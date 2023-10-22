@@ -23,7 +23,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class FileDialog
@@ -36,7 +36,7 @@ public:
      * @param path The file to be selected
      * @warning This method assumes that the file dialog is already open.
      */
-    GUITEST_API static void fill(Tester& tester, const std::filesystem::path& path);
+    GUITEST_API static void fill(Tester& _tester, const std::filesystem::path& _path);
 };
 
 }

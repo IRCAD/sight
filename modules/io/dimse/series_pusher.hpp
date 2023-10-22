@@ -67,17 +67,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_pusher, service::controller);
 
-    typedef std::vector<CSPTR(data::series)> DicomSeriesContainerType;
+    typedef std::vector<CSPTR(data::series)> dicom_series_container_t;
 
     MODULE_IO_DIMSE_API static const core::com::slots::key_t DISPLAY_SLOT;
-    typedef core::com::slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    typedef core::com::slot<void (const std::string&, bool)> display_message_slot_t;
 
     /// Signal to start the progress (bar id)
-    typedef core::com::signal<void (std::string)> StartedProgressSignalType;
+    typedef core::com::signal<void (std::string)> started_progress_signal_t;
     /// Signal to update the progress (bar id, percentage, message)
-    typedef core::com::signal<void (std::string, float, std::string)> ProgressedSignalType;
+    typedef core::com::signal<void (std::string, float, std::string)> progressed_signal_t;
     /// Signal to stop the progress (bar id)
-    typedef core::com::signal<void (std::string)> StoppedProgressSignalType;
+    typedef core::com::signal<void (std::string)> stopped_progress_signal_t;
 
     /// Key in m_signals map of signal m_sigProgressed
     static const core::com::signals::key_t PROGRESSED_SIG;
@@ -127,7 +127,7 @@ protected:
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    static MODULE_IO_DIMSE_API void displayMessage(const std::string& message, bool error);
+    static MODULE_IO_DIMSE_API void displayMessage(const std::string& _message, bool _error);
 
     /**
      * @brief Progress callback
@@ -136,25 +136,25 @@ protected:
      * @param[in] filePath File path
      */
     MODULE_IO_DIMSE_API void progress_callback(
-        const std::string& seriesInstanceUID,
-        unsigned int instanceNumber,
-        const std::string& filePath
+        const std::string& _series_instance_uid,
+        unsigned int _instance_number,
+        const std::string& _file_path
     );
 
     /// Slot to call displayMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
+    display_message_slot_t::sptr m_slotDisplayMessage;
 
     /// Slot to call progress_callback method
-    sight::io::dimse::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotProgressCallback;
+    sight::io::dimse::SeriesEnquirer::progress_callback_slot_t::sptr m_slotProgressCallback;
 
     /// Signal emitted when the bar is progressing
-    ProgressedSignalType::sptr m_sigProgressed;
+    progressed_signal_t::sptr m_sigProgressed;
 
     /// Signal emitted when the bar is starting
-    StartedProgressSignalType::sptr m_sigStartedProgress;
+    started_progress_signal_t::sptr m_sigStartedProgress;
 
     /// Signal emitted when the bar is stopping
-    StoppedProgressSignalType::sptr m_sigStoppedProgress;
+    stopped_progress_signal_t::sptr m_sigStoppedProgress;
 
     /// Progress Bar ID
     std::string m_progressbarId;

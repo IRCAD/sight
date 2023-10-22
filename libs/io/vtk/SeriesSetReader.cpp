@@ -76,18 +76,18 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void initSeries(data::series::sptr series, const std::string& instanceUID)
+void init_series(data::series::sptr _series, const std::string& _instance_uid)
 {
-    series->setModality("OT");
+    _series->setModality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     const std::string date       = core::tools::get_date(now);
     const std::string time       = core::tools::get_time(now);
-    series->setSeriesDate(date);
-    series->setSeriesTime(time);
+    _series->setSeriesDate(date);
+    _series->setSeriesTime(time);
 
-    series->setStudyInstanceUID(instanceUID);
-    series->setStudyDate(date);
-    series->setStudyTime(time);
+    _series->setStudyInstanceUID(_instance_uid);
+    _series->setStudyDate(date);
+    _series->setStudyTime(time);
 }
 
 //------------------------------------------------------------------------------
@@ -100,30 +100,30 @@ SeriesSetReader::SeriesSetReader() :
 
 //------------------------------------------------------------------------------
 template<typename T, typename FILE>
-vtkSmartPointer<vtkDataObject> getObj(FILE& file, const core::jobs::observer::sptr& job)
+vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::jobs::observer::sptr& _job)
 {
     vtkSmartPointer<T> reader = vtkSmartPointer<T>::New();
-    reader->SetFileName(file.string().c_str());
+    reader->SetFileName(_file.string().c_str());
 
-    if(job)
+    if(_job)
     {
         vtkSmartPointer<helper::vtkLambdaCommand> progress_callback;
         progress_callback = vtkSmartPointer<helper::vtkLambdaCommand>::New();
         progress_callback->SetCallback(
-            [&](vtkObject* caller, std::uint64_t, void*)
+            [&](vtkObject* _caller, std::uint64_t, void*)
             {
-                auto* filter = static_cast<T*>(caller);
-                job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+                auto* filter = static_cast<T*>(_caller);
+                _job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
             });
         reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-        job->add_simple_cancel_hook(
+        _job->add_simple_cancel_hook(
             [&]()
             {
                 reader->AbortExecuteOn();
             });
         reader->Update();
-        job->finish();
+        _job->finish();
     }
     else
     {
@@ -135,42 +135,42 @@ vtkSmartPointer<vtkDataObject> getObj(FILE& file, const core::jobs::observer::sp
 
 //------------------------------------------------------------------------------
 
-data::object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, const std::filesystem::path& file)
+data::object::sptr get_data_object(const vtkSmartPointer<vtkDataObject>& _obj, const std::filesystem::path& _file)
 {
-    vtkSmartPointer<vtkPolyData> mesh         = vtkPolyData::SafeDownCast(obj);
-    vtkSmartPointer<vtkImageData> img         = vtkImageData::SafeDownCast(obj);
-    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkUnstructuredGrid::SafeDownCast(obj);
-    data::object::sptr dataObj;
+    vtkSmartPointer<vtkPolyData> mesh         = vtkPolyData::SafeDownCast(_obj);
+    vtkSmartPointer<vtkImageData> img         = vtkImageData::SafeDownCast(_obj);
+    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkUnstructuredGrid::SafeDownCast(_obj);
+    data::object::sptr data_obj;
 
     if(grid != nullptr)
     {
-        data::mesh::sptr meshObj = std::make_shared<data::mesh>();
-        io::vtk::helper::mesh::fromVTKGrid(grid, meshObj);
+        data::mesh::sptr mesh_obj = std::make_shared<data::mesh>();
+        io::vtk::helper::mesh::fromVTKGrid(grid, mesh_obj);
 
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
-        rec->setMesh(meshObj);
-        rec->setOrganName(file.stem().string());
+        rec->setMesh(mesh_obj);
+        rec->setOrganName(_file.stem().string());
         rec->setIsVisible(true);
-        dataObj = rec;
+        data_obj = rec;
     }
 
     if(mesh != nullptr)
     {
-        data::mesh::sptr meshObj = std::make_shared<data::mesh>();
-        io::vtk::helper::mesh::fromVTKMesh(mesh, meshObj);
+        data::mesh::sptr mesh_obj = std::make_shared<data::mesh>();
+        io::vtk::helper::mesh::fromVTKMesh(mesh, mesh_obj);
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
-        rec->setMesh(meshObj);
-        rec->setOrganName(file.stem().string());
+        rec->setMesh(mesh_obj);
+        rec->setOrganName(_file.stem().string());
         rec->setIsVisible(true);
-        dataObj = rec;
+        data_obj = rec;
     }
     else if(img != nullptr)
     {
         try
         {
-            data::image::sptr imgObj = std::make_shared<data::image>();
-            io::vtk::fromVTKImage(img, imgObj);
-            dataObj = imgObj;
+            data::image::sptr img_obj = std::make_shared<data::image>();
+            io::vtk::from_vtk_image(img, img_obj);
+            data_obj = img_obj;
         }
         catch(std::exception& e)
         {
@@ -178,28 +178,28 @@ data::object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
         }
     }
 
-    return dataObj;
+    return data_obj;
 }
 
 //------------------------------------------------------------------------------
 
-bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkMetaImageReader>& /*unused*/)
+bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkMetaImageReader>& /*unused*/)
 {
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkGenericDataObjectReader>& reader)
+bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkGenericDataObjectReader>& _reader)
 {
-    return reader->IsFileStructuredPoints() != 0;
+    return _reader->IsFileStructuredPoints() != 0;
 }
 
 //------------------------------------------------------------------------------
 
-bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkXMLGenericDataObjectReader>& reader)
+bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkXMLGenericDataObjectReader>& _reader)
 {
-    return reader->GetImageDataOutput() != nullptr;
+    return _reader->GetImageDataOutput() != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -209,10 +209,10 @@ void SeriesSetReader::read()
     auto series_set = getConcreteObject();
 
     const std::vector<std::filesystem::path>& files = get_files();
-    const std::string instanceUID                   = core::tools::UUID::generate();
+    const std::string instance_uid                  = core::tools::UUID::generate();
 
-    data::model_series::ReconstructionVectorType recs;
-    std::vector<std::string> errorFiles;
+    data::model_series::reconstruction_vector_t recs;
+    std::vector<std::string> error_files;
     for(const auto& file : files)
     {
         vtkSmartPointer<vtkDataObject> obj;
@@ -223,50 +223,50 @@ void SeriesSetReader::read()
         {
             if(!img)
             {
-                obj = getObj<vtkGenericDataObjectReader>(file, m_job);
+                obj = get_obj<vtkGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".vti")
         {
             if(!img)
             {
-                obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
+                obj = get_obj<vtkXMLGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".mhd")
         {
-            obj = getObj<vtkMetaImageReader>(file, m_job);
+            obj = get_obj<vtkMetaImageReader>(file, m_job);
         }
         else if(file.extension().string() == ".vtu" || file.extension().string() == ".vtp")
         {
-            obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
+            obj = get_obj<vtkXMLGenericDataObjectReader>(file, m_job);
         }
         else if(file.extension().string() == ".obj")
         {
-            obj = getObj<vtkOBJReader>(file, m_job);
+            obj = get_obj<vtkOBJReader>(file, m_job);
         }
         else if(file.extension().string() == ".stl")
         {
-            obj = getObj<vtkSTLReader>(file, m_job);
+            obj = get_obj<vtkSTLReader>(file, m_job);
         }
         else if(file.extension().string() == ".ply")
         {
-            obj = getObj<vtkPLYReader>(file, m_job);
+            obj = get_obj<vtkPLYReader>(file, m_job);
         }
 
         if(!img)
         {
-            data::object::sptr dataObj = getDataObject(obj, file);
-            img = std::dynamic_pointer_cast<data::image>(dataObj);
-            rec = std::dynamic_pointer_cast<data::reconstruction>(dataObj);
+            data::object::sptr data_obj = get_data_object(obj, file);
+            img = std::dynamic_pointer_cast<data::image>(data_obj);
+            rec = std::dynamic_pointer_cast<data::reconstruction>(data_obj);
         }
 
         if(img)
         {
-            auto imgSeries = std::make_shared<data::image_series>();
-            initSeries(imgSeries, instanceUID);
-            imgSeries->image::shallow_copy(img);
-            series_set->push_back(imgSeries);
+            auto img_series = std::make_shared<data::image_series>();
+            init_series(img_series, instance_uid);
+            img_series->image::shallow_copy(img);
+            series_set->push_back(img_series);
         }
         else if(rec)
         {
@@ -274,22 +274,22 @@ void SeriesSetReader::read()
         }
         else
         {
-            errorFiles.push_back(file.string());
+            error_files.push_back(file.string());
         }
     }
 
-    if(!errorFiles.empty())
+    if(!error_files.empty())
     {
-        SIGHT_THROW("SeriesSetReader cannot read VTK file(s) : " << boost::algorithm::join(errorFiles, ", "));
+        SIGHT_THROW("SeriesSetReader cannot read VTK file(s) : " << boost::algorithm::join(error_files, ", "));
     }
 
     // Adds loaded Reconstructions in series_set
     if(!recs.empty())
     {
-        data::model_series::sptr modelSeries = std::make_shared<data::model_series>();
-        initSeries(modelSeries, instanceUID);
-        modelSeries->setReconstructionDB(recs);
-        series_set->push_back(modelSeries);
+        data::model_series::sptr model_series = std::make_shared<data::model_series>();
+        init_series(model_series, instance_uid);
+        model_series->setReconstructionDB(recs);
+        series_set->push_back(model_series);
     }
 }
 

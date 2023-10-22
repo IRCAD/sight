@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,13 +44,13 @@ Q_OBJECT;
 public:
 
     /// Constructor
-    QTagSelectorWidget(QWidget* parent = nullptr);
+    QTagSelectorWidget(QWidget* _parent = nullptr);
 
     /// Destructor
     ~QTagSelectorWidget() override;
 
     /// Set tag
-    void setTagValue(const DcmTagKey& tag);
+    void setTagValue(const DcmTagKey& _tag);
 
     /// Get tag
     DcmTagKey getTag();
@@ -58,7 +58,7 @@ public:
 protected Q_SLOTS:
 
     /// Update tag name when selected tag changes
-    void updateTagName(int value = 0);
+    void updateTagName(int _value = 0);
 
 protected:
 

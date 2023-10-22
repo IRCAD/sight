@@ -108,8 +108,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::signal<void (data::activity::sptr)> ActivityCreatedSignalType;
-    typedef core::com::signal<void (data::activity::sptr)> DataRequiredSignalType;
+    typedef core::com::signal<void (data::activity::sptr)> activity_created_signal_t;
+    typedef core::com::signal<void (data::activity::sptr)> data_required_signal_t;
 /**
  * @}
  */
@@ -117,13 +117,13 @@ public:
 Q_SIGNALS:
 
     // Emitted when the activity at the given index can be launched
-    void enable(int index);
-    void select(int index);
+    void enable(int _index);
+    void select(int _index);
 
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    void goTo(int index);
+    void goTo(int _index);
 
 protected:
 
@@ -159,8 +159,8 @@ private:
     /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
     void previous();
 
-    ActivityCreatedSignalType::sptr m_sigActivityCreated;
-    DataRequiredSignalType::sptr m_sigDataRequired;
+    activity_created_signal_t::sptr m_sigActivityCreated;
+    data_required_signal_t::sptr m_sigDataRequired;
 
     /// List of activity ids
     QStringList m_qActivityIds;

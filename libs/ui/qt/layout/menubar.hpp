@@ -54,7 +54,7 @@ public:
      * @pre layout must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::menubar::sptr parent, const std::string& id) override;
+    UI_QT_API void createLayout(ui::container::menubar::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local menus.
@@ -65,12 +65,12 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    UI_QT_API void menuIsVisible(ui::container::menu::sptr menu, bool isVisible) override;
+    UI_QT_API void menuIsVisible(ui::container::menu::sptr _menu, bool _is_visible) override;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_QT_API void menuIsEnabled(ui::container::menu::sptr menu, bool isEnabled) override;
+    UI_QT_API void menuIsEnabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
 
 protected:
 

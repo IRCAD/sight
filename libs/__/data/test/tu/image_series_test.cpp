@@ -127,9 +127,9 @@ void image_seriesTest::equalityTest()
     series2->setPatientPosition(series1->getPatientPosition());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setAnatomicalOrientationType("14");
+    series1->set_anatomical_orientation_type("14");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setAnatomicalOrientationType(series1->getAnatomicalOrientationType());
+    series2->set_anatomical_orientation_type(series1->get_anatomical_orientation_type());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->setPerformedProcedureStepID("15");
@@ -187,12 +187,12 @@ void image_seriesTest::equalityTest()
     series2->shallow_copy(series1);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    auto dicomSeries = std::make_shared<data::dicom_series>();
-    dicomSeries->setSeriesInstanceUID("25");
-    dicomSeries->setNumberOfInstances(1);
-    series1->setDicomReference(dicomSeries);
+    auto dicom_series = std::make_shared<data::dicom_series>();
+    dicom_series->setSeriesInstanceUID("25");
+    dicom_series->setNumberOfInstances(1);
+    series1->setDicomReference(dicom_series);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setDicomReference(dicomSeries);
+    series2->setDicomReference(dicom_series);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->setContrastBolusAgent("26");

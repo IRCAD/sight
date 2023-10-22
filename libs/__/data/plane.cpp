@@ -44,18 +44,18 @@ plane::plane()
     m_vPoints[1] = std::make_shared<data::point>();
     m_vPoints[2] = std::make_shared<data::point>();
 
-    new_signal<SelectedSignalType>(SELECTED_SIG);
+    new_signal<selected_signal_t>(SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void plane::shallow_copy(const object::csptr& source)
+void plane::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const plane>(source);
+    const auto& other = std::dynamic_pointer_cast<const plane>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -68,23 +68,23 @@ void plane::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void plane::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void plane::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const plane>(source);
+    const auto& other = std::dynamic_pointer_cast<const plane>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
-    m_vPoints[0] = data::object::copy(other->m_vPoints[0], cache);
-    m_vPoints[1] = data::object::copy(other->m_vPoints[1], cache);
-    m_vPoints[2] = data::object::copy(other->m_vPoints[2], cache);
+    m_vPoints[0] = data::object::copy(other->m_vPoints[0], _cache);
+    m_vPoints[1] = data::object::copy(other->m_vPoints[1], _cache);
+    m_vPoints[2] = data::object::copy(other->m_vPoints[2], _cache);
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -98,23 +98,23 @@ void plane::setValue(data::point::sptr _point1, data::point::sptr _point2, data:
 
 //------------------------------------------------------------------------------
 
-bool plane::operator==(const plane& other) const noexcept
+bool plane::operator==(const plane& _other) const noexcept
 {
-    if(m_isIntersection != other.m_isIntersection
-       || !core::tools::is_equal(m_vPoints, other.m_vPoints))
+    if(m_isIntersection != _other.m_isIntersection
+       || !core::tools::is_equal(m_vPoints, _other.m_vPoints))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool plane::operator!=(const plane& other) const noexcept
+bool plane::operator!=(const plane& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

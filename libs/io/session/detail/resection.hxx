@@ -42,37 +42,37 @@ constexpr static auto s_IsVisible {"IsVisible"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto resection = helper::safe_cast<data::resection>(object);
+    const auto resection = helper::safe_cast<data::resection>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::resection>(tree, 1);
+    helper::write_version<data::resection>(_tree, 1);
 
     // Serialize attributes
-    helper::write_string(tree, s_Name, resection->getName());
-    tree.put(s_IsSafePart, resection->getIsSafePart());
-    tree.put(s_IsValid, resection->getIsValid());
-    tree.put(s_IsVisible, resection->getIsVisible());
+    helper::write_string(_tree, s_Name, resection->getName());
+    _tree.put(s_IsSafePart, resection->getIsSafePart());
+    _tree.put(s_IsValid, resection->getIsValid());
+    _tree.put(s_IsVisible, resection->getIsVisible());
 
-    children[s_PlaneList] = resection->getPlaneList();
+    _children[s_PlaneList] = resection->getPlaneList();
 
     // Serialize intputs
     std::size_t index = 0;
     for(const auto& input : resection->getInputs())
     {
-        children["I" + std::to_string(index++)] = input;
+        _children["I" + std::to_string(index++)] = input;
     }
 
     // Serialize outputs
     index = 0;
     for(const auto& output : resection->getOutputs())
     {
-        children["O" + std::to_string(index++)] = output;
+        _children["O" + std::to_string(index++)] = output;
     }
 }
 
@@ -80,25 +80,25 @@ inline static void write(
 
 inline static data::resection::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto resection = helper::cast_or_create<data::resection>(object);
+    auto resection = helper::cast_or_create<data::resection>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::resection>(tree, 0, 1);
+    helper::read_version<data::resection>(_tree, 0, 1);
 
     // Deserialize attributes
-    resection->setName(helper::read_string(tree, s_Name));
-    resection->setIsSafePart(tree.get<bool>(s_IsSafePart));
-    resection->setIsValid(tree.get<bool>(s_IsValid));
-    resection->setIsVisible(tree.get<bool>(s_IsVisible));
+    resection->setName(helper::read_string(_tree, s_Name));
+    resection->setIsSafePart(_tree.get<bool>(s_IsSafePart));
+    resection->setIsValid(_tree.get<bool>(s_IsValid));
+    resection->setIsVisible(_tree.get<bool>(s_IsVisible));
 
-    resection->setPlaneList(std::dynamic_pointer_cast<data::plane_list>(children.at(s_PlaneList)));
+    resection->setPlaneList(std::dynamic_pointer_cast<data::plane_list>(_children.at(s_PlaneList)));
 
     // Deserialize intputs / outputs
     auto& inputs = resection->getInputs();
@@ -107,24 +107,24 @@ inline static data::resection::sptr read(
     auto& outputs = resection->getOutputs();
     outputs.clear();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& inputIt  = children.find("I" + std::to_string(index));
-        const auto& outputIt = children.find("O" + std::to_string(index));
+        const auto& input_it  = _children.find("I" + std::to_string(index));
+        const auto& output_it = _children.find("O" + std::to_string(index));
 
-        if(inputIt == children.cend() && outputIt == children.cend())
+        if(input_it == _children.cend() && output_it == _children.cend())
         {
             break;
         }
 
-        if(inputIt != children.cend())
+        if(input_it != _children.cend())
         {
-            inputs.push_back(std::dynamic_pointer_cast<data::reconstruction>(inputIt->second));
+            inputs.push_back(std::dynamic_pointer_cast<data::reconstruction>(input_it->second));
         }
 
-        if(outputIt != children.cend())
+        if(output_it != _children.cend())
         {
-            outputs.push_back(std::dynamic_pointer_cast<data::reconstruction>(outputIt->second));
+            outputs.push_back(std::dynamic_pointer_cast<data::reconstruction>(output_it->second));
         }
     }
 

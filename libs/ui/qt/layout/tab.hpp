@@ -54,7 +54,7 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::widget::sptr parent, const std::string& id) override;
+    UI_QT_API void createLayout(ui::container::widget::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local layout with sub containers.

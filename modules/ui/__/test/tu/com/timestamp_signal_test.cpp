@@ -58,25 +58,25 @@ void timestamp_signal_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void timestamp_signal_test::test(bool useSystemClock)
+void timestamp_signal_test::test(bool _use_system_clock)
 {
     using namespace std::literals::chrono_literals;
 
     boost::property_tree::ptree ptree;
-    ptree.put("useSystemClock", useSystemClock);
+    ptree.put("useSystemClock", _use_system_clock);
     m_timestampSignal->set_config(ptree);
     CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->configure());
     CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->start().get());
 
     std::vector<double> timestamps;
-    auto triggeredSlot = core::com::new_slot(
-        [&timestamps](double timestamp)
+    auto triggered_slot = core::com::new_slot(
+        [&timestamps](double _timestamp)
         {
-            timestamps.push_back(timestamp);
+            timestamps.push_back(_timestamp);
         });
     m_worker = core::thread::worker::make();
-    triggeredSlot->set_worker(m_worker);
-    m_timestampSignal->signal("triggered")->connect(triggeredSlot);
+    triggered_slot->set_worker(m_worker);
+    m_timestampSignal->signal("triggered")->connect(triggered_slot);
 
     CPPUNIT_ASSERT_NO_THROW(m_timestampSignal->update().get());
     SIGHT_TEST_WAIT(1 == timestamps.size());

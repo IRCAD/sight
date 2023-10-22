@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/registry/adaptor.hpp"
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
@@ -68,7 +68,7 @@ const core::com::slots::key_t render::SET_AUTO_MODE            = "setAutoMode";
 //-----------------------------------------------------------------------------
 
 render::render() noexcept :
-    m_ogreRoot(viz::scene3d::Utils::getOgreRoot())
+    m_ogreRoot(viz::scene3d::utils::getOgreRoot())
 {
     new_signal<signals::compositorUpdated_signal_t>(signals::COMPOSITOR_UPDATED);
     new_signal<signals::void_signal_t>(signals::FULLSCREEN_SET);
@@ -97,75 +97,75 @@ void render::configuring()
     const config_t config = this->get_config();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
-    const config_t sceneCfg = config.get_child("scene");
+    const config_t scene_cfg = config.get_child("scene");
 
-    const std::size_t nbInouts = config.count("inout");
-    SIGHT_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
+    const std::size_t nb_inouts = config.count("inout");
+    SIGHT_ASSERT("This service accepts at most one inout.", nb_inouts <= 1);
 
-    if(nbInouts == 1)
+    if(nb_inouts == 1)
     {
         const auto key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
         SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" << s_OFFSCREEN_INOUT << "' is accepted.", m_offScreen);
 
-        m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
-        m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
-        m_flip   = sceneCfg.get<bool>("<xmlattr>.flip", m_flip);
+        m_width  = scene_cfg.get<unsigned int>("<xmlattr>.width", m_width);
+        m_height = scene_cfg.get<unsigned int>("<xmlattr>.height", m_height);
+        m_flip   = scene_cfg.get<bool>("<xmlattr>.flip", m_flip);
     }
     else // no offscreen rendering.
     {
         this->initialize();
     }
 
-    m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
+    m_fullscreen = scene_cfg.get<bool>("<xmlattr>.fullscreen", false);
 
-    const auto renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
-    if(renderMode == "auto")
+    const auto render_mode = scene_cfg.get<std::string>("<xmlattr>.renderMode", "auto");
+    if(render_mode == "auto")
     {
         m_renderMode = RenderMode::AUTO;
     }
-    else if(renderMode == "manual" || renderMode == "sync") /* Keep sync for backwards compatibility */
+    else if(render_mode == "manual" || render_mode == "sync") /* Keep sync for backwards compatibility */
     {
         m_renderMode = RenderMode::MANUAL;
     }
     else
     {
-        SIGHT_ERROR("Unknown rendering mode '" + renderMode + "', use the default 'auto'.");
+        SIGHT_ERROR("Unknown rendering mode '" + render_mode + "', use the default 'auto'.");
     }
 
-    auto& adaptorRegistry = viz::scene3d::registry::get_adaptor_registry();
+    auto& adaptor_registry = viz::scene3d::registry::get_adaptor_registry();
 
     /// New config
-    auto layerConfigs = sceneCfg.equal_range("layer");
-    for(const auto& itLayer : boost::make_iterator_range(layerConfigs))
+    auto layer_configs = scene_cfg.equal_range("layer");
+    for(const auto& it_layer : boost::make_iterator_range(layer_configs))
     {
-        const auto layerId  = itLayer.second.get<std::string>("<xmlattr>.id");
-        auto adaptorConfigs = itLayer.second.equal_range("adaptor");
-        for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+        const auto layer_id  = it_layer.second.get<std::string>("<xmlattr>.id");
+        auto adaptor_configs = it_layer.second.equal_range("adaptor");
+        for(const auto& it : boost::make_iterator_range(adaptor_configs))
         {
             const auto uid = it.second.get<std::string>("<xmlattr>.uid");
-            adaptorRegistry[uid] = {this->get_id(), layerId};
+            adaptor_registry[uid] = {this->get_id(), layer_id};
         }
 
         //create resetcamera_layerID slot
-        const core::com::slots::key_t resetcamera_slotkey = "resetCamera_" + layerId;
-        auto resetCameraLayerSlot                         = new_slot(
+        const core::com::slots::key_t resetcamera_slotkey = "resetCamera_" + layer_id;
+        auto reset_camera_layer_slot                      = new_slot(
             resetcamera_slotkey,
-            [this, layerId]()
+            [this, layer_id]()
             {
-                this->resetCameraCoordinates(layerId);
+                this->resetCameraCoordinates(layer_id);
             });
 
-        resetCameraLayerSlot->set_worker(sight::core::thread::get_default_worker());
+        reset_camera_layer_slot->set_worker(sight::core::thread::get_default_worker());
     }
 
     /// Old config
-    auto adaptorConfigs = sceneCfg.equal_range("adaptor");
-    for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+    auto adaptor_configs = scene_cfg.equal_range("adaptor");
+    for(const auto& it : boost::make_iterator_range(adaptor_configs))
     {
         const auto uid = it.second.get<std::string>("<xmlattr>.uid");
-        adaptorRegistry[uid] = {this->get_id(), ""};
+        adaptor_registry[uid] = {this->get_id(), ""};
     }
 }
 
@@ -173,7 +173,7 @@ void render::configuring()
 
 void render::starting()
 {
-    bool bHasBackground = false;
+    bool b_has_background = false;
 
     if(!m_offScreen)
     {
@@ -184,20 +184,20 @@ void render::starting()
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 
-    const config_t sceneCfg = config.get_child("scene");
+    const config_t scene_cfg = config.get_child("scene");
 
-    SIGHT_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
+    SIGHT_ERROR_IF("Overlays should be enabled at the layer level.", !scene_cfg.get("<xmlattr>.overlays", "").empty());
 
-    auto layerConfigs = sceneCfg.equal_range("layer");
-    for(auto it = layerConfigs.first ; it != layerConfigs.second ; ++it)
+    auto layer_configs = scene_cfg.equal_range("layer");
+    for(auto it = layer_configs.first ; it != layer_configs.second ; ++it)
     {
         this->configureLayer(it->second);
     }
 
-    auto bkgConfigs = sceneCfg.equal_range("background");
-    for(auto it = bkgConfigs.first ; it != bkgConfigs.second ; ++it)
+    auto bkg_configs = scene_cfg.equal_range("background");
+    for(auto it = bkg_configs.first ; it != bkg_configs.second ; ++it)
     {
-        SIGHT_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
+        SIGHT_ERROR_IF("A background has already been set, overriding it...", b_has_background);
         try
         {
             this->configureBackgroundLayer(it->second);
@@ -207,39 +207,39 @@ void render::starting()
             SIGHT_ERROR("Error configuring background for layer '" + this->get_id() + "': " + e.what());
         }
 
-        bHasBackground = true;
+        b_has_background = true;
     }
 
-    if(!bHasBackground)
+    if(!b_has_background)
     {
         // Create a default black background
-        viz::scene3d::Layer::sptr ogreLayer = std::make_shared<viz::scene3d::Layer>();
-        ogreLayer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
-        ogreLayer->set_id("backgroundLayer");
-        ogreLayer->setOrder(0);
-        ogreLayer->set_worker(this->worker());
-        ogreLayer->setBackgroundColor("#000000", "#000000");
-        ogreLayer->setBackgroundScale(0, 0.5);
-        ogreLayer->setHasDefaultLight(false);
-        ogreLayer->setViewportConfig({0.F, 0.F, 1.F, 1.F});
+        viz::scene3d::layer::sptr ogre_layer = std::make_shared<viz::scene3d::layer>();
+        ogre_layer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
+        ogre_layer->set_id("backgroundLayer");
+        ogre_layer->setOrder(0);
+        ogre_layer->set_worker(this->worker());
+        ogre_layer->setBackgroundColor("#000000", "#000000");
+        ogre_layer->setBackgroundScale(0, 0.5);
+        ogre_layer->setHasDefaultLight(false);
+        ogre_layer->setViewportConfig({0.F, 0.F, 1.F, 1.F});
 
-        m_layers[s_OGREBACKGROUNDID] = ogreLayer;
+        m_layers[s_OGREBACKGROUNDID] = ogre_layer;
     }
 
-    const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
     if(m_offScreen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::window_interactor::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->get_sptr());
-        m_interactorManager->createContainer(nullptr, m_fullscreen, serviceID);
+        m_interactorManager->createContainer(nullptr, m_fullscreen, service_id);
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::window_interactor::createManager();
         m_interactorManager->setRenderService(this->get_sptr());
-        m_interactorManager->createContainer(this->getContainer(), m_fullscreen, serviceID);
+        m_interactorManager->createContainer(this->getContainer(), m_fullscreen, service_id);
     }
 
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
@@ -254,7 +254,7 @@ void render::stopping()
 
     for(const auto& it : m_layers)
     {
-        viz::scene3d::Layer::sptr layer = it.second;
+        viz::scene3d::layer::sptr layer = it.second;
         layer->destroyScene();
     }
 
@@ -286,67 +286,67 @@ void render::makeCurrent()
 
 void render::configureLayer(const config_t& _cfg)
 {
-    const config_t attributes               = _cfg.get_child("<xmlattr>");
-    const std::string id                    = attributes.get<std::string>("id", "");
-    const std::string compositors           = attributes.get<std::string>("compositors", "");
-    const std::string transparencyTechnique = attributes.get<std::string>("transparency", "");
-    const std::string numPeels              = attributes.get<std::string>("numPeels", "4");
-    const std::string stereoMode            = attributes.get<std::string>("stereoMode", "");
-    const std::string defaultLight          = attributes.get<std::string>("defaultLight", "");
-    const auto viewportConfig               = configureLayerViewport(_cfg);
+    const config_t attributes                = _cfg.get_child("<xmlattr>");
+    const std::string id                     = attributes.get<std::string>("id", "");
+    const std::string compositors            = attributes.get<std::string>("compositors", "");
+    const std::string transparency_technique = attributes.get<std::string>("transparency", "");
+    const std::string num_peels              = attributes.get<std::string>("numPeels", "4");
+    const std::string stereo_mode            = attributes.get<std::string>("stereoMode", "");
+    const std::string default_light          = attributes.get<std::string>("defaultLight", "");
+    const auto viewport_config               = configureLayerViewport(_cfg);
 
     auto overlays = std::istringstream(attributes.get<std::string>("overlays", ""));
-    std::vector<std::string> enabledOverlays;
-    for(std::string overlayName ; std::getline(overlays, overlayName, ';') ; )
+    std::vector<std::string> enabled_overlays;
+    for(std::string overlay_name ; std::getline(overlays, overlay_name, ';') ; )
     {
-        enabledOverlays.push_back(overlayName);
+        enabled_overlays.push_back(overlay_name);
     }
 
     SIGHT_ASSERT("'id' required attribute missing or empty", !id.empty());
     SIGHT_ASSERT(
-        "Unknown 3D mode : " << stereoMode,
-        stereoMode.empty() || stereoMode == "false" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8"
-        || stereoMode == "Stereo"
+        "Unknown 3D mode : " << stereo_mode,
+        stereo_mode.empty() || stereo_mode == "false" || stereo_mode == "AutoStereo5" || stereo_mode == "AutoStereo8"
+        || stereo_mode == "Stereo"
     );
 
-    int layerOrder        = 0;
-    const auto layerDepth = attributes.get_optional<int>("depth");
-    if(layerDepth)
+    int layer_order        = 0;
+    const auto layer_depth = attributes.get_optional<int>("depth");
+    if(layer_depth)
     {
         FW_DEPRECATED_MSG("Attribute 'depth' is deprecated, please used 'order' instead", "22.0")
-        layerOrder = layerDepth.get();
+        layer_order = layer_depth.get();
     }
     else
     {
-        layerOrder = attributes.get<int>("order");
+        layer_order = attributes.get<int>("order");
     }
 
-    SIGHT_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
+    SIGHT_ASSERT("Attribute 'order' must be greater than 0", layer_order > 0);
 
-    viz::scene3d::Layer::sptr ogreLayer              = std::make_shared<viz::scene3d::Layer>();
-    compositor::core::StereoModeType layerStereoMode = stereoMode == "AutoStereo5"
-                                                       ? compositor::core::StereoModeType::AUTOSTEREO_5
-                                                       : stereoMode == "AutoStereo8"
-                                                       ? compositor::core::StereoModeType::AUTOSTEREO_8
-                                                       : stereoMode == "Stereo"
-                                                       ? compositor::core::StereoModeType::STEREO
-                                                       : compositor::core::StereoModeType::NONE;
+    viz::scene3d::layer::sptr ogre_layer              = std::make_shared<viz::scene3d::layer>();
+    compositor::core::stereo_mode_t layer_stereo_mode = stereo_mode == "AutoStereo5"
+                                                        ? compositor::core::stereo_mode_t::AUTOSTEREO_5
+                                                        : stereo_mode == "AutoStereo8"
+                                                        ? compositor::core::stereo_mode_t::AUTOSTEREO_8
+                                                        : stereo_mode == "Stereo"
+                                                        ? compositor::core::stereo_mode_t::STEREO
+                                                        : compositor::core::stereo_mode_t::NONE;
 
-    ogreLayer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
-    ogreLayer->set_id(id);
-    ogreLayer->setOrder(layerOrder);
-    ogreLayer->set_worker(this->worker());
-    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
-    ogreLayer->setCompositorChainEnabled(compositors);
-    ogreLayer->setViewportConfig(viewportConfig);
+    ogre_layer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
+    ogre_layer->set_id(id);
+    ogre_layer->setOrder(layer_order);
+    ogre_layer->set_worker(this->worker());
+    ogre_layer->setCoreCompositorEnabled(true, transparency_technique, num_peels, layer_stereo_mode);
+    ogre_layer->setCompositorChainEnabled(compositors);
+    ogre_layer->setViewportConfig(viewport_config);
 
-    if(!defaultLight.empty() && defaultLight == "false")
+    if(!default_light.empty() && default_light == "false")
     {
-        ogreLayer->setHasDefaultLight(false);
+        ogre_layer->setHasDefaultLight(false);
     }
 
     // Finally, the layer is pushed in the map
-    m_layers[id] = ogreLayer;
+    m_layers[id] = ogre_layer;
 }
 
 //-----------------------------------------------------------------------------
@@ -356,84 +356,84 @@ void render::configureBackgroundLayer(const config_t& _cfg)
     SIGHT_ASSERT("'id' required attribute missing or empty", !this->get_id().empty());
     const config_t attributes = _cfg.get_child("<xmlattr>");
 
-    viz::scene3d::Layer::sptr ogreLayer = std::make_shared<viz::scene3d::Layer>();
-    ogreLayer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
-    ogreLayer->set_id(s_OGREBACKGROUNDID);
-    ogreLayer->setOrder(0);
-    ogreLayer->set_worker(this->worker());
-    ogreLayer->setHasDefaultLight(false);
+    viz::scene3d::layer::sptr ogre_layer = std::make_shared<viz::scene3d::layer>();
+    ogre_layer->setRenderService(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
+    ogre_layer->set_id(s_OGREBACKGROUNDID);
+    ogre_layer->setOrder(0);
+    ogre_layer->set_worker(this->worker());
+    ogre_layer->setHasDefaultLight(false);
 
     if(attributes.count("material") != 0U)
     {
         const auto material = attributes.get<std::string>("material");
-        ogreLayer->setBackgroundMaterial(material);
+        ogre_layer->setBackgroundMaterial(material);
     }
     else if(attributes.count("color") != 0U)
     {
         const auto color = attributes.get<std::string>("color");
-        ogreLayer->setBackgroundColor(color, color);
+        ogre_layer->setBackgroundColor(color, color);
     }
     else if((attributes.count("topColor") != 0U) && (attributes.count("bottomColor") != 0U))
     {
-        const auto topColor = attributes.get<std::string>("topColor");
-        const auto botColor = attributes.get<std::string>("bottomColor");
+        const auto top_color = attributes.get<std::string>("topColor");
+        const auto bot_color = attributes.get<std::string>("bottomColor");
 
-        ogreLayer->setBackgroundColor(topColor, botColor);
+        ogre_layer->setBackgroundColor(top_color, bot_color);
     }
 
     if((attributes.count("topScale") != 0U) && (attributes.count("bottomScale") != 0U))
     {
-        const auto topScaleVal = attributes.get<float>("topScale");
-        const auto botScaleVal = attributes.get<float>("bottomScale");
+        const auto top_scale_val = attributes.get<float>("topScale");
+        const auto bot_scale_val = attributes.get<float>("bottomScale");
 
-        ogreLayer->setBackgroundScale(topScaleVal, botScaleVal);
+        ogre_layer->setBackgroundScale(top_scale_val, bot_scale_val);
     }
     else
     {
-        ogreLayer->setBackgroundScale(0.5F, 0.5F);
+        ogre_layer->setBackgroundScale(0.5F, 0.5F);
     }
 
-    m_layers[s_OGREBACKGROUNDID] = ogreLayer;
+    m_layers[s_OGREBACKGROUNDID] = ogre_layer;
 }
 
 //-----------------------------------------------------------------------------
 
-Layer::ViewportConfigType render::configureLayerViewport(const service::config_t& _cfg)
+layer::viewport_config_t render::configureLayerViewport(const service::config_t& _cfg)
 {
-    Layer::ViewportConfigType cfgType {0.F, 0.F, 1.F, 1.F};
-    const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
-    if(_vpConfig.has_value())
+    layer::viewport_config_t cfg_type {0.F, 0.F, 1.F, 1.F};
+    const auto vp_config = _cfg.get_child_optional("viewport.<xmlattr>");
+    if(vp_config.has_value())
     {
-        const auto& cfg = _vpConfig.get();
+        const auto& cfg = vp_config.get();
 
-        float xPos = cfg.get<float>("hOffset", 0.F);
-        float yPos = cfg.get<float>("vOffset", 0.F);
+        float x_pos = cfg.get<float>("hOffset", 0.F);
+        float y_pos = cfg.get<float>("vOffset", 0.F);
 
         const auto width  = cfg.get<float>("width");
         const auto height = cfg.get<float>("height");
 
-        const std::map<std::string, float> horizAlignToX {
-            {"left", xPos},
-            {"center", 0.5F - width * 0.5F + xPos},
-            {"right", 1.F - width - xPos}
+        const std::map<std::string, float> horiz_align_to_x {
+            {"left", x_pos},
+            {"center", 0.5F - width * 0.5F + x_pos},
+            {"right", 1.F - width - x_pos}
         };
 
-        const std::map<std::string, float> vertAlignToY {
-            {"bottom", 1.F - height - yPos},
-            {"center", 0.5F - height * 0.5F + yPos},
-            {"top", yPos}
+        const std::map<std::string, float> vert_align_to_y {
+            {"bottom", 1.F - height - y_pos},
+            {"center", 0.5F - height * 0.5F + y_pos},
+            {"top", y_pos}
         };
 
-        const std::string hAlign = cfg.get("hAlign", "left");
-        const std::string vAlign = cfg.get("vAlign", "top");
+        const std::string h_align = cfg.get("hAlign", "left");
+        const std::string v_align = cfg.get("vAlign", "top");
 
-        xPos = horizAlignToX.at(hAlign);
-        yPos = vertAlignToY.at(vAlign);
+        x_pos = horiz_align_to_x.at(h_align);
+        y_pos = vert_align_to_y.at(v_align);
 
-        cfgType = std::tie(xPos, yPos, width, height);
+        cfg_type = std::tie(x_pos, y_pos, width, height);
     }
 
-    return cfgType;
+    return cfg_type;
 }
 
 //-----------------------------------------------------------------------------
@@ -456,21 +456,21 @@ void render::requestRender()
         const auto image = m_offScreenImage.lock();
         {
             this->makeCurrent();
-            Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
-            SIGHT_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
-            viz::scene3d::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
+            Ogre::TexturePtr render_texture = m_interactorManager->getRenderTexture();
+            SIGHT_ASSERT("The offscreen window doesn't write to a texture", render_texture);
+            viz::scene3d::utils::convertFromOgreTexture(render_texture, image.get_shared(), m_flip);
         }
 
-        auto sig = image->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig->async_emit();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void render::resetCameraCoordinates(const std::string& _layerId)
+void render::resetCameraCoordinates(const std::string& _layer_id)
 {
-    auto layer = m_layers.find(_layerId);
+    auto layer = m_layers.find(_layer_id);
 
     if(layer != m_layers.end())
     {
@@ -508,27 +508,27 @@ bool render::isShownOnScreen()
 
 // ----------------------------------------------------------------------------
 
-Ogre::SceneManager* render::getSceneManager(const std::string& sceneID)
+Ogre::SceneManager* render::getSceneManager(const std::string& _scene_id)
 {
-    viz::scene3d::Layer::sptr layer = this->getLayer(sceneID);
+    viz::scene3d::layer::sptr layer = this->getLayer(_scene_id);
     return layer->getSceneManager();
 }
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::Layer::sptr render::getLayer(const std::string& sceneID)
+viz::scene3d::layer::sptr render::getLayer(const std::string& _scene_id)
 {
-    SIGHT_ASSERT("Empty sceneID", !sceneID.empty());
-    SIGHT_ASSERT("Layer ID " << sceneID << " does not exist", m_layers.find(sceneID) != m_layers.end());
+    SIGHT_ASSERT("Empty sceneID", !_scene_id.empty());
+    SIGHT_ASSERT("layer ID " << _scene_id << " does not exist", m_layers.find(_scene_id) != m_layers.end());
 
-    viz::scene3d::Layer::sptr layer = m_layers.at(sceneID);
+    viz::scene3d::layer::sptr layer = m_layers.at(_scene_id);
 
     return layer;
 }
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::render::LayerMapType render::getLayers()
+viz::scene3d::render::layer_map_t render::getLayers()
 {
     return m_layers;
 }

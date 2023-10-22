@@ -35,9 +35,9 @@ namespace sight::core::memory::stream::in
 
 struct hold_counter_stream : boost::iostreams::stream<boost::iostreams::array_source>
 {
-    hold_counter_stream(char* buf, std::size_t size, buffer::lock_type lock) :
-        boost::iostreams::stream<boost::iostreams::array_source>(buf, size),
-        m_counter(std::move(lock))
+    hold_counter_stream(char* _buf, std::size_t _size, buffer::lock_type _lock) :
+        boost::iostreams::stream<boost::iostreams::array_source>(_buf, _size),
+        m_counter(std::move(_lock))
     {
     }
 
@@ -51,20 +51,20 @@ buffer::lock_type no_factory()
     return {};
 }
 
-buffer::buffer(void* buf, std::size_t size) :
-    m_buf(buf),
-    m_size(size),
+buffer::buffer(void* _buf, std::size_t _size) :
+    m_buf(_buf),
+    m_size(_size),
     m_counter_factory(&no_factory)
 {
-    SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
+    SIGHT_ASSERT("Buffer is null.", m_buf || _size == 0);
 }
 
-buffer::buffer(void* buf, std::size_t size, counter_factory_type counter_factory) :
-    m_buf(buf),
-    m_size(size),
-    m_counter_factory(std::move(counter_factory))
+buffer::buffer(void* _buf, std::size_t _size, counter_factory_type _counter_factory) :
+    m_buf(_buf),
+    m_size(_size),
+    m_counter_factory(std::move(_counter_factory))
 {
-    SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
+    SIGHT_ASSERT("Buffer is null.", m_buf || _size == 0);
 }
 
 SPTR(std::istream) buffer::get()

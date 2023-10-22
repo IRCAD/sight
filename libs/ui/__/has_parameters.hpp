@@ -79,34 +79,34 @@ protected:
     UI_API virtual ~has_parameters();
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void setParameter(sight::ui::parameter_t val, std::string key);
+    UI_API virtual void setParameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void setBoolParameter(bool val, std::string key);
+    UI_API virtual void setBoolParameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a color parameter.
-    UI_API virtual void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
+    UI_API virtual void setColorParameter(std::array<std::uint8_t, 4> _color, std::string _key);
 
     /// Slot: This method is used to set a double parameter.
-    UI_API virtual void setDoubleParameter(double val, std::string key);
+    UI_API virtual void setDoubleParameter(double _val, std::string _key);
 
     /// Slot: This method is used to set two double parameters.
-    UI_API virtual void setDouble2Parameter(double val0, double val1, std::string key);
+    UI_API virtual void setDouble2Parameter(double _val0, double _val1, std::string _key);
 
     /// Slot: This method is used to set three double parameters.
-    UI_API virtual void setDouble3Parameter(double val0, double val1, double val2, std::string key);
+    UI_API virtual void setDouble3Parameter(double _val0, double _val1, double _val2, std::string _key);
 
     /// Slot: This method is used to set an integer parameter.
-    UI_API virtual void setIntParameter(int val, std::string key);
+    UI_API virtual void setIntParameter(int _val, std::string _key);
 
     /// Slot: This method is used to set two int parameters.
-    UI_API virtual void setInt2Parameter(int val0, int val1, std::string key);
+    UI_API virtual void setInt2Parameter(int _val0, int _val1, std::string _key);
 
     /// Slot: This method is used to set three int parameters.
-    UI_API virtual void setInt3Parameter(int val0, int val1, int val2, std::string key);
+    UI_API virtual void setInt3Parameter(int _val0, int _val1, int _val2, std::string _key);
 
     /// Slot: This method is used to set an enum parameter.
-    UI_API virtual void setEnumParameter(std::string val, std::string key);
+    UI_API virtual void setEnumParameter(std::string _val, std::string _key);
 };
 
 } // namespace sight::ui

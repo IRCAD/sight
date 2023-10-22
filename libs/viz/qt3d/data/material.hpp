@@ -100,16 +100,16 @@ public:
     VIZ_QT3D_API_QT void removeParameter(Qt3DRender::QParameter* _parameter);
 
     /// Updates material options mode (standard or point normals).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateOptionsMode(int _optionsMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateOptionsMode(int _options_mode);
 
     /// Updates material polygon mode (surface, point, wireframe or edge).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updatePolygonMode(int _polygonMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updatePolygonMode(int _polygon_mode);
 
     /// Updates material shading mode (ambient/flat/phong).
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateShadingMode(int _shadingMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateShadingMode(int _shading_mode);
 
     /// Updates material color.
-    VIZ_QT3D_API_QT Q_INVOKABLE void updateRGBAMode(sight::data::material::sptr _sightMaterial);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateRGBAMode(sight::data::material::sptr _sight_material);
 
 Q_SIGNALS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,9 @@ FrameGraph::FrameGraph(Qt3DCore::QNode* _parent) :
                     m_renderStateSet->addRenderState(culling);
 
                     // Adds a render state to add depth test.
-                    QPointer<Qt3DRender::QDepthTest> const depthTest = new Qt3DRender::QDepthTest();
-                    depthTest->setDepthFunction(Qt3DRender::QDepthTest::Less);
-                    m_renderStateSet->addRenderState(depthTest);
+                    QPointer<Qt3DRender::QDepthTest> const depth_test = new Qt3DRender::QDepthTest();
+                    depth_test->setDepthFunction(Qt3DRender::QDepthTest::Less);
+                    m_renderStateSet->addRenderState(depth_test);
                 }
             }
         }
@@ -129,10 +129,10 @@ QVector<Qt3DRender::QFrameGraphNode*> FrameGraph::getAllNodes()
 
 void FrameGraph::getAllNodesRec(
     QVector<Qt3DRender::QFrameGraphNode*>& _nodes,
-    Qt3DRender::QFrameGraphNode* _currentNode
+    Qt3DRender::QFrameGraphNode* _current_node
 )
 {
-    auto children = _currentNode->children();
+    auto children = _current_node->children();
     if(!children.isEmpty())
     {
         for(auto& i : children)

@@ -31,9 +31,9 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-void notification::show(service::Notification notification)
+void notification::show(service::Notification _notification)
 {
-    ui::dialog::notification notif(std::move(notification));
+    ui::dialog::notification notif(std::move(_notification));
     notif.show();
 }
 
@@ -44,24 +44,24 @@ notification::notification()
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(notification_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::notification_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(notification_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::notification_base>(gui_obj);
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-notification::notification(service::Notification notification)
+notification::notification(service::Notification _notification)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(notification_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::notification_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(notification_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::notification_base>(gui_obj);
 
             if(m_implementation)
             {
-                m_implementation->setNotification(std::move(notification));
+                m_implementation->setNotification(std::move(_notification));
             }
         }).wait();
 }
@@ -164,14 +164,14 @@ void notification::setIndex(unsigned int _index)
 
 //-----------------------------------------------------------------------------
 
-void notification::setDuration(std::optional<std::chrono::milliseconds> _durationInMs)
+void notification::setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setDuration(_durationInMs);
+                m_implementation->setDuration(_duration_in_ms);
             }
         }).wait();
 }
@@ -303,14 +303,14 @@ void notification::setContainer(container::widget::csptr _container)
 
 //-----------------------------------------------------------------------------
 
-void notification::setClosedCallback(std::function<void()> f)
+void notification::setClosedCallback(std::function<void()> _f)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setClosedCallback(f);
+                m_implementation->setClosedCallback(_f);
             }
         }).wait();
 }

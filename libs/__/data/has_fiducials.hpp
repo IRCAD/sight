@@ -31,7 +31,7 @@ class has_fiducials
 {
 public:
 
-    explicit has_fiducials(core::com::signals& signals);
+    explicit has_fiducials(core::com::signals& _signals);
 
     struct signals
     {
@@ -56,28 +56,28 @@ public:
         using GroupModified = core::com::signal<void (std::string)>;
         static inline const core::com::signals::key_t GROUP_MODIFIED = "groupModified";
 
-        using GroupRenamed = core::com::signal<void (std::string old, std::string _new)>;
+        using GroupRenamed = core::com::signal<void (std::string _old, std::string _new)>;
         static inline const core::com::signals::key_t GROUP_RENAMED = "groupRenamed";
 
-        using PointSelected = core::com::signal<void (std::string name, std::size_t index)>;
+        using PointSelected = core::com::signal<void (std::string _name, std::size_t _index)>;
         static inline const core::com::signals::key_t POINT_SELECTED = "pointSelected";
 
-        using PointDeselected = core::com::signal<void (std::string name, std::size_t index)>;
+        using PointDeselected = core::com::signal<void (std::string _name, std::size_t _index)>;
         static inline const core::com::signals::key_t POINT_DESELECTED = "pointDeselected";
     };
 
 private:
 
-    const signals::GroupAdded::sptr m_groupAdded {std::make_shared<signals::GroupAdded>()};
-    const signals::GroupRemoved::sptr m_groupRemoved {std::make_shared<signals::GroupRemoved>()};
-    const signals::PointAdded::sptr m_pointAdded {std::make_shared<signals::PointAdded>()};
-    const signals::PointRemoved::sptr m_pointRemoved {std::make_shared<signals::PointRemoved>()};
-    const signals::PointInserted::sptr m_pointInserted {std::make_shared<signals::PointInserted>()};
-    const signals::PointModified::sptr m_pointModified {std::make_shared<signals::PointModified>()};
-    const signals::GroupModified::sptr m_groupModified {std::make_shared<signals::GroupModified>()};
-    const signals::GroupRenamed::sptr m_groupRenamed {std::make_shared<signals::GroupRenamed>()};
-    const signals::PointSelected::sptr m_pointSelected {std::make_shared<signals::PointSelected>()};
-    const signals::PointDeselected::sptr m_pointDeselected {std::make_shared<signals::PointDeselected>()};
+    const signals::GroupAdded::sptr M_GROUP_ADDED {std::make_shared<signals::GroupAdded>()};
+    const signals::GroupRemoved::sptr M_GROUP_REMOVED {std::make_shared<signals::GroupRemoved>()};
+    const signals::PointAdded::sptr M_POINT_ADDED {std::make_shared<signals::PointAdded>()};
+    const signals::PointRemoved::sptr M_POINT_REMOVED {std::make_shared<signals::PointRemoved>()};
+    const signals::PointInserted::sptr M_POINT_INSERTED {std::make_shared<signals::PointInserted>()};
+    const signals::PointModified::sptr M_POINT_MODIFIED {std::make_shared<signals::PointModified>()};
+    const signals::GroupModified::sptr M_GROUP_MODIFIED {std::make_shared<signals::GroupModified>()};
+    const signals::GroupRenamed::sptr M_GROUP_RENAMED {std::make_shared<signals::GroupRenamed>()};
+    const signals::PointSelected::sptr M_POINT_SELECTED {std::make_shared<signals::PointSelected>()};
+    const signals::PointDeselected::sptr M_POINT_DESELECTED {std::make_shared<signals::PointDeselected>()};
 };
 
 } // namespace sight::data

@@ -49,7 +49,7 @@ bool intersect_triangle(
     double& _v
 )
 {
-    const double Epsilon = 0.000001;
+    const double epsilon = 0.000001;
 
     fwVec3d edge1;
     fwVec3d edge2;
@@ -65,20 +65,20 @@ bool intersect_triangle(
     pvec = geometry::data::cross(_dir, edge2);
 
     /* if determinant is near zero, ray lies in plane of triangle */
-    const double Det = geometry::data::dot(edge1, pvec);
+    const double det = geometry::data::dot(edge1, pvec);
 
-    if(Det > -Epsilon && Det < Epsilon)
+    if(det > -epsilon && det < epsilon)
     {
         return false;
     }
 
-    const double Inv_det = 1.0 / Det;
+    const double inv_det = 1.0 / det;
 
     /* calculate distance from vert0 to ray origin */
     tvec = _orig - _vert0;
 
     /* calculate U parameter and test bounds */
-    _u = Inv_det * geometry::data::dot(tvec, pvec);
+    _u = inv_det * geometry::data::dot(tvec, pvec);
     if(_u < 0.0 || _u > 1.0)
     {
         return false;
@@ -88,68 +88,68 @@ bool intersect_triangle(
     qvec = geometry::data::cross(tvec, edge1);
 
     /* calculate V parameter and test bounds */
-    _v = Inv_det * geometry::data::dot(_dir, qvec);
+    _v = inv_det * geometry::data::dot(_dir, qvec);
     if(_v < 0.0 || _u + _v > 1.0)
     {
         return false;
     }
 
     /* calculate t, ray intersects triangle */
-    _t = Inv_det * geometry::data::dot(edge2, qvec);
+    _t = inv_det * geometry::data::dot(edge2, qvec);
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex, const fwVec3d& _p)
+bool is_inclosed_volume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertex_index, const fwVec3d& _p)
 {
-    const unsigned int X         = 0;
-    const unsigned int Y         = 1;
-    const unsigned int Z         = 2;
-    const std::size_t ElementNbr = _vertexIndex.size();
-    if(ElementNbr == 0)
+    const unsigned int x          = 0;
+    const unsigned int y          = 1;
+    const unsigned int z          = 2;
+    const std::size_t element_nbr = _vertex_index.size();
+    if(element_nbr == 0)
     {
         return false;
     }
 
     // Check all mesh triangles
-    unsigned int intersectionNbr = 0;
-    for(std::size_t i = 0 ; i < ElementNbr ; ++i)
+    unsigned int intersection_nbr = 0;
+    for(std::size_t i = 0 ; i < element_nbr ; ++i)
     {
         // get triangle vertices.
-        const fwVec3d P1 =
-        {_vertex[std::size_t(_vertexIndex[i][0])][0], _vertex[std::size_t(_vertexIndex[i][0])][1],
-         _vertex[std::size_t(_vertexIndex[i][0])][2]
+        const fwVec3d p1 =
+        {_vertex[std::size_t(_vertex_index[i][0])][0], _vertex[std::size_t(_vertex_index[i][0])][1],
+         _vertex[std::size_t(_vertex_index[i][0])][2]
         };
-        const fwVec3d P2 =
-        {_vertex[std::size_t(_vertexIndex[i][1])][0], _vertex[std::size_t(_vertexIndex[i][1])][1],
-         _vertex[std::size_t(_vertexIndex[i][1])][2]
+        const fwVec3d p2 =
+        {_vertex[std::size_t(_vertex_index[i][1])][0], _vertex[std::size_t(_vertex_index[i][1])][1],
+         _vertex[std::size_t(_vertex_index[i][1])][2]
         };
-        const fwVec3d P3 =
-        {_vertex[std::size_t(_vertexIndex[i][2])][0], _vertex[std::size_t(_vertexIndex[i][2])][1],
-         _vertex[std::size_t(_vertexIndex[i][2])][2]
+        const fwVec3d p3 =
+        {_vertex[std::size_t(_vertex_index[i][2])][0], _vertex[std::size_t(_vertex_index[i][2])][1],
+         _vertex[std::size_t(_vertex_index[i][2])][2]
         };
 
         // remove all triangles above point.
-        if(!(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z])) //trianglePotentiallyWellPositionned
+        if(!(p1[z] > _p[z] && p2[z] > _p[z] && p3[z] > _p[z])) //trianglePotentiallyWellPositionned
         {
             // We check vertices on each side of the 3 axis.
             // If P1[X] > P[X] So we need P2[X] < P[X] ou P3[X] < P[X], same way on the 2 other axis.
             // By doing so we can exclude points that are localized on axis.
             bool stop = false;
-            for(unsigned int axe = X ; axe <= Y && !stop ; ++axe)
+            for(unsigned int axe = x ; axe <= y && !stop ; ++axe)
             {
-                const double Delta1 = P1[axe] - _p[axe];
-                const double Delta2 = P2[axe] - _p[axe];
-                const double Delta3 = P3[axe] - _p[axe];
+                const double delta1 = p1[axe] - _p[axe];
+                const double delta2 = p2[axe] - _p[axe];
+                const double delta3 = p3[axe] - _p[axe];
 
-                if(Delta1 >= 0.F && Delta2 >= 0.F && Delta3 >= 0.F)
+                if(delta1 >= 0.F && delta2 >= 0.F && delta3 >= 0.F)
                 {
                     stop = true;
                     break;
                 }
 
-                if(Delta1 < 0.F && Delta2 < 0.F && Delta3 < 0.F)
+                if(delta1 < 0.F && delta2 < 0.F && delta3 < 0.F)
                 {
                     stop = true;
                     break;
@@ -161,9 +161,9 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
                 fwVec3d dir   = {0.F, 0.F, 1.F};
-                fwVec3d vert0 = {P1[0], P1[1], P1[2]};
-                fwVec3d vert1 = {P2[0], P2[1], P2[2]};
-                fwVec3d vert2 = {P3[0], P3[1], P3[2]};
+                fwVec3d vert0 = {p1[0], p1[1], p1[2]};
+                fwVec3d vert1 = {p2[0], p2[1], p2[2]};
+                fwVec3d vert2 = {p3[0], p3[1], p3[2]};
                 double t      = NAN;
                 double u      = NAN;
                 double v      = NAN;
@@ -172,69 +172,69 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                     // We only keep points below _p (following Oz axis).
                     if(t < 0.F)
                     {
-                        ++intersectionNbr;
+                        ++intersection_nbr;
                     }
                 }
             }
         }
     }
 
-    return intersectionNbr % 2 == 1;
+    return intersection_nbr % 2 == 1;
 }
 
 //-----------------------------------------------------------------------------
 
-bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
+bool is_borderless_surface(const fwVertexIndex& _vertex_index)
 {
     using Edge          = std::pair<int, int>; // always Edge.first < Edge.second !!
     using EdgeHistogram = boost::unordered_map<Edge, int>;
-    EdgeHistogram edgesHistogram;
-    bool isBorderless = true;
+    EdgeHistogram edges_histogram;
+    bool is_borderless = true;
 
-    for(const fwVertexIndex::value_type& vertex : _vertexIndex)
+    for(const fwVertexIndex::value_type& vertex : _vertex_index)
     {
         SIGHT_ASSERT("Invalid vertex size: " << vertex.size(), vertex.size() > 2);
-        ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]))];
-        ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]))];
-        ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]))];
+        ++edges_histogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]))];
+        ++edges_histogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]))];
+        ++edges_histogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]))];
     }
 
-    for(const EdgeHistogram::value_type& h : edgesHistogram)
+    for(const EdgeHistogram::value_type& h : edges_histogram)
     {
         if(h.second < 2)
         {
-            isBorderless = false;
+            is_borderless = false;
             break;
         }
     }
 
-    return isBorderless;
+    return is_borderless;
 }
 
 //-----------------------------------------------------------------------------
 
 // container of connected component
-void findBorderEdges(
-    const fwVertexIndex& _vertexIndex,
-    std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& contours
+void find_border_edges(
+    const fwVertexIndex& _vertex_index,
+    std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& _contours
 )
 {
     using Edge    = std::pair<std::size_t, std::size_t>;
     using Contour = std::vector<Edge>; // at Border
 
-    std::map<Edge, int> edgesHistogram;
-    for(fwVertexIndex::value_type vertex : _vertexIndex)
+    std::map<Edge, int> edges_histogram;
+    for(fwVertexIndex::value_type vertex : _vertex_index)
     {
         assert(vertex.size() > 2);
         int i1 = vertex[0];
         int i2 = vertex[1];
         int i3 = vertex[2];
-        edgesHistogram[std::make_pair(std::min(i1, i2), std::max(i1, i2))]++;
-        edgesHistogram[std::make_pair(std::min(i1, i3), std::max(i1, i3))]++;
-        edgesHistogram[std::make_pair(std::min(i3, i2), std::max(i3, i2))]++;
+        edges_histogram[std::make_pair(std::min(i1, i2), std::max(i1, i2))]++;
+        edges_histogram[std::make_pair(std::min(i1, i3), std::max(i1, i3))]++;
+        edges_histogram[std::make_pair(std::min(i3, i2), std::max(i3, i2))]++;
     }
 
-    for(const std::map<Edge, int>::value_type& elt1 : edgesHistogram)
+    for(const std::map<Edge, int>::value_type& elt1 : edges_histogram)
     {
         if(elt1.second < 2) // an orphan found
         {
@@ -249,10 +249,10 @@ void findBorderEdges(
                 Edge current = fifo.front();
                 contour.push_back(current);
                 fifo.pop_front();
-                edgesHistogram[current] = 2; // to mark it processed;
+                edges_histogram[current] = 2; // to mark it processed;
 
                 // search neighbor at border and insert in fifo
-                for(const std::map<Edge, int>::value_type& elt2 : edgesHistogram)
+                for(const std::map<Edge, int>::value_type& elt2 : edges_histogram)
                 {
                     Edge candidate = elt2.first;
                     if(elt2.second < 2) // at border
@@ -260,7 +260,7 @@ void findBorderEdges(
                         if(candidate.first == current.first || candidate.second == current.second // neighbor
                            || candidate.first == current.second || candidate.second == current.first)
                         {
-                            edgesHistogram[candidate] = 2; // mark processed;
+                            edges_histogram[candidate] = 2; // mark processed;
                             fifo.push_back(candidate);
                         }
                     }
@@ -268,97 +268,97 @@ void findBorderEdges(
             }
 
             // all neighbor processed
-            contours.push_back(contour);
+            _contours.push_back(contour);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
+bool close_surface(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index)
 {
     using Edge     = std::pair<std::size_t, std::size_t>;
     using Contour  = std::vector<Edge>; // at Border
     using Contours = std::vector<Contour>;
 
     Contours contours;
-    findBorderEdges(_vertexIndex, contours);
-    bool closurePerformed = !contours.empty();
+    find_border_edges(_vertex_index, contours);
+    bool closure_performed = !contours.empty();
     // close each hole
     for(const Contours::value_type& contour : contours)
     {
-        std::size_t newVertexIndex = _vertex.size();
+        std::size_t new_vertex_index = _vertex.size();
         // create gravity point & insert new triangle
-        std::vector<float> massCenter(3, 0);
+        std::vector<float> mass_center(3, 0);
 
         for(const Contour::value_type& edge : contour)
         {
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
-                massCenter[i] += _vertex[edge.first][i];
-                massCenter[i] += _vertex[edge.second][i];
+                mass_center[i] += _vertex[edge.first][i];
+                mass_center[i] += _vertex[edge.second][i];
             }
 
             // create new Triangle
-            std::vector<int> triangleIndex(3);
-            triangleIndex[0] = int(edge.first);
-            triangleIndex[1] = int(edge.second);
-            triangleIndex[2] = int(newVertexIndex);
-            _vertexIndex.push_back(triangleIndex); // TEST
+            std::vector<int> triangle_index(3);
+            triangle_index[0] = int(edge.first);
+            triangle_index[1] = int(edge.second);
+            triangle_index[2] = int(new_vertex_index);
+            _vertex_index.push_back(triangle_index); // TEST
         }
 
         for(std::size_t i = 0 ; i < 3 ; ++i)
         {
-            massCenter[i] /= float(contour.size() * 2);
+            mass_center[i] /= float(contour.size() * 2);
         }
 
-        _vertex.push_back(massCenter); // normalize barycenter
+        _vertex.push_back(mass_center); // normalize barycenter
     }
 
-    return closurePerformed;
+    return closure_performed;
 }
 
 //-----------------------------------------------------------------------------
 
-bool removeOrphanVertices(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
+bool remove_orphan_vertices(fwVertexPosition& _vertex, fwVertexIndex& _vertex_index)
 {
-    fwVertexPosition newVertex;
-    newVertex.reserve(_vertex.size());
+    fwVertexPosition new_vertex;
+    new_vertex.reserve(_vertex.size());
 
-    std::set<int> indexPointToKeep;
+    std::set<int> index_point_to_keep;
 
-    for(const fwVertexIndex::value_type& vertex : _vertexIndex)
+    for(const fwVertexIndex::value_type& vertex : _vertex_index)
     {
-        indexPointToKeep.insert(vertex[0]);
-        indexPointToKeep.insert(vertex[1]);
-        indexPointToKeep.insert(vertex[2]);
+        index_point_to_keep.insert(vertex[0]);
+        index_point_to_keep.insert(vertex[1]);
+        index_point_to_keep.insert(vertex[2]);
     }
 
-    bool orphanFound = indexPointToKeep.size() != _vertex.size();
+    bool orphan_found = index_point_to_keep.size() != _vertex.size();
 
-    if(orphanFound)
+    if(orphan_found)
     {
         // rebuild index table according to element suppression
         int idx = 0;
         std::map<int, int> translate; // map oldIndex -> newIndex (to take into account removal
-        std::set<int>::iterator idxIter;
-        for(int indexPt : indexPointToKeep)
+        std::set<int>::iterator idx_iter;
+        for(int index_pt : index_point_to_keep)
         {
-            translate[indexPt] = idx++;
-            newVertex.push_back(_vertex[std::size_t(indexPt)]);
+            translate[index_pt] = idx++;
+            new_vertex.push_back(_vertex[std::size_t(index_pt)]);
         }
 
-        for(fwVertexIndex::value_type& vertex : _vertexIndex)
+        for(fwVertexIndex::value_type& vertex : _vertex_index)
         {
             vertex[0] = translate[vertex[0]];
             vertex[1] = translate[vertex[1]];
             vertex[2] = translate[vertex[2]];
         }
 
-        _vertex.swap(newVertex);
+        _vertex.swap(new_vertex);
     }
 
-    return orphanFound;
+    return orphan_found;
 }
 
 //-----------------------------------------------------------------------------

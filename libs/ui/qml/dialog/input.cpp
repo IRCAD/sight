@@ -35,7 +35,7 @@ SIGHT_REGISTER_GUI(sight::ui::qml::dialog::input, sight::ui::dialog::input_base:
 namespace sight::ui::qml::dialog
 {
 
-static auto enumRegistered =
+static auto enum_registered =
     []
     {
         qmlRegisterUncreatableType<input>("sight.input", 1, 0, "EchoMode", "Enum EchoMode is not a type");
@@ -44,30 +44,30 @@ static auto enumRegistered =
 
 //------------------------------------------------------------------------------
 
-void input::setTitle(const std::string& title)
+void input::setTitle(const std::string& _title)
 {
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void input::setMessage(const std::string& msg)
+void input::setMessage(const std::string& _msg)
 {
-    m_message = QString::fromStdString(msg);
+    m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(input::EchoMode echoMode)
+void input::setEchoMode(input::EchoMode _echo_mode)
 {
-    m_echoMode = echoMode;
+    m_echoMode = _echo_mode;
 }
 
 //------------------------------------------------------------------------------
 
-void input::set_input(const std::string& text)
+void input::set_input(const std::string& _text)
 {
-    m_input = QString::fromStdString(text);
+    m_input = QString::fromStdString(_text);
 }
 
 //------------------------------------------------------------------------------
@@ -77,14 +77,14 @@ std::pair<std::string, bool> input::getInput()
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath =
+    const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/input.qml");
 
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("input", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialogPath, context);
+    QObject* window = engine->createComponent(dialog_path, context);
     SIGHT_ASSERT("The Qml File input is not found or not loaded", window);
     // keep window to destroy it
 
@@ -111,11 +111,11 @@ std::pair<std::string, bool> input::getInput()
 
 //------------------------------------------------------------------------------
 
-void input::resultDialog(const QVariant& msg, bool isOk)
+void input::resultDialog(const QVariant& _msg, bool _is_ok)
 {
-    if(isOk)
+    if(_is_ok)
     {
-        m_input = msg.toString();
+        m_input = _msg.toString();
     }
     else
     {

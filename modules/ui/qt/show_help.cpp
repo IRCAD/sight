@@ -47,22 +47,22 @@ class HelpBrowser : public QTextBrowser
 {
 public:
 
-    explicit HelpBrowser(QHelpEngine* helpEngine, QWidget* parent = nullptr) :
-        QTextBrowser(parent),
-        m_helpEngine(helpEngine)
+    explicit HelpBrowser(QHelpEngine* _help_engine, QWidget* _parent = nullptr) :
+        QTextBrowser(_parent),
+        m_helpEngine(_help_engine)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    QVariant loadResource(int type, const QUrl& url) override
+    QVariant loadResource(int _type, const QUrl& _url) override
     {
-        if(url.scheme() == "qthelp")
+        if(_url.scheme() == "qthelp")
         {
-            return {m_helpEngine->fileData(url)};
+            return {m_helpEngine->fileData(_url)};
         }
 
-        return QTextBrowser::loadResource(type, url);
+        return QTextBrowser::loadResource(_type, _url);
     }
 
 private:
@@ -103,34 +103,34 @@ void show_help::updating()
 
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Help"));
-    auto* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
-    if(!helpEngine->setupData())
+    auto* help_engine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
+    if(!help_engine->setupData())
     {
-        SIGHT_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("Help file is missing or not correct.");
-        messageBox.setIcon(sight::ui::dialog::message::WARNING);
-        messageBox.addButton(sight::ui::dialog::message::OK);
-        messageBox.show();
+        SIGHT_ERROR("HelpEngine error: " << help_engine->error().toStdString());
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Warning");
+        message_box.setMessage("Help file is missing or not correct.");
+        message_box.setIcon(sight::ui::dialog::message::WARNING);
+        message_box.addButton(sight::ui::dialog::message::OK);
+        message_box.show();
         // Setup help engine information failed.
         // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
     }
     else
     {
-        auto* helpPanel   = new QSplitter(Qt::Horizontal);
-        auto* helpBrowser = new HelpBrowser(helpEngine, dialog);
-        helpPanel->insertWidget(0, helpEngine->contentWidget());
-        helpPanel->insertWidget(1, helpBrowser);
-        helpPanel->setStretchFactor(1, 1);
+        auto* help_panel   = new QSplitter(Qt::Horizontal);
+        auto* help_browser = new HelpBrowser(help_engine, dialog);
+        help_panel->insertWidget(0, help_engine->contentWidget());
+        help_panel->insertWidget(1, help_browser);
+        help_panel->setStretchFactor(1, 1);
 
         auto* h_layout = new QHBoxLayout();
-        h_layout->addWidget(helpPanel);
+        h_layout->addWidget(help_panel);
         dialog->setLayout(h_layout);
         QObject::connect(
-            helpEngine->contentWidget(),
+            help_engine->contentWidget(),
             SIGNAL(linkActivated(const QUrl&)),
-            helpBrowser,
+            help_browser,
             SLOT(setSource(const QUrl&))
         );
 

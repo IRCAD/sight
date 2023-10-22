@@ -45,7 +45,7 @@ public:
     /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
-    UI_API static void show(sight::service::Notification notification);
+    UI_API static void show(sight::service::Notification _notification);
     inline static void show(
         std::string _message,
         sight::service::Notification::Type _type    = sight::service::Notification::Type::INFO,
@@ -61,7 +61,7 @@ public:
     /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
-    UI_API notification(sight::service::Notification notification);
+    UI_API notification(sight::service::Notification _notification);
     inline explicit notification(
         std::string _message,
         sight::service::Notification::Type _type    = sight::service::Notification::Type::INFO,
@@ -96,7 +96,7 @@ public:
     UI_API void setIndex(unsigned int _index) override;
 
     /// Sets the duration in ms.
-    UI_API void setDuration(std::optional<std::chrono::milliseconds> _durationInMs) override;
+    UI_API void setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms) override;
     UI_API std::optional<std::chrono::milliseconds> getDuration() const override;
 
     /// Sets the channel. Empty string for default global channel
@@ -126,7 +126,7 @@ public:
     UI_API void setContainer(ui::container::widget::csptr _container) override;
 
     /// Define the callback called when the dialog is closed
-    UI_API void setClosedCallback(std::function<void()> f) override;
+    UI_API void setClosedCallback(std::function<void()> _f) override;
 
 protected:
 

@@ -93,7 +93,7 @@ protected:
 private:
 
     /// Defines the Parent transform identifier.
-    sight::viz::scene3d::render::OgreObjectIdType m_parentTransformId;
+    sight::viz::scene3d::render::ogre_object_id_t m_parentTransformId;
 
     /// Contains the Ogre transform node.
     Ogre::SceneNode* m_transformNode {nullptr};

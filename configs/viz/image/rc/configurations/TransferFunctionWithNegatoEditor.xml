@@ -28,7 +28,7 @@ Example:
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}"     type="sight::data::image"     src="ref" />
-        <object uid="${histogram}" type="sight::data::Histogram" src="ref"/>
+        <object uid="${histogram}" type="sight::data::histogram" src="ref"/>
         <object uid="${landmarks}" type="sight::data::landmarks" src="ref"/>
 
         <object uid="TFSet" type="sight::data::composite" src="deferred" />

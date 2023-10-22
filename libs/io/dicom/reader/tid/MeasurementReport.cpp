@@ -31,13 +31,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 MeasurementReport::MeasurementReport(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::image::sptr& image,
-    const core::log::logger::sptr& logger
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::image::sptr& _image,
+    const core::log::logger::sptr& _logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(_dicom_series, _reader, _instance, _image, _logger)
 {
 }
 
@@ -48,31 +48,31 @@ MeasurementReport::~MeasurementReport()
 
 //------------------------------------------------------------------------------
 
-void MeasurementReport::readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& root)
+void MeasurementReport::readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& _root)
 {
-    if(root->getCodedAttribute()
+    if(_root->getCodedAttribute()
        == io::dicom::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report"))
     {
-        for(const SPTR(io::dicom::container::sr::DicomSRNode) & node : root->getSubNodeContainer())
+        for(const SPTR(io::dicom::container::sr::DicomSRNode) & node : _root->getSubNodeContainer())
         {
             // Try to identify a fiducial node
             if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"))
             {
-                for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
+                for(const SPTR(io::dicom::container::sr::DicomSRNode) & sub_node : node->getSubNodeContainer())
                 {
                     io::dicom::reader::tid::Fiducial fiducial(m_dicomSeries, m_reader, m_instance, m_object, m_logger);
-                    fiducial.readNode(subNode);
+                    fiducial.readNode(sub_node);
                 }
             }
             // Try to identify a measurement node
             else if(node->getCodedAttribute()
                     == io::dicom::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"))
             {
-                for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
+                for(const SPTR(io::dicom::container::sr::DicomSRNode) & sub_node : node->getSubNodeContainer())
                 {
                     io::dicom::reader::tid::Measurement measurement(m_dicomSeries, m_reader, m_instance, m_object,
                                                                     m_logger);
-                    measurement.readNode(subNode);
+                    measurement.readNode(sub_node);
                 }
             }
         }

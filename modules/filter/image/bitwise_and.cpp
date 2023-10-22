@@ -49,48 +49,48 @@ struct AndImageFilter
     //------------------------------------------------------------------------------
 
     template<class MASK_PIXELTYPE>
-    void operator()(AndImageFilterParameters& params)
+    void operator()(AndImageFilterParameters& _params)
     {
-        data::image::csptr inputImage = params.inputImage;
-        data::image::csptr mask       = params.mask;
-        data::image::sptr outputImage = params.outputImage;
+        data::image::csptr input_image = _params.inputImage;
+        data::image::csptr mask        = _params.mask;
+        data::image::sptr output_image = _params.outputImage;
 
         const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->numDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", input_image->numDimensions() == dimension);
 
-        using InputImageType  = typename itk::Image<PIXELTYPE, dimension>;
-        using MaskImageType   = typename itk::Image<MASK_PIXELTYPE, dimension>;
-        using OutputImageType = typename itk::Image<PIXELTYPE, dimension>;
+        using input_image_t  = typename itk::Image<PIXELTYPE, dimension>;
+        using mask_image_t   = typename itk::Image<MASK_PIXELTYPE, dimension>;
+        using output_image_t = typename itk::Image<PIXELTYPE, dimension>;
 
-        typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(inputImage);
-        typename MaskImageType::Pointer itkMaskImage   = io::itk::moveToItk<MaskImageType>(mask);
-        typename OutputImageType::Pointer itkOutputImage;
+        typename input_image_t::Pointer itk_input_image = io::itk::move_to_itk<input_image_t>(input_image);
+        typename mask_image_t::Pointer itk_mask_image   = io::itk::move_to_itk<mask_image_t>(mask);
+        typename output_image_t::Pointer itk_output_image;
 
         // We assume that the mask pixel type has a lower size in bits than the image pixel type
         // Cast mask pixel type to the image pixel type
-        using FilterType = itk::CastImageFilter<MaskImageType, InputImageType>;
-        typename FilterType::Pointer caster = FilterType::New();
-        caster->SetInput(itkMaskImage);
+        using filter_t = itk::CastImageFilter<mask_image_t, input_image_t>;
+        typename filter_t::Pointer caster = filter_t::New();
+        caster->SetInput(itk_mask_image);
 
         // Rescale the image so that the output range of the casted mask image is in the same range as the input image.
-        using RescaleType = itk::RescaleIntensityImageFilter<InputImageType, InputImageType>;
-        typename RescaleType::Pointer rescaler = RescaleType::New();
+        using rescale_t = itk::RescaleIntensityImageFilter<input_image_t, input_image_t>;
+        typename rescale_t::Pointer rescaler = rescale_t::New();
         rescaler->SetInput(caster->GetOutput());
         rescaler->SetOutputMinimum(0);
         rescaler->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
         rescaler->Update();
 
-        typename InputImageType::Pointer itkMaskImageCasted = rescaler->GetOutput();
+        typename input_image_t::Pointer itk_mask_image_casted = rescaler->GetOutput();
 
-        using ITKFilterType = typename itk::AndImageFilter<InputImageType, InputImageType, OutputImageType>;
+        using ITKFilterType = typename itk::AndImageFilter<input_image_t, input_image_t, output_image_t>;
         typename ITKFilterType::Pointer filter = ITKFilterType::New();
-        filter->SetInput1(itkInputImage);
-        filter->SetInput2(itkMaskImageCasted);
-        itkOutputImage = filter->GetOutput();
+        filter->SetInput1(itk_input_image);
+        filter->SetInput2(itk_mask_image_casted);
+        itk_output_image = filter->GetOutput();
         filter->Update();
 
-        itkOutputImage->GetSource()->Update();
-        io::itk::moveFromItk<OutputImageType>(itkOutputImage, outputImage);
+        itk_output_image->GetSource()->Update();
+        io::itk::move_from_itk<output_image_t>(itk_output_image, output_image);
     }
 };
 
@@ -101,10 +101,10 @@ struct AndImageFilterCaller
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(AndImageFilterParameters& params)
+    void operator()(AndImageFilterParameters& _params)
     {
-        const auto maskType = params.mask->getType();
-        core::tools::dispatcher<core::tools::integer_types, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
+        const auto mask_type = _params.mask->getType();
+        core::tools::dispatcher<core::tools::integer_types, AndImageFilter<PIXELTYPE> >::invoke(mask_type, _params);
     }
 };
 
@@ -140,17 +140,17 @@ void bitwise_and::updating()
     const auto mask = m_mask.lock();
     SIGHT_ASSERT("mask does not exist.", mask);
 
-    data::image::sptr outputImage = std::make_shared<data::image>();
+    data::image::sptr output_image = std::make_shared<data::image>();
 
     AndImageFilterParameters params;
     params.inputImage  = image.get_shared();
     params.mask        = mask.get_shared();
-    params.outputImage = outputImage;
+    params.outputImage = output_image;
 
     const auto type = image->getType();
     core::tools::dispatcher<core::tools::integer_types, AndImageFilterCaller>::invoke(type, params);
 
-    this->set_output(s_OUTPUTIMAGE_OUT, outputImage);
+    this->set_output(s_OUTPUTIMAGE_OUT, output_image);
 
     m_sigComputed->async_emit();
 }

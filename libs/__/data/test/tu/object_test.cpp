@@ -49,64 +49,64 @@ void object_test::tearDown()
 
 void object_test::fieldTest()
 {
-    const std::string FIELD_ID1 = "FIELD_ID1";
-    const std::string FIELD_ID2 = "FIELD_ID2";
-    const std::string FIELD_ID3 = "FIELD_ID3";
+    const std::string field_i_d1 = "FIELD_ID1";
+    const std::string field_i_d2 = "FIELD_ID2";
+    const std::string field_i_d3 = "FIELD_ID3";
 
     data::object::sptr nullobj;
-    data::object::sptr obj       = std::make_shared<data::real>();
-    data::object::sptr fieldObj1 = std::make_shared<data::real>();
-    data::object::sptr fieldObj2 = std::make_shared<data::real>();
+    data::object::sptr obj        = std::make_shared<data::real>();
+    data::object::sptr field_obj1 = std::make_shared<data::real>();
+    data::object::sptr field_obj2 = std::make_shared<data::real>();
 
-    CPPUNIT_ASSERT(obj->getFields().empty());
+    CPPUNIT_ASSERT(obj->get_fields().empty());
 
-    obj->setField(FIELD_ID1, fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+    obj->set_field(field_i_d1, field_obj1);
+    CPPUNIT_ASSERT_EQUAL(obj->get_fields().size(), std::size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d1), field_obj1);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d3), nullobj);
 
-    data::object::FieldMapType localFieldsBackup = obj->getFields();
+    data::object::field_map_t local_fields_backup = obj->get_fields();
 
-    obj->setField(FIELD_ID2, fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(2));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+    obj->set_field(field_i_d2, field_obj2);
+    CPPUNIT_ASSERT_EQUAL(obj->get_fields().size(), std::size_t(2));
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d1), field_obj1);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d2), field_obj2);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d3), nullobj);
 
-    data::object::FieldNameVectorType refFieldNames;
-    refFieldNames.push_back(FIELD_ID1);
-    refFieldNames.push_back(FIELD_ID2);
-    data::object::FieldNameVectorType fieldNames = obj->getFieldNames();
-    std::sort(fieldNames.begin(), fieldNames.end());
-    std::sort(refFieldNames.begin(), refFieldNames.end());
-    CPPUNIT_ASSERT(refFieldNames == fieldNames);
+    data::object::field_name_vector_t ref_field_names;
+    ref_field_names.push_back(field_i_d1);
+    ref_field_names.push_back(field_i_d2);
+    data::object::field_name_vector_t field_names = obj->get_field_names();
+    std::sort(field_names.begin(), field_names.end());
+    std::sort(ref_field_names.begin(), ref_field_names.end());
+    CPPUNIT_ASSERT(ref_field_names == field_names);
 
-    obj->setFields(localFieldsBackup);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+    obj->set_fields(local_fields_backup);
+    CPPUNIT_ASSERT_EQUAL(obj->get_fields().size(), std::size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d1), field_obj1);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d3), nullobj);
 
-    fieldNames = obj->getFieldNames();
-    refFieldNames.clear();
-    refFieldNames.push_back(FIELD_ID1);
-    CPPUNIT_ASSERT(refFieldNames == fieldNames);
+    field_names = obj->get_field_names();
+    ref_field_names.clear();
+    ref_field_names.push_back(field_i_d1);
+    CPPUNIT_ASSERT(ref_field_names == field_names);
 
-    obj->setField(FIELD_ID1, fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), std::size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+    obj->set_field(field_i_d1, field_obj2);
+    CPPUNIT_ASSERT_EQUAL(obj->get_fields().size(), std::size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d1), field_obj2);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->get_field(field_i_d3), nullobj);
 
-    obj->removeField(FIELD_ID1);
-    CPPUNIT_ASSERT(obj->getFields().empty());
+    obj->remove_field(field_i_d1);
+    CPPUNIT_ASSERT(obj->get_fields().empty());
 
-    data::object::sptr defaultField = obj->setDefaultField(FIELD_ID1, fieldObj1);
-    CPPUNIT_ASSERT(defaultField == fieldObj1);
+    data::object::sptr default_field = obj->set_default_field(field_i_d1, field_obj1);
+    CPPUNIT_ASSERT(default_field == field_obj1);
 
-    defaultField = obj->setDefaultField(FIELD_ID1, fieldObj2);
-    CPPUNIT_ASSERT(defaultField != fieldObj2);
+    default_field = obj->set_default_field(field_i_d1, field_obj2);
+    CPPUNIT_ASSERT(default_field != field_obj2);
 }
 
 //------------------------------------------------------------------------------

@@ -31,11 +31,11 @@ namespace sight::service
 
 using register_t = core::com::signal<void (data::object::sptr, const std::string&)>;
 
-static std::mutex s_signalMutex;
+static std::mutex s_signal_mutex;
 /// Signal used to notify that a new output object is available
-register_t::sptr s_registerSignal = std::make_shared<register_t>();
+register_t::sptr s_register_signal = std::make_shared<register_t>();
 /// Signal used to notify that an output object is no longer available
-register_t::sptr s_unregisterSignal = std::make_shared<register_t>();
+register_t::sptr s_unregister_signal = std::make_shared<register_t>();
 
 //------------------------------------------------------------------------------
 
@@ -45,11 +45,11 @@ void manager::set_object(
     std::string_view _key,
     std::optional<std::size_t> _index,
     data::Access _access,
-    const bool _autoConnect,
+    const bool _auto_connect,
     const bool _optional
 )
 {
-    _srv->set_object(_obj, _key, _index, _access, _autoConnect, _optional);
+    _srv->set_object(_obj, _key, _index, _access, _auto_connect, _optional);
 }
 
 //------------------------------------------------------------------------------
@@ -96,32 +96,32 @@ void manager::auto_disconnect(service::base::sptr& _srv)
 
 core::com::connection manager::connect_register_out(const core::com::slot_base::sptr& _slot)
 {
-    std::lock_guard<std::mutex> lock(s_signalMutex);
-    return s_registerSignal->connect(_slot);
+    std::lock_guard<std::mutex> lock(s_signal_mutex);
+    return s_register_signal->connect(_slot);
 }
 
 //------------------------------------------------------------------------------
 
 core::com::connection manager::connect_unregister_out(const core::com::slot_base::sptr& _slot)
 {
-    std::lock_guard<std::mutex> lock(s_signalMutex);
-    return s_unregisterSignal->connect(_slot);
+    std::lock_guard<std::mutex> lock(s_signal_mutex);
+    return s_unregister_signal->connect(_slot);
 }
 
 //------------------------------------------------------------------------------
 
 void manager::notify_register_out(data::object::sptr _obj, const std::string& _id)
 {
-    std::lock_guard<std::mutex> lock(s_signalMutex);
-    s_registerSignal->async_emit(_obj, _id);
+    std::lock_guard<std::mutex> lock(s_signal_mutex);
+    s_register_signal->async_emit(_obj, _id);
 }
 
 //------------------------------------------------------------------------------
 
 void manager::notify_unregister_out(data::object::sptr _obj, const std::string& _id)
 {
-    std::lock_guard<std::mutex> lock(s_signalMutex);
-    s_unregisterSignal->async_emit(_obj, _id);
+    std::lock_guard<std::mutex> lock(s_signal_mutex);
+    s_unregister_signal->async_emit(_obj, _id);
 }
 
 //------------------------------------------------------------------------------

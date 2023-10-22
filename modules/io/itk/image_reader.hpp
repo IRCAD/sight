@@ -67,7 +67,7 @@ public:
 
     MODULE_IO_ITK_API ~image_reader() noexcept override;
 
-    MODULE_IO_ITK_API static bool loadImage(const std::filesystem::path& imgFile, const SPTR(data::image)& img);
+    MODULE_IO_ITK_API static bool loadImage(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
 
 protected:
 

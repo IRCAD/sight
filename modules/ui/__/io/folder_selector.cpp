@@ -38,7 +38,7 @@ const core::com::signals::key_t folder_selector::FOLDER_SELECTED_SIG = "folderSe
 
 folder_selector::folder_selector() noexcept
 {
-    new_signal<FolderSelectedSignalType>(FOLDER_SELECTED_SIG);
+    new_signal<folder_selected_signal_t>(FOLDER_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -64,17 +64,17 @@ void folder_selector::starting()
 
 void folder_selector::updating()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_dialogTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(sight::ui::dialog::location::READ);
-    dialogFile.setType(sight::ui::dialog::location::FOLDER);
+    static auto default_directory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_dialogTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(sight::ui::dialog::location::READ);
+    dialog_file.setType(sight::ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
-        auto sig = this->signal<FolderSelectedSignalType>(FOLDER_SELECTED_SIG);
+        auto sig = this->signal<folder_selected_signal_t>(FOLDER_SELECTED_SIG);
         sig->async_emit(result->get_folder());
     }
 }

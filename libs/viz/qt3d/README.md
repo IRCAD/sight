@@ -47,7 +47,7 @@ Contains GLSL shaders.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                         viz_qt3d
 )
 ```

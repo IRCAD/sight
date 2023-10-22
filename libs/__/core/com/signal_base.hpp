@@ -54,13 +54,13 @@ struct CORE_CLASS_API signal_base : virtual core::base_object
      * @brief Connects the given slot.
      * @throws BadSlot If given slot doesn't match signal type.
      */
-    virtual connection connect(SPTR(slot_base) slot) = 0;
+    virtual connection connect(SPTR(slot_base) _slot) = 0;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    virtual void disconnect(SPTR(slot_base) slot) = 0;
+    virtual void disconnect(SPTR(slot_base) _slot) = 0;
 
     /// Returns number of connections.
     virtual std::size_t num_connections() const = 0;

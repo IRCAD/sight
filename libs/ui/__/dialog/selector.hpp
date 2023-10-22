@@ -51,14 +51,14 @@ public:
      * @param _multiple allow multiple selections
      */
     UI_API selector(
-        const std::string& title,
-        const std::string& message,
+        const std::string& _title,
+        const std::string& _message,
         std::vector<std::string> _selections,
         bool _multiple = false
     );
 
     /// Sets the selector title.
-    UI_API void setTitle(std::string title) override;
+    UI_API void setTitle(std::string _title) override;
 
     ///  The string list that can be chosen by the selector, which can be optionally preselected.
     UI_API void set_choices_preset(choices_preset_t _choices) override;
@@ -70,10 +70,10 @@ public:
     UI_API selections_t show() override;
 
     /// Set the message
-    UI_API void setMessage(const std::string& msg) override;
+    UI_API void setMessage(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 protected:
 

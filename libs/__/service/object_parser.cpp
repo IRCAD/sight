@@ -51,9 +51,9 @@ void object_parser::updating()
 
 //-----------------------------------------------------------------------------
 
-void object_parser::setObjectConfig(const service::config_t& _cfgElem)
+void object_parser::setObjectConfig(const service::config_t& _cfg_elem)
 {
-    m_cfg = _cfgElem;
+    m_cfg = _cfg_elem;
 }
 
 //-----------------------------------------------------------------------------

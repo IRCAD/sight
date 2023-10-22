@@ -60,7 +60,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    APP_API const field_adaptor_t& getParameters(const std::string& extensionId) const;
+    APP_API const field_adaptor_t& getParameters(const std::string& _extension_id) const;
 
     /**
      * @brief Clear the registry.

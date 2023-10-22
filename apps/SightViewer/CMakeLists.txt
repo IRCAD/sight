@@ -6,7 +6,7 @@ add_dependencies(
     module_app
     module_ui
     module_ui_qt
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
     module_service
     data
     viz_scene2d

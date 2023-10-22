@@ -50,46 +50,46 @@ public:
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(timeline::raw_buffer) getClosestBuffer(
-        core::hires_clock::type timestamp,
-        timeline::direction_t direction = timeline::BOTH
+        core::hires_clock::type _timestamp,
+        timeline::direction_t _direction = timeline::BOTH
     ) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::hires_clock::type timestamp)
+    DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::hires_clock::type _timestamp)
     const;
 
     /// Initialize the size of the pool buffer.
-    DATA_API void initPoolSize(std::size_t size);
+    DATA_API void initPoolSize(std::size_t _size);
 
     /**
      * @brief Return a new timeline::object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::object) createObject(core::hires_clock::type timestamp) override;
+    DATA_API SPTR(timeline::object) createObject(core::hires_clock::type _timestamp) override;
 
     /**
-     * @brief Return a new BufferType with the given timestamp.
+     * @brief Return a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::raw_buffer) createBuffer(core::hires_clock::type timestamp);
+    DATA_API SPTR(timeline::raw_buffer) createBuffer(core::hires_clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API bool isObjectValid(const CSPTR(timeline::object)& obj) const override;
+    DATA_API bool isObjectValid(const CSPTR(timeline::object)& _obj) const override;
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 }; // class raw_buffer_tl
 

@@ -57,7 +57,7 @@ matrix optimization, image filtering, drawing functions, etc...
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> filter_image)
+target_link_libraries( my_target <PUBLIC|PRIVATE> filter_image)
 
 ```
 

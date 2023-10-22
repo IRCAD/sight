@@ -36,33 +36,33 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-structure_traits::sptr structure_traits_dictionary::getStructure(std::string type)
+structure_traits::sptr structure_traits_dictionary::getStructure(std::string _type)
 {
     SIGHT_ASSERT(
-        "Structure of type '" + type + "' not found",
-        m_structureTraitsMap.find(type) != m_structureTraitsMap.end()
+        "Structure of type '" + _type + "' not found",
+        m_structureTraitsMap.find(_type) != m_structureTraitsMap.end()
     );
-    return m_structureTraitsMap[type];
+    return m_structureTraitsMap[_type];
 }
 
 //------------------------------------------------------------------------------
 
-structure_traits::csptr structure_traits_dictionary::getStructure(std::string type) const
+structure_traits::csptr structure_traits_dictionary::getStructure(std::string _type) const
 {
     SIGHT_ASSERT(
-        "Structure of type '" + type + "' not found",
-        m_structureTraitsMap.find(type) != m_structureTraitsMap.end()
+        "Structure of type '" + _type + "' not found",
+        m_structureTraitsMap.find(_type) != m_structureTraitsMap.end()
     );
-    return m_structureTraitsMap.at(type);
+    return m_structureTraitsMap.at(_type);
 }
 
 //------------------------------------------------------------------------------
 
-void structure_traits_dictionary::addStructure(structure_traits::sptr structureTraits)
+void structure_traits_dictionary::addStructure(structure_traits::sptr _structure_traits)
 {
-    std::string type                             = structureTraits->getType();
-    structure_traits::StructureClass structClass = structureTraits->getClass();
-    std::string attachment                       = structureTraits->getAttachmentType();
+    std::string type                              = _structure_traits->getType();
+    structure_traits::StructureClass struct_class = _structure_traits->getClass();
+    std::string attachment                        = _structure_traits->get_attachment_type();
 
     SIGHT_THROW_IF(
         "Structure of type '" << type << "' already exist",
@@ -70,8 +70,8 @@ void structure_traits_dictionary::addStructure(structure_traits::sptr structureT
     );
 
     SIGHT_THROW_IF(
-        "Structure of class '" << structClass << "' can not have attachment",
-        !(attachment.empty() || structClass == structure_traits::LESION || structClass
+        "Structure of class '" << struct_class << "' can not have attachment",
+        !(attachment.empty() || struct_class == structure_traits::LESION || struct_class
           == structure_traits::FUNCTIONAL)
     );
 
@@ -87,46 +87,46 @@ void structure_traits_dictionary::addStructure(structure_traits::sptr structureT
 
     SIGHT_THROW_IF(
         "Structure must have at least one category",
-        structureTraits->getCategories().empty()
+        _structure_traits->getCategories().empty()
     );
 
     SIGHT_THROW_IF(
         "Wrong structure type '" << type << "', a type cannot contain space",
-        structureTraits->getType().find(' ') != std::string::npos
+        _structure_traits->getType().find(' ') != std::string::npos
     );
 
-    m_structureTraitsMap[type] = structureTraits;
+    m_structureTraitsMap[type] = _structure_traits;
 }
 
 //------------------------------------------------------------------------------
 
 structure_traits_dictionary::StructureTypeNameContainer structure_traits_dictionary::getStructureTypeNames() const
 {
-    StructureTypeNameContainer vectNames;
+    StructureTypeNameContainer vect_names;
     std::transform(
         m_structureTraitsMap.begin(),
         m_structureTraitsMap.end(),
-        std::back_inserter(vectNames),
-        [](const auto& e){return e.first;});
-    return vectNames;
+        std::back_inserter(vect_names),
+        [](const auto& _e){return _e.first;});
+    return vect_names;
 }
 
 //------------------------------------------------------------------------------
 
-DATA_API void structure_traits_dictionary::setStructureTraitsMap(const StructureTraitsMapType& structureTraitsMap)
+DATA_API void structure_traits_dictionary::setStructureTraitsMap(const structure_traits_map_t& _structure_traits_map)
 {
-    m_structureTraitsMap = structureTraitsMap;
+    m_structureTraitsMap = _structure_traits_map;
 }
 
 //------------------------------------------------------------------------------
 
-void structure_traits_dictionary::shallow_copy(const object::csptr& source)
+void structure_traits_dictionary::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const structure_traits_dictionary>(source);
+    const auto& other = std::dynamic_pointer_cast<const structure_traits_dictionary>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -140,47 +140,47 @@ void structure_traits_dictionary::shallow_copy(const object::csptr& source)
 //------------------------------------------------------------------------------
 
 void structure_traits_dictionary::deep_copy(
-    const object::csptr& source,
-    const std::unique_ptr<deep_copy_cache_t>& cache
+    const object::csptr& _source,
+    const std::unique_ptr<deep_copy_cache_t>& _cache
 )
 {
-    const auto& other = std::dynamic_pointer_cast<const structure_traits_dictionary>(source);
+    const auto& other = std::dynamic_pointer_cast<const structure_traits_dictionary>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
     m_structureTraitsMap.clear();
-    for(const StructureTraitsMapType::value_type& elt : other->m_structureTraitsMap)
+    for(const structure_traits_map_t::value_type& elt : other->m_structureTraitsMap)
     {
-        m_structureTraitsMap[elt.first] = data::object::copy(elt.second, cache);
+        m_structureTraitsMap[elt.first] = data::object::copy(elt.second, _cache);
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool structure_traits_dictionary::operator==(const structure_traits_dictionary& other) const noexcept
+bool structure_traits_dictionary::operator==(const structure_traits_dictionary& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_structureTraitsMap, other.m_structureTraitsMap))
+    if(!core::tools::is_equal(m_structureTraitsMap, _other.m_structureTraitsMap))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool structure_traits_dictionary::operator!=(const structure_traits_dictionary& other) const noexcept
+bool structure_traits_dictionary::operator!=(const structure_traits_dictionary& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

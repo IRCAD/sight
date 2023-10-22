@@ -37,17 +37,17 @@ class ServiceFactoryRegistry
 {
 public:
 
-    ServiceFactoryRegistry(const std::string& simpl, const std::string& stype)
+    ServiceFactoryRegistry(const std::string& _simpl, const std::string& _stype)
     {
         auto factory = service::extension::factory::get();
-        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
+        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, _simpl, _stype);
     }
 
-    ServiceFactoryRegistry(const std::string& simpl, const std::string& stype, const std::string& oimpl)
+    ServiceFactoryRegistry(const std::string& _simpl, const std::string& _stype, const std::string& _oimpl)
     {
         auto factory = service::extension::factory::get();
-        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
-        factory->add_object_factory(simpl, oimpl);
+        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, _simpl, _stype);
+        factory->add_object_factory(_simpl, _oimpl);
     }
 };
 
@@ -58,10 +58,10 @@ class ServiceObjectFactoryRegistry
 {
 public:
 
-    ServiceObjectFactoryRegistry(const std::string& simpl, const std::string& oimpl)
+    ServiceObjectFactoryRegistry(const std::string& _simpl, const std::string& _oimpl)
     {
         auto factory = service::extension::factory::get();
-        factory->add_object_factory(simpl, oimpl);
+        factory->add_object_factory(_simpl, _oimpl);
     }
 };
 

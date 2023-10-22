@@ -84,14 +84,14 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::image& image,
-        O& output,
-        Writer::Mode mode,
+        const data::image& _image,
+        O& _output,
+        Writer::Mode _mode,
         Flag = Flag::NONE
 )
     {
         //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
-        const auto& pixel_format = image.getPixelFormat();
+        const auto& pixel_format = _image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
             pixel_format == data::image::PixelFormat::RG
@@ -99,7 +99,7 @@ public:
             || pixel_format == data::image::PixelFormat::BGRA
         );
 
-        const auto& pixel_type = image.getType();
+        const auto& pixel_type = _image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
@@ -107,7 +107,7 @@ public:
 
         // Prepare the output buffers
         // LibJPEG will realloc memory, as needed, but its upon to the caller to free it...
-        const auto image_byte_size = image.getSizeInBytes();
+        const auto image_byte_size = _image.getSizeInBytes();
         if(image_byte_size > m_output_initial_buffer_size)
         {
             m_output_buffer              = reinterpret_cast<unsigned char*>(realloc(m_output_buffer, image_byte_size));
@@ -121,11 +121,11 @@ public:
         jpeg_mem_dest(&m_cinfo, &m_output_buffer, &m_output_buffer_size);
 
         // Configure libJPEG
-        const auto& sizes = image.size();
+        const auto& sizes = _image.size();
         m_cinfo.image_width  = JDIMENSION(sizes[0]);
         m_cinfo.image_height = JDIMENSION(sizes[1]);
 
-        m_cinfo.input_components = int(image.numComponents());
+        m_cinfo.input_components = int(_image.numComponents());
         m_cinfo.in_color_space   =
             [pixel_format]
             {
@@ -164,7 +164,7 @@ public:
         jpeg_set_quality(&m_cinfo, 100, true);
 
         // Optimize or not huffman code. 10% slower - 20% smaller
-        switch(mode)
+        switch(_mode)
         {
             case Writer::Mode::BEST:
                 m_cinfo.optimize_coding = true;
@@ -187,7 +187,7 @@ public:
             // libjpeg API is old -> const_cast
             row_pointer[0] = reinterpret_cast<unsigned char*>(
                 const_cast<void*>(
-                    image.getPixel(m_cinfo.next_scanline * m_cinfo.image_width)
+                    _image.getPixel(m_cinfo.next_scanline * m_cinfo.image_width)
                 )
             );
 
@@ -203,25 +203,25 @@ public:
         // Write to stream or buffer...
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            output.write(reinterpret_cast<char*>(m_output_buffer), std::streamsize(m_output_buffer_size));
+            _output.write(reinterpret_cast<char*>(m_output_buffer), std::streamsize(m_output_buffer_size));
         }
         else if constexpr(std::is_same_v<std::uint8_t**, O>)
         {
-            (*output) = new std::uint8_t[m_output_buffer_size];
-            std::memcpy(*output, m_output_buffer, m_output_buffer_size);
+            (*_output) = new std::uint8_t[m_output_buffer_size];
+            std::memcpy(*_output, m_output_buffer, m_output_buffer_size);
         }
         else if constexpr(std::is_same_v<std::uint8_t*, O>)
         {
-            std::memcpy(output, m_output_buffer, m_output_buffer_size);
+            std::memcpy(_output, m_output_buffer, m_output_buffer_size);
         }
         else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
         {
-            if(output.size() < m_output_buffer_size)
+            if(_output.size() < m_output_buffer_size)
             {
-                output.resize(m_output_buffer_size);
+                _output.resize(m_output_buffer_size);
             }
 
-            std::memcpy(output.data(), m_output_buffer, m_output_buffer_size);
+            std::memcpy(_output.data(), m_output_buffer, m_output_buffer_size);
         }
         else
         {
@@ -264,28 +264,28 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpegErrorExit(j_common_ptr cinfo)
+    inline static void jpegErrorExit(j_common_ptr _cinfo)
     {
-        char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
         // Create the message
-        (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
 
         // Use exception instead of longjmp/setjmp
-        SIGHT_THROW(jpegLastErrorMsg);
+        SIGHT_THROW(jpeg_last_error_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void jpegOutputMessage(j_common_ptr cinfo)
+    inline static void jpegOutputMessage(j_common_ptr _cinfo)
     {
-        char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
         // Create the message
-        (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
 
         // Log recoverable error
-        SIGHT_WARN(jpegLastErrorMsg);
+        SIGHT_WARN(jpeg_last_error_msg);
     }
 
     struct jpeg_error_mgr m_jerr {};

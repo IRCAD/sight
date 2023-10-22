@@ -31,8 +31,8 @@ namespace sight::core::runtime::detail::dl
 
 //------------------------------------------------------------------------------
 
-posix::posix(const std::filesystem::path& module_path) noexcept :
-    native(module_path)
+posix::posix(const std::filesystem::path& _module_path) noexcept :
+    native(_module_path)
 {
 }
 
@@ -50,13 +50,13 @@ bool posix::is_loaded() const noexcept
 
 //------------------------------------------------------------------------------
 
-void* posix::get_symbol(const std::string& name) const
+void* posix::get_symbol(const std::string& _name) const
 {
     void* result = nullptr;
     if(is_loaded())
     {
         dlerror(); /* Clear existing error */
-        result = dlsym(m_handle, name.c_str());
+        result = dlsym(m_handle, _name.c_str());
         if(result == nullptr) /* Check for possible errors */
         {
             std::string message(dlerror());

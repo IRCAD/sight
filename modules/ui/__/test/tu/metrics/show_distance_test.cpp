@@ -21,7 +21,7 @@
 
 #include "show_distance_test.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <service/op.hpp>
@@ -65,11 +65,11 @@ void show_distance_test::basicTest()
     CPPUNIT_ASSERT_NO_THROW(m_showDistance->configure());
     CPPUNIT_ASSERT_NO_THROW(m_showDistance->start().get());
 
-    CPPUNIT_ASSERT(data::helper::MedicalImage::getDistanceVisibility(*image));
+    CPPUNIT_ASSERT(data::helper::medical_image::get_distance_visibility(*image));
     CPPUNIT_ASSERT_NO_THROW(m_showDistance->update().get());
-    CPPUNIT_ASSERT(!data::helper::MedicalImage::getDistanceVisibility(*image));
+    CPPUNIT_ASSERT(!data::helper::medical_image::get_distance_visibility(*image));
     CPPUNIT_ASSERT_NO_THROW(m_showDistance->update().get());
-    CPPUNIT_ASSERT(data::helper::MedicalImage::getDistanceVisibility(*image));
+    CPPUNIT_ASSERT(data::helper::medical_image::get_distance_visibility(*image));
 }
 
 //------------------------------------------------------------------------------

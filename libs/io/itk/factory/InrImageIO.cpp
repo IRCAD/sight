@@ -56,33 +56,33 @@ InrImageIO::~InrImageIO()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::PrintSelf(std::ostream& os, Indent indent) const
+void InrImageIO::PrintSelf(std::ostream& _os, Indent _indent) const
 {
-    Superclass::PrintSelf(os, indent);
-    os << indent << "PixelType " << m_PixelType << "\n";
-    os << indent << "ComponentType " << m_ComponentType << "\n";
+    Superclass::PrintSelf(_os, _indent);
+    _os << _indent << "pixel_t " << m_PixelType << "\n";
+    _os << _indent << "component_t " << m_ComponentType << "\n";
 }
 
 //------------------------------------------------------------------------------
 
-bool InrImageIO::CanReadFile(const char* FileNameToRead)
+bool InrImageIO::CanReadFile(const char* _file_name_to_read)
 {
     // Do not perform extension checking, magic number in the header is better.
-    gzFile inputFile = gzopen(FileNameToRead, "rb");
-    if(inputFile == nullptr)
+    gzFile input_file = gzopen(_file_name_to_read, "rb");
+    if(input_file == nullptr)
     {
         return false;
     }
 
-    std::string firstLine(14, '\0');
-    firstLine.reserve(15);
+    std::string first_line(14, '\0');
+    first_line.reserve(15);
 
-    gzgets(inputFile, firstLine.data(), 15);
+    gzgets(input_file, first_line.data(), 15);
 
-    gzclose(inputFile);
+    gzclose(input_file);
 
     std::string const magic("#INRIMAGE-4#{\n");
-    return firstLine == magic;
+    return first_line == magic;
 }
 
 //------------------------------------------------------------------------------
@@ -91,25 +91,25 @@ void InrImageIO::ReadImageInformation()
 {
     using namespace std::literals::string_literals;
 
-    gzFile inputFile = gzopen(this->GetFileName(), "rb");
-    if(inputFile == nullptr)
+    gzFile input_file = gzopen(this->GetFileName(), "rb");
+    if(input_file == nullptr)
     {
-        gzclose(inputFile);
+        gzclose(input_file);
         throw ExceptionObject(__FILE__, __LINE__, "File "s + GetFileName() + " could not be read");
     }
 
-    const int lineBufSize = 256;
-    std::array<char, lineBufSize> linebuf {};
-    std::map<std::string, std::string> headerValues;
+    const int line_buf_size = 256;
+    std::array<char, line_buf_size> linebuf {};
+    std::map<std::string, std::string> header_values;
     m_headerSize = 0;
-    while((gzgets(inputFile, linebuf.data(), lineBufSize) != nullptr) && (gzeof(inputFile) == 0))
+    while((gzgets(input_file, linebuf.data(), line_buf_size) != nullptr) && (gzeof(input_file) == 0))
     {
         std::string line(linebuf.data());
         // Count the number of characters we just read : length of the line
         m_headerSize += std::streamoff(line.length());
         // Remove eventual trailing '\n'
-        std::string::size_type const endOfLine = line.find('\n');
-        line = line.substr(0, endOfLine);
+        std::string::size_type const end_of_line = line.find('\n');
+        line = line.substr(0, end_of_line);
 
         if(line == "##}")
         {
@@ -128,48 +128,48 @@ void InrImageIO::ReadImageInformation()
             if(delimiter == line.end())
             {
                 // invalid line : missing '='
-                gzclose(inputFile);
+                gzclose(input_file);
                 throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nOffending line : "s + line);
             }
 
             // Tokenize [KEY] = [VALUE] and store it in map
             std::string key   = line.substr(0, std::size_t(delimiter - line.begin()));
             std::string value = line.substr(std::size_t(delimiter - line.begin() + 1), std::string::npos);
-            if(headerValues.find(key) != headerValues.end())
+            if(header_values.find(key) != header_values.end())
             {
                 // duplicate key
-                gzclose(inputFile);
+                gzclose(input_file);
                 throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nDuplicate key : "s + key);
             }
 
-            headerValues[key] = value;
+            header_values[key] = value;
         }
     }
 
     // We have finished reading the header
-    gzclose(inputFile);
+    gzclose(input_file);
 
     // Process headerValue map
-    for(auto& headerValue : headerValues)
+    for(auto& header_value : header_values)
     {
-        if(headerValue.first == "XDIM")
+        if(header_value.first == "XDIM")
         {
-            auto xdim = boost::lexical_cast<std::size_t>(headerValue.second);
+            auto xdim = boost::lexical_cast<std::size_t>(header_value.second);
             this->SetDimensions(0, xdim);
         }
-        else if(headerValue.first == "YDIM")
+        else if(header_value.first == "YDIM")
         {
-            auto ydim = boost::lexical_cast<std::size_t>(headerValue.second);
+            auto ydim = boost::lexical_cast<std::size_t>(header_value.second);
             this->SetDimensions(1, ydim);
         }
-        else if(headerValue.first == "ZDIM")
+        else if(header_value.first == "ZDIM")
         {
-            auto zdim = boost::lexical_cast<std::size_t>(headerValue.second);
+            auto zdim = boost::lexical_cast<std::size_t>(header_value.second);
             this->SetDimensions(2, zdim);
         }
-        else if(headerValue.first == "VDIM")
+        else if(header_value.first == "VDIM")
         {
-            auto vdim = boost::lexical_cast<std::uint32_t>(headerValue.second);
+            auto vdim = boost::lexical_cast<std::uint32_t>(header_value.second);
             if(vdim == 1)
             {
                 SetPixelType(SCALAR);
@@ -181,31 +181,31 @@ void InrImageIO::ReadImageInformation()
 
             SetNumberOfComponents(vdim);
         }
-        else if(headerValue.first == "VX")
+        else if(header_value.first == "VX")
         {
-            auto vx = boost::lexical_cast<float>(headerValue.second);
+            auto vx = boost::lexical_cast<float>(header_value.second);
             this->SetSpacing(0, vx);
         }
-        else if(headerValue.first == "VY")
+        else if(header_value.first == "VY")
         {
-            auto vy = boost::lexical_cast<float>(headerValue.second);
+            auto vy = boost::lexical_cast<float>(header_value.second);
             this->SetSpacing(1, vy);
         }
-        else if(headerValue.first == "VZ")
+        else if(header_value.first == "VZ")
         {
-            auto vz = boost::lexical_cast<float>(headerValue.second);
+            auto vz = boost::lexical_cast<float>(header_value.second);
             this->SetSpacing(2, vz);
         }
-        else if(headerValue.first == "TYPE")
+        else if(header_value.first == "TYPE")
         {
-            auto pixsize_it = headerValues.find("PIXSIZE");
-            if(pixsize_it == headerValues.end())
+            auto pixsize_it = header_values.find("PIXSIZE");
+            if(pixsize_it == header_values.end())
             {
                 // Missing pixsize
                 throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nPIXSIZE key not found.");
             }
 
-            std::string type    = headerValue.second;
+            std::string type    = header_value.second;
             std::string pixsize = pixsize_it->second;
             if(type == "unsigned fixed")
             {
@@ -317,22 +317,22 @@ void InrImageIO::ReadImageInformation()
                 throw ExceptionObject(__FILE__, __LINE__, "Invalid INR file.\nInvalid TYPE.");
             }
         } // TYPE
-        else if(headerValue.first == "PIXSIZE" || headerValue.first == "SCALE")
+        else if(header_value.first == "PIXSIZE" || header_value.first == "SCALE")
         {
             // PIXSIZE: nothing to do, processed with "TYPE"
             // SCALE: For fixed point arithmetic only. We don't use it.
         }
-        else if(headerValue.first == "CPU")
+        else if(header_value.first == "CPU")
         {
             // Big endian are : sun, sgi
-            if(headerValue.second == "sun" || headerValue.second == "sgi")
+            if(header_value.second == "sun" || header_value.second == "sgi")
             {
                 // File is big-endian, swap if system is little endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsLE();
                 m_ByteOrder = BigEndian;
             }
             // Little endian are : pc, alpha, decm
-            else if(headerValue.second == "pc" || headerValue.second == "alpha" || headerValue.second == "decm")
+            else if(header_value.second == "pc" || header_value.second == "alpha" || header_value.second == "decm")
             {
                 // File is little-endian, swap if system is big-endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsBE();
@@ -343,7 +343,7 @@ void InrImageIO::ReadImageInformation()
                 throw ExceptionObject(
                           __FILE__,
                           __LINE__,
-                          "Invalid INR file.\nUnknown CPU value : "s + headerValue.second
+                          "Invalid INR file.\nUnknown CPU value : "s + header_value.second
                 );
             }
         }
@@ -352,7 +352,7 @@ void InrImageIO::ReadImageInformation()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::Read(void* buffer)
+void InrImageIO::Read(void* _buffer)
 {
     using namespace std::literals::string_literals;
 
@@ -364,14 +364,14 @@ void InrImageIO::Read(void* buffer)
     }
 
     // Skip the header
-    int bytesSkipped = int(gzseek(file, m_headerSize, SEEK_CUR));
-    if(bytesSkipped != m_headerSize)
+    int bytes_skipped = int(gzseek(file, m_headerSize, SEEK_CUR));
+    if(bytes_skipped != m_headerSize)
     {
         throw ExceptionObject(
                   __FILE__,
                   __LINE__,
                   "INR file "s + GetFileName() + " could not be read (header size : " + std::to_string(
-                      bytesSkipped
+                      bytes_skipped
                   ) + "/" + std::to_string(m_headerSize) + ")."
         );
     }
@@ -381,25 +381,25 @@ void InrImageIO::Read(void* buffer)
     // Replace this line :
     //int bytesRead = gzread(file, buffer, GetImageSizeInBytes());
     // by
-    int bytesRead     = 0;
-    int nbStep        = 10;
+    int bytes_read    = 0;
+    int nb_step       = 10;
     std::int64_t size = ((GetImageSizeInBytes() > 1024LL * 1024 * 10)
-                         ? (GetImageSizeInBytes() / nbStep) + 1
+                         ? (GetImageSizeInBytes() / nb_step) + 1
                          : GetImageSizeInBytes());
 
     try
     {
         int step = 0;
 
-        while(bytesRead < GetImageSizeInBytes() && step < nbStep)
+        while(bytes_read < GetImageSizeInBytes() && step < nb_step)
         {
             step++;
-            UpdateProgress(((float) bytesRead) / float(GetImageSizeInBytes()));
-            bytesRead +=
+            UpdateProgress(((float) bytes_read) / float(GetImageSizeInBytes()));
+            bytes_read +=
                 gzread(
                     file,
-                    reinterpret_cast<char*>(buffer) + bytesRead,
-                    std::uint32_t(std::min(size, GetImageSizeInBytes() - bytesRead))
+                    reinterpret_cast<char*>(_buffer) + bytes_read,
+                    std::uint32_t(std::min(size, GetImageSizeInBytes() - bytes_read))
                 );
         }
     }
@@ -411,13 +411,13 @@ void InrImageIO::Read(void* buffer)
     UpdateProgress(1.0);
     // End replace
 
-    if(bytesRead != GetImageSizeInBytes())
+    if(bytes_read != GetImageSizeInBytes())
     {
         gzclose(file);
         throw ExceptionObject(__FILE__, __LINE__, "INR file "s + GetFileName() + " could not be read");
     }
 
-    const auto imageSizeInComponents = std::size_t(GetImageSizeInComponents());
+    const auto image_size_in_components = std::size_t(GetImageSizeInComponents());
 
     // Swap bytes if necessary
     if(m_ByteOrder == LittleEndian)
@@ -426,71 +426,71 @@ void InrImageIO::Read(void* buffer)
         {
             case CHAR:
                 ByteSwapper<char>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<char*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<char*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<unsigned char*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned char*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case SHORT:
                 ByteSwapper<short>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<short*>(buffer),                  // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<short*>(_buffer),                 // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case USHORT:
                 ByteSwapper<unsigned short>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<unsigned short*>(buffer),                  // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned short*>(_buffer),                 // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case INT:
                 ByteSwapper<int>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<int*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<int*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<unsigned int*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned int*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case LONG:
                 ByteSwapper<long>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<long*>(buffer),                  // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<long*>(_buffer),                 // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case ULONG:
                 ByteSwapper<unsigned long>::SwapRangeFromSystemToLittleEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<unsigned long*>(buffer),                  // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned long*>(_buffer),                 // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case FLOAT:
                 ByteSwapper<float>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<float*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<float*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case DOUBLE:
                 ByteSwapper<double>::SwapRangeFromSystemToLittleEndian(
-                    reinterpret_cast<double*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<double*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
@@ -505,68 +505,71 @@ void InrImageIO::Read(void* buffer)
         {
             case CHAR:
                 ByteSwapper<char>::SwapRangeFromSystemToBigEndian(
-                    reinterpret_cast<char*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<char*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case UCHAR:
                 ByteSwapper<unsigned char>::SwapRangeFromSystemToBigEndian(
-                    reinterpret_cast<unsigned char*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned char*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case SHORT:
                 ByteSwapper<short>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<short*>(buffer),               // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<short*>(_buffer),              // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case USHORT:
                 ByteSwapper<unsigned short>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<unsigned short*>(buffer),               // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned short*>(_buffer),              // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case INT:
-                ByteSwapper<int>::SwapRangeFromSystemToBigEndian(reinterpret_cast<int*>(buffer), imageSizeInComponents);
+                ByteSwapper<int>::SwapRangeFromSystemToBigEndian(
+                    reinterpret_cast<int*>(_buffer),
+                    image_size_in_components
+                );
                 break;
 
             case UINT:
                 ByteSwapper<unsigned int>::SwapRangeFromSystemToBigEndian(
-                    reinterpret_cast<unsigned int*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned int*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case LONG:
                 ByteSwapper<long>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<long*>(buffer),               // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<long*>(_buffer),              // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case ULONG:
                 ByteSwapper<unsigned long>::SwapRangeFromSystemToBigEndian( // NOLINT(google-runtime-int)
-                    reinterpret_cast<unsigned long*>(buffer),               // NOLINT(google-runtime-int)
-                    imageSizeInComponents
+                    reinterpret_cast<unsigned long*>(_buffer),              // NOLINT(google-runtime-int)
+                    image_size_in_components
                 );
                 break;
 
             case FLOAT:
                 ByteSwapper<float>::SwapRangeFromSystemToBigEndian(
-                    reinterpret_cast<float*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<float*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
             case DOUBLE:
                 ByteSwapper<double>::SwapRangeFromSystemToBigEndian(
-                    reinterpret_cast<double*>(buffer),
-                    imageSizeInComponents
+                    reinterpret_cast<double*>(_buffer),
+                    image_size_in_components
                 );
                 break;
 
@@ -581,10 +584,10 @@ void InrImageIO::Read(void* buffer)
 
 //------------------------------------------------------------------------------
 
-bool InrImageIO::CanWriteFile(const char* FileNameToWrite)
+bool InrImageIO::CanWriteFile(const char* _file_name_to_write)
 {
     // Extension must be .inr or .inr.gz
-    std::string const filename(FileNameToWrite);
+    std::string const filename(_file_name_to_write);
 
     std::string::size_type index = filename.rfind(".inr");
     if(index == filename.length() - std::string(".inr").length())
@@ -602,24 +605,24 @@ void InrImageIO::WriteImageInformation()
 {
     using namespace std::literals::string_literals;
 
-    std::stringstream headerStream;
+    std::stringstream header_stream;
 
     // Magic
-    headerStream << "#INRIMAGE-4#{" << "\n";
+    header_stream << "#INRIMAGE-4#{" << "\n";
     // Dimensions : always write a 3D InrImage
-    headerStream << "XDIM=" << ((GetDimensions(0) < 1) ? 1 : GetDimensions(0)) << "\n";
-    headerStream << "YDIM=" << ((GetDimensions(1) < 1) ? 1 : GetDimensions(1)) << "\n";
-    headerStream << "ZDIM=" << ((GetDimensions(2) < 1) ? 1 : GetDimensions(2)) << "\n";
+    header_stream << "XDIM=" << ((GetDimensions(0) < 1) ? 1 : GetDimensions(0)) << "\n";
+    header_stream << "YDIM=" << ((GetDimensions(1) < 1) ? 1 : GetDimensions(1)) << "\n";
+    header_stream << "ZDIM=" << ((GetDimensions(2) < 1) ? 1 : GetDimensions(2)) << "\n";
     // Number of components per pixel
-    headerStream << "VDIM=" << GetNumberOfComponents() << "\n";
+    header_stream << "VDIM=" << GetNumberOfComponents() << "\n";
     // Spacing : if it's 0, put it to one instead
-    headerStream << "VX=" << ((GetSpacing(0) == 0.0) ? 1.0 : GetSpacing(0)) << "\n";
-    headerStream << "VY=" << ((GetSpacing(1) == 0.0) ? 1.0 : GetSpacing(1)) << "\n";
-    headerStream << "VZ=" << ((GetSpacing(2) == 0.0) ? 1.0 : GetSpacing(2)) << "\n";
+    header_stream << "VX=" << ((GetSpacing(0) == 0.0) ? 1.0 : GetSpacing(0)) << "\n";
+    header_stream << "VY=" << ((GetSpacing(1) == 0.0) ? 1.0 : GetSpacing(1)) << "\n";
+    header_stream << "VZ=" << ((GetSpacing(2) == 0.0) ? 1.0 : GetSpacing(2)) << "\n";
     // Scale
-    headerStream << "SCALE=2**0" << "\n";
+    header_stream << "SCALE=2**0" << "\n";
     // Endianness
-    headerStream << "CPU=" << (itk::ByteSwapper<char>::SystemIsLE() ? "pc" : "sgi") << "\n";
+    header_stream << "CPU=" << (itk::ByteSwapper<char>::SystemIsLE() ? "pc" : "sgi") << "\n";
     // Point type
     std::string type;
     if(m_ComponentType == UCHAR || m_ComponentType == USHORT || m_ComponentType == UINT || m_ComponentType == ULONG)
@@ -644,32 +647,32 @@ void InrImageIO::WriteImageInformation()
         );
     }
 
-    headerStream << "TYPE=" << type << "\n";
+    header_stream << "TYPE=" << type << "\n";
     // PixelSize
-    int pixelSize = 0;
+    int pixel_size = 0;
     if(m_ComponentType == UCHAR || m_ComponentType == CHAR)
     {
-        pixelSize = sizeof(char);
+        pixel_size = sizeof(char);
     }
     else if(m_ComponentType == USHORT || m_ComponentType == SHORT)
     {
-        pixelSize = sizeof(short); // NOLINT(google-runtime-int)
+        pixel_size = sizeof(short); // NOLINT(google-runtime-int)
     }
     else if(m_ComponentType == UINT || m_ComponentType == INT)
     {
-        pixelSize = sizeof(int);
+        pixel_size = sizeof(int);
     }
     else if(m_ComponentType == ULONG || m_ComponentType == LONG)
     {
-        pixelSize = sizeof(long); // NOLINT(google-runtime-int)
+        pixel_size = sizeof(long); // NOLINT(google-runtime-int)
     }
     else if(m_ComponentType == FLOAT)
     {
-        pixelSize = sizeof(float);
+        pixel_size = sizeof(float);
     }
     else if(m_ComponentType == DOUBLE)
     {
-        pixelSize = sizeof(double);
+        pixel_size = sizeof(double);
     }
     else
     {
@@ -681,17 +684,17 @@ void InrImageIO::WriteImageInformation()
         );
     }
 
-    pixelSize *= 8;
-    headerStream << "PIXSIZE=" << pixelSize << " bits" << "\n";
+    pixel_size *= 8;
+    header_stream << "PIXSIZE=" << pixel_size << " bits" << "\n";
 
-    int const padding = int(256 - headerStream.str().length() - std::string("##}\n").length());
+    int const padding = int(256 - header_stream.str().length() - std::string("##}\n").length());
     for(int i = 0 ; i < padding ; ++i)
     {
-        headerStream << "\n";
+        header_stream << "\n";
     }
 
-    headerStream << "##}\n";
-    if(!headerStream)
+    header_stream << "##}\n";
+    if(!header_stream)
     {
         // Something could not be written to headerStream
         throw ExceptionObject(
@@ -701,14 +704,14 @@ void InrImageIO::WriteImageInformation()
         );
     }
 
-    std::string const header = headerStream.str();
+    std::string const header = header_stream.str();
     std::string const filename(this->GetFileName());
     std::string::size_type const index = filename.rfind(".inr.gz");
 
     if(index == filename.length() - std::string(".inr.gz").length())
     {
-        gzFile outputFile = gzopen(this->GetFileName(), "wb9");
-        if(outputFile == nullptr)
+        gzFile output_file = gzopen(this->GetFileName(), "wb9");
+        if(output_file == nullptr)
         {
             throw ExceptionObject(
                       __FILE__,
@@ -717,14 +720,14 @@ void InrImageIO::WriteImageInformation()
             );
         }
 
-        std::string headerString = headerStream.str();
-        gzwrite(outputFile, headerString.c_str(), std::uint32_t(headerString.length()));
-        gzclose(outputFile);
+        std::string header_string = header_stream.str();
+        gzwrite(output_file, header_string.c_str(), std::uint32_t(header_string.length()));
+        gzclose(output_file);
     }
     else
     {
-        FILE* outputFile = fopen(this->GetFileName(), "wb");
-        if(outputFile == nullptr)
+        FILE* output_file = fopen(this->GetFileName(), "wb");
+        if(output_file == nullptr)
         {
             throw ExceptionObject(
                       __FILE__,
@@ -733,13 +736,13 @@ void InrImageIO::WriteImageInformation()
             );
         }
 
-        std::string const headerString = headerStream.str();
-        if(fwrite(headerString.c_str(), sizeof(char), headerString.length(), outputFile) == 0)
+        std::string const header_string = header_stream.str();
+        if(fwrite(header_string.c_str(), sizeof(char), header_string.length(), output_file) == 0)
         {
             perror("fwrite");
         }
 
-        if(fclose(outputFile) != 0)
+        if(fclose(output_file) != 0)
         {
             perror("fclose");
         }
@@ -748,7 +751,7 @@ void InrImageIO::WriteImageInformation()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::Write(const void* buffer)
+void InrImageIO::Write(const void* _buffer)
 {
     using namespace std::literals::string_literals;
 
@@ -758,8 +761,8 @@ void InrImageIO::Write(const void* buffer)
     std::string::size_type const index = filename.rfind(suffix);
     if(index == filename.length() - suffix.length())
     {
-        gzFile outputFile = gzopen(this->GetFileName(), "ab");
-        if(outputFile == nullptr)
+        gzFile output_file = gzopen(this->GetFileName(), "ab");
+        if(output_file == nullptr)
         {
             throw ExceptionObject(
                       __FILE__,
@@ -784,26 +787,26 @@ void InrImageIO::Write(const void* buffer)
                 UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
                 written +=
                     gzwrite(
-                        outputFile,
-                        reinterpret_cast<const char*>(buffer) + written,
+                        output_file,
+                        reinterpret_cast<const char*>(_buffer) + written,
                         std::uint32_t(std::min(size, GetImageSizeInBytes() - written))
                     );
             }
         }
         catch(sight::core::exception& /*e*/) // catch progress bar cancel exception
         {
-            gzclose(outputFile);
+            gzclose(output_file);
             throw;
         }
         UpdateProgress(1.0);
         // End replace
 
-        gzclose(outputFile);
+        gzclose(output_file);
     }
     else
     {
-        FILE* outputFile = fopen(this->GetFileName(), "ab");
-        if(outputFile == nullptr)
+        FILE* output_file = fopen(this->GetFileName(), "ab");
+        if(output_file == nullptr)
         {
             throw ExceptionObject(
                       __FILE__,
@@ -828,22 +831,22 @@ void InrImageIO::Write(const void* buffer)
                 UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
                 written +=
                     int(fwrite(
-                            reinterpret_cast<const char*>(buffer) + written,
+                            reinterpret_cast<const char*>(_buffer) + written,
                             1,
                             std::size_t(std::min(size, GetImageSizeInBytes() - written)),
-                            outputFile
+                            output_file
                     ));
             }
         }
         catch(sight::core::exception& /*e*/) // catch progress bar cancel exception
         {
-            std::ignore = fclose(outputFile);
+            std::ignore = fclose(output_file);
             throw;
         }
         UpdateProgress(1.0);
         // End replace
 
-        std::ignore = fclose(outputFile);
+        std::ignore = fclose(output_file);
     }
 }
 

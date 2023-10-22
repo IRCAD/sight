@@ -60,8 +60,8 @@ protected:
      *>
           <gui>
               <layout>
-                  <menu name="My Menu"/>
-                  <menu name="My Menu 2"/>
+                  <menu name="My menu"/>
+                  <menu name="My menu 2"/>
               </layout>
           </gui>
           <registry>
@@ -77,7 +77,7 @@ protected:
      * @warning
      * - The number of item in the gui section must be equal or greater than in the registry section.
      * - The order of the menu in each section (gui and registry) must be the same.\n
-     *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     *   For example: the menu named "My menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
      *  @see sight::ui::menu_bar::initialize(),

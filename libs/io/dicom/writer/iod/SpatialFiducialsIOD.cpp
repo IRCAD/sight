@@ -32,7 +32,7 @@
 
 #include <core/spy_log.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/vector.hpp>
@@ -45,13 +45,13 @@ namespace sight::io::dicom::writer::iod
 //------------------------------------------------------------------------------
 
 SpatialFiducialsIOD::SpatialFiducialsIOD(
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const std::filesystem::path& destinationPath,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const std::filesystem::path& _destination_path,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel)
+    io::dicom::writer::iod::InformationObjectDefinition(_instance, _destination_path, _logger, _progress, _cancel)
 {
 }
 
@@ -62,51 +62,51 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(const data::series::csptr& series)
+void SpatialFiducialsIOD::write(const data::series::csptr& _series)
 {
     // Retrieve image series
-    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
-    SIGHT_ASSERT("Image series should not be null.", imageSeries);
+    data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
+    SIGHT_ASSERT("Image series should not be null.", image_series);
 
-    const data::vector::sptr distances = data::helper::MedicalImage::getDistances(*imageSeries);
+    const data::vector::sptr distances = data::helper::medical_image::get_distances(*image_series);
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
     SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
-    io::dicom::writer::ie::series seriesIE(writer, m_instance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
-    io::dicom::writer::ie::SpatialFiducials spatialFiducialsIE(writer, m_instance, imageSeries);
+    io::dicom::writer::ie::Patient patient_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::Study study_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::series series_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::Equipment equipment_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::SpatialFiducials spatial_fiducials_ie(writer, m_instance, image_series);
 
     // Write Patient Module - PS 3.3 C.7.1.1
-    patientIE.writePatientModule();
+    patient_ie.writePatientModule();
 
     // Write General Study Module - PS 3.3 C.7.2.1
-    studyIE.writeGeneralStudyModule();
+    study_ie.writeGeneralStudyModule();
 
     // Write Patient Study Module - PS 3.3 C.7.2.2
-    studyIE.writePatientStudyModule();
+    study_ie.writePatientStudyModule();
 
     // Write General Series Module - PS 3.3 C.7.3.1
-    seriesIE.writeGeneralSeriesModule();
+    series_ie.writeGeneralSeriesModule();
 
     // Write General Series Module - PS 3.3 C.21.1
-    seriesIE.writeSpatialFiducialsSeriesModule();
+    series_ie.writeSpatialFiducialsSeriesModule();
 
     // Write General Equipment Module - PS 3.3 C.7.5.1
-    equipmentIE.writeGeneralEquipmentModule();
+    equipment_ie.writeGeneralEquipmentModule();
 
     // Write Spatial Fiducials Module - PS 3.3 C.21.2
-    spatialFiducialsIE.writeSpatialFiducialsModule();
+    spatial_fiducials_ie.writeSpatialFiducialsModule();
 
     // Write Common Instance Reference Module - PS 3.3 C.12.2
-    spatialFiducialsIE.writeCommonInstanceReferenceModule();
+    spatial_fiducials_ie.writeCommonInstanceReferenceModule();
 
     // Write SOP Common Module - PS 3.3 C.12.1
-    spatialFiducialsIE.writeSOPCommonModule();
+    spatial_fiducials_ie.writeSOPCommonModule();
 
     // Write document
     io::dicom::helper::FileWriter::write(m_destinationPath, writer);

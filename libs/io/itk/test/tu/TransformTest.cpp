@@ -53,7 +53,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    data::matrix4::sptr sightMat = std::make_shared<data::matrix4>();
+    data::matrix4::sptr sight_mat = std::make_shared<data::matrix4>();
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -63,19 +63,19 @@ void TransformTest::testConversion()
         }
     }
 
-    io::itk::helper::Transform::convertFromITK(mat, sightMat);
+    io::itk::helper::Transform::convertFromITK(mat, sight_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            CPPUNIT_ASSERT_EQUAL(mat(i, j), (*sightMat)(i, j));
+            CPPUNIT_ASSERT_EQUAL(mat(i, j), (*sight_mat)(i, j));
         }
     }
 
-    data::matrix4::csptr sightMat2 = sightMat;
+    data::matrix4::csptr sight_mat2 = sight_mat;
 
-    ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sightMat2);
+    ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sight_mat2);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {

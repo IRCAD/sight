@@ -22,7 +22,7 @@
 
 #include "utils_test.hpp"
 
-#include "../../../../../modules/ui/viz/helper/Utils.hpp"
+#include "../../../../../modules/ui/viz/helper/utils.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::viz::ut::utils_test);
@@ -46,26 +46,26 @@ void utils_test::tearDown()
 
 void utils_test::convertOgreColorToQColor()
 {
-    QColor refColor(255, 255, 255);
+    QColor ref_color(255, 255, 255);
 
-    QColor resultColor = module::ui::viz::helper::Utils::convertOgreColorToQColor(Ogre::ColourValue());
-    CPPUNIT_ASSERT(resultColor.red() == refColor.red());
-    CPPUNIT_ASSERT(resultColor.green() == refColor.green());
-    CPPUNIT_ASSERT(resultColor.blue() == refColor.blue());
-    CPPUNIT_ASSERT(resultColor.alpha() == refColor.alpha());
+    QColor result_color = module::ui::viz::helper::utils::convertOgreColorToQColor(Ogre::ColourValue());
+    CPPUNIT_ASSERT(result_color.red() == ref_color.red());
+    CPPUNIT_ASSERT(result_color.green() == ref_color.green());
+    CPPUNIT_ASSERT(result_color.blue() == ref_color.blue());
+    CPPUNIT_ASSERT(result_color.alpha() == ref_color.alpha());
 }
 
 //------------------------------------------------------------------------------
 
 void utils_test::convertQColorToOgreColor()
 {
-    Ogre::ColourValue refColor;
+    Ogre::ColourValue ref_color;
 
-    Ogre::ColourValue resultColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor.r) == static_cast<int>(refColor.r));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor.g) == static_cast<int>(refColor.g));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor.b) == static_cast<int>(refColor.b));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor.a) == static_cast<int>(refColor.a));
+    Ogre::ColourValue result_color = module::ui::viz::helper::utils::convertQColorToOgreColor(QColor(255, 255, 255));
+    CPPUNIT_ASSERT(static_cast<int>(result_color.r) == static_cast<int>(ref_color.r));
+    CPPUNIT_ASSERT(static_cast<int>(result_color.g) == static_cast<int>(ref_color.g));
+    CPPUNIT_ASSERT(static_cast<int>(result_color.b) == static_cast<int>(ref_color.b));
+    CPPUNIT_ASSERT(static_cast<int>(result_color.a) == static_cast<int>(ref_color.a));
 }
 
 //------------------------------------------------------------------------------

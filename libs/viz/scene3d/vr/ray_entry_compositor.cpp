@@ -37,121 +37,121 @@ namespace sight::viz::scene3d::vr
 {
 
 // Mutex to avoid concurrent compositor manager calls.
-static std::mutex s_compositorManagerLock;
+static std::mutex s_compositor_manager_lock;
 
 //------------------------------------------------------------------------------
 
 ray_entry_compositor::ray_entry_compositor(
-    std::string _compositorName,
-    std::uint8_t _rqGroup,
-    compositor::core::StereoModeType _stereoMode,
-    bool _enableMixedRendering
+    std::string _compositor_name,
+    std::uint8_t _rq_group,
+    compositor::core::stereo_mode_t _stereo_mode,
+    bool _enable_mixed_rendering
 ) :
-    m_compositorName(std::move(_compositorName))
+    M_COMPOSITOR_NAME(std::move(_compositor_name))
 {
     auto& cm = Ogre::CompositorManager::getSingleton();
-    std::lock_guard<std::mutex> guard(s_compositorManagerLock);
+    std::lock_guard<std::mutex> guard(s_compositor_manager_lock);
 
-    m_compositor = cm.getByName(m_compositorName, RESOURCE_GROUP);
+    m_compositor = cm.getByName(M_COMPOSITOR_NAME, RESOURCE_GROUP);
 
     if(!m_compositor)
     {
-        m_compositor = cm.create(m_compositorName, viz::scene3d::RESOURCE_GROUP);
+        m_compositor = cm.create(M_COMPOSITOR_NAME, viz::scene3d::RESOURCE_GROUP);
 
-        auto* compTech = m_compositor->createTechnique();
+        auto* comp_tech = m_compositor->createTechnique();
 
-        std::uint8_t nbViewpoints = 1;
-        float heightFactor        = 1.F;
-        float widthFactor         = 1.F;
+        std::uint8_t nb_viewpoints = 1;
+        float height_factor        = 1.F;
+        float width_factor         = 1.F;
 
-        switch(_stereoMode)
+        switch(_stereo_mode)
         {
-            case compositor::core::StereoModeType::NONE:
+            case compositor::core::stereo_mode_t::NONE:
                 break;
 
-            case compositor::core::StereoModeType::STEREO:
-                nbViewpoints = 2;
-                heightFactor = 0.5F;
+            case compositor::core::stereo_mode_t::STEREO:
+                nb_viewpoints = 2;
+                height_factor = 0.5F;
                 break;
 
-            case compositor::core::StereoModeType::AUTOSTEREO_5:
-                nbViewpoints = 5;
-                heightFactor = 0.5F;
-                widthFactor  = 0.6F;
+            case compositor::core::stereo_mode_t::AUTOSTEREO_5:
+                nb_viewpoints = 5;
+                height_factor = 0.5F;
+                width_factor  = 0.6F;
                 break;
 
-            case compositor::core::StereoModeType::AUTOSTEREO_8:
-                nbViewpoints = 8;
-                heightFactor = 0.5F;
-                widthFactor  = 0.375F;
+            case compositor::core::stereo_mode_t::AUTOSTEREO_8:
+                nb_viewpoints = 8;
+                height_factor = 0.5F;
+                width_factor  = 0.375F;
                 break;
         }
 
-        const auto schemePrefix = std::string("VolumeEntries") + (nbViewpoints > 1 ? "auto_stereo" : "");
+        const auto scheme_prefix = std::string("VolumeEntries") + (nb_viewpoints > 1 ? "auto_stereo" : "");
 
-        for(std::uint8_t i = 0 ; i < nbViewpoints ; ++i)
+        for(std::uint8_t i = 0 ; i < nb_viewpoints ; ++i)
         {
-            const auto schemeSuffix  = nbViewpoints > 1 ? std::to_string(i) : "";
-            const auto texTargetName = m_compositorName + "Texture" + schemeSuffix;
+            const auto scheme_suffix   = nb_viewpoints > 1 ? std::to_string(i) : "";
+            const auto tex_target_name = M_COMPOSITOR_NAME + "texture" + scheme_suffix;
 
-            auto* texDef = compTech->createTextureDefinition(texTargetName);
-            texDef->scope = Ogre::CompositionTechnique::TextureScope::TS_CHAIN;
-            texDef->formatList.push_back(Ogre::PixelFormat::PF_FLOAT32_GR);
-            texDef->heightFactor = heightFactor;
-            texDef->widthFactor  = widthFactor;
+            auto* tex_def = comp_tech->createTextureDefinition(tex_target_name);
+            tex_def->scope = Ogre::CompositionTechnique::TextureScope::TS_CHAIN;
+            tex_def->formatList.push_back(Ogre::PixelFormat::PF_FLOAT32_GR);
+            tex_def->heightFactor = height_factor;
+            tex_def->widthFactor  = width_factor;
 
-            auto* backFacesTargetPass = compTech->createTargetPass();
-            backFacesTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-            backFacesTargetPass->setOutputName(texTargetName);
+            auto* back_faces_target_pass = comp_tech->createTargetPass();
+            back_faces_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            back_faces_target_pass->setOutputName(tex_target_name);
 
-            auto* clearPass = backFacesTargetPass->createPass();
-            clearPass->setType(Ogre::CompositionPass::PT_CLEAR);
-            clearPass->setClearBuffers(Ogre::FBT_COLOUR | Ogre::FBT_DEPTH);
-            clearPass->setClearColour(Ogre::ColourValue(0.F, 1.F, 1.F, 1.F));
+            auto* clear_pass = back_faces_target_pass->createPass();
+            clear_pass->setType(Ogre::CompositionPass::PT_CLEAR);
+            clear_pass->setClearBuffers(Ogre::FBT_COLOUR | Ogre::FBT_DEPTH);
+            clear_pass->setClearColour(Ogre::ColourValue(0.F, 1.F, 1.F, 1.F));
 
-            auto* backFacesPass = backFacesTargetPass->createPass();
-            backFacesPass->setMaterialScheme(std::string(schemePrefix) + "_BackFaces" + schemeSuffix);
-            backFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            backFacesPass->setFirstRenderQueue(_rqGroup);
-            backFacesPass->setLastRenderQueue(_rqGroup);
+            auto* back_faces_pass = back_faces_target_pass->createPass();
+            back_faces_pass->setMaterialScheme(std::string(scheme_prefix) + "_BackFaces" + scheme_suffix);
+            back_faces_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            back_faces_pass->setFirstRenderQueue(_rq_group);
+            back_faces_pass->setLastRenderQueue(_rq_group);
 
-            auto* frontFacesTargetPass = compTech->createTargetPass();
-            frontFacesTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-            frontFacesTargetPass->setOutputName(texTargetName);
+            auto* front_faces_target_pass = comp_tech->createTargetPass();
+            front_faces_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            front_faces_target_pass->setOutputName(tex_target_name);
 
-            auto* frontFacesPass = frontFacesTargetPass->createPass();
-            frontFacesPass->setMaterialScheme(std::string(schemePrefix) + "_FrontFaces" + schemeSuffix);
-            frontFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            frontFacesPass->setFirstRenderQueue(_rqGroup);
-            frontFacesPass->setLastRenderQueue(_rqGroup);
+            auto* front_faces_pass = front_faces_target_pass->createPass();
+            front_faces_pass->setMaterialScheme(std::string(scheme_prefix) + "_FrontFaces" + scheme_suffix);
+            front_faces_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            front_faces_pass->setFirstRenderQueue(_rq_group);
+            front_faces_pass->setLastRenderQueue(_rq_group);
 
-            auto* backFacesMaxTargetPass = compTech->createTargetPass();
-            backFacesMaxTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-            backFacesMaxTargetPass->setOutputName(texTargetName);
+            auto* back_faces_max_target_pass = comp_tech->createTargetPass();
+            back_faces_max_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
+            back_faces_max_target_pass->setOutputName(tex_target_name);
 
-            auto* backFacesMaxPass = backFacesMaxTargetPass->createPass();
-            backFacesMaxPass->setMaterialScheme(std::string(schemePrefix) + "_BackFacesMax" + schemeSuffix);
-            backFacesMaxPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            backFacesMaxPass->setFirstRenderQueue(_rqGroup);
-            backFacesMaxPass->setLastRenderQueue(_rqGroup);
+            auto* back_faces_max_pass = back_faces_max_target_pass->createPass();
+            back_faces_max_pass->setMaterialScheme(std::string(scheme_prefix) + "_BackFacesMax" + scheme_suffix);
+            back_faces_max_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            back_faces_max_pass->setFirstRenderQueue(_rq_group);
+            back_faces_max_pass->setLastRenderQueue(_rq_group);
 
-            if(_enableMixedRendering)
+            if(_enable_mixed_rendering)
             {
-                auto* frontFacesMinTargetPass = compTech->createTargetPass();
-                frontFacesMinTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-                frontFacesMinTargetPass->setOutputName(texTargetName);
+                auto* front_faces_min_target_pass = comp_tech->createTargetPass();
+                front_faces_min_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
+                front_faces_min_target_pass->setOutputName(tex_target_name);
 
-                auto* frontFacesMinPass = frontFacesMinTargetPass->createPass();
-                frontFacesMinPass->setMaterialScheme(
-                    std::string(schemePrefix) + "_FrontFacesMin" + schemeSuffix
+                auto* front_faces_min_pass = front_faces_min_target_pass->createPass();
+                front_faces_min_pass->setMaterialScheme(
+                    std::string(scheme_prefix) + "_FrontFacesMin" + scheme_suffix
                 );
-                frontFacesMinPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                frontFacesMinPass->setLastRenderQueue(viz::scene3d::rq::s_SURFACE_ID);
+                front_faces_min_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+                front_faces_min_pass->setLastRenderQueue(viz::scene3d::rq::s_SURFACE_ID);
             }
         }
 
-        auto* outputTargetPass = compTech->getOutputTargetPass();
-        outputTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+        auto* output_target_pass = comp_tech->getOutputTargetPass();
+        output_target_pass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
     }
 }
 
@@ -161,7 +161,7 @@ ray_entry_compositor::~ray_entry_compositor()
 {
     auto& cm = Ogre::CompositorManager::getSingleton();
 
-    std::lock_guard<std::mutex> guard(s_compositorManagerLock);
+    std::lock_guard<std::mutex> guard(s_compositor_manager_lock);
     // If this is the last reference. (Plus the one kept by the manager)
     if(m_compositor.use_count() == 2)
     {
@@ -173,7 +173,7 @@ ray_entry_compositor::~ray_entry_compositor()
 
 const std::string& ray_entry_compositor::getName() const
 {
-    return m_compositorName;
+    return M_COMPOSITOR_NAME;
 }
 
 //------------------------------------------------------------------------------

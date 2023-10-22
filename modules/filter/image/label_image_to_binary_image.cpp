@@ -42,7 +42,7 @@
 namespace sight::module::filter::image
 {
 
-using FunctionType = std::function<std::uint8_t(const std::uint8_t&)>;
+using function_t = std::function<std::uint8_t(const std::uint8_t&)>;
 
 class LambdaFunctor
 {
@@ -51,7 +51,7 @@ public:
     LambdaFunctor()
     = default;
 
-    explicit LambdaFunctor(FunctionType _f) :
+    explicit LambdaFunctor(function_t _f) :
         m_function(std::move(_f))
     {
     }
@@ -72,7 +72,7 @@ public:
 
 private:
 
-    FunctionType m_function;
+    function_t m_function;
 };
 
 //------------------------------------------------------------------------------
@@ -104,23 +104,23 @@ void label_image_to_binary_image::starting()
 
 void label_image_to_binary_image::updating()
 {
-    using ImageType = typename itk::Image<std::uint8_t, 3>;
+    using image_t = typename itk::Image<std::uint8_t, 3>;
 
-    const auto labelImage = m_labelImage.lock();
-    SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", labelImage);
+    const auto label_image = m_labelImage.lock();
+    SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", label_image);
 
-    const auto maskImage = m_binaryMask.lock();
-    SIGHT_ASSERT("No " << s_BINARY_MASK_INOUT << " inout.", maskImage);
+    const auto mask_image = m_binaryMask.lock();
+    SIGHT_ASSERT("No " << s_BINARY_MASK_INOUT << " inout.", mask_image);
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",
-        labelImage->getType() == core::type::UINT8 && labelImage->numComponents() == 1
+        label_image->getType() == core::type::UINT8 && label_image->numComponents() == 1
     );
 
     LambdaFunctor functor;
     if(m_labelSetFieldName)
     {
-        data::vector::csptr labels = labelImage->getField<data::vector>(m_labelSetFieldName.value());
+        data::vector::csptr labels = label_image->get_field<data::vector>(m_labelSetFieldName.value());
 
         if(!labels)
         {
@@ -131,32 +131,32 @@ void label_image_to_binary_image::updating()
             return;
         }
 
-        std::bitset<std::numeric_limits<std::uint8_t>::max() + 1> labelSet;
+        std::bitset<std::numeric_limits<std::uint8_t>::max() + 1> label_set;
 
         std::for_each(
             labels->begin(),
             labels->end(),
-            [&labelSet](data::object::csptr _o)
+            [&label_set](data::object::csptr _o)
             {
-                data::integer::csptr intObj = std::dynamic_pointer_cast<const data::integer>(_o);
-                SIGHT_ASSERT("The label vector should only contain integers.", intObj);
-                const int val = int(intObj->value());
+                data::integer::csptr int_obj = std::dynamic_pointer_cast<const data::integer>(_o);
+                SIGHT_ASSERT("The label vector should only contain integers.", int_obj);
+                const int val = int(int_obj->value());
                 SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255);
-                labelSet.set(static_cast<std::uint8_t>(val), true);
+                label_set.set(static_cast<std::uint8_t>(val), true);
             });
 
         functor = LambdaFunctor(
-            FunctionType(
-                [labelSet](const std::uint8_t& _in)
+            function_t(
+                [label_set](const std::uint8_t& _in)
             {
-                return labelSet[_in] ? 255 : 0;
+                return label_set[_in] ? 255 : 0;
             })
         );
     }
     else
     {
         functor = LambdaFunctor(
-            FunctionType(
+            function_t(
                 [](const std::uint8_t& _in)
             {
                 return _in > 0 ? 255 : 0;
@@ -164,21 +164,21 @@ void label_image_to_binary_image::updating()
         );
     }
 
-    typename ImageType::Pointer itkLabelImg = io::itk::moveToItk<ImageType>(labelImage.get_shared());
+    typename image_t::Pointer itk_label_img = io::itk::move_to_itk<image_t>(label_image.get_shared());
 
-    itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
-        itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
+    itk::UnaryFunctorImageFilter<image_t, image_t, LambdaFunctor>::Pointer label_to_mask_filter =
+        itk::UnaryFunctorImageFilter<image_t, image_t, LambdaFunctor>::New();
 
-    labelToMaskFilter->SetFunctor(functor);
-    labelToMaskFilter->SetInput(itkLabelImg);
-    labelToMaskFilter->Update();
+    label_to_mask_filter->SetFunctor(functor);
+    label_to_mask_filter->SetInput(itk_label_img);
+    label_to_mask_filter->Update();
 
-    typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
+    typename image_t::Pointer itk_mask_img = label_to_mask_filter->GetOutput();
 
-    io::itk::moveFromItk<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
-    const auto modifiedSig = maskImage->signal<data::object::ModifiedSignalType>(data::image::MODIFIED_SIG);
+    io::itk::move_from_itk<image_t::Pointer>(itk_mask_img, mask_image.get_shared());
+    const auto modified_sig = mask_image->signal<data::object::modified_signal_t>(data::image::MODIFIED_SIG);
 
-    modifiedSig->async_emit();
+    modified_sig->async_emit();
 
     m_sigComputed->async_emit();
 }

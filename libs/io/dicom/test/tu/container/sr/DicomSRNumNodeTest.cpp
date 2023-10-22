@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,13 +58,13 @@ void DicomSRNumNodeTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), sequence->GetNumberOfItems());
     gdcm::DataSet& item = sequence->GetItem(1).GetNestedDataSet();
     CPPUNIT_ASSERT_EQUAL(42., (io::dicom::helper::DicomDataReader::getTagValue<NUM_VALUE, double>(item)));
-    gdcm::SmartPointer<gdcm::SequenceOfItems> unitsSequence =
+    gdcm::SmartPointer<gdcm::SequenceOfItems> units_sequence =
         item.GetDataElement(gdcm::Attribute<UNITS>::GetTag()).GetValueAsSQ();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), unitsSequence->GetNumberOfItems());
-    gdcm::DataSet& unitsItem = unitsSequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("value"s, (io::dicom::helper::DicomDataReader::getTagValue<VALUE>(unitsItem)));
-    CPPUNIT_ASSERT_EQUAL("designator"s, (io::dicom::helper::DicomDataReader::getTagValue<DESIGNATOR>(unitsItem)));
-    CPPUNIT_ASSERT_EQUAL("meaning"s, (io::dicom::helper::DicomDataReader::getTagValue<MEANING>(unitsItem)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), units_sequence->GetNumberOfItems());
+    gdcm::DataSet& units_item = units_sequence->GetItem(1).GetNestedDataSet();
+    CPPUNIT_ASSERT_EQUAL("value"s, (io::dicom::helper::DicomDataReader::getTagValue<VALUE>(units_item)));
+    CPPUNIT_ASSERT_EQUAL("designator"s, (io::dicom::helper::DicomDataReader::getTagValue<DESIGNATOR>(units_item)));
+    CPPUNIT_ASSERT_EQUAL("meaning"s, (io::dicom::helper::DicomDataReader::getTagValue<MEANING>(units_item)));
     // TODO: fix
     // CPPUNIT_ASSERT_EQUAL("version"s, (io::dicom::helper::DicomDataReader::getTagValue<VERSION>(unitsItem)));
 }

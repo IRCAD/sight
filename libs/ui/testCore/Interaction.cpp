@@ -28,40 +28,40 @@
 #include <QAbstractButton>
 #include <QTimer>
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 //------------------------------------------------------------------------------
 
-static std::string modifiersToString(Qt::KeyboardModifiers modifiers)
+static std::string modifiers_to_string(Qt::KeyboardModifiers _modifiers)
 {
     std::vector<std::string> strings;
-    if((modifiers& Qt::ShiftModifier) != 0U)
+    if((_modifiers& Qt::ShiftModifier) != 0U)
     {
         strings.emplace_back("Shift");
     }
 
-    if((modifiers& Qt::ControlModifier) != 0U)
+    if((_modifiers& Qt::ControlModifier) != 0U)
     {
         strings.emplace_back("Control");
     }
 
-    if((modifiers& Qt::AltModifier) != 0U)
+    if((_modifiers& Qt::AltModifier) != 0U)
     {
         strings.emplace_back("Alt");
     }
 
-    if((modifiers& Qt::MetaModifier) != 0U)
+    if((_modifiers& Qt::MetaModifier) != 0U)
     {
         strings.emplace_back("Meta");
     }
 
-    if((modifiers& Qt::KeypadModifier) != 0U)
+    if((_modifiers& Qt::KeypadModifier) != 0U)
     {
         strings.emplace_back("Keypad");
     }
 
-    if((modifiers& Qt::GroupSwitchModifier) != 0U)
+    if((_modifiers& Qt::GroupSwitchModifier) != 0U)
     {
         strings.emplace_back("GroupSwitch");
     }
@@ -92,30 +92,30 @@ static std::string modifiersToString(Qt::KeyboardModifiers modifiers)
 
 //------------------------------------------------------------------------------
 
-static std::string pointToString(const QPoint& p)
+static std::string point_to_string(const QPoint& _p)
 {
-    return std::string("(") + std::to_string(p.x()) + ',' + std::to_string(p.y()) + ')';
+    return std::string("(") + std::to_string(_p.x()) + ',' + std::to_string(_p.y()) + ')';
 }
 
-MouseClick::MouseClick(Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint& pos) :
-    m_button(button),
-    m_modifiers(modifiers),
-    m_pos(pos)
+MouseClick::MouseClick(Qt::MouseButton _button, Qt::KeyboardModifiers _modifiers, const QPoint& _pos) :
+    m_button(_button),
+    m_modifiers(_modifiers),
+    m_pos(_pos)
 {
-}
-
-//------------------------------------------------------------------------------
-
-void MouseClick::interactWith(QWidget* widget) const
-{
-    interactWith<>(widget);
 }
 
 //------------------------------------------------------------------------------
 
-void MouseClick::interactWith(QWindow* window) const
+void MouseClick::interactWith(QWidget* _widget) const
 {
-    interactWith<>(window);
+    interactWith<>(_widget);
+}
+
+//------------------------------------------------------------------------------
+
+void MouseClick::interactWith(QWindow* _window) const
+{
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -128,10 +128,10 @@ void MouseClick::interactWith(T thing) const
         new TestEvent(
             [*this, thing]
         {
-            if(auto* pushButton = qobject_cast<QAbstractButton*>(thing);
-               m_modifiers == Qt::NoModifier && pushButton != nullptr)
+            if(auto* push_button = qobject_cast<QAbstractButton*>(thing);
+               m_modifiers == Qt::NoModifier && push_button != nullptr)
             {
-                pushButton->click();
+                push_button->click();
             }
             else
             {
@@ -163,7 +163,7 @@ std::string MouseClick::toString() const
         res += "other click";
     }
 
-    const std::string modifiers = modifiersToString(m_modifiers);
+    const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " while holding " + modifiers;
@@ -172,25 +172,25 @@ std::string MouseClick::toString() const
     return res;
 }
 
-MouseDoubleClick::MouseDoubleClick(Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint& pos) :
-    m_button(button),
-    m_modifiers(modifiers),
-    m_pos(pos)
+MouseDoubleClick::MouseDoubleClick(Qt::MouseButton _button, Qt::KeyboardModifiers _modifiers, const QPoint& _pos) :
+    m_button(_button),
+    m_modifiers(_modifiers),
+    m_pos(_pos)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MouseDoubleClick::interactWith(QWidget* widget) const
+void MouseDoubleClick::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void MouseDoubleClick::interactWith(QWindow* window) const
+void MouseDoubleClick::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ std::string MouseDoubleClick::toString() const
         res += "other double click";
     }
 
-    const std::string modifiers = modifiersToString(m_modifiers);
+    const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " while holding " + modifiers;
@@ -239,26 +239,31 @@ std::string MouseDoubleClick::toString() const
     return res;
 }
 
-MouseDrag::MouseDrag(const QPoint& from, const QPoint& to, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) :
-    m_from(from),
-    m_to(to),
-    m_button(button),
-    m_modifiers(modifiers)
+MouseDrag::MouseDrag(
+    const QPoint& _from,
+    const QPoint& _to,
+    Qt::MouseButton _button,
+    Qt::KeyboardModifiers _modifiers
+) :
+    m_from(_from),
+    m_to(_to),
+    m_button(_button),
+    m_modifiers(_modifiers)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MouseDrag::interactWith(QWidget* widget) const
+void MouseDrag::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void MouseDrag::interactWith(QWindow* window) const
+void MouseDrag::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -284,7 +289,7 @@ void MouseDrag::interactWith(T thing) const
 std::string MouseDrag::toString() const
 {
     std::string res;
-    res = res + "drag mouse from " + pointToString(m_from) + " to " + pointToString(m_to) + " while holding ";
+    res = res + "drag mouse from " + point_to_string(m_from) + " to " + point_to_string(m_to) + " while holding ";
 
     if(m_button == Qt::LeftButton)
     {
@@ -304,7 +309,7 @@ std::string MouseDrag::toString() const
     }
 
     res += " button";
-    const std::string modifiers = modifiersToString(m_modifiers);
+    const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " and " + modifiers;
@@ -313,8 +318,8 @@ std::string MouseDrag::toString() const
     return res;
 }
 
-MouseWheel::MouseWheel(const QPoint& _angleDelta, Qt::KeyboardModifiers _modifiers, const QPoint& _position) :
-    m_angleDelta(_angleDelta),
+MouseWheel::MouseWheel(const QPoint& _angle_delta, Qt::KeyboardModifiers _modifiers, const QPoint& _position) :
+    m_angleDelta(_angle_delta),
     m_modifiers(_modifiers),
     m_position(_position)
 {
@@ -322,16 +327,16 @@ MouseWheel::MouseWheel(const QPoint& _angleDelta, Qt::KeyboardModifiers _modifie
 
 //------------------------------------------------------------------------------
 
-void MouseWheel::interactWith(QWidget* widget) const
+void MouseWheel::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void MouseWheel::interactWith(QWindow* window) const
+void MouseWheel::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -362,8 +367,8 @@ void MouseWheel::interactWith(T thing) const
 
 std::string MouseWheel::toString() const
 {
-    std::string res       = "rotate the mouse wheel of " + pointToString(m_angleDelta) + " units";
-    std::string modifiers = modifiersToString(m_modifiers);
+    std::string res       = "rotate the mouse wheel of " + point_to_string(m_angleDelta) + " units";
+    std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " while holding " + modifiers;
@@ -372,24 +377,24 @@ std::string MouseWheel::toString() const
     return res;
 }
 
-KeyboardSequence::KeyboardSequence(std::string text, Qt::KeyboardModifiers modifiers) :
-    m_text(std::move(text)),
-    m_modifiers(modifiers)
+KeyboardSequence::KeyboardSequence(std::string _text, Qt::KeyboardModifiers _modifiers) :
+    m_text(std::move(_text)),
+    m_modifiers(_modifiers)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void KeyboardSequence::interactWith(QWidget* widget) const
+void KeyboardSequence::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void KeyboardSequence::interactWith(QWindow* window) const
+void KeyboardSequence::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -415,7 +420,7 @@ void KeyboardSequence::interactWith(T thing) const
 std::string KeyboardSequence::toString() const
 {
     std::string res             = "type \"" + m_text + '"';
-    const std::string modifiers = modifiersToString(m_modifiers);
+    const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " while holding " + modifiers;
@@ -424,24 +429,24 @@ std::string KeyboardSequence::toString() const
     return res;
 }
 
-KeyboardClick::KeyboardClick(Qt::Key key, Qt::KeyboardModifiers modifiers) :
-    m_key(key),
-    m_modifiers(modifiers)
+KeyboardClick::KeyboardClick(Qt::Key _key, Qt::KeyboardModifiers _modifiers) :
+    m_key(_key),
+    m_modifiers(_modifiers)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void KeyboardClick::interactWith(QWidget* widget) const
+void KeyboardClick::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void KeyboardClick::interactWith(QWindow* window) const
+void KeyboardClick::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -463,10 +468,10 @@ void KeyboardClick::interactWith(T thing) const
 
 std::string KeyboardClick::toString() const
 {
-    std::string enumName = QMetaEnum::fromType<Qt::Key>().valueToKey(m_key);
-    enumName = enumName.substr(enumName.find('_') + 1);
-    std::string res             = "press " + enumName + " key";
-    const std::string modifiers = modifiersToString(m_modifiers);
+    std::string enum_name = QMetaEnum::fromType<Qt::Key>().valueToKey(m_key);
+    enum_name = enum_name.substr(enum_name.find('_') + 1);
+    std::string res             = "press " + enum_name + " key";
+    const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {
         res += " while holding " + modifiers;
@@ -475,9 +480,9 @@ std::string KeyboardClick::toString() const
     return res;
 }
 
-PinchGesture::PinchGesture(std::pair<QPoint, QPoint> _firstFingerPos, std::pair<QPoint, QPoint> _secondFingerPos) :
-    m_firstFingerPos(std::move(_firstFingerPos)),
-    m_secondFingerPos(std::move(_secondFingerPos))
+PinchGesture::PinchGesture(std::pair<QPoint, QPoint> _first_finger_pos, std::pair<QPoint, QPoint> _second_finger_pos) :
+    m_firstFingerPos(std::move(_first_finger_pos)),
+    m_secondFingerPos(std::move(_second_finger_pos))
 {
     SIGHT_ASSERT(
         "Two fingers can't be at the same place at the same time",
@@ -487,16 +492,16 @@ PinchGesture::PinchGesture(std::pair<QPoint, QPoint> _firstFingerPos, std::pair<
 
 //------------------------------------------------------------------------------
 
-void PinchGesture::interactWith(QWidget* widget) const
+void PinchGesture::interactWith(QWidget* _widget) const
 {
-    interactWith<>(widget);
+    interactWith<>(_widget);
 }
 
 //------------------------------------------------------------------------------
 
-void PinchGesture::interactWith(QWindow* window) const
+void PinchGesture::interactWith(QWindow* _window) const
 {
-    interactWith<>(window);
+    interactWith<>(_window);
 }
 
 //------------------------------------------------------------------------------
@@ -514,13 +519,13 @@ void PinchGesture::interactWith(T thing) const
 
     // If the two fingers are too far in one go, Qt will ignore it as it will consider them as spurious. We must
     // therefore divide the moves in multiple steps.
-    QLineF firstFingerLine(m_firstFingerPos.first, m_firstFingerPos.second);
-    QLineF secondFingerLine(m_secondFingerPos.first, m_secondFingerPos.second);
+    QLineF first_finger_line(m_firstFingerPos.first, m_firstFingerPos.second);
+    QLineF second_finger_line(m_secondFingerPos.first, m_secondFingerPos.second);
     for(int i = 0 ; i < 100 ; i++)
     {
         QTest::touchEvent(thing, Tester::getDummyTouchScreen())
-        .move(0, firstFingerLine.pointAt(i / 100.).toPoint(), null)
-        .move(1, secondFingerLine.pointAt(i / 100.).toPoint(), null);
+        .move(0, first_finger_line.pointAt(i / 100.).toPoint(), null)
+        .move(1, second_finger_line.pointAt(i / 100.).toPoint(), null);
     }
 
     QTest::touchEvent(thing, Tester::getDummyTouchScreen())
@@ -535,10 +540,10 @@ void PinchGesture::interactWith(T thing) const
 
 std::string PinchGesture::toString() const
 {
-    return "pinch gesture with first finger going from " + pointToString(m_firstFingerPos.first) + " to "
-           + pointToString(m_firstFingerPos.second) + " and second finger going from " + pointToString(
+    return "pinch gesture with first finger going from " + point_to_string(m_firstFingerPos.first) + " to "
+           + point_to_string(m_firstFingerPos.second) + " and second finger going from " + point_to_string(
         m_secondFingerPos.first
-           ) + " to " + pointToString(m_secondFingerPos.second);
+           ) + " to " + point_to_string(m_secondFingerPos.second);
 }
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test_core

@@ -27,7 +27,7 @@
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 
@@ -45,7 +45,7 @@
 namespace sight::module::ui::qt::image
 {
 
-namespace imHelper = data::helper::MedicalImage;
+namespace imHelper = data::helper::medical_image;
 
 static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
@@ -71,32 +71,32 @@ void slice_index_position_editor::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     auto* layout = new QVBoxLayout();
 
-    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector, m_displayStepButtons);
-    m_sliceSelectorPanel->setProperty("class", "SliceSelector");
+    m_sliceSelectorPanel = new sight::ui::qt::slice_selector(m_displayAxisSelector, m_displayStepButtons);
+    m_sliceSelectorPanel->setProperty("class", "slice_selector");
     m_sliceSelectorPanel->setEnable(false);
-    m_sliceSelectorPanel->setObjectName(serviceID);
+    m_sliceSelectorPanel->setObjectName(service_id);
 
-    sight::ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = [this](int i){sliceIndexNotification(i);};
-    m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
+    sight::ui::qt::slice_selector::ChangeIndexCallback change_index_callback;
+    change_index_callback = [this](int _i){sliceIndexNotification(_i);};
+    m_sliceSelectorPanel->setChangeIndexCallback(change_index_callback);
 
-    sight::ui::qt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = [this](int t){sliceTypeNotification(t);};
-    m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
+    sight::ui::qt::slice_selector::ChangeIndexCallback change_type_callback;
+    change_type_callback = [this](int _t){sliceTypeNotification(_t);};
+    m_sliceSelectorPanel->setChangeTypeCallback(change_type_callback);
     m_sliceSelectorPanel->setTypeSelection(m_orientation);
 
     layout->addWidget(m_sliceSelectorPanel);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->updating();
 }
@@ -150,20 +150,20 @@ void slice_index_position_editor::updating()
 {
     const auto image = m_image.const_lock();
 
-    const bool imageIsValid = imHelper::checkImageValidity(image.get_shared());
-    m_sliceSelectorPanel->setEnable(imageIsValid);
+    const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
+    m_sliceSelectorPanel->setEnable(image_is_valid);
 
     m_axialIndex = std::max(
         std::int64_t(0),
-        imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)
+        imHelper::get_slice_index(*image, imHelper::orientation_t::AXIAL).value_or(0)
     );
     m_frontalIndex = std::max(
         std::int64_t(0),
-        imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)
+        imHelper::get_slice_index(*image, imHelper::orientation_t::FRONTAL).value_or(0)
     );
     m_sagittalIndex = std::max(
         std::int64_t(0),
-        imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)
+        imHelper::get_slice_index(*image, imHelper::orientation_t::SAGITTAL).value_or(0)
     );
 
     this->updateSliceIndexFromImg(*image);
@@ -171,39 +171,39 @@ void slice_index_position_editor::updating()
 
 //-----------------------------------------------------------------------------
 
-void slice_index_position_editor::updateSliceIndex(int axial, int frontal, int sagittal)
+void slice_index_position_editor::updateSliceIndex(int _axial, int _frontal, int _sagittal)
 {
-    if(sagittal != m_sagittalIndex
-       || frontal != m_frontalIndex
-       || axial != m_axialIndex)
+    if(_sagittal != m_sagittalIndex
+       || _frontal != m_frontalIndex
+       || _axial != m_axialIndex)
     {
-        m_sagittalIndex = sagittal;
-        m_frontalIndex  = frontal;
-        m_axialIndex    = axial;
+        m_sagittalIndex = _sagittal;
+        m_frontalIndex  = _frontal;
+        m_axialIndex    = _axial;
     }
 
     const auto image = m_image.lock();
 
     namespace imHelper = imHelper;
 
-    imHelper::setSliceIndex(*image, orientation_t::AXIAL, m_axialIndex);
-    imHelper::setSliceIndex(*image, orientation_t::FRONTAL, m_frontalIndex);
-    imHelper::setSliceIndex(*image, orientation_t::SAGITTAL, m_sagittalIndex);
+    imHelper::set_slice_index(*image, orientation_t::AXIAL, m_axialIndex);
+    imHelper::set_slice_index(*image, orientation_t::FRONTAL, m_frontalIndex);
+    imHelper::set_slice_index(*image, orientation_t::SAGITTAL, m_sagittalIndex);
 
     this->updateSliceIndexFromImg(*image);
 }
 
 //-----------------------------------------------------------------------------
 
-void slice_index_position_editor::updateSliceType(int from, int to)
+void slice_index_position_editor::updateSliceType(int _from, int _to)
 {
-    if(to == static_cast<int>(m_orientation))
+    if(_to == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<orientation_t>(from);
+        m_orientation = static_cast<orientation_t>(_from);
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(_from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<orientation_t>(to);
+        m_orientation = static_cast<orientation_t>(_to);
     }
 
     this->updateSliceTypeFromImg(m_orientation);
@@ -219,11 +219,12 @@ void slice_index_position_editor::info(std::ostream& /*_sstream*/)
 
 void slice_index_position_editor::updateSliceIndexFromImg(const sight::data::image& _image)
 {
-    if(imHelper::checkImageValidity(_image))
+    if(imHelper::check_image_validity(_image))
     {
         // Default value take the middle of the size.
         const auto image_size = _image.size();
-        const auto index      = imHelper::getSliceIndex(_image, m_orientation).value_or(image_size[m_orientation] / 2);
+        const auto index      =
+            imHelper::get_slice_index(_image, m_orientation).value_or(image_size[m_orientation] / 2);
 
         // Update QSlider
         int max = 0;
@@ -239,10 +240,10 @@ void slice_index_position_editor::updateSliceIndexFromImg(const sight::data::ima
 
 //------------------------------------------------------------------------------
 
-void slice_index_position_editor::updateSliceTypeFromImg(const orientation_t& type)
+void slice_index_position_editor::updateSliceTypeFromImg(const orientation_t& _type)
 {
     // Update Type Choice
-    m_sliceSelectorPanel->setTypeSelection(static_cast<int>(type));
+    m_sliceSelectorPanel->setTypeSelection(static_cast<int>(_type));
 
     const auto image = m_image.const_lock();
     SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
@@ -252,22 +253,22 @@ void slice_index_position_editor::updateSliceTypeFromImg(const orientation_t& ty
 
 //------------------------------------------------------------------------------
 
-void slice_index_position_editor::sliceIndexNotification(int index)
+void slice_index_position_editor::sliceIndexNotification(int _index)
 {
     const auto image = m_image.lock();
 
-    imHelper::setSliceIndex(*image, m_orientation, index);
+    imHelper::set_slice_index(*image, m_orientation, _index);
 
     std::array idx {
-        static_cast<int>(imHelper::getSliceIndex(
+        static_cast<int>(imHelper::get_slice_index(
                              *image,
                              imHelper::orientation_t::SAGITTAL
         ).value_or(0)),
-        static_cast<int>(imHelper::getSliceIndex(
+        static_cast<int>(imHelper::get_slice_index(
                              *image,
                              imHelper::orientation_t::FRONTAL
         ).value_or(0)),
-        static_cast<int>(imHelper::getSliceIndex(
+        static_cast<int>(imHelper::get_slice_index(
                              *image,
                              imHelper::orientation_t::AXIAL
         ).value_or(0))
@@ -292,7 +293,7 @@ void slice_index_position_editor::sliceTypeNotification(int _type)
         || type == orientation_t::Z_AXIS
     );
 
-    const auto oldType = m_orientation;
+    const auto old_type = m_orientation;
     // Change slice type
     m_orientation = static_cast<orientation_t>(type);
 
@@ -305,7 +306,7 @@ void slice_index_position_editor::sliceTypeNotification(int _type)
         );
         {
             core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_TYPE_SLOT)));
-            sig->async_emit(oldType, _type);
+            sig->async_emit(old_type, _type);
         }
         this->updateSliceIndexFromImg(*image);
     }

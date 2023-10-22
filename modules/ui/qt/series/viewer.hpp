@@ -112,7 +112,7 @@ protected:
 
 private:
 
-    typedef std::map<std::string, std::string> ReplaceValuesMapType;
+    typedef std::map<std::string, std::string> replace_values_map_t;
 
     /// Stucture to register configuration informations.
     struct SeriesConfigInfo
@@ -121,10 +121,10 @@ private:
         std::string configId;
 
         /// Stores the parameters to pass to config.
-        ReplaceValuesMapType parameters;
+        replace_values_map_t parameters;
     };
 
-    typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
+    typedef std::map<std::string, SeriesConfigInfo> series_config_map_t;
 
     /// config manager
     app::config_manager::sptr m_configTemplateManager;
@@ -133,7 +133,7 @@ private:
     std::string m_parentView;
 
     /// Stores the association between data type and associated configuration.
-    SeriesConfigMapType m_seriesConfigs;
+    series_config_map_t m_seriesConfigs;
 
     static constexpr std::string_view s_SERIES = "series";
 

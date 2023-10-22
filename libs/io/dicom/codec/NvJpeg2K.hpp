@@ -32,7 +32,7 @@ public:
 
     ~NvJpeg2K() override = default;
 
-    bool Code(gdcm::DataElement const& in, gdcm::DataElement& out) override;
+    bool Code(gdcm::DataElement const& _in, gdcm::DataElement& _out) override;
 
     ImageCodec* Clone() const override;
 };

@@ -41,19 +41,19 @@ public:
     UI_API ~application() override = default;
 
     /// Tells the application to exit with a returncode
-    UI_API virtual void exit(int returnCode = 0, bool async = true) = 0;
+    UI_API virtual void exit(int _return_code = 0, bool _async = true) = 0;
 
     /// Sets if confirmation is required when exiting application
-    void setConfirm(bool confirm)
+    void setConfirm(bool _confirm)
     {
-        m_confirm = confirm;
+        m_confirm = _confirm;
     }
 
-    /// Application factory, returning the registered instance of Application. Manage a Singleton.
+    /// application factory, returning the registered instance of application. Manage a Singleton.
     UI_API static application::sptr get();
 
-    typedef std::string FactoryRegistryKeyType;
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    typedef std::string factory_registry_key_t;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
 protected:
 

@@ -49,8 +49,8 @@ void projection_test::tearDown()
 void projection_test::projectionTest()
 {
     {
-        const std::size_t pX    = 42;
-        const std::size_t pY    = 53;
+        const std::size_t p_x   = 42;
+        const std::size_t p_y   = 53;
         const std::size_t depth = 155;
 
         const std::size_t width  = 640;
@@ -63,17 +63,17 @@ void projection_test::projectionTest()
         double x = NAN;
         double y = NAN;
         double z = NAN;
-        filter::vision::projection::projectPixel(pX, pY, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
-        std::size_t pX2 = 0;
-        std::size_t pY2 = 0;
-        bool success    = filter::vision::projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX2, pY2);
+        filter::vision::projection::projectPixel(p_x, p_y, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
+        std::size_t p_x2 = 0;
+        std::size_t p_y2 = 0;
+        bool success     = filter::vision::projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, p_x2, p_y2);
 
         CPPUNIT_ASSERT(success);
-        CPPUNIT_ASSERT_EQUAL(pX, pX2);
-        CPPUNIT_ASSERT_EQUAL(pY, pY2);
+        CPPUNIT_ASSERT_EQUAL(p_x, p_x2);
+        CPPUNIT_ASSERT_EQUAL(p_y, p_y2);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (pX - cx) / fx, x, 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (pY - cy) / fy, y, 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (p_x - cx) / fx, x, 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (p_y - cy) / fy, y, 0.0001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(double(depth), z, 0.0001);
     }
 
@@ -89,14 +89,14 @@ void projection_test::projectionTest()
         const double fx          = 565.53;
         const double fy          = 563.25;
 
-        std::size_t pX = 0;
-        std::size_t pY = 0;
-        bool success   = filter::vision::projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX, pY);
+        std::size_t p_x = 0;
+        std::size_t p_y = 0;
+        bool success    = filter::vision::projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, p_x, p_y);
         CPPUNIT_ASSERT(success);
         double x2 = NAN;
         double y2 = NAN;
         double z2 = NAN;
-        filter::vision::projection::projectPixel(pX, pY, z, cx, cy, fx, fy, x2, y2, z2);
+        filter::vision::projection::projectPixel(p_x, p_y, z, cx, cy, fx, fy, x2, y2, z2);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(x, x2, 0.1);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(y, y2, 0.1);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(z, z2, 0.001);

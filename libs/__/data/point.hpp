@@ -38,16 +38,16 @@ class DATA_CLASS_API point final : public object
 {
 public:
 
-    typedef double PointCoordType;
-    typedef std::array<double, 3> PointCoordArrayType;
+    typedef double point_coord_t;
+    typedef std::array<double, 3> point_coord_array_t;
 
     SIGHT_DECLARE_CLASS(point, object);
 
     /// point factory
-    DATA_API point(float x, float y   = 0.F, float z = 0.F);
-    DATA_API point(double x, double y = 0., double z = 0.);
-    DATA_API point(const PointCoordArrayType& coord);
-    DATA_API point(const point::sptr& p);
+    DATA_API point(float _x, float _y   = 0.F, float _z = 0.F);
+    DATA_API point(double _x, double _y = 0., double _z = 0.);
+    DATA_API point(const point_coord_array_t& _coord);
+    DATA_API point(const point::sptr& _p);
 
     DATA_API point();
 
@@ -56,9 +56,9 @@ public:
 
     /// @brief get/set point coordinates
     /// @{
-    PointCoordArrayType& getCoord();
-    const PointCoordArrayType& getCoord() const;
-    void setCoord(const PointCoordArrayType& _vCoord);
+    point_coord_array_t& getCoord();
+    const point_coord_array_t& getCoord() const;
+    void setCoord(const point_coord_array_t& _v_coord);
     /// @}
 
     DATA_API std::string getLabel() const;
@@ -67,52 +67,52 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const point& other) const noexcept;
-    DATA_API bool operator!=(const point& other) const noexcept;
+    DATA_API bool operator==(const point& _other) const noexcept;
+    DATA_API bool operator!=(const point& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
 
     /// point coordinates
-    PointCoordArrayType m_vCoord {};
+    point_coord_array_t m_vCoord {};
 }; // end class point
 
 //-----------------------------------------------------------------------------
 
-inline point::PointCoordArrayType& point::getCoord()
+inline point::point_coord_array_t& point::getCoord()
 {
     return this->m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const point::PointCoordArrayType& point::getCoord() const
+inline const point::point_coord_array_t& point::getCoord() const
 {
     return this->m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void point::setCoord(const PointCoordArrayType& _vCoord)
+inline void point::setCoord(const point_coord_array_t& _v_coord)
 {
-    this->m_vCoord = _vCoord;
+    this->m_vCoord = _v_coord;
 }
 
-DATA_API std::ostream& operator<<(std::ostream& out, const point& p);
+DATA_API std::ostream& operator<<(std::ostream& _out, const point& _p);
 
 //-----------------------------------------------------------------------------
 

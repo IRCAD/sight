@@ -71,21 +71,21 @@ void image_series_writer::configuring()
 
 void image_series_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::dialog::location::WRITE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.setOption(ui::dialog::location::WRITE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {

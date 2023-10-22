@@ -37,21 +37,21 @@ void image::createConfig(core::tools::object::sptr _obj)
 
     if(m_cfg.count("color") != 0U)
     {
-        const auto colorStr = m_cfg.get<std::string>("color");
+        const auto color_str = m_cfg.get<std::string>("color");
 
         std::array<std::uint8_t, 4> color {};
-        data::tools::color::hexaStringToRGBA(colorStr, color);
+        data::tools::color::hexaStringToRGBA(color_str, color);
 
         // Initialize with a dummy 4x4 black image
         image->setSpacing({1, 1, 1});
         image->setOrigin({0, 0, 0});
         image->resize({4, 4, 1}, core::type::UINT8, data::image::RGBA);
 
-        const auto dumpLock = image->dump_lock();
-        auto itr            = image->begin<sight::data::iterator::rgba>();
-        const auto itrEnd   = image->end<sight::data::iterator::rgba>();
+        const auto dump_lock = image->dump_lock();
+        auto itr             = image->begin<sight::data::iterator::rgba>();
+        const auto itr_end   = image->end<sight::data::iterator::rgba>();
 
-        for( ; itr != itrEnd ; ++itr)
+        for( ; itr != itr_end ; ++itr)
         {
             itr->r = color[0];
             itr->g = color[1];
@@ -68,11 +68,11 @@ void image::createConfig(core::tools::object::sptr _obj)
         image->setOrigin({0, 0, 0});
         image->resize({4, 4, 1}, core::type::UINT8, data::image::GRAY_SCALE);
 
-        const auto dumpLock = image->dump_lock();
-        auto itr            = image->begin<std::uint8_t>();
-        const auto itrEnd   = image->end<std::uint8_t>();
+        const auto dump_lock = image->dump_lock();
+        auto itr             = image->begin<std::uint8_t>();
+        const auto itr_end   = image->end<std::uint8_t>();
 
-        for( ; itr != itrEnd ; ++itr)
+        for( ; itr != itr_end ; ++itr)
         {
             *itr = value;
         }

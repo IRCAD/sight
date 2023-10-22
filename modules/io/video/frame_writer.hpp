@@ -100,10 +100,10 @@ protected:
 private:
 
     /// SLOT: Adds the current frame in the video
-    void saveFrame(core::hires_clock::type timestamp);
+    void saveFrame(core::hires_clock::type _timestamp);
 
     /// Writes frame on the disk
-    void write(core::hires_clock::type timestamp);
+    void write(core::hires_clock::type _timestamp);
 
     /// SLOT: Starts recording
     void startRecord();
@@ -118,7 +118,7 @@ private:
     void toggleRecording();
 
     /// Slot called when a format is changed
-    void setFormatParameter(std::string val, std::string key);
+    void setFormatParameter(std::string _val, std::string _key);
 
     int m_imageType {0}; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 

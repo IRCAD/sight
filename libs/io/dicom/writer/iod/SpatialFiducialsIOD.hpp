@@ -47,18 +47,18 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducialsIOD(
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const std::filesystem::path& destinationPath,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const std::filesystem::path& _destination_path,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
     IO_DICOM_API ~SpatialFiducialsIOD() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& series) override;
+    IO_DICOM_API void write(const data::series::csptr& _series) override;
 };
 
 } // namespace sight::io::dicom::writer::iod

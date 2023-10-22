@@ -42,9 +42,9 @@ struct apply
 {
     //------------------------------------------------------------------------------
 
-    void operator()(E e)
+    void operator()(E _e)
     {
-        e->apply();
+        _e->apply();
     }
 };
 
@@ -64,12 +64,12 @@ profile::~profile()
 
 //------------------------------------------------------------------------------
 
-void profile::set_params(int argc, char** argv)
+void profile::set_params(int _argc, char** _argv)
 {
     params_container params;
-    for(int i = 0 ; i < argc ; ++i)
+    for(int i = 0 ; i < _argc ; ++i)
     {
-        params.emplace_back(argv[i]);
+        params.emplace_back(_argv[i]);
     }
 
     this->set_params(params);
@@ -77,9 +77,9 @@ void profile::set_params(int argc, char** argv)
 
 //------------------------------------------------------------------------------
 
-void profile::set_params(const profile::params_container& params)
+void profile::set_params(const profile::params_container& _params)
 {
-    m_params = params;
+    m_params = _params;
 
     delete[] m_argv;
 

@@ -37,7 +37,7 @@
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/progress.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <filesystem>
 
@@ -66,12 +66,12 @@ void series_puller::configuring()
     //Parse server port and hostname
     if(config.count("server") != 0U)
     {
-        const std::string serverInfo               = config.get("server", "");
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string server_info               = config.get("server", "");
+        const std::string::size_type split_position = server_info.find(':');
+        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = serverInfo.substr(0, splitPosition);
-        m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+        m_serverHostnameKey = server_info.substr(0, split_position);
+        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -97,7 +97,7 @@ void series_puller::starting()
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
-        const auto readerConfig = service::extension::config::getDefault()->get_service_config(
+        const auto reader_config = service::extension::config::getDefault()->get_service_config(
             m_dicomReaderSrvConfig,
             "sight::io::service::reader"
         );
@@ -106,10 +106,10 @@ void series_puller::starting()
             "Sorry, there is no service configuration "
             << m_dicomReaderSrvConfig
             << " for sight::io::service::reader",
-            !readerConfig.empty()
+            !reader_config.empty()
         );
 
-        m_dicomReader->set_config(readerConfig);
+        m_dicomReader->set_config(reader_config);
     }
 
     m_dicomReader->configure();
@@ -131,7 +131,7 @@ void series_puller::updating()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -143,28 +143,28 @@ void series_puller::updating()
     if(m_isPulling)
     {
         // Display a message to inform the user that the service is already pulling data.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Pulling Series");
-        messageBox.setMessage(
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Pulling Series");
+        message_box.setMessage(
             "The service is already pulling data. Please wait until the pulling is done "
             "before sending a new pull request."
         );
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.show();
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.show();
     }
     else
     {
-        const auto selectedSeries = m_selectedSeries.lock();
-        if(selectedSeries->empty())
+        const auto selected_series = m_selectedSeries.lock();
+        if(selected_series->empty())
         {
             // Display a message to inform the user that there is no series selected.
-            sight::ui::dialog::message messageBox;
-            messageBox.setTitle("Pulling Series");
-            messageBox.setMessage("Unable to pull series, there is no series selected. ");
-            messageBox.setIcon(ui::dialog::message::INFO);
-            messageBox.addButton(ui::dialog::message::OK);
-            messageBox.show();
+            sight::ui::dialog::message message_box;
+            message_box.setTitle("Pulling Series");
+            message_box.setMessage("Unable to pull series, there is no series selected. ");
+            message_box.setIcon(ui::dialog::message::INFO);
+            message_box.addButton(ui::dialog::message::OK);
+            message_box.show();
         }
         else
         {
@@ -190,14 +190,14 @@ void series_puller::pullSeries()
         m_seriesIndex   = 0;
         m_instanceCount = 0;
 
-        const auto selectedSeries = m_selectedSeries.lock();
+        const auto selected_series = m_selectedSeries.lock();
 
         // Find which selected series must be pulled
-        DicomSeriesContainerType pullSeriesVector;
-        DicomSeriesContainerType selectedSeriesVector;
+        dicom_series_container_t pull_series_vector;
+        dicom_series_container_t selected_series_vector;
 
-        auto it = selectedSeries->cbegin();
-        for( ; it != selectedSeries->cend() ; ++it)
+        auto it = selected_series->cbegin();
+        for( ; it != selected_series->cend() ; ++it)
         {
             data::dicom_series::sptr series = std::dynamic_pointer_cast<data::dicom_series>(*it);
 
@@ -212,24 +212,24 @@ void series_puller::pullSeries()
                 // Add series in the pulling series map
                 m_pullingDicomSeriesMap[series->getSeriesInstanceUID()] = series;
 
-                pullSeriesVector.push_back(series);
+                pull_series_vector.push_back(series);
                 m_instanceCount += series->numInstances();
             }
 
-            selectedSeriesVector.push_back(series);
+            selected_series_vector.push_back(series);
         }
 
         // Pull series
-        if(!pullSeriesVector.empty())
+        if(!pull_series_vector.empty())
         {
             /// GET
-            const InstanceUIDContainerType& seriesInstancesUIDs =
-                sight::io::http::helper::Series::toSeriesInstanceUIDContainer(pullSeriesVector);
-            for(const std::string& seriesInstancesUID : seriesInstancesUIDs)
+            const InstanceUIDContainerType& series_instances_ui_ds =
+                sight::io::http::helper::Series::toSeriesInstanceUIDContainer(pull_series_vector);
+            for(const std::string& series_instances_uid : series_instances_ui_ds)
             {
                 // Find Series according to SeriesInstanceUID
                 QJsonObject query;
-                query.insert("SeriesInstanceUID", seriesInstancesUID.c_str());
+                query.insert("SeriesInstanceUID", series_instances_uid.c_str());
 
                 QJsonObject body;
                 body.insert("Level", "Series");
@@ -237,16 +237,16 @@ void series_puller::pullSeries()
                 body.insert("Limit", 0);
 
                 /// Url PACS
-                const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+                const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
                 sight::io::http::Request::sptr request = sight::io::http::Request::New(
-                    pacsServer + "/tools/find"
+                    pacs_server + "/tools/find"
                 );
-                QByteArray seriesAnswer;
+                QByteArray series_answer;
                 try
                 {
-                    seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+                    series_answer = m_clientQt.post(request, QJsonDocument(body).toJson());
                 }
                 catch(sight::io::http::exceptions::HostNotFound& exception)
                 {
@@ -260,33 +260,33 @@ void series_puller::pullSeries()
                     SIGHT_WARN(exception.what());
                 }
 
-                QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
-                const QJsonArray& seriesArray = jsonResponse.array();
+                QJsonDocument json_response    = QJsonDocument::fromJson(series_answer);
+                const QJsonArray& series_array = json_response.array();
 
-                const int seriesArraySize = seriesArray.count();
-                for(int i = 0 ; i < seriesArraySize ; ++i)
+                const int series_array_size = series_array.count();
+                for(int i = 0 ; i < series_array_size ; ++i)
                 {
-                    const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
+                    const std::string& series_uid = series_array.at(i).toString().toStdString();
 
                     /// GET all Instances by Series.
-                    const std::string& instancesUrl(std::string(pacsServer) + "/series/" + seriesUID);
-                    const QByteArray& instancesAnswer =
-                        m_clientQt.get(sight::io::http::Request::New(instancesUrl));
-                    jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-                    const QJsonObject& jsonObj       = jsonResponse.object();
-                    const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
+                    const std::string& instances_url(std::string(pacs_server) + "/series/" + series_uid);
+                    const QByteArray& instances_answer =
+                        m_clientQt.get(sight::io::http::Request::New(instances_url));
+                    json_response = QJsonDocument::fromJson(instances_answer);
+                    const QJsonObject& json_obj       = json_response.object();
+                    const QJsonArray& instances_array = json_obj["Instances"].toArray();
 
-                    const int instancesArraySize = instancesArray.count();
-                    for(int j = 0 ; j < instancesArraySize ; ++j)
+                    const int instances_array_size = instances_array.count();
+                    for(int j = 0 ; j < instances_array_size ; ++j)
                     {
-                        const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
+                        const std::string& instance_uid = instances_array.at(j).toString().toStdString();
 
                         /// GET DICOM Instance file.
-                        const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
+                        const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/file");
 
                         try
                         {
-                            m_path = m_clientQt.get_file(sight::io::http::Request::New(instanceUrl));
+                            m_path = m_clientQt.get_file(sight::io::http::Request::New(instance_url));
                         }
                         catch(sight::io::http::exceptions::ContentNotFound& exception)
                         {
@@ -299,12 +299,12 @@ void series_puller::pullSeries()
                         }
 
                         // Create dicom folder
-                        std::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
-                        QDir().mkpath(instancePath.string().c_str());
+                        std::filesystem::path instance_path = m_path.parent_path() / series_instances_uid;
+                        QDir().mkpath(instance_path.string().c_str());
                         // Move dicom file to the created dicom folder
-                        instancePath /= m_path.filename();
-                        QFile::rename(m_path.string().c_str(), instancePath.string().c_str());
-                        m_path = m_path.parent_path() / seriesInstancesUID;
+                        instance_path /= m_path.filename();
+                        QFile::rename(m_path.string().c_str(), instance_path.string().c_str());
+                        m_path = m_path.parent_path() / series_instances_uid;
                     }
                 }
             }
@@ -313,7 +313,7 @@ void series_puller::pullSeries()
         // Read series if there is no error
         if(m_isPulling)
         {
-            this->readLocalSeries(selectedSeriesVector);
+            this->readLocalSeries(selected_series_vector);
         }
 
         // Set pulling boolean to false
@@ -331,32 +331,32 @@ void series_puller::pullSeries()
 
 //------------------------------------------------------------------------------
 
-void series_puller::readLocalSeries(DicomSeriesContainerType selectedSeries)
+void series_puller::readLocalSeries(dicom_series_container_t _selected_series)
 {
     const auto dest_series_set = m_series_set.lock();
 
     const auto scoped_emitter = dest_series_set->scoped_emit();
 
     // Read only series that are not in the series_set
-    const InstanceUIDContainerType& alreadyLoadedSeries =
+    const InstanceUIDContainerType& already_loaded_series =
         sight::io::http::helper::Series::toSeriesInstanceUIDContainer(dest_series_set->get_content());
 
-    for(const auto& series : selectedSeries)
+    for(const auto& series : _selected_series)
     {
-        const std::string& selectedSeriesUID = series->getSeriesInstanceUID();
+        const std::string& selected_series_uid = series->getSeriesInstanceUID();
 
         // Add the series to the local series vector
-        if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+        if(std::find(m_localSeries.begin(), m_localSeries.end(), selected_series_uid) == m_localSeries.end())
         {
-            m_localSeries.push_back(selectedSeriesUID);
+            m_localSeries.push_back(selected_series_uid);
         }
 
         // Check if the series is loaded
         if(std::find(
-               alreadyLoadedSeries.cbegin(),
-               alreadyLoadedSeries.cend(),
-               selectedSeriesUID
-           ) == alreadyLoadedSeries.cend())
+               already_loaded_series.cbegin(),
+               already_loaded_series.cend(),
+               selected_series_uid
+           ) == already_loaded_series.cend())
         {
             // Clear temporary series
             m_tmp_series_set->clear();
@@ -372,15 +372,15 @@ void series_puller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void series_puller::displayErrorMessage(const std::string& message)
+void series_puller::displayErrorMessage(const std::string& _message)
 {
-    SIGHT_WARN("Error: " + message);
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle("Error");
-    messageBox.setMessage(message);
-    messageBox.setIcon(ui::dialog::message::CRITICAL);
-    messageBox.addButton(ui::dialog::message::OK);
-    messageBox.show();
+    SIGHT_WARN("Error: " + _message);
+    sight::ui::dialog::message message_box;
+    message_box.setTitle("Error");
+    message_box.setMessage(_message);
+    message_box.setIcon(ui::dialog::message::CRITICAL);
+    message_box.addButton(ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

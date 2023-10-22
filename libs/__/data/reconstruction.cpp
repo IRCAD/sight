@@ -48,8 +48,8 @@ reconstruction::reconstruction() :
 
     m_material(data::factory::make<data::material>()),
     m_computedMaskVolume(reconstruction::s_NO_COMPUTED_MASK_VOLUME),
-    m_sigMeshChanged(std::make_shared<MeshChangedSignalType>()),
-    m_sigVisibilityModified(std::make_shared<VisibilityModifiedSignalType>())
+    m_sigMeshChanged(std::make_shared<mesh_changed_signal_t>()),
+    m_sigVisibilityModified(std::make_shared<visibility_modified_signal_t>())
 {
     m_signals(MESH_CHANGED_SIG, m_sigMeshChanged)
         (VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
@@ -57,13 +57,13 @@ reconstruction::reconstruction() :
 
 //------------------------------------------------------------------------------
 
-void reconstruction::shallow_copy(const object::csptr& source)
+void reconstruction::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const reconstruction>(source);
+    const auto& other = std::dynamic_pointer_cast<const reconstruction>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -84,13 +84,13 @@ void reconstruction::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void reconstruction::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void reconstruction::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const reconstruction>(source);
+    const auto& other = std::dynamic_pointer_cast<const reconstruction>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -100,39 +100,39 @@ void reconstruction::deep_copy(const object::csptr& source, const std::unique_pt
     m_sOrganName     = other->m_sOrganName;
     m_sStructureType = other->m_sStructureType;
 
-    m_material = data::object::copy(other->m_material, cache);
-    m_image    = data::object::copy(other->m_image, cache);
-    m_mesh     = data::object::copy(other->m_mesh, cache);
+    m_material = data::object::copy(other->m_material, _cache);
+    m_image    = data::object::copy(other->m_image, _cache);
+    m_mesh     = data::object::copy(other->m_mesh, _cache);
 
     m_computedMaskVolume = other->m_computedMaskVolume;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool reconstruction::operator==(const reconstruction& other) const noexcept
+bool reconstruction::operator==(const reconstruction& _other) const noexcept
 {
-    if(m_bIsVisible != other.m_bIsVisible
-       || m_sOrganName != other.m_sOrganName
-       || m_sStructureType != other.m_sStructureType
-       || m_computedMaskVolume != other.m_computedMaskVolume
-       || !core::tools::is_equal(m_material, other.m_material)
-       || !core::tools::is_equal(m_image, other.m_image)
-       || !core::tools::is_equal(m_mesh, other.m_mesh))
+    if(m_bIsVisible != _other.m_bIsVisible
+       || m_sOrganName != _other.m_sOrganName
+       || m_sStructureType != _other.m_sStructureType
+       || m_computedMaskVolume != _other.m_computedMaskVolume
+       || !core::tools::is_equal(m_material, _other.m_material)
+       || !core::tools::is_equal(m_image, _other.m_image)
+       || !core::tools::is_equal(m_mesh, _other.m_mesh))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool reconstruction::operator!=(const reconstruction& other) const noexcept
+bool reconstruction::operator!=(const reconstruction& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // end namespace sight::data

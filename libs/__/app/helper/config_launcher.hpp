@@ -60,7 +60,7 @@ public:
      */
     APP_API void startConfig(
         service::base::sptr _srv,
-        const field_adaptor_t& _optReplaceMap = field_adaptor_t()
+        const field_adaptor_t& _opt_replace_map = field_adaptor_t()
     );
 
     /// Stops/destroys config and disconnect connection with config root object.
@@ -75,7 +75,7 @@ public:
         return m_configIsRunning;
     }
 
-    APP_API void setConfig(const std::string& key);
+    APP_API void setConfig(const std::string& _key);
 
 private:
 
@@ -85,7 +85,7 @@ private:
     public:
 
         Parameters() = default;
-        Parameters(const service::config_t& config);
+        Parameters(const service::config_t& _config);
         std::string m_id;
         std::vector<std::pair<std::string, std::string> > m_parameters;
     };
@@ -99,8 +99,8 @@ private:
      * @return the initialised config
      */
     service::config_t initConfig(
-        const std::string& appCfgId,
-        const service::config_t& oldConfig,
+        const std::string& _app_cfg_id,
+        const service::config_t& _old_config,
         service::base::sptr _service
     );
 

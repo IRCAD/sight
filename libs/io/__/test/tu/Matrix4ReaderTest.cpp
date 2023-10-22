@@ -36,28 +36,28 @@ namespace sight::io::ut
 
 void Matrix4ReaderTest::basicTest()
 {
-    constexpr std::string_view fileContent = R"(
+    constexpr std::string_view file_content = R"(
 0 1 2 3
 10 11 12 13
 20 21 22 23
 30 31 32 33
 )";
-    auto matrixReader                      = std::make_shared<reader::matrix4_reader>();
-    std::filesystem::path filepath         = std::filesystem::temp_directory_path()
-                                             / ("test" + matrixReader->extension());
+    auto matrix_reader                      = std::make_shared<reader::matrix4_reader>();
+    std::filesystem::path filepath          = std::filesystem::temp_directory_path()
+                                              / ("test" + matrix_reader->extension());
     {
         std::ofstream out(filepath);
-        out << fileContent;
+        out << file_content;
     }
-    auto matrixOut = std::make_shared<data::matrix4>();
-    matrixReader->set_object(matrixOut);
-    matrixReader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(matrixReader->read());
+    auto matrix_out = std::make_shared<data::matrix4>();
+    matrix_reader->set_object(matrix_out);
+    matrix_reader->set_file(filepath);
+    CPPUNIT_ASSERT_NO_THROW(matrix_reader->read());
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            CPPUNIT_ASSERT_EQUAL(j + 10. * i, (*matrixOut)(i, j));
+            CPPUNIT_ASSERT_EQUAL(j + 10. * i, (*matrix_out)(i, j));
         }
     }
 }

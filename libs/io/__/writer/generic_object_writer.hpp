@@ -32,8 +32,8 @@ namespace sight::io::writer
  * @brief   generic class for all object writers.
  *
  * This class adds 2 methods to the API of object_writer.
- * 'set_object' Replaces m_object with the argument casted into DataType.
- * 'getConcretObject' Returns m_object casted into DataType.
+ * 'set_object' Replaces m_object with the argument casted into data_t.
+ * 'getConcretObject' Returns m_object casted into data_t.
  */
 template<class DATATYPE>
 class generic_object_writer : public io::writer::object_writer
@@ -41,7 +41,7 @@ class generic_object_writer : public io::writer::object_writer
 public:
 
     /// the object type related
-    typedef DATATYPE DataType;
+    typedef DATATYPE data_t;
 
     SIGHT_DECLARE_CLASS(generic_object_writer<DATATYPE>, io::writer::object_writer);
 
@@ -59,25 +59,25 @@ public:
      *
      * This method overloads set_object to ensure that given object corresponds to DATATYPE
      */
-    void set_object(core::tools::object::csptr obj) override
+    void set_object(core::tools::object::csptr _obj) override
     {
         SIGHT_ASSERT(
-            "Object type: '" << std::string(typeid(obj).name())
-            << "' is not a '" << typeid(DataType()).name() << "'",
-            std::dynamic_pointer_cast<const DataType>(obj)
+            "Object type: '" << std::string(typeid(_obj).name())
+            << "' is not a '" << typeid(data_t()).name() << "'",
+            std::dynamic_pointer_cast<const data_t>(_obj)
         );
-        object_writer::set_object(obj);
+        object_writer::set_object(_obj);
     }
 
     /**
      * @brief m_object getter.
      * @return m_object
      *
-     * This method automatically casts object in correct DataType.
+     * This method automatically casts object in correct data_t.
      */
-    virtual std::shared_ptr<const DataType> getConcreteObject() const
+    virtual std::shared_ptr<const data_t> getConcreteObject() const
     {
-        return std::dynamic_pointer_cast<const DataType>(getObject());
+        return std::dynamic_pointer_cast<const data_t>(getObject());
     }
 };
 

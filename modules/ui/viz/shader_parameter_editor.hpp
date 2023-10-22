@@ -58,10 +58,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(shader_parameter_editor, sight::ui::editor);
 
-    typedef std::string EditorImplementationType;
-    typedef std::string ObjectClassnameType;
+    typedef std::string editor_implementation_t;
+    typedef std::string object_classname_t;
     typedef std::string ObjectId;
-    typedef std::map<ObjectClassnameType, EditorImplementationType> EditorMapType;
+    typedef std::map<object_classname_t, editor_implementation_t> editor_map_t;
 
     /// Constructor.
     MODULE_UI_VIZ_API shader_parameter_editor() noexcept;

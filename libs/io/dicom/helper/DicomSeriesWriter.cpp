@@ -47,17 +47,17 @@ DicomSeriesWriter::DicomSeriesWriter() :
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriter::setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer)
+void DicomSeriesWriter::setAnonymizer(const SPTR(helper::DicomAnonymizer)& _anonymizer)
 {
-    m_anonymizer = anonymizer;
+    m_anonymizer = _anonymizer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriter::setOutputArchive(const io::zip::write_archive::sptr& archive, const std::string& subPath)
+void DicomSeriesWriter::setOutputArchive(const io::zip::write_archive::sptr& _archive, const std::string& _sub_path)
 {
-    m_archive = archive;
-    m_subPath = subPath;
+    m_archive = _archive;
+    m_subPath = _sub_path;
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void DicomSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::getFilename(const std::size_t& instanceIndex)
+std::string DicomSeriesWriter::getFilename(const std::size_t& _instance_index)
 {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(7);
@@ -86,7 +86,7 @@ std::string DicomSeriesWriter::getFilename(const std::size_t& instanceIndex)
     }
     else
     {
-        ss << instanceIndex;
+        ss << _instance_index;
     }
 
     return ss.str();
@@ -94,15 +94,15 @@ std::string DicomSeriesWriter::getFilename(const std::size_t& instanceIndex)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriter::processStream(std::istream& inputStream, std::ostream& outputStream)
+void DicomSeriesWriter::processStream(std::istream& _input_stream, std::ostream& _output_stream)
 {
     if(m_anonymizer)
     {
-        m_anonymizer->anonymize(inputStream, outputStream);
+        m_anonymizer->anonymize(_input_stream, _output_stream);
     }
     else
     {
-        outputStream << inputStream.rdbuf();
+        _output_stream << _input_stream.rdbuf();
     }
 }
 
@@ -110,7 +110,7 @@ void DicomSeriesWriter::processStream(std::istream& inputStream, std::ostream& o
 
 void DicomSeriesWriter::processWrite()
 {
-    data::dicom_series::csptr dicomSeries = this->getConcreteObject();
+    data::dicom_series::csptr dicom_series = this->getConcreteObject();
 
     // Create folder
     std::filesystem::path folder = this->get_folder();
@@ -127,13 +127,13 @@ void DicomSeriesWriter::processWrite()
         std::filesystem::create_directories(folder);
     }
 
-    std::size_t nb_instances = dicomSeries->numInstances();
+    std::size_t nb_instances = dicom_series->numInstances();
 
     m_job->set_total_work_units(nb_instances);
     unsigned int count = 0;
 
     // Write binary files
-    for(const auto& value : dicomSeries->getDicomContainer())
+    for(const auto& value : dicom_series->getDicomContainer())
     {
         if(m_job->cancel_requested())
         {
@@ -142,10 +142,10 @@ void DicomSeriesWriter::processWrite()
 
         const std::string filename = this->getFilename(value.first);
 
-        const core::memory::buffer_object::sptr sourceBuffer = value.second;
-        core::memory::buffer_object::lock_t sourceLocker(sourceBuffer);
-        const core::memory::buffer_manager::stream_info& streamInfo = sourceBuffer->get_stream_info();
-        SPTR(std::istream) stream = streamInfo.stream;
+        const core::memory::buffer_object::sptr source_buffer = value.second;
+        core::memory::buffer_object::lock_t source_locker(source_buffer);
+        const core::memory::buffer_manager::stream_info& stream_info = source_buffer->get_stream_info();
+        SPTR(std::istream) stream = stream_info.stream;
 
         const std::filesystem::path& dest_dir = m_anonymizer ? folder / m_subPath : folder;
 
@@ -174,14 +174,14 @@ void DicomSeriesWriter::processWriteArchive()
 {
     SIGHT_ASSERT("Output archive shall be set", m_archive);
 
-    data::dicom_series::csptr dicomSeries = this->getConcreteObject();
+    data::dicom_series::csptr dicom_series = this->getConcreteObject();
 
-    const std::size_t nb_instances = dicomSeries->numInstances();
+    const std::size_t nb_instances = dicom_series->numInstances();
     unsigned int count             = 0;
 
     m_job->set_total_work_units(nb_instances);
 
-    for(const auto& value : dicomSeries->getDicomContainer())
+    for(const auto& value : dicom_series->getDicomContainer())
     {
         if(m_job->cancel_requested())
         {
@@ -190,10 +190,10 @@ void DicomSeriesWriter::processWriteArchive()
 
         const std::string filename = this->getFilename(value.first);
 
-        const core::memory::buffer_object::sptr sourceBuffer = value.second;
-        core::memory::buffer_object::lock_t sourceLocker(sourceBuffer);
-        const core::memory::buffer_manager::stream_info& streamInfo = sourceBuffer->get_stream_info();
-        SPTR(std::istream) stream = streamInfo.stream;
+        const core::memory::buffer_object::sptr source_buffer = value.second;
+        core::memory::buffer_object::lock_t source_locker(source_buffer);
+        const core::memory::buffer_manager::stream_info& stream_info = source_buffer->get_stream_info();
+        SPTR(std::istream) stream = stream_info.stream;
 
         const std::filesystem::path& dest_dir =
             m_anonymizer ? m_subPath : "";

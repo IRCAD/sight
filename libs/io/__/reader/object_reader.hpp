@@ -85,7 +85,7 @@ public:
      * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method getObject()
      */
-    IO_API virtual void set_object(core::tools::object::sptr _pObject);
+    IO_API virtual void set_object(core::tools::object::sptr _p_object);
 
     /**
      * @brief m_object getter.

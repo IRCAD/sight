@@ -30,28 +30,28 @@ namespace sight::ui::dialog
 //-----------------------------------------------------------------------------
 
 pulse_progress::pulse_progress(
-    const std::string& title,
-    ui::dialog::pulse_progress_base::Stuff stuff,
-    const std::string& msg,
-    ui::dialog::pulse_progress_base::MilliSecond frequenceRefresh
+    const std::string& _title,
+    ui::dialog::pulse_progress_base::Stuff _stuff,
+    const std::string& _msg,
+    ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh
 )
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(pulse_progress_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::pulse_progress_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(pulse_progress_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::pulse_progress_base>(gui_obj);
             if(m_implementation)
             {
-                m_implementation->setStuff(stuff);
-                m_implementation->setTitle(title);
-                m_implementation->setMessage(msg);
-                m_implementation->setFrequence(frequenceRefresh);
+                m_implementation->setStuff(_stuff);
+                m_implementation->setTitle(_title);
+                m_implementation->setMessage(_msg);
+                m_implementation->setFrequence(_frequence_refresh);
             }
             else
             {
-                this->setStuff(stuff);
+                this->setStuff(_stuff);
             }
         })
     ).wait();
@@ -59,21 +59,21 @@ pulse_progress::pulse_progress(
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& title)
+void pulse_progress::setTitle(const std::string& _title)
 {
     if(m_implementation)
     {
-        m_implementation->setTitle(title);
+        m_implementation->setTitle(_title);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& msg)
+void pulse_progress::setMessage(const std::string& _msg)
 {
     if(m_implementation)
     {
-        m_implementation->setMessage(msg);
+        m_implementation->setMessage(_msg);
     }
 }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="extension" type="ExtensionType" />
+    <xs:element name="extension" type="extension_t" />
 
-    <xs:complexType name="ExtensionType">
+    <xs:complexType name="extension_t">
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
-            <xs:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="parameters" type="parameters_t" minOccurs="0" maxOccurs="1"/>
             <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="config" type="config_t" />
@@ -14,38 +14,38 @@
         <xs:anyAttribute processContents="skip" />
     </xs:complexType>
 
-    <xs:complexType name="ParametersType">
+    <xs:complexType name="parameters_t">
         <xs:sequence>
-            <xs:element name="param" type="ParamType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="ParamType">
+    <xs:complexType name="param_t">
         <xs:attribute name='name' type='xs:string' use="required" />
         <xs:attribute name='default' type='xs:string' />
     </xs:complexType>
 
     <xs:complexType name="config_t">
         <xs:sequence>
-            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="connect"  type="connection_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
     <!-- Object Type -->
-    <xs:complexType name="ObjectType">
+    <xs:complexType name="object_t">
         <xs:sequence>
             <xs:element name="name"  type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
-            <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="item"  type="item_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="node"  type="node_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="edge"  type="edge_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="colors"  type="color_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="gray"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
@@ -57,27 +57,27 @@
     </xs:complexType>
 
     <!-- Item Type -->
-    <xs:complexType name="ItemType">
+    <xs:complexType name="item_t">
         <xs:sequence>
-             <xs:element name="object" type="ObjectType" minOccurs="1" maxOccurs="1" />
+             <xs:element name="object" type="object_t" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name='key' type='xs:string' />
     </xs:complexType>
 
     <!-- Service Type -->
-    <xs:complexType name="ServiceType">
+    <xs:complexType name="service_t">
         <xs:sequence>
             <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' use="required"/>
         <xs:attribute name='type' type='xs:string' use="required" />
-        <xs:attribute name='auto_connect' type='AutoConnectType' />
+        <xs:attribute name='auto_connect' type='auto_connect_t' />
         <xs:attribute name='worker' type='xs:string' />
         <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
 
     <!-- Connection Type -->
-    <xs:complexType name="ConnectionType">
+    <xs:complexType name="connection_t">
         <xs:sequence>
             <xs:element name="signal"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="slot"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
@@ -86,15 +86,15 @@
     </xs:complexType>
 
     <!-- Start/Update/stop Type -->
-    <xs:complexType name="StartType">
+    <xs:complexType name="start_t">
         <xs:attribute name='uid' type='xs:string' />
     </xs:complexType>
 
-    <xs:complexType name="UpdateType">
+    <xs:complexType name="update_t">
         <xs:attribute name='uid' type='xs:string' />
     </xs:complexType>
 
-    <xs:simpleType name="AutoConnectType">
+    <xs:simpleType name="auto_connect_t">
         <xs:restriction base="xs:string">
             <xs:enumeration value="true" />
             <xs:enumeration value="false" />
@@ -102,33 +102,33 @@
     </xs:simpleType>
 
     <!-- ServiceList Type -->
-    <xs:complexType name="ServiceListType">
+    <xs:complexType name="service_list_t">
         <xs:sequence>
-            <xs:element name="service" type="ServiceType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="service" type="service_t" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <!-- NodeType Type -->
-    <xs:complexType name="NodeType"> <!-- Almost the same as ObjectType -->
+    <!-- node_t Type -->
+    <xs:complexType name="node_t"> <!-- Almost the same as object_t -->
         <xs:sequence>
-            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
+            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="uid" type="xs:string" use="required" />
         <xs:attribute name="src" type="xs:string" />
     </xs:complexType>
 
-    <!-- EdgeType Type -->
-    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optional "weight" attribute -->
+    <!-- edge_t Type -->
+    <xs:complexType name="edge_t"> <!-- Same as node_t, but with optional "weight" attribute -->
         <xs:sequence>
-            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
+            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="origin" type="xs:string" use="required" />
         <xs:attribute name="target" type="xs:string" use="required" />
@@ -137,15 +137,15 @@
         <xs:attribute name="src" type="xs:string" />
     </xs:complexType>
 
-    <xs:complexType name="ColorType">
+    <xs:complexType name="color_t">
         <xs:sequence>
-            <xs:element name="step" type="StepType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="step" type="step_t" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="isClamped" type="xs:string" />
         <xs:attribute name="default" type="xs:string" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="StepType">
+    <xs:complexType name="step_t">
         <xs:attribute name="color" type="xs:string" use="required" />
         <xs:attribute name="value" type="xs:string" use="required" />
     </xs:complexType>

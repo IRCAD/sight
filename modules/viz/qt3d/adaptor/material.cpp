@@ -56,8 +56,8 @@ material::~material() noexcept =
 
 void material::configuring()
 {
-    const auto configTree = this->get_config();
-    const auto config     = configTree.get_child_optional("config.<xmlattr>");
+    const auto config_tree = this->get_config();
+    const auto config      = config_tree.get_child_optional("config.<xmlattr>");
 
     if(config)
     {

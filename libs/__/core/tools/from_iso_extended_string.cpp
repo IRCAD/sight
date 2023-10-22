@@ -29,17 +29,17 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-std::string get_date_in_xsd_format(const boost::posix_time::ptime& date_and_time)
+std::string get_date_in_xsd_format(const boost::posix_time::ptime& _date_and_time)
 {
-    std::string date_and_time_str = boost::posix_time::to_iso_extended_string(date_and_time);
+    std::string date_and_time_str = boost::posix_time::to_iso_extended_string(_date_and_time);
     return date_and_time_str.substr(0, 10);
 }
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::ptime from_iso_extended_string(const std::string& time_string)
+boost::posix_time::ptime from_iso_extended_string(const std::string& _time_string)
 {
-    std::string tmp(time_string);
+    std::string tmp(_time_string);
     const auto i = tmp.find('T');
     tmp[i] = ' ';
     boost::posix_time::ptime t = boost::posix_time::time_from_string(tmp);
@@ -48,10 +48,10 @@ boost::posix_time::ptime from_iso_extended_string(const std::string& time_string
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::ptime from_date_in_xsd_format(const std::string& date_string)
+boost::posix_time::ptime from_date_in_xsd_format(const std::string& _date_string)
 {
     std::stringstream ss;
-    ss << date_string << " 00:00:00";
+    ss << _date_string << " 00:00:00";
 
     boost::posix_time::ptime t = boost::posix_time::time_from_string(ss.str());
     return t;
@@ -59,9 +59,9 @@ boost::posix_time::ptime from_date_in_xsd_format(const std::string& date_string)
 
 //------------------------------------------------------------------------------
 
-std::string to_iso_extended_string(boost::posix_time::ptime ptime)
+std::string to_iso_extended_string(boost::posix_time::ptime _ptime)
 {
-    return boost::posix_time::to_iso_extended_string(ptime);
+    return boost::posix_time::to_iso_extended_string(_ptime);
 }
 
 } // namespace sight::core::tools

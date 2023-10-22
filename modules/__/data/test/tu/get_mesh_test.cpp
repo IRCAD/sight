@@ -60,8 +60,8 @@ void get_mesh_test::extractsMeshByIndex()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -82,7 +82,7 @@ void get_mesh_test::extractsMeshByIndex()
     rec1->setMesh(mesh1);
     rec2->setMesh(mesh2);
     rec3->setMesh(mesh3);
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
     recs.push_back(rec3);
@@ -103,18 +103,18 @@ void get_mesh_test::extractsMeshByIndex()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    getMeshServ->update().wait();
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    get_mesh_serv->update().wait();
 
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 0).lock()->get_id(), mesh3->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 1).lock()->get_id(), mesh1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 2).lock()->get_id(), mesh3->get_id());
-    getMeshServ->stop().wait();
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh3->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh3->get_id());
+    get_mesh_serv->stop().wait();
 
-    sight::service::remove(getMeshServ);
+    sight::service::remove(get_mesh_serv);
 }
 
 //------------------------------------------------------------------------------
@@ -125,8 +125,8 @@ void get_mesh_test::extractsMeshWithIndexOutOfBound()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -147,7 +147,7 @@ void get_mesh_test::extractsMeshWithIndexOutOfBound()
     rec1->setMesh(mesh1);
     rec2->setMesh(mesh2);
     rec3->setMesh(mesh3);
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
     recs.push_back(rec3);
@@ -168,13 +168,13 @@ void get_mesh_test::extractsMeshWithIndexOutOfBound()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    CPPUNIT_ASSERT_THROW(getMeshServ->update().get(), core::exception);
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    CPPUNIT_ASSERT_THROW(get_mesh_serv->update().get(), core::exception);
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 //------------------------------------------------------------------------------
@@ -185,8 +185,8 @@ void get_mesh_test::extractsMeshByType()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -217,17 +217,17 @@ void get_mesh_test::extractsMeshByType()
     rec3->setMesh(mesh3);
     rec4->setMesh(mesh4);
     rec5->setMesh(mesh5);
-    rec1->setStructureType("skin");
-    rec2->setStructureType("liver");
-    rec3->setStructureType("kidney");
-    rec4->setStructureType("kidney");
-    rec5->setStructureType("kidney");
+    rec1->set_structure_type("skin");
+    rec2->set_structure_type("liver");
+    rec3->set_structure_type("kidney");
+    rec4->set_structure_type("kidney");
+    rec5->set_structure_type("kidney");
     rec1->setOrganName("skin-surface");
     rec2->setOrganName("liver-surface");
     rec3->setOrganName("kidney-volume-left");
     rec4->setOrganName("kidney-volume-right");
     rec5->setOrganName("kidney-surface");
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
     recs.push_back(rec3); // ( kidney , kidney-volume-left )
@@ -253,19 +253,19 @@ void get_mesh_test::extractsMeshByType()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    getMeshServ->update().wait();
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 0).lock()->get_id(), mesh2->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 1).lock()->get_id(), mesh1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 2).lock()->get_id(), mesh3->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 3).lock()->get_id(), mesh4->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 4).lock()->get_id(), mesh3->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 5).lock()->get_id(), mesh5->get_id());
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    get_mesh_serv->update().wait();
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh2->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh3->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 3).lock()->get_id(), mesh4->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 4).lock()->get_id(), mesh3->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 5).lock()->get_id(), mesh5->get_id());
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 //------------------------------------------------------------------------------
@@ -276,8 +276,8 @@ void get_mesh_test::extractsMeshByTypeNotFound()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -308,17 +308,17 @@ void get_mesh_test::extractsMeshByTypeNotFound()
     rec3->setMesh(mesh3);
     rec4->setMesh(mesh4);
     rec5->setMesh(mesh5);
-    rec1->setStructureType("skin");
-    rec2->setStructureType("liver");
-    rec3->setStructureType("kidney");
-    rec4->setStructureType("kidney");
-    rec5->setStructureType("kidney");
+    rec1->set_structure_type("skin");
+    rec2->set_structure_type("liver");
+    rec3->set_structure_type("kidney");
+    rec4->set_structure_type("kidney");
+    rec5->set_structure_type("kidney");
     rec1->setOrganName("skin-surface");
     rec2->setOrganName("liver-surface");
     rec3->setOrganName("kidney-volume-left");
     rec4->setOrganName("kidney-volume-right");
     rec5->setOrganName("kidney-surface");
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
     recs.push_back(rec3); // ( kidney , kidney-volume-left )
@@ -341,13 +341,13 @@ void get_mesh_test::extractsMeshByTypeNotFound()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    CPPUNIT_ASSERT_THROW(getMeshServ->update().get(), sight::data::exception);
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    CPPUNIT_ASSERT_THROW(get_mesh_serv->update().get(), sight::data::exception);
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 //------------------------------------------------------------------------------
@@ -358,8 +358,8 @@ void get_mesh_test::extractsMeshByNameNotFound()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -390,17 +390,17 @@ void get_mesh_test::extractsMeshByNameNotFound()
     rec3->setMesh(mesh3);
     rec4->setMesh(mesh4);
     rec5->setMesh(mesh5);
-    rec1->setStructureType("skin");
-    rec2->setStructureType("liver");
-    rec3->setStructureType("kidney");
-    rec4->setStructureType("kidney");
-    rec5->setStructureType("kidney");
+    rec1->set_structure_type("skin");
+    rec2->set_structure_type("liver");
+    rec3->set_structure_type("kidney");
+    rec4->set_structure_type("kidney");
+    rec5->set_structure_type("kidney");
     rec1->setOrganName("skin-surface");
     rec2->setOrganName("liver-surface");
     rec3->setOrganName("kidney-volume-left");
     rec4->setOrganName("kidney-volume-right");
     rec5->setOrganName("kidney-surface");
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
     recs.push_back(rec3); // ( kidney , kidney-volume-left )
@@ -422,13 +422,13 @@ void get_mesh_test::extractsMeshByNameNotFound()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    CPPUNIT_ASSERT_THROW(getMeshServ->update().get(), sight::data::exception);
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    CPPUNIT_ASSERT_THROW(get_mesh_serv->update().get(), sight::data::exception);
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 //------------------------------------------------------------------------------
@@ -439,8 +439,8 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
     auto m_series = std::make_shared<sight::data::model_series>();
     CPPUNIT_ASSERT(m_series);
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -471,17 +471,17 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
     rec3->setMesh(mesh3);
     rec4->setMesh(mesh4);
     rec5->setMesh(mesh5);
-    rec1->setStructureType("skin");
-    rec2->setStructureType("liver");
-    rec3->setStructureType("kidney");
-    rec4->setStructureType("kidney");
-    rec5->setStructureType("kidney");
+    rec1->set_structure_type("skin");
+    rec2->set_structure_type("liver");
+    rec3->set_structure_type("kidney");
+    rec4->set_structure_type("kidney");
+    rec5->set_structure_type("kidney");
     rec1->setOrganName("skin-surface");
     rec2->setOrganName("liver-surface");
     rec3->setOrganName("kidney-volume-left");
     rec4->setOrganName("kidney-volume-right");
     rec5->setOrganName("kidney-surface");
-    sight::data::model_series::ReconstructionVectorType recs;
+    sight::data::model_series::reconstruction_vector_t recs;
     recs.push_back(rec1); // ( skin , skin-surface )
     recs.push_back(rec2); // ( liver , liver-surface )
     recs.push_back(rec3); // ( kidney , kidney-volume-left )
@@ -505,17 +505,17 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(m_series, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    getMeshServ->update().wait();
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 0).lock()->get_id(), mesh5->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 1).lock()->get_id(), mesh2->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 2).lock()->get_id(), mesh1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->output("mesh", 3).lock()->get_id(), mesh3->get_id());
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(m_series, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    get_mesh_serv->update().wait();
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh5->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh2->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_mesh_serv->output("mesh", 3).lock()->get_id(), mesh3->get_id());
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 // //------------------------------------------------------------------------------
@@ -523,8 +523,8 @@ void get_mesh_test::extractsWithMeshTypeAndIndex()
 void get_mesh_test::extractsWithInvalidModelsSeries()
 {
     // Create service
-    sight::service::base::sptr getMeshServ = sight::service::add("sight::module::data::get_mesh");
-    CPPUNIT_ASSERT(getMeshServ);
+    sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
+    CPPUNIT_ASSERT(get_mesh_serv);
     service::config_t config;
     std::stringstream config_string;
     config_string
@@ -534,13 +534,13 @@ void get_mesh_test::extractsWithInvalidModelsSeries()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getMeshServ->set_config(config);
-    getMeshServ->set_input(nullptr, "modelSeries");
-    getMeshServ->configure();
-    getMeshServ->start().wait();
-    CPPUNIT_ASSERT_THROW(getMeshServ->update().get(), sight::data::exception);
-    getMeshServ->stop().wait();
-    sight::service::remove(getMeshServ);
+    get_mesh_serv->set_config(config);
+    get_mesh_serv->set_input(nullptr, "modelSeries");
+    get_mesh_serv->configure();
+    get_mesh_serv->start().wait();
+    CPPUNIT_ASSERT_THROW(get_mesh_serv->update().get(), sight::data::exception);
+    get_mesh_serv->stop().wait();
+    sight::service::remove(get_mesh_serv);
 }
 
 //-----------------------------------------------------------------------------

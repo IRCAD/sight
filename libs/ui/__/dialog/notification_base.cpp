@@ -27,7 +27,7 @@ namespace sight::ui::dialog
 
 static const std::string s_defaultMessage = "Empty message";
 
-const notification_base::FactoryRegistryKeyType notification_base::REGISTRY_KEY =
+const notification_base::factory_registry_key_t notification_base::REGISTRY_KEY =
     "::ui::dialog::notification";
 
 //-----------------------------------------------------------------------------
@@ -89,9 +89,9 @@ void notification_base::setIndex(unsigned int _index)
 
 //-----------------------------------------------------------------------------
 
-void notification_base::setDuration(std::optional<std::chrono::milliseconds> _durationInMs)
+void notification_base::setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms)
 {
-    m_notification.duration = _durationInMs;
+    m_notification.duration = _duration_in_ms;
 }
 
 //------------------------------------------------------------------------------

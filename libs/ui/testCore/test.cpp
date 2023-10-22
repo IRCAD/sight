@@ -26,7 +26,7 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 //------------------------------------------------------------------------------
@@ -35,30 +35,30 @@ void test::setUp()
 {
     sight::core::runtime::init();
 
-    const auto profileFilePath = getProfilePath();
+    const auto profile_file_path = getProfilePath();
 
     //load the profiles' project modules
-    const auto profileModulePath = profileFilePath.parent_path().parent_path();
-    if(std::filesystem::exists(profileModulePath) && std::filesystem::is_directory(profileModulePath))
+    const auto profile_module_path = profile_file_path.parent_path().parent_path();
+    if(std::filesystem::exists(profile_module_path) && std::filesystem::is_directory(profile_module_path))
     {
-        sight::core::runtime::add_modules(profileModulePath);
+        sight::core::runtime::add_modules(profile_module_path);
     }
     else
     {
-        SIGHT_ERROR("Module path " << profileModulePath << " does not exists or is not a directory.");
+        SIGHT_ERROR("Module path " << profile_module_path << " does not exists or is not a directory.");
     }
 
-    m_profile = sight::core::runtime::io::profile_reader::create_profile(profileFilePath);
+    m_profile = sight::core::runtime::io::profile_reader::create_profile(profile_file_path);
     m_profile->start();
-    sight::ui::testCore::Tester::init();
+    sight::ui::test_core::Tester::init();
 }
 
 //------------------------------------------------------------------------------
 
-void test::start(const std::string& testName, std::function<void(Tester&)> test, bool verboseMode)
+void test::start(const std::string& _test_name, std::function<void(Tester&)> _test, bool _verbose_mode)
 {
-    Tester tester(testName, verboseMode);
-    tester.start([&tester, test]{test(tester);});
+    Tester tester(_test_name, _verbose_mode);
+    tester.start([&tester, _test]{_test(tester);});
     m_profile->run();
     m_profile->stop();
     CPPUNIT_ASSERT_MESSAGE(tester.getFailureMessage(), !tester.failed());
@@ -66,10 +66,10 @@ void test::start(const std::string& testName, std::function<void(Tester&)> test,
 
 //------------------------------------------------------------------------------
 
-void test::compareImages(const std::filesystem::path& a, const std::filesystem::path& b)
+void test::compareImages(const std::filesystem::path& _a, const std::filesystem::path& _b)
 {
-    const QImage ia(QString::fromStdString(a.string()));
-    const QImage ib(QString::fromStdString(b.string()));
+    const QImage ia(QString::fromStdString(_a.string()));
+    const QImage ib(QString::fromStdString(_b.string()));
     const double mse          = Tester::compareImagesMSE(ia, ib);
     const double histogram    = Tester::compareImagesHistogram(ia, ib);
     const double correlation  = Tester::compareImagesCorrelation(ia, ib);
@@ -80,9 +80,9 @@ void test::compareImages(const std::filesystem::path& a, const std::filesystem::
                                 + std::to_string(voodoo)
                                 + '\n';
     CPPUNIT_ASSERT_MESSAGE(message + " (MSE)\n" + score, mse > 0.96);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Histogram)\n" + score, histogram > 0.98);
+    CPPUNIT_ASSERT_MESSAGE(message + " (histogram)\n" + score, histogram > 0.98);
     CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.69);
     CPPUNIT_ASSERT_MESSAGE(message + " (Voodoo)\n" + score, voodoo > 0.96);
 }
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test_core

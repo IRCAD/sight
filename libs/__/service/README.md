@@ -79,7 +79,7 @@ Deprecated, please use `sight::core::thread` instead.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> service)
+target_link_libraries( my_target <PUBLIC|PRIVATE> service)
 ```
 
 ### XML

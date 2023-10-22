@@ -59,12 +59,12 @@ void starter::stopping()
 {
     std::vector<service::base::shared_future_t> futures;
 
-    for(const VectPairIDActionType::value_type& serviceUid : boost::adaptors::reverse(m_uuidServices))
+    for(const VectPairIDActionType::value_type& service_uid : boost::adaptors::reverse(m_uuidServices))
     {
-        bool srv_exists = core::tools::id::exist(serviceUid.first);
-        if(srv_exists && (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()))
+        bool srv_exists = core::tools::id::exist(service_uid.first);
+        if(srv_exists && (m_idStartedSrvSet.find(service_uid.first) != m_idStartedSrvSet.end()))
         {
-            service::base::sptr service = service::get(serviceUid.first);
+            service::base::sptr service = service::get(service_uid.first);
             if(service->started())
             {
                 futures.push_back(service->stop());
@@ -81,18 +81,18 @@ void starter::stopping()
 
 void starter::info(std::ostream& _sstream)
 {
-    _sstream << "Starter Action" << std::endl;
+    _sstream << "Starter action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void starter::updating()
 {
-    for(auto& m_uuidService : m_uuidServices)
+    for(auto& m_uuid_service : m_uuidServices)
     {
-        ActionType action = m_uuidService.second;
-        IDSrvType uid     = m_uuidService.first;
-        bool srv_exists   = core::tools::id::exist(uid);
+        action_t action = m_uuid_service.second;
+        IDSrvType uid   = m_uuid_service.first;
+        bool srv_exists = core::tools::id::exist(uid);
 
         // Manage special action
         if(action == START_IF_EXISTS)
@@ -211,7 +211,7 @@ void starter::updating()
                 sight::ui::dialog::message::WARNING
             );
 
-            SIGHT_INFO("Do nothing for Service " << m_uuidService.first);
+            SIGHT_INFO("Do nothing for Service " << m_uuid_service.first);
         }
     }
 }
@@ -222,51 +222,51 @@ void starter::configuring()
 {
     this->initialize();
 
-    for(const auto& actionCfg : this->get_config())
+    for(const auto& action_cfg : this->get_config())
     {
-        std::string actionType = actionCfg.first;
-        ActionType action {ActionType::DO_NOTHING};
-        if(actionType == "start")
+        std::string action_type = action_cfg.first;
+        action_t action {action_t::DO_NOTHING};
+        if(action_type == "start")
         {
             action = START;
         }
-        else if(actionType == "stop")
+        else if(action_type == "stop")
         {
             action = STOP;
         }
-        else if(actionType == "start_or_stop")
+        else if(action_type == "start_or_stop")
         {
             action = START_OR_STOP;
         }
-        else if(actionType == "start_only_or_stop")
+        else if(action_type == "start_only_or_stop")
         {
             action = START_ONLY_OR_STOP;
         }
-        else if(actionType == "start_if_exists")
+        else if(action_type == "start_if_exists")
         {
             action = START_IF_EXISTS;
         }
-        else if(actionType == "stop_if_exists")
+        else if(action_type == "stop_if_exists")
         {
             action = STOP_IF_EXISTS;
         }
-        else if(actionType == "start_only")
+        else if(action_type == "start_only")
         {
             action = START_ONLY;
         }
-        else if(actionType == "state" || actionType == "<xmlattr>")
+        else if(action_type == "state" || action_type == "<xmlattr>")
         {
             // Ignore
             continue;
         }
         else
         {
-            SIGHT_WARN("The \"actionType\":" << actionType << " is not managed by starter");
+            SIGHT_WARN("The \"actionType\":" << action_type << " is not managed by starter");
             continue;
         }
 
-        SIGHT_INFO("starter " << actionCfg.first);
-        const auto uuid = actionCfg.second.get<std::string>("<xmlattr>.uid");
+        SIGHT_INFO("starter " << action_cfg.first);
+        const auto uuid = action_cfg.second.get<std::string>("<xmlattr>.uid");
 
         m_uuidServices.emplace_back(uuid, action);
     }

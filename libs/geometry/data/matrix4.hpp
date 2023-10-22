@@ -49,8 +49,8 @@ GEOMETRY_DATA_API bool invert(
  * @param[out] _output Output matrix.
  */
 GEOMETRY_DATA_API void multiply(
-    const sight::data::matrix4& _trfA,
-    const sight::data::matrix4& _trfB,
+    const sight::data::matrix4& _trf_a,
+    const sight::data::matrix4& _trf_b,
     sight::data::matrix4& _output
 );
 
@@ -78,7 +78,7 @@ GEOMETRY_DATA_API void multiply(
  * @param[in] _epsilon Precision of the test (default 1e-12)
  * @return boolean value: true if the matrix is identity, false otherwise.
  */
-GEOMETRY_DATA_API bool isIdentity(
+GEOMETRY_DATA_API bool is_identity(
     const sight::data::matrix4& _trf,
     double _epsilon = 1e-12
 );
@@ -88,7 +88,7 @@ GEOMETRY_DATA_API bool isIdentity(
  * @param[in] _trf Input data::matrix4.
  * @return GLM matrix.
  */
-inline glm::dmat4x4 getMatrixFromTF3D(const sight::data::matrix4& _trf)
+inline glm::dmat4x4 to_glm_mat(const sight::data::matrix4& _trf)
 {
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
@@ -105,18 +105,18 @@ inline glm::dmat4x4 getMatrixFromTF3D(const sight::data::matrix4& _trf)
  * @param[out] _trf Output data::matrix4.
  * @param[in] _input Input GLM matrix.
  */
-inline void setTF3DFromMatrix(sight::data::matrix4& _trf, const glm::dmat4x4& _input)
+inline void from_glm_mat(sight::data::matrix4& _trf, const glm::dmat4x4& _input)
 {
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const std::size_t rowDst = i * 4;
-        const auto rowSrc        = static_cast<glm::length_t>(i);
+        const std::size_t row_dst = i * 4;
+        const auto row_src        = static_cast<glm::length_t>(i);
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const auto colSrc = static_cast<glm::length_t>(j);
-            _trf[rowDst + j] = _input[colSrc][rowSrc];
+            const auto col_src = static_cast<glm::length_t>(j);
+            _trf[row_dst + j] = _input[col_src][row_src];
         }
     }
 }

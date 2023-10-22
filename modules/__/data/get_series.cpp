@@ -28,13 +28,13 @@ namespace sight::module::data
 
 void get_series::configuring()
 {
-    service::config_t config = this->get_config();
-    const config_t configOut = config.get_child("out");
+    service::config_t config  = this->get_config();
+    const config_t config_out = config.get_child("out");
 
-    const auto keyCfg = configOut.equal_range("key");
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
+    const auto key_cfg = config_out.equal_range("key");
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg)
     {
-        const service::config_t& attr = itCfg->second.get_child("<xmlattr>.index");
+        const service::config_t& attr = it_cfg->second.get_child("<xmlattr>.index");
         const auto index              = attr.get_value<size_t>();
         m_indexNumbers.push_back(index);
     }

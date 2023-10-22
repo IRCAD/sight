@@ -58,7 +58,7 @@
 /*
  * @brief Define several typdefs for classes (sptr, wptr, ...)
  */
-#define __FWCORE_CLASS_TYPEDEFS_1(_class) \
+#define FWCORE_CLASS_TYPEDEFS_1(_class) \
     /** Self type  */ \
     typedef _class self_type; \
     /** Type of base class  */ \
@@ -83,7 +83,7 @@
  *
  * base_class is a typedef to the superclass
  */
-#define __FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
+#define FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
     /** Self type  */ \
     typedef _class self_type; \
     /** Type of base class  */ \
@@ -103,7 +103,7 @@
     /** Const unique pointer type  */ \
     typedef CUPTR(self_type) cuptr;
 
-#define __FWCORE_STATIC_CACHE(value) \
+#define FWCORE_STATIC_CACHE(value) \
     static const std::string __cache__(value); \
     return __cache__;
 
@@ -114,26 +114,26 @@
  * - Classname is data::object
  * - LeafClassname is Object
  */
-#define __FWCORE_INTERFACE_MACRO() \
+#define FWCORE_INTERFACE_MACRO() \
     /** @name Demangling methods */ \
     /** @{ */ \
     /** @brief return object's classname without its namespace, i.e. base_object */ \
     virtual const std::string& get_leaf_classname() const \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
+        FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
     } \
     static const std::string& leaf_classname() \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
     } \
     /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
     virtual const std::string& get_classname() const \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
     } \
     static const std::string& classname() \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
     } \
     /** @} */
 
@@ -144,26 +144,26 @@
  * - Classname is data::object
  * - LeafClassname is Object
  */
-#define __FWCORE_CLASSNAME_MACRO() \
+#define FWCORE_CLASSNAME_MACRO() \
     /** @name Demangling methods */ \
     /** @{ */ \
     /** @brief return object's classname without its namespace, i.e. base_object */ \
     const std::string& get_leaf_classname() const override \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
+        FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
     } \
     static const std::string& leaf_classname() \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_type>()); \
     } \
     /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
     const std::string& get_classname() const override \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
     } \
     static const std::string& classname() \
     { \
-        __FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
+        FWCORE_STATIC_CACHE(sight::core::get_classname<self_type>()); \
     } \
     /** @} */
 
@@ -176,7 +176,7 @@
  * image->is_a("data::object") is true
  *
  */
-#define __FWCORE_TYPE_1(_class) \
+#define FWCORE_TYPE_1(_class) \
     static bool is_type_of(const std::string& type) \
     { \
         return self_type::classname() == type; \
@@ -186,7 +186,7 @@
         return self_type::is_type_of(type); \
     }
 
-#define __FWCORE_TYPE_2(_class, _parent_class) \
+#define FWCORE_TYPE_2(_class, _parent_class) \
     static bool is_type_of(const std::string& type) \
     { \
         if(self_type::classname() == type) \
@@ -219,24 +219,24 @@
 
 #if !BOOST_PP_VARIADICS_MSVC
     #define SIGHT_DECLARE_CLASS(...) \
-    BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
+    BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 #else
     #define SIGHT_DECLARE_CLASS(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
-#define __FWCORE_CLASS_MACRO_1(_class) \
-    __FWCORE_CLASS_TYPEDEFS_1(_class) \
-    __FWCORE_INTERFACE_MACRO() \
-    __FWCORE_TYPE_1(_class)
+#define FWCORE_CLASS_MACRO_1(_class) \
+    FWCORE_CLASS_TYPEDEFS_1(_class) \
+    FWCORE_INTERFACE_MACRO() \
+    FWCORE_TYPE_1(_class)
 
-#define __FWCORE_CLASS_MACRO_2(_class, _parent_class) \
-    __FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
-    __FWCORE_CLASSNAME_MACRO() \
-    __FWCORE_TYPE_2(_class, _parent_class)
+#define FWCORE_CLASS_MACRO_2(_class, _parent_class) \
+    FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
+    FWCORE_CLASSNAME_MACRO() \
+    FWCORE_TYPE_2(_class, _parent_class)
 
-#define __FWCORE_CLASS_MACRO_3(_class, _parentClass, _factory) \
-    __FWCORE_CLASS_MACRO_2(_class, _parentClass) \
+#define FWCORE_CLASS_MACRO_3(_class, _parentClass, _factory) \
+    FWCORE_CLASS_MACRO_2(_class, _parentClass) \
     static sptr make() \
     { \
         return _factory(); \
@@ -246,7 +246,7 @@
  * @brief Generate common code for services classes
  */
 #define SIGHT_DECLARE_SERVICE(_class, _parent_class) \
-    __FWCORE_CLASS_MACRO_2(_class, _parent_class)
+    FWCORE_CLASS_MACRO_2(_class, _parent_class)
 
 /// Force inline
 #ifdef _MSC_VER

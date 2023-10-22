@@ -21,73 +21,73 @@
 
 #pragma once
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 //------------------------------------------------------------------------------
 
 template<typename T>
 void Tester::take(
-    const std::string& componentDescription,
-    std::function<T()> graphicComponent,
-    std::function<bool(T)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<T()> _graphic_component,
+    std::function<bool(T)> _condition,
+    int _timeout
 )
 {
     if(m_verboseMode)
     {
-        qDebug() << "Waiting up to" << timeout << "ms for" << QString::fromStdString(componentDescription)
+        qDebug() << "Waiting up to" << _timeout << "ms for" << QString::fromStdString(_component_description)
         << "to appear";
     }
 
     T component;
     const bool ok = waitForAsynchronously(
-        [&graphicComponent, &condition, &component]() -> bool
+        [&_graphic_component, &_condition, &component]() -> bool
         {
-            component = graphicComponent();
-            return component != nullptr && condition(component);
+            component = _graphic_component();
+            return component != nullptr && _condition(component);
         },
-        timeout
+        _timeout
     );
     if(!ok)
     {
-        fail("\"" + componentDescription + "\" has never showed up");
+        fail("\"" + _component_description + "\" has never showed up");
     }
 
     m_graphicComponent     = component;
-    m_componentDescription = componentDescription;
+    m_componentDescription = _component_description;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Tester::doubt(const std::string& resultDescription, std::function<bool(T)> result, int timeout)
+void Tester::doubt(const std::string& _result_description, std::function<bool(T)> _result, int _timeout)
 {
     if(m_graphicComponent == nullptr)
     {
         return;
     }
 
-    m_resultDescription = resultDescription;
+    m_resultDescription = _result_description;
     T component = get<T>();
 
     if(m_verboseMode)
     {
-        qDebug() << "Waiting up to" << timeout << "ms for" << QString::fromStdString(resultDescription)
+        qDebug() << "Waiting up to" << _timeout << "ms for" << QString::fromStdString(_result_description)
         << "to become true";
     }
 
     const bool ok = waitForAsynchronously(
-        [&result, component]() -> bool
+        [&_result, component]() -> bool
         {
-            return result(component);
+            return _result(component);
         },
-        timeout
+        _timeout
     );
     if(!ok)
     {
         fail(
-            "The interaction on the component \"" + m_componentDescription + "\" didn't yield the result \"" + resultDescription
+            "The interaction on the component \"" + m_componentDescription + "\" didn't yield the result \"" + _result_description
             + '"'
         );
     }
@@ -100,10 +100,10 @@ void Tester::doubt(const std::string& resultDescription, std::function<bool(T)> 
 
 template<typename T>
 void Tester::yields(
-    const std::string& componentDescription,
-    std::function<T(QObject*)> graphicComponent,
-    std::function<bool(T)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<T(QObject*)> _graphic_component,
+    std::function<bool(T)> _condition,
+    int _timeout
 )
 {
     if(m_graphicComponent == nullptr)
@@ -111,30 +111,30 @@ void Tester::yields(
         return;
     }
 
-    m_resultDescription = componentDescription + " appears";
+    m_resultDescription = _component_description + " appears";
 
     if(m_verboseMode)
     {
-        qDebug() << "Waiting up to" << timeout << "ms for" << QString::fromStdString(componentDescription)
+        qDebug() << "Waiting up to" << _timeout << "ms for" << QString::fromStdString(_component_description)
         << "to appear";
     }
 
-    T newGraphicComponent = nullptr;
-    const bool ok         = waitForAsynchronously(
-        [this, &graphicComponent, &condition, &newGraphicComponent]() -> bool
+    T new_graphic_component = nullptr;
+    const bool ok           = waitForAsynchronously(
+        [this, &_graphic_component, &_condition, &new_graphic_component]() -> bool
         {
-            newGraphicComponent = graphicComponent(m_graphicComponent);
-            return newGraphicComponent != nullptr && condition(newGraphicComponent);
+            new_graphic_component = _graphic_component(m_graphicComponent);
+            return new_graphic_component != nullptr && _condition(new_graphic_component);
         },
-        timeout
+        _timeout
     );
     if(!ok)
     {
-        fail("\"" + m_componentDescription + " didn't yield the component \"" + componentDescription + '"');
+        fail("\"" + m_componentDescription + " didn't yield the component \"" + _component_description + '"');
     }
 
-    m_graphicComponent     = newGraphicComponent;
-    m_componentDescription = componentDescription;
+    m_graphicComponent     = new_graphic_component;
+    m_componentDescription = _component_description;
     m_resultDescription    = "";
 }
 
@@ -142,20 +142,20 @@ void Tester::yields(
 
 template<typename T>
 void Tester::yields(
-    const std::string& componentDescription,
-    const std::string& objectName,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    const std::string& _object_name,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
     yields(
-        componentDescription,
-        [&objectName](QObject* old)
+        _component_description,
+        [&_object_name](QObject* _old)
         {
-            return old->findChild<T>(objectName == "" ? QString() : QString::fromStdString(objectName));
+            return _old->findChild<T>(_object_name == "" ? QString() : QString::fromStdString(_object_name));
         },
-        condition,
-        timeout
+        _condition,
+        _timeout
     );
 }
 
@@ -163,26 +163,26 @@ void Tester::yields(
 
 template<typename T>
 void Tester::maybeTake(
-    const std::string& componentDescription,
-    std::function<T()> graphicComponent,
-    std::function<bool(T)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<T()> _graphic_component,
+    std::function<bool(T)> _condition,
+    int _timeout
 )
 {
     if(m_verboseMode)
     {
-        qDebug() << "Waiting up to" << timeout << "ms for" << QString::fromStdString(componentDescription)
+        qDebug() << "Waiting up to" << _timeout << "ms for" << QString::fromStdString(_component_description)
         << "to appear";
     }
 
     T component;
     const bool ok = waitForAsynchronously(
-        [&graphicComponent, &condition, &component]() -> bool
+        [&_graphic_component, &_condition, &component]() -> bool
         {
-            component = graphicComponent();
-            return component != nullptr && condition(component);
+            component = _graphic_component();
+            return component != nullptr && _condition(component);
         },
-        timeout
+        _timeout
     );
     if(!ok)
     {
@@ -190,24 +190,24 @@ void Tester::maybeTake(
     }
 
     m_graphicComponent     = component;
-    m_componentDescription = componentDescription;
+    m_componentDescription = _component_description;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Tester::doSomething(std::function<void(T)> f)
+void Tester::doSomething(std::function<void(T)> _f)
 {
-    f(get<T>());
+    _f(get<T>());
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Tester::doSomethingAsynchronously(std::function<void(T)> f)
+void Tester::doSomethingAsynchronously(std::function<void(T)> _f)
 {
     T component = get<T>();
-    qApp->postEvent(qApp, new TestEvent([component, f]{f(component);}));
+    qApp->postEvent(qApp, new TestEvent([component, _f]{_f(component);}));
 }
 
 //------------------------------------------------------------------------------

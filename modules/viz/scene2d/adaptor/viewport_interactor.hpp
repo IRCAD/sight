@@ -62,7 +62,7 @@ protected:
 
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API void zoom(bool zoomIn);
+    MODULE_VIZ_SCENE2D_API void zoom(bool _zoom_in);
 
 private:
 

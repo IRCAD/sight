@@ -54,18 +54,18 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationObjectDefinition(
-        SPTR(io::dicom::container::DicomInstance)instance,
-        std::filesystem::path destinationPath,
-        core::log::logger::sptr logger = nullptr,
-        ProgressCallback progress      = nullptr,
-        CancelRequestedCallback cancel = nullptr
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        std::filesystem::path _destination_path,
+        core::log::logger::sptr _logger = nullptr,
+        ProgressCallback _progress      = nullptr,
+        CancelRequestedCallback _cancel = nullptr
     );
 
     /// Destructor
     IO_DICOM_API virtual ~InformationObjectDefinition();
 
     /// Write DICOM file
-    IO_DICOM_API virtual void write(const data::series::csptr& series) = 0;
+    IO_DICOM_API virtual void write(const data::series::csptr& _series) = 0;
 
 protected:
 

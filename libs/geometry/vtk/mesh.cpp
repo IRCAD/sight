@@ -33,21 +33,21 @@ namespace sight::geometry::vtk
 
 //------------------------------------------------------------------------------
 
-data::point::sptr computeCenterOfMass(const data::mesh::csptr mesh, const bool useScalarAsWeights)
+data::point::sptr compute_center_of_mass(const data::mesh::csptr _mesh, const bool _use_scalar_as_weights)
 {
-    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    sight::io::vtk::helper::mesh::toVTKMesh(mesh, polyData);
+    vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
+    sight::io::vtk::helper::mesh::toVTKMesh(_mesh, poly_data);
 
     // Compute the center of mass
-    vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
+    vtkSmartPointer<vtkCenterOfMass> center_of_mass_filter =
         vtkSmartPointer<vtkCenterOfMass>::New();
-    centerOfMassFilter->SetInputData(polyData);
-    centerOfMassFilter->SetUseScalarsAsWeights(useScalarAsWeights);
-    centerOfMassFilter->Update();
+    center_of_mass_filter->SetInputData(poly_data);
+    center_of_mass_filter->SetUseScalarsAsWeights(_use_scalar_as_weights);
+    center_of_mass_filter->Update();
 
-    std::array<double, 3> centerOfMass {};
-    centerOfMassFilter->GetCenter(centerOfMass.data());
-    data::point::sptr center = std::make_shared<data::point>(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
+    std::array<double, 3> center_of_mass {};
+    center_of_mass_filter->GetCenter(center_of_mass.data());
+    data::point::sptr center = std::make_shared<data::point>(center_of_mass[0], center_of_mass[1], center_of_mass[2]);
     return center;
 }
 

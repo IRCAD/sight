@@ -119,7 +119,7 @@ private:
     connections_t auto_connections() const final;
 
     void updateTransform();
-    void setParameter(ui::parameter_t value, std::string key);
+    void setParameter(ui::parameter_t _value, std::string _key);
 
     using predefined_position_t =
         sight::viz::scene3d::interactor::predefined_position_interactor::predefined_position_t;

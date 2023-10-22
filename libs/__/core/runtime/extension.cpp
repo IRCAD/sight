@@ -31,13 +31,13 @@ namespace sight::core::runtime
 //------------------------------------------------------------------------------
 
 extension::extension(
-    std::shared_ptr<module> module,
-    const std::string& id,
-    const std::string& point
+    std::shared_ptr<module> _module,
+    const std::string& _id,
+    const std::string& _point
 ) :
-    module_element(module),
-    m_id(filter_id(id)),
-    m_point(filter_id(point))
+    module_element(_module),
+    M_ID(filter_id(_id)),
+    M_POINT(filter_id(_point))
 {
 }
 
@@ -45,14 +45,14 @@ extension::extension(
 
 const std::string& extension::identifier() const
 {
-    return m_id;
+    return M_ID;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& extension::point() const
 {
-    return m_point;
+    return M_POINT;
 }
 
 //------------------------------------------------------------------------------

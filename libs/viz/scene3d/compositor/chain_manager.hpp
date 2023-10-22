@@ -41,7 +41,7 @@ class Viewport;
 namespace sight::viz::scene3d
 {
 
-class Layer;
+class layer;
 
 namespace compositor
 {
@@ -56,43 +56,43 @@ public:
 
     typedef std::unique_ptr<chain_manager> uptr;
 
-    typedef std::string CompositorIdType;
-    typedef std::pair<CompositorIdType, bool> CompositorType;
-    typedef std::vector<CompositorType> CompositorChainType;
+    typedef std::string compositor_id_t;
+    typedef std::pair<compositor_id_t, bool> compositor_t;
+    typedef std::vector<compositor_t> compositor_chain_t;
 
-    VIZ_SCENE3D_API chain_manager(const SPTR(viz::scene3d::Layer)& _layer);
+    VIZ_SCENE3D_API chain_manager(const SPTR(viz::scene3d::layer)& _layer);
     VIZ_SCENE3D_API ~chain_manager() override;
 
     /// Inserts the new compositor in the compositor chain vector
-    VIZ_SCENE3D_API void addAvailableCompositor(CompositorIdType _compositorName);
+    VIZ_SCENE3D_API void addAvailableCompositor(compositor_id_t _compositor_name);
     /// Clears the compositor chain
     VIZ_SCENE3D_API void clearCompositorChain();
     /// Enables or disables the target compositor
-    VIZ_SCENE3D_API void updateCompositorState(CompositorIdType _compositorName, bool _isEnabled);
+    VIZ_SCENE3D_API void updateCompositorState(compositor_id_t _compositor_name, bool _is_enabled);
 
-    VIZ_SCENE3D_API void setCompositorChain(const std::vector<CompositorIdType>& _compositors);
+    VIZ_SCENE3D_API void setCompositorChain(const std::vector<compositor_id_t>& _compositors);
 
-    VIZ_SCENE3D_API CompositorChainType getCompositorChain();
+    VIZ_SCENE3D_API compositor_chain_t getCompositorChain();
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
-    VIZ_SCENE3D_API static const CompositorIdType FINAL_CHAIN_COMPOSITOR;
+    VIZ_SCENE3D_API static const compositor_id_t FINAL_CHAIN_COMPOSITOR;
 
 private:
 
     /// Adds the final compositor to the compositor chain
     void addFinalCompositor();
 
-    void updateCompositorAdaptors(CompositorIdType _compositorName, bool _isEnabled);
+    void updateCompositorAdaptors(compositor_id_t _compositor_name, bool _is_enabled);
 
     /// List of available compositors, the names are associated to a boolean value which indicates whether
     /// the compositor is enabled or not
     /// WARNING: It may not match the real list of compositors in the Ogre manager, as other classes may add
     /// compositors as well. So this list is only there to know which compositors are handled by this class.
-    CompositorChainType m_compositorChain;
+    compositor_chain_t m_compositorChain;
 
     /// The parent layer's.
-    WPTR(viz::scene3d::Layer) m_layer;
+    WPTR(viz::scene3d::layer) m_layer;
 
     /// Map allowing to keep the objects of the created adaptors alive
     std::map<std::string, data::object::sptr> m_adaptorsObjectsOwner;
@@ -101,7 +101,7 @@ private:
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline chain_manager::CompositorChainType chain_manager::getCompositorChain()
+inline chain_manager::compositor_chain_t chain_manager::getCompositorChain()
 {
     return m_compositorChain;
 }

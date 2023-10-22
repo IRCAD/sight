@@ -48,8 +48,8 @@ using Lock = std::conditional_t<std::is_const_v<DATATYPE>, core::mt::read_lock, 
 public:
 
     /// Constructor
-    explicit constexpr locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
-        m_data(data)
+    explicit constexpr locked_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
+        m_data(_data)
     {
         if(m_data)
         {
@@ -72,29 +72,29 @@ public:
     }
 
     /// Constructor
-    explicit constexpr locked_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
-        locked_ptr(data.lock())
+    explicit constexpr locked_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
+        locked_ptr(_data.lock())
     {
     }
 
     /// Constructor
-    explicit constexpr locked_ptr(const weak_ptr<DATATYPE>& data) noexcept :
-        locked_ptr(data.lock())
+    explicit constexpr locked_ptr(const weak_ptr<DATATYPE>& _data) noexcept :
+        locked_ptr(_data.lock())
     {
     }
 
     /// Assignment operator
-    constexpr locked_ptr& operator=(const std::shared_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::shared_ptr<DATATYPE>& _data) noexcept
     {
-        if(data != m_data)
+        if(_data != m_data)
         {
-            if(data)
+            if(_data)
             {
                 if constexpr(std::is_base_of_v<core::memory::buffered, DATATYPE>)
                 {
-                    m_dump_locks = data->dump_lock();
+                    m_dump_locks = _data->dump_lock();
                 }
-                else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::buffered>(data); buffered)
+                else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::buffered>(_data); buffered)
                 {
                     m_dump_locks = buffered->dump_lock();
                 }
@@ -103,7 +103,7 @@ public:
                     m_dump_locks.clear();
                 }
 
-                m_locker = Lock(data->get_mutex());
+                m_locker = Lock(_data->get_mutex());
             }
             else
             {
@@ -111,23 +111,23 @@ public:
                 m_locker.reset();
             }
 
-            m_data = data;
+            m_data = _data;
         }
 
         return *this;
     }
 
     /// Assignment operator
-    constexpr locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
     {
-        this->operator=(data.lock());
+        this->operator=(_data.lock());
         return *this;
     }
 
     /// Assignment operator
-    constexpr locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const weak_ptr<DATATYPE>& _data) noexcept
     {
-        this->operator=(data.lock());
+        this->operator=(_data.lock());
         return *this;
     }
 
@@ -170,39 +170,39 @@ public:
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const locked_ptr<DATATYPE>& _data) const noexcept
     {
-        return get() == data.get();
+        return get() == _data.get();
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const locked_ptr<DATATYPE>& _data) const noexcept
     {
-        return get() != data.get();
+        return get() != _data.get();
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const std::shared_ptr<DATATYPE>& _data) const noexcept
     {
-        return get() == data.get();
+        return get() == _data.get();
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const std::shared_ptr<DATATYPE>& _data) const noexcept
     {
-        return get() != data.get();
+        return get() != _data.get();
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator==(const DATATYPE* data) const noexcept
+    constexpr bool operator==(const DATATYPE* _data) const noexcept
     {
-        return get() == data;
+        return get() == _data;
     }
 
     /// Allows to compare pointer address
-    constexpr bool operator!=(const DATATYPE* data) const noexcept
+    constexpr bool operator!=(const DATATYPE* _data) const noexcept
     {
-        return get() != data;
+        return get() != _data;
     }
 
 private:

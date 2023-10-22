@@ -117,10 +117,10 @@ const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
     {"1.2.840.10008.5.1.4.1.1.77.1.5.3", {"Stereometric Relationship Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.77.1.5.4", {"Ophthalmic Tomography Image Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.77.1.5.5",
-     {"Wide Field Ophthalmic Photography Stereographic Projection Image Storage", false
+     {"Wide field Ophthalmic Photography Stereographic Projection Image Storage", false
      }
     },
-    {"1.2.840.10008.5.1.4.1.1.77.1.5.6", {"Wide Field Ophthalmic Photography 3D Coordinates Image Storage", false}},
+    {"1.2.840.10008.5.1.4.1.1.77.1.5.6", {"Wide field Ophthalmic Photography 3D Coordinates Image Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.77.1.6", {"VL Whole Slide Microscopy Image Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.78.1", {"Lensometry Measurements Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.78.2", {"Autorefraction Measurements Storage", false}},
@@ -131,7 +131,7 @@ const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
     {"1.2.840.10008.5.1.4.1.1.78.7", {"Ophthalmic Axial Measurements Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.78.8", {"Intraocular Lens Calculations Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.79.1", {"Macular Grid Thickness and Volume Report", true}},
-    {"1.2.840.10008.5.1.4.1.1.80.1", {"Ophthalmic Visual Field Static Perimetry Measurements Storage", false}},
+    {"1.2.840.10008.5.1.4.1.1.80.1", {"Ophthalmic Visual field Static Perimetry Measurements Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.81.1", {"Ophthalmic Thickness Map Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.82.1", {"Corneal Topography Map Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.88.11", {"Basic Text SR Storage", true}},
@@ -165,7 +165,7 @@ const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
     {"1.2.840.10008.5.1.4.1.1.481.8", {"RT Ion Plan Storage", false}},
     {"1.2.840.10008.5.1.4.1.1.481.9", {"RT Ion Beams Treatment Record Storage", false}},
     {"1.2.840.10008.5.1.4.34.7", {"RT Beams Delivery Instruction Storage", false}},
-    {"1.2.840.10008.5.1.4.34.10", {"RT Brachy Application Setup Delivery Instruction Storage", false}},
+    {"1.2.840.10008.5.1.4.34.10", {"RT Brachy application Setup Delivery Instruction Storage", false}},
 
     // Non-Patient Object Storage Service Classes
     {"1.2.840.10008.5.1.4.38.1", {"Hanging Protocol Storage", false}},
@@ -177,17 +177,17 @@ const sop_class::op_classContainerType sop_class::s_SOP_CLASS_LIST = {
 
 //------------------------------------------------------------------------------
 
-std::string sop_class::getSOPClassName(const std::string& sop_classUID)
+std::string sop_class::getSOPClassName(const std::string& _sop_class_uid)
 {
-    auto it = s_SOP_CLASS_LIST.find(sop_classUID);
-    return it != s_SOP_CLASS_LIST.end() ? it->second.first : sop_classUID;
+    auto it = s_SOP_CLASS_LIST.find(_sop_class_uid);
+    return it != s_SOP_CLASS_LIST.end() ? it->second.first : _sop_class_uid;
 }
 
 //------------------------------------------------------------------------------
 
-bool sop_class::isHazardousSOPClass(const std::string& sop_classUID)
+bool sop_class::isHazardousSOPClass(const std::string& _sop_class_uid)
 {
-    auto it = s_SOP_CLASS_LIST.find(sop_classUID);
+    auto it = s_SOP_CLASS_LIST.find(_sop_class_uid);
     return it != s_SOP_CLASS_LIST.end() ? it->second.second : true;
 }
 

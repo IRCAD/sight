@@ -56,12 +56,12 @@ public:
     IO_DICOM_API virtual ~DicomSeriesAnonymizer();
 
     /// Anonymize the DicomSeries (modify the current object)
-    IO_DICOM_API void anonymize(const data::dicom_series::sptr& source);
+    IO_DICOM_API void anonymize(const data::dicom_series::sptr& _source);
 
     /// Anonymize the DicomSeries (doesn't modify the current object)
     IO_DICOM_API void anonymize(
-        const data::dicom_series::sptr& source,
-        const data::dicom_series::sptr& destination
+        const data::dicom_series::sptr& _source,
+        const data::dicom_series::sptr& _destination
     );
 
     /// Get job observer

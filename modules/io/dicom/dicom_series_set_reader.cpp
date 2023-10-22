@@ -62,23 +62,23 @@ void dicom_series_set_reader::configuring()
 
     m_showLogDialog = config.get<bool>("showLogDialog", m_showLogDialog);
 
-    if(const auto dicomDir = config.get_optional<std::string>("dicomdirSupport"); dicomDir.has_value())
+    if(const auto dicom_dir = config.get_optional<std::string>("dicomdirSupport"); dicom_dir.has_value())
     {
-        const std::string& dicomDirStr = dicomDir.value();
+        const std::string& dicom_dir_str = dicom_dir.value();
         SIGHT_ASSERT(
             "<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
-            dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection"
+            dicom_dir_str == "always" || dicom_dir_str == "never" || dicom_dir_str == "user_selection"
         );
 
-        if(dicomDirStr == "always")
+        if(dicom_dir_str == "always")
         {
             m_dicomDirSupport = ALWAYS;
         }
-        else if(dicomDirStr == "never")
+        else if(dicom_dir_str == "never")
         {
             m_dicomDirSupport = NEVER;
         }
-        else if(dicomDirStr == "user_selection")
+        else if(dicom_dir_str == "user_selection")
         {
             m_dicomDirSupport = USER_SELECTION;
         }
@@ -89,20 +89,20 @@ void dicom_series_set_reader::configuring()
 
 void dicom_series_set_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder());
+        dialog_file.saveDefaultLocation(default_directory);
     }
 }
 
@@ -134,27 +134,27 @@ std::string dicom_series_set_reader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-data::series_set::sptr dicom_series_set_reader::createSeriesSet(const std::filesystem::path& dicomDir)
+data::series_set::sptr dicom_series_set_reader::createSeriesSet(const std::filesystem::path& _dicom_dir)
 {
     auto reader     = std::make_shared<sight::io::dicom::reader::series_set>();
     auto series_set = std::make_shared<data::series_set>();
     reader->set_object(series_set);
-    reader->set_folder(dicomDir);
+    reader->set_folder(_dicom_dir);
 
     auto job = reader->getJob();
     m_sigJobCreated->emit(job);
 
     if(m_dicomDirSupport == USER_SELECTION && reader->isDicomDirAvailable())
     {
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Dicomdir file");
-        messageBox.setMessage(
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Dicomdir file");
+        message_box.setMessage(
             "There is a dicomdir file in the root folder. "
             "Would you like to use it for the reading process ?"
         );
-        messageBox.setIcon(ui::dialog::message::QUESTION);
-        messageBox.addButton(ui::dialog::message::YES_NO);
-        sight::ui::dialog::message::Buttons button = messageBox.show();
+        message_box.setIcon(ui::dialog::message::QUESTION);
+        message_box.addButton(ui::dialog::message::YES_NO);
+        sight::ui::dialog::message::Buttons button = message_box.show();
 
         reader->setDicomdirActivated(button == sight::ui::dialog::message::YES);
     }

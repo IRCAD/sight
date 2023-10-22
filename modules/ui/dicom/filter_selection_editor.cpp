@@ -78,41 +78,41 @@ void filter_selection_editor::starting()
     const auto dest_series_set = m_dest_series_set.lock();
     SIGHT_ASSERT("The series_set \"" + m_dest_series_setID + "\" doesn't exist.", dest_series_set);
 
-    const auto selectedDicomSeries = m_selectedDicomSeries.lock();
-    SIGHT_ASSERT("Selected dicom Series vector should not be null.", selectedDicomSeries);
+    const auto selected_dicom_series = m_selectedDicomSeries.lock();
+    SIGHT_ASSERT("Selected dicom Series vector should not be null.", selected_dicom_series);
 
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
-    auto* mainLayout = new QVBoxLayout();
-    mainLayout->setAlignment(Qt::AlignTop);
-    qtContainer->setLayout(mainLayout);
+    auto* main_layout = new QVBoxLayout();
+    main_layout->setAlignment(Qt::AlignTop);
+    qt_container->setLayout(main_layout);
 
     // Size policy
     QSizePolicy policy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
     // Top widget
-    auto* topLayout = new QHBoxLayout();
-    auto* topWidget = new QWidget();
-    topWidget->setLayout(topLayout);
-    topLayout->setContentsMargins(QMargins(0, 0, 0, 0));
-    mainLayout->addWidget(topWidget);
+    auto* top_layout = new QHBoxLayout();
+    auto* top_widget = new QWidget();
+    top_widget->setLayout(top_layout);
+    top_layout->setContentsMargins(QMargins(0, 0, 0, 0));
+    main_layout->addWidget(top_widget);
 
     // Available filter list
     m_availableFilterListWidget = new QComboBox();
     this->fillAvailableFilters();
-    topLayout->addWidget(m_availableFilterListWidget);
+    top_layout->addWidget(m_availableFilterListWidget);
 
     auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
 
     // Add filter button
     m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Plus.svg").string())), "Add");
     m_addFilterButton->setSizePolicy(policy);
-    topLayout->addWidget(m_addFilterButton);
+    top_layout->addWidget(m_addFilterButton);
 
     // Add selected filters
     m_selectedFilterListWidget = new QListWidget();
-    mainLayout->addWidget(m_selectedFilterListWidget);
+    main_layout->addWidget(m_selectedFilterListWidget);
     m_selectedFilterListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     m_selectedFilterListWidget->setDragEnabled(true);
     m_selectedFilterListWidget->viewport()->setAcceptDrops(true);
@@ -121,32 +121,32 @@ void filter_selection_editor::starting()
     m_selectedFilterListWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
     // Add forced apply checkbox
-    auto* applyLayout = new QHBoxLayout();
-    auto* applyWidget = new QWidget();
-    applyWidget->setLayout(applyLayout);
-    applyWidget->setSizePolicy(policy);
-    applyLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    auto* apply_layout = new QHBoxLayout();
+    auto* apply_widget = new QWidget();
+    apply_widget->setLayout(apply_layout);
+    apply_widget->setSizePolicy(policy);
+    apply_layout->setContentsMargins(QMargins(0, 0, 0, 0));
     m_forcedApplyCheckBox = new QCheckBox("Ignore errors");
-    applyLayout->addWidget(m_forcedApplyCheckBox);
-    mainLayout->addWidget(applyWidget, 0, Qt::AlignRight);
+    apply_layout->addWidget(m_forcedApplyCheckBox);
+    main_layout->addWidget(apply_widget, 0, Qt::AlignRight);
 
     // Bottom widget
-    auto* bottomLayout = new QHBoxLayout();
-    auto* bottomWidget = new QWidget();
-    bottomWidget->setLayout(bottomLayout);
-    bottomLayout->setContentsMargins(QMargins(0, 0, 0, 0));
-    mainLayout->addWidget(bottomWidget);
+    auto* bottom_layout = new QHBoxLayout();
+    auto* bottom_widget = new QWidget();
+    bottom_widget->setLayout(bottom_layout);
+    bottom_layout->setContentsMargins(QMargins(0, 0, 0, 0));
+    main_layout->addWidget(bottom_widget);
 
-    auto* buttonLayout = new QHBoxLayout();
-    auto* buttonWidget = new QWidget();
-    buttonWidget->setLayout(buttonLayout);
-    buttonWidget->setSizePolicy(policy);
-    buttonLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    auto* button_layout = new QHBoxLayout();
+    auto* button_widget = new QWidget();
+    button_widget->setLayout(button_layout);
+    button_widget->setSizePolicy(policy);
+    button_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Apply filters button
     m_applyFiltersButton = new QPushButton(QIcon(QString::fromStdString((path / "Apply.svg").string())), "Apply");
     m_applyFiltersButton->setSizePolicy(policy);
-    buttonLayout->addWidget(m_applyFiltersButton);
+    button_layout->addWidget(m_applyFiltersButton);
 
     // Configure filter button
     m_configureFilterButton = new QPushButton(
@@ -155,22 +155,22 @@ void filter_selection_editor::starting()
     );
     m_configureFilterButton->setSizePolicy(policy);
     m_configureFilterButton->setEnabled(false);
-    buttonLayout->addWidget(m_configureFilterButton);
+    button_layout->addWidget(m_configureFilterButton);
 
     // Split filter button
     m_splitFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Split.svg").string())), "Split");
     m_splitFilterButton->setSizePolicy(policy);
     m_splitFilterButton->setEnabled(false);
-    buttonLayout->addWidget(m_splitFilterButton);
+    button_layout->addWidget(m_splitFilterButton);
 
     // Remove filter button
     m_removeFilterButton =
         new QPushButton(QIcon(QString::fromStdString((path / "Minus.svg").string())), "Remove");
     m_removeFilterButton->setSizePolicy(policy);
     m_removeFilterButton->setEnabled(false);
-    buttonLayout->addWidget(m_removeFilterButton);
+    button_layout->addWidget(m_removeFilterButton);
 
-    bottomLayout->addWidget(buttonWidget, 0, Qt::AlignRight);
+    bottom_layout->addWidget(button_widget, 0, Qt::AlignRight);
 
     // Create shortcut
     m_deleteShortcut =
@@ -195,9 +195,9 @@ void filter_selection_editor::starting()
 
 //------------------------------------------------------------------------------
 
-void filter_selection_editor::onForceChecked(int state)
+void filter_selection_editor::onForceChecked(int _state)
 {
-    if(state == Qt::Checked)
+    if(_state == Qt::Checked)
     {
         sight::ui::dialog::message::show(
             "Be careful",
@@ -213,16 +213,16 @@ void filter_selection_editor::fillAvailableFilters()
 {
     int index = 0;
 
-    std::vector<sight::filter::dicom::filter::sptr> sortedFilters;
+    std::vector<sight::filter::dicom::filter::sptr> sorted_filters;
     for(const std::string& key : sight::filter::dicom::registry::get()->get_factory_keys())
     {
         sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
-        sortedFilters.push_back(filter);
+        sorted_filters.push_back(filter);
     }
 
-    std::sort(sortedFilters.begin(), sortedFilters.end(), filter_selection_editor::sortFilters);
+    std::sort(sorted_filters.begin(), sorted_filters.end(), filter_selection_editor::sortFilters);
 
-    for(const sight::filter::dicom::filter::sptr& filter : sortedFilters)
+    for(const sight::filter::dicom::filter::sptr& filter : sorted_filters)
     {
         // If the filter doesn't have a configuration or if it is configurable using GUI
         if(!filter->isConfigurationRequired() || filter->isConfigurableWithGUI())
@@ -282,10 +282,10 @@ void filter_selection_editor::updating()
 
 //------------------------------------------------------------------------------
 
-void filter_selection_editor::addFilter(int filterTypeIndex)
+void filter_selection_editor::addFilter(int _filter_type_index)
 {
     int index = m_selectedFilterListWidget->currentRow() + 1;
-    this->addFilter(filterTypeIndex, index);
+    this->addFilter(_filter_type_index, index);
 }
 
 //------------------------------------------------------------------------------
@@ -297,13 +297,13 @@ void filter_selection_editor::addFilterAtTheEnd()
 
 //------------------------------------------------------------------------------
 
-void filter_selection_editor::addFilter(int filterTypeIndex, int position)
+void filter_selection_editor::addFilter(int _filter_type_index, int _position)
 {
     // Get information from selected filter
-    QIcon icon          = m_availableFilterListWidget->itemIcon(filterTypeIndex);
-    QString name        = m_availableFilterListWidget->itemText(filterTypeIndex);
-    QString description = m_availableFilterListWidget->itemData(filterTypeIndex, Qt::ToolTipRole).toString();
-    std::string key     = m_availableFilterListWidget->itemData(filterTypeIndex).toString().toStdString();
+    QIcon icon          = m_availableFilterListWidget->itemIcon(_filter_type_index);
+    QString name        = m_availableFilterListWidget->itemText(_filter_type_index);
+    QString description = m_availableFilterListWidget->itemData(_filter_type_index, Qt::ToolTipRole).toString();
+    std::string key     = m_availableFilterListWidget->itemData(_filter_type_index).toString().toStdString();
 
     // Create filter
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
@@ -311,11 +311,11 @@ void filter_selection_editor::addFilter(int filterTypeIndex, int position)
     m_filtersMap[id] = filter;
 
     // Add a the filter in the list
-    m_selectedFilterListWidget->insertItem(position, name);
-    m_selectedFilterListWidget->item(position)->setIcon(icon);
-    m_selectedFilterListWidget->item(position)->setToolTip(description);
-    m_selectedFilterListWidget->item(position)->setData(Qt::UserRole, id.c_str());
-    m_selectedFilterListWidget->setCurrentRow(position);
+    m_selectedFilterListWidget->insertItem(_position, name);
+    m_selectedFilterListWidget->item(_position)->setIcon(icon);
+    m_selectedFilterListWidget->item(_position)->setToolTip(description);
+    m_selectedFilterListWidget->item(_position)->setData(Qt::UserRole, id.c_str());
+    m_selectedFilterListWidget->setCurrentRow(_position);
 
     // Update apply button
     m_applyFiltersButton->setEnabled(m_selectedFilterListWidget->count() > 0);
@@ -325,15 +325,15 @@ void filter_selection_editor::addFilter(int filterTypeIndex, int position)
 
 void filter_selection_editor::removeFilter()
 {
-    int currentIndex = m_selectedFilterListWidget->currentRow();
-    if(currentIndex >= 0)
+    int current_index = m_selectedFilterListWidget->currentRow();
+    if(current_index >= 0)
     {
         // Remove selected filter from map
-        std::string id = m_selectedFilterListWidget->item(currentIndex)->data(Qt::UserRole).toString().toStdString();
+        std::string id = m_selectedFilterListWidget->item(current_index)->data(Qt::UserRole).toString().toStdString();
         m_filtersMap.erase(id);
 
         // Remove selected filter from widget
-        m_selectedFilterListWidget->takeItem(currentIndex);
+        m_selectedFilterListWidget->takeItem(current_index);
     }
 }
 
@@ -341,9 +341,9 @@ void filter_selection_editor::removeFilter()
 
 void filter_selection_editor::configureFilter()
 {
-    int selectedFilterIndex = m_selectedFilterListWidget->currentRow();
-    std::string id          =
-        m_selectedFilterListWidget->item(selectedFilterIndex)->data(Qt::UserRole).toString().toStdString();
+    int selected_filter_index = m_selectedFilterListWidget->currentRow();
+    std::string id            =
+        m_selectedFilterListWidget->item(selected_filter_index)->data(Qt::UserRole).toString().toStdString();
     m_filtersMap[id]->configureWithGUI();
 }
 
@@ -351,17 +351,17 @@ void filter_selection_editor::configureFilter()
 
 void filter_selection_editor::splitFilter()
 {
-    int currentIndex        = m_selectedFilterListWidget->currentRow();
-    std::string compositeId =
-        m_selectedFilterListWidget->item(currentIndex)->data(Qt::UserRole).toString().toStdString();
+    int current_index        = m_selectedFilterListWidget->currentRow();
+    std::string composite_id =
+        m_selectedFilterListWidget->item(current_index)->data(Qt::UserRole).toString().toStdString();
     sight::filter::dicom::composite::base::sptr composite =
-        std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(m_filtersMap[compositeId]);
+        std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(m_filtersMap[composite_id]);
 
     // Remove composite filter
     this->removeFilter();
 
     // Add filters
-    int position = currentIndex;
+    int position = current_index;
     for(const sight::filter::dicom::filter::sptr& filter : composite->getChildren())
     {
         std::string id = filter->get_id();
@@ -375,24 +375,24 @@ void filter_selection_editor::splitFilter()
         ++position;
     }
 
-    m_selectedFilterListWidget->setCurrentRow(currentIndex);
+    m_selectedFilterListWidget->setCurrentRow(current_index);
 }
 
 //------------------------------------------------------------------------------
 
-void filter_selection_editor::updateButtonStatus(int filterIndex)
+void filter_selection_editor::updateButtonStatus(int _filter_index)
 {
-    bool hasFilter = (filterIndex != -1);
-    m_removeFilterButton->setEnabled(hasFilter);
-    if(hasFilter)
+    bool has_filter = (_filter_index != -1);
+    m_removeFilterButton->setEnabled(has_filter);
+    if(has_filter)
     {
-        std::string id = m_selectedFilterListWidget->item(filterIndex)->data(Qt::UserRole).toString().toStdString();
+        std::string id = m_selectedFilterListWidget->item(_filter_index)->data(Qt::UserRole).toString().toStdString();
 
         // Configure filter button
         m_configureFilterButton->setEnabled(m_filtersMap[id]->isConfigurableWithGUI());
 
         // Split filter button
-        m_splitFilterButton->setEnabled(m_filtersMap[id]->getFilterType() == sight::filter::dicom::filter::COMPOSITE);
+        m_splitFilterButton->setEnabled(m_filtersMap[id]->get_filter_type() == sight::filter::dicom::filter::COMPOSITE);
     }
     else
     {
@@ -409,14 +409,14 @@ void filter_selection_editor::applyFilters()
     using FilterContainertype      = std::vector<sight::filter::dicom::filter::sptr>;
 
     // Get selected DicomSeries
-    const auto selectedDicomSeries = m_selectedDicomSeries.lock();
-    SIGHT_ASSERT("Selected dicom Series vector  object should not be null.", selectedDicomSeries);
+    const auto selected_dicom_series = m_selectedDicomSeries.lock();
+    SIGHT_ASSERT("Selected dicom Series vector  object should not be null.", selected_dicom_series);
 
     // Display the informations
-    sight::ui::dialog::message messageBox;
-    messageBox.setIcon(sight::ui::dialog::message::INFO);
-    messageBox.addButton(sight::ui::dialog::message::OK);
-    messageBox.setTitle("Filters information");
+    sight::ui::dialog::message message_box;
+    message_box.setIcon(sight::ui::dialog::message::INFO);
+    message_box.addButton(sight::ui::dialog::message::OK);
+    message_box.setTitle("Filters information");
 
     // Clear destination series_set
     const auto dest_series_set = m_dest_series_set.lock();
@@ -426,57 +426,57 @@ void filter_selection_editor::applyFilters()
     dest_series_set->clear();
 
     // Be sure series are selected
-    if(selectedDicomSeries->empty())
+    if(selected_dicom_series->empty())
     {
-        messageBox.setMessage("You must select series on which you want to apply your filters.");
+        message_box.setMessage("You must select series on which you want to apply your filters.");
     }
     else if(m_selectedFilterListWidget->count() == 0)
     {
-        messageBox.setMessage("You must select the filters that you want to apply on your series.");
+        message_box.setMessage("You must select the filters that you want to apply on your series.");
     }
     else
     {
         // Create containers
-        DicomSeriesContainertype dicomSeriesContainer;
-        FilterContainertype filterContainer;
+        DicomSeriesContainertype dicom_series_container;
+        FilterContainertype filter_container;
 
         // Copy selected DicomSeries
-        for(const data::object::sptr& obj : *selectedDicomSeries)
+        for(const data::object::sptr& obj : *selected_dicom_series)
         {
-            data::dicom_series::sptr srcDicomSerie = std::dynamic_pointer_cast<data::dicom_series>(obj);
-            SIGHT_ASSERT("The series should be a DicomSerie.", srcDicomSerie);
+            data::dicom_series::sptr src_dicom_serie = std::dynamic_pointer_cast<data::dicom_series>(obj);
+            SIGHT_ASSERT("The series should be a DicomSerie.", src_dicom_serie);
 
-            data::dicom_series::sptr destinationDicomSerie = std::make_shared<data::dicom_series>();
-            destinationDicomSerie->deep_copy(srcDicomSerie);
-            dicomSeriesContainer.push_back(destinationDicomSerie);
+            data::dicom_series::sptr destination_dicom_serie = std::make_shared<data::dicom_series>();
+            destination_dicom_serie->deep_copy(src_dicom_serie);
+            dicom_series_container.push_back(destination_dicom_serie);
         }
 
         // Create filter vector
         for(int i = 0 ; i < m_selectedFilterListWidget->count() ; ++i)
         {
             std::string id = m_selectedFilterListWidget->item(i)->data(Qt::UserRole).toString().toStdString();
-            filterContainer.push_back(m_filtersMap[id]);
+            filter_container.push_back(m_filtersMap[id]);
         }
 
-        std::stringstream ssFilters;
-        std::stringstream ssInfos;
-        bool forcedApply = m_forcedApplyCheckBox->isChecked();
+        std::stringstream ss_filters;
+        std::stringstream ss_infos;
+        bool forced_apply = m_forcedApplyCheckBox->isChecked();
 
-        ssFilters << "<b>Filters :</b><br />";
+        ss_filters << "<b>Filters :</b><br />";
         // Let's apply all the filters
-        for(const sight::filter::dicom::filter::sptr& filter : filterContainer)
+        for(const sight::filter::dicom::filter::sptr& filter : filter_container)
         {
-            ssFilters << "- " << filter->getName() << " -> ";
+            ss_filters << "- " << filter->getName() << " -> ";
             try
             {
-                sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, forcedApply);
-                ssFilters << "<font color=\"Green\">OK</font><br />";
+                sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, forced_apply);
+                ss_filters << "<font color=\"Green\">OK</font><br />";
             }
             catch(sight::filter::dicom::exceptions::FilterFailure& e)
             {
-                ssFilters << "<font color=\"Red\">ERROR</font><br />";
-                ssInfos << "- " << e.what() << "<br />";
-                if(!forcedApply)
+                ss_filters << "<font color=\"Red\">ERROR</font><br />";
+                ss_infos << "- " << e.what() << "<br />";
+                if(!forced_apply)
                 {
                     break;
                 }
@@ -484,38 +484,38 @@ void filter_selection_editor::applyFilters()
         }
 
         // Push series
-        if(forcedApply || ssInfos.str().empty())
+        if(forced_apply || ss_infos.str().empty())
         {
             // Add filtered series to series_set
-            for(const auto& series : dicomSeriesContainer)
+            for(const auto& series : dicom_series_container)
             {
                 dest_series_set->push_back(series);
             }
         }
 
         // If there is no error
-        if(ssInfos.str().empty())
+        if(ss_infos.str().empty())
         {
-            ssInfos << "All filters have been correctly applied.";
+            ss_infos << "All filters have been correctly applied.";
         }
 
-        std::string msg = ssFilters.str() + "<br /><br /><b>Informations :</b><br />" + ssInfos.str();
-        messageBox.setMessage(msg);
+        std::string msg = ss_filters.str() + "<br /><br /><b>Informations :</b><br />" + ss_infos.str();
+        message_box.setMessage(msg);
     }
 
     // Diplay message
-    messageBox.show();
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------
 
-void filter_selection_editor::showContextMenuForSelectedFilter(const QPoint& pos)
+void filter_selection_editor::showContextMenuForSelectedFilter(const QPoint& _pos)
 {
     // Create context menu
-    QMenu contextMenu("Context menu", m_selectedFilterListWidget);
+    QMenu context_menu("Context menu", m_selectedFilterListWidget);
 
     // Add menu
-    QMenu* addMenu = contextMenu.addMenu("Add");
+    QMenu* add_menu = context_menu.addMenu("Add");
 
     // Fill the menu with the available filters
     for(int i = 0 ; i < m_availableFilterListWidget->count() ; ++i)
@@ -524,59 +524,59 @@ void filter_selection_editor::showContextMenuForSelectedFilter(const QPoint& pos
         QIcon icon   = m_availableFilterListWidget->itemIcon(i);
         auto* action = new QAction(icon, text, m_selectedFilterListWidget);
         action->setIconVisibleInMenu(true);
-        addMenu->addAction(action);
+        add_menu->addAction(action);
 
         QObject::connect(action, &QAction::triggered, [this, i]{addFilter(i);});
     }
 
     // Check id the menu is requested from a filter
-    QListWidgetItem* filterItem = m_selectedFilterListWidget->itemAt(pos);
-    if(filterItem != nullptr)
+    QListWidgetItem* filter_item = m_selectedFilterListWidget->itemAt(_pos);
+    if(filter_item != nullptr)
     {
         // Get filter
-        std::string id                            = filterItem->data(Qt::UserRole).toString().toStdString();
+        std::string id                            = filter_item->data(Qt::UserRole).toString().toStdString();
         sight::filter::dicom::filter::sptr filter = m_filtersMap[id];
 
         // Remove action
-        auto* removeAction = new QAction("Remove", m_selectedFilterListWidget);
-        QObject::connect(removeAction, &QAction::triggered, this, &filter_selection_editor::removeFilter);
-        contextMenu.addAction(removeAction);
+        auto* remove_action = new QAction("Remove", m_selectedFilterListWidget);
+        QObject::connect(remove_action, &QAction::triggered, this, &filter_selection_editor::removeFilter);
+        context_menu.addAction(remove_action);
 
         // Configure action
-        auto* configureAction = new QAction("Configure", m_selectedFilterListWidget);
-        configureAction->setEnabled(filter->isConfigurableWithGUI());
-        QObject::connect(configureAction, &QAction::triggered, this, &filter_selection_editor::removeFilter);
-        contextMenu.addAction(configureAction);
+        auto* configure_action = new QAction("Configure", m_selectedFilterListWidget);
+        configure_action->setEnabled(filter->isConfigurableWithGUI());
+        QObject::connect(configure_action, &QAction::triggered, this, &filter_selection_editor::removeFilter);
+        context_menu.addAction(configure_action);
 
         // Split action
-        auto* splitAction = new QAction("Split", m_selectedFilterListWidget);
-        splitAction->setEnabled(filter->getFilterType() == sight::filter::dicom::filter::COMPOSITE);
-        QObject::connect(splitAction, &QAction::triggered, this, &filter_selection_editor::removeFilter);
-        contextMenu.addAction(splitAction);
+        auto* split_action = new QAction("Split", m_selectedFilterListWidget);
+        split_action->setEnabled(filter->get_filter_type() == sight::filter::dicom::filter::COMPOSITE);
+        QObject::connect(split_action, &QAction::triggered, this, &filter_selection_editor::removeFilter);
+        context_menu.addAction(split_action);
     }
 
     // Display menu
-    contextMenu.exec(m_selectedFilterListWidget->mapToGlobal(pos));
+    context_menu.exec(m_selectedFilterListWidget->mapToGlobal(_pos));
 }
 
 //------------------------------------------------------------------------------
 
 bool filter_selection_editor::sortFilters(
-    const sight::filter::dicom::filter::sptr& a,
-    const sight::filter::dicom::filter::sptr& b
+    const sight::filter::dicom::filter::sptr& _a,
+    const sight::filter::dicom::filter::sptr& _b
 )
 {
-    if(a->getFilterType() == b->getFilterType())
+    if(_a->get_filter_type() == _b->get_filter_type())
     {
-        return a->getName() < b->getName();
+        return _a->getName() < _b->getName();
     }
 
-    return a->getFilterType() > b->getFilterType();
+    return _a->get_filter_type() > _b->get_filter_type();
 }
 
 //------------------------------------------------------------------------------
 
-QIcon filter_selection_editor::getFilterIcon(sight::filter::dicom::filter::sptr filter)
+QIcon filter_selection_editor::getFilterIcon(sight::filter::dicom::filter::sptr _filter)
 {
     const std::filesystem::path path = core::runtime::get_module_resource_path(std::string("sight::module::ui::icons"));
     std::array icons {
@@ -586,21 +586,21 @@ QIcon filter_selection_editor::getFilterIcon(sight::filter::dicom::filter::sptr 
         QIcon(QString::fromStdString((path / "Composite.svg").string())),
         QIcon(QString::fromStdString((path / "Custom.svg").string()))
     };
-    return icons[filter->getFilterType()];
+    return icons[_filter->get_filter_type()];
 }
 
 //------------------------------------------------------------------------------
 
-std::string filter_selection_editor::getFilterDescription(sight::filter::dicom::filter::sptr filter)
+std::string filter_selection_editor::getFilterDescription(sight::filter::dicom::filter::sptr _filter)
 {
     std::array types {"Modifier", "Sorter", "Splitter", "Composite", "Custom"};
     std::string description =
-        "<b>Name :</b> " + filter->getName() + "<br />"
-                                               "<b>Type :</b> " + types[filter->getFilterType()] + "<br />"
-                                                                                                   "<b>Configurable :</b> "
-        + ((filter->isConfigurableWithGUI()) ? "true" : "false") + "<br />"
-                                                                   "<b>Informations :</b><br />"
-        + filter->getDescription();
+        "<b>Name :</b> " + _filter->getName() + "<br />"
+                                                "<b>Type :</b> " + types[_filter->get_filter_type()] + "<br />"
+                                                                                                       "<b>Configurable :</b> "
+        + ((_filter->isConfigurableWithGUI()) ? "true" : "false") + "<br />"
+                                                                    "<b>Informations :</b><br />"
+        + _filter->getDescription();
     return description;
 }
 

@@ -48,16 +48,16 @@ void object_test::tearDown()
 
 void object_test::id_test()
 {
-    const std::string UUID = "uid";
+    const std::string uuid = "uid";
 
     // process
     core::tools::object::sptr obj = std::make_shared<core::tools::object>();
 
-    obj->set_id(UUID);
+    obj->set_id(uuid);
 
     // check
     CPPUNIT_ASSERT(obj->has_id());
-    CPPUNIT_ASSERT_EQUAL(obj->get_id(), UUID);
+    CPPUNIT_ASSERT_EQUAL(obj->get_id(), uuid);
 }
 
 } // namespace sight::core::tools::ut

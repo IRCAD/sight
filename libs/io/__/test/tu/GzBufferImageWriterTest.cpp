@@ -38,18 +38,18 @@ namespace sight::io::ut
 
 void GzBufferImageWriterTest::basicTest()
 {
-    auto gzBufferImageWriter       = std::make_shared<writer::gz_buffer_image_writer>();
+    auto gz_buffer_image_writer    = std::make_shared<writer::gz_buffer_image_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path()
-                                     / ("test" + gzBufferImageWriter->extension());
-    auto imageIn = std::make_shared<data::image>();
-    imageIn->resize({16}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
+                                     / ("test" + gz_buffer_image_writer->extension());
+    auto image_in = std::make_shared<data::image>();
+    image_in->resize({16}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
     {
-        auto imageLock = imageIn->dump_lock();
-        std::iota(imageIn->begin<std::uint8_t>(), imageIn->end<std::uint8_t>(), std::uint8_t(0));
+        auto image_lock = image_in->dump_lock();
+        std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));
     }
-    gzBufferImageWriter->set_object(imageIn);
+    gz_buffer_image_writer->set_object(image_in);
     std::filesystem::remove(filepath);
-    gzBufferImageWriter->set_file(filepath);
+    gz_buffer_image_writer->set_file(filepath);
     /* TODO: fix
        CPPUNIT_ASSERT_NO_THROW(gzBufferImageWriter->write());
        std::array<std::uint8_t, 16> array;

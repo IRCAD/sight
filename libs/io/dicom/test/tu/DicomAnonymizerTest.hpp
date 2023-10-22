@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,8 @@ public:
 
 private:
 
-    void testDICOMFolder(const std::filesystem::path& srcPath);
-    void testAnonymizedFile(const std::filesystem::path& filename);
+    void testDICOMFolder(const std::filesystem::path& _src_path);
+    void testAnonymizedFile(const std::filesystem::path& _filename);
 
     std::set<std::string> m_uidContainer;
 };

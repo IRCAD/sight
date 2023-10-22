@@ -40,8 +40,8 @@ void multi_config_controller::configuring(const config_t& _config)
 {
     m_configLauncher->parseConfig(_config, this->get_sptr());
 
-    const auto& appConfig = _config.get_child("appConfig");
-    m_key = appConfig.get<std::string>("<xmlattr>.key", m_key);
+    const auto& app_config = _config.get_child("appConfig");
+    m_key = app_config.get<std::string>("<xmlattr>.key", m_key);
 }
 
 //------------------------------------------------------------------------------
@@ -70,11 +70,11 @@ void multi_config_controller::updating()
 }
 
 //------------------------------------------------------------------------------
-void multi_config_controller::setConfig(sight::ui::parameter_t val, std::string key)
+void multi_config_controller::setConfig(sight::ui::parameter_t _val, std::string _key)
 {
-    if(key == m_key && std::holds_alternative<std::string>(val))
+    if(_key == m_key && std::holds_alternative<std::string>(_val))
     {
-        m_configLauncher->setConfig(std::get<std::string>(val));
+        m_configLauncher->setConfig(std::get<std::string>(_val));
         this->update();
     }
 }

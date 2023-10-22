@@ -31,8 +31,8 @@ namespace sight::viz::scene2d
 
 //-----------------------------------------------------------------------------
 
-Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget) :
-    QGraphicsView(scene, widget)
+Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* _scene, QWidget* _widget) :
+    QGraphicsView(_scene, _widget)
 {
     if(!this->hasMouseTracking())
     {
@@ -48,35 +48,35 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setSceneRender(viz::scene2d::render::sptr sceneRender)
+void Scene2DGraphicsView::setSceneRender(viz::scene2d::render::sptr _scene_render)
 {
-    m_scene2DRender = sceneRender;
+    m_scene2DRender = _scene_render;
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::KeyPress);
-    sceneEvent.setButton(scene2d::data::Event::NoButton);
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
-    sceneEvent.setKey(_event->key());
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::KeyPress);
+    scene_event.setButton(scene2d::data::Event::NoButton);
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene_event.setKey(_event->key());
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::KeyRelease);
-    sceneEvent.setButton(scene2d::data::Event::NoButton);
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
-    sceneEvent.setKey(_event->key());
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::KeyRelease);
+    scene_event.setButton(scene2d::data::Event::NoButton);
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene_event.setKey(_event->key());
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,97 +85,97 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 {
     this->updateFromViewport(m_viewport);
 
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::Resize);
-    sceneEvent.setButton(scene2d::data::Event::NoButton);
-    sceneEvent.setModifier(scene2d::data::Event::NoModifier);
-    sceneEvent.setSize(scene2d::vec2d_t(_event->size().width(), _event->size().height()));
-    sceneEvent.setOldSize(scene2d::vec2d_t(_event->oldSize().width(), _event->oldSize().height()));
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::Resize);
+    scene_event.setButton(scene2d::data::Event::NoButton);
+    scene_event.setModifier(scene2d::data::Event::NoModifier);
+    scene_event.setSize(scene2d::vec2d_t(_event->size().width(), _event->size().height()));
+    scene_event.setOldSize(scene2d::vec2d_t(_event->oldSize().width(), _event->oldSize().height()));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::mousePressEvent(QMouseEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::MouseButtonPress);
-    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::MouseButtonPress);
+    scene_event.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::mouseDoubleClickEvent(QMouseEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::MouseButtonDoubleClick);
-    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::MouseButtonDoubleClick);
+    scene_event.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::mouseReleaseEvent(QMouseEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::MouseButtonRelease);
-    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::MouseButtonRelease);
+    scene_event.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::mouseMoveEvent(QMouseEvent* _event)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::MouseMove);
-    sceneEvent.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
-    sceneEvent.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::MouseMove);
+    scene_event.setCoord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.setButton(sight::viz::scene2d::Scene2DGraphicsView::getScene2DButtonFromEvent(_event));
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::wheelEvent(QWheelEvent* _event)
 {
-    const bool scrollUp = _event->angleDelta().y() > 0;
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType((scrollUp) ? scene2d::data::Event::MouseWheelUp : scene2d::data::Event::MouseWheelDown);
-    sceneEvent.setCoord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
-    sceneEvent.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
+    const bool scroll_up = _event->angleDelta().y() > 0;
+    scene2d::data::Event scene_event;
+    scene_event.setType((scroll_up) ? scene2d::data::Event::MouseWheelUp : scene2d::data::Event::MouseWheelDown);
+    scene_event.setCoord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
+    scene_event.setModifier(sight::viz::scene2d::Scene2DGraphicsView::getScene2DModifierFromEvent(_event));
 
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::enterEvent(QEvent* /*event*/)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::EnterEvent);
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::EnterEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene2DGraphicsView::leaveEvent(QEvent* /*event*/)
 {
-    scene2d::data::Event sceneEvent;
-    sceneEvent.setType(scene2d::data::Event::LeaveEvent);
-    m_scene2DRender.lock()->dispatchInteraction(sceneEvent);
+    scene2d::data::Event scene_event;
+    scene_event.setType(scene2d::data::Event::LeaveEvent);
+    m_scene2DRender.lock()->dispatchInteraction(scene_event);
 }
 
 //------------------------------------------------------------------------------
@@ -187,20 +187,20 @@ QSize Scene2DGraphicsView::sizeHint() const
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::updateFromViewport(const scene2d::data::Viewport& viewport)
+void Scene2DGraphicsView::updateFromViewport(const scene2d::data::Viewport& _viewport)
 {
     this->fitInView(
-        viewport.x(),
-        viewport.y(),
-        viewport.width(),
-        viewport.height(),
+        _viewport.x(),
+        _viewport.y(),
+        _viewport.width(),
+        _viewport.height(),
         m_scene2DRender.lock()->getAspectRatioMode()
     );
 
-    m_viewport.setX(viewport.x());
-    m_viewport.setY(viewport.y());
-    m_viewport.setWidth(viewport.width());
-    m_viewport.setHeight(viewport.height());
+    m_viewport.setX(_viewport.x());
+    m_viewport.setY(_viewport.y());
+    m_viewport.setWidth(_viewport.width());
+    m_viewport.setHeight(_viewport.height());
 }
 
 //-----------------------------------------------------------------------------

@@ -55,8 +55,8 @@ public:
     /// Destructor. Does nothing.
     UI_API ~notification_base() override = default;
 
-    typedef std::string FactoryRegistryKeyType;
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    typedef std::string factory_registry_key_t;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Sets the message.
     /// @param _msg message as a std::string, it can be empty.
@@ -93,7 +93,7 @@ public:
      * @param _durationInMs duration of the notification before closing (+ 1 sec of fade in/out effects).
      *                      std::nullopt means infinite duration.
      */
-    UI_API virtual void setDuration(std::optional<std::chrono::milliseconds> _durationInMs);
+    UI_API virtual void setDuration(std::optional<std::chrono::milliseconds> _duration_in_ms);
     UI_API virtual std::optional<std::chrono::milliseconds> getDuration() const;
 
     /// Set the channel property
@@ -132,9 +132,9 @@ public:
     }
 
     /// Define the callback called when the dialog is closed
-    UI_API virtual void setClosedCallback(std::function<void()> f)
+    UI_API virtual void setClosedCallback(std::function<void()> _f)
     {
-        m_closedCallBack = f;
+        m_closedCallBack = _f;
     }
 
 protected:

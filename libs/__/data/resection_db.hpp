@@ -52,24 +52,24 @@ public:
     /// Destructor
     DATA_API ~resection_db() noexcept override = default;
 
-    typedef std::vector<resection::sptr> ResectionContainerType;
+    typedef std::vector<resection::sptr> resection_container_t;
 
     /**
      * @brief Get the number of resections
      */
-    DATA_API ResectionContainerType::size_type numResections() const;
+    DATA_API resection_container_t::size_type numResections() const;
 
     /**
      * @brief add resection
      */
-    DATA_API void addResection(const resection::sptr& resection);
+    DATA_API void addResection(const resection::sptr& _resection);
 
     /**
      * @{
      * @brief Get/Set value of the resections.
      */
-    const ResectionContainerType& getResections() const;
-    void setResections(const ResectionContainerType& val);
+    const resection_container_t& getResections() const;
+    void setResections(const resection_container_t& _val);
     /// @}
 
     /**
@@ -78,7 +78,7 @@ public:
      */
     resection::sptr getSafeResection();
     resection::csptr getSafeResection() const;
-    void setSafeResection(const resection::sptr& _safeResection);
+    void setSafeResection(const resection::sptr& _safe_resection);
     /// @}
 
     /***
@@ -93,7 +93,7 @@ public:
     DATA_API static const core::com::signals::key_t SAFE_PART_ADDED_SIG;
 
     /// Type of signal when a resection is added
-    typedef core::com::signal<void ()> ResectionAddedSignalType;
+    typedef core::com::signal<void ()> resection_added_signal_t;
 
     /// Key in m_signals map of signal m_sigResectionAdded
     DATA_API static const core::com::signals::key_t RESECTION_ADDED_SIG;
@@ -104,29 +104,29 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const resection_db& other) const noexcept;
-    DATA_API bool operator!=(const resection_db& other) const noexcept;
+    DATA_API bool operator==(const resection_db& _other) const noexcept;
+    DATA_API bool operator!=(const resection_db& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
 
     resection::sptr m_safeResection;
 
-    ResectionContainerType m_resections;
+    resection_container_t m_resections;
 
 private:
 
@@ -134,21 +134,21 @@ private:
     SafePartAddedSignalType::sptr m_sigSafePartAdded;
 
     /// Signal emitted when a resection is added
-    ResectionAddedSignalType::sptr m_sigResectionAdded;
+    resection_added_signal_t::sptr m_sigResectionAdded;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const resection_db::ResectionContainerType& resection_db::getResections() const
+inline const resection_db::resection_container_t& resection_db::getResections() const
 {
     return m_resections;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void resection_db::setResections(const resection_db::ResectionContainerType& val)
+inline void resection_db::setResections(const resection_db::resection_container_t& _val)
 {
-    m_resections = val;
+    m_resections = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -167,9 +167,9 @@ inline resection::csptr resection_db::getSafeResection() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection_db::setSafeResection(const resection::sptr& _safeResection)
+inline void resection_db::setSafeResection(const resection::sptr& _safe_resection)
 {
-    m_safeResection = _safeResection;
+    m_safeResection = _safe_resection;
 }
 
 //-----------------------------------------------------------------------------

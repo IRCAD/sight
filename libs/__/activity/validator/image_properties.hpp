@@ -47,8 +47,8 @@ public:
      * @see activity::validator::base::validate
      */
     ACTIVITY_API validator::return_t validate(
-        const activity::extension::activity_info& activity_info,
-        const CSPTR(data::vector)& currentSelection
+        const activity::extension::activity_info& _activity_info,
+        const CSPTR(data::vector)& _current_selection
     ) const override;
 
     /**
@@ -56,7 +56,7 @@ public:
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see activity::validator::base::validate
      */
-    ACTIVITY_API validator::return_t validate(const CSPTR(data::object)& currentObject) const
+    ACTIVITY_API validator::return_t validate(const CSPTR(data::object)& _current_object) const
     override;
 };
 

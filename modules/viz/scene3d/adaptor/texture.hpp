@@ -31,7 +31,7 @@
 #include <data/material.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -86,7 +86,7 @@ public:
     MODULE_VIZ_SCENE3D_API std::string getTextureName() const;
 
     /// Sets the texture name.
-    MODULE_VIZ_SCENE3D_API void setTextureName(std::string _texName);
+    MODULE_VIZ_SCENE3D_API void setTextureName(std::string _tex_name);
 
     /// Gets if 1.0 is used as the alpha value.
     MODULE_VIZ_SCENE3D_API bool getUseAlpha() const;
@@ -120,7 +120,7 @@ protected:
 private:
 
     /// Contains the Ogre texture.
-    sight::viz::scene3d::Texture::sptr m_texture;
+    sight::viz::scene3d::texture::sptr m_texture;
 
     /// Defines the texture's name in the Ogre resource manager.
     std::string m_textureName;
@@ -138,8 +138,8 @@ private:
     bool m_isDynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    typedef core::com::signal<void ()> TextureSwappedSignalType;
-    TextureSwappedSignalType::sptr m_sigTextureSwapped;
+    typedef core::com::signal<void ()> texture_swapped_signal_t;
+    texture_swapped_signal_t::sptr m_sigTextureSwapped;
 
     static constexpr std::string_view s_TEXTURE_INOUT = "image";
     data::ptr<data::image, data::Access::in> m_image {this, s_TEXTURE_INOUT, true};
@@ -161,9 +161,9 @@ inline std::string texture::getTextureName() const
 
 //------------------------------------------------------------------------------
 
-inline void texture::setTextureName(std::string _texName)
+inline void texture::setTextureName(std::string _tex_name)
 {
-    m_textureName = _texName;
+    m_textureName = _tex_name;
 }
 
 //------------------------------------------------------------------------------

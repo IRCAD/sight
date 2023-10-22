@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
      * Several DicomCodedAttributes can be detected in a single entry.
      * @param[in] entry Entry containing one or several coded attributes.
      */
-    IO_DICOM_API static DicomCodedAttributeVectorType convertEntryToCodedAttribute(const std::string& entry);
+    IO_DICOM_API static DicomCodedAttributeVectorType convertEntryToCodedAttribute(const std::string& _entry);
 
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into GDCM's BasicCodedEntryVector.
@@ -53,7 +53,7 @@ public:
      * @param[in] entry Entry containing one or several coded attributes.
      */
     IO_DICOM_API static gdcm::Segment::BasicCodedEntryVector convertEntryToGDCMCodedAttribute(
-        const std::string& entry
+        const std::string& _entry
     );
 
     /**
@@ -63,7 +63,7 @@ public:
      * @param[in,out] entry Value that shall be verified and formatted
      * @param[in] multipleValue If set to 'false', check the uniqueness of the value
      */
-    IO_DICOM_API static bool checkAndFormatEntry(std::string& entry, bool multipleValue = false);
+    IO_DICOM_API static bool checkAndFormatEntry(std::string& _entry, bool _multiple_value = false);
 };
 
 } // namespace sight::io::dicom::helper

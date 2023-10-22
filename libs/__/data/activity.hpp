@@ -38,7 +38,7 @@ public:
 
     SIGHT_DECLARE_CLASS(activity, data::composite);
 
-    typedef std::string ConfigIdType;
+    typedef std::string config_id_t;
 
     /// Constructor / Destructor
     /// @{
@@ -47,47 +47,47 @@ public:
     /// @}
 
     /// Gets the activity configuration ID.
-    const ConfigIdType& getActivityConfigId() const;
+    const config_id_t& getActivityConfigId() const;
 
     /// Sets the activity configuration ID.
-    void setActivityConfigId(const ConfigIdType& _val);
+    void setActivityConfigId(const config_id_t& _val);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const activity& other) const noexcept;
-    DATA_API bool operator!=(const activity& other) const noexcept;
+    DATA_API bool operator==(const activity& _other) const noexcept;
+    DATA_API bool operator!=(const activity& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
 
     /// Defines the activity configuration ID.
-    ConfigIdType m_activityConfigId;
+    config_id_t m_activityConfigId;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const activity::ConfigIdType& activity::getActivityConfigId() const
+inline const activity::config_id_t& activity::getActivityConfigId() const
 {
     return m_activityConfigId;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void activity::setActivityConfigId(const activity::ConfigIdType& _val)
+inline void activity::setActivityConfigId(const activity::config_id_t& _val)
 {
     m_activityConfigId = _val;
 }

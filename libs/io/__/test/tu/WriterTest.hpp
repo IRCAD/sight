@@ -39,16 +39,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(STestWriter, sight::io::service::writer);
 
-    STestWriter(sight::io::service::IOPathType pt) :
-        m_pathType(pt)
+    STestWriter(sight::io::service::IOPathType _pt) :
+        m_pathType(_pt)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void setPathType(sight::io::service::IOPathType pt)
+    void set_path_type(sight::io::service::IOPathType _pt)
     {
-        m_pathType = pt;
+        m_pathType = _pt;
     }
 
 protected:

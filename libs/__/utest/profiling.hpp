@@ -41,27 +41,27 @@ namespace sight::utest
 
 template<typename Func, typename Unit = std::chrono::milliseconds>
 static inline std::tuple<Unit, Unit> profile_func(
-    const char* const SOURCE,
-    const int LINE,
-    Func f,
-    std::size_t iteration                     = 3,
-    const std::optional<std::string>& label   = std::nullopt,
-    const std::optional<double>& target_ratio = std::nullopt
+    const char* const _source,
+    const int _line,
+    Func _f,
+    std::size_t _iteration                     = 3,
+    const std::optional<std::string>& _label   = std::nullopt,
+    const std::optional<double>& _target_ratio = std::nullopt
 )
 {
     // Just to have at least one iteration
-    iteration = std::max(std::size_t(1), iteration);
+    _iteration = std::max(std::size_t(1), _iteration);
 
     std::vector<std::chrono::steady_clock::duration> durations;
-    durations.reserve(iteration);
+    durations.reserve(_iteration);
 
-    for(std::size_t i = 0 ; i < iteration ; ++i)
+    for(std::size_t i = 0 ; i < _iteration ; ++i)
     {
         // Register the current clock value
         const auto& start = std::chrono::steady_clock::now();
 
         // Execute the function
-        f(i);
+        _f(i);
 
         // Compute the elapsed time
         durations.emplace_back(std::chrono::steady_clock::now() - start);
@@ -79,10 +79,10 @@ static inline std::tuple<Unit, Unit> profile_func(
         durations.begin(),
         durations.end(),
         0.0,
-        [&](auto a, const auto& b)
+        [&](auto _a, const auto& _b)
         {
-            const double diff = double(b.count()) - double(mean.count());
-            return std::move(a) + (diff * diff);
+            const double diff = double(_b.count()) - double(mean.count());
+            return std::move(_a) + (diff * diff);
         }) / double(durations.size());
 
     // Compute standard error
@@ -100,33 +100,33 @@ static inline std::tuple<Unit, Unit> profile_func(
 
     bool accurate = true;
 
-    if(target_ratio)
+    if(_target_ratio)
     {
         // Check if the standard error is not too big which means the measured time is not very accurate
         const double error_ratio = error_as_double / mean_as_double;
-        accurate = error_ratio < *target_ratio;
+        accurate = error_ratio < *_target_ratio;
 
         // Max 1000 iteration in "auto" mode...
-        if(!accurate && iteration < 1000)
+        if(!accurate && _iteration < 1000)
         {
             // Increase the number of iteration to have a more accurate result
-            iteration *= 2;
+            _iteration *= 2;
 
             std::cerr
             << "\nInaccurate results (error ratio = "
             << error_ratio
             << ") > (target ratio = "
-            << *target_ratio
+            << *_target_ratio
             << "). Retrying with "
-            << iteration
+            << _iteration
             << " iterations."
             << std::endl;
 
-            return profile_func(SOURCE, LINE, f, iteration, label, target_ratio);
+            return profile_func(_source, _line, _f, _iteration, _label, _target_ratio);
         }
     }
 
-    if(label)
+    if(_label)
     {
         const auto unit = []
                           {
@@ -163,7 +163,7 @@ static inline std::tuple<Unit, Unit> profile_func(
 
         std::stringstream stream;
         stream
-        << *label
+        << *_label
         << " : average time ("
         << durations.size()
         << " iterations) = "
@@ -172,13 +172,13 @@ static inline std::tuple<Unit, Unit> profile_func(
         << ", standard error = "
         << error_as_double
         << " " << unit()
-        << (accurate || !target_ratio ? "" : " - Not accurate !");
+        << (accurate || !_target_ratio ? "" : " - Not accurate !");
 
         // We do not use macro because of __FILE__ and __LINE__
         sight::core::log::spy_logger::get().info(
             stream.str(),
-            SOURCE,
-            LINE
+            _source,
+            _line
         );
     }
 

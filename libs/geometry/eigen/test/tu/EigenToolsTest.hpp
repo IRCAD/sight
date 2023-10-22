@@ -38,7 +38,7 @@ private:
 
     CPPUNIT_TEST_SUITE(EigenToolsTest);
     CPPUNIT_TEST(f4sToEigen);
-    CPPUNIT_TEST(eigenToF4s);
+    CPPUNIT_TEST(from_eigen);
     CPPUNIT_TEST(float16ToEigen);
     CPPUNIT_TEST(eigenMatToRvecTvec);
     CPPUNIT_TEST(f4sMatToRvecTvec);
@@ -51,7 +51,7 @@ public:
     void tearDown() override;
 
     static void f4sToEigen();
-    static void eigenToF4s();
+    static void from_eigen();
 
     static void float16ToEigen();
 
@@ -61,9 +61,9 @@ public:
     //------------------------------------------------------------------------------
 
     template<class T>
-    static T random(const T& a, const T& b)
+    static T random(const T& _a, const T& _b)
     {
-        return static_cast<T>(core::tools::random::safe_rand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
+        return static_cast<T>(core::tools::random::safe_rand()) / static_cast<T>(RAND_MAX) * (_b - _a) + _a;
     }
 };
 

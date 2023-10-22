@@ -39,13 +39,13 @@ class IO_ITK_CLASS_API Transform
 public:
 
     /// Typedef to a itk Transform <double, 4,4>
-    typedef ::itk::Matrix<double, 4, 4> MatrixType;
+    typedef ::itk::Matrix<double, 4, 4> matrix_t;
     /**
      * @brief convert a Sight transformation to itk
      * @param _inTrf input data::matrix4
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    IO_ITK_API static MatrixType convertToITK(const data::matrix4::csptr& _inTrf);
+    IO_ITK_API static matrix_t convertToITK(const data::matrix4::csptr& _in_trf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
@@ -53,8 +53,8 @@ public:
      * @param _outTrf output data::matrix4 (needs to be allocated before)
      */
     IO_ITK_API static void convertFromITK(
-        const MatrixType& _inTrf,
-        data::matrix4::sptr& _outTrf
+        const matrix_t& _in_trf,
+        data::matrix4::sptr& _out_trf
     );
 };
 

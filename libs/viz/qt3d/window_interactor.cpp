@@ -27,7 +27,7 @@ namespace sight::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-const window_interactor::FactoryRegistryKeyType window_interactor::REGISTRY_KEY =
+const window_interactor::factory_registry_key_t window_interactor::REGISTRY_KEY =
     "::viz::qt3d::window_interactor::REGISTRY_KEY";
 
 //-----------------------------------------------------------------------------

@@ -43,24 +43,24 @@ void gz_array_writer::write()
     data::array::csptr array = this->getConcreteObject();
 
     /// test if can open archive
-    gzFile rawFile = gzopen(this->get_file().string().c_str(), "wb1");
-    if(rawFile == nullptr)
+    gzFile raw_file = gzopen(this->get_file().string().c_str(), "wb1");
+    if(raw_file == nullptr)
     {
         std::string str = "gz_array_writer::write unable to open ";
         str += get_file().string();
-        gzclose(rawFile);
+        gzclose(raw_file);
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = array->dump_lock();
+    const auto dump_lock = array->dump_lock();
 
     // file is OK : process now
-    const std::size_t arraySizeInBytes = array->getSizeInBytes();
+    const std::size_t array_size_in_bytes = array->getSizeInBytes();
 
     const int uncompressed_bytes_written =
-        gzwrite(rawFile, array->buffer(), static_cast<unsigned int>(arraySizeInBytes));
-    gzclose(rawFile);
-    if(uncompressed_bytes_written != static_cast<int>(arraySizeInBytes))
+        gzwrite(raw_file, array->buffer(), static_cast<unsigned int>(array_size_in_bytes));
+    gzclose(raw_file);
+    if(uncompressed_bytes_written != static_cast<int>(array_size_in_bytes))
     {
         std::string str = "gz_array_writer::write unable to write ";
         str += get_file().string();

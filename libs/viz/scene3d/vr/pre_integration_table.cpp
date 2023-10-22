@@ -27,7 +27,7 @@
 #include <core/profiling.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgrePrerequisites.h>
@@ -57,10 +57,10 @@ pre_integration_table::~pre_integration_table()
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::createTexture(const std::string& _parentId)
+void pre_integration_table::createTexture(const std::string& _parent_id)
 {
     m_tableTexture = Ogre::TextureManager::getSingleton().create(
-        _parentId + "_PreIntTableTexture",
+        _parent_id + "_PreIntTableTexture",
         viz::scene3d::RESOURCE_GROUP,
         true
     );
@@ -79,48 +79,48 @@ void pre_integration_table::removeTexture()
 void pre_integration_table::imageUpdate(
     const data::image::csptr& _img,
     const data::transfer_function::csptr& _tf,
-    float _samplingRate
+    float _sampling_rate
 )
 {
     FW_PROFILE("TF Init")
     {
-        Ogre::PixelFormat pixelFormat = viz::scene3d::Utils::getPixelFormatOgre(*_img);
+        Ogre::PixelFormat pixel_format = viz::scene3d::utils::getPixelFormatOgre(*_img);
 
-        const auto dumpLock = _img->dump_lock();
+        const auto dump_lock = _img->dump_lock();
 
-        const std::size_t nbPixels = _img->numElements();
+        const std::size_t nb_pixels = _img->numElements();
 
-        switch(pixelFormat)
+        switch(pixel_format)
         {
             case Ogre::PF_L8: //uint8
             {
-                const auto* ucharImgBuffer = static_cast<const uint8_t*>(_img->buffer());
-                auto minMax                = std::minmax_element(ucharImgBuffer, ucharImgBuffer + nbPixels);
+                const auto* uchar_img_buffer = static_cast<const uint8_t*>(_img->buffer());
+                auto min_max                 = std::minmax_element(uchar_img_buffer, uchar_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *minMax.first;
-                m_valueInterval.second = *minMax.second;
+                m_valueInterval.first  = *min_max.first;
+                m_valueInterval.second = *min_max.second;
 
                 break;
             }
 
             case Ogre::PF_L16: //int16
             {
-                const auto* ushortImgBuffer = static_cast<const int16_t*>(_img->buffer());
-                auto minMax                 = std::minmax_element(ushortImgBuffer, ushortImgBuffer + nbPixels);
+                const auto* ushort_img_buffer = static_cast<const int16_t*>(_img->buffer());
+                auto min_max                  = std::minmax_element(ushort_img_buffer, ushort_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *minMax.first;
-                m_valueInterval.second = *minMax.second;
+                m_valueInterval.first  = *min_max.first;
+                m_valueInterval.second = *min_max.second;
 
                 break;
             }
 
             case ::Ogre::PF_R32_SINT: //int32
             {
-                const auto* uintImgBuffer = static_cast<const int32_t*>(_img->buffer());
-                auto minMax               = std::minmax_element(uintImgBuffer, uintImgBuffer + nbPixels);
+                const auto* uint_img_buffer = static_cast<const int32_t*>(_img->buffer());
+                auto min_max                = std::minmax_element(uint_img_buffer, uint_img_buffer + nb_pixels);
 
-                m_valueInterval.first  = *minMax.first;
-                m_valueInterval.second = *minMax.second;
+                m_valueInterval.first  = *min_max.first;
+                m_valueInterval.second = *min_max.second;
 
                 break;
             }
@@ -129,11 +129,11 @@ void pre_integration_table::imageUpdate(
                 SIGHT_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
         }
 
-        auto textureSize = static_cast<unsigned>(m_valueInterval.second - m_valueInterval.first);
+        auto texture_size = static_cast<unsigned>(m_valueInterval.second - m_valueInterval.first);
 
-        if(textureSize != m_textureSize)
+        if(texture_size != m_textureSize)
         {
-            m_textureSize = textureSize;
+            m_textureSize = texture_size;
 
             if(m_table != nullptr)
             {
@@ -144,7 +144,7 @@ void pre_integration_table::imageUpdate(
             m_table         = new TablePixel[static_cast<std::size_t>(m_textureSize) * m_textureSize];
             m_integralTable = new IntegralPixel[m_textureSize];
 
-            Utils::allocateTexture(
+            utils::allocateTexture(
                 m_tableTexture.get(),
                 m_textureSize,
                 m_textureSize,
@@ -154,14 +154,14 @@ void pre_integration_table::imageUpdate(
                 true
             );
 
-            tfUpdate(_tf, _samplingRate);
+            tfUpdate(_tf, _sampling_rate);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, float _sampleDistance)
+void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, float _sample_distance)
 {
     if(m_table == nullptr)
     {
@@ -174,15 +174,15 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
 
         for(int k = 0 ; k < static_cast<int>(m_textureSize) ; ++k)
         {
-            data::transfer_function::value_t value             = k + m_valueInterval.first;
-            data::transfer_function::color_t interpolatedColor = _tf->sample(value);
+            data::transfer_function::value_t value              = k + m_valueInterval.first;
+            data::transfer_function::color_t interpolated_color = _tf->sample(value);
 
             // We use associated colours.
-            double alpha = interpolatedColor.a;
+            double alpha = interpolated_color.a;
             tmp += glm::vec4(
-                alpha * interpolatedColor.r,
-                alpha * interpolatedColor.g,
-                alpha * interpolatedColor.b,
+                alpha * interpolated_color.r,
+                alpha * interpolated_color.g,
+                alpha * interpolated_color.b,
                 alpha
             );
 
@@ -190,7 +190,7 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
         }
 
         // Inverse of the sampling accounted by the TF.
-        const float samplingAdjustmentFactor = 200.F;
+        const float sampling_adjustment_factor = 200.F;
 
         // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for schedule(dynamic)
@@ -200,7 +200,7 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
             {
                 glm::vec4 res(0.F);
 
-                const float d = (_sampleDistance * samplingAdjustmentFactor) / static_cast<float>(sb - sf);
+                const float d = (_sample_distance * sampling_adjustment_factor) / static_cast<float>(sb - sf);
 
                 if(sb != sf)
                 {
@@ -213,18 +213,18 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
                 }
                 else
                 {
-                    data::transfer_function::value_t value             = sb + m_valueInterval.first;
-                    data::transfer_function::color_t interpolatedColor = _tf->sample(value);
+                    data::transfer_function::value_t value              = sb + m_valueInterval.first;
+                    data::transfer_function::color_t interpolated_color = _tf->sample(value);
 
                     res =
                         glm::vec4(
-                            interpolatedColor.r,
-                            interpolatedColor.g,
-                            interpolatedColor.b,
-                            interpolatedColor.a
+                            interpolated_color.r,
+                            interpolated_color.g,
+                            interpolated_color.b,
+                            interpolated_color.a
                         );
 
-                    res.a = 1.F - std::pow(1.F - res.a, _sampleDistance * samplingAdjustmentFactor);
+                    res.a = 1.F - std::pow(1.F - res.a, _sample_distance * sampling_adjustment_factor);
                 }
 
                 res = glm::clamp(res, 0.F, 1.F);
@@ -239,16 +239,16 @@ void pre_integration_table::tfUpdate(const data::transfer_function::csptr& _tf, 
         }
 
         // Store table in texture buffer.
-        Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_tableTexture->getBuffer();
+        Ogre::HardwarePixelBufferSharedPtr pix_buffer = m_tableTexture->getBuffer();
 
         // Discards the entire buffer while locking so that we can easily refill it from scratch
-        pixBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-        Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
-        auto* pDest           = static_cast<std::uint8_t*>(pixBox.data);
+        pix_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        Ogre::PixelBox pix_box = pix_buffer->getCurrentLock();
+        auto* p_dest           = static_cast<std::uint8_t*>(pix_box.data);
 
-        std::memcpy(pDest, m_table, static_cast<std::size_t>(m_textureSize) * m_textureSize * sizeof(TablePixel));
+        std::memcpy(p_dest, m_table, static_cast<std::size_t>(m_textureSize) * m_textureSize * sizeof(TablePixel));
 
-        pixBuffer->unlock();
+        pix_buffer->unlock();
     }
 }
 

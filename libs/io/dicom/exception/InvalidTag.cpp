@@ -27,8 +27,8 @@ namespace sight::io::dicom::exception
 
 //----------------------------------------------------------------------------
 
-InvalidTag::InvalidTag(const std::string& message) :
-    core::exception(message)
+InvalidTag::InvalidTag(const std::string& _message) :
+    core::exception(_message)
 {
 }
 

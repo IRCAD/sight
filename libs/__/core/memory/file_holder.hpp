@@ -40,7 +40,7 @@ public:
     file_holder()
     = default;
 
-    CORE_API file_holder(const std::filesystem::path& file, bool autodelete = false);
+    CORE_API file_holder(const std::filesystem::path& _file, bool _autodelete = false);
 
     operator std::filesystem::path() const
     {

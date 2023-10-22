@@ -40,10 +40,10 @@ class VIZ_SCENE3D_CLASS_API mesh_picker_interactor final : public sight::viz::sc
 public:
 
     /// Defines the type of signal sent when a picking query succeeded.
-    using PointClickedSigType = core::com::signal<void (data::tools::picking_info)>;
+    using point_clicked_sig_t = core::com::signal<void (data::tools::picking_info)>;
 
     /// Initializes the picker.
-    VIZ_SCENE3D_API mesh_picker_interactor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;
+    VIZ_SCENE3D_API mesh_picker_interactor(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true) noexcept;
 
     /// Destroys the picker.
     VIZ_SCENE3D_API ~mesh_picker_interactor() noexcept override;
@@ -55,10 +55,10 @@ public:
     VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
     /// Sets the signal to be called when picking succeeded.
-    VIZ_SCENE3D_API void setPointClickedSig(const PointClickedSigType::sptr& _sig);
+    VIZ_SCENE3D_API void setPointClickedSig(const point_clicked_sig_t::sptr& _sig);
 
     /// Sets the mask to filter out entities with mismathing query flags.
-    VIZ_SCENE3D_API void setQueryMask(std::uint32_t _queryMask);
+    VIZ_SCENE3D_API void setQueryMask(std::uint32_t _query_mask);
 
 private:
 
@@ -77,7 +77,7 @@ private:
     std::uint32_t m_queryMask {0xffffffff};
 
     /// Defines the signal sent when picking succeeded.
-    PointClickedSigType::sptr m_pointClickedSig;
+    point_clicked_sig_t::sptr m_pointClickedSig;
 };
 
 } //namespace sight::viz::scene3d::interactor.

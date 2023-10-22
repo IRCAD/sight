@@ -40,13 +40,13 @@ image_series::image_series() :
 
 //------------------------------------------------------------------------------
 
-void image_series::shallow_copy(const object::csptr& source)
+void image_series::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const image_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const image_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -62,13 +62,13 @@ void image_series::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void image_series::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const image_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const image_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -77,31 +77,31 @@ void image_series::deep_copy(const object::csptr& source, const std::unique_ptr<
     m_dicomReference = data::object::copy(other->m_dicomReference);
 
     m_fiducialsSeries = std::make_shared<fiducials_series>();
-    m_fiducialsSeries->deep_copy(other->m_fiducialsSeries, cache);
+    m_fiducialsSeries->deep_copy(other->m_fiducialsSeries, _cache);
 
-    series::deep_copy(other, cache);
+    series::deep_copy(other, _cache);
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool image_series::operator==(const image_series& other) const noexcept
+bool image_series::operator==(const image_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicomReference, other.m_dicomReference))
+    if(!core::tools::is_equal(m_dicomReference, _other.m_dicomReference))
     {
         return false;
     }
 
     // Super class last
-    return series::operator==(other) && base_class::operator==(other);
+    return series::operator==(_other) && base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool image_series::operator!=(const image_series& other) const noexcept
+bool image_series::operator!=(const image_series& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
@@ -113,18 +113,18 @@ std::vector<double> image_series::getWindowCenter() const noexcept
 
 //------------------------------------------------------------------------------
 
-void image_series::setWindowCenter(const std::vector<double>& windowCenters)
+void image_series::setWindowCenter(const std::vector<double>& _window_centers)
 {
-    series::setWindowCenter(windowCenters);
-    image::setWindowCenter(windowCenters);
+    series::setWindowCenter(_window_centers);
+    image::setWindowCenter(_window_centers);
 }
 
 //------------------------------------------------------------------------------
 
-void image_series::setWindowWidth(const std::vector<double>& windowWidths)
+void image_series::setWindowWidth(const std::vector<double>& _window_widths)
 {
-    series::setWindowWidth(windowWidths);
-    image::setWindowWidth(windowWidths);
+    series::setWindowWidth(_window_widths);
+    image::setWindowWidth(_window_widths);
 }
 
 //------------------------------------------------------------------------------
@@ -136,14 +136,14 @@ std::vector<double> image_series::getWindowWidth() const noexcept
 
 //------------------------------------------------------------------------------
 
-void image_series::setRows(const std::optional<std::uint16_t>& rows)
+void image_series::setRows(const std::optional<std::uint16_t>& _rows)
 {
-    series::setRows(rows);
+    series::setRows(_rows);
 
     // Resize the image (if possible and needed...)
     if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::image::PixelFormat::UNDEFINED)
     {
-        const auto rows_value = rows.value_or(1);
+        const auto rows_value = _rows.value_or(1);
 
         if(const auto& original_size = size(); original_size[0] != rows_value)
         {
@@ -154,14 +154,14 @@ void image_series::setRows(const std::optional<std::uint16_t>& rows)
 
 //------------------------------------------------------------------------------
 
-void image_series::setColumns(const std::optional<std::uint16_t>& columns)
+void image_series::setColumns(const std::optional<std::uint16_t>& _columns)
 {
-    series::setColumns(columns);
+    series::setColumns(_columns);
 
     // Resize the image (if possible and needed...)
     if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::image::PixelFormat::UNDEFINED)
     {
-        const auto columns_value = columns.value_or(1);
+        const auto columns_value = _columns.value_or(1);
 
         if(const auto& original_size = size(); original_size[1] != columns_value)
         {
@@ -172,10 +172,10 @@ void image_series::setColumns(const std::optional<std::uint16_t>& columns)
 
 //------------------------------------------------------------------------------
 
-std::size_t image_series::resize(const Size& size, const core::type& type, PixelFormat format)
+std::size_t image_series::resize(const Size& _size, const core::type& _type, PixelFormat _format)
 {
-    series::shrinkFrames(size[2]);
-    return image::resize(size, type, format);
+    series::shrinkFrames(_size[2]);
+    return image::resize(_size, _type, _format);
 }
 
 //------------------------------------------------------------------------------

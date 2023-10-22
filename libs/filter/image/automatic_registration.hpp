@@ -44,16 +44,16 @@ class FILTER_IMAGE_CLASS_API automatic_registration
 public:
 
     /// Numeric type used for internal computations.
-    using RealType = double;
+    using real_t = double;
 
-    using RegisteredImageType = itk::Image<float, 3>;
+    using registered_image_t = itk::Image<float, 3>;
 
-    using OptimizerType = itk::RegularStepGradientDescentOptimizerv4<RealType>;
+    using optimizer_t = itk::RegularStepGradientDescentOptimizerv4<real_t>;
 
     /// Shrink factors per level and smoothing sigmas per level
-    using MultiResolutionParametersType = std::vector<std::pair<itk::SizeValueType, RealType> >;
+    using multi_resolution_parameters_t = std::vector<std::pair<itk::SizeValueType, real_t> >;
 
-    using IterationCallbackType = std::function<void ()>;
+    using iteration_callback_t = std::function<void ()>;
 
     FILTER_IMAGE_API automatic_registration() noexcept;
     FILTER_IMAGE_API virtual ~automatic_registration() noexcept;
@@ -74,29 +74,29 @@ public:
         const data::image::csptr& _reference,
         const data::matrix4::sptr& _trf,
         metric_t _metric,
-        const MultiResolutionParametersType& _multiResolutionParameters,
-        RealType _samplingPercentage    = 1.0,
-        double _minStep                 = 0.0001,
-        std::uint64_t _maxIterations    = 200,
-        IterationCallbackType _callback = nullptr
+        const multi_resolution_parameters_t& _multi_resolution_parameters,
+        real_t _sampling_percentage    = 1.0,
+        double _min_step               = 0.0001,
+        std::uint64_t _max_iterations  = 200,
+        iteration_callback_t _callback = nullptr
     );
 
     FILTER_IMAGE_API void stopRegistration();
 
     /// Current metric evaluated by the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API RealType getCurrentMetricValue() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t getCurrentMetricValue() const;
 
     /// Current set of parameters used to evaluate the metric in the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API const OptimizerType::ParametersType& getCurrentParameters() const;
+    [[nodiscard]] FILTER_IMAGE_API const optimizer_t::ParametersType& getCurrentParameters() const;
 
     /// Gradient descent relaxation factor.
-    [[nodiscard]] FILTER_IMAGE_API RealType getRelaxationFactor() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t getRelaxationFactor() const;
 
     /// Gradient descent learning rate.
-    [[nodiscard]] FILTER_IMAGE_API RealType getLearningRate() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t getLearningRate() const;
 
     /// Gradient magnitude tolerance.
-    [[nodiscard]] FILTER_IMAGE_API RealType getGradientMagnitudeTolerance() const;
+    [[nodiscard]] FILTER_IMAGE_API real_t getGradientMagnitudeTolerance() const;
 
     /// Current optimizer iteration.
     [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType getCurrentIteration() const;

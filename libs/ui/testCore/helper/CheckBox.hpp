@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class CheckBox
@@ -37,21 +37,21 @@ public:
      * @param tester The current tester
      * @param checkBox How to get the check box to toggle
      */
-    GUITEST_API static void toggle(Tester& tester, const Select& checkBox);
+    GUITEST_API static void toggle(Tester& _tester, const Select& _check_box);
 
     /**
      * Check whether a check box is checked
      * @param tester The current tester
      * @param checkBox How to get the check box to verify
      */
-    GUITEST_API static void shouldBeChecked(Tester& tester, const Select& checkBox);
+    GUITEST_API static void shouldBeChecked(Tester& _tester, const Select& _check_box);
 
     /**
      * Check whether a check box isn't checked
      * @param tester The current tester
      * @param checkBox How to get the check box to verify
      */
-    GUITEST_API static void shouldNotBeChecked(Tester& tester, const Select& checkBox);
+    GUITEST_API static void shouldNotBeChecked(Tester& _tester, const Select& _check_box);
 };
 
 } // namespace sight::ui::testCore::helper

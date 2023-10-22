@@ -38,7 +38,7 @@ namespace sight::core::tools
  * @return casted and rounded value.
  */
 template<typename TYPEOUT, typename TYPEIN>
-TYPEOUT numeric_round_cast(const TYPEIN& value)
+TYPEOUT numeric_round_cast(const TYPEIN& _value)
 {
     typedef boost::numeric::conversion_traits<TYPEOUT, TYPEIN> traits_type;
     typedef boost::numeric::silent_overflow_handler overflow_handler_type;
@@ -56,7 +56,7 @@ TYPEOUT numeric_round_cast(const TYPEIN& value)
             range_checker_type
     > round_cast_type;
 
-    return round_cast_type::convert(value);
+    return round_cast_type::convert(_value);
 }
 
 } // namespace sight::core::tools

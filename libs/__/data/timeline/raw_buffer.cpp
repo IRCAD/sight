@@ -28,12 +28,12 @@ namespace sight::data::timeline
 //-----------------------------------------------------------------------------
 
 raw_buffer::raw_buffer(
-    core::hires_clock::type timestamp,
-    BufferDataType buffer,
-    std::size_t size,
-    DeleterType d
+    core::hires_clock::type _timestamp,
+    buffer_data_t _buffer,
+    std::size_t _size,
+    deleter_t _d
 ) :
-    timeline::buffer(timestamp, buffer, size, d)
+    timeline::buffer(_timestamp, _buffer, _size, _d)
 {
 }
 
@@ -44,9 +44,9 @@ raw_buffer::~raw_buffer()
 
 //-----------------------------------------------------------------------------
 
-void raw_buffer::setBufferValues(BufferDataType values)
+void raw_buffer::setBufferValues(buffer_data_t _values)
 {
-    memcpy(m_buffer, values, m_size);
+    memcpy(m_buffer, _values, m_size);
 }
 
 } // namespace sight::data::timeline

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,12 +32,12 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRTextNode::DicomSRTextNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    std::string textValue
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    std::string _text_value
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "TEXT", relationship),
-    m_textValue(std::move(textValue))
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "TEXT", _relationship),
+    m_textValue(std::move(_text_value))
 {
 }
 
@@ -48,20 +48,20 @@ DicomSRTextNode::~DicomSRTextNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNode::write(gdcm::DataSet& dataset) const
+void DicomSRTextNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Text Value - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa160>(m_textValue, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa160>(m_textValue, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNode::print(std::ostream& os) const
+void DicomSRTextNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nText value : [" << m_textValue << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nText value : [" << m_textValue << "]";
 }
 
 //------------------------------------------------------------------------------

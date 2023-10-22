@@ -43,14 +43,14 @@ namespace sight::io::dicom::writer::iod
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::CTMRImageIOD(
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const std::filesystem::path& destinationPath,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const std::filesystem::path& _destination_path,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger,
-                                                        progress, cancel)
+    io::dicom::writer::iod::InformationObjectDefinition(_instance, _destination_path, _logger,
+                                                        _progress, _cancel)
 {
 }
 
@@ -61,97 +61,97 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::write(const data::series::csptr& series)
+void CTMRImageIOD::write(const data::series::csptr& _series)
 {
     // Retrieve image series
-    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
-    SIGHT_ASSERT("Image series should not be null.", imageSeries);
+    data::image_series::csptr image_series = std::dynamic_pointer_cast<const data::image_series>(_series);
+    SIGHT_ASSERT("Image series should not be null.", image_series);
 
     // Create writer
     SPTR(gdcm::ImageWriter) writer = std::make_shared<gdcm::ImageWriter>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
-    io::dicom::writer::ie::series seriesIE(writer, m_instance, series);
-    io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_instance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
-    io::dicom::writer::ie::image imageIE(writer, m_instance, imageSeries);
+    io::dicom::writer::ie::Patient patient_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::Study study_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::series series_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::FrameOfReference frame_of_reference_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::Equipment equipment_ie(writer, m_instance, _series);
+    io::dicom::writer::ie::image image_ie(writer, m_instance, image_series);
 
     // Write Patient Module - PS 3.3 C.7.1.1
-    patientIE.writePatientModule();
+    patient_ie.writePatientModule();
 
     // Write General Study Module - PS 3.3 C.7.2.1
-    studyIE.writeGeneralStudyModule();
+    study_ie.writeGeneralStudyModule();
 
     // Write Patient Study Module - PS 3.3 C.7.2.2
-    studyIE.writePatientStudyModule();
+    study_ie.writePatientStudyModule();
 
     // Write General Series Module - PS 3.3 C.7.3.1
-    seriesIE.writeGeneralSeriesModule();
+    series_ie.writeGeneralSeriesModule();
 
     // Write Frame of Reference Module - PS 3.3 C.7.4.1
-    frameOfReferenceIE.writeFrameOfReferenceModule();
+    frame_of_reference_ie.writeFrameOfReferenceModule();
 
     // Write General Equipment Module - PS 3.3 C.7.5.1
-    equipmentIE.writeGeneralEquipmentModule();
+    equipment_ie.writeGeneralEquipmentModule();
 
     // Write General Image Module - PS 3.3 C.7.6.1
-    imageIE.writeGeneralImageModule();
+    image_ie.writeGeneralImageModule();
 
     // Write Image Plane Module - PS 3.3 C.7.6.2
-    imageIE.writeImagePlaneModule();
+    image_ie.writeImagePlaneModule();
 
     // Write Image Pixel Module - PS 3.3 C.7.6.3
-    imageIE.writeImagePixelModule();
+    image_ie.writeImagePixelModule();
 
     if(m_instance->getSOPClassUID() == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage))
     {
         // Write CT Image Module - PS 3.3 C.8.2.1
-        imageIE.writeCTImageModule();
+        image_ie.writeCTImageModule();
     }
     else if(m_instance->getSOPClassUID() == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
         // Write MR Image Module - PS 3.3 C.8.3.1
-        imageIE.writeMRImageModule();
+        image_ie.writeMRImageModule();
     }
 
     // Write VOI LUT Module - PS 3.3 C.11.2
-    imageIE.writeVOILUTModule();
+    image_ie.writeVOILUTModule();
 
     // Write SOP Common Module - PS 3.3 C.12.1
-    imageIE.writeSOPCommonModule();
+    image_ie.writeSOPCommonModule();
 
     // Copy dataset to avoid writing conflict with GDCM
-    const gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
+    const gdcm::DataSet dataset_copy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (imageSeries->size()[2]) : 1;
+    std::size_t nb_frames = (m_instance->getIsMultiFiles()) ? (image_series->size()[2]) : 1;
 
     // Write specific tags according to frame number
-    for(unsigned int i = 0 ; i < nbFrames ; ++i)
+    for(unsigned int i = 0 ; i < nb_frames ; ++i)
     {
         // Reset dataset
-        writer->GetFile().SetDataSet(datasetCopy);
+        writer->GetFile().SetDataSet(dataset_copy);
 
         // Write SOP Common Module specific tags - PS 3.3 C.12.1
-        imageIE.writeSOPCommonModuleSpecificTags(i);
+        image_ie.writeSOPCommonModuleSpecificTags(i);
 
         // Write General Image Module specific tags - PS 3.3 C.7.6.1
-        imageIE.writeGeneralImageModuleSpecificTags(i);
+        image_ie.writeGeneralImageModuleSpecificTags(i);
 
         // Write Image Plane Module specific tags - PS 3.3 C.7.6.2
-        imageIE.writeImagePlaneModuleSpecificTags(i);
+        image_ie.writeImagePlaneModuleSpecificTags(i);
 
         // Write Image Pixel Module specific tags - PS 3.3 C.7.6.3
-        imageIE.writeImagePixelModuleSpecificTags(i);
+        image_ie.writeImagePixelModuleSpecificTags(i);
 
         // Write file
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(5) << i;
-        auto framePath = m_destinationPath;
-        framePath += ss.str();
-        io::dicom::helper::FileWriter::write(framePath, writer);
+        auto frame_path = m_destinationPath;
+        frame_path += ss.str();
+        io::dicom::helper::FileWriter::write(frame_path, writer);
     }
 }
 

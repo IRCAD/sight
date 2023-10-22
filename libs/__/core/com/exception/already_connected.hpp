@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// Bad call exception.
 struct already_connected : core::exception
 {
-    CORE_API already_connected(const std::string& err);
+    CORE_API already_connected(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

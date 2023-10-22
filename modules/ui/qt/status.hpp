@@ -149,19 +149,19 @@ protected:
     void changeToOrange();
 
     /// SLOT : change label color (true = green, false = red)
-    void toggleGreenRed(bool green);
+    void toggleGreenRed(bool _green);
 
     /// SLOT : change nth label color
-    void changeNthToGreen(int index);
+    void changeNthToGreen(int _index);
 
     /// SLOT : change nth label color
-    void changeNthToRed(int index);
+    void changeNthToRed(int _index);
 
     /// SLOT : change nth label color
-    void changeNthToOrange(int index);
+    void changeNthToOrange(int _index);
 
     /// SLOT : change nth label color (true = green, false = red)
-    void toggleNthGreenRed(int index, bool green);
+    void toggleNthGreenRed(int _index, bool _green);
 
 private:
 

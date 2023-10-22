@@ -32,7 +32,7 @@
 #include <QEvent>
 #include <QObject>
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 class GUITEST_CLASS_API test : public CPPUNIT_NS::TestFixture
@@ -43,11 +43,15 @@ public:
 
 protected:
 
-    GUITEST_API void start(const std::string& testName, std::function<void(Tester&)> test, bool verboseMode = false);
+    GUITEST_API void start(
+        const std::string& _test_name,
+        std::function<void(Tester&)> _test,
+        bool _verbose_mode = false
+    );
 
     GUITEST_API virtual std::filesystem::path getProfilePath() = 0;
 
-    GUITEST_API static void compareImages(const std::filesystem::path& a, const std::filesystem::path& b);
+    GUITEST_API static void compareImages(const std::filesystem::path& _a, const std::filesystem::path& _b);
 
 private:
 

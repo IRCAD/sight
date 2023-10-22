@@ -28,7 +28,7 @@
 #include "ui/__/service.hpp"
 
 #include <ui/__/toolbar.hpp>
-#include <ui/qt/widget/SpeedDial.hpp>
+#include <ui/qt/widget/speed_dial.hpp>
 
 #include <QShortcut>
 
@@ -74,7 +74,7 @@ public:
 
     icon_speed_dial();
 
-    struct Action
+    struct action
     {
         std::string sid;
         std::string name;
@@ -100,15 +100,15 @@ private:
 
     void updateActions();
 
-    sight::ui::qt::widget::SpeedDial::Direction m_direction = sight::ui::qt::widget::SpeedDial::Direction::UP;
-    int m_spacing                                           = -1;
+    sight::ui::qt::widget::speed_dial::Direction m_direction = sight::ui::qt::widget::speed_dial::Direction::UP;
+    int m_spacing                                            = -1;
     std::string m_icon;
     std::string m_unfoldedIcon;
     int m_animationDuration = -1;
-    std::vector<Action> m_actions;
+    std::vector<action> m_actions;
     std::vector<QWidget*> m_widgets;
 
-    sight::ui::qt::widget::SpeedDial* m_speedDial = nullptr;
+    sight::ui::qt::widget::speed_dial* m_speedDial = nullptr;
     std::vector<QShortcut*> m_shortcuts;
 };
 

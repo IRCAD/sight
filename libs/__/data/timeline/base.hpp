@@ -38,8 +38,8 @@ typedef enum
 
 struct signals
 {
-    using pushed_t  = core::com::signal<void (core::hires_clock::type timestamp)>;
-    using removed_t = core::com::signal<void (core::hires_clock::type timestamp)>;
+    using pushed_t  = core::com::signal<void (core::hires_clock::type _timestamp)>;
+    using removed_t = core::com::signal<void (core::hires_clock::type _timestamp)>;
     using cleared_t = core::com::signal<void ()>;
 
     inline static const core::com::signals::key_t PUSHED  = "objectPushed";
@@ -62,21 +62,21 @@ public:
     DATA_API ~base() override = default;
 
     /// Push an object to the base
-    DATA_API virtual void pushObject(const SPTR(timeline::object)& obj) = 0;
+    DATA_API virtual void pushObject(const SPTR(timeline::object)& _obj) = 0;
 
     /// Removes an object from the base
-    DATA_API virtual SPTR(timeline::object) popObject(core::hires_clock::type timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) popObject(core::hires_clock::type _timestamp) = 0;
 
     /// modify an object timestamp
     DATA_API virtual void modifyTime(
-        core::hires_clock::type timestamp,
-        core::hires_clock::type newTimestamp
+        core::hires_clock::type _timestamp,
+        core::hires_clock::type _new_timestamp
     ) = 0;
 
     /// Change an object to the specified timestamp
     DATA_API virtual void set_object(
-        core::hires_clock::type timestamp,
-        const SPTR(timeline::object)& obj
+        core::hires_clock::type _timestamp,
+        const SPTR(timeline::object)& _obj
     ) = 0;
 
     /**
@@ -84,7 +84,7 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the base. You must call pushObject() to register it.
      */
-    DATA_API virtual SPTR(timeline::object) createObject(core::hires_clock::type timestamp) = 0;
+    DATA_API virtual SPTR(timeline::object) createObject(core::hires_clock::type _timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
@@ -92,17 +92,17 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(timeline::object) getClosestObject(
-        core::hires_clock::type timestamp,
-        direction_t direction = BOTH
+        core::hires_clock::type _timestamp,
+        direction_t _direction = BOTH
     ) const = 0;
 
     /// Return the object with the specified timestamp
-    DATA_API virtual CSPTR(timeline::object) getObject(core::hires_clock::type timestamp) const = 0;
+    DATA_API virtual CSPTR(timeline::object) getObject(core::hires_clock::type _timestamp) const = 0;
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const base& other) const noexcept;
-    DATA_API bool operator!=(const base& other) const noexcept;
+    DATA_API bool operator==(const base& _other) const noexcept;
+    DATA_API bool operator!=(const base& _other) const noexcept;
     /// @}
 
 protected:

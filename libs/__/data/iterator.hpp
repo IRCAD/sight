@@ -84,32 +84,32 @@ public:
     /// @}
 
     array_iterator() = default;
-    constexpr array_iterator(pointer begin);
-    array_iterator(const array_iterator<T>& other) = default;
-    array_iterator(array_iterator<T>&& other) noexcept = default;
+    constexpr array_iterator(pointer _begin);
+    array_iterator(const array_iterator<T>& _other) = default;
+    array_iterator(array_iterator<T>&& _other) noexcept = default;
     ~array_iterator() = default;
 
     template<bool isConst = std::is_const_v<T>, typename = typename std::enable_if_t<isConst> >
-    constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& other);
+    constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& _other);
 
-    array_iterator& operator=(const array_iterator& other) = default;
-    array_iterator& operator=(array_iterator&& other) noexcept = default;
+    array_iterator& operator=(const array_iterator& _other) = default;
+    array_iterator& operator=(array_iterator&& _other) noexcept = default;
 
     /// Comparison operators
-    constexpr bool operator==(const array_iterator& other) const noexcept;
-    constexpr bool operator!=(const array_iterator& other) const noexcept;
+    constexpr bool operator==(const array_iterator& _other) const noexcept;
+    constexpr bool operator!=(const array_iterator& _other) const noexcept;
 
     /// Increment/Decrement operators
     array_iterator& operator++();
     const array_iterator operator++(int); // NOLINT(readability-const-return-type)
-    constexpr array_iterator operator+(difference_type index) const;
-    array_iterator& operator+=(difference_type index);
+    constexpr array_iterator operator+(difference_type _index) const;
+    array_iterator& operator+=(difference_type _index);
     array_iterator& operator--();
     const array_iterator operator--(int); // NOLINT(readability-const-return-type)
-    constexpr array_iterator operator-(difference_type index) const;
-    array_iterator& operator-=(difference_type index);
+    constexpr array_iterator operator-(difference_type _index) const;
+    array_iterator& operator-=(difference_type _index);
 
-    constexpr difference_type operator-(const array_iterator& other) const noexcept;
+    constexpr difference_type operator-(const array_iterator& _other) const noexcept;
 
     /// Value access operators
     reference operator*() const;

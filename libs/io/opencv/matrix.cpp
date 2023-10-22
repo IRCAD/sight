@@ -29,7 +29,7 @@ namespace sight::io::opencv
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyFromCv(const cv::Matx44d& _src, data::matrix4::sptr& _dst)
+void matrix::copy_from_cv(const cv::Matx44d& _src, data::matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("sight::data::matrix4 is null", _dst);
 
@@ -59,7 +59,7 @@ void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Matx44d& _dst)
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyFromCv(const cv::Matx44f& _src, data::matrix4::sptr& _dst)
+void matrix::copy_from_cv(const cv::Matx44f& _src, data::matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("sight::data::matrix4 is null", _dst);
 
@@ -89,7 +89,7 @@ void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Matx44f& _dst)
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::matrix4::sptr& _dst)
+void matrix::copy_from_cv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::matrix4::sptr& _dst)
 {
     // Check validity of _rvec & _tvec.
     SIGHT_ASSERT("Rotation vector 'rvec' should be of size 1x3", _rvec.size().width == 1 && _rvec.size().height == 3);
@@ -149,7 +149,7 @@ void matrix::copyToCv(const data::matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat&
 
 //-----------------------------------------------------------------------------
 
-void matrix::copyFromCv(const cv::Mat& _src, data::matrix4::sptr& _dst)
+void matrix::copy_from_cv(const cv::Mat& _src, data::matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("Size of OpenCV matrix should be 4x4", _src.cols == 4 && _src.rows == 4);
     SIGHT_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1);

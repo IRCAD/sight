@@ -21,40 +21,40 @@
 
 #include "Scene3d.hpp"
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void Scene3d::rotate(Tester& tester, const Select& scene, QPointF rotation)
+void Scene3d::rotate(Tester& _tester, const Select& _scene, QPointF _rotation)
 {
-    auto bt = tester.addInBacktrace(
-        "rotating \"" + scene.getDescription(tester) + "\" scene by (" + std::to_string(rotation.x())
-        + ", " + std::to_string(rotation.y()) + ')'
+    auto bt = _tester.addInBacktrace(
+        "rotating \"" + _scene.getDescription(_tester) + "\" scene by (" + std::to_string(_rotation.x())
+        + ", " + std::to_string(_rotation.y()) + ')'
     );
-    scene.select(tester);
-    const QWidget* s = tester.get<QWidget*>();
-    int rotationX    = rotation.x() == 0 ? 0 : static_cast<int>(s->width() * rotation.x());
-    int rotationY    = rotation.y() == 0 ? 0 : static_cast<int>(s->height() * rotation.y());
-    tester.interact(
+    _scene.select(_tester);
+    const QWidget* s = _tester.get<QWidget*>();
+    int rotation_x   = _rotation.x() == 0 ? 0 : static_cast<int>(s->width() * _rotation.x());
+    int rotation_y   = _rotation.y() == 0 ? 0 : static_cast<int>(s->height() * _rotation.y());
+    _tester.interact(
         std::make_unique<MouseDrag>(
             Tester::leftOf(s),
-            Tester::leftOf(s) + QPoint(rotationX, rotationY)
+            Tester::leftOf(s) + QPoint(rotation_x, rotation_y)
         )
     );
 }
 
 //------------------------------------------------------------------------------
 
-void Scene3d::zoom(Tester& tester, const Select& scene, int mouseSteps)
+void Scene3d::zoom(Tester& _tester, const Select& _scene, int _mouse_steps)
 {
-    auto bt = tester.addInBacktrace(
-        "zooming \"" + scene.getDescription(tester) + "\" scene by " + std::to_string(mouseSteps) + " mouse steps"
+    auto bt = _tester.addInBacktrace(
+        "zooming \"" + _scene.getDescription(_tester) + "\" scene by " + std::to_string(_mouse_steps) + " mouse steps"
     );
-    scene.select(tester);
-    tester.interact(
-        std::make_unique<MouseWheel>(QPoint(0, static_cast<int>(mouseSteps * 120 / qApp->devicePixelRatio())))
+    _scene.select(_tester);
+    _tester.interact(
+        std::make_unique<MouseWheel>(QPoint(0, static_cast<int>(_mouse_steps * 120 / qApp->devicePixelRatio())))
     );
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

@@ -48,46 +48,46 @@ void ImageDiffCommandTest::tearDown()
 
 void ImageDiffCommandTest::undoredoTest()
 {
-    const data::image::Size SIZE          = {{32, 32, 32}};
-    const data::image::Spacing SPACING    = {{1., 1., 1.}};
-    const data::image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::type TYPE                 = core::type::UINT8;
+    const data::image::Size size          = {{32, 32, 32}};
+    const data::image::Spacing spacing    = {{1., 1., 1.}};
+    const data::image::Origin origin      = {{0., 0., 0.}};
+    const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
 
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utest_data::generator::image::generateImage(image, size, spacing, origin, type, format);
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
     filter::image::image_diff diff(image->getType().size());
 
-    std::uint8_t NEWVALUE = 1;
+    std::uint8_t newvalue = 1;
 
-    auto* newBufferValue = reinterpret_cast<data::image::BufferType*>(&NEWVALUE);
+    auto* new_buffer_value = reinterpret_cast<data::image::buffer_t*>(&newvalue);
 
-    const std::vector<data::image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
+    const std::vector<data::image::index_t> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(std::size_t i = 0 ; i < 8 ; ++i)
     {
-        const data::image::IndexType index = indices[i];
+        const data::image::index_t index = indices[i];
 
-        const data::image::BufferType* pixBuf =
-            reinterpret_cast<data::image::BufferType*>(image->getPixel(index));
+        const data::image::buffer_t* pix_buf =
+            reinterpret_cast<data::image::buffer_t*>(image->getPixel(index));
 
-        diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixel(index, newBufferValue);
+        diff.addDiff(index, pix_buf, new_buffer_value);
+        image->setPixel(index, new_buffer_value);
 
         CPPUNIT_ASSERT_EQUAL(i + 1, diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
     // Create an imageDiffCommand to test
-    ui::history::ImageDiffCommand imageDiffCommand(image, diff);
+    ui::history::ImageDiffCommand image_diff_command(image, diff);
 
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
-    CPPUNIT_ASSERT(imageDiffCommand.undo());
+    CPPUNIT_ASSERT(image_diff_command.undo());
 
     for(std::size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
     {
@@ -95,16 +95,16 @@ void ImageDiffCommandTest::undoredoTest()
     }
 
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
-    CPPUNIT_ASSERT(imageDiffCommand.redo());
+    CPPUNIT_ASSERT(image_diff_command.redo());
 
     for(std::size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
     {
         // Check if 'i' is an index
-        auto indexIt = std::find(indices.begin(), indices.end(), i);
+        auto index_it = std::find(indices.begin(), indices.end(), i);
 
-        if(indexIt != indices.end())
+        if(index_it != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
+            CPPUNIT_ASSERT_EQUAL(newvalue, *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
         else
         {
@@ -117,49 +117,49 @@ void ImageDiffCommandTest::undoredoTest()
 
 void ImageDiffCommandTest::getSizeTest()
 {
-    const data::image::Size SIZE          = {{32, 32, 32}};
-    const data::image::Spacing SPACING    = {{1., 1., 1.}};
-    const data::image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::type TYPE                 = core::type::UINT8;
+    const data::image::Size size          = {{32, 32, 32}};
+    const data::image::Spacing spacing    = {{1., 1., 1.}};
+    const data::image::Origin origin      = {{0., 0., 0.}};
+    const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
 
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utest_data::generator::image::generateImage(image, size, spacing, origin, type, format);
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
     filter::image::image_diff diff(image->getType().size() * 64);
 
-    std::uint8_t NEWVALUE = 1;
+    std::uint8_t newvalue = 1;
 
-    auto* newBufferValue = reinterpret_cast<data::image::BufferType*>(&NEWVALUE);
+    auto* new_buffer_value = reinterpret_cast<data::image::buffer_t*>(&newvalue);
 
-    const std::vector<data::image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
+    const std::vector<data::image::index_t> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(std::size_t i = 0 ; i < 8 ; ++i)
     {
-        const data::image::IndexType index = indices[i];
+        const data::image::index_t index = indices[i];
 
-        const data::image::BufferType* pixBuf =
-            reinterpret_cast<data::image::BufferType*>(image->getPixel(index));
+        const data::image::buffer_t* pix_buf =
+            reinterpret_cast<data::image::buffer_t*>(image->getPixel(index));
 
-        diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixel(index, newBufferValue);
+        diff.addDiff(index, pix_buf, new_buffer_value);
+        image->setPixel(index, new_buffer_value);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
     // Create an imageDiffCommand to test
-    ui::history::ImageDiffCommand imageDiffCommand(image, diff);
+    ui::history::ImageDiffCommand image_diff_command(image, diff);
 
     // Ensure that the real size is at least bigger than the naive sizeof
-    CPPUNIT_ASSERT(imageDiffCommand.size() > sizeof(imageDiffCommand));
+    CPPUNIT_ASSERT(image_diff_command.size() > sizeof(image_diff_command));
 
     // Ensure that the real size is at least bigger than the size of the diff
-    CPPUNIT_ASSERT(imageDiffCommand.size() > diff.size());
+    CPPUNIT_ASSERT(image_diff_command.size() > diff.size());
 }
 
 //------------------------------------------------------------------------------

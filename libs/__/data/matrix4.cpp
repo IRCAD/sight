@@ -39,29 +39,29 @@ matrix4::matrix4()
 
 //------------------------------------------------------------------------------
 
-matrix4::matrix4(std::initializer_list<value_type> init_list)
+matrix4::matrix4(std::initializer_list<value_type> _init_list)
 {
-    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", init_list.size() == this->size());
-    std::copy(init_list.begin(), init_list.end(), this->begin());
+    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", _init_list.size() == this->size());
+    std::copy(_init_list.begin(), _init_list.end(), this->begin());
 }
 
 //------------------------------------------------------------------------------
-matrix4& matrix4::operator=(std::initializer_list<value_type> init_list)
+matrix4& matrix4::operator=(std::initializer_list<value_type> _init_list)
 {
-    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", init_list.size() == this->size());
-    std::copy(init_list.begin(), init_list.end(), this->begin());
+    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", _init_list.size() == this->size());
+    std::copy(_init_list.begin(), _init_list.end(), this->begin());
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-void matrix4::shallow_copy(const object::csptr& source)
+void matrix4::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const matrix4>(source);
+    const auto& other = std::dynamic_pointer_cast<const matrix4>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -72,19 +72,19 @@ void matrix4::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void matrix4::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void matrix4::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const matrix4>(source);
+    const auto& other = std::dynamic_pointer_cast<const matrix4>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------

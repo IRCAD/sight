@@ -43,24 +43,24 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr make(const std::string& title, const ui::dialog::pulse_progress_base::Stuff& stuff)
+    static sptr make(const std::string& _title, const ui::dialog::pulse_progress_base::Stuff& _stuff)
     {
-        return std::make_shared<pulse_progress>(title, stuff);
+        return std::make_shared<pulse_progress>(_title, _stuff);
     }
 
     /// will instantiate the concrete implementation
     UI_API pulse_progress(
-        const std::string& title,
-        Stuff stuff,
-        const std::string& msg                                        = std::string(),
-        ui::dialog::pulse_progress_base::MilliSecond frequenceRefresh = 100
+        const std::string& _title,
+        Stuff _stuff,
+        const std::string& _msg                                         = std::string(),
+        ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh = 100
     );
 
     ///set the title for the dialog
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     ///set the message for the dialog
-    UI_API void setMessage(const std::string& message) override;
+    UI_API void setMessage(const std::string& _message) override;
 
     ///show the pulse progress dialog
     UI_API void show() override;

@@ -35,10 +35,10 @@ constexpr static auto s_Type {"Type"};
 constexpr static auto s_Class {"Class"};
 constexpr static auto s_NativeExp {"NativeExp"};
 constexpr static auto s_NativeGeometricExp {"NativeGeometricExp"};
-constexpr static auto s_AttachmentType {"AttachmentType"};
+constexpr static auto s_AttachmentType {"attachment_t"};
 constexpr static auto s_AnatomicRegion {"AnatomicRegion"};
 constexpr static auto s_PropertyCategory {"PropertyCategory"};
-constexpr static auto s_PropertyType {"PropertyType"};
+constexpr static auto s_PropertyType {"property_t"};
 constexpr static auto s_Category {"Category"};
 constexpr static auto s_Categories {"Categories"};
 constexpr static auto s_Color {"Color"};
@@ -47,82 +47,82 @@ constexpr static auto s_Color {"Color"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto structureTraits = helper::safe_cast<data::structure_traits>(object);
+    const auto structure_traits = helper::safe_cast<data::structure_traits>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::structure_traits>(tree, 1);
+    helper::write_version<data::structure_traits>(_tree, 1);
 
     // Serialize attributes
-    helper::write_string(tree, s_Type, structureTraits->getType());
-    tree.put(s_Class, structureTraits->getClass());
-    helper::write_string(tree, s_NativeExp, structureTraits->getNativeExp());
-    helper::write_string(tree, s_NativeGeometricExp, structureTraits->getNativeGeometricExp());
-    helper::write_string(tree, s_AttachmentType, structureTraits->getAttachmentType());
-    helper::write_string(tree, s_AnatomicRegion, structureTraits->getAnatomicRegion());
-    helper::write_string(tree, s_PropertyCategory, structureTraits->getPropertyCategory());
-    helper::write_string(tree, s_PropertyType, structureTraits->getPropertyType());
+    helper::write_string(_tree, s_Type, structure_traits->getType());
+    _tree.put(s_Class, structure_traits->getClass());
+    helper::write_string(_tree, s_NativeExp, structure_traits->getNativeExp());
+    helper::write_string(_tree, s_NativeGeometricExp, structure_traits->getNativeGeometricExp());
+    helper::write_string(_tree, s_AttachmentType, structure_traits->get_attachment_type());
+    helper::write_string(_tree, s_AnatomicRegion, structure_traits->getAnatomicRegion());
+    helper::write_string(_tree, s_PropertyCategory, structure_traits->getPropertyCategory());
+    helper::write_string(_tree, s_PropertyType, structure_traits->get_property_type());
 
     // Categories
-    boost::property_tree::ptree categoriesTree;
+    boost::property_tree::ptree categories_tree;
 
-    for(const auto& category : structureTraits->getCategories())
+    for(const auto& category : structure_traits->getCategories())
     {
-        categoriesTree.add(s_Category, category);
+        categories_tree.add(s_Category, category);
     }
 
-    tree.add_child(s_Categories, categoriesTree);
+    _tree.add_child(s_Categories, categories_tree);
 
     // Color
-    children[s_Color] = structureTraits->getColor();
+    _children[s_Color] = structure_traits->getColor();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::structure_traits::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto structureTraits = helper::cast_or_create<data::structure_traits>(object);
+    auto structure_traits = helper::cast_or_create<data::structure_traits>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::structure_traits>(tree, 0, 1);
+    helper::read_version<data::structure_traits>(_tree, 0, 1);
 
     // Deserialize attributes
-    structureTraits->setType(helper::read_string(tree, s_Type));
-    structureTraits->setClass(static_cast<data::structure_traits::StructureClass>(tree.get<int>(s_Class)));
-    structureTraits->setNativeExp(helper::read_string(tree, s_NativeExp));
-    structureTraits->setNativeGeometricExp(helper::read_string(tree, s_NativeGeometricExp));
-    structureTraits->setAttachmentType(helper::read_string(tree, s_AttachmentType));
-    structureTraits->setAnatomicRegion(helper::read_string(tree, s_AnatomicRegion));
-    structureTraits->setPropertyCategory(helper::read_string(tree, s_PropertyCategory));
-    structureTraits->setPropertyType(helper::read_string(tree, s_PropertyType));
+    structure_traits->setType(helper::read_string(_tree, s_Type));
+    structure_traits->setClass(static_cast<data::structure_traits::StructureClass>(_tree.get<int>(s_Class)));
+    structure_traits->setNativeExp(helper::read_string(_tree, s_NativeExp));
+    structure_traits->setNativeGeometricExp(helper::read_string(_tree, s_NativeGeometricExp));
+    structure_traits->set_attachment_type(helper::read_string(_tree, s_AttachmentType));
+    structure_traits->setAnatomicRegion(helper::read_string(_tree, s_AnatomicRegion));
+    structure_traits->setPropertyCategory(helper::read_string(_tree, s_PropertyCategory));
+    structure_traits->set_property_type(helper::read_string(_tree, s_PropertyType));
 
     // Categories
     // Clearing is required in case the object is reused
     data::structure_traits::CategoryContainer categories;
 
-    for(const auto& categoryTree : tree.get_child(s_Categories))
+    for(const auto& category_tree : _tree.get_child(s_Categories))
     {
-        categories.push_back(static_cast<data::structure_traits::Category>(categoryTree.second.get_value<int>()));
+        categories.push_back(static_cast<data::structure_traits::Category>(category_tree.second.get_value<int>()));
     }
 
-    structureTraits->setCategories(categories);
+    structure_traits->setCategories(categories);
 
     // Color
-    structureTraits->setColor(std::dynamic_pointer_cast<data::color>(children.at(s_Color)));
+    structure_traits->setColor(std::dynamic_pointer_cast<data::color>(_children.at(s_Color)));
 
-    return structureTraits;
+    return structure_traits;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::structure_traits, write, read);

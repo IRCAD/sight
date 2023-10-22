@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3dTest/plugin.hpp"
 
-#include <viz/scene3d/Utils.hpp>
-#include <viz/scene3d/WindowManager.hpp>
+#include <viz/scene3d/utils.hpp>
+#include <viz/scene3d/window_manager.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreLogManager.h>
@@ -45,7 +45,7 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
-    m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
+    m_ogreRoot = sight::viz::scene3d::utils::getOgreRoot();
 
     Ogre::NameValuePairList const params {
         {"hidden", "true"},
@@ -59,7 +59,7 @@ void plugin::start()
         false,
         &params
     );
-    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
+    sight::viz::scene3d::window_manager::sptr mgr = sight::viz::scene3d::window_manager::get();
     mgr->add(window);
 
     window->setVisible(false);
@@ -72,7 +72,7 @@ void plugin::start()
 void plugin::stop() noexcept
 {
     m_ogreRoot = nullptr;
-    sight::viz::scene3d::Utils::destroyOgreRoot();
+    sight::viz::scene3d::utils::destroyOgreRoot();
 }
 
 //-----------------------------------------------------------------------------

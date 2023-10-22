@@ -36,8 +36,8 @@ class UTEST_DATA_CLASS_API File
 public:
 
     UTEST_DATA_API static bool contentEquals(
-        const std::filesystem::path& l_file,
-        const std::filesystem::path& r_file
+        const std::filesystem::path& _l_file,
+        const std::filesystem::path& _r_file
     );
 };
 

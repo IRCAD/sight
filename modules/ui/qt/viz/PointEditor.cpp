@@ -68,34 +68,34 @@ void PointEditor::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
     auto* h_layout = new QHBoxLayout();
 
-    auto* staticText_x = new QLabel(tr("x:"));
-    h_layout->addWidget(staticText_x, 0, Qt::AlignVCenter);
+    auto* static_text_x = new QLabel(tr("x:"));
+    h_layout->addWidget(static_text_x, 0, Qt::AlignVCenter);
 
     m_textCtrl_x = new QLineEdit();
     m_textCtrl_x->setValidator(new QDoubleValidator(m_textCtrl_x));
     h_layout->addWidget(m_textCtrl_x, 1, Qt::AlignVCenter);
 
-    auto* staticText_y = new QLabel(tr("y:"));
-    h_layout->addWidget(staticText_y, 0, Qt::AlignVCenter);
+    auto* static_text_y = new QLabel(tr("y:"));
+    h_layout->addWidget(static_text_y, 0, Qt::AlignVCenter);
 
     m_textCtrl_y = new QLineEdit();
     m_textCtrl_y->setValidator(new QDoubleValidator(m_textCtrl_y));
     h_layout->addWidget(m_textCtrl_y, 1, Qt::AlignVCenter);
 
-    auto* staticText_z = new QLabel(tr("z:"));
-    h_layout->addWidget(staticText_z, 0, Qt::AlignVCenter);
+    auto* static_text_z = new QLabel(tr("z:"));
+    h_layout->addWidget(static_text_z, 0, Qt::AlignVCenter);
 
     m_textCtrl_z = new QLineEdit();
     m_textCtrl_z->setValidator(new QDoubleValidator(m_textCtrl_z));
     h_layout->addWidget(m_textCtrl_z, 1, Qt::AlignVCenter);
 
-    qtContainer->setLayout(h_layout);
+    qt_container->setLayout(h_layout);
     this->updating();
 }
 
@@ -121,13 +121,13 @@ void PointEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void PointEditor::getInteraction(data::tools::picking_info info)
+void PointEditor::getInteraction(data::tools::picking_info _info)
 {
-    if(info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_DOWN)
+    if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_DOWN)
     {
-        m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 3));
-        m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 3));
-        m_textCtrl_z->setText(QString("%1").arg(info.m_worldPos[2], 0, 'f', 3));
+        m_textCtrl_x->setText(QString("%1").arg(_info.m_worldPos[0], 0, 'f', 3));
+        m_textCtrl_y->setText(QString("%1").arg(_info.m_worldPos[1], 0, 'f', 3));
+        m_textCtrl_z->setText(QString("%1").arg(_info.m_worldPos[2], 0, 'f', 3));
     }
 }
 

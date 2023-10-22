@@ -35,7 +35,7 @@ class filter;
 namespace factory
 {
 
-FILTER_DICOM_API SPTR(sight::filter::dicom::filter) make(const sight::filter::dicom::registry::key_t& classname);
+FILTER_DICOM_API SPTR(sight::filter::dicom::filter) make(const sight::filter::dicom::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

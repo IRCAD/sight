@@ -36,21 +36,21 @@ namespace sight::io::session::detail::matrix4
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto matrix = helper::safe_cast<data::matrix4>(object);
+    const auto matrix = helper::safe_cast<data::matrix4>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::matrix4>(tree, 1);
+    helper::write_version<data::matrix4>(_tree, 1);
 
     std::size_t index = 0;
     for(const auto& coefficient : *matrix)
     {
-        tree.put(std::to_string(index++), coefficient);
+        _tree.put(std::to_string(index++), coefficient);
     }
 }
 
@@ -58,21 +58,21 @@ inline static void write(
 
 inline static data::matrix4::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto matrix = helper::cast_or_create<data::matrix4>(object);
+    auto matrix = helper::cast_or_create<data::matrix4>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::matrix4>(tree, 0, 1);
+    helper::read_version<data::matrix4>(_tree, 0, 1);
 
     for(std::size_t index = 0 ; index < 16 ; ++index)
     {
-        (*matrix)[index] = tree.get<double>(std::to_string(index));
+        (*matrix)[index] = _tree.get<double>(std::to_string(index));
     }
 
     return matrix;

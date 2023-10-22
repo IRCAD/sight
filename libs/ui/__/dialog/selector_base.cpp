@@ -25,14 +25,17 @@
 namespace sight::ui::dialog
 {
 
-const selector_base::FactoryRegistryKeyType selector_base::REGISTRY_KEY = "sight::ui::dialog::selector";
+const selector_base::factory_registry_key_t selector_base::REGISTRY_KEY = "sight::ui::dialog::selector";
 
 //------------------------------------------------------------------------------
 
 void selector_base::set_choices(choices_t _choices)
 {
     choices_preset_t choices;
-    std::ranges::transform(_choices, std::back_inserter(choices), [](const auto& x){return std::make_pair(x, false);});
+    std::ranges::transform(
+        _choices,
+        std::back_inserter(choices),
+        [](const auto& _x){return std::make_pair(_x, false);});
     set_choices_preset(choices);
 }
 

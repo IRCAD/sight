@@ -32,7 +32,7 @@
 
 #include <data/activity.hpp>
 
-#include <ui/__/view/IActivityView.hpp>
+#include <ui/__/activity_view.hpp>
 
 namespace sight::module::ui::qt::activity
 {
@@ -70,11 +70,11 @@ namespace sight::module::ui::qt::activity
  * @subsection Configuration Configuration
  * - \b border (optional, default="-1"): contents margins of the layout.
  */
-class MODULE_UI_QT_CLASS_API view : public sight::ui::view::IActivityView
+class MODULE_UI_QT_CLASS_API view : public sight::ui::activity_view
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(view, sight::ui::view::IActivityView);
+    SIGHT_DECLARE_SERVICE(view, sight::ui::activity_view);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API view();
@@ -87,7 +87,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::signal<void (data::activity::sptr)> ActivityLaunchedSignalType;
+    typedef core::com::signal<void (data::activity::sptr)> activity_launched_signal_t;
 /**
  * @}
  */
@@ -111,7 +111,7 @@ private:
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
-    void launchActivity(data::activity::sptr activity) override;
+    void launchActivity(data::activity::sptr _activity) override;
 
     /// Helper to launch activity configuration
     sight::app::config_manager::sptr m_configManager;
@@ -119,7 +119,7 @@ private:
     /// WID used to register the activity container
     std::string m_wid;
 
-    ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sigActivityLaunched;
 
     /// Contents margins of the layout.
     int m_border {-1};

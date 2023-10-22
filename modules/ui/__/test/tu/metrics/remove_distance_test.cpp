@@ -21,7 +21,7 @@
 
 #include "remove_distance_test.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point.hpp>
 #include <data/vector.hpp>
@@ -109,35 +109,35 @@ void remove_distance_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-static data::point_list::sptr createPl(const std::vector<data::point::sptr>& v)
+static data::point_list::sptr create_pl(const std::vector<data::point::sptr>& _v)
 {
     auto res = std::make_shared<data::point_list>();
-    res->setPoints(v);
+    res->setPoints(_v);
     return res;
 }
 
 //------------------------------------------------------------------------------
 
-static data::image::sptr createImage()
+static data::image::sptr create_image()
 {
     auto image = std::make_shared<data::image>();
     image->resize({1, 2, 3}, core::type::UINT8, data::image::RGB);
 
-    auto createPl = [](const std::vector<data::point::sptr>& v)
-                    {
-                        auto res = std::make_shared<data::point_list>();
-                        res->setPoints(v);
-                        return res;
-                    };
+    auto create_pl = [](const std::vector<data::point::sptr>& _v)
+                     {
+                         auto res = std::make_shared<data::point_list>();
+                         res->setPoints(_v);
+                         return res;
+                     };
 
     auto distances = std::make_shared<data::vector>();
     distances->assign(
         {
-            createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
-            createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(2.)}),
-            createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(3.)})
+            create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
+            create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(2.)}),
+            create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(3.)})
         });
-    data::helper::MedicalImage::setDistances(*image, distances);
+    data::helper::medical_image::set_distances(*image, distances);
 
     return image;
 }
@@ -146,7 +146,7 @@ static data::image::sptr createImage()
 
 void remove_distance_test::removeAllTest()
 {
-    auto image = createImage();
+    auto image = create_image();
 
     m_removeDistance->set_inout(image, "image");
     CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
@@ -155,7 +155,7 @@ void remove_distance_test::removeAllTest()
     selector_dummy::choice = "ALL";
     CPPUNIT_ASSERT_NO_THROW(m_removeDistance->update().get());
 
-    auto distances = data::helper::MedicalImage::getDistances(*image);
+    auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT(distances == nullptr || distances->empty());
 }
 
@@ -163,7 +163,7 @@ void remove_distance_test::removeAllTest()
 
 void remove_distance_test::removeOneTest()
 {
-    auto image = createImage();
+    auto image = create_image();
 
     m_removeDistance->set_inout(image, "image");
     CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
@@ -172,14 +172,14 @@ void remove_distance_test::removeOneTest()
     selector_dummy::choice = "2 mm";
     CPPUNIT_ASSERT_NO_THROW(m_removeDistance->update().get());
 
-    auto distances = data::helper::MedicalImage::getDistances(*image);
+    auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), distances->size());
     CPPUNIT_ASSERT_EQUAL(
-        *createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
+        *create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
         *std::dynamic_pointer_cast<data::point_list>((*distances)[0])
     );
     CPPUNIT_ASSERT_EQUAL(
-        *createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(3.)}),
+        *create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(3.)}),
         *std::dynamic_pointer_cast<data::point_list>((*distances)[1])
     );
 }
@@ -188,7 +188,7 @@ void remove_distance_test::removeOneTest()
 
 void remove_distance_test::removeLastTest()
 {
-    auto image = createImage();
+    auto image = create_image();
 
     m_removeDistance->set_inout(image, "image");
     CPPUNIT_ASSERT_NO_THROW(m_removeDistance->configure());
@@ -196,14 +196,14 @@ void remove_distance_test::removeLastTest()
 
     m_removeDistance->slot("removeLastDistance")->run();
 
-    auto distances = data::helper::MedicalImage::getDistances(*image);
+    auto distances = data::helper::medical_image::get_distances(*image);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), distances->size());
     CPPUNIT_ASSERT_EQUAL(
-        *createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
+        *create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(1.)}),
         *std::dynamic_pointer_cast<data::point_list>((*distances)[0])
     );
     CPPUNIT_ASSERT_EQUAL(
-        *createPl({std::make_shared<data::point>(0.), std::make_shared<data::point>(2.)}),
+        *create_pl({std::make_shared<data::point>(0.), std::make_shared<data::point>(2.)}),
         *std::dynamic_pointer_cast<data::point_list>((*distances)[1])
     );
 }

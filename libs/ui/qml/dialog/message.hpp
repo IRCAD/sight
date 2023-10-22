@@ -54,22 +54,22 @@ public:
     UI_QML_API ~message() override;
 
     /// Set the title of the message box
-    UI_QML_API void setTitle(const std::string& title) override;
+    UI_QML_API void setTitle(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& msg) override;
+    UI_QML_API void setMessage(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QML_API void setIcon(message::Icons icon) override;
+    UI_QML_API void setIcon(message::Icons _icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QML_API void addButton(message::Buttons button) override;
+    UI_QML_API void addButton(message::Buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_QML_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Set the default buttons
-    UI_QML_API void setDefaultButton(message::Buttons button) override;
+    UI_QML_API void setDefaultButton(message::Buttons _button) override;
 
     /// Show the message box and return the clicked button.
     UI_QML_API Buttons show() override;
@@ -84,7 +84,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(int clicked);
+    void resultDialog(int _clicked);
 
 private:
 
@@ -107,7 +107,7 @@ private:
 
     /// Setter to QProperty and emit signal
     UI_QML_API void emitButtons(StandardButton* /*standardButton*/);
-    UI_QML_API void emitIcon(const QUrl& iconPath);
+    UI_QML_API void emitIcon(const QUrl& _icon_path);
 };
 
 } // namespace sight::ui::qml::dialog

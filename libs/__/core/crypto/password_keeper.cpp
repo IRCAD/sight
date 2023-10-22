@@ -48,9 +48,9 @@ inline static secure_string get_global_password_key()
 
 //------------------------------------------------------------------------------
 
-secure_string password_keeper::get_pseudo_password_hash(const secure_string& salt) noexcept
+secure_string password_keeper::get_pseudo_password_hash(const secure_string& _salt) noexcept
 {
-    return SIGHT_PSEUDO_RANDOM_HASH(salt);
+    return SIGHT_PSEUDO_RANDOM_HASH(_salt);
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): the class is final
@@ -88,16 +88,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void set_password(const core::crypto::secure_string& password)
+    inline void set_password(const core::crypto::secure_string& _password)
     {
-        m_password = core::crypto::encrypt(password, compute_password_key());
+        m_password = core::crypto::encrypt(_password, compute_password_key());
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool check_password(const core::crypto::secure_string& password) const
+    [[nodiscard]] inline bool check_password(const core::crypto::secure_string& _password) const
     {
-        return core::crypto::decrypt(m_password, compute_password_key()) == password;
+        return core::crypto::decrypt(m_password, compute_password_key()) == _password;
     }
 
     //------------------------------------------------------------------------------
@@ -143,16 +143,16 @@ core::crypto::secure_string password_keeper::get_password() const
 
 //------------------------------------------------------------------------------
 
-void password_keeper::set_password(const core::crypto::secure_string& password)
+void password_keeper::set_password(const core::crypto::secure_string& _password)
 {
-    m_pimpl->set_password(password);
+    m_pimpl->set_password(_password);
 }
 
 //------------------------------------------------------------------------------
 
-bool password_keeper::check_password(const core::crypto::secure_string& password) const
+bool password_keeper::check_password(const core::crypto::secure_string& _password) const
 {
-    return m_pimpl->check_password(password);
+    return m_pimpl->check_password(_password);
 }
 
 //------------------------------------------------------------------------------
@@ -181,38 +181,38 @@ core::crypto::secure_string password_keeper::get_global_password()
 //------------------------------------------------------------------------------
 
 void password_keeper::set_global_password(
-    const core::crypto::secure_string& password,
-    [[maybe_unused]] bool restart_logger
+    const core::crypto::secure_string& _password,
+    [[maybe_unused]] bool _restart_logger
 )
 {
     std::lock_guard guard(s_password_mutex);
 
     // Check if the password is new
-    if(restart_logger)
+    if(_restart_logger)
     {
         // If we use encrypted log
         if(auto& logger = core::log::spy_logger::get(); logger.is_log_encrypted())
         {
             // Check if the password has changed and is not the default one.
             if(const auto& old_password = core::crypto::decrypt(s_password, get_global_password_key());
-               old_password != password || (has_default_password() && password != get_default_password()))
+               old_password != _password || (has_default_password() && _password != get_default_password()))
             {
-                logger.change_log_password(password, old_password);
+                logger.change_log_password(_password, old_password);
             }
         }
     }
 
     // Store the new password
-    s_password = core::crypto::encrypt(password, get_global_password_key());
+    s_password = core::crypto::encrypt(_password, get_global_password_key());
 }
 
 //------------------------------------------------------------------------------
 
-bool password_keeper::check_global_password(const core::crypto::secure_string& password)
+bool password_keeper::check_global_password(const core::crypto::secure_string& _password)
 {
     std::lock_guard guard(s_password_mutex);
 
-    return core::crypto::decrypt(s_password, get_global_password_key()) == password;
+    return core::crypto::decrypt(s_password, get_global_password_key()) == _password;
 }
 
 //------------------------------------------------------------------------------

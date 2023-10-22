@@ -39,73 +39,74 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-bool isDICOM(const std::filesystem::path& filepath)
+bool is_dicom(const std::filesystem::path& _filepath)
 {
-    std::ifstream ifs(filepath, std::ios::binary);
+    std::ifstream ifs(_filepath, std::ios::binary);
     ifs.seekg(128);
-    std::array<char, 5> DICOM {};
-    ifs.read(DICOM.data(), 4);
+    std::array<char, 5> dicom {};
+    ifs.read(dicom.data(), 4);
     ifs.close();
-    return strcmp(DICOM.data(), "DICM") == 0;
+    return strcmp(dicom.data(), "DICM") == 0;
 }
 
 //------------------------------------------------------------------------------
 
 void DicomSearch::searchRecursively(
-    const std::filesystem::path& dirPath,
-    std::vector<std::filesystem::path>& dicomFiles,
-    bool checkIsDicom,
-    const core::jobs::observer::sptr& readerObserver
+    const std::filesystem::path& _dir_path,
+    std::vector<std::filesystem::path>& _dicom_files,
+    bool _check_is_dicom,
+    const core::jobs::observer::sptr& _reader_observer
 )
 {
-    std::vector<std::filesystem::path> fileVect;
-    checkFilenameExtension(dirPath, fileVect, readerObserver);
+    std::vector<std::filesystem::path> file_vect;
+    checkFilenameExtension(_dir_path, file_vect, _reader_observer);
 
-    if(checkIsDicom)
+    if(_check_is_dicom)
     {
-        if(readerObserver)
+        if(_reader_observer)
         {
-            readerObserver->set_total_work_units(fileVect.size());
+            _reader_observer->set_total_work_units(file_vect.size());
         }
 
         std::uint64_t progress = 0;
-        for(const auto& file : fileVect)
+        for(const auto& file : file_vect)
         {
-            if(readerObserver)
+            if(_reader_observer)
             {
-                readerObserver->done_work(++progress);
+                _reader_observer->done_work(++progress);
 
-                if(readerObserver->cancel_requested())
+                if(_reader_observer->cancel_requested())
                 {
-                    dicomFiles.clear();
+                    _dicom_files.clear();
                     break;
                 }
             }
 
-            bool isDicom = isDICOM(file);
-            if(isDicom)
+            if(is_dicom(file))
             {
-                dicomFiles.push_back(file);
+                _dicom_files.push_back(file);
             }
-
-            SIGHT_WARN_IF("Failed to read: " + file.string(), !isDicom);
+            else
+            {
+                SIGHT_WARN("Failed to read: " + file.string());
+            }
         }
     }
     else
     {
-        dicomFiles = fileVect;
+        _dicom_files = file_vect;
     }
 }
 
 //------------------------------------------------------------------------------
 
 void DicomSearch::checkFilenameExtension(
-    const std::filesystem::path& dirPath,
-    std::vector<std::filesystem::path>& dicomFiles,
-    const core::jobs::observer::sptr& fileLookupObserver
+    const std::filesystem::path& _dir_path,
+    std::vector<std::filesystem::path>& _dicom_files,
+    const core::jobs::observer::sptr& _file_lookup_observer
 )
 {
-    dicomFiles.clear();
+    _dicom_files.clear();
 
     std::set<std::string> extensions = {".jpg", ".jpeg", ".htm", ".html", ".txt", ".xml",
                                         ".stm", ".str", ".lst", ".ifo", ".pdf", ".gif",
@@ -113,12 +114,12 @@ void DicomSearch::checkFilenameExtension(
                                         ".DS_Store"
     };
 
-    for(std::filesystem::recursive_directory_iterator it(dirPath) ;
+    for(std::filesystem::recursive_directory_iterator it(_dir_path) ;
         it != std::filesystem::recursive_directory_iterator() ; ++it)
     {
-        if(fileLookupObserver && fileLookupObserver->cancel_requested())
+        if(_file_lookup_observer && _file_lookup_observer->cancel_requested())
         {
-            dicomFiles.clear();
+            _dicom_files.clear();
             break;
         }
 
@@ -133,7 +134,7 @@ void DicomSearch::checkFilenameExtension(
 
                 if(stem != "dicomdir")
                 {
-                    dicomFiles.emplace_back(path.string());
+                    _dicom_files.emplace_back(path.string());
                 }
             }
         }

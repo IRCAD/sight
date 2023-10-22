@@ -71,7 +71,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(filter_selection_editor, sight::ui::editor);
 
-    typedef std::map<std::string, sight::filter::dicom::filter::sptr> FilterMapType;
+    typedef std::map<std::string, sight::filter::dicom::filter::sptr> filter_map_t;
 
     /**
      * @brief Constructor
@@ -86,7 +86,7 @@ public:
 private Q_SLOTS:
 
     /// Slot called when a new filter type is selected in the context menu
-    MODULE_UI_DICOM_API void addFilter(int filterTypeIndex);
+    MODULE_UI_DICOM_API void addFilter(int _filter_type_index);
 
     /// Slot called when the add filter button is pressed
     MODULE_UI_DICOM_API void addFilterAtTheEnd();
@@ -95,7 +95,7 @@ private Q_SLOTS:
     MODULE_UI_DICOM_API void removeFilter();
 
     /// Slot called when a new filter is selected
-    MODULE_UI_DICOM_API void updateButtonStatus(int filterIndex);
+    MODULE_UI_DICOM_API void updateButtonStatus(int _filter_index);
 
     /// Slot called when the configure filter button is pressed
     MODULE_UI_DICOM_API void configureFilter();
@@ -107,10 +107,10 @@ private Q_SLOTS:
     MODULE_UI_DICOM_API void applyFilters();
 
     /// Slot used to display the context menu on a filter
-    MODULE_UI_DICOM_API void showContextMenuForSelectedFilter(const QPoint& pos);
+    MODULE_UI_DICOM_API void showContextMenuForSelectedFilter(const QPoint& _pos);
 
     /// Slot used to display a warning when ignore errors checkbox is checked
-    static MODULE_UI_DICOM_API void onForceChecked(int state);
+    static MODULE_UI_DICOM_API void onForceChecked(int _state);
 
 protected:
 
@@ -137,18 +137,18 @@ protected:
      * @param[in] filterTypeIndex Filter type index in the combobox
      * @param[in] position Position in the list
      */
-    MODULE_UI_DICOM_API void addFilter(int filterTypeIndex, int position);
+    MODULE_UI_DICOM_API void addFilter(int _filter_type_index, int _position);
 
     /**
      * @brief Sort filters
      * @param[in] a First filter
      * @param[in] b Second filter
      */
-    static bool sortFilters(const sight::filter::dicom::filter::sptr& a, const sight::filter::dicom::filter::sptr& b);
+    static bool sortFilters(const sight::filter::dicom::filter::sptr& _a, const sight::filter::dicom::filter::sptr& _b);
 
-    static QIcon getFilterIcon(sight::filter::dicom::filter::sptr filter);
+    static QIcon getFilterIcon(sight::filter::dicom::filter::sptr _filter);
 
-    static std::string getFilterDescription(sight::filter::dicom::filter::sptr filter);
+    static std::string getFilterDescription(sight::filter::dicom::filter::sptr _filter);
 
     /// Combo box displaying the available filters
     QPointer<QComboBox> m_availableFilterListWidget;
@@ -178,7 +178,7 @@ protected:
     QPointer<QCheckBox> m_forcedApplyCheckBox;
 
     /// Map used to store filters and their keys
-    FilterMapType m_filtersMap;
+    filter_map_t m_filtersMap;
 
     /// Destination series_set ID
     std::string m_dest_series_setID;

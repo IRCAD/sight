@@ -91,15 +91,6 @@ public:
 
     SIGHT_DECLARE_SERVICE(render, viz::render);
 
-    /// A string type representing adaptors id.
-    typedef std::string AdaptorIDType;
-
-    /// A string type representing objects id.
-    typedef std::string ObjectIDType;
-
-    /// A float type representing adaptors zValue.
-    typedef float AdaptorZValueType;
-
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
     ///  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
     VIZ_SCENE2D_API render() noexcept;
@@ -114,26 +105,26 @@ public:
     VIZ_SCENE2D_API Scene2DGraphicsView* getView() const;
 
     /// Get the axis.
-    VIZ_SCENE2D_API scene2d::data::Axis::sptr getAxis(const std::string& id) const;
+    VIZ_SCENE2D_API scene2d::data::Axis::sptr getAxis(const std::string& _id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
     VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
 
     /// Returns true if given coordinates are contained in the view of the scene
-    VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& coord) const;
+    VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& _coord) const;
 
     /** @brief Compute the viewport coordinates mapped to scene coordinates.
      * @param coord input viewport coordinates
      * @param clip clip the returned coordinates to the size of the scene
      * @return scene coordinates
      */
-    VIZ_SCENE2D_API scene2d::vec2d_t mapToScene(const scene2d::vec2d_t& coord, bool clip = false) const;
+    VIZ_SCENE2D_API scene2d::vec2d_t mapToScene(const scene2d::vec2d_t& _coord, bool _clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
 
     /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
-    VIZ_SCENE2D_API void updateSceneSize(float ratioPercent = 0);
+    VIZ_SCENE2D_API void updateSceneSize(float _ratio_percent = 0);
 
 protected:
 

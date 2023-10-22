@@ -47,31 +47,31 @@ dump_all::~dump_all() noexcept =
 
 void dump_all::updating()
 {
-    std::size_t nbBuffDumped = 0;
-    core::memory::buffer_manager::buffer_info_map_t buffInfoMap;
-    core::memory::buffer_manager::sptr buffManager = core::memory::buffer_manager::get();
-    if(buffManager)
+    std::size_t nb_buff_dumped = 0;
+    core::memory::buffer_manager::buffer_info_map_t buff_info_map;
+    core::memory::buffer_manager::sptr buff_manager = core::memory::buffer_manager::get();
+    if(buff_manager)
     {
-        buffInfoMap = buffManager->get_buffer_infos().get();
+        buff_info_map = buff_manager->get_buffer_infos().get();
     }
 
-    for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buffInfoMap)
+    for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : buff_info_map)
     {
-        core::memory::buffer_info dumpBuffInfo = elt.second;
-        bool loaded                            = dumpBuffInfo.loaded;
-        bool isLock                            = dumpBuffInfo.lock_count() > 0;
-        if(loaded && !isLock)
+        core::memory::buffer_info dump_buff_info = elt.second;
+        bool loaded                              = dump_buff_info.loaded;
+        bool is_lock                             = dump_buff_info.lock_count() > 0;
+        if(loaded && !is_lock)
         {
-            bool dumped = buffManager->dump_buffer(elt.first).get();
+            bool dumped = buff_manager->dump_buffer(elt.first).get();
             if(dumped)
             {
-                ++nbBuffDumped;
+                ++nb_buff_dumped;
             }
         }
     }
 
     std::stringstream stream;
-    stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped << "/" << buffInfoMap.size() << ").";
+    stream << nb_buff_dumped << " buffer dumped (" << nb_buff_dumped << "/" << buff_info_map.size() << ").";
     sight::ui::dialog::message::show(
         "Dump all",
         stream.str(),

@@ -36,14 +36,14 @@
 namespace sight::core::jobs
 {
 
-base::base(std::string name) :
+base::base(std::string _name) :
     m_sig_cancel_requested(std::make_shared<cancel_requested_signal>()),
     m_sig_canceled(std::make_shared<state_signal>()),
     m_sig_started(std::make_shared<state_signal>()),
     m_sig_finished(std::make_shared<state_signal>()),
     m_sig_done_work(std::make_shared<done_work_signal>()),
     m_sig_logged(std::make_shared<log_signal>()),
-    m_name(std::move(name))
+    m_name(std::move(_name))
 {
 }
 
@@ -54,9 +54,9 @@ base::~base()
     std::for_each(
         m_state_hooks.begin(),
         m_state_hooks.end(),
-        [&](const state_hook_seq::value_type& f)
+        [&](const state_hook_seq::value_type& _f)
         {
-            f(m_state);
+            _f(m_state);
         });
 }
 
@@ -148,55 +148,55 @@ base::shared_future base::cancel()
 
 //------------------------------------------------------------------------------
 
-void base::add_cancel_hook(job_cancel_hook callback)
+void base::add_cancel_hook(job_cancel_hook _callback)
 {
     core::mt::write_lock lock(m_mutex);
-    this->add_cancel_hook_no_lock(callback);
+    this->add_cancel_hook_no_lock(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_simple_cancel_hook(cancel_hook callback)
+void base::add_simple_cancel_hook(cancel_hook _callback)
 {
     this->add_cancel_hook(
         job_cancel_hook(
             [ = ](base& /*job*/)
         {
-            callback();
+            _callback();
         })
     );
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_done_work_hook(done_work_hook callback)
+void base::add_done_work_hook(done_work_hook _callback)
 {
     core::mt::write_lock lock(m_mutex);
-    this->add_done_work_hook_no_lock(callback);
+    this->add_done_work_hook_no_lock(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_total_work_units_hook(total_work_units_hook callback)
+void base::add_total_work_units_hook(total_work_units_hook _callback)
 {
     core::mt::write_lock lock(m_mutex);
-    this->add_total_work_units_hook_no_lock(callback);
+    this->add_total_work_units_hook_no_lock(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_log_hook(log_hook callback)
+void base::add_log_hook(log_hook _callback)
 {
     core::mt::write_lock lock(m_mutex);
-    this->add_log_hook_no_lock(callback);
+    this->add_log_hook_no_lock(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_state_hook(state_hook callback)
+void base::add_state_hook(state_hook _callback)
 {
     core::mt::write_lock lock(m_mutex);
-    this->add_state_hook_no_lock(callback);
+    this->add_state_hook_no_lock(_callback);
 }
 
 //------------------------------------------------------------------------------
@@ -240,18 +240,18 @@ base::shared_future base::run()
 
 //------------------------------------------------------------------------------
 
-void base::set_state(base::state state)
+void base::set_state(base::state _state)
 {
     core::mt::write_lock lock(m_mutex);
-    this->set_state_no_lock(state);
+    this->set_state_no_lock(_state);
 }
 
 //------------------------------------------------------------------------------
 
-void base::set_state_no_lock(base::state state)
+void base::set_state_no_lock(base::state _state)
 {
-    m_state = state;
-    switch(state)
+    m_state = _state;
+    switch(_state)
     {
         case WAITING:
             break;
@@ -279,9 +279,9 @@ void base::set_state_no_lock(base::state state)
     std::for_each(
         m_state_hooks.begin(),
         m_state_hooks.end(),
-        [&](const state_hook_seq::value_type& f)
+        [&](const state_hook_seq::value_type& _f)
         {
-            f(m_state);
+            _f(m_state);
         });
 }
 
@@ -330,26 +330,26 @@ void base::wait()
 
 //------------------------------------------------------------------------------
 
-void base::log(const std::string& message)
+void base::log(const std::string& _message)
 {
     core::mt::write_lock lock(m_mutex);
-    this->log_no_lock(message);
+    this->log_no_lock(_message);
 }
 
 //------------------------------------------------------------------------------
 
-void base::log_no_lock(const std::string& message)
+void base::log_no_lock(const std::string& _message)
 {
-    m_logs.push_back(message);
+    m_logs.push_back(_message);
 
-    m_sig_logged->async_emit(message);
+    m_sig_logged->async_emit(_message);
 
     std::for_each(
         m_log_hooks.begin(),
         m_log_hooks.end(),
-        [&](const log_hook_seq::value_type& f)
+        [&](const log_hook_seq::value_type& _f)
         {
-            f(*this, message);
+            _f(*this, _message);
         });
 }
 
@@ -362,64 +362,64 @@ base::state base::get_state_no_lock() const
 
 //------------------------------------------------------------------------------
 
-void base::add_cancel_hook_no_lock(job_cancel_hook callback)
+void base::add_cancel_hook_no_lock(job_cancel_hook _callback)
 {
     if(m_state == WAITING || m_state == RUNNING)
     {
-        m_cancel_hooks.push_back(callback);
+        m_cancel_hooks.push_back(_callback);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_done_work_hook_no_lock(done_work_hook callback)
+void base::add_done_work_hook_no_lock(done_work_hook _callback)
 {
     if(m_state == WAITING || m_state == RUNNING)
     {
-        m_done_work_hooks.push_back(callback);
+        m_done_work_hooks.push_back(_callback);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_total_work_units_hook_no_lock(total_work_units_hook callback)
+void base::add_total_work_units_hook_no_lock(total_work_units_hook _callback)
 {
     if(m_state == WAITING || m_state == RUNNING)
     {
-        m_total_work_units_hooks.push_back(callback);
+        m_total_work_units_hooks.push_back(_callback);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_log_hook_no_lock(log_hook callback)
+void base::add_log_hook_no_lock(log_hook _callback)
 {
-    m_log_hooks.push_back(callback);
+    m_log_hooks.push_back(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::add_state_hook_no_lock(state_hook callback)
+void base::add_state_hook_no_lock(state_hook _callback)
 {
-    m_state_hooks.push_back(callback);
+    m_state_hooks.push_back(_callback);
 }
 
 //------------------------------------------------------------------------------
 
-void base::done_work(std::uint64_t units)
+void base::done_work(std::uint64_t _units)
 {
     core::mt::read_to_write_lock lock(m_mutex);
-    this->done_work(units, lock);
+    this->done_work(_units, lock);
 }
 
 //------------------------------------------------------------------------------
 
-void base::done_work(std::uint64_t units, core::mt::read_to_write_lock& lock)
+void base::done_work(std::uint64_t _units, core::mt::read_to_write_lock& _lock)
 {
     auto old_done_work = m_done_work_units;
     decltype(m_done_work_hooks) done_work_hooks;
 
-    if(m_done_work_units == units)
+    if(m_done_work_units == _units)
     {
         return;
     }
@@ -427,57 +427,57 @@ void base::done_work(std::uint64_t units, core::mt::read_to_write_lock& lock)
     done_work_hooks = m_done_work_hooks;
 
     {
-        core::mt::upgrade_to_write_lock write_lock(lock);
-        m_done_work_units = units;
+        core::mt::upgrade_to_write_lock write_lock(_lock);
+        m_done_work_units = _units;
     }
 
     m_sig_done_work->async_emit(m_done_work_units, m_total_work_units);
 
-    lock.unlock();
+    _lock.unlock();
 
     std::for_each(
         done_work_hooks.begin(),
         done_work_hooks.end(),
-        [&](const done_work_hook_seq::value_type& f)
+        [&](const done_work_hook_seq::value_type& _f)
         {
-            f(*this, old_done_work);
+            _f(*this, old_done_work);
         });
 }
 
 //------------------------------------------------------------------------------
 
-void base::set_total_work_units(std::uint64_t units)
+void base::set_total_work_units(std::uint64_t _units)
 {
     core::mt::read_to_write_lock lock(m_mutex);
-    this->set_total_work_units_upgrade_lock(units, lock);
+    this->set_total_work_units_upgrade_lock(_units, lock);
 }
 
 //------------------------------------------------------------------------------
 
-void base::set_total_work_units_upgrade_lock(std::uint64_t units, core::mt::read_to_write_lock& lock)
+void base::set_total_work_units_upgrade_lock(std::uint64_t _units, core::mt::read_to_write_lock& _lock)
 {
     auto old_total_work_units = m_total_work_units;
     decltype(m_total_work_units_hooks) total_work_units_hook;
 
     total_work_units_hook = m_total_work_units_hooks;
 
-    if(m_done_work_units > units)
+    if(m_done_work_units > _units)
     {
-        this->done_work(units, lock);
+        this->done_work(_units, _lock);
     }
 
     {
-        core::mt::upgrade_to_write_lock write_lock(lock);
-        m_total_work_units = units;
+        core::mt::upgrade_to_write_lock write_lock(_lock);
+        m_total_work_units = _units;
     }
 
-    lock.unlock();
+    _lock.unlock();
     std::for_each(
         total_work_units_hook.begin(),
         total_work_units_hook.end(),
-        [&](const total_work_units_hook_seq::value_type& f)
+        [&](const total_work_units_hook_seq::value_type& _f)
         {
-            f(*this, old_total_work_units);
+            _f(*this, old_total_work_units);
         });
 }
 
@@ -491,10 +491,10 @@ base::logs base::get_logs() const
 
 //------------------------------------------------------------------------------
 
-void base::set_cancelable(bool cancel)
+void base::set_cancelable(bool _cancel)
 {
     core::mt::write_lock lock(m_mutex);
-    m_cancelable = cancel;
+    m_cancelable = _cancel;
 }
 
 //------------------------------------------------------------------------------

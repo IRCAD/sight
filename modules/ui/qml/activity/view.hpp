@@ -112,11 +112,11 @@ public:
     MODULE_UI_QML_API ~view() override = default;
 
     /// Signal emited when the activity is launched
-    typedef core::com::signal<void ()> ActivityLaunchedSignalType;
+    typedef core::com::signal<void ()> activity_launched_signal_t;
 
 Q_SIGNALS:
 
-    void launchRequested(QUrl path, QVariantMap replace);
+    void launchRequested(QUrl _path, QVariantMap _replace);
 
 public Q_SLOTS:
 
@@ -140,9 +140,9 @@ protected:
 private:
 
     /// Slot: Launch the given activity in the stackView.
-    void launchActivity(data::activity::sptr activity);
+    void launchActivity(data::activity::sptr _activity);
 
-    ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sigActivityLaunched;
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::Access::inout> m_data {this, "data"};

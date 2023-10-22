@@ -35,7 +35,7 @@ class object;
 namespace factory
 {
 
-DATA_API SPTR(data::object) make(const data::registry::key_t& classname);
+DATA_API SPTR(data::object) make(const data::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make()

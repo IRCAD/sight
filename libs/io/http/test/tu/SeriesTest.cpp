@@ -97,21 +97,21 @@ void SeriesTest::tearDown()
 
 void SeriesTest::testSeries()
 {
-    io::http::helper::Series::DicomSeriesContainer seriesVector =
+    io::http::helper::Series::DicomSeriesContainer series_vector =
         io::http::helper::Series::toFwMedData(m_json);
-    CPPUNIT_ASSERT(seriesVector.size() == 1);
-    const auto& series = seriesVector[0];
+    CPPUNIT_ASSERT(series_vector.size() == 1);
+    const auto& series = series_vector[0];
     CPPUNIT_ASSERT(series);
 
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
-    CPPUNIT_ASSERT(dicomSeries);
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDate(), seriesDate.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesTime(), seriesTime.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDescription(), seriesDescription.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
+    CPPUNIT_ASSERT(dicom_series);
+    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesDate(), seriesDate.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesTime(), seriesTime.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->getSeriesDescription(), seriesDescription.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->getModality(), modality.toStdString());
     CPPUNIT_ASSERT_EQUAL(
-        dicomSeries->numInstances(),
+        dicom_series->numInstances(),
         static_cast<std::size_t>(numberOfSeriesRelatedInstances.toULong())
     );
 
@@ -129,7 +129,7 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(series->getInstitutionName(), institutionName.toStdString());
 
     io::http::helper::Series::InstanceUIDContainer instances =
-        io::http::helper::Series::toSeriesInstanceUIDContainer(seriesVector);
+        io::http::helper::Series::toSeriesInstanceUIDContainer(series_vector);
     CPPUNIT_ASSERT(instances.size() == 1);
 }
 

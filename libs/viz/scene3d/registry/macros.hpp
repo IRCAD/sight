@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "viz/scene3d/ILight.hpp"
-#include "viz/scene3d/IText.hpp"
+#include "viz/scene3d/light_adaptor.hpp"
 #include "viz/scene3d/registry/detail.hpp"
+#include "viz/scene3d/text.hpp"
 #include "viz/scene3d/window_interactor.hpp"
 
 #include <boost/preprocessor/cat.hpp>
@@ -46,11 +46,11 @@ namespace sight::viz::scene3d::registry
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(OgreInteractorClassname));
 
 #define SIGHT_REGISTER_SCENE3D_LIGHT(OgreLightClassname, FunctorKey) \
-    static sight::viz::scene3d::ILight::Registry<OgreLightClassname> \
+    static sight::viz::scene3d::light_adaptor::Registry<OgreLightClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_TEXT(OgreTextClassname, FunctorKey) \
-    static sight::viz::scene3d::IText::Registry<OgreTextClassname> \
+    static sight::viz::scene3d::text::Registry<OgreTextClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace sight::viz::scene3d::registry

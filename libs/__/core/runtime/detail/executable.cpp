@@ -34,9 +34,9 @@ std::shared_ptr<module> executable::get_module() const
 
 //------------------------------------------------------------------------------
 
-void executable::set_module(std::shared_ptr<module> module)
+void executable::set_module(std::shared_ptr<module> _module)
 {
-    m_module = module;
+    m_module = _module;
 }
 
 //------------------------------------------------------------------------------

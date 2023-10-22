@@ -4,7 +4,7 @@ add_dependencies(
     activity_navigation_calibration
     module_ui
     module_viz_scene3d
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
     module_activity
     module_service
     module_sync

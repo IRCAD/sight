@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneMultipleTF" type="sight::viz::scene2d::render">
               <scene>
@@ -126,7 +126,7 @@
             </config>
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::render">
             <scene>

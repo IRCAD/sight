@@ -29,16 +29,16 @@ namespace sight::data::timeline
 
 template<typename TYPE>
 generic_object<TYPE>::generic_object(
-    unsigned int m_maxElementNum,
-    core::hires_clock::type timestamp,
-    BufferDataType buffer,
-    std::size_t size,
-    DeleterType d
+    unsigned int _m_max_element_num,
+    core::hires_clock::type _timestamp,
+    buffer_data_t _buffer,
+    std::size_t _size,
+    deleter_t _d
 ) :
-    generic_object_base(m_maxElementNum, timestamp, buffer, size, d)
+    generic_object_base(_m_max_element_num, _timestamp, _buffer, _size, _d)
 {
     // init all floating point values to 0
-    memset(m_buffer, 0, m_maxElementNum * getElementSize());
+    memset(m_buffer, 0, _m_max_element_num * getElementSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -49,34 +49,34 @@ template<typename TYPE> generic_object<TYPE>::~generic_object()
 //-----------------------------------------------------------------------------
 
 template<typename TYPE>
-const TYPE& generic_object<TYPE>::getElement(unsigned int index) const
+const TYPE& generic_object<TYPE>::getElement(unsigned int _index) const
 {
-    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", _index < m_maxElementNum);
 
-    return *(reinterpret_cast<const ElementType*>(m_buffer + index * getElementSize()));
+    return *(reinterpret_cast<const element_t*>(m_buffer + _index * getElementSize()));
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename TYPE>
-void generic_object<TYPE>::setElement(const ElementType& element, unsigned int index)
+void generic_object<TYPE>::setElement(const element_t& _element, unsigned int _index)
 {
     static_assert(
         std::is_trivially_copyable_v<TYPE>,
         "TYPE must be TriviallyCopyable for generic_object<TYPE>::setElement to be used."
     );
-    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", _index < m_maxElementNum);
 
     // store floating point values
-    auto* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
+    auto* dst_element = reinterpret_cast<TYPE*>(m_buffer + _index * getElementSize());
     // undefined behavior if TYPE isn't TriviallyCopyable:
-    memcpy(static_cast<void*>(dstElement), &element, getElementSize());
+    memcpy(static_cast<void*>(dst_element), &_element, getElementSize());
 
     // update presence mask
-    uint64_t oldMask = m_presenceMask;
-    m_presenceMask |= (uint64_t(1) << index);
+    uint64_t old_mask = m_presenceMask;
+    m_presenceMask |= (uint64_t(1) << _index);
 
-    if(oldMask != m_presenceMask)
+    if(old_mask != m_presenceMask)
     {
         ++m_numPresent;
     }
@@ -85,23 +85,23 @@ void generic_object<TYPE>::setElement(const ElementType& element, unsigned int i
 //-----------------------------------------------------------------------------
 
 template<typename TYPE>
-TYPE* generic_object<TYPE>::addElement(unsigned int index)
+TYPE* generic_object<TYPE>::addElement(unsigned int _index)
 {
-    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", _index < m_maxElementNum);
 
     // update presence mask
-    uint64_t oldMask = m_presenceMask;
-    m_presenceMask |= (uint64_t(1) << index);
+    uint64_t old_mask = m_presenceMask;
+    m_presenceMask |= (uint64_t(1) << _index);
 
-    if(oldMask != m_presenceMask)
+    if(old_mask != m_presenceMask)
     {
         ++m_numPresent;
     }
 
     // return pointer on the new element
-    auto* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
+    auto* dst_element = reinterpret_cast<TYPE*>(m_buffer + _index * getElementSize());
 
-    return dstElement;
+    return dst_element;
 }
 
 //-----------------------------------------------------------------------------
@@ -115,8 +115,8 @@ typename generic_object<TYPE>::iterator generic_object<TYPE>::getPresenceIterato
 //-----------------------------------------------------------------------------
 
 template<typename TYPE>
-generic_object<TYPE>::iterator::iterator(const generic_object_base& object) :
-    m_object(&object),
+generic_object<TYPE>::iterator::iterator(const generic_object_base& _object) :
+    m_object(&_object),
     m_maxElement(m_object->getMaxElementNum())
 {
     while(m_currentIndex < m_maxElement && !m_object->isPresent(m_currentIndex))
@@ -141,7 +141,7 @@ void generic_object<TYPE>::iterator::operator++()
 template<typename TYPE>
 const TYPE& generic_object<TYPE>::iterator::operator*() const
 {
-    const auto* object = static_cast<const generic_object<ElementType>*>(m_object);
+    const auto* object = static_cast<const generic_object<element_t>*>(m_object);
     return object->getElement(m_currentIndex);
 }
 

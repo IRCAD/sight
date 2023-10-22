@@ -95,9 +95,9 @@ protected:
 
 private Q_SLOTS:
 
-    void onCxSliderChanged(int value);
-    void onCySliderChanged(int value);
-    void onFySliderChanged(int value);
+    void onCxSliderChanged(int _value);
+    void onCySliderChanged(int _value);
+    void onFySliderChanged(int _value);
 
 private:
 

@@ -42,18 +42,18 @@ barrier_dump::barrier_dump() :
 //------------------------------------------------------------------------------
 
 void barrier_dump::allocation_request(
-    buffer_info& info,
+    buffer_info& _info,
     core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/,
-    buffer_info::size_t size
+    buffer_info::size_t _size
 )
 {
-    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= info.size);
-    m_total_allocated -= info.size;
-    m_total_allocated += size;
-    if(!info.loaded)
+    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= _info.size);
+    m_total_allocated -= _info.size;
+    m_total_allocated += _size;
+    if(!_info.loaded)
     {
-        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= info.size);
-        m_total_dumped -= info.size;
+        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= _info.size);
+        m_total_dumped -= _info.size;
     }
 
     this->apply();
@@ -62,18 +62,18 @@ void barrier_dump::allocation_request(
 //------------------------------------------------------------------------------
 
 void barrier_dump::set_request(
-    buffer_info& info,
+    buffer_info& _info,
     core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/,
-    buffer_info::size_t size
+    buffer_info::size_t _size
 )
 {
-    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= info.size);
-    m_total_allocated -= info.size;
-    m_total_allocated += size;
-    if(!info.loaded)
+    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= _info.size);
+    m_total_allocated -= _info.size;
+    m_total_allocated += _size;
+    if(!_info.loaded)
     {
-        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= info.size);
-        m_total_dumped -= info.size;
+        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= _info.size);
+        m_total_dumped -= _info.size;
     }
 
     this->apply();
@@ -82,18 +82,18 @@ void barrier_dump::set_request(
 //------------------------------------------------------------------------------
 
 void barrier_dump::reallocate_request(
-    buffer_info& info,
+    buffer_info& _info,
     core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/,
-    buffer_info::size_t new_size
+    buffer_info::size_t _new_size
 )
 {
-    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= info.size);
-    m_total_allocated -= info.size;
-    m_total_allocated += new_size;
-    if(!info.loaded)
+    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= _info.size);
+    m_total_allocated -= _info.size;
+    m_total_allocated += _new_size;
+    if(!_info.loaded)
     {
-        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= info.size);
-        m_total_dumped -= info.size;
+        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= _info.size);
+        m_total_dumped -= _info.size;
     }
 
     this->apply();
@@ -101,16 +101,16 @@ void barrier_dump::reallocate_request(
 
 //------------------------------------------------------------------------------
 
-void barrier_dump::destroy_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
+void barrier_dump::destroy_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
 {
-    if(!info.loaded)
+    if(!_info.loaded)
     {
-        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= info.size);
-        m_total_dumped -= info.size;
+        SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= _info.size);
+        m_total_dumped -= _info.size;
     }
 
-    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= info.size);
-    m_total_allocated -= info.size;
+    SIGHT_ASSERT("Memory allocation inconsistency", m_total_allocated >= _info.size);
+    m_total_allocated -= _info.size;
 }
 
 //------------------------------------------------------------------------------
@@ -128,17 +128,17 @@ void barrier_dump::unlock_request(buffer_info& /*info*/, core::memory::buffer_ma
 
 //------------------------------------------------------------------------------
 
-void barrier_dump::dump_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
+void barrier_dump::dump_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
 {
-    m_total_dumped += info.size;
+    m_total_dumped += _info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void barrier_dump::restore_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
+void barrier_dump::restore_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t /*buffer*/)
 {
-    SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= info.size);
-    m_total_dumped -= info.size;
+    SIGHT_ASSERT("Memory dump inconsistency", m_total_dumped >= _info.size);
+    m_total_dumped -= _info.size;
 }
 
 //------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ bool barrier_dump::is_barrier_crossed() const
 
 //------------------------------------------------------------------------------
 
-std::size_t barrier_dump::dump(std::size_t nb_of_bytes)
+std::size_t barrier_dump::dump(std::size_t _nb_of_bytes)
 {
     std::size_t dumped = 0;
 
@@ -185,7 +185,7 @@ std::size_t barrier_dump::dump(std::size_t nb_of_bytes)
 
         for(const auto& pair : buffer_infos)
         {
-            if(dumped < nb_of_bytes)
+            if(dumped < _nb_of_bytes)
             {
                 if(manager->dump_buffer(pair.first).get())
                 {
@@ -225,23 +225,23 @@ void barrier_dump::refresh()
 
 //------------------------------------------------------------------------------
 
-bool barrier_dump::set_param(const std::string& name, const std::string& value)
+bool barrier_dump::set_param(const std::string& _name, const std::string& _value)
 {
     try
     {
-        if(name == "barrier")
+        if(_name == "barrier")
         {
-            m_barrier = core::memory::byte_size(value).size();
+            m_barrier = core::memory::byte_size(_value).size();
             return true;
         }
     }
     catch(core::memory::exception::bad_cast const&)
     {
-        SIGHT_ERROR("Bad value for " << name << " : " << value);
+        SIGHT_ERROR("Bad value for " << _name << " : " << _value);
         return false;
     }
 
-    SIGHT_ERROR("Bad parameter name " << name);
+    SIGHT_ERROR("Bad parameter name " << _name);
     return false;
 }
 
@@ -255,19 +255,19 @@ const core::memory::policy::base::param_names_type& barrier_dump::get_param_name
 
 //------------------------------------------------------------------------------
 
-std::string barrier_dump::get_param(const std::string& name, bool* ok) const
+std::string barrier_dump::get_param(const std::string& _name, bool* _ok) const
 {
     bool is_ok = false;
     std::string value;
-    if(name == "barrier")
+    if(_name == "barrier")
     {
         value = std::string(core::memory::byte_size(core::memory::byte_size::size_t(m_barrier)));
         is_ok = true;
     }
 
-    if(ok != nullptr)
+    if(_ok != nullptr)
     {
-        *ok = is_ok;
+        *_ok = is_ok;
     }
 
     return value;

@@ -46,19 +46,19 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API ComprehensiveSRIOD(
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const std::filesystem::path& destinationPath,
-        bool use3DSR                          = false,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const std::filesystem::path& _destination_path,
+        bool _use3_dsr                         = false,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
     IO_DICOM_API ~ComprehensiveSRIOD() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& series) override;
+    IO_DICOM_API void write(const data::series::csptr& _series) override;
 
 protected:
 

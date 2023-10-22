@@ -75,10 +75,10 @@ public:
         default;
 
     MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_SLOT;
-    typedef core::com::slot<void ()> SwitchSlotType;
+    typedef core::com::slot<void ()> switch_slot_t;
 
     MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_TO_SLOT;
-    typedef core::com::slot<void (int)> SwitchToSlotType;
+    typedef core::com::slot<void (int)> switch_to_slot_t;
 
 protected:
 
@@ -98,7 +98,7 @@ protected:
     MODULE_GEOMETRY_API void switchMatrix();
 
     /// Switch to Matrix "index"
-    MODULE_GEOMETRY_API void switchToMatrix(int index);
+    MODULE_GEOMETRY_API void switchToMatrix(int _index);
 
     MODULE_GEOMETRY_API connections_t auto_connections() const override;
 

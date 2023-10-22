@@ -53,7 +53,7 @@ Library containing functions for reading and writing DICOM files. It also contai
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_dicom)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_dicom)
 
 ```
 

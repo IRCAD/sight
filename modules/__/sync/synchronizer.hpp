@@ -144,7 +144,7 @@ public:
         static inline const key_t MATRIX_SYNCHRONIZED_SIG     = "matrixSynchronized";
         static inline const key_t MATRIX_UNSYNCHRONIZED_SIG   = "matrixUnsynchronized";
 
-        using timestamp_signal_t = sight::core::com::signal<void (core::hires_clock::type timestamp)>;
+        using timestamp_signal_t = sight::core::com::signal<void (core::hires_clock::type _timestamp)>;
         using void_signal_t      = sight::core::com::signal<void ()>;
         using int_signal_t       = sight::core::com::signal<void (int)>;
     };
@@ -248,9 +248,9 @@ protected:
      * @param _outputVarIndex : the output var to update
      */
     MODULE_SYNC_API void setFrameBinding(
-        std::size_t _tlIndex,
-        unsigned int _elementIndex,
-        std::size_t _outputVarIndex
+        std::size_t _tl_index,
+        unsigned int _element_index,
+        std::size_t _output_var_index
     );
 
     /**
@@ -261,9 +261,9 @@ protected:
      * @param _outputVarIndex : the output var to update
      */
     MODULE_SYNC_API void setMatrixBinding(
-        std::size_t _tlIndex,
-        unsigned int _elementIndex,
-        std::size_t _outputVarIndex
+        std::size_t _tl_index,
+        unsigned int _element_index,
+        std::size_t _output_var_index
     );
 
     /** Set a delay between frames and matrices.
@@ -283,7 +283,7 @@ protected:
      * @param key : needs to be either frameDelay_i or matrixDelay_i
      * where i is the index of the timeline in the input vector
      */
-    MODULE_SYNC_API void setDelay(int val, std::string key);
+    MODULE_SYNC_API void setDelay(int _val, std::string _key);
 
 private:
 
@@ -292,7 +292,7 @@ private:
      *
      * @param frameTLIndex : the index of the frameTL to treat
      */
-    std::vector<outVarParameter> getFrameTlOutputVarIndex(std::size_t frameTLIndex);
+    std::vector<outVarParameter> getFrameTlOutputVarIndex(std::size_t _frame_tl_index);
 
     /**
      * @brief Copy the synchronized frame from the tl toward the corresponding output variables.
@@ -301,8 +301,8 @@ private:
      * @param synchronizationTimestamp : the synchronization timestamp
      */
     void copyFrameFromTLtoOutput(
-        std::size_t frameTLIndex,
-        core::hires_clock::type synchronizationTimestamp
+        std::size_t _frame_tl_index,
+        core::hires_clock::type _synchronization_timestamp
     );
 
     /**
@@ -310,7 +310,7 @@ private:
      *
      * @param matrixTLIndex : the index of the matrixTL to treat
      */
-    std::vector<outVarParameter> getMatrixTlOutputVarIndex(std::size_t matrixTLIndex);
+    std::vector<outVarParameter> getMatrixTlOutputVarIndex(std::size_t _matrix_tl_index);
 
     /**
      * @brief Copy the synchronized matrix from the tl toward the corresponding output variables.
@@ -319,8 +319,8 @@ private:
      * @param synchronizationTimestamp : the synchronization timestamp
      */
     void copyMatrixFromTLtoOutput(
-        std::size_t matrixTLIndex,
-        core::hires_clock::type synchronizationTimestamp
+        std::size_t _matrix_tl_index,
+        core::hires_clock::type _synchronization_timestamp
     );
 
     /**
@@ -328,14 +328,14 @@ private:
      *
      * @param synchFrameTLIndex : vector of index of the frameTl which have just been synchronized
      */
-    void sendFrameVarStatus(const std::vector<std::size_t>& synchFrameTLIndex);
+    void sendFrameVarStatus(const std::vector<std::size_t>& _synch_frame_tl_index);
 
     /**
      * @brief send signals for the frame variables which required it, each time that the synchronization state changes
      *
      * @param synchFrameTLIndex : vector of index of the matrixTl which have just been synchronized
      */
-    void sendMatrixVarStatus(const std::vector<std::size_t>& synchMatrixTLIndex);
+    void sendMatrixVarStatus(const std::vector<std::size_t>& _synch_matrix_tl_index);
 
     /// @brief vector which store the input/output variable associations for frames and matrix
     std::vector<outVarParameter> m_frameOutVarParameters {};

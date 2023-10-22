@@ -28,16 +28,16 @@
 #include <QComboBox>
 #include <QLineEdit>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-static std::string mapToString(const std::map<std::string, std::string>& values)
+static std::string map_to_string(const std::map<std::string, std::string>& _values)
 {
     std::string res = "{";
     bool first      = true;
-    for(const auto& [key, value] : values)
+    for(const auto& [key, value] : _values)
     {
         if(!first)
         {
@@ -52,34 +52,34 @@ static std::string mapToString(const std::map<std::string, std::string>& values)
 
 //------------------------------------------------------------------------------
 
-void PreferencesConfiguration::fill(Tester& tester, const std::map<std::string, std::string>& values)
+void PreferencesConfiguration::fill(Tester& _tester, const std::map<std::string, std::string>& _values)
 {
-    auto bt = tester.addInBacktrace("fill preferences configuration window with " + mapToString(values));
-    Dialog::take(tester, "preferences configuration window");
-    QPointer<QWidget> window = tester.get<QWidget*>();
-    for(const auto& e : values)
+    auto bt = _tester.addInBacktrace("fill preferences configuration window with " + map_to_string(_values));
+    Dialog::take(_tester, "preferences configuration window");
+    QPointer<QWidget> window = _tester.get<QWidget*>();
+    for(const auto& e : _values)
     {
         auto key   = e.first;
         auto value = e.second;
-        tester.take("preferences configuration window", window);
-        tester.yields('"' + key + "\" field", key);
-        QString qValue = QString::fromStdString(value);
-        if(tester.is_a<QLineEdit*>())
+        _tester.take("preferences configuration window", window);
+        _tester.yields('"' + key + "\" field", key);
+        QString q_value = QString::fromStdString(value);
+        if(_tester.is_a<QLineEdit*>())
         {
-            tester.get<QLineEdit*>()->setText(qValue);
+            _tester.get<QLineEdit*>()->setText(q_value);
         }
-        else if(tester.is_a<QCheckBox*>())
+        else if(_tester.is_a<QCheckBox*>())
         {
-            tester.get<QCheckBox*>()->setChecked(qValue == "true");
+            _tester.get<QCheckBox*>()->setChecked(q_value == "true");
         }
-        else if(tester.is_a<QComboBox*>())
+        else if(_tester.is_a<QComboBox*>())
         {
-            tester.get<QComboBox*>()->setCurrentText(qValue);
+            _tester.get<QComboBox*>()->setCurrentText(q_value);
         }
     }
 
-    helper::Button::push(tester, Select::fromDialog("OK"));
-    tester.doubt(
+    helper::Button::push(_tester, Select::fromDialog("OK"));
+    _tester.doubt(
         "the preferences configuration window is closed",
         [&window](QObject*) -> bool
         {
@@ -87,4 +87,4 @@ void PreferencesConfiguration::fill(Tester& tester, const std::map<std::string, 
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

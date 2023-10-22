@@ -66,17 +66,17 @@ ModelSeriesObjWriter::~ModelSeriesObjWriter()
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkActor> createActor(const data::reconstruction::sptr& pReconstruction)
+vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reconstruction)
 {
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 
-    data::mesh::sptr mesh         = pReconstruction->getMesh();
-    data::material::sptr material = pReconstruction->getMaterial();
+    data::mesh::sptr mesh         = _p_reconstruction->getMesh();
+    data::material::sptr material = _p_reconstruction->getMaterial();
 
-    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, polyData);
+    vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(mesh, poly_data);
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(polyData);
+    mapper->SetInputData(poly_data);
     actor->SetMapper(mapper);
 
     vtkProperty* property = actor->GetProperty();
@@ -102,29 +102,29 @@ void ModelSeriesObjWriter::write()
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
-    [[maybe_unused]] const auto objectLock = m_object.lock();
+    [[maybe_unused]] const auto object_lock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock);
+    SIGHT_ASSERT("Object Lock null.", object_lock);
 
     const std::filesystem::path prefix = this->get_folder();
 
-    const data::model_series::csptr modelSeries = getConcreteObject();
+    const data::model_series::csptr model_series = getConcreteObject();
 
-    m_job->set_total_work_units(modelSeries->getReconstructionDB().size());
+    m_job->set_total_work_units(model_series->getReconstructionDB().size());
     std::uint64_t units = 0;
-    for(const data::reconstruction::sptr& rec : modelSeries->getReconstructionDB())
+    for(const data::reconstruction::sptr& rec : model_series->getReconstructionDB())
     {
         vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-        vtkSmartPointer<vtkActor> actor       = createActor(rec);
+        vtkSmartPointer<vtkActor> actor       = create_actor(rec);
         renderer->AddActor(actor);
 
-        vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-        renderWindow->AddRenderer(renderer);
+        vtkSmartPointer<vtkRenderWindow> render_window = vtkSmartPointer<vtkRenderWindow>::New();
+        render_window->AddRenderer(renderer);
 
         const std::string filename = (prefix / (rec->getOrganName() + "_" + rec->get_uuid())).string();
 
         vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
-        exporter->SetRenderWindow(renderWindow);
+        exporter->SetRenderWindow(render_window);
         exporter->SetFilePrefix(filename.c_str());
         exporter->Write();
         m_job->done_work(++units);

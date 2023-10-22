@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/__/config.hpp"
-#include "ui/__/detail/registry/ToolBar.hpp"
+#include "ui/__/detail/registry/tool_bar.hpp"
 #include "ui/__/layout/toolbar_manager.hpp"
 
 #include <service/base.hpp>
@@ -36,7 +36,7 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class ToolBar;
+class tool_bar;
 
 }
 
@@ -50,19 +50,19 @@ public:
     SIGHT_DECLARE_SERVICE(toolbar, service::base);
 
     /// Method called when an action service is stopping
-    UI_API void actionServiceStopping(std::string actionSrvSID);
+    UI_API void actionServiceStopping(std::string _action_srv_sid);
 
     /// Method called when an action service is starting
-    UI_API void actionServiceStarting(std::string actionSrvSID);
+    UI_API void actionServiceStarting(std::string _action_srv_sid);
 
     /// Method called when the action service is activated
-    UI_API void actionServiceSetChecked(std::string actionSrvSID, bool isChecked);
+    UI_API void actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked);
 
     /// Method called when the action service is executable
-    UI_API void actionServiceSetEnabled(std::string actionSrvSID, bool isEnabled);
+    UI_API void actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled);
 
     /// Method called when the action service is visible
-    UI_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
+    UI_API void actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
 
@@ -108,7 +108,7 @@ protected:
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - \<menuItem\> represents action
      *   - \<menu\> represents menu
-     *   - \<editor\> represents container service (editor, IView, ...)
+     *   - \<editor\> represents container service (editor, view, ...)
      *
      *  * @section Slots Slots
      * - \b setVisible(bool isVisible) : this slot shows the toolBar (if isVisible = true) or hides it.
@@ -122,7 +122,7 @@ protected:
      *   - The order of the item in each section (gui and registry) must be the same.\n
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
-     *  @see ui::registry::ToolBar::initialize(),
+     *  @see ui::registry::tool_bar::initialize(),
      *::ui::layout::toolbar_manager::initialize()
      */
     UI_API void initialize();
@@ -144,7 +144,7 @@ protected:
     };
 
     /// SLOT: show/hide the container
-    UI_API void setVisible(bool isVisible);
+    UI_API void setVisible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
     UI_API void setVisibleByParameter(ui::parameter_t);
@@ -157,10 +157,10 @@ protected:
 
 private:
 
-    void initializeLayoutManager(const ui::config_t& layoutConfig);
+    void initializeLayoutManager(const ui::config_t& _layout_config);
 
     ui::layout::toolbar_manager::sptr m_layoutManager;
-    SPTR(ui::detail::registry::ToolBar) m_registry;
+    SPTR(ui::detail::registry::tool_bar) m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hideActions {false};

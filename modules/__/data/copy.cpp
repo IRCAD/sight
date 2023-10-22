@@ -35,20 +35,20 @@ void copy::configuring()
     const auto& config = this->get_config();
     SIGHT_ASSERT("One 'in' tag is required.", config.get_optional<std::string>("in").has_value());
 
-    [[maybe_unused]] const auto inoutCfg = config.get_optional<std::string>("inout");
-    [[maybe_unused]] const auto outCfg   = config.get_optional<std::string>("out");
-    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.has_value() + outCfg.has_value());
+    [[maybe_unused]] const auto inout_cfg = config.get_optional<std::string>("inout");
+    [[maybe_unused]] const auto out_cfg   = config.get_optional<std::string>("out");
+    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inout_cfg.has_value() + out_cfg.has_value());
 
-    if(const auto modeConfig = config.get_optional<std::string>("mode"); modeConfig.has_value())
+    if(const auto mode_config = config.get_optional<std::string>("mode"); mode_config.has_value())
     {
-        const auto& mode = modeConfig.value();
+        const auto& mode = mode_config.value();
         if(mode == "copyOnStart")
         {
-            m_mode = ModeType::START;
+            m_mode = mode_t::START;
         }
         else if(mode == "copyOnUpdate")
         {
-            m_mode = ModeType::UPDATE;
+            m_mode = mode_t::UPDATE;
         }
         else
         {
@@ -61,7 +61,7 @@ void copy::configuring()
 
 void copy::starting()
 {
-    if(m_mode == ModeType::START)
+    if(m_mode == mode_t::START)
     {
         this->make_copy();
     }
@@ -71,7 +71,7 @@ void copy::starting()
 
 void copy::updating()
 {
-    if(m_mode == ModeType::UPDATE)
+    if(m_mode == mode_t::UPDATE)
     {
         this->make_copy();
     }
@@ -96,21 +96,21 @@ void copy::make_copy()
     // Check if we use inout or output.
     bool create = false;
     {
-        const auto targetLock = m_target.lock();
-        if(!targetLock)
+        const auto target_lock = m_target.lock();
+        if(!target_lock)
         {
             create = true;
         }
     }
 
     // Extract the object.
-    const auto sourceObject = m_source.lock();
+    const auto source_object = m_source.lock();
 
-    sight::data::object::csptr source = sourceObject.get_shared();
+    sight::data::object::csptr source = source_object.get_shared();
 
     if(source)
     {
-        const auto setOutputData =
+        const auto set_output_data =
             [&]()
             {
                 if(create)
@@ -125,7 +125,7 @@ void copy::make_copy()
                     const auto target = m_target.lock();
                     target->deep_copy(source);
 
-                    auto sig = target->signal<sight::data::object::ModifiedSignalType>(
+                    auto sig = target->signal<sight::data::object::modified_signal_t>(
                         sight::data::object::MODIFIED_SIG
                     );
                     {
@@ -135,7 +135,7 @@ void copy::make_copy()
                 }
             };
 
-        setOutputData();
+        set_output_data();
     }
 }
 

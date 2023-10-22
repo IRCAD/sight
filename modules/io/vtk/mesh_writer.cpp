@@ -54,7 +54,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 mesh_writer::mesh_writer() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -68,25 +68,25 @@ sight::io::service::IOPathType mesh_writer::getIOPathType() const
 
 void mesh_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("OBJ File(.obj)", "*.obj");
-    dialogFile.addFilter("PLY File(.ply)", "*.ply");
-    dialogFile.addFilter("STL File(.stl)", "*.stl");
-    dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
-    dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(ui::dialog::location::WRITE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("OBJ File(.obj)", "*.obj");
+    dialog_file.addFilter("PLY File(.ply)", "*.ply");
+    dialog_file.addFilter("STL File(.stl)", "*.stl");
+    dialog_file.addFilter("VTK Legacy File(.vtk)", "*.vtk");
+    dialog_file.addFilter("VTK Polydata File(.vtp)", "*.vtp");
+    dialog_file.setOption(ui::dialog::location::WRITE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
-        m_selectedExtension = dialogFile.getSelectedExtensions().front();
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        m_selectedExtension = dialog_file.getSelectedExtensions().front();
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -123,7 +123,7 @@ void mesh_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-typename WRITER::sptr configureWriter(const std::filesystem::path& _file)
+typename WRITER::sptr configure_writer(const std::filesystem::path& _file)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_file);
@@ -154,61 +154,61 @@ void mesh_writer::updating()
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
 
-        std::filesystem::path fileToWrite   = this->get_file();
-        const std::string providedExtension = fileToWrite.extension().string();
-        std::string extensionToUse;
+        std::filesystem::path file_to_write  = this->get_file();
+        const std::string provided_extension = file_to_write.extension().string();
+        std::string extension_to_use;
 
         // Check if file has an extension.
-        if(providedExtension.empty())
+        if(provided_extension.empty())
         {
             // No extension provided, add extension of selected filter.
-            extensionToUse = m_selectedExtension;
-            fileToWrite   += extensionToUse;
+            extension_to_use = m_selectedExtension;
+            file_to_write   += extension_to_use;
         }
         else
         {
-            extensionToUse = providedExtension;
+            extension_to_use = provided_extension;
         }
 
-        sight::io::writer::object_writer::sptr meshWriter;
+        sight::io::writer::object_writer::sptr mesh_writer;
 
-        if(extensionToUse == ".vtk")
+        if(extension_to_use == ".vtk")
         {
-            meshWriter = configureWriter<sight::io::vtk::MeshWriter>(fileToWrite);
+            mesh_writer = configure_writer<sight::io::vtk::MeshWriter>(file_to_write);
         }
-        else if(extensionToUse == ".vtp")
+        else if(extension_to_use == ".vtp")
         {
-            meshWriter = configureWriter<sight::io::vtk::VtpMeshWriter>(fileToWrite);
+            mesh_writer = configure_writer<sight::io::vtk::VtpMeshWriter>(file_to_write);
         }
-        else if(extensionToUse == ".stl")
+        else if(extension_to_use == ".stl")
         {
-            meshWriter = configureWriter<sight::io::vtk::StlMeshWriter>(fileToWrite);
+            mesh_writer = configure_writer<sight::io::vtk::StlMeshWriter>(file_to_write);
         }
-        else if(extensionToUse == ".ply")
+        else if(extension_to_use == ".ply")
         {
-            meshWriter = configureWriter<sight::io::vtk::PlyMeshWriter>(fileToWrite);
+            mesh_writer = configure_writer<sight::io::vtk::PlyMeshWriter>(file_to_write);
         }
-        else if(extensionToUse == ".obj")
+        else if(extension_to_use == ".obj")
         {
-            meshWriter = configureWriter<sight::io::vtk::ObjMeshWriter>(fileToWrite);
+            mesh_writer = configure_writer<sight::io::vtk::ObjMeshWriter>(file_to_write);
         }
         else
         {
             SIGHT_THROW_EXCEPTION(
                 core::tools::failed(
-                    "Extension '" + fileToWrite.extension().string()
+                    "Extension '" + file_to_write.extension().string()
                     + "' is not managed by module::io::vtk::mesh_writer."
                 )
             );
         }
 
-        m_sigJobCreated->emit(meshWriter->getJob());
+        m_sigJobCreated->emit(mesh_writer->getJob());
 
-        meshWriter->set_object(mesh);
+        mesh_writer->set_object(mesh);
 
         try
         {
-            meshWriter->write();
+            mesh_writer->write();
             m_writeFailed = false;
         }
         catch(core::tools::failed& e)

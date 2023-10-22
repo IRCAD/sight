@@ -63,7 +63,7 @@ public:
      * @param[in] igtlType
      * @return a core::type
      */
-    static const core::type& getFwToolsType(const std::uint8_t& igtlType);
+    static const core::type& get_fw_tools_type(const std::uint8_t& _igtl_type);
 
     /**
      * @brief get igtlType from a core::type
@@ -71,7 +71,7 @@ public:
      * @param[in] type
      * @return uint8 value correspond to an type enum in ::igtl::ImageMessage2
      */
-    static std::uint8_t getIgtlType(const core::type& type);
+    static std::uint8_t get_igtl_type(const core::type& _type);
 
 private:
 

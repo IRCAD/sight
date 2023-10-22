@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,23 +33,23 @@ namespace sight::io::dicom::helper
 //------------------------------------------------------------------------------
 
 void FileWriter::write(
-    const std::filesystem::path& filename,
-    const SPTR(gdcm::Writer)& writer
+    const std::filesystem::path& _filename,
+    const SPTR(gdcm::Writer)& _writer
 )
 {
     // Set file header
-    gdcm::FileMetaInformation& metaInformation = writer->GetFile().GetHeader();
+    gdcm::FileMetaInformation& meta_information = _writer->GetFile().GetHeader();
 
     // Transfer syntax - Type 1
-    metaInformation.SetDataSetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
+    meta_information.SetDataSetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
 
     // Initialize the file
-    writer->SetFileName(filename.string().c_str()); // NOTE: Must be called when file is ready to be written
+    _writer->SetFileName(_filename.string().c_str()); // NOTE: Must be called when file is ready to be written
 
     // Write data
-    if(!writer->Write())
+    if(!_writer->Write())
     {
-        const std::string msg = "Unable to write the file " + filename.string();
+        const std::string msg = "Unable to write the file " + _filename.string();
         throw io::dicom::exception::Failed(msg);
     }
 }

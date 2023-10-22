@@ -44,21 +44,21 @@ namespace sight::io::bitmap::ut
 
 //------------------------------------------------------------------------------
 
-inline static void testBackend(
-    const std::filesystem::path& file,
-    Backend backend,
-    data::image::sptr expected_image = data::image::sptr()
+inline static void test_backend(
+    const std::filesystem::path& _file,
+    Backend _backend,
+    data::image::sptr _expected_image = data::image::sptr()
 )
 {
     core::os::temp_dir temp_dir;
     std::filesystem::path filepath;
 
-    if(expected_image)
+    if(_expected_image)
     {
-        filepath = temp_dir / file;
+        filepath = temp_dir / _file;
 
         // Write a expected image to disk
-        const auto& mat = imageToMat(expected_image);
+        const auto& mat = image_to_mat(_expected_image);
         cv::imwrite(
             filepath.string(),
             mat,
@@ -70,14 +70,14 @@ inline static void testBackend(
                 cv::IMWRITE_JPEG_OPTIMIZE, 1
             });
     }
-    else if(std::filesystem::exists(file) && std::filesystem::is_regular_file(file))
+    else if(std::filesystem::exists(_file) && std::filesystem::is_regular_file(_file))
     {
-        filepath       = file;
-        expected_image = readImage(filepath);
+        filepath        = _file;
+        _expected_image = read_image(filepath);
     }
     else
     {
-        CPPUNIT_FAIL("File not found: " + file.string());
+        CPPUNIT_FAIL("File not found: " + _file.string());
     }
 
     auto actual_image = std::make_shared<data::image>();
@@ -88,25 +88,25 @@ inline static void testBackend(
         reader->set_object(actual_image);
         reader->set_file(filepath);
 
-        CPPUNIT_ASSERT_NO_THROW(reader->read(backend));
+        CPPUNIT_ASSERT_NO_THROW(reader->read(_backend));
     }
 
-    const auto& expected_sizes = expected_image->size();
+    const auto& expected_sizes = _expected_image->size();
     const auto& actual_sizes   = actual_image->size();
 
     CPPUNIT_ASSERT_EQUAL(expected_sizes[0], actual_sizes[0]);
     CPPUNIT_ASSERT_EQUAL(expected_sizes[1], actual_sizes[1]);
     CPPUNIT_ASSERT_EQUAL(expected_sizes[2], actual_sizes[2]);
-    CPPUNIT_ASSERT_EQUAL(expected_image->getPixelFormat(), actual_image->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(expected_image->getType(), actual_image->getType());
+    CPPUNIT_ASSERT_EQUAL(_expected_image->getPixelFormat(), actual_image->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(_expected_image->getType(), actual_image->getType());
 
-    if(backend == Backend::LIBJPEG || backend == Backend::NVJPEG)
+    if(_backend == Backend::LIBJPEG || _backend == Backend::NVJPEG)
     {
-        CPPUNIT_ASSERT(computePSNR(expected_image, actual_image) > 20.0);
+        CPPUNIT_ASSERT(compute_psnr(_expected_image, actual_image) > 20.0);
     }
     else
     {
-        CPPUNIT_ASSERT(*expected_image == *actual_image);
+        CPPUNIT_ASSERT(*_expected_image == *actual_image);
     }
 
     // test non existant file
@@ -117,7 +117,7 @@ inline static void testBackend(
         reader->set_object(actual_image);
         reader->set_file(path);
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
+        CPPUNIT_ASSERT_THROW(reader->read(_backend), core::exception);
     }
 
     // test existing corrupted file
@@ -130,7 +130,7 @@ inline static void testBackend(
         reader->set_object(actual_image);
         reader->set_file(corrupted_file);
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
+        CPPUNIT_ASSERT_THROW(reader->read(_backend), core::exception);
     }
 
     // test file with bad extension
@@ -140,15 +140,15 @@ inline static void testBackend(
         reader->set_object(actual_image);
         reader->set_file(filepath.replace_extension(".bad"));
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
+        CPPUNIT_ASSERT_THROW(reader->read(_backend), core::exception);
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline static void profileReader(
-    std::size_t loop,
-    Backend backend
+inline static void profile_reader(
+    std::size_t _loop,
+    Backend _backend
 )
 {
     auto reader = std::make_shared<Reader>();
@@ -156,14 +156,14 @@ inline static void profileReader(
     auto actual_image = std::make_shared<data::image>();
     reader->set_object(actual_image);
 
-    const auto& filename = "wild" + extensions(backend).front();
+    const auto& filename = "wild" + extensions(_backend).front();
     const auto& filepath = utest_data::Data::dir() / "sight" / "image" / "bitmap" / filename;
     reader->set_file(filepath);
 
     const std::string backend_name =
         [&]
         {
-            switch(backend)
+            switch(_backend)
             {
                 case Backend::LIBTIFF:
                     return "libTIFF";
@@ -178,13 +178,13 @@ inline static void profileReader(
                     return "libjpeg";
 
                 case Backend::NVJPEG2K:
-                    return "nvJPEG2K";
+                    return "nv_jpeg_2k";
 
                 case Backend::OPENJPEG:
                     return "openJPEG";
 
                 default:
-                    SIGHT_THROW("Unknown backend: '" << std::uint8_t(backend) << "'");
+                    SIGHT_THROW("Unknown backend: '" << std::uint8_t(_backend) << "'");
             }
         }();
 
@@ -193,24 +193,24 @@ inline static void profileReader(
         [&]
             (std::size_t)
         {
-            CPPUNIT_ASSERT_NO_THROW(reader->read(backend));
+            CPPUNIT_ASSERT_NO_THROW(reader->read(_backend));
         },
-        loop,
+        _loop,
         backend_name,
         0.1
     );
 
     // Now profile openCV reading to compare
-    if(!utest::Filter::ignoreSlowTests() && loop > 1)
+    if(!utest::Filter::ignoreSlowTests() && _loop > 1)
     {
         const auto& opencv_label = "(openCV): " + filepath.extension().string();
         SIGHT_PROFILE_FUNC(
             [&]
                 (std::size_t)
             {
-                CPPUNIT_ASSERT_NO_THROW(readImage(filepath));
+                CPPUNIT_ASSERT_NO_THROW(read_image(filepath));
             },
-            loop,
+            _loop,
             opencv_label,
             0.1
         );
@@ -253,9 +253,9 @@ void ReaderTest::extensionsTest()
     };
 
     std::vector<Backend> backends {
-        io::bitmap::nvJPEG() ? Backend::NVJPEG : Backend::LIBJPEG,
-        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K : Backend::OPENJPEG,
-        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
+        io::bitmap::nv_jpeg() ? Backend::NVJPEG : Backend::LIBJPEG,
+        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K : Backend::OPENJPEG,
+        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
         Backend::LIBTIFF,
         Backend::LIBPNG
     };
@@ -280,9 +280,9 @@ void ReaderTest::extensionsTest()
 void ReaderTest::wildcardTest()
 {
     std::vector<Backend> backends {
-        io::bitmap::nvJPEG() ? Backend::NVJPEG : Backend::LIBJPEG,
-        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K : Backend::OPENJPEG,
-        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
+        io::bitmap::nv_jpeg() ? Backend::NVJPEG : Backend::LIBJPEG,
+        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K : Backend::OPENJPEG,
+        io::bitmap::nv_jpeg_2k() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
         Backend::LIBTIFF,
         Backend::LIBPNG
     };
@@ -318,7 +318,7 @@ void ReaderTest::wildcardTest()
 
     for(std::size_t index = 0 ; const auto& backend : backends)
     {
-        const auto& [label, wildcard] = io::bitmap::wildcardFilter(backend);
+        const auto& [label, wildcard] = io::bitmap::wildcard_filter(backend);
 
         CPPUNIT_ASSERT_EQUAL(labels[index], label);
         CPPUNIT_ASSERT_EQUAL(wildcards[index], wildcard);
@@ -330,24 +330,24 @@ void ReaderTest::wildcardTest()
 
 void ReaderTest::nvJPEGTest()
 {
-    if(!io::bitmap::nvJPEG())
+    if(!io::bitmap::nv_jpeg())
     {
         return;
     }
 
-    testBackend("nvJPEG.jpg", Backend::NVJPEG, getSyntheticImage(0));
+    test_backend("nvJPEG.jpg", Backend::NVJPEG, get_synthetic_image(0));
 }
 
 //------------------------------------------------------------------------------
 
 void ReaderTest::nvJPEG2KTest()
 {
-    if(!io::bitmap::nvJPEG2K())
+    if(!io::bitmap::nv_jpeg_2k())
     {
         return;
     }
 
-    testBackend(
+    test_backend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
         utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
@@ -359,12 +359,12 @@ void ReaderTest::nvJPEG2KTest()
 
 void ReaderTest::libPNGTest()
 {
-    testBackend("libPNG_RGB_UINT8.png", Backend::LIBPNG, getSyntheticImage(0));
+    test_backend("libPNG_RGB_UINT8.png", Backend::LIBPNG, get_synthetic_image(0));
 
-    testBackend(
+    test_backend(
         "libPNG_RGBA_UINT8.png",
         Backend::LIBPNG,
-        getSyntheticImage(1, core::type::UINT8, data::image::PixelFormat::RGBA)
+        get_synthetic_image(1, core::type::UINT8, data::image::PixelFormat::RGBA)
     );
 }
 
@@ -372,14 +372,14 @@ void ReaderTest::libPNGTest()
 
 void ReaderTest::libJPEGTest()
 {
-    testBackend("libJPEG.jpg", Backend::LIBJPEG, getSyntheticImage(0));
+    test_backend("libJPEG.jpg", Backend::LIBJPEG, get_synthetic_image(0));
 }
 
 //------------------------------------------------------------------------------
 
 void ReaderTest::openJPEGTest()
 {
-    testBackend(
+    test_backend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
         utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
@@ -391,18 +391,18 @@ void ReaderTest::openJPEGTest()
 
 void ReaderTest::libTIFFTest()
 {
-    testBackend("libTIFF_RGB_UINT8.tiff", Backend::LIBTIFF, getSyntheticImage(0));
+    test_backend("libTIFF_RGB_UINT8.tiff", Backend::LIBTIFF, get_synthetic_image(0));
 
-    testBackend(
+    test_backend(
         "libTIFF_RGBA_UINT16.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(1, core::type::UINT16, data::image::PixelFormat::RGBA)
+        get_synthetic_image(1, core::type::UINT16, data::image::PixelFormat::RGBA)
     );
 
-    testBackend(
+    test_backend(
         "libTIFF_GRAYSCALE_DOUBLE.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(2, core::type::DOUBLE, data::image::PixelFormat::GRAY_SCALE)
+        get_synthetic_image(2, core::type::DOUBLE, data::image::PixelFormat::GRAY_SCALE)
     );
 }
 
@@ -419,22 +419,22 @@ void ReaderTest::profilingTest()
 
     SIGHT_INFO("Loop: " << LOOP_COUNT);
 
-    profileReader(LOOP_COUNT, Backend::LIBJPEG);
+    profile_reader(LOOP_COUNT, Backend::LIBJPEG);
 
-    if(io::bitmap::nvJPEG())
+    if(io::bitmap::nv_jpeg())
     {
-        profileReader(LOOP_COUNT, Backend::NVJPEG);
+        profile_reader(LOOP_COUNT, Backend::NVJPEG);
     }
 
-    profileReader(LOOP_COUNT, Backend::OPENJPEG);
+    profile_reader(LOOP_COUNT, Backend::OPENJPEG);
 
-    if(io::bitmap::nvJPEG2K())
+    if(io::bitmap::nv_jpeg_2k())
     {
-        profileReader(LOOP_COUNT, Backend::NVJPEG2K);
+        profile_reader(LOOP_COUNT, Backend::NVJPEG2K);
     }
 
-    profileReader(LOOP_COUNT, Backend::LIBPNG);
-    profileReader(LOOP_COUNT, Backend::LIBTIFF);
+    profile_reader(LOOP_COUNT, Backend::LIBPNG);
+    profile_reader(LOOP_COUNT, Backend::LIBTIFF);
 }
 
 } // namespace sight::io::bitmap::ut

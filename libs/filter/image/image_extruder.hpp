@@ -89,9 +89,9 @@ private:
     /// Represents a 3D triangle by three points.
     struct Triangle
     {
-        const glm::vec3 a;
-        const glm::vec3 b;
-        const glm::vec3 c;
+        const glm::vec3 A;
+        const glm::vec3 B;
+        const glm::vec3 C;
     };
 };
 

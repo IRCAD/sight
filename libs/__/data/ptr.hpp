@@ -52,7 +52,7 @@ public:
     DATA_API base_ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _autoConnect,
+        bool _auto_connect,
         bool _optional,
         Access _access,
         std::optional<std::size_t> _index = std::nullopt
@@ -75,13 +75,13 @@ protected:
     /// Internal setter of the pointer
     DATA_API virtual void set(
         const sight::data::object::sptr& _obj,
-        std::optional<bool> auto_connect,
-        std::optional<bool> optional,
-        std::optional<std::size_t> index = std::nullopt,
-        bool signal                      = false
-    )                                    = 0;
+        std::optional<bool> _auto_connect,
+        std::optional<bool> _optional,
+        std::optional<std::size_t> _index = std::nullopt,
+        bool _signal                      = false
+    )                                     = 0;
 
-    DATA_API virtual void set_deferred_id(const std::string& _id, std::optional<std::size_t> index = std::nullopt) = 0;
+    DATA_API virtual void set_deferred_id(const std::string& _id, std::optional<std::size_t> _index = std::nullopt) = 0;
 
     has_data* m_holder {nullptr};
     std::string_view m_key;
@@ -137,10 +137,10 @@ public:
     ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _autoConnect                 = false,
+        bool _auto_connect                = false,
         bool _optional                    = access_type_traits<DATATYPE, ACCESS>::optional,
         std::optional<std::size_t> _index = {}) noexcept :
-        base_ptr(_holder, _key, _autoConnect, _optional, ACCESS, _index)
+        base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, _index)
     {
     }
 
@@ -185,15 +185,15 @@ private:
     /// Assign the content of the pointer
     void set(
         const sight::data::object::sptr& _obj,
-        std::optional<bool> auto_connect,
-        std::optional<bool> optional,
+        std::optional<bool> _auto_connect,
+        std::optional<bool> _optional,
         std::optional<std::size_t> /*index*/ = std::nullopt,
-        bool signal                          = false
+        bool _signal                         = false
     ) final
     {
         if constexpr(ACCESS == data::Access::out)
         {
-            if(signal)
+            if(_signal)
             {
                 const auto ptr = this->lock();
                 if(ptr)
@@ -210,27 +210,27 @@ private:
         else
         {
             using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
-            auto typedObj = std::dynamic_pointer_cast<target_t>(_obj);
+            auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
                 + "' to '" + target_t::classname() + "'",
-                typedObj
+                typed_obj
             );
-            base_ptr_t::operator=(typedObj);
+            base_ptr_t::operator=(typed_obj);
 
-            if(auto_connect.has_value())
+            if(_auto_connect.has_value())
             {
-                m_autoConnect = auto_connect.value();
+                m_autoConnect = _auto_connect.value();
             }
 
-            if(optional.has_value())
+            if(_optional.has_value())
             {
-                m_optional = optional.value();
+                m_optional = _optional.value();
             }
 
             if constexpr(ACCESS == data::Access::out)
             {
-                if(signal)
+                if(_signal)
                 {
                     m_holder->notify_register_out(_obj, m_deferredId);
                 }
@@ -267,16 +267,16 @@ public:
     ptr_vector(
         has_data* _holder,
         std::string_view _key,
-        bool _autoConnect = false,
-        bool _optional    = access_type_traits<DATATYPE, ACCESS>::optional
+        bool _auto_connect = false,
+        bool _optional     = access_type_traits<DATATYPE, ACCESS>::optional
     ) noexcept :
-        base_ptr(_holder, _key, _autoConnect, _optional, ACCESS, {})
+        base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, {})
     {
     }
 
     ~ptr_vector() final
     {
-        std::for_each(m_ptrs.begin(), m_ptrs.end(), [](const auto& p){delete p.second;});
+        std::for_each(m_ptrs.begin(), m_ptrs.end(), [](const auto& _p){delete _p.second;});
     }
 
     /// Default constructors, destructor and assignment operators
@@ -354,48 +354,53 @@ private:
     /// Pointer assignment
     void set(
         const sight::data::object::sptr& _obj,
-        std::optional<bool> auto_connect,
-        std::optional<bool> optional,
+        std::optional<bool> _auto_connect,
+        std::optional<bool> _optional,
         std::optional<std::size_t> _index = std::nullopt,
-        bool signal                       = false
+        bool _signal                      = false
     ) final
     {
         auto index = _index.value();
         if(_obj == nullptr)
         {
-            m_ptrs[index]->set(nullptr, {}, {}, signal);
+            m_ptrs[index]->set(nullptr, {}, {}, _signal);
             delete m_ptrs[index];
             m_ptrs.erase(index);
         }
         else
         {
             using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
-            auto typedObj = std::dynamic_pointer_cast<target_t>(_obj);
+            auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
                 + "' to '" + target_t::classname() + "'",
-                typedObj
+                typed_obj
             );
 
             if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *auto_connect, *optional, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *_auto_connect, *_optional, index)));
             }
 
-            m_ptrs[index]->set(_obj, auto_connect, optional, signal);
+            m_ptrs[index]->set(_obj, _auto_connect, _optional, _signal);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void set_deferred_id(const std::string& _id, std::optional<std::size_t> index = std::nullopt) final
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t> _index = std::nullopt) final
     {
-        if(m_ptrs.find(*index) == m_ptrs.end())
+        if(m_ptrs.find(*_index) == m_ptrs.end())
         {
-            m_ptrs.emplace(std::make_pair(index.value(), new ptr_t(m_holder, m_key, m_autoConnect, m_optional, index)));
+            m_ptrs.emplace(
+                std::make_pair(
+                    _index.value(),
+                    new ptr_t(m_holder, m_key, m_autoConnect, m_optional, _index)
+                )
+            );
         }
 
-        m_ptrs[*index]->m_deferredId = _id;
+        m_ptrs[*_index]->m_deferredId = _id;
     }
 
     /// Collection of data, indexed by key

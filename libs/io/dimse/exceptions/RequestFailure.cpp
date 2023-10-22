@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 namespace sight::io::dimse::exceptions
 {
 
-RequestFailure::RequestFailure(const std::string& message) :
-    io::dimse::exceptions::Base(message)
+RequestFailure::RequestFailure(const std::string& _message) :
+    io::dimse::exceptions::Base(_message)
 {
 }
 

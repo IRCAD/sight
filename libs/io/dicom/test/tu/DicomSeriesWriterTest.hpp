@@ -33,7 +33,7 @@
 namespace sight::io::dicom::ut
 {
 
-typedef std::set<std::string> ExcludeSetType;
+typedef std::set<std::string> exclude_set_t;
 class DicomSeriesWriterTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(DicomSeriesWriterTest);
@@ -63,8 +63,8 @@ private:
      * @param anonymized if true, further attributes related to anonymisation are not compared.
      */
     void checkDicomSeries(
-        const std::filesystem::path& p,
-        bool anonymized = false
+        const std::filesystem::path& _p,
+        bool _anonymized = false
     );
 
     data::dicom_series::sptr m_srcDicomSeries;

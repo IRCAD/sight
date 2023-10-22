@@ -48,10 +48,10 @@ public:
      * @param[out] lt vtkLookupTable
      */
     IO_VTK_API static void toVtkLookupTable(
-        data::transfer_function::csptr tf,
-        vtkSmartPointer<vtkLookupTable> lt,
-        bool allowTransparency = false,
-        unsigned int size      = 256
+        data::transfer_function::csptr _tf,
+        vtkSmartPointer<vtkLookupTable> _lt,
+        bool _allow_transparency = false,
+        unsigned int _size       = 256
     );
 
     /*!
@@ -64,10 +64,10 @@ public:
      *
      */
     IO_VTK_API static void toBWVtkLookupTable(
-        double rangeMin,
-        double rangeMax,
-        vtkSmartPointer<vtkLookupTable> lt,
-        unsigned int size = 256
+        double _range_min,
+        double _range_max,
+        vtkSmartPointer<vtkLookupTable> _lt,
+        unsigned int _size = 256
     );
 };
 

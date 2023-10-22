@@ -40,13 +40,13 @@ camera_set::camera_set()
 
 //------------------------------------------------------------------------------
 
-void camera_set::shallow_copy(const object::csptr& source)
+void camera_set::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const camera_set>(source);
+    const auto& other = std::dynamic_pointer_cast<const camera_set>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
@@ -56,27 +56,27 @@ void camera_set::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-bool camera_set::operator==(const camera_set& other) const noexcept
+bool camera_set::operator==(const camera_set& _other) const noexcept
 {
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool camera_set::operator!=(const camera_set& other) const noexcept
+bool camera_set::operator!=(const camera_set& _other) const noexcept
 {
-    return base_class::operator!=(other);
+    return base_class::operator!=(_other);
 }
 
 //------------------------------------------------------------------------------
 
-void camera_set::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void camera_set::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const camera_set>(source);
+    const auto& other = std::dynamic_pointer_cast<const camera_set>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
@@ -87,28 +87,28 @@ void camera_set::deep_copy(const object::csptr& source, const std::unique_ptr<de
         other->cbegin(),
         other->cend(),
         std::back_inserter(*this),
-        [&](const auto& value)
+        [&](const auto& _value)
         {
-            return std::make_pair(object::copy(value.first, cache), value.second);
+            return std::make_pair(object::copy(_value.first, _cache), _value.second);
         });
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void camera_set::add_camera(camera::sptr camera)
+void camera_set::add_camera(camera::sptr _camera)
 {
     if(empty())
     {
         // Add camera with identity matrix
-        push_back({camera, std::make_shared<matrix4>()});
+        push_back({_camera, std::make_shared<matrix4>()});
     }
     // Check if the camera is already in the set before adding it
-    else if(cend() == std::find_if(cbegin(), cend(), [&](const auto& value){return value.first == camera;}))
+    else if(cend() == std::find_if(cbegin(), cend(), [&](const auto& _value){return _value.first == _camera;}))
     {
         // Add camera with nullptr matrix
-        push_back({camera, nullptr});
+        push_back({_camera, nullptr});
     }
     else
     {
@@ -118,23 +118,23 @@ void camera_set::add_camera(camera::sptr camera)
 
 //------------------------------------------------------------------------------
 
-camera::csptr camera_set::get_camera(std::size_t index) const
+camera::csptr camera_set::get_camera(std::size_t _index) const
 {
-    return at(index).first;
+    return at(_index).first;
 }
 
 //------------------------------------------------------------------------------
 
-camera::sptr camera_set::get_camera(std::size_t index)
+camera::sptr camera_set::get_camera(std::size_t _index)
 {
-    return at(index).first;
+    return at(_index).first;
 }
 
 //------------------------------------------------------------------------------
 
-void camera_set::remove_camera(camera::sptr camera)
+void camera_set::remove_camera(camera::sptr _camera)
 {
-    const auto& it = std::find_if(cbegin(), cend(), [&](const auto& value){return value.first == camera;});
+    const auto& it = std::find_if(cbegin(), cend(), [&](const auto& _value){return _value.first == _camera;});
 
     SIGHT_THROW_IF("Camera not found.", it == cend());
 
@@ -143,23 +143,23 @@ void camera_set::remove_camera(camera::sptr camera)
 
 //------------------------------------------------------------------------------
 
-void camera_set::set_extrinsic_matrix(std::size_t index, matrix4::sptr matrix)
+void camera_set::set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix)
 {
-    at(index).second = matrix;
+    at(_index).second = _matrix;
 }
 
 //------------------------------------------------------------------------------
 
-DATA_API matrix4::csptr camera_set::get_extrinsic_matrix(std::size_t index) const
+DATA_API matrix4::csptr camera_set::get_extrinsic_matrix(std::size_t _index) const
 {
-    return at(index).second;
+    return at(_index).second;
 }
 
 //------------------------------------------------------------------------------
 
-DATA_API matrix4::sptr camera_set::get_extrinsic_matrix(std::size_t index)
+DATA_API matrix4::sptr camera_set::get_extrinsic_matrix(std::size_t _index)
 {
-    return at(index).second;
+    return at(_index).second;
 }
 
 } // namespace sight::data

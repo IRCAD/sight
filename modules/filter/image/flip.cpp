@@ -65,16 +65,16 @@ void flip::starting()
 
 void flip::updating()
 {
-    const auto inImg = m_source.lock();
+    const auto in_img = m_source.lock();
 
-    SIGHT_ASSERT("No 'imageIn' found !", inImg);
-    if(inImg)
+    SIGHT_ASSERT("No 'imageIn' found !", in_img);
+    if(in_img)
     {
-        data::image::sptr outImg = std::make_shared<data::image>();
+        data::image::sptr out_img = std::make_shared<data::image>();
 
-        sight::filter::image::flipper::flip(inImg.get_shared(), outImg, m_flipAxes);
+        sight::filter::image::flipper::flip(in_img.get_shared(), out_img, m_flipAxes);
 
-        m_target = outImg;
+        m_target = out_img;
 
         m_sigComputed->async_emit();
     }

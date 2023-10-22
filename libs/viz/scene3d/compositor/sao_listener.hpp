@@ -45,13 +45,13 @@ public:
 
     VIZ_SCENE3D_API sao_listener() = delete;
 
-    VIZ_SCENE3D_API sao_listener(Ogre::Viewport* vp) :
-        m_viewport(vp)
+    VIZ_SCENE3D_API sao_listener(Ogre::Viewport* _vp) :
+        m_viewport(_vp)
     {
     }
 
     /// Method called before a render_target operation involving a material to set dynamically the material parameters.
-    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat) override;
+    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 _pass_id, Ogre::MaterialPtr& _mat) override;
 
 private:
 

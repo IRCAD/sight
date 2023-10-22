@@ -36,7 +36,7 @@ The services are implementations of the adaptor present in libs/viz/scene2D
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_viz_scene2D
 )

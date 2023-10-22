@@ -34,9 +34,9 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::mesh_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3d_test::ut::mesh_test);
 
-namespace sight::viz::qt3dTest::ut
+namespace sight::viz::qt3d_test::ut
 {
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ void mesh_test::setCubeMesh()
     scene->setCamera(scene->getCamera());
 
     const data::mesh::sptr mesh = std::make_shared<data::mesh>();
-    mesh->reserve(8, 12, data::mesh::CellType::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
+    mesh->reserve(8, 12, data::mesh::cell_type_t::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->dump_lock();
 
@@ -99,49 +99,49 @@ void mesh_test::setCubeMesh()
     mesh->pushCell(6, 5, 0);
 
     // Sets Qt3D mesh.
-    auto* qt3dMesh = new viz::qt3d::data::mesh(scene);
-    qt3dMesh->setMesh(mesh);
+    auto* qt3d_mesh = new viz::qt3d::data::mesh(scene);
+    qt3d_mesh->setMesh(mesh);
 
     // Asserts.
-    auto* geomRenderer    = qobject_cast<Qt3DRender::QGeometryRenderer*>(qt3dMesh->components()[0]);
-    auto* posAttribute    = geomRenderer->geometry()->attributes()[0];
-    auto* normalAttribute = geomRenderer->geometry()->attributes()[1];
-    auto* indexAttribute  = geomRenderer->geometry()->attributes()[2];
+    auto* geom_renderer    = qobject_cast<Qt3DRender::QGeometryRenderer*>(qt3d_mesh->components()[0]);
+    auto* pos_attribute    = geom_renderer->geometry()->attributes()[0];
+    auto* normal_attribute = geom_renderer->geometry()->attributes()[1];
+    auto* index_attribute  = geom_renderer->geometry()->attributes()[2];
 
     // Asserts primitive type.
-    CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geomRenderer->primitiveType());
+    CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geom_renderer->primitiveType());
 
     // Asserts number of vertices, normals, and indexes.
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), posAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), normalAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numCells() * 3), indexAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), pos_attribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), normal_attribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numCells() * 3), index_attribute->count());
 
     // Asserts each point is at the right position.
-    const QByteArray posBufferDataByte = posAttribute->buffer()->data();
-    const auto* const posBufferData    = reinterpret_cast<const float*>(posBufferDataByte.data());
-    unsigned int count                 = 0;
+    const QByteArray pos_buffer_data_byte = pos_attribute->buffer()->data();
+    const auto* const pos_buffer_data     = reinterpret_cast<const float*>(pos_buffer_data_byte.data());
+    unsigned int count                    = 0;
     for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        CPPUNIT_ASSERT(static_cast<float>(p.x) - posBufferData[count] < 0.01F);
-        CPPUNIT_ASSERT(static_cast<float>(p.y) - posBufferData[count + 1] < 0.01F);
-        CPPUNIT_ASSERT(static_cast<float>(p.z) - posBufferData[count + 2] < 0.01F);
+        CPPUNIT_ASSERT(static_cast<float>(p.x) - pos_buffer_data[count] < 0.01F);
+        CPPUNIT_ASSERT(static_cast<float>(p.y) - pos_buffer_data[count + 1] < 0.01F);
+        CPPUNIT_ASSERT(static_cast<float>(p.z) - pos_buffer_data[count + 2] < 0.01F);
         count += 3;
     }
 
     // Asserts indexes are in the right order.
-    const QByteArray indexBufferDataByte = indexAttribute->buffer()->data();
-    const auto* const indexBufferData    = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
+    const QByteArray index_buffer_data_byte = index_attribute->buffer()->data();
+    const auto* const index_buffer_data     = reinterpret_cast<const unsigned int*>(index_buffer_data_byte.data());
     count = 0;
     for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(cell.pt[i]), indexBufferData[count]);
+            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(cell.pt[i]), index_buffer_data[count]);
             count++;
         }
     }
 
-    delete qt3dMesh;
+    delete qt3d_mesh;
     delete scene;
 }
 
@@ -156,7 +156,7 @@ void mesh_test::centerCameraOnCube()
     auto* const camera = scene->getCamera();
 
     const data::mesh::sptr mesh = std::make_shared<data::mesh>();
-    mesh->reserve(8, 12, data::mesh::CellType::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
+    mesh->reserve(8, 12, data::mesh::cell_type_t::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->dump_lock();
 
@@ -183,38 +183,38 @@ void mesh_test::centerCameraOnCube()
     mesh->pushCell(6, 5, 0);
 
     // Sets expected camera after beeing centered on the cube.
-    auto* expectedCamera = new Qt3DRender::QCamera();
-    expectedCamera->lens()->setPerspectiveProjection(
+    auto* expected_camera = new Qt3DRender::QCamera();
+    expected_camera->lens()->setPerspectiveProjection(
         camera->lens()->fieldOfView(),
         camera->lens()->aspectRatio(),
         camera->lens()->nearPlane(),
         camera->lens()->farPlane()
     );
-    expectedCamera->setUpVector(camera->upVector());
-    expectedCamera->setPosition(camera->position());
-    expectedCamera->setViewCenter(camera->viewCenter());
-    expectedCamera->viewSphere(QVector3D(0.5F, 0.5F, 0.5F), 1);
+    expected_camera->setUpVector(camera->upVector());
+    expected_camera->setPosition(camera->position());
+    expected_camera->setViewCenter(camera->viewCenter());
+    expected_camera->viewSphere(QVector3D(0.5F, 0.5F, 0.5F), 1);
 
     // Sets Qt3D mesh and center camera on it.
-    auto* qt3dMesh = new viz::qt3d::data::mesh(scene);
-    qt3dMesh->setMesh(mesh);
-    qt3dMesh->centerCameraOnMesh();
+    auto* qt3d_mesh = new viz::qt3d::data::mesh(scene);
+    qt3d_mesh->setMesh(mesh);
+    qt3d_mesh->centerCameraOnMesh();
 
     // Asserts actual camera's view center is equal to expected camera's one.
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().x() - qt3dMesh->getScene()->getCamera()->viewCenter().x() < 0.01F);
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().y() - qt3dMesh->getScene()->getCamera()->viewCenter().y() < 0.01F);
-    CPPUNIT_ASSERT(expectedCamera->viewCenter().z() - qt3dMesh->getScene()->getCamera()->viewCenter().z() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->viewCenter().x() - qt3d_mesh->getScene()->getCamera()->viewCenter().x() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->viewCenter().y() - qt3d_mesh->getScene()->getCamera()->viewCenter().y() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->viewCenter().z() - qt3d_mesh->getScene()->getCamera()->viewCenter().z() < 0.01F);
 
     // Asserts actual camera's position is equal to expected camera's one.
-    CPPUNIT_ASSERT(expectedCamera->position().x() - qt3dMesh->getScene()->getCamera()->position().x() < 0.01F);
-    CPPUNIT_ASSERT(expectedCamera->position().y() - qt3dMesh->getScene()->getCamera()->position().y() < 0.01F);
-    CPPUNIT_ASSERT(expectedCamera->position().z() - qt3dMesh->getScene()->getCamera()->position().z() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->position().x() - qt3d_mesh->getScene()->getCamera()->position().x() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->position().y() - qt3d_mesh->getScene()->getCamera()->position().y() < 0.01F);
+    CPPUNIT_ASSERT(expected_camera->position().z() - qt3d_mesh->getScene()->getCamera()->position().z() < 0.01F);
 
-    delete expectedCamera;
-    delete qt3dMesh;
+    delete expected_camera;
+    delete qt3d_mesh;
     delete scene;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::qt3dTest::ut
+} // namespace sight::viz::qt3d_test::ut

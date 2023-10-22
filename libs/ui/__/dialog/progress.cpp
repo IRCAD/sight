@@ -31,17 +31,17 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-progress::progress(const std::string& title, const std::string& message)
+progress::progress(const std::string& _title, const std::string& _message)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(progress_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::progress_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(progress_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::progress_base>(gui_obj);
             if(m_implementation)
             {
-                m_implementation->setTitle(title);
-                m_implementation->setMessage(message);
+                m_implementation->setTitle(_title);
+                m_implementation->setMessage(_message);
             }
         }).wait();
 }
@@ -59,56 +59,56 @@ progress::~progress()
 
 //-----------------------------------------------------------------------------
 
-void progress::setTitle(const std::string& title)
+void progress::setTitle(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setTitle(title);
+                m_implementation->setTitle(_title);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::setMessage(const std::string& msg)
+void progress::setMessage(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(msg);
+                m_implementation->setMessage(_msg);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::operator()(float percent, std::string msg)
+void progress::operator()(float _percent, std::string _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                (*m_implementation)(percent, msg);
+                (*m_implementation)(_percent, _msg);
             }
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void progress::setCancelCallback(CancelCallbackType callback)
+void progress::setCancelCallback(cancel_callback_t _callback)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
             if(m_implementation)
             {
-                m_implementation->setCancelCallback(callback);
+                m_implementation->setCancelCallback(_callback);
             }
         }).wait();
 }

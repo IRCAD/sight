@@ -28,7 +28,7 @@
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <geometry/data/types.hpp>
 
@@ -62,18 +62,18 @@ void image_info::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* h_layout = new QHBoxLayout();
 
-    auto* staticText = new QLabel(QObject::tr("intensity:"));
-    h_layout->addWidget(staticText, 0, Qt::AlignVCenter);
+    auto* static_text = new QLabel(QObject::tr("intensity:"));
+    h_layout->addWidget(static_text, 0, Qt::AlignVCenter);
 
     m_valueText = new QLineEdit();
     m_valueText->setReadOnly(true);
     h_layout->addWidget(m_valueText, 1, Qt::AlignVCenter);
 
-    qtContainer->setLayout(h_layout);
+    qt_container->setLayout(h_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -96,24 +96,24 @@ void image_info::updating()
 {
     const auto image = m_image.lock();
     SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
-    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
-    m_valueText->setEnabled(imageIsValid);
+    const bool image_is_valid = data::helper::medical_image::check_image_validity(image.get_shared());
+    m_valueText->setEnabled(image_is_valid);
 }
 
 //------------------------------------------------------------------------------
 
-void image_info::getInteraction(data::tools::picking_info info)
+void image_info::getInteraction(data::tools::picking_info _info)
 {
-    if(info.m_eventId == data::tools::picking_info::Event::MOUSE_MOVE)
+    if(_info.m_eventId == data::tools::picking_info::Event::MOUSE_MOVE)
     {
         const auto image = m_image.lock();
         SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
 
-        const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
-        m_valueText->setEnabled(imageIsValid);
-        if(imageIsValid)
+        const bool image_is_valid = data::helper::medical_image::check_image_validity(image.get_shared());
+        m_valueText->setEnabled(image_is_valid);
+        if(image_is_valid)
         {
-            const std::array<double, 3>& point = info.m_worldPos;
+            const std::array<double, 3>& point = _info.m_worldPos;
             const data::image::Size size       = image->size();
 
             if(point[0] < 0 || point[1] < 0 || point[2] < 0)
@@ -132,17 +132,17 @@ void image_info::getInteraction(data::tools::picking_info info)
             }
             };
 
-            bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
+            bool is_inside = (coords[0] < size[0] && coords[1] < size[1]);
             if(image->numDimensions() < 3)
             {
-                isInside = (isInside && coords[2] == 0);
+                is_inside = (is_inside && coords[2] == 0);
             }
             else
             {
-                isInside = (isInside && coords[2] < size[2]);
+                is_inside = (is_inside && coords[2] < size[2]);
             }
 
-            if(!isInside)
+            if(!is_inside)
             {
                 SIGHT_ERROR(
                     "The received coordinates are not in image space, maybe you used the wrong picker "
@@ -151,7 +151,7 @@ void image_info::getInteraction(data::tools::picking_info info)
                 return;
             }
 
-            const auto dumpLock = image->dump_lock();
+            const auto dump_lock = image->dump_lock();
 
             const std::string intensity = image->getPixelAsString(coords[0], coords[1], coords[2]);
             m_valueText->setText(QString::fromStdString(intensity));

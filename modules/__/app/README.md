@@ -13,7 +13,7 @@ Module containing the mechanism to parse xml configuration of an application
 In the CMakeLists of your application you need to add the dependency, and provide the configuration files as parameters of this module as follow:
 
 ```cmake
-add_dependencies(myTarget module_app ... )
+add_dependencies(my_target module_app ... )
 
 
 module_param(

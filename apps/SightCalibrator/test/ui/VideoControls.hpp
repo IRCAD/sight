@@ -26,7 +26,7 @@
 namespace sight::sightcalibrator::test::ui
 {
 
-class VideoControls : public sight::ui::testCore::test
+class VideoControls : public sight::ui::test_core::test
 {
 CPPUNIT_TEST_SUITE(VideoControls);
 CPPUNIT_TEST(test);

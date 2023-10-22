@@ -49,9 +49,9 @@ public:
      * @param[in] object Sight data object
      */
     IO_DICOM_API TemplateID(
-        SPTR(gdcm::Writer)writer,
-        SPTR(io::dicom::container::DicomInstance)instance,
-        CSPTR(DATATYPE)object
+        SPTR(gdcm::Writer)_writer,
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        CSPTR(DATATYPE)_object
     );
 
     /// Destructor
@@ -73,17 +73,17 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    SPTR(gdcm::Writer)writer,
-    SPTR(io::dicom::container::DicomInstance)instance,
-    CSPTR(DATATYPE)object
+    SPTR(gdcm::Writer)_writer,
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    CSPTR(DATATYPE)_object
 ) :
-    m_writer(std::move(writer)),
-    m_instance(std::move(instance)),
-    m_object(std::move(object))
+    m_writer(std::move(_writer)),
+    m_instance(std::move(_instance)),
+    m_object(std::move(_object))
 {
-    SIGHT_ASSERT("Writer should not be null.", writer);
-    SIGHT_ASSERT("Instance should not be null.", instance);
-    SIGHT_ASSERT("Object should not be null.", object);
+    SIGHT_ASSERT("Writer should not be null.", _writer);
+    SIGHT_ASSERT("Instance should not be null.", _instance);
+    SIGHT_ASSERT("Object should not be null.", _object);
 }
 
 //------------------------------------------------------------------------------

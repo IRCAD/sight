@@ -27,7 +27,7 @@
 #include <data/point_list.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
 #include <OGRE/OgreTexture.h>
@@ -77,7 +77,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
- * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API video final : public sight::viz::scene3d::adaptor
@@ -164,7 +164,7 @@ private:
     void clearEntity();
 
     /// Contains the Ogre texture used to store the image.
-    sight::viz::scene3d::Texture::sptr m_texture;
+    sight::viz::scene3d::texture::sptr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
     Ogre::MaterialPtr m_material;
@@ -238,7 +238,7 @@ private:
     /// Defines the mask for picking requests in the point list.
     std::string m_queryFlags;
 
-    /// Defines the TrueType font source file.
+    /// Defines the true_t font source file.
     std::string m_fontSource;
 
     /// Defines the font size in points.

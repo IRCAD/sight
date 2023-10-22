@@ -41,13 +41,13 @@ structure_traits::structure_traits() :
 
 //------------------------------------------------------------------------------
 
-void structure_traits::shallow_copy(const object::csptr& source)
+void structure_traits::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const structure_traits>(source);
+    const auto& other = std::dynamic_pointer_cast<const structure_traits>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -69,13 +69,13 @@ void structure_traits::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void structure_traits::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void structure_traits::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const structure_traits>(source);
+    const auto& other = std::dynamic_pointer_cast<const structure_traits>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -83,7 +83,7 @@ void structure_traits::deep_copy(const object::csptr& source, const std::unique_
 
     m_type               = other->m_type;
     m_categories         = other->m_categories;
-    m_color              = data::object::copy(other->m_color, cache);
+    m_color              = data::object::copy(other->m_color, _cache);
     m_class              = other->m_class;
     m_nativeExp          = other->m_nativeExp;
     m_nativeGeometricExp = other->m_nativeGeometricExp;
@@ -92,36 +92,36 @@ void structure_traits::deep_copy(const object::csptr& source, const std::unique_
     m_propertyCategory   = other->m_propertyCategory;
     m_propertyType       = other->m_propertyType;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool structure_traits::operator==(const structure_traits& other) const noexcept
+bool structure_traits::operator==(const structure_traits& _other) const noexcept
 {
-    if(m_type != other.m_type
-       || m_class != other.m_class
-       || m_nativeExp != other.m_nativeExp
-       || m_nativeGeometricExp != other.m_nativeGeometricExp
-       || m_attachmentType != other.m_attachmentType
-       || m_anatomicRegion != other.m_anatomicRegion
-       || m_propertyCategory != other.m_propertyCategory
-       || m_propertyType != other.m_propertyType
-       || !core::tools::is_equal(m_categories, other.m_categories)
-       || !core::tools::is_equal(m_color, other.m_color))
+    if(m_type != _other.m_type
+       || m_class != _other.m_class
+       || m_nativeExp != _other.m_nativeExp
+       || m_nativeGeometricExp != _other.m_nativeGeometricExp
+       || m_attachmentType != _other.m_attachmentType
+       || m_anatomicRegion != _other.m_anatomicRegion
+       || m_propertyCategory != _other.m_propertyCategory
+       || m_propertyType != _other.m_propertyType
+       || !core::tools::is_equal(m_categories, _other.m_categories)
+       || !core::tools::is_equal(m_color, _other.m_color))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool structure_traits::operator!=(const structure_traits& other) const noexcept
+bool structure_traits::operator!=(const structure_traits& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

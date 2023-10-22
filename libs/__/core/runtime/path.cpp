@@ -45,14 +45,14 @@ std::filesystem::path working_path() noexcept
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_module_resource_path(const std::string& module_identifier) noexcept
+std::filesystem::path get_module_resource_path(const std::string& _module_identifier) noexcept
 {
     const auto& runtime            = detail::runtime::get();
-    std::shared_ptr<module> module = runtime.find_module(module_identifier);
+    std::shared_ptr<module> module = runtime.find_module(_module_identifier);
 
     if(module == nullptr)
     {
-        SIGHT_ERROR("Could not find module " + module_identifier + "'");
+        SIGHT_ERROR("Could not find module " + _module_identifier + "'");
         return {};
     }
 
@@ -62,36 +62,36 @@ std::filesystem::path get_module_resource_path(const std::string& module_identif
 //------------------------------------------------------------------------------
 
 std::filesystem::path get_module_resource_file_path(
-    const std::string& module_identifier,
-    const std::filesystem::path& path
+    const std::string& _module_identifier,
+    const std::filesystem::path& _path
 ) noexcept
 {
     const auto& runtime            = detail::runtime::get();
-    std::shared_ptr<module> module = runtime.find_module(module_identifier);
+    std::shared_ptr<module> module = runtime.find_module(_module_identifier);
 
     if(module == nullptr)
     {
-        SIGHT_ERROR("Could not find module '" + module_identifier + "'");
+        SIGHT_ERROR("Could not find module '" + _module_identifier + "'");
         return {};
     }
 
-    return get_module_resource_path(module, path);
+    return get_module_resource_path(module, _path);
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_module_resource_file_path(const std::filesystem::path& path) noexcept
+std::filesystem::path get_module_resource_file_path(const std::filesystem::path& _path) noexcept
 {
-    SIGHT_ASSERT("Path should not be empty", !path.empty());
-    SIGHT_ASSERT("Path should be relative", path.is_relative());
+    SIGHT_ASSERT("Path should not be empty", !_path.empty());
+    SIGHT_ASSERT("Path should be relative", _path.is_relative());
 
-    const std::string module_folder = path.begin()->string();
+    const std::string module_folder = _path.begin()->string();
 
     // Strip the module name
     std::filesystem::path path_without_module;
-    for(const auto& itPath : std::views::drop(path, 1))
+    for(const auto& it_path : std::views::drop(_path, 1))
     {
-        path_without_module /= itPath;
+        path_without_module /= it_path;
     }
 
     try
@@ -116,7 +116,7 @@ std::filesystem::path get_module_resource_file_path(const std::filesystem::path&
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_library_resource_file_path(const std::filesystem::path& path) noexcept
+std::filesystem::path get_library_resource_file_path(const std::filesystem::path& _path) noexcept
 {
     // The path argument can be a filesystem path or a module identifier followed by a system paths, i.e.
     // - viz_scene3d/media
@@ -126,7 +126,7 @@ std::filesystem::path get_library_resource_file_path(const std::filesystem::path
 
     // Extract the namespace
     std::smatch match;
-    std::string path_str = path.string();
+    std::string path_str = _path.string();
     std::string lib_namespace;
 
     // If we have sight::viz::scene3d/media
@@ -156,14 +156,14 @@ std::filesystem::path get_library_resource_file_path(const std::filesystem::path
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_resource_file_path(const std::filesystem::path& path) noexcept
+std::filesystem::path get_resource_file_path(const std::filesystem::path& _path) noexcept
 {
-    auto file = core::runtime::get_module_resource_file_path(path);
+    auto file = core::runtime::get_module_resource_file_path(_path);
     if(file.empty())
     {
         // If not found in a module, look into libraries
-        file = core::runtime::get_library_resource_file_path(path);
-        SIGHT_ERROR_IF("Resource '" + path.string() + "' has not been found in any module or library", file.empty());
+        file = core::runtime::get_library_resource_file_path(_path);
+        SIGHT_ERROR_IF("Resource '" + _path.string() + "' has not been found in any module or library", file.empty());
     }
 
     return file;
@@ -172,11 +172,11 @@ std::filesystem::path get_resource_file_path(const std::filesystem::path& path) 
 //------------------------------------------------------------------------------
 
 std::filesystem::path get_module_resource_path(
-    std::shared_ptr<module> module,
-    const std::filesystem::path& path
+    std::shared_ptr<module> _module,
+    const std::filesystem::path& _path
 ) noexcept
 {
-    return module->get_resources_location() / path;
+    return _module->get_resources_location() / _path;
 }
 
 //------------------------------------------------------------------------------

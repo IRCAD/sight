@@ -46,13 +46,13 @@ const core::com::signals::key_t slider::POSITION_CHANGED_SIG = "positionChanged"
 const core::com::slots::key_t slider::SET_POSITION_SLIDER_SLOT = "setPositionSlider";
 const core::com::slots::key_t slider::SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
-static const char* s_UNKNOWN_TIME = "--:--:--";
+static const char* s_unknown_time = "--:--:--";
 
 //------------------------------------------------------------------------------
 
-QString convertMSecToHHMMSS(int64_t milliseconds)
+QString convert_m_sec_to_hhmmss(int64_t _milliseconds)
 {
-    std::chrono::milliseconds ms(milliseconds);
+    std::chrono::milliseconds ms(_milliseconds);
     std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(ms);
     ms -= hours;
     std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(ms);
@@ -72,7 +72,7 @@ slider::slider() noexcept
     /// Slot to change the duration of the slider
     new_slot(SET_DURATION_SLIDER_SLOT, &slider::setDuration, this);
 
-    m_sigPositionChanged = new_signal<PositionChangedSignalType>(POSITION_CHANGED_SIG);
+    m_sigPositionChanged = new_signal<position_changed_signal_t>(POSITION_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -85,32 +85,32 @@ slider::~slider() noexcept =
 void slider::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
-    layout->setObjectName(serviceID);
+    layout->setObjectName(service_id);
     m_positionSlider = new QSlider(Qt::Horizontal);
-    m_positionSlider->setObjectName(serviceID + "/positionSlider");
+    m_positionSlider->setObjectName(service_id + "/positionSlider");
     m_positionSlider->setRange(0, 0);
 
     QObject::connect(m_positionSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
     QObject::connect(m_positionSlider, SIGNAL(sliderReleased()), this, SLOT(changePosition()));
 
     m_currentPosition = new QLabel();
-    m_currentPosition->setObjectName(serviceID + "/currentPosition");
-    m_currentPosition->setText(s_UNKNOWN_TIME);
+    m_currentPosition->setObjectName(service_id + "/currentPosition");
+    m_currentPosition->setText(s_unknown_time);
 
     m_totalDuration = new QLabel();
-    m_totalDuration->setObjectName(serviceID + "/totalDuration");
-    m_totalDuration->setText(s_UNKNOWN_TIME);
+    m_totalDuration->setObjectName(service_id + "/totalDuration");
+    m_totalDuration->setText(s_unknown_time);
 
     layout->addWidget(m_currentPosition);
     layout->addWidget(m_positionSlider);
     layout->addWidget(m_totalDuration);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
     this->updating();
 }
 
@@ -138,19 +138,19 @@ void slider::updating()
 
 void slider::changePosition()
 {
-    int64_t newPos = m_positionSlider->sliderPosition();
-    m_positionSlider->setSliderPosition(static_cast<int>(newPos));
-    if(newPos == -1)
+    int64_t new_pos = m_positionSlider->sliderPosition();
+    m_positionSlider->setSliderPosition(static_cast<int>(new_pos));
+    if(new_pos == -1)
     {
-        m_currentPosition->setText(s_UNKNOWN_TIME);
+        m_currentPosition->setText(s_unknown_time);
     }
     else
     {
-        m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+        m_currentPosition->setText(convert_m_sec_to_hhmmss(new_pos));
     }
 
     // Notify the new position
-    m_sigPositionChanged->async_emit(newPos);
+    m_sigPositionChanged->async_emit(new_pos);
 
     m_sliderPressed = false;
 }
@@ -164,36 +164,36 @@ void slider::sliderPressed()
 
 //------------------------------------------------------------------------------
 
-void slider::setPosition(int64_t newPos)
+void slider::setPosition(int64_t _new_pos)
 {
     if(!m_sliderPressed)
     {
-        m_positionSlider->setValue(static_cast<int>(newPos));
+        m_positionSlider->setValue(static_cast<int>(_new_pos));
 
-        if(newPos == -1)
+        if(_new_pos == -1)
         {
-            m_currentPosition->setText(s_UNKNOWN_TIME);
+            m_currentPosition->setText(s_unknown_time);
         }
         else
         {
-            m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+            m_currentPosition->setText(convert_m_sec_to_hhmmss(_new_pos));
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slider::setDuration(int64_t duration)
+void slider::setDuration(int64_t _duration)
 {
-    m_positionSlider->setRange(0, static_cast<int>(duration));
+    m_positionSlider->setRange(0, static_cast<int>(_duration));
 
-    if(duration == -1)
+    if(_duration == -1)
     {
-        m_totalDuration->setText(s_UNKNOWN_TIME);
+        m_totalDuration->setText(s_unknown_time);
     }
     else
     {
-        m_totalDuration->setText(convertMSecToHHMMSS(duration));
+        m_totalDuration->setText(convert_m_sec_to_hhmmss(_duration));
     }
 }
 

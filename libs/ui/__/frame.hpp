@@ -26,7 +26,7 @@
 #include "ui/__/builder/toolbar.hpp"
 #include "ui/__/config.hpp"
 #include "ui/__/container/widget.hpp"
-#include "ui/__/detail/registry/View.hpp"
+#include "ui/__/detail/registry/view.hpp"
 #include "ui/__/layout/frame_manager.hpp"
 
 #include <service/base.hpp>
@@ -37,7 +37,7 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class View;
+class view;
 
 }
 
@@ -59,7 +59,7 @@ class View;
      <window onclose="notify" />
      <gui>
          <frame>
-             <name>My App</name>
+             <name>My app</name>
              <icon>myApp-1.0/icon.ico</icon>
              <minSize width="800" height="600" />
              <style mode="MODAL" />
@@ -105,7 +105,7 @@ public:
 
     /// Signal emitted when frame is closed and onclose policy is notify
     static const core::com::signals::key_t CLOSED_SIG;
-    typedef core::com::signal<void ()> ClosedSignalType;
+    typedef core::com::signal<void ()> closed_signal_t;
     /**
      * @}
      */
@@ -135,7 +135,7 @@ protected:
     /**
      * @brief Initialize frame managers.
      *
-     * @see ui::registry::View::initialize(),
+     * @see ui::registry::view::initialize(),
      * ui::layout::frame_manager::initialize(),
      *      ui::builder::toolbar::initialize(), ui::builder::menubar::initialize()
      */
@@ -157,7 +157,7 @@ protected:
 private:
 
     /// SLOT: show/hide the container
-    void setVisible(bool isVisible);
+    void setVisible(bool _is_visible);
 
     /// SLOT: show the container
     void show();
@@ -168,12 +168,12 @@ private:
     static void onCloseExit();
     void onCloseNotify();
     static void onCloseMessage();
-    void initializeLayoutManager(const ui::config_t& layoutConfig);
-    void initializeMenuBarBuilder(const ui::config_t& menuBarConfig);
-    void initializeToolBarBuilder(const ui::config_t& toolBarConfig);
+    void initializeLayoutManager(const ui::config_t& _layout_config);
+    void initializeMenuBarBuilder(const ui::config_t& _menu_bar_config);
+    void initializeToolBarBuilder(const ui::config_t& _tool_bar_config);
 
     ui::layout::frame_manager::sptr m_frameLayoutManager;
-    SPTR(ui::detail::registry::View) m_viewRegistry;
+    SPTR(ui::detail::registry::view) m_viewRegistry;
     ui::builder::menubar::sptr m_menuBarBuilder;
     ui::builder::toolbar::sptr m_toolBarBuilder;
 
@@ -183,7 +183,7 @@ private:
     std::string m_closePolicy;
 
     /// Signal emitted when frame is closed and onclose mode is message
-    ClosedSignalType::sptr m_sigClosed;
+    closed_signal_t::sptr m_sigClosed;
 };
 
 } // namespace sight::ui

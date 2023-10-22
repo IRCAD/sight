@@ -61,7 +61,7 @@ public:
      */
     PlaneListContainer& getPlanes();
     const PlaneListContainer& getPlanes() const;
-    void setPlanes(const PlaneListContainer& _vPlanes);
+    void setPlanes(const PlaneListContainer& _v_planes);
     /// @}
 
     /**
@@ -69,15 +69,15 @@ public:
      * @{
      */
     /// Signal emitted when a plane is added
-    typedef core::com::signal<void (plane::sptr)> PlaneAddedSignalType;
+    typedef core::com::signal<void (plane::sptr)> plane_added_signal_t;
     DATA_API static const core::com::signals::key_t PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
-    typedef core::com::signal<void (plane::sptr)> PlaneRemovedSignalType;
+    typedef core::com::signal<void (plane::sptr)> plane_removed_signal_t;
     DATA_API static const core::com::signals::key_t PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
-    typedef core::com::signal<void (bool)> VisibilityModifiedSignalType;
+    typedef core::com::signal<void (bool)> visibility_modified_signal_t;
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
 /**
  * @}
@@ -85,22 +85,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const plane_list& other) const noexcept;
-    DATA_API bool operator!=(const plane_list& other) const noexcept;
+    DATA_API bool operator==(const plane_list& _other) const noexcept;
+    DATA_API bool operator!=(const plane_list& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -125,9 +125,9 @@ inline const plane_list::PlaneListContainer& plane_list::getPlanes() const
 
 //-----------------------------------------------------------------------------
 
-inline void plane_list::setPlanes(const plane_list::PlaneListContainer& _vPlanes)
+inline void plane_list::setPlanes(const plane_list::PlaneListContainer& _v_planes)
 {
-    this->m_vPlanes = _vPlanes;
+    this->m_vPlanes = _v_planes;
 }
 
 //-----------------------------------------------------------------------------

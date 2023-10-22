@@ -35,11 +35,11 @@ namespace sight::io::opencv::ut
 
 //------------------------------------------------------------------------------
 
-static void assert2dPointEquality(const data::point::csptr& _pt, const cv::Point2d& _cvPt)
+static void assert2d_point_equality(const data::point::csptr& _pt, const cv::Point2d& _cv_pt)
 {
     const auto& coords = _pt->getCoord();
-    CPPUNIT_ASSERT_EQUAL(coords[0], _cvPt.x);
-    CPPUNIT_ASSERT_EQUAL(coords[1], _cvPt.y);
+    CPPUNIT_ASSERT_EQUAL(coords[0], _cv_pt.x);
+    CPPUNIT_ASSERT_EQUAL(coords[1], _cv_pt.y);
     CPPUNIT_ASSERT_EQUAL(coords[2], 0.);
 }
 
@@ -57,22 +57,22 @@ void point_list_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void point_list_test::copyFromCv()
+void point_list_test::copy_from_cv()
 {
-    std::vector<cv::Point2d> cvPointList;
+    std::vector<cv::Point2d> cv_point_list;
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        cvPointList.emplace_back(double(i), double(i * 2 + 3));
+        cv_point_list.emplace_back(double(i), double(i * 2 + 3));
     }
 
     data::point_list::sptr pl = std::make_shared<data::point_list>();
-    io::opencv::point_list::copyFromCv(cvPointList, pl);
+    io::opencv::point_list::copy_from_cv(cv_point_list, pl);
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
         data::point::csptr pt = pl->getPoints()[i];
-        assert2dPointEquality(pt, cvPointList[i]);
+        assert2d_point_equality(pt, cv_point_list[i]);
         CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(pt->getCoord()[0]));
         CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 2 + 3), std::uint16_t(pt->getCoord()[1]));
         CPPUNIT_ASSERT_EQUAL(0., pt->getCoord()[2]);
@@ -91,14 +91,14 @@ void point_list_test::copyToCv()
         pl->getPoints().push_back(point);
     }
 
-    std::vector<cv::Point2d> cvPointList;
-    io::opencv::point_list::copyToCv(pl, cvPointList);
+    std::vector<cv::Point2d> cv_point_list;
+    io::opencv::point_list::copyToCv(pl, cv_point_list);
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        assert2dPointEquality(pl->getPoints()[i], cvPointList[i]);
-        CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(cvPointList[i].x));
-        CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 3 + 5), std::uint16_t(cvPointList[i].y));
+        assert2d_point_equality(pl->getPoints()[i], cv_point_list[i]);
+        CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(cv_point_list[i].x));
+        CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 3 + 5), std::uint16_t(cv_point_list[i].y));
     }
 }
 

@@ -50,21 +50,21 @@ void integer_test::tearDown()
 
 void integer_test::methode1()
 {
-    const std::array VALUES {
+    const std::array values {
         std::numeric_limits<std::int64_t>::min(),
         std::int64_t(-1654), std::int64_t(0), std::int64_t(123456),
         std::numeric_limits<std::int64_t>::max()
     };
 
-    for(std::int64_t VALUE : VALUES)
+    for(std::int64_t value : values)
     {
         data::integer::sptr i0 = std::make_shared<data::integer>();
-        i0->value() = VALUE;
-        data::integer::sptr i1 = std::make_shared<data::integer>(VALUE);
+        i0->value() = value;
+        data::integer::sptr i1 = std::make_shared<data::integer>(value);
 
-        CPPUNIT_ASSERT_EQUAL(VALUE, i0->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, i1->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, std::make_shared<data::integer>(VALUE)->value());
+        CPPUNIT_ASSERT_EQUAL(value, i0->value());
+        CPPUNIT_ASSERT_EQUAL(value, i1->value());
+        CPPUNIT_ASSERT_EQUAL(value, std::make_shared<data::integer>(value)->value());
 
         CPPUNIT_ASSERT(*i0 == *i1);
     }

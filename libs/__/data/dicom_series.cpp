@@ -36,13 +36,13 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-void dicom_series::shallow_copy(const object::csptr& source)
+void dicom_series::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const dicom_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const dicom_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -59,13 +59,13 @@ void dicom_series::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void dicom_series::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void dicom_series::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const dicom_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const dicom_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -79,30 +79,30 @@ void dicom_series::deep_copy(const object::csptr& source, const std::unique_ptr<
     m_dicomContainer.clear();
     for(const auto& elt : other->m_dicomContainer)
     {
-        const core::memory::buffer_object::sptr& bufferSrc = elt.second;
-        core::memory::buffer_object::lock_t lockerSource(bufferSrc);
+        const core::memory::buffer_object::sptr& buffer_src = elt.second;
+        core::memory::buffer_object::lock_t locker_source(buffer_src);
 
-        if(!bufferSrc->is_empty())
+        if(!buffer_src->is_empty())
         {
-            auto bufferDest = std::make_shared<core::memory::buffer_object>(true);
-            core::memory::buffer_object::lock_t lockerDest(bufferDest);
+            auto buffer_dest = std::make_shared<core::memory::buffer_object>(true);
+            core::memory::buffer_object::lock_t locker_dest(buffer_dest);
 
-            bufferDest->allocate(bufferSrc->size());
+            buffer_dest->allocate(buffer_src->size());
 
-            char* buffDest = static_cast<char*>(lockerDest.buffer());
-            char* buffSrc  = static_cast<char*>(lockerSource.buffer());
-            std::copy(buffSrc, buffSrc + bufferSrc->size(), buffDest);
+            char* buff_dest = static_cast<char*>(locker_dest.buffer());
+            char* buff_src  = static_cast<char*>(locker_source.buffer());
+            std::copy(buff_src, buff_src + buffer_src->size(), buff_dest);
 
-            m_dicomContainer[elt.first] = bufferDest;
+            m_dicomContainer[elt.first] = buffer_dest;
         }
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void dicom_series::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
+void dicom_series::addDicomPath(std::size_t _instance_index, const std::filesystem::path& _path)
 {
     SIGHT_THROW_EXCEPTION_IF(
         std::filesystem::filesystem_error(
@@ -115,75 +115,75 @@ void dicom_series::addDicomPath(std::size_t _instanceIndex, const std::filesyste
         !std::filesystem::exists(_path)
     );
 
-    auto buffer         = std::make_shared<core::memory::buffer_object>(true);
-    const auto buffSize = std::filesystem::file_size(_path);
+    auto buffer          = std::make_shared<core::memory::buffer_object>(true);
+    const auto buff_size = std::filesystem::file_size(_path);
     buffer->set_istream_factory(
         std::make_shared<core::memory::stream::in::raw>(_path),
-        static_cast<core::memory::buffer_object::size_t>(buffSize),
+        static_cast<core::memory::buffer_object::size_t>(buff_size),
         _path,
         core::memory::RAW
     );
-    m_dicomContainer[_instanceIndex] = buffer;
+    m_dicomContainer[_instance_index] = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-void dicom_series::addBinary(std::size_t _instanceIndex, const core::memory::buffer_object::sptr& _buffer)
+void dicom_series::addBinary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer)
 {
-    m_dicomContainer[_instanceIndex] = _buffer;
+    m_dicomContainer[_instance_index] = _buffer;
 }
 
 //------------------------------------------------------------------------------
 
-bool dicom_series::isInstanceAvailable(std::size_t _instanceIndex) const
+bool dicom_series::isInstanceAvailable(std::size_t _instance_index) const
 {
-    const auto& dicomContainerIter = m_dicomContainer.find(_instanceIndex);
-    return dicomContainerIter != m_dicomContainer.end();
+    const auto& dicom_container_iter = m_dicomContainer.find(_instance_index);
+    return dicom_container_iter != m_dicomContainer.end();
 }
 
 //------------------------------------------------------------------------------
 
-void dicom_series::addsop_classUID(const std::string& _sopClassUID)
+void dicom_series::addsop_classUID(const std::string& _sop_class_uid)
 {
-    m_sop_classUIDs.insert(_sopClassUID);
+    m_sop_classUIDs.insert(_sop_class_uid);
 }
 
 //------------------------------------------------------------------------------
 
-void dicom_series::addComputedTagValue(const std::string& _tagName, const std::string& _value)
+void dicom_series::addComputedTagValue(const std::string& _tag_name, const std::string& _value)
 {
-    m_computedTagValues[_tagName] = _value;
+    m_computedTagValues[_tag_name] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-bool dicom_series::hasComputedValues(const std::string& _tagName) const
+bool dicom_series::hasComputedValues(const std::string& _tag_name) const
 {
-    return m_computedTagValues.find(_tagName) != m_computedTagValues.end();
+    return m_computedTagValues.find(_tag_name) != m_computedTagValues.end();
 }
 
 //------------------------------------------------------------------------------
 
-bool dicom_series::operator==(const dicom_series& other) const noexcept
+bool dicom_series::operator==(const dicom_series& _other) const noexcept
 {
-    if(m_numberOfInstances != other.m_numberOfInstances
-       || m_sop_classUIDs != other.m_sop_classUIDs
-       || m_computedTagValues != other.m_computedTagValues
-       || m_firstInstanceNumber != other.m_firstInstanceNumber
-       || !core::tools::is_equal(m_dicomContainer, other.m_dicomContainer))
+    if(m_numberOfInstances != _other.m_numberOfInstances
+       || m_sop_classUIDs != _other.m_sop_classUIDs
+       || m_computedTagValues != _other.m_computedTagValues
+       || m_firstInstanceNumber != _other.m_firstInstanceNumber
+       || !core::tools::is_equal(m_dicomContainer, _other.m_dicomContainer))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool dicom_series::operator!=(const dicom_series& other) const noexcept
+bool dicom_series::operator!=(const dicom_series& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

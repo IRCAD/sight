@@ -120,7 +120,7 @@ private:
     void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /// Recomputes the viewport. Can signal or not the data depending from where it is called.
-    void updateViewport(bool _signalSelectedViewport);
+    void updateViewport(bool _signal_selected_viewport);
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
@@ -129,7 +129,7 @@ private:
      * @param width width of the shutter.
      * @param height height of the shutter.
      */
-    void updateViewportFromShutter(double x, double y, double width, double height);
+    void updateViewportFromShutter(double _x, double _y, double _width, double _height);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
     bool mouseOnShutterLeft(sight::viz::scene2d::vec2d_t _coord);

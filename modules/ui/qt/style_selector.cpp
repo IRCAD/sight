@@ -28,7 +28,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -67,10 +67,10 @@ void style_selector::starting()
 {
     m_styleMap["DEFAULT"] = std::filesystem::path("");
 
-    const auto styleRc = core::runtime::get_module_resource_path("sight::module::ui::qt");
+    const auto style_rc = core::runtime::get_module_resource_path("sight::module::ui::qt");
 
     // Stores each rcc & qss
-    for(const auto& p : std::filesystem::directory_iterator(styleRc))
+    for(const auto& p : std::filesystem::directory_iterator(style_rc))
     {
         std::filesystem::path f = p;
 
@@ -83,7 +83,7 @@ void style_selector::starting()
                 filename.begin(),
                 filename.end(),
                 name.begin(),
-                [](unsigned char c) -> unsigned char {return static_cast<unsigned char>(std::toupper(c));});
+                [](unsigned char _c) -> unsigned char {return static_cast<unsigned char>(std::toupper(_c));});
 
             m_styleMap[name] = f.replace_extension("");
         }
@@ -108,11 +108,11 @@ void style_selector::updating()
 
 //-----------------------------------------------------------------------------
 
-void style_selector::changeStyle(const std::string& _styleName)
+void style_selector::changeStyle(const std::string& _style_name)
 {
-    auto path = m_styleMap[_styleName];
+    auto path = m_styleMap[_style_name];
 
-    sight::ui::Preferences preferences;
+    sight::ui::preferences preferences;
 
     // DEFAULT (no theme) case.
     if(path.empty())
@@ -124,22 +124,22 @@ void style_selector::changeStyle(const std::string& _styleName)
     }
 
     // Load ressources
-    [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(
+    [[maybe_unused]] const bool resource_loaded = QResource::registerResource(
         path.replace_extension(
             ".rcc"
         ).string().c_str()
     );
-    SIGHT_ASSERT("Cannot load resources '" + path.replace_extension(".rcc").string() + "'.", resourceLoaded);
+    SIGHT_ASSERT("Cannot load resources '" + path.replace_extension(".rcc").string() + "'.", resource_loaded);
 
     // Load stylesheet.
     QFile data(QString::fromStdString(path.replace_extension(".qss").string()));
     if(data.open(QFile::ReadOnly))
     {
-        QTextStream styleIn(&data);
-        const QString style = styleIn.readAll();
+        QTextStream style_in(&data);
+        const QString style = style_in.readAll();
         data.close();
         qApp->setStyleSheet(style);
-        preferences.put("THEME", _styleName);
+        preferences.put("THEME", _style_name);
     }
 }
 
@@ -150,13 +150,13 @@ void style_selector::updateFromPrefs()
     // Apply previously saved style in preferences file.
     try
     {
-        sight::ui::Preferences preferences;
+        sight::ui::preferences preferences;
         if(const auto& theme = preferences.get_optional<std::string>("THEME"); theme)
         {
             this->changeStyle(*theme);
         }
     }
-    catch(const sight::ui::PreferencesDisabled& /*e*/)
+    catch(const sight::ui::preferences_disabled& /*e*/)
     {
         // Nothing to do..
     }

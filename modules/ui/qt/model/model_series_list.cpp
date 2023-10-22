@@ -34,7 +34,7 @@
 #include <core/tools/id.hpp>
 
 #include <data/boolean.hpp>
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/integer.hpp>
 #include <data/real.hpp>
 #include <data/reconstruction.hpp>
@@ -71,8 +71,8 @@ static const core::com::slots::key_t SHOW_RECONSTRUCTIONS_SLOT     = "showRecons
 
 model_series_list::model_series_list() noexcept
 {
-    m_sigReconstructionSelected = new_signal<ReconstructionSelectedSignalType>(RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = new_signal<EmptiedSelectionSignalType>(EMPTIED_SELECTION_SIG);
+    m_sigReconstructionSelected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
+    m_sigEmptiedSelection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
 
     new_slot(SHOW_RECONSTRUCTIONS_SLOT, &model_series_list::showReconstructions, this);
 }
@@ -93,9 +93,9 @@ void model_series_list::configuring()
     }
 
     auto columns = config_t.get_child("columns");
-    for(auto itCol = columns.begin() ; itCol != columns.end() ; ++itCol)
+    for(auto it_col = columns.begin() ; it_col != columns.end() ; ++it_col)
     {
-        m_headers << QString::fromStdString(itCol->first);
+        m_headers << QString::fromStdString(it_col->first);
     }
 }
 
@@ -105,14 +105,14 @@ void model_series_list::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
-    auto* layout       = new QVBoxLayout;
-    auto* layoutButton = new QHBoxLayout;
-    layout->addLayout(layoutButton);
+    auto* layout        = new QVBoxLayout;
+    auto* layout_button = new QHBoxLayout;
+    layout->addLayout(layout_button);
 
     m_tree = new QTreeWidget();
 
@@ -123,33 +123,33 @@ void model_series_list::starting()
     {
         // check box "show"
         m_showCheckBox = new QCheckBox(tr("Hide all organs"));
-        m_showCheckBox->setObjectName(serviceID + "/" + m_showCheckBox->text());
+        m_showCheckBox->setObjectName(service_id + "/" + m_showCheckBox->text());
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-        layoutButton->addWidget(m_showCheckBox, 0);
+        layout_button->addWidget(m_showCheckBox, 0);
         QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this, &model_series_list::onShowReconstructions);
 
         m_checkAllButton = new QPushButton(tr("Check all"));
-        m_checkAllButton->setObjectName(serviceID + "/" + m_checkAllButton->text());
-        layoutButton->addWidget(m_checkAllButton, 0);
+        m_checkAllButton->setObjectName(service_id + "/" + m_checkAllButton->text());
+        layout_button->addWidget(m_checkAllButton, 0);
         QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &model_series_list::onCheckAllCheckBox);
 
         m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
-        m_unCheckAllButton->setObjectName(serviceID + "/" + m_unCheckAllButton->text());
-        layoutButton->addWidget(m_unCheckAllButton, 0);
+        m_unCheckAllButton->setObjectName(service_id + "/" + m_unCheckAllButton->text());
+        layout_button->addWidget(m_unCheckAllButton, 0);
         QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &model_series_list::onUnCheckAllCheckBox);
     }
 
     if(m_enableDelete)
     {
         m_deleteAllButton = new QPushButton(tr("Delete all"));
-        m_deleteAllButton->setObjectName(serviceID + "/" + m_deleteAllButton->text());
-        layoutButton->addWidget(m_deleteAllButton, 0);
+        m_deleteAllButton->setObjectName(service_id + "/" + m_deleteAllButton->text());
+        layout_button->addWidget(m_deleteAllButton, 0);
         QObject::connect(m_deleteAllButton, &QPushButton::clicked, this, &model_series_list::onDeleteAllCheckBox);
     }
 
     layout->addWidget(m_tree, 1);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     QObject::connect(
         m_tree,
@@ -245,24 +245,24 @@ void model_series_list::stopping()
 
 void model_series_list::updateReconstructions()
 {
-    auto qtContainer         = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
+    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    QWidget* const container = qt_container->getQtContainer();
 
     SIGHT_ASSERT("container not instanced", container);
 
-    auto modelSeries        = m_modelSeries.lock();
-    bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
-    container->setEnabled(hasReconstructions);
+    auto model_series        = m_modelSeries.lock();
+    bool has_reconstructions = !model_series->getReconstructionDB().empty();
+    container->setEnabled(has_reconstructions);
 
-    this->fillTree(modelSeries);
-    if(hasReconstructions)
+    this->fillTree(model_series);
+    if(has_reconstructions)
     {
         if(m_showCheckBox != nullptr)
         {
             m_showCheckBox->blockSignals(true);
-            const bool showAllRec =
-                modelSeries->getField("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
-            m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked);
+            const bool show_all_rec =
+                model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
+            m_showCheckBox->setCheckState(show_all_rec ? Qt::Unchecked : Qt::Checked);
             m_showCheckBox->blockSignals(false);
         }
     }
@@ -270,9 +270,9 @@ void model_series_list::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>& _modelSeries)
+void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>& _model_series)
 {
-    const auto& reconstructions = _modelSeries->getReconstructionDB();
+    const auto& reconstructions = _model_series->getReconstructionDB();
 
     if(!m_tree->selectedItems().empty())
     {
@@ -293,7 +293,7 @@ void model_series_list::fillTree(const data::mt::locked_ptr<data::model_series>&
             }
             else if(column == "structure_type")
             {
-                info << QString::fromStdString(reconstruction->getStructureType());
+                info << QString::fromStdString(reconstruction->get_structure_type());
             }
             else if(column == "volume")
             {
@@ -341,17 +341,17 @@ void model_series_list::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*un
     data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
     SIGHT_ASSERT("rec not instanced", rec);
 
-    const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
+    const bool item_is_checked = (_item->checkState(0) == Qt::Checked);
 
-    if(rec->getIsVisible() != itemIsChecked)
+    if(rec->getIsVisible() != item_is_checked)
     {
-        rec->setIsVisible(itemIsChecked);
+        rec->setIsVisible(item_is_checked);
 
-        data::reconstruction::VisibilityModifiedSignalType::sptr sig;
-        sig = rec->signal<data::reconstruction::VisibilityModifiedSignalType>(
+        data::reconstruction::visibility_modified_signal_t::sptr sig;
+        sig = rec->signal<data::reconstruction::visibility_modified_signal_t>(
             data::reconstruction::VISIBILITY_MODIFIED_SIG
         );
-        sig->async_emit(itemIsChecked);
+        sig->async_emit(item_is_checked);
     }
 }
 
@@ -366,8 +366,8 @@ void model_series_list::onShowReconstructions(int _state)
     m_tree->setEnabled(!visible);
 
     {
-        auto modelSeries = m_modelSeries.lock();
-        data::helper::Field helper(modelSeries.get_shared());
+        auto model_series = m_modelSeries.lock();
+        data::helper::field helper(model_series.get_shared());
         helper.addOrSwap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
     }
 }
@@ -425,14 +425,14 @@ void model_series_list::onCheckAllBoxes(bool _visible)
 
 void model_series_list::onDeleteAllCheckBox()
 {
-    auto modelSeries = m_modelSeries.lock();
+    auto model_series = m_modelSeries.lock();
 
     // Remove all reconstructions.
-    data::model_series::ReconstructionVectorType reconstructions = modelSeries->getReconstructionDB();
-    modelSeries->setReconstructionDB(data::model_series::ReconstructionVectorType());
+    data::model_series::reconstruction_vector_t reconstructions = model_series->getReconstructionDB();
+    model_series->setReconstructionDB(data::model_series::reconstruction_vector_t());
 
     // Send the signals.
-    auto sig = modelSeries->signal<data::model_series::ReconstructionsRemovedSignalType>(
+    auto sig = model_series->signal<data::model_series::reconstructions_removed_signal_t>(
         data::model_series::RECONSTRUCTIONS_REMOVED_SIG
     );
     sig->async_emit(reconstructions);
@@ -445,37 +445,37 @@ void model_series_list::onCustomContextMenuRequested(const QPoint& _pos)
     QModelIndex index = m_tree->indexAt(_pos);
     if(index.isValid())
     {
-        auto* const deleteAction = new QAction("Delete");
+        auto* const delete_action = new QAction("Delete");
         QObject::connect(
-            deleteAction,
+            delete_action,
             &QAction::triggered,
             this,
             [index, this]()
             {
-                auto modelSeries = m_modelSeries.lock();
+                auto model_series = m_modelSeries.lock();
 
-                data::model_series::ReconstructionVectorType deletedReconstructions;
+                data::model_series::reconstruction_vector_t deleted_reconstructions;
 
                 // Remove reconstruction.
-                data::model_series::ReconstructionVectorType reconstructions =
-                    modelSeries->getReconstructionDB();
-                const auto recIt =
+                data::model_series::reconstruction_vector_t reconstructions =
+                    model_series->getReconstructionDB();
+                const auto rec_it =
                     reconstructions.begin() + index.row();
-                const data::reconstruction::sptr reconstruction = *recIt;
-                reconstructions.erase(recIt);
-                modelSeries->setReconstructionDB(reconstructions);
+                const data::reconstruction::sptr reconstruction = *rec_it;
+                reconstructions.erase(rec_it);
+                model_series->setReconstructionDB(reconstructions);
 
                 // Send the signals.
-                deletedReconstructions.push_back(reconstruction);
-                auto sig = modelSeries->signal<data::model_series::ReconstructionsRemovedSignalType>(
+                deleted_reconstructions.push_back(reconstruction);
+                auto sig = model_series->signal<data::model_series::reconstructions_removed_signal_t>(
                     data::model_series::RECONSTRUCTIONS_REMOVED_SIG
                 );
-                sig->async_emit(deletedReconstructions);
+                sig->async_emit(deleted_reconstructions);
             });
 
-        QMenu contextMenu;
-        contextMenu.addAction(deleteAction);
-        contextMenu.exec(QCursor::pos());
+        QMenu context_menu;
+        context_menu.addAction(delete_action);
+        context_menu.exec(QCursor::pos());
     }
 }
 

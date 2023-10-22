@@ -33,17 +33,17 @@ progress_adviser::~progress_adviser()
 
 //------------------------------------------------------------------------------
 
-void progress_adviser::add_handler(const progress_handler& handler)
+void progress_adviser::add_handler(const progress_handler& _handler)
 {
     // append a new ProgressHandler
-    m_progress_signal.connect(handler);
+    m_progress_signal.connect(_handler);
 }
 
 //------------------------------------------------------------------------------
 
-void progress_adviser::notify_progress(float percent, const std::string& msg) const
+void progress_adviser::notify_progress(float _percent, const std::string& _msg) const
 {
-    m_progress_signal(percent, msg);
+    m_progress_signal(_percent, _msg);
 }
 
 } // namespace sight::core::tools

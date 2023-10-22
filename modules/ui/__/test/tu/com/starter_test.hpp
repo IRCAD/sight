@@ -58,7 +58,12 @@ public:
         STARTED_THEN_STOPPED
     };
 
-    void test(const std::string& actionName, bool exists, ShouldBe shouldBe = ShouldBe::STARTED, int nbUpdate = 0);
+    void test(
+        const std::string& _action_name,
+        bool _exists,
+        ShouldBe _should_be = ShouldBe::STARTED,
+        int _nb_update      = 0
+    );
 
     void startTest();
     void startOnlyTest();

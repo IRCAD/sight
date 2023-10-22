@@ -51,87 +51,87 @@ void image_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void testRoiApply(const core::type imageType, const core::type roiType)
+void test_roi_apply(const core::type _image_type, const core::type _roi_type)
 {
-    const std::string message = "Test failed with types : img : " + imageType.name()
-                                + ", roi : " + roiType.name();
-    data::image::sptr imageRef;
-    data::image::sptr imgRoiApplied = std::make_shared<data::image>();
-    data::image::sptr roi           = std::make_shared<data::image>();
+    const std::string message = "Test failed with types : img : " + _image_type.name()
+                                + ", roi : " + _roi_type.name();
+    data::image::sptr image_ref;
+    data::image::sptr img_roi_applied = std::make_shared<data::image>();
+    data::image::sptr roi             = std::make_shared<data::image>();
 
     // generate a random image
-    utest_data::generator::image::generateRandomImage(imgRoiApplied, imageType);
-    const data::image::Size size       = imgRoiApplied->size();
-    const data::image::Spacing spacing = imgRoiApplied->getSpacing();
-    const data::image::Origin origin   = imgRoiApplied->getOrigin();
+    utest_data::generator::image::generateRandomImage(img_roi_applied, _image_type);
+    const data::image::Size size       = img_roi_applied->size();
+    const data::image::Spacing spacing = img_roi_applied->getSpacing();
+    const data::image::Origin origin   = img_roi_applied->getOrigin();
     utest_data::generator::image::generateImage(
         roi,
         size,
         spacing,
         origin,
-        roiType,
+        _roi_type,
         data::image::PixelFormat::GRAY_SCALE
     );
 
-    imageRef = data::object::copy(imgRoiApplied);
+    image_ref = data::object::copy(img_roi_applied);
 
     // fill roi with random values
     utest_data::generator::image::randomizeImage(roi);
 
-    const auto dumpLock = roi->dump_lock();
-    auto begin          = roi->begin();
-    const auto end      = roi->end();
-    const auto part     = std::int64_t((end - begin) / 3);
+    const auto dump_lock = roi->dump_lock();
+    auto begin           = roi->begin();
+    const auto end       = roi->end();
+    const auto part      = std::int64_t((end - begin) / 3);
 
     // keep random values in 1/3 of the image (else fill with 0)
     std::fill(begin, begin + part, std::int8_t(0));
     std::fill(end - part, end, std::int8_t(0));
 
     // apply roi and check
-    filter::image::applyRoi(imgRoiApplied, roi);
-    CPPUNIT_ASSERT_MESSAGE(message, filter::image::isRoiApplied(imageRef, roi, imgRoiApplied));
+    filter::image::apply_roi(img_roi_applied, roi);
+    CPPUNIT_ASSERT_MESSAGE(message, filter::image::is_roi_applied(image_ref, roi, img_roi_applied));
 }
 
 //------------------------------------------------------------------------------
 
 void image_test::roiApplyTest()
 {
-    testRoiApply(core::type::INT8, core::type::INT8);
-    testRoiApply(core::type::INT8, core::type::INT16);
-    testRoiApply(core::type::INT8, core::type::INT32);
-    testRoiApply(core::type::INT8, core::type::UINT8);
-    testRoiApply(core::type::INT8, core::type::UINT16);
-    testRoiApply(core::type::INT8, core::type::UINT32);
-    testRoiApply(core::type::INT16, core::type::INT8);
-    testRoiApply(core::type::INT16, core::type::INT16);
-    testRoiApply(core::type::INT16, core::type::INT32);
-    testRoiApply(core::type::INT16, core::type::UINT8);
-    testRoiApply(core::type::INT16, core::type::UINT16);
-    testRoiApply(core::type::INT16, core::type::UINT32);
-    testRoiApply(core::type::INT32, core::type::INT8);
-    testRoiApply(core::type::INT32, core::type::INT16);
-    testRoiApply(core::type::INT32, core::type::INT32);
-    testRoiApply(core::type::INT32, core::type::UINT8);
-    testRoiApply(core::type::INT32, core::type::UINT16);
-    testRoiApply(core::type::INT32, core::type::UINT32);
-    testRoiApply(core::type::UINT8, core::type::INT8);
-    testRoiApply(core::type::UINT8, core::type::INT16);
-    testRoiApply(core::type::UINT8, core::type::INT32);
-    testRoiApply(core::type::UINT8, core::type::UINT8);
-    testRoiApply(core::type::UINT8, core::type::UINT16);
-    testRoiApply(core::type::UINT8, core::type::UINT32);
-    testRoiApply(core::type::UINT16, core::type::INT8);
-    testRoiApply(core::type::UINT16, core::type::INT16);
-    testRoiApply(core::type::UINT16, core::type::INT32);
-    testRoiApply(core::type::UINT16, core::type::UINT8);
-    testRoiApply(core::type::UINT16, core::type::UINT16);
-    testRoiApply(core::type::UINT16, core::type::UINT32);
-    testRoiApply(core::type::UINT32, core::type::INT8);
-    testRoiApply(core::type::UINT32, core::type::INT16);
-    testRoiApply(core::type::UINT32, core::type::INT32);
-    testRoiApply(core::type::UINT32, core::type::UINT8);
-    testRoiApply(core::type::UINT32, core::type::UINT16);
-    testRoiApply(core::type::UINT32, core::type::UINT32);
+    test_roi_apply(core::type::INT8, core::type::INT8);
+    test_roi_apply(core::type::INT8, core::type::INT16);
+    test_roi_apply(core::type::INT8, core::type::INT32);
+    test_roi_apply(core::type::INT8, core::type::UINT8);
+    test_roi_apply(core::type::INT8, core::type::UINT16);
+    test_roi_apply(core::type::INT8, core::type::UINT32);
+    test_roi_apply(core::type::INT16, core::type::INT8);
+    test_roi_apply(core::type::INT16, core::type::INT16);
+    test_roi_apply(core::type::INT16, core::type::INT32);
+    test_roi_apply(core::type::INT16, core::type::UINT8);
+    test_roi_apply(core::type::INT16, core::type::UINT16);
+    test_roi_apply(core::type::INT16, core::type::UINT32);
+    test_roi_apply(core::type::INT32, core::type::INT8);
+    test_roi_apply(core::type::INT32, core::type::INT16);
+    test_roi_apply(core::type::INT32, core::type::INT32);
+    test_roi_apply(core::type::INT32, core::type::UINT8);
+    test_roi_apply(core::type::INT32, core::type::UINT16);
+    test_roi_apply(core::type::INT32, core::type::UINT32);
+    test_roi_apply(core::type::UINT8, core::type::INT8);
+    test_roi_apply(core::type::UINT8, core::type::INT16);
+    test_roi_apply(core::type::UINT8, core::type::INT32);
+    test_roi_apply(core::type::UINT8, core::type::UINT8);
+    test_roi_apply(core::type::UINT8, core::type::UINT16);
+    test_roi_apply(core::type::UINT8, core::type::UINT32);
+    test_roi_apply(core::type::UINT16, core::type::INT8);
+    test_roi_apply(core::type::UINT16, core::type::INT16);
+    test_roi_apply(core::type::UINT16, core::type::INT32);
+    test_roi_apply(core::type::UINT16, core::type::UINT8);
+    test_roi_apply(core::type::UINT16, core::type::UINT16);
+    test_roi_apply(core::type::UINT16, core::type::UINT32);
+    test_roi_apply(core::type::UINT32, core::type::INT8);
+    test_roi_apply(core::type::UINT32, core::type::INT16);
+    test_roi_apply(core::type::UINT32, core::type::INT32);
+    test_roi_apply(core::type::UINT32, core::type::UINT8);
+    test_roi_apply(core::type::UINT32, core::type::UINT16);
+    test_roi_apply(core::type::UINT32, core::type::UINT32);
 
 // float and double disabled : randomization generate some <nan>
 
@@ -167,7 +167,7 @@ void image_test::roiApplyTest()
 //    TestRoiApply( "double", "double");
 //#endif
 
-    // 64 bit type not supported by DynamicType/Dispatcher
+    // 64 bit type not supported by dynamic_t/Dispatcher
 
     // TestRoiApply( "uint64", "double");
     // TestRoiApply( "int64" , "double");

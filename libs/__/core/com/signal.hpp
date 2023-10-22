@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SIGNAL_HPP__
+#define FWCOM_SIGNAL_HPP
 
 #include "core/com/signal_base.hpp"
 
@@ -86,22 +86,22 @@ struct CORE_CLASS_API signal<R(A ...)>: signal_base
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    connection connect(SPTR(slot_base) slot) override;
+    connection connect(SPTR(slot_base) _slot) override;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect(SPTR(slot_base) slot) override;
+    void disconnect(SPTR(slot_base) _slot) override;
 
     /// Disconnects all slots.
     void disconnect_all();
 
     /// Requests execution of slots with given arguments.
-    void emit(A ... a) const;
+    void emit(A ... _a) const;
 
     /// Requests asynchronous execution of slots with given arguments.
-    void async_emit(A ... a) const;
+    void async_emit(A ... _a) const;
 
     /// Returns number of connected slots.
     std::size_t num_connections() const override
@@ -114,7 +114,7 @@ struct CORE_CLASS_API signal<R(A ...)>: signal_base
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    connection get_connection(SPTR(slot_base) slot, bool throws = false);
+    connection get_connection(SPTR(slot_base) _slot, bool _throws = false);
 
     protected:
 
@@ -130,7 +130,7 @@ struct CORE_CLASS_API signal<R(A ...)>: signal_base
          * @throws AlreadyConnected If given slot is already connected.
          */
         template<typename FROM_F>
-        connection connect(SPTR(slot_base) slot);
+        connection connect(SPTR(slot_base) _slot);
 
         /// Connected slots.
         slot_container_type m_slots;

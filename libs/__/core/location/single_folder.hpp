@@ -40,7 +40,7 @@ public:
     [[nodiscard]] inline std::string to_string() const override;
 
     /// Sets folder
-    inline void set_folder(const std::filesystem::path& folder);
+    inline void set_folder(const std::filesystem::path& _folder);
 
     /// Gets folder
     [[nodiscard]] inline std::filesystem::path get_folder() const;
@@ -60,9 +60,9 @@ inline std::string single_folder::to_string() const
 
 //------------------------------------------------------------------------------
 
-inline void single_folder::set_folder(const std::filesystem::path& folder)
+inline void single_folder::set_folder(const std::filesystem::path& _folder)
 {
-    m_folder = folder;
+    m_folder = _folder;
 }
 
 //------------------------------------------------------------------------------

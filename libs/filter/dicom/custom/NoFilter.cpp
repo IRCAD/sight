@@ -49,15 +49,15 @@ std::string NoFilter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-NoFilter::DicomSeriesContainerType NoFilter::apply(
-    const data::dicom_series::sptr& series,
+NoFilter::dicom_series_container_t NoFilter::apply(
+    const data::dicom_series::sptr& _series,
     const core::log::logger::sptr&
     /*logger*/
 )
 const
 {
-    DicomSeriesContainerType result;
-    result.push_back(series);
+    dicom_series_container_t result;
+    result.push_back(_series);
     return result;
 }
 

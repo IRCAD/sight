@@ -45,8 +45,8 @@ tool_calibration::~tool_calibration() noexcept =
 
 void tool_calibration::configuring()
 {
-    const auto configTree = this->get_config();
-    const auto outputs    = configTree.equal_range("out");
+    const auto config_tree = this->get_config();
+    const auto outputs     = config_tree.equal_range("out");
     for(auto it = outputs.first ; it != outputs.second ; ++it)
     {
         const auto key = it->second.get<std::string>("<xmlattr>.key");
@@ -84,19 +84,23 @@ void tool_calibration::updating()
 
 void tool_calibration::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
-    const auto matricesVector = m_matricesVector.lock();
+    const auto matrices_vector = m_matricesVector.lock();
 
-    data::matrix4::sptr calibrationMatrix = std::make_shared<data::matrix4>();
+    data::matrix4::sptr calibration_matrix = std::make_shared<data::matrix4>();
 
-    data::matrix4::sptr centerMatrixNoRot = std::make_shared<data::matrix4>();
+    data::matrix4::sptr center_matrix_no_rot = std::make_shared<data::matrix4>();
 
-    geometry::vision::helper::calibratePointingTool(matricesVector.get_shared(), calibrationMatrix, centerMatrixNoRot);
+    geometry::vision::helper::calibrate_pointing_tool(
+        matrices_vector.get_shared(),
+        calibration_matrix,
+        center_matrix_no_rot
+    );
 
-    m_matrixCalibration = calibrationMatrix;
+    m_matrixCalibration = calibration_matrix;
 
     if(m_hasOutputCenter)
     {
-        m_matrixCenter = centerMatrixNoRot;
+        m_matrixCenter = center_matrix_no_rot;
     }
 }
 

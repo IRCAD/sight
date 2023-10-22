@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,23 +35,23 @@ namespace sight::io::dicom::helper::ut
 
 void TagsTest::getGdcmTagNominalTest()
 {
-    CPPUNIT_ASSERT_EQUAL((gdcm::Tag {0x10, 0x20}), helper::getGdcmTag("10", "20"));
+    CPPUNIT_ASSERT_EQUAL((gdcm::Tag {0x10, 0x20}), helper::get_gdcm_tag("10", "20"));
 }
 
 //------------------------------------------------------------------------------
 
 void TagsTest::getGdcmTagNotANumberTest()
 {
-    CPPUNIT_ASSERT_THROW(helper::getGdcmTag("group", "element"), io::dicom::exception::InvalidTag);
+    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("group", "element"), io::dicom::exception::InvalidTag);
 }
 
 //------------------------------------------------------------------------------
 
 void TagsTest::getGdcmTagTooBigTest()
 {
-    CPPUNIT_ASSERT_THROW(helper::getGdcmTag("100000", "20"), io::dicom::exception::InvalidTag);
+    CPPUNIT_ASSERT_THROW(helper::get_gdcm_tag("100000", "20"), io::dicom::exception::InvalidTag);
     CPPUNIT_ASSERT_THROW(
-        helper::getGdcmTag("10", std::to_string(std::numeric_limits<std::uint64_t>::max())),
+        helper::get_gdcm_tag("10", std::to_string(std::numeric_limits<std::uint64_t>::max())),
         io::dicom::exception::InvalidTag
     );
 }

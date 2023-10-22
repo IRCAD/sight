@@ -29,9 +29,9 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void object_writer::set_object(core::tools::object::csptr object)
+void object_writer::set_object(core::tools::object::csptr _object)
 {
-    m_object = object;
+    m_object = _object;
 }
 
 //------------------------------------------------------------------------------

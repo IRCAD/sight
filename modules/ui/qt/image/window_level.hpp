@@ -46,7 +46,7 @@ class QToolButton;
 namespace sight::ui::qt::widget
 {
 
-class QRangeSlider;
+class range_slider;
 
 } // namespace sight::ui::qt::widget
 
@@ -132,13 +132,13 @@ protected Q_SLOTS:
 
     void onTextEditingFinished();
 
-    void onToggleTF(bool squareTF);
+    void onToggleTF(bool _square_tf);
 
-    void onToggleAutoWL(bool autoWL);
+    void onToggleAutoWL(bool _auto_wl);
 
     void onWindowLevelWidgetChanged(double _min, double _max);
 
-    void onDynamicRangeSelectionChanged(QAction* action);
+    void onDynamicRangeSelectionChanged(QAction* _action);
 
 protected:
 
@@ -148,19 +148,19 @@ protected:
 
     double fromWindowLevel(double _val);
 
-    void onImageWindowLevelChanged(double _imageMin, double _imageMax);
+    void onImageWindowLevelChanged(double _image_min, double _image_max);
 
-    void updateWidgetMinMax(double _imageMin, double _imageMax);
+    void updateWidgetMinMax(double _image_min, double _image_max);
 
-    void updateImageWindowLevel(double _imageMin, double _imageMax);
+    void updateImageWindowLevel(double _image_min, double _image_max);
 
-    void updateTextWindowLevel(double _imageMin, double _imageMax);
+    void updateTextWindowLevel(double _image_min, double _image_max);
 
     WindowLevelMinMaxType getImageWindowMinMax();
 
-    static bool getWidgetDoubleValue(QLineEdit* widget, double& val);
+    static bool getWidgetDoubleValue(QLineEdit* _widget, double& _val);
 
-    void setWidgetDynamicRange(double min, double max);
+    void setWidgetDynamicRange(double _min, double _max);
 
 private:
 
@@ -171,7 +171,7 @@ private:
     QPointer<QToolButton> m_dynamicRangeSelection;
     QPointer<QMenu> m_dynamicRangeMenu;
 
-    QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
+    QPointer<sight::ui::qt::widget::range_slider> m_rangeSlider;
 
     double m_widgetDynamicRangeMin {-1024};
     double m_widgetDynamicRangeWidth {4000};

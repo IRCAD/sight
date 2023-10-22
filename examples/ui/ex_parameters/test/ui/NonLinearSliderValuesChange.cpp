@@ -49,21 +49,21 @@ void NonLinearSliderValuesChange::test()
 {
     start(
         "NonLinearSliderValuesChange",
-        [](sight::ui::testCore::Tester& tester)
+        [](sight::ui::test_core::Tester& _tester)
         {
-            tester.getMainWindow()->dumpObjectTree();
+            _tester.getMainWindow()->dumpObjectTree();
 
-            namespace helper = sight::ui::testCore::helper;
+            namespace helper = sight::ui::test_core::helper;
             using Select     = helper::Select;
 
-            helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "25");
-            helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "150");
+            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "25");
+            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "150");
 
-            helper::Button::pushMenuBarItem(tester, "menuPreferencesView/Preference sync test");
-            helper::PreferencesConfiguration::fill(tester, {{"nonlin", "37,70,105,135,160"}});
+            helper::Button::pushMenuBarItem(_tester, "menuPreferencesView/Preference sync test");
+            helper::PreferencesConfiguration::fill(_tester, {{"nonlin", "37,70,105,135,160"}});
 
-            helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "37");
-            helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "160");
+            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/minValueLabel"), "37");
+            helper::Label::exactlyMatch(_tester, Select::fromParent("parameters1Srv", "nonlin/maxValueLabel"), "160");
         },
         true
     );

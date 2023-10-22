@@ -27,7 +27,7 @@
 #include <core/com/slots.hxx>
 
 #include <data/boolean.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
 
@@ -72,26 +72,26 @@ void show_distance::updating()
 {
     const auto image = m_image.lock();
 
-    if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+    if(!data::helper::medical_image::check_image_validity(image.get_shared()))
     {
         this->sight::ui::action::setChecked(false);
     }
     else
     {
-        const bool isShown = data::helper::MedicalImage::getDistanceVisibility(*image);
+        const bool is_shown = data::helper::medical_image::get_distance_visibility(*image);
 
-        const bool toShow = !isShown;
-        data::helper::MedicalImage::setDistanceVisibility(*image, toShow);
+        const bool to_show = !is_shown;
+        data::helper::medical_image::set_distance_visibility(*image, to_show);
 
         // Manage hide/show from the field information.
-        this->sight::ui::action::setChecked(!toShow);
+        this->sight::ui::action::setChecked(!to_show);
 
-        const auto sig = image->signal<data::image::DistanceDisplayedSignalType>(
+        const auto sig = image->signal<data::image::distance_displayed_signal_t>(
             data::image::DISTANCE_DISPLAYED_SIG
         );
         {
             core::com::connection::blocker block(sig->get_connection(this->slot(SHOW_DISTANCE_SLOT)));
-            sig->async_emit(toShow);
+            sig->async_emit(to_show);
         }
     }
 }
@@ -118,7 +118,7 @@ service::connections_t show_distance::auto_connections() const
 void show_distance::showDistance(bool /*unused*/)
 {
     const auto image          = m_image.lock();
-    const auto show_distances = data::helper::MedicalImage::getDistanceVisibility(*image);
+    const auto show_distances = data::helper::medical_image::get_distance_visibility(*image);
 
     this->sight::ui::action::setChecked(!(show_distances));
 }

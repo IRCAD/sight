@@ -29,14 +29,14 @@ namespace sight::data
 base_ptr::base_ptr(
     data::has_data* _holder,
     std::string_view _key,
-    bool _autoConnect,
+    bool _auto_connect,
     bool _optional,
     Access _access,
     std::optional<std::size_t> _index
 ) :
     m_holder(_holder),
     m_key(_key),
-    m_autoConnect(_autoConnect),
+    m_autoConnect(_auto_connect),
     m_optional(_optional),
     m_access(_access)
 {

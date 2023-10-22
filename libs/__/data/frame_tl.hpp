@@ -66,11 +66,11 @@ public:
 
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
-        std::size_t width,
-        std::size_t height,
-        const core::type& type,
-        PixelFormat format,
-        unsigned int maxElementNum = 1
+        std::size_t _width,
+        std::size_t _height,
+        const core::type& _type,
+        PixelFormat _format,
+        unsigned int _max_element_num = 1
     );
 
     /// Returns the width of an image in the timeline
@@ -101,32 +101,32 @@ public:
     PixelFormat getPixelFormat() const;
 
     /// Set the frame pixel format
-    void setPixelFormat(PixelFormat format);
+    void setPixelFormat(PixelFormat _format);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const frame_tl& other) const noexcept;
-    DATA_API bool operator!=(const frame_tl& other) const noexcept;
+    DATA_API bool operator==(const frame_tl& _other) const noexcept;
+    DATA_API bool operator!=(const frame_tl& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 private:
 
     /// Forbid the use of this inherited method.
-    DATA_API void initPoolSize(unsigned int maxElementNum) override;
+    DATA_API void initPoolSize(unsigned int _max_element_num) override;
 
     /// frame width
     std::size_t m_width {0};
@@ -146,9 +146,9 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline void frame_tl::setPixelFormat(PixelFormat format)
+inline void frame_tl::setPixelFormat(PixelFormat _format)
 {
-    m_pixelFormat = format;
+    m_pixelFormat = _format;
 }
 
 //-----------------------------------------------------------------------------

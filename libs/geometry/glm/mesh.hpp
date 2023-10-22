@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,11 +41,11 @@ namespace sight::geometry::glm
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
-GEOMETRY_GLM_API ::glm::dvec3 toBarycentricCoord(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C
+GEOMETRY_GLM_API ::glm::dvec3 to_barycentric_coord(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c
 );
 
 /**
@@ -57,11 +57,11 @@ GEOMETRY_GLM_API ::glm::dvec3 toBarycentricCoord(
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
-GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(
-    const ::glm::dvec3& _baryCoord,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C
+GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
+    const ::glm::dvec3& _bary_coord,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c
 );
 
 /**
@@ -75,12 +75,12 @@ GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return barycentric coordinates (u, v, w, h).
  */
-GEOMETRY_GLM_API ::glm::dvec4 toBarycentricCoord(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+GEOMETRY_GLM_API ::glm::dvec4 to_barycentric_coord(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 );
 
 /**
@@ -93,12 +93,12 @@ GEOMETRY_GLM_API ::glm::dvec4 toBarycentricCoord(
  * @param _C fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return world coordinates (x, y, z).
  */
-GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(
-    const ::glm::dvec4& _baryCoord,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
+    const ::glm::dvec4& _bary_coord,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 );
 
 /**
@@ -110,12 +110,12 @@ GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-GEOMETRY_GLM_API bool isInsideTetrahedron(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+GEOMETRY_GLM_API bool is_inside_tetrahedron(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 );
 
 /**
@@ -124,73 +124,74 @@ GEOMETRY_GLM_API bool isInsideTetrahedron(
  * @param barycentricCoordPInsideABCD: P coordinates expressed as barycentric coordinates in (ABCD).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-GEOMETRY_GLM_API bool isInsideTetrahedron(::glm::dvec4 barycentricCoordPInsideABCD);
+GEOMETRY_GLM_API bool is_inside_tetrahedron(::glm::dvec4 _barycentric_coord_p_inside_abcd);
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U>
-std::pair<T, U> makeOrderedPair(const T first, const U second)
+std::pair<T, U> make_ordered_pair(const T _first, const U _second)
 {
-    if(first < second)
+    if(_first < _second)
     {
-        return std::pair<T, U>(first, second);
+        return std::pair<T, U>(_first, _second);
     }
 
-    return std::pair<T, U>(second, first);
+    return std::pair<T, U>(_second, _first);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U, typename V>
-bool isBorderlessSurface(
-    T* cellDataBegin,
-    T* cellDataEnd,
-    U* cellDataOffsetsBegin,
-    U* cellDataOffsetsEnd,
-    V* cellTypesBegin
+bool is_borderless_surface(
+    T* _cell_data_begin,
+    T* _cell_data_end,
+    U* _cell_data_offsets_begin,
+    U* _cell_data_offsets_end,
+    V* _cell_types_begin
 )
 {
     typedef std::pair<T, T> Edge; // always Edge.first < Edge.second !!
     typedef boost::unordered_map<Edge, int> EdgeHistogram;
-    EdgeHistogram edgesHistogram;
-    bool isBorderless = true;
+    EdgeHistogram edges_histogram;
+    bool is_borderless = true;
 
-    U* iter          = cellDataOffsetsBegin;
-    U* iter2         = cellDataOffsetsBegin + 1;
-    const U* iterEnd = cellDataOffsetsEnd - 1;
-    V* iterTypes     = cellTypesBegin;
+    U* iter           = _cell_data_offsets_begin;
+    U* iter2          = _cell_data_offsets_begin + 1;
+    const U* iter_end = _cell_data_offsets_end - 1;
+    V* iter_types     = _cell_types_begin;
 
-    std::size_t dataLen = *iter2 - *iter;
+    std::size_t data_len = *iter2 - *iter;
     for( ;
-         iter < iterEnd || (iter < cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter)) ;
-         dataLen = *++iter2 - *++iter, ++iterTypes)
+         iter < iter_end
+         || (iter < _cell_data_offsets_end && (data_len = (_cell_data_end - _cell_data_begin) - *iter)) ;
+         data_len = *++iter2 - *++iter, ++iter_types)
     {
-        if(*iterTypes == 0)
+        if(*iter_types == 0)
         {
             continue;
         }
 
-        T* iterCell          = cellDataBegin + *iter;
-        T* iterCell2         = iterCell + 1;
-        T* beginCell         = iterCell;
-        const T* iterCellEnd = beginCell + dataLen - 1;
+        T* iter_cell           = _cell_data_begin + *iter;
+        T* iter_cell2          = iter_cell + 1;
+        T* begin_cell          = iter_cell;
+        const T* iter_cell_end = begin_cell + data_len - 1;
         for( ;
-             iterCell < iterCellEnd || (iterCell < (beginCell + dataLen) && (iterCell2 = beginCell)) ;
-             ++iterCell, ++iterCell2)
+             iter_cell < iter_cell_end || (iter_cell < (begin_cell + data_len) && (iter_cell2 = begin_cell)) ;
+             ++iter_cell, ++iter_cell2)
         {
-            ++edgesHistogram[makeOrderedPair(*iterCell, *(iterCell2))];
+            ++edges_histogram[makeOrderedPair(*iter_cell, *(iter_cell2))];
         }
     }
 
-    for(const typename EdgeHistogram::value_type& h : edgesHistogram)
+    for(const typename EdgeHistogram::value_type& h : edges_histogram)
     {
         if(h.second != 2)
         {
-            isBorderless = false;
+            is_borderless = false;
             break;
         }
     }
 
-    return isBorderless;
+    return is_borderless;
 }
 
 } // namespace sight::geometry::glm

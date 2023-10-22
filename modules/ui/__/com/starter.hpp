@@ -128,7 +128,7 @@ public:
 
 protected:
 
-    enum ActionType
+    enum action_t
     {
         START,
         STOP,
@@ -167,7 +167,7 @@ protected:
 private:
 
     typedef core::tools::id::type IDSrvType;
-    typedef std::pair<IDSrvType, ActionType> PairIDActionType;
+    typedef std::pair<IDSrvType, action_t> PairIDActionType;
     typedef std::vector<PairIDActionType> VectPairIDActionType;
     typedef std::set<IDSrvType> SetIDSrvType;
 

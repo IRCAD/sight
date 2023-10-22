@@ -29,7 +29,7 @@
 #include <core/tools/dispatcher.hpp>
 
 #include <data/composite.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/transfer_function.hpp>
@@ -69,61 +69,61 @@ struct JpgITKSaverFunctor
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(const Parameter& param)
+    void operator()(const Parameter& _param)
     {
         SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
-        data::image::csptr image = param.m_dataImage;
+        data::image::csptr image = _param.m_dataImage;
 
         // Reader IO (*1*)
-        auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
-        assert(imageIOWrite.IsNotNull());
+        auto image_io_write = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
+        assert(image_io_write.IsNotNull());
 
         // create writer
         using itkImageType = ::itk::Image<PIXELTYPE, 3>;
         using Image2DType  = ::itk::Image<unsigned char, 2>;
-        using WriterType   = typename ::itk::ImageSeriesWriter<itkImageType, Image2DType>;
-        typename WriterType::Pointer writer = WriterType::New();
+        using writer_t     = typename ::itk::ImageSeriesWriter<itkImageType, Image2DType>;
+        typename writer_t::Pointer writer = writer_t::New();
 
         // set observation (*2*)
-        ::itk::LightProcessObject::Pointer castHelper = (::itk::LightProcessObject*) (imageIOWrite.GetPointer());
-        assert(castHelper.IsNotNull());
-        Progressor progress(castHelper, param.m_fwWriter, param.m_directoryPath);
+        ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
+        assert(cast_helper.IsNotNull());
+        Progressor progress(cast_helper, _param.m_fwWriter, _param.m_directoryPath);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(image);
+        typename itkImageType::Pointer itk_image = io::itk::move_to_itk<itkImageType>(image);
 
-        using RescaleFilterType = ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType>;
-        typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
+        using rescale_filter_t = ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType>;
+        typename rescale_filter_t::Pointer rescale_filter = rescale_filter_t::New();
 
         double min = NAN;
         double max = NAN;
-        data::helper::MedicalImage::getMinMax(image, min, max);
+        data::helper::medical_image::get_min_max(image, min, max);
 
-        rescaleFilter->SetWindowMinimum(PIXELTYPE(min));
-        rescaleFilter->SetWindowMaximum(PIXELTYPE(max));
-        rescaleFilter->SetOutputMinimum(PIXELTYPE(0));
-        rescaleFilter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
-        rescaleFilter->InPlaceOff();
-        rescaleFilter->SetInput(itkImage);
-        rescaleFilter->Update();
+        rescale_filter->SetWindowMinimum(PIXELTYPE(min));
+        rescale_filter->SetWindowMaximum(PIXELTYPE(max));
+        rescale_filter->SetOutputMinimum(PIXELTYPE(0));
+        rescale_filter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
+        rescale_filter->InPlaceOff();
+        rescale_filter->SetInput(itk_image);
+        rescale_filter->Update();
 
-        writer->SetInput(rescaleFilter->GetOutput());
+        writer->SetInput(rescale_filter->GetOutput());
 
-        using NameGeneratorType = ::itk::NumericSeriesFileNames;
+        using name_generator_t = ::itk::NumericSeriesFileNames;
 
-        NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
+        name_generator_t::Pointer name_generator = name_generator_t::New();
 
-        std::string format = param.m_directoryPath;
+        std::string format = _param.m_directoryPath;
         format += "/%04d.jpg";
-        nameGenerator->SetSeriesFormat(format.c_str());
-        nameGenerator->SetStartIndex(1);
-        nameGenerator->SetEndIndex(image->size()[2]);
-        nameGenerator->SetIncrementIndex(1);
+        name_generator->SetSeriesFormat(format.c_str());
+        name_generator->SetStartIndex(1);
+        name_generator->SetEndIndex(image->size()[2]);
+        name_generator->SetIncrementIndex(1);
 
-        writer->SetFileNames(nameGenerator->GetFileNames());
+        writer->SetFileNames(name_generator->GetFileNames());
 
-        writer->SetImageIO(imageIOWrite);
+        writer->SetImageIO(image_io_write);
 
         // save image;
         writer->Update();
@@ -137,15 +137,15 @@ void JpgImageWriter::write()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    JpgITKSaverFunctor::Parameter saverParam;
-    saverParam.m_directoryPath = this->get_folder().string();
-    saverParam.m_dataImage     = this->getConcreteObject();
-    saverParam.m_fwWriter      = this->get_sptr();
-    assert(saverParam.m_dataImage);
+    JpgITKSaverFunctor::Parameter saver_param;
+    saver_param.m_directoryPath = this->get_folder().string();
+    saver_param.m_dataImage     = this->getConcreteObject();
+    saver_param.m_fwWriter      = this->get_sptr();
+    assert(saver_param.m_dataImage);
 
     core::tools::dispatcher<core::tools::supported_dispatcher_types, JpgITKSaverFunctor>::invoke(
-        saverParam.m_dataImage->getType(),
-        saverParam
+        saver_param.m_dataImage->getType(),
+        saver_param
     );
 }
 

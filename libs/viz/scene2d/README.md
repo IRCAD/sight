@@ -5,7 +5,7 @@ The generic element cover background size, position, viewports, scenes and mouse
 
 ## Classes
 
-* **adaptor**: root class for the 2D Scene adaptors. Needs to be extended to get the sight::viz::scene2D elements. 
+* **adaptor**: root class for the 2D scene adaptors. Needs to be extended to get the sight::viz::scene2D elements. 
 
 * **Scene2DGraphicsView**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
 
@@ -35,7 +35,7 @@ The generic element cover background size, position, viewports, scenes and mouse
 ### CMake
 
 ```cmake
-add_dependencies(myTarget viz_scene2d ... )
+add_dependencies(my_target viz_scene2d ... )
 ```
 
 ### Implementation

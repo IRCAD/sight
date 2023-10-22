@@ -75,10 +75,10 @@ public:
      *
      */
     module(
-        const std::filesystem::path& location,
-        std::string id,
-        std::string c = "",
-        int priority  = 0
+        const std::filesystem::path& _location,
+        std::string _id,
+        std::string _c = "",
+        int _priority  = 0
     );
 
     /**
@@ -143,13 +143,13 @@ public:
     SPTR(plugin) get_plugin() const final;
 
     /** @copydoc core::runtime::module */
-    std::string get_parameter_value(const std::string& identifier) const final;
+    std::string get_parameter_value(const std::string& _identifier) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    bool has_parameter(const std::string& identifier) const final;
+    bool has_parameter(const std::string& _identifier) const final;
 
     /// @copydoc core::runtime::module::getExtensions
     extension_container extensions() const final;
@@ -172,7 +172,7 @@ public:
      *
      * @param[in]   library a shared pointer to the library to add
      */
-    void set_library(SPTR(dl::library) library);
+    void set_library(SPTR(dl::library) _library);
     //@}
 
     /**
@@ -184,7 +184,7 @@ public:
      *
      * @param[in]   factory a shared pointer to the executable factory instance to add
      */
-    void add_executable_factory(SPTR(executable_factory) factory);
+    void add_executable_factory(SPTR(executable_factory) _factory);
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -195,7 +195,7 @@ public:
      *
      * @todo    not implemented and not used !!!!!!!
      */
-    executable* create_executable_instance(const std::string& type);
+    executable* create_executable_instance(const std::string& _type);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -220,7 +220,7 @@ public:
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    SPTR(executable_factory) find_executable_factory(const std::string& type) const;
+    SPTR(executable_factory) find_executable_factory(const std::string& _type) const;
     //@}
 
     /**
@@ -232,7 +232,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
-    void add_extension(SPTR(detail::extension) extension);
+    void add_extension(SPTR(detail::extension) _extension);
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -241,7 +241,7 @@ public:
      *
      * @return      true or false
      */
-    bool has_extension(const std::string& identifier) const;
+    bool has_extension(const std::string& _identifier) const;
 
     /**
      * @brief       Search a specific extension in the module to enable or
@@ -252,7 +252,7 @@ public:
      * @param[in]   identifier  the extension identifier
      * @param[in]   enable      enable or disable this extension
      */
-    void set_enable_extension(const std::string& identifier, bool enable);
+    void set_enable_extension(const std::string& _identifier, bool _enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -280,7 +280,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension point to add
      */
-    void add_extension_point(SPTR(extension_point) extension);
+    void add_extension_point(SPTR(extension_point) _extension);
 
     /**
      * @brief       Retrieves the extension point for the given identifier.
@@ -289,7 +289,7 @@ public:
      *
      * @return      a shared pointer to the found extension point, may be empty if none
      */
-    SPTR(extension_point) find_extension_point(const std::string& identifier) const;
+    SPTR(extension_point) find_extension_point(const std::string& _identifier) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -298,7 +298,7 @@ public:
      *
      * @return      true or false
      */
-    bool has_extension_point(const std::string& identifier) const;
+    bool has_extension_point(const std::string& _identifier) const;
 
     /**
      * @brief       Search a specific extension point in the module to enable or
@@ -309,7 +309,7 @@ public:
      * @param[in]   identifier  the extension point identifier
      * @param[in]   enable      enable or disable this extension point
      */
-    void set_enable_extension_point(const std::string& identifier, bool enable);
+    void set_enable_extension_point(const std::string& _identifier, bool _enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -337,7 +337,7 @@ public:
      *
      * @param[in]   requirement a string containing a module identifier that is required
      */
-    void add_requirement(const std::string& requirement);
+    void add_requirement(const std::string& _requirement);
     //@}
 
     /**
@@ -350,7 +350,7 @@ public:
      * @remark  It is possible to disable a started module but this
      *          will have no effect.
      */
-    void set_enable(bool state);
+    void set_enable(bool _state);
     //@}
 
     /**
@@ -373,7 +373,7 @@ public:
      * @param[in]   identifier  a string containing the parameter identifier
      * @param[in]   value       a string containing the parameter value
      */
-    void add_parameter(const std::string& identifier, const std::string& value);
+    void add_parameter(const std::string& _identifier, const std::string& _value);
     //@}
 
     bool is_started() const override
@@ -388,7 +388,7 @@ public:
         return m_priority;
     }
 
-    static std::string get_module_str(const std::string& identifier);
+    static std::string get_module_str(const std::string& _identifier);
 
 private:
 
@@ -400,9 +400,9 @@ private:
     // dynamic libraries
 
     std::filesystem::path m_library_location;            ///< the path to the module libraries
-    const std::filesystem::path m_resources_location;    ///< the path to the module resources
-    const std::string m_identifier;                      ///< a string containing the module identifier
-    const std::string m_class;                           ///< a string containing the module's plugin class name
+    const std::filesystem::path M_RESOURCES_LOCATION;    ///< the path to the module resources
+    const std::string M_IDENTIFIER;                      ///< a string containing the module identifier
+    const std::string M_CLASS;                           ///< a string containing the module's plugin class name
     extension_impl_container m_extensions;               ///< all extensions
     extension_point_container m_extension_points;        ///< all extension points
     executable_factory_container m_executable_factories; ///< all executable factories

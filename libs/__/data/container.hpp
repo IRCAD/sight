@@ -214,15 +214,15 @@ public:
     inline virtual ~ContainerWrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
-    constexpr auto remove(const typename C::value_type& value)
+    constexpr auto remove(const typename C::value_type& _value)
     {
-        return C::erase(std::remove(C::begin(), C::end(), value), C::end());
+        return C::erase(std::remove(C::begin(), C::end(), _value), C::end());
     }
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove_one(const typename C::value_type& value)
+    constexpr auto remove_one(const typename C::value_type& _value)
     {
-        if(const auto& it = std::find(C::cbegin(), C::cend(), value); it != C::cend())
+        if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
             return C::erase(it);
         }
@@ -371,9 +371,9 @@ public:
     inline virtual ~ContainerWrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove(const typename C::value_type& value)
+    constexpr auto remove(const typename C::value_type& _value)
     {
-        if(const auto& it = std::find(C::cbegin(), C::cend(), value); it != C::cend())
+        if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
             return C::erase(it);
         }
@@ -669,8 +669,8 @@ public:
     /// Constructors / Destructor / Assignment operators
     /// @{
     constexpr container();
-    inline explicit container(const C& container);
-    inline explicit container(C&& container);
+    inline explicit container(const C& _container);
+    inline explicit container(C&& _container);
     inline ~container() noexcept override = default;
 
     /// To allow assignment from STL containers
@@ -680,8 +680,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    constexpr bool operator==(const container& other) const noexcept;
-    constexpr bool operator!=(const container& other) const noexcept;
+    constexpr bool operator==(const container& _other) const noexcept;
+    constexpr bool operator!=(const container& _other) const noexcept;
     /// @}
 
     /// Signals
@@ -704,7 +704,7 @@ public:
 
     struct DATA_CLASS_API ScopedEmitter
     {
-        constexpr ScopedEmitter(const container& container) noexcept;
+        constexpr ScopedEmitter(const container& _container) noexcept;
         inline ~ScopedEmitter() noexcept;
 
         /// Emits the needed signals
@@ -714,7 +714,7 @@ public:
         constexpr void reset() noexcept;
 
         /// Resets the internal state
-        constexpr void block(const core::com::slot_base::sptr& slot) noexcept;
+        constexpr void block(const core::com::slot_base::sptr& _slot) noexcept;
 
         const container& m_container;
         container::container_type m_backup;
@@ -726,15 +726,15 @@ public:
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    inline void shallow_copy(const object::csptr& source) override;
+    inline void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     inline void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 };
 

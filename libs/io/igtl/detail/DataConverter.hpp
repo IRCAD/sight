@@ -31,7 +31,7 @@ namespace sight::io::igtl::detail
 {
 
 ///converterRegisterMacro need to be called by every converter
-#define converterRegisterMacro(ClassName) \
+#define CONVERTER_REGISTER_MACRO(ClassName) \
     static io::igtl::detail::DataConverter::Registry<ClassName> BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 /**
@@ -57,7 +57,7 @@ public:
     IO_IGTL_API static DataConverter::sptr getInstance();
 
     ///Static method called by the registry class to register a new converter
-    IO_IGTL_API static void registerConverter(converter::base::sptr c);
+    IO_IGTL_API static void registerConverter(converter::base::sptr _c);
 
     ///Class Registry used by the macro to register new converter in the m_converters
     template<typename T>
@@ -75,12 +75,12 @@ public:
      * @brief convert a data::object to a ::igtl::MessageBase
      * @return a ::igtl::MessageBase smart pointer
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::object::csptr src) const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::object::csptr _src) const;
 
     /**
      * @brief convert a ::igtl::MessageBase to a data::object
      */
-    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const;
 
     /**
      * @brief get status message
@@ -92,9 +92,9 @@ public:
      * @return igtl message smart pointer
      */
     static IO_IGTL_API ::igtl::MessageBase::Pointer getStatusMessage(
-        int igtlCode,
-        int igtlSubCode,
-        const std::string& errMsg
+        int _igtl_code,
+        int _igtl_sub_code,
+        const std::string& _err_msg
     );
 
     /**

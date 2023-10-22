@@ -32,16 +32,16 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 Study::Study(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::series::sptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::series::sptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::series>(dicomSeries, reader, instance, series, logger,
-                                                           progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::series>(_dicom_series, _reader, _instance, _series, _logger,
+                                                           _progress, _cancel)
 {
 }
 
@@ -57,24 +57,24 @@ void Study::readGeneralStudyModule()
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    const std::string& studyUID = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000d>(dataset);
-    m_object->setStudyInstanceUID(studyUID);
+    const std::string& study_uid = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000d>(dataset);
+    m_object->setStudyInstanceUID(study_uid);
 
-    const std::string& studyID = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0010>(dataset);
-    m_object->setStudyID(studyID);
+    const std::string& study_id = io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x0010>(dataset);
+    m_object->setStudyID(study_id);
 
-    const std::string& studyDate = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0020>(dataset);
-    m_object->setStudyDate(studyDate);
+    const std::string& study_date = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0020>(dataset);
+    m_object->setStudyDate(study_date);
 
-    const std::string& studyTime = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0030>(dataset);
-    m_object->setStudyTime(studyTime);
+    const std::string& study_time = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0030>(dataset);
+    m_object->setStudyTime(study_time);
 
-    const std::string& studyReferringPhysicianName =
+    const std::string& study_referring_physician_name =
         io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0090>(dataset);
-    m_object->setReferringPhysicianName(studyReferringPhysicianName);
+    m_object->setReferringPhysicianName(study_referring_physician_name);
 
-    const std::string& studyDescription = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1030>(dataset);
-    m_object->setStudyDescription(studyDescription);
+    const std::string& study_description = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1030>(dataset);
+    m_object->setStudyDescription(study_description);
 }
 
 //------------------------------------------------------------------------------
@@ -84,21 +84,21 @@ void Study::readPatientStudyModule()
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    const std::string& studyPatientAge = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1010>(dataset);
-    m_object->setPatientAge(studyPatientAge);
+    const std::string& study_patient_age = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1010>(dataset);
+    m_object->setPatientAge(study_patient_age);
 
-    const std::string& studyPatientSize = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1020>(dataset);
+    const std::string& study_patient_size = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1020>(dataset);
 
-    if(!studyPatientSize.empty())
+    if(!study_patient_size.empty())
     {
-        m_object->setPatientSize(std::stod(studyPatientSize));
+        m_object->setPatientSize(std::stod(study_patient_size));
     }
 
-    const std::string& studyPatientWeight = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1030>(dataset);
+    const std::string& study_patient_weight = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1030>(dataset);
 
-    if(!studyPatientWeight.empty())
+    if(!study_patient_weight.empty())
     {
-        m_object->setPatientWeight(std::stod(studyPatientWeight));
+        m_object->setPatientWeight(std::stod(study_patient_weight));
     }
 }
 

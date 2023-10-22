@@ -32,13 +32,13 @@ SIGHT_REGISTER_DATA(sight::data::marker_map)
 
 //------------------------------------------------------------------------------
 
-void marker_map::shallow_copy(const object::csptr& source)
+void marker_map::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const marker_map>(source);
+    const auto& other = std::dynamic_pointer_cast<const marker_map>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -51,13 +51,13 @@ void marker_map::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void marker_map::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void marker_map::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const marker_map>(source);
+    const auto& other = std::dynamic_pointer_cast<const marker_map>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -65,12 +65,12 @@ void marker_map::deep_copy(const object::csptr& source, const std::unique_ptr<de
 
     m_markers = other->m_markers;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-const marker_map::MarkerType* marker_map::getMarker(const key_t& _id) const
+const marker_map::marker_t* marker_map::getMarker(const key_t& _id) const
 {
     auto it = m_markers.find(_id);
     if(it != m_markers.end())
@@ -83,7 +83,7 @@ const marker_map::MarkerType* marker_map::getMarker(const key_t& _id) const
 
 //------------------------------------------------------------------------------
 
-marker_map::MarkerType* marker_map::getMarker(const key_t& _id)
+marker_map::marker_t* marker_map::getMarker(const key_t& _id)
 {
     auto it = m_markers.find(_id);
     if(it != m_markers.end())
@@ -96,25 +96,25 @@ marker_map::MarkerType* marker_map::getMarker(const key_t& _id)
 
 //------------------------------------------------------------------------------
 
-const marker_map::MarkerType& marker_map::getMarker(std::size_t index) const
+const marker_map::marker_t& marker_map::getMarker(std::size_t _index) const
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
-    SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size());
+    SIGHT_ASSERT("Index is bigger than map's size", _index < m_markers.size());
 
     auto it = m_markers.begin();
-    std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));
+    std::advance(it, static_cast<container_t::iterator::difference_type>(_index));
     return it->second;
 }
 
 //------------------------------------------------------------------------------
 
-marker_map::MarkerType& marker_map::getMarker(std::size_t index)
+marker_map::marker_t& marker_map::getMarker(std::size_t _index)
 {
     SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
-    SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size());
+    SIGHT_ASSERT("Index is bigger than map's size", _index < m_markers.size());
 
     auto it = m_markers.begin();
-    std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));
+    std::advance(it, static_cast<container_t::iterator::difference_type>(_index));
     return it->second;
 }
 
@@ -127,29 +127,29 @@ std::size_t marker_map::count() const
 
 //------------------------------------------------------------------------------
 
-void marker_map::setMarker(const key_t& _id, const marker_map::MarkerType& _marker)
+void marker_map::setMarker(const key_t& _id, const marker_map::marker_t& _marker)
 {
     m_markers[_id] = _marker;
 }
 
 //------------------------------------------------------------------------------
 
-bool marker_map::operator==(const marker_map& other) const noexcept
+bool marker_map::operator==(const marker_map& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_markers, other.m_markers))
+    if(!core::tools::is_equal(m_markers, _other.m_markers))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool marker_map::operator!=(const marker_map& other) const noexcept
+bool marker_map::operator!=(const marker_map& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

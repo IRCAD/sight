@@ -51,7 +51,7 @@ public:
 protected:
 
     // Overrides
-    void set_module(std::shared_ptr<module> module) override;
+    void set_module(std::shared_ptr<module> _module) override;
 
 private:
 

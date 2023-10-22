@@ -46,7 +46,7 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     ACTIVITY_API validator::return_t validate(
-        const CSPTR(data::activity)& activity
+        const CSPTR(data::activity)& _activity
     ) const override;
 };
 

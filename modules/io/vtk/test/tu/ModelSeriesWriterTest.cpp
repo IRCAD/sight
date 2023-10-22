@@ -45,8 +45,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ModelSeriesWriterTes
 namespace sight::module::io::vtk::ut
 {
 
-namespace fs            = std::filesystem;
-using FileContainerType = std::vector<std::string>;
+namespace fs           = std::filesystem;
+using file_container_t = std::vector<std::string>;
 
 namespace point = sight::data::iterator::point;
 namespace cell  = sight::data::iterator::cell;
@@ -67,26 +67,26 @@ void ModelSeriesWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void runModelSeriesSrv(
-    const std::string& impl,
-    const boost::property_tree::ptree& cfg,
-    const SPTR(data::object)& obj
+void run_model_series_srv(
+    const std::string& _impl,
+    const boost::property_tree::ptree& _cfg,
+    const SPTR(data::object)& _obj
 )
 {
-    service::base::sptr srv = service::add(impl);
+    service::base::sptr srv = service::add(_impl);
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
+    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + _impl, srv);
 
     if(srv->is_a("sight::io::service::reader"))
     {
-        srv->set_inout(obj, "data");
+        srv->set_inout(_obj, "data");
     }
     else
     {
-        srv->set_input(obj, "data");
+        srv->set_input(_obj, "data");
     }
 
-    CPPUNIT_ASSERT_NO_THROW(srv->set_config(cfg));
+    CPPUNIT_ASSERT_NO_THROW(srv->set_config(_cfg));
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
@@ -96,53 +96,53 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-boost::property_tree::ptree getIOCfgFromFolder(const fs::path& file)
+boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 {
-    service::config_t srvCfg;
-    srvCfg.add("folder", file.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("folder", _file.string());
 
-    return srvCfg;
+    return srv_cfg;
 }
 
 //------------------------------------------------------------------------------
 
-boost::property_tree::ptree getIOCfgFromFiles(const FileContainerType& files)
+boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files)
 {
-    service::config_t srvCfg;
-    for(const auto& file : files)
+    service::config_t srv_cfg;
+    for(const auto& file : _files)
     {
-        srvCfg.add("file", file);
+        srv_cfg.add("file", file);
     }
 
-    return srvCfg;
+    return srv_cfg;
 }
 
 //------------------------------------------------------------------------------
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    data::model_series::sptr modelSeries = utest_data::generator::series_set::createModelSeries(5);
+    data::model_series::sptr model_series = utest_data::generator::series_set::createModelSeries(5);
 
-    const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
+    const std::vector<std::string> all_extensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    for(const auto& ext : allExtensions)
+    for(const auto& ext : all_extensions)
     {
-        const auto& extDir = tmpDir / ext;
-        fs::create_directories(extDir);
+        const auto& ext_dir = tmp_dir / ext;
+        fs::create_directories(ext_dir);
 
-        auto cfg = getIOCfgFromFolder(extDir);
+        auto cfg = get_io_cfg_from_folder(ext_dir);
         cfg.add("extension", ext);
 
-        runModelSeriesSrv(
+        run_model_series_srv(
             "sight::module::io::vtk::model_series_writer",
             cfg,
-            modelSeries
+            model_series
         );
 
-        FileContainerType files;
-        for(fs::directory_iterator it(extDir) ; it != fs::directory_iterator() ; ++it)
+        file_container_t files;
+        for(fs::directory_iterator it(ext_dir) ; it != fs::directory_iterator() ; ++it)
         {
             if(it->path().extension() == "." + ext)
             {
@@ -155,57 +155,57 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Number of saved files",
-            modelSeries->getReconstructionDB().size(),
+            model_series->getReconstructionDB().size(),
             files.size()
         );
 
         auto series_set = std::make_shared<data::series_set>();
 
-        runModelSeriesSrv(
+        run_model_series_srv(
             "sight::module::io::vtk::series_set_reader",
-            getIOCfgFromFiles(files),
+            get_io_cfg_from_files(files),
             series_set
         );
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("series_set Size", (std::size_t) 1, series_set->size());
 
-        data::model_series::sptr readSeries = std::dynamic_pointer_cast<data::model_series>(series_set->at(0));
-        CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
+        data::model_series::sptr read_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(0));
+        CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", read_series);
 
-        using RecVecType = data::model_series::ReconstructionVectorType;
-        const RecVecType& readRecs = readSeries->getReconstructionDB();
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
+        using rec_vec_t = data::model_series::reconstruction_vector_t;
+        const rec_vec_t& read_recs = read_series->getReconstructionDB();
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), read_recs.size());
 
-        const RecVecType& refRecs = modelSeries->getReconstructionDB();
-        auto itRef                = refRecs.begin();
-        auto itRead               = readRecs.begin();
+        const rec_vec_t& ref_recs = model_series->getReconstructionDB();
+        auto it_ref               = ref_recs.begin();
+        auto it_read              = read_recs.begin();
 
-        for( ; itRef != refRecs.end() ; ++itRef, ++itRead)
+        for( ; it_ref != ref_recs.end() ; ++it_ref, ++it_read)
         {
-            data::mesh::csptr refMesh  = (*itRef)->getMesh();
-            data::mesh::csptr readMesh = (*itRead)->getMesh();
+            data::mesh::csptr ref_mesh  = (*it_ref)->getMesh();
+            data::mesh::csptr read_mesh = (*it_read)->getMesh();
 
-            const auto reflock      = refMesh->dump_lock();
-            const auto readMeshLock = readMesh->dump_lock();
+            const auto reflock        = ref_mesh->dump_lock();
+            const auto read_mesh_lock = read_mesh->dump_lock();
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Points.",
-                refMesh->numPoints(),
-                readMesh->numPoints()
+                ref_mesh->numPoints(),
+                read_mesh->numPoints()
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Cells.",
-                refMesh->numCells(),
-                readMesh->numCells()
+                ref_mesh->numCells(),
+                read_mesh->numCells()
             );
 
             // Don't test internal structures for obj, ply and stl, since some of them are missing.
             if(ext != "obj" && ext != "ply" && ext != "stl")
             {
-                const auto refPoints  = refMesh->czip_range<point::xyz, point::nxyz, point::rgba>();
-                const auto readPoints = readMesh->czip_range<point::xyz, point::nxyz, point::rgba>();
+                const auto ref_points  = ref_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
+                const auto read_points = read_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
 
-                for(const auto& [ref, read] : boost::combine(refPoints, readPoints))
+                for(const auto& [ref, read] : boost::combine(ref_points, read_points))
                 {
                     const auto& [pt1, n1, c1] = ref;
                     const auto& [pt2, n2, c2] = read;
@@ -224,10 +224,10 @@ void ModelSeriesWriterTest::testWriteMeshes()
                     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal z", n1.nz, n2.nz, 0.00001);
                 }
 
-                const auto refCells  = refMesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
-                const auto readCells = readMesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
+                const auto ref_cells  = ref_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
+                const auto read_cells = read_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
 
-                for(const auto& [ref, read] : boost::combine(refCells, readCells))
+                for(const auto& [ref, read] : boost::combine(ref_cells, read_cells))
                 {
                     const auto& [tri1, n1, c1] = ref;
                     const auto& [tri2, n2, c2] = read;
@@ -255,24 +255,24 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    data::model_series::sptr modelSeries = utest_data::generator::series_set::createModelSeries(5);
+    data::model_series::sptr model_series = utest_data::generator::series_set::createModelSeries(5);
 
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    runModelSeriesSrv(
+    run_model_series_srv(
         "sight::module::io::vtk::model_series_obj_writer",
-        getIOCfgFromFolder(tmpDir),
-        modelSeries
+        get_io_cfg_from_folder(tmp_dir),
+        model_series
     );
 
-    FileContainerType files;
-    for(fs::directory_iterator it(tmpDir) ; it != fs::directory_iterator() ; ++it)
+    file_container_t files;
+    for(fs::directory_iterator it(tmp_dir) ; it != fs::directory_iterator() ; ++it)
     {
         files.push_back(it->path().string());
     }
 
     // Writer generates a .mtl file for each .obj file
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB().size() * 2, files.size());
+    CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB().size() * 2, files.size());
 }
 
 //------------------------------------------------------------------------------

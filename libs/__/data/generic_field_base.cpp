@@ -27,9 +27,9 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& _os, const data::generic_field_base& lf)
+std::ostream& operator<<(std::ostream& _os, const data::generic_field_base& _lf)
 {
-    return lf.toOStream(_os);
+    return _lf.toOStream(_os);
 }
 
 } //namespace sight::data

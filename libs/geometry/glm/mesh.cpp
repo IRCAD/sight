@@ -33,18 +33,18 @@ namespace sight::geometry::glm
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 toBarycentricCoord(
-    const ::glm::dvec3& P,
-    const ::glm::dvec3& A,
-    const ::glm::dvec3& B,
-    const ::glm::dvec3& C
+::glm::dvec3 to_barycentric_coord(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c
 )
 {
-    ::glm::dvec3 baryCoord;
+    ::glm::dvec3 bary_coord;
 
-    const ::glm::dvec3 v0 = B - A; // AB Vector
-    const ::glm::dvec3 v1 = C - A; // AC Vector
-    const ::glm::dvec3 v2 = P - A; // AP Vector
+    const ::glm::dvec3 v0 = _b - _a; // AB Vector
+    const ::glm::dvec3 v1 = _c - _a; // AC Vector
+    const ::glm::dvec3 v2 = _p - _a; // AP Vector
 
     // Precompute some dot products.
     const double d00 = ::glm::dot(v0, v0);
@@ -66,21 +66,21 @@ namespace sight::geometry::glm
     const double w = ((d00 * d21) - (d01 * d20)) * invdenom;
     const double u = 1. - v - w; // deduce last coordinate from the two others.
 
-    baryCoord.x = u;
-    baryCoord.y = v;
-    baryCoord.z = w;
+    bary_coord.x = u;
+    bary_coord.y = v;
+    bary_coord.z = w;
 
-    return baryCoord;
+    return bary_coord;
 }
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec4 toBarycentricCoord(
-    const ::glm::dvec3& P,
-    const ::glm::dvec3& A,
-    const ::glm::dvec3& B,
-    const ::glm::dvec3& C,
-    const ::glm::dvec3& D
+::glm::dvec4 to_barycentric_coord(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 )
 {
     /*
@@ -100,55 +100,55 @@ namespace sight::geometry::glm
           u + v + w + h = 1
      */
 
-    ::glm::dvec4 baryCoord;
+    ::glm::dvec4 bary_coord;
 
-    const ::glm::dvec3 vab = B - A; // AB Vector
-    const ::glm::dvec3 vac = C - A; // AC Vector
-    const ::glm::dvec3 vad = D - A; // AD Vector
+    const ::glm::dvec3 vab = _b - _a; // AB Vector
+    const ::glm::dvec3 vac = _c - _a; // AC Vector
+    const ::glm::dvec3 vad = _d - _a; // AD Vector
 
-    const ::glm::dvec3 vap = P - A; // AP Vector
+    const ::glm::dvec3 vap = _p - _a; // AP Vector
 
-    const double volumeB = ::glm::dot(vap, ::glm::cross(vac, vad));
-    const double volumeC = ::glm::dot(vap, ::glm::cross(vad, vab));
-    const double volumeD = ::glm::dot(vap, ::glm::cross(vab, vac));
+    const double volume_b = ::glm::dot(vap, ::glm::cross(vac, vad));
+    const double volume_c = ::glm::dot(vap, ::glm::cross(vad, vab));
+    const double volume_d = ::glm::dot(vap, ::glm::cross(vab, vac));
 
-    const double volumeTot = ::glm::dot(vab, ::glm::cross(vac, vad));
+    const double volume_tot = ::glm::dot(vab, ::glm::cross(vac, vad));
 
     // Don't test the case in release to avoid performance issue.
-    SIGHT_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
+    SIGHT_ASSERT("Degenerate triangle case leads to zero division.", volume_tot != 0.);
 
     // Inverse the denominator to speed up computation of v & w.
-    const double invdenom = 1. / volumeTot;
+    const double invdenom = 1. / volume_tot;
 
     // Barycentric coordinates
-    const double v = volumeB * invdenom;
-    const double w = volumeC * invdenom;
-    const double h = volumeD * invdenom;
+    const double v = volume_b * invdenom;
+    const double w = volume_c * invdenom;
+    const double h = volume_d * invdenom;
     const double u = 1. - v - w - h; // deduce last coordinate from the two others.
 
-    baryCoord[0] = u;
-    baryCoord[1] = v;
-    baryCoord[2] = w;
-    baryCoord[3] = h;
+    bary_coord[0] = u;
+    bary_coord[1] = v;
+    bary_coord[2] = w;
+    bary_coord[3] = h;
 
-    return baryCoord;
+    return bary_coord;
 }
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 fromBarycentricCoord(
-    const ::glm::dvec3& _baryCoord,
-    const ::glm::dvec3& A,
-    const ::glm::dvec3& B,
-    const ::glm::dvec3& C
+::glm::dvec3 from_barycentric_coord(
+    const ::glm::dvec3& _bary_coord,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c
 )
 {
-    ::glm::dvec3 worldCoordinates;
+    ::glm::dvec3 world_coordinates;
 
     // Use standard notation for clarity.
-    const double u = _baryCoord[0];
-    const double v = _baryCoord[1];
-    const double w = _baryCoord[2];
+    const double u = _bary_coord[0];
+    const double v = _bary_coord[1];
+    const double w = _bary_coord[2];
 
     [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
 
@@ -159,19 +159,19 @@ namespace sight::geometry::glm
         sum<1. + 10e-9 && sum>1. - 10e-9
     );
 
-    worldCoordinates = u * A + v * B + w * C;
+    world_coordinates = u * _a + v * _b + w * _c;
 
-    return worldCoordinates;
+    return world_coordinates;
 }
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 fromBarycentricCoord(
-    const ::glm::dvec4& _baryCoord,
-    const ::glm::dvec3& A,
-    const ::glm::dvec3& B,
-    const ::glm::dvec3& C,
-    const ::glm::dvec3& D
+::glm::dvec3 from_barycentric_coord(
+    const ::glm::dvec4& _bary_coord,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 )
 {
     /*
@@ -182,10 +182,10 @@ namespace sight::geometry::glm
      */
 
     // Use standard notation for clarity.
-    const double u = _baryCoord[0];
-    const double v = _baryCoord[1];
-    const double w = _baryCoord[2];
-    const double h = _baryCoord[3];
+    const double u = _bary_coord[0];
+    const double v = _bary_coord[1];
+    const double w = _bary_coord[2];
+    const double h = _bary_coord[3];
 
     [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
 
@@ -196,17 +196,17 @@ namespace sight::geometry::glm
         sum<1. + 10e-9 && sum>1. - 10e-9
     );
 
-    return u * A + v * B + w * C + h * D;
+    return u * _a + v * _b + w * _c + h * _d;
 }
 
 //------------------------------------------------------------------------------
 
-bool isInsideTetrahedron(
-    const ::glm::dvec3& P,
-    const ::glm::dvec3& A,
-    const ::glm::dvec3& B,
-    const ::glm::dvec3& C,
-    const ::glm::dvec3& D
+bool is_inside_tetrahedron(
+    const ::glm::dvec3& _p,
+    const ::glm::dvec3& _a,
+    const ::glm::dvec3& _b,
+    const ::glm::dvec3& _c,
+    const ::glm::dvec3& _d
 )
 {
     /*
@@ -216,13 +216,13 @@ bool isInsideTetrahedron(
           are
           in between 0 and 1.
      */
-    const ::glm::dvec4 barycentricCoord = toBarycentricCoord(P, A, B, C, D);
-    return isInsideTetrahedron(barycentricCoord);
+    const ::glm::dvec4 barycentric_coord = to_barycentric_coord(_p, _a, _b, _c, _d);
+    return is_inside_tetrahedron(barycentric_coord);
 }
 
 //------------------------------------------------------------------------------
 
-bool isInsideTetrahedron(const ::glm::dvec4 barycentricCoordPInsideABCD)
+bool is_inside_tetrahedron(const ::glm::dvec4 _barycentric_coord_p_inside_abcd)
 {
     /*
        There are several ways to determine if a point is inside a tetrahedron.
@@ -230,10 +230,10 @@ bool isInsideTetrahedron(const ::glm::dvec4 barycentricCoordPInsideABCD)
        It checks if all of the barycentric coordinates are in between 0 and 1.
 
      */
-    return 0 <= barycentricCoordPInsideABCD[0] && barycentricCoordPInsideABCD[0] <= 1
-           && 0 <= barycentricCoordPInsideABCD[1] && barycentricCoordPInsideABCD[1] <= 1
-           && 0 <= barycentricCoordPInsideABCD[2] && barycentricCoordPInsideABCD[2] <= 1
-           && 0 <= barycentricCoordPInsideABCD[3] && barycentricCoordPInsideABCD[3] <= 1;
+    return 0 <= _barycentric_coord_p_inside_abcd[0] && _barycentric_coord_p_inside_abcd[0] <= 1
+           && 0 <= _barycentric_coord_p_inside_abcd[1] && _barycentric_coord_p_inside_abcd[1] <= 1
+           && 0 <= _barycentric_coord_p_inside_abcd[2] && _barycentric_coord_p_inside_abcd[2] <= 1
+           && 0 <= _barycentric_coord_p_inside_abcd[3] && _barycentric_coord_p_inside_abcd[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------

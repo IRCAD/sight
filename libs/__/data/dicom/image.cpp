@@ -28,21 +28,21 @@ namespace sight::data::dicom
 {
 
 image::image(
-    std::uint16_t samplesPerPixel,
-    std::uint16_t bitsAllocated,
-    std::uint16_t bitsStored,
-    std::uint16_t highBit,
-    std::uint16_t pixelRepresentation,
-    double rescaleSlope,
-    double rescaleIntercept
+    std::uint16_t _samples_per_pixel,
+    std::uint16_t _bits_allocated,
+    std::uint16_t _bits_stored,
+    std::uint16_t _high_bit,
+    std::uint16_t _pixel_representation,
+    double _rescale_slope,
+    double _rescale_intercept
 ) :
-    m_samplesPerPixel(samplesPerPixel),
-    m_bitsAllocated(bitsAllocated),
-    m_bitsStored(bitsStored),
-    m_highBit(highBit),
-    m_pixelRepresentation(pixelRepresentation),
-    m_rescaleSlope(rescaleSlope),
-    m_rescaleIntercept(rescaleIntercept)
+    m_samplesPerPixel(_samples_per_pixel),
+    m_bitsAllocated(_bits_allocated),
+    m_bitsStored(_bits_stored),
+    m_highBit(_high_bit),
+    m_pixelRepresentation(_pixel_representation),
+    m_rescaleSlope(_rescale_slope),
+    m_rescaleIntercept(_rescale_intercept)
 {
 }
 

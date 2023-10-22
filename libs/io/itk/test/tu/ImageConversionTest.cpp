@@ -62,21 +62,21 @@ void ImageConversionTest::testConversion()
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generateRandomImage(image, core::type::INT16);
 
-    using ImageType = ::itk::Image<std::int16_t, 3>;
-    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
+    using image_t = ::itk::Image<std::int16_t, 3>;
+    image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
 
     data::image::sptr image2 = std::make_shared<data::image>();
-    io::itk::moveFromItk<ImageType>(itkImage, image2, false);
+    io::itk::move_from_itk<image_t>(itk_image, image2, false);
 
-    io::itk::ut::helper::roundSpacing(image);
-    io::itk::ut::helper::roundSpacing(image2);
+    io::itk::ut::helper::round_spacing(image);
+    io::itk::ut::helper::round_spacing(image2);
 
     image2->setWindowCenter(image->getWindowCenter());
     image2->setWindowWidth(image->getWindowWidth());
 
     CPPUNIT_ASSERT(*image == *image2);
 
-    data::image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
     image3->setWindowCenter(image->getWindowCenter());
     image3->setWindowWidth(image->getWindowWidth());
 
@@ -118,23 +118,23 @@ void ImageConversionTest::testConversion2D()
 
     utest_data::generator::image::generateImage(image, size, spacing, origin, type, data::image::GRAY_SCALE, 0);
 
-    using ImageType = ::itk::Image<std::int16_t, 2>;
+    using image_t = ::itk::Image<std::int16_t, 2>;
 
-    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
+    image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
 
-    data::image::sptr image2    = std::make_shared<data::image>();
-    bool image2ManagesHisBuffer = false;
-    io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
+    data::image::sptr image2       = std::make_shared<data::image>();
+    bool image2_manages_his_buffer = false;
+    io::itk::move_from_itk<image_t>(itk_image, image2, image2_manages_his_buffer);
 
-    io::itk::ut::helper::roundSpacing(image);
-    io::itk::ut::helper::roundSpacing(image2);
+    io::itk::ut::helper::round_spacing(image);
+    io::itk::ut::helper::round_spacing(image2);
 
     image2->setWindowCenter(image->getWindowCenter());
     image2->setWindowWidth(image->getWindowWidth());
 
     CPPUNIT_ASSERT(*image == *image2);
 
-    data::image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
     image3->setWindowCenter(image->getWindowCenter());
     image3->setWindowWidth(image->getWindowWidth());
 

@@ -40,14 +40,14 @@ public:
 
     /// Creates the widget.
     VIZ_SCENE3D_API clipping_box_interactor(
-        SPTR(Layer)_layer,
-        bool _layerOrderDependant,
+        SPTR(layer)_layer,
+        bool _layer_order_dependant,
         const std::string& _id,
-        Ogre::SceneNode* _parentSceneNode,
-        const Ogre::Matrix4& _clippingMatrix,
-        const widget::clipping_box::ClippingUpdateCallbackType& _clippingUpdateCb,
-        const std::string& _boxMtlName,
-        const std::string& _handleMtlName
+        Ogre::SceneNode* _parent_scene_node,
+        const Ogre::Matrix4& _clipping_matrix,
+        const widget::clipping_box::clipping_update_callback_t& _clipping_update_cb,
+        const std::string& _box_mtl_name,
+        const std::string& _handle_mtl_name
     ) noexcept;
 
     /// Destroys the widget.
@@ -78,7 +78,7 @@ public:
     /// @param _scalingFactor distance of the fingers
     /// @param _centerX the width coordinate of the center of the pinch
     /// @param _centerY the height coordinate of the center of the pinch
-    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
 
     /// Ends all interactions with the widget.
     /// @param _x current width coordinate.
@@ -106,7 +106,7 @@ public:
     [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
 
     /// Sets the current clipping box positions from the input transform.
-    VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clippingTrf);
+    VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clipping_trf);
 
 private:
 
@@ -120,7 +120,7 @@ private:
     widget::clipping_box m_widget;
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
-    Ogre::MovableObject* pickObject(int x, int y);
+    Ogre::MovableObject* pickObject(int _x, int _y);
 };
 
 } // namespace sight::viz::scene3d::interactor

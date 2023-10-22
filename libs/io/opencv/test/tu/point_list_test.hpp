@@ -35,7 +35,7 @@ class point_list_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(point_list_test);
-    CPPUNIT_TEST(copyFromCv);
+    CPPUNIT_TEST(copy_from_cv);
     CPPUNIT_TEST(copyToCv);
     CPPUNIT_TEST_SUITE_END();
 
@@ -44,7 +44,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void copyFromCv();
+    static void copy_from_cv();
     static void copyToCv();
 };
 

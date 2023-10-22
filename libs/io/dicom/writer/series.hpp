@@ -61,7 +61,7 @@ public:
         COMPREHENSIVE_3D_SR = 3  /*! Export Fiducials using Comprehensive3DSRIOD */
     } FiducialsExportMode;
 
-    typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> DicomInstanceMapType;
+    typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> dicom_instance_map_t;
 
     /// Destructor
     IO_DICOM_API ~series() override = default;
@@ -88,9 +88,9 @@ public:
     }
 
     /// Set Fiducials Export Mode);
-    void setFiducialsExportMode(const FiducialsExportMode& fiducialsExportMode)
+    void setFiducialsExportMode(const FiducialsExportMode& _fiducials_export_mode)
     {
-        m_fiducialsExportMode = fiducialsExportMode;
+        m_fiducialsExportMode = _fiducials_export_mode;
     }
 
 private:
@@ -99,7 +99,7 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    static bool hasDocumentSR(const data::image_series::csptr& series);
+    static bool hasDocumentSR(const data::image_series::csptr& _series);
 
     /**
      * @brief Returns the image instance used to create the reconstruction
@@ -109,7 +109,7 @@ private:
     SPTR(io::dicom::container::DicomInstance) getImageInstance();
 
     /// Dicom Instance map used to keep information between series writing calls
-    DicomInstanceMapType m_dicomInstanceMap;
+    dicom_instance_map_t m_dicomInstanceMap;
 
     /// Fiducials Export Mode
     FiducialsExportMode m_fiducialsExportMode {SPATIAL_FIDUCIALS};

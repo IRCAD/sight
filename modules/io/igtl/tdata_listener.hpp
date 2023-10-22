@@ -89,10 +89,10 @@ protected:
 
 private:
 
-    typedef std::map<std::string, std::uint64_t> MatrixNameIndexType;
+    typedef std::map<std::string, std::uint64_t> matrix_name_index_t;
 
     ///Push received matrices in timeline
-    void manageTimeline(const SPTR(data::composite)& obj, double timestamp = 0);
+    void manageTimeline(const SPTR(data::composite)& _obj, double _timestamp = 0);
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
@@ -115,7 +115,7 @@ private:
     /// device names key
     std::vector<std::string> m_deviceNamesConfig;
 
-    MatrixNameIndexType m_matrixNameIndex;
+    matrix_name_index_t m_matrixNameIndex;
 
     data::ptr<data::matrix_tl, sight::data::Access::inout> m_timeline {this, "timeline"};
 };

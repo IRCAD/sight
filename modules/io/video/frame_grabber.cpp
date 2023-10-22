@@ -31,7 +31,7 @@
 #include <data/frame_tl.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -128,8 +128,8 @@ void frame_grabber::startCamera()
         // For compatibility with old calibration with absolute path
         if(!file.is_absolute())
         {
-            const std::filesystem::path videoDir(ui::Preferences().get("VIDEO_DIR_PREF", std::string()));
-            file = videoDir / file;
+            const std::filesystem::path video_dir(ui::preferences().get("VIDEO_DIR_PREF", std::string()));
+            file = video_dir / file;
         }
 
         file = file.lexically_normal();
@@ -204,16 +204,16 @@ void frame_grabber::stopCamera()
     if(m_isInitialized)
     {
         // Clear the timeline: send a black frame
-        const auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-        sigPosition->async_emit(static_cast<std::int64_t>(-1));
+        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+        sig_position->async_emit(static_cast<std::int64_t>(-1));
 
-        const auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
-        sigDuration->async_emit(static_cast<std::int64_t>(-1));
+        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
+        sig_duration->async_emit(static_cast<std::int64_t>(-1));
 
-        const auto frameTL = m_frame.lock();
-        sight::module::io::video::frame_grabber::clearTimeline(*frameTL);
+        const auto frame_tl = m_frame.lock();
+        sight::module::io::video::frame_grabber::clearTimeline(*frame_tl);
 
-        const auto sig = this->signal<grabber::CameraStoppedSignalType>(grabber::CAMERA_STOPPED_SIG);
+        const auto sig = this->signal<grabber::camera_stopped_signal_t>(grabber::CAMERA_STOPPED_SIG);
         sig->async_emit();
 
         this->setStartState(false);
@@ -224,11 +224,11 @@ void frame_grabber::stopCamera()
 
 // -----------------------------------------------------------------------------
 
-void frame_grabber::readVideo(const std::filesystem::path& file)
+void frame_grabber::readVideo(const std::filesystem::path& _file)
 {
     core::mt::scoped_lock lock(m_mutex);
 
-    m_videoCapture.open(file.string());
+    m_videoCapture.open(_file.string());
 
     if(m_videoCapture.isOpened())
     {
@@ -247,11 +247,11 @@ void frame_grabber::readVideo(const std::filesystem::path& file)
             return;
         }
 
-        const auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
-        sigDuration->async_emit(static_cast<std::int64_t>((m_videoFramesNb / fps) * 1000));
+        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
+        sig_duration->async_emit(static_cast<std::int64_t>((m_videoFramesNb / fps) * 1000));
 
-        const auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-        sigPosition->async_emit(0);
+        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+        sig_position->async_emit(0);
 
         core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / fps);
 
@@ -260,14 +260,14 @@ void frame_grabber::readVideo(const std::filesystem::path& file)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal<grabber::CameraStartedSignalType>(grabber::CAMERA_STARTED_SIG);
+        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
         sig->async_emit();
     }
     else
     {
         sight::ui::dialog::message::show(
             "Grabber",
-            "This file cannot be opened: " + file.string() + "."
+            "This file cannot be opened: " + _file.string() + "."
         );
 
         this->setStartState(false);
@@ -339,7 +339,7 @@ void frame_grabber::readDevice(const data::camera& _camera)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal<grabber::CameraStartedSignalType>(grabber::CAMERA_STARTED_SIG);
+        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
         sig->async_emit();
     }
     else
@@ -395,19 +395,19 @@ void frame_grabber::readStream(const data::camera& _camera)
 
 // -----------------------------------------------------------------------------
 
-void frame_grabber::readImages(const std::filesystem::path& folder, const std::string& extension)
+void frame_grabber::readImages(const std::filesystem::path& _folder, const std::string& _extension)
 {
     core::mt::scoped_lock lock(m_mutex);
 
-    std::filesystem::directory_iterator currentEntry(folder);
-    std::filesystem::directory_iterator endEntry;
-    for( ; currentEntry != endEntry ; ++currentEntry)
+    std::filesystem::directory_iterator current_entry(_folder);
+    std::filesystem::directory_iterator end_entry;
+    for( ; current_entry != end_entry ; ++current_entry)
     {
-        std::filesystem::path entryPath = *currentEntry;
+        std::filesystem::path entry_path = *current_entry;
 
-        if(entryPath.extension() == extension)
+        if(entry_path.extension() == _extension)
         {
-            m_imageToRead.push_back(entryPath);
+            m_imageToRead.push_back(entry_path);
         }
     }
 
@@ -417,28 +417,28 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
     if(!m_imageToRead.empty())
     {
         // Find the timestamps of all the images
-        double stubTimestamp = 0.;
-        for(const std::filesystem::path& imagePath : m_imageToRead)
+        double stub_timestamp = 0.;
+        for(const std::filesystem::path& image_path : m_imageToRead)
         {
-            const std::string imageName = imagePath.filename().string();
+            const std::string image_name = image_path.filename().string();
             static const std::regex s_TIMESTAMP("[^0-9]*([0-9]{5,})[^0-9]*");
             std::smatch match;
-            if(std::regex_match(imageName, match, s_TIMESTAMP))
+            if(std::regex_match(image_name, match, s_TIMESTAMP))
             {
-                const std::string timestampStr = match[1].str();
-                m_imageTimestamps.push_back(std::stod(timestampStr));
+                const std::string timestamp_str = match[1].str();
+                m_imageTimestamps.push_back(std::stod(timestamp_str));
             }
             else
             {
                 SIGHT_WARN(
-                    "Could not find a timestamp in file name: " + imageName
+                    "Could not find a timestamp in file name: " + image_name
                     + ". Generating a timestamp duration of: " + std::to_string(m_defaultDuration)
                     + "ms."
                 );
 
-                m_imageTimestamps.push_back(stubTimestamp);
+                m_imageTimestamps.push_back(stub_timestamp);
 
-                stubTimestamp += m_defaultDuration;
+                stub_timestamp += m_defaultDuration;
             }
         }
 
@@ -454,12 +454,12 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
             const auto w = static_cast<std::size_t>(width);
             const auto h = static_cast<std::size_t>(height);
 
-            auto frameTL = m_frame.lock();
+            auto frame_tl = m_frame.lock();
 
             switch(type)
             {
                 case CV_8UC1:
-                    frameTL->initPoolSize(
+                    frame_tl->initPoolSize(
                         w,
                         h,
                         core::type::UINT8,
@@ -468,7 +468,7 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
                     break;
 
                 case CV_8UC3:
-                    frameTL->initPoolSize(
+                    frame_tl->initPoolSize(
                         w,
                         h,
                         core::type::UINT8,
@@ -477,7 +477,7 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
                     break;
 
                 case CV_8UC4:
-                    frameTL->initPoolSize(
+                    frame_tl->initPoolSize(
                         w,
                         h,
                         core::type::UINT8,
@@ -486,7 +486,7 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
                     break;
 
                 case CV_16UC1:
-                    frameTL->initPoolSize(
+                    frame_tl->initPoolSize(
                         w,
                         h,
                         core::type::UINT16,
@@ -506,23 +506,23 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
         m_isInitialized = true;
         this->setStartState(true);
 
-        const auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
+        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
 
-        std::int64_t videoDuration = 0;
+        std::int64_t video_duration = 0;
         if(!m_useTimelapse)
         {
-            videoDuration = static_cast<std::int64_t>(m_imageToRead.size() * m_fps);
+            video_duration = static_cast<std::int64_t>(m_imageToRead.size() * m_fps);
         }
         else
         {
-            videoDuration = static_cast<std::int64_t>(m_imageTimestamps.back())
-                            - static_cast<std::int64_t>(m_imageTimestamps.front());
+            video_duration = static_cast<std::int64_t>(m_imageTimestamps.back())
+                             - static_cast<std::int64_t>(m_imageTimestamps.front());
         }
 
-        sigDuration->async_emit(videoDuration);
+        sig_duration->async_emit(video_duration);
 
-        const auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-        sigPosition->async_emit(0);
+        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+        sig_position->async_emit(0);
 
         if(m_oneShot)
         {
@@ -559,7 +559,7 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
             m_timer->start();
         }
 
-        auto sig = this->signal<grabber::CameraStartedSignalType>(grabber::CAMERA_STARTED_SIG);
+        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
         sig->async_emit();
     }
 }
@@ -575,11 +575,11 @@ void frame_grabber::grabVideo()
         const double timestamp = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>
                                                          (std::chrono::system_clock::now().time_since_epoch()).count());
 
-        const bool isGrabbed = m_videoCapture.grab();
+        const bool is_grabbed = m_videoCapture.grab();
 
-        if(isGrabbed)
+        if(is_grabbed)
         {
-            auto frameTL = m_frame.lock();
+            auto frame_tl = m_frame.lock();
 
             cv::Mat image;
             m_videoCapture.retrieve(image);
@@ -606,7 +606,7 @@ void frame_grabber::grabVideo()
                 switch(image.type())
                 {
                     case CV_8UC1:
-                        frameTL->initPoolSize(
+                        frame_tl->initPoolSize(
                             width,
                             height,
                             core::type::UINT8,
@@ -615,7 +615,7 @@ void frame_grabber::grabVideo()
                         break;
 
                     case CV_8UC3:
-                        frameTL->initPoolSize(
+                        frame_tl->initPoolSize(
                             width,
                             height,
                             core::type::UINT8,
@@ -624,7 +624,7 @@ void frame_grabber::grabVideo()
                         break;
 
                     case CV_8UC4:
-                        frameTL->initPoolSize(
+                        frame_tl->initPoolSize(
                             width,
                             height,
                             core::type::UINT8,
@@ -633,7 +633,7 @@ void frame_grabber::grabVideo()
                         break;
 
                     case CV_16UC1:
-                        frameTL->initPoolSize(
+                        frame_tl->initPoolSize(
                             width,
                             height,
                             core::type::UINT16,
@@ -653,45 +653,45 @@ void frame_grabber::grabVideo()
             }
 
             // Get time slider position.
-            const auto ms          = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
-            const auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-            sigPosition->async_emit(static_cast<std::int64_t>(ms));
+            const auto ms           = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_MSEC));
+            const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+            sig_position->async_emit(static_cast<std::int64_t>(ms));
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
+            SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->createBuffer(timestamp);
+            std::uint8_t* frame_buff_out = buffer_out->addElement(0);
 
             // Create an OpenCV mat that aliases the buffer created from the output timeline.
-            cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, cv::Mat::AUTO_STEP);
+            cv::Mat img_out(image.size(), image.type(), (void*) frame_buff_out, cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
                 // Convert the read image from BGR to RGB.
-                cv::cvtColor(image, imgOut, cv::COLOR_BGR2RGB);
+                cv::cvtColor(image, img_out, cv::COLOR_BGR2RGB);
             }
             else if(image.type() == CV_8UC4)
             {
                 // Convert the read image from BGRA to RGBA.
-                cv::cvtColor(image, imgOut, cv::COLOR_BGRA2RGBA);
+                cv::cvtColor(image, img_out, cv::COLOR_BGRA2RGBA);
             }
             else
             {
-                image.copyTo(imgOut);
+                image.copyTo(img_out);
             }
 
-            frameTL->pushObject(bufferOut);
+            frame_tl->pushObject(buffer_out);
 
             const auto sig =
-                frameTL->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+                frame_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
             sig->async_emit(timestamp);
         }
 
         if(m_loopVideo)
         {
             // Loop the video.
-            const auto currentF = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
+            const auto current_f = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_POS_FRAMES));
 
-            if(currentF == m_videoFramesNb)
+            if(current_f == m_videoFramesNb)
             {
                 m_videoCapture.set(cv::CAP_PROP_POS_MSEC, 0.);
             }
@@ -711,11 +711,11 @@ void frame_grabber::grabImage()
     // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
     if(!m_isPaused && m_imageCount < m_imageToRead.size())
     {
-        const auto frameTL = m_frame.lock();
+        const auto frame_tl = m_frame.lock();
 
-        const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
+        const std::filesystem::path image_path = m_imageToRead[m_imageCount];
 
-        const cv::Mat image               = cv::imread(imagePath.string(), cv::IMREAD_UNCHANGED);
+        const cv::Mat image               = cv::imread(image_path.string(), cv::IMREAD_UNCHANGED);
         core::hires_clock::type timestamp = NAN;
 
         //create a new timestamp
@@ -736,53 +736,53 @@ void frame_grabber::grabImage()
         const std::size_t width  = static_cast<std::size_t>(image.size().width);
         const std::size_t height = static_cast<std::size_t>(image.size().height);
 
-        if(width == frameTL->getWidth() && height == frameTL->getHeight())
+        if(width == frame_tl->getWidth() && height == frame_tl->getHeight())
         {
-            const auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-            sigPosition->async_emit(static_cast<std::int64_t>(m_imageCount) * 30);
+            const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+            sig_position->async_emit(static_cast<std::int64_t>(m_imageCount) * 30);
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
+            SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->createBuffer(timestamp);
+            std::uint8_t* frame_buff_out = buffer_out->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
-            cv::Mat imgOut(image.size(), image.type(), (void*) frameBuffOut, cv::Mat::AUTO_STEP);
+            cv::Mat img_out(image.size(), image.type(), (void*) frame_buff_out, cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
                 // convert the readded image from BGR to RGB
-                cv::cvtColor(image, imgOut, cv::COLOR_BGR2RGB);
+                cv::cvtColor(image, img_out, cv::COLOR_BGR2RGB);
             }
             else if(image.type() == CV_8UC4)
             {
                 // convert the readded image from BGRA to RGBA
-                cv::cvtColor(image, imgOut, cv::COLOR_BGRA2RGBA);
+                cv::cvtColor(image, img_out, cv::COLOR_BGRA2RGBA);
             }
             else
             {
-                image.copyTo(imgOut);
+                image.copyTo(img_out);
             }
 
-            frameTL->pushObject(bufferOut);
+            frame_tl->pushObject(buffer_out);
 
             const auto sig =
-                frameTL->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+                frame_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
             sig->async_emit(timestamp);
 
-            const double t1          = core::hires_clock::get_time_in_milli_sec();
-            const double elapsedTime = t1 - t0;
+            const double t1           = core::hires_clock::get_time_in_milli_sec();
+            const double elapsed_time = t1 - t0;
 
             if(m_useTimelapse)
             {
-                double nextDuration = 0.;
+                double next_duration = 0.;
 
-                const std::size_t currentImage = m_imageCount;
-                const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
+                const std::size_t current_image = m_imageCount;
+                const double current_time       = m_imageTimestamps[current_image] + elapsed_time;
 
                 // If the next image delay is already passed, drop the image and check the next one.
-                while(nextDuration < elapsedTime && m_imageCount + m_step < m_imageTimestamps.size())
+                while(next_duration < elapsed_time && m_imageCount + m_step < m_imageTimestamps.size())
                 {
-                    nextDuration  = m_imageTimestamps[m_imageCount + m_step] - currentTime;
+                    next_duration = m_imageTimestamps[m_imageCount + m_step] - current_time;
                     m_imageCount += m_step;
                 }
 
@@ -792,7 +792,7 @@ void frame_grabber::grabImage()
                     m_timer->stop();
                     if(m_loopVideo)
                     {
-                        frameTL->clearTimeline();
+                        frame_tl->clearTimeline();
                         m_imageCount = 0;
                         core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / m_fps);
                         m_timer->set_duration(duration);
@@ -802,7 +802,7 @@ void frame_grabber::grabImage()
                 else
                 {
                     core::thread::timer::time_duration_t duration =
-                        std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
+                        std::chrono::milliseconds(static_cast<std::int64_t>(next_duration));
                     m_timer->stop();
                     m_timer->set_duration(duration);
                     m_timer->start();
@@ -820,42 +820,42 @@ void frame_grabber::grabImage()
     }
     else if(!m_isPaused && m_loopVideo)
     {
-        const auto frameTL = m_frame.lock();
-        frameTL->clearTimeline();
+        const auto frame_tl = m_frame.lock();
+        frame_tl->clearTimeline();
         m_imageCount = 0;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void frame_grabber::updateZoom(cv::Mat image)
+void frame_grabber::updateZoom(cv::Mat _image)
 {
     if(m_zoomCenter.has_value())
     {
         // Compute zoom parameters
-        const int width             = image.size().width;
-        const int height            = image.size().height;
-        const int croppedAreaWidth  = width / m_zoomFactor;
-        const int croppedAreaHeight = height / m_zoomFactor;
+        const int width               = _image.size().width;
+        const int height              = _image.size().height;
+        const int cropped_area_width  = width / m_zoomFactor;
+        const int cropped_area_height = height / m_zoomFactor;
 
         // Compute correct position for zoom center
-        const int centerXPix = (m_zoomCenter.value()[0] + width / 2);
-        const int centerYPix = -(m_zoomCenter.value()[1]) + height / 2;
+        const int center_x_pix = (m_zoomCenter.value()[0] + width / 2);
+        const int center_y_pix = -(m_zoomCenter.value()[1]) + height / 2;
 
         // Compute starting area of zoom rectangle in pixels
-        const int x1 = centerXPix - croppedAreaWidth / 2;
-        const int y1 = centerYPix - croppedAreaHeight / 2;
+        const int x1 = center_x_pix - cropped_area_width / 2;
+        const int y1 = center_y_pix - cropped_area_height / 2;
 
         // Compute a padded zoomed area image
-        const auto imageRect    = cv::Rect({}, image.size());
-        const auto roi          = cv::Rect(x1, y1, croppedAreaWidth, croppedAreaHeight);
-        const auto intersection = imageRect & roi;
-        const auto interRoi     = intersection - roi.tl();
-        cv::Mat crop            = cv::Mat::zeros(roi.size(), image.type());
-        image(intersection).copyTo(crop(interRoi));
+        const auto image_rect   = cv::Rect({}, _image.size());
+        const auto roi          = cv::Rect(x1, y1, cropped_area_width, cropped_area_height);
+        const auto intersection = image_rect & roi;
+        const auto inter_roi    = intersection - roi.tl();
+        cv::Mat crop            = cv::Mat::zeros(roi.size(), _image.type());
+        _image(intersection).copyTo(crop(inter_roi));
 
         // Rescale the zoomed image
-        cv::resize(crop, image, image.size());
+        cv::resize(crop, _image, _image.size());
     }
 }
 
@@ -868,20 +868,20 @@ void frame_grabber::toggleLoopMode()
 
 // -----------------------------------------------------------------------------
 
-void frame_grabber::setPosition(int64_t position)
+void frame_grabber::setPosition(int64_t _position)
 {
     core::mt::scoped_lock lock(m_mutex);
 
     if(m_videoCapture.isOpened())
     {
-        m_videoCapture.set(cv::CAP_PROP_POS_MSEC, static_cast<double>(position));
+        m_videoCapture.set(cv::CAP_PROP_POS_MSEC, static_cast<double>(_position));
     }
     else if(!m_imageToRead.empty())
     {
-        const auto newPos = static_cast<std::size_t>(position / 30);
-        if(newPos < m_imageToRead.size())
+        const auto new_pos = static_cast<std::size_t>(_position / 30);
+        if(new_pos < m_imageToRead.size())
         {
-            m_imageCount = newPos;
+            m_imageCount = new_pos;
         }
     }
 }
@@ -895,12 +895,12 @@ void frame_grabber::nextImage()
         // Compute difference between a possible step change in setStep() slot and the current step value
         const std::int64_t shift = static_cast<std::int64_t>(m_stepChanged)
                                    - static_cast<std::int64_t>(m_step);
-        const std::int64_t shiftedImageCount = static_cast<std::int64_t>(m_imageCount) + shift;
+        const std::int64_t shifted_image_count = static_cast<std::int64_t>(m_imageCount) + shift;
 
-        if(shiftedImageCount < static_cast<std::int64_t>(m_imageToRead.size()))
+        if(shifted_image_count < static_cast<std::int64_t>(m_imageToRead.size()))
         {
             // Update image position index
-            m_imageCount = static_cast<std::size_t>(shiftedImageCount);
+            m_imageCount = static_cast<std::size_t>(shifted_image_count);
             m_step       = m_stepChanged;
 
             m_timer->stop();
@@ -927,11 +927,11 @@ void frame_grabber::previousImage()
             // Compute difference between a possible step change in setStep() slot and the current step value
             const std::int64_t shift = static_cast<std::int64_t>(m_stepChanged)
                                        - static_cast<std::int64_t>(m_step);
-            const std::int64_t shiftedimageCount = static_cast<std::int64_t>(m_imageCount) - shift;
+            const std::int64_t shiftedimage_count = static_cast<std::int64_t>(m_imageCount) - shift;
 
             // Update image position index
             // m_imageCount is pointing to next image, so -1 = present image
-            m_imageCount = static_cast<std::size_t>(shiftedimageCount) - (2 * m_step);
+            m_imageCount = static_cast<std::size_t>(shiftedimage_count) - (2 * m_step);
             m_step       = m_stepChanged;
 
             m_timer->stop();
@@ -949,33 +949,33 @@ void frame_grabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void frame_grabber::setParameter(ui::parameter_t value, std::string key)
+void frame_grabber::setParameter(ui::parameter_t _value, std::string _key)
 {
-    if(key == "step")
+    if(_key == "step")
     {
-        const int step = std::get<int>(value);
+        const int step = std::get<int>(_value);
         SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<std::uint64_t>(step);
     }
     else
     {
-        SIGHT_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
+        SIGHT_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void frame_grabber::setStep(int step, std::string key)
+void frame_grabber::setStep(int _step, std::string _key)
 {
-    this->setParameter(step, key);
+    this->setParameter(_step, _key);
 }
 
 //------------------------------------------------------------------------------
 
-void frame_grabber::addROICenter(sight::data::point::sptr p)
+void frame_grabber::addROICenter(sight::data::point::sptr _p)
 {
-    const auto& coord = p->getCoord();
+    const auto& coord = _p->getCoord();
 
     m_zoomCenter = {{static_cast<int>(std::nearbyint(coord[0])), static_cast<int>(std::nearbyint(coord[1]))}};
 }

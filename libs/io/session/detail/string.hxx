@@ -36,38 +36,38 @@ constexpr static auto s_Value {"Value"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto string = helper::safe_cast<data::string>(object);
+    const auto string = helper::safe_cast<data::string>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::string>(tree, 1);
+    helper::write_version<data::string>(_tree, 1);
 
-    helper::write_string(tree, s_Value, string->getValue());
+    helper::write_string(_tree, s_Value, string->getValue());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::string::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto string = helper::cast_or_create<data::string>(object);
+    auto string = helper::cast_or_create<data::string>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::string>(tree, 0, 1);
+    helper::read_version<data::string>(_tree, 0, 1);
 
     // Assign the value
-    string->setValue(helper::read_string(tree, s_Value));
+    string->setValue(helper::read_string(_tree, s_Value));
 
     return string;
 }

@@ -30,7 +30,7 @@
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class NonLinearSliderValuesChange : public sight::ui::testCore::test
+class NonLinearSliderValuesChange : public sight::ui::test_core::test
 {
 CPPUNIT_TEST_SUITE(NonLinearSliderValuesChange);
 CPPUNIT_TEST(test);

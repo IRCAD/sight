@@ -72,23 +72,23 @@ void DicomDirTest::readDicomDir()
 
     const std::filesystem::path path = utest_data::Data::dir()
                                        / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
-    const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+    const std::string path_str = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    std::vector<data::dicom_series::sptr> seriesContainer;
+    std::vector<data::dicom_series::sptr> series_container;
 
     core::log::logger::sptr logger = std::make_shared<core::log::logger>();
 
     // Read DICOMDIR file
-    io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesContainer, logger);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesContainer.size());
+    io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", series_container, logger);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_container.size());
     CPPUNIT_ASSERT(logger->empty());
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(84), seriesContainer.front()->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(84), series_container.front()->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

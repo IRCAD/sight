@@ -26,7 +26,7 @@
 
 #include <core/tools/failed.hpp>
 
-#include <ui/__/view/IView.hpp>
+#include <ui/__/view.hpp>
 
 namespace sight::module::ui
 {
@@ -35,11 +35,11 @@ namespace sight::module::ui
  * @brief Defines the generic layout for application.
  * @see sight::ui::container for the service configuration
  */
-class MODULE_UI_CLASS_API view : public sight::ui::view::IView
+class MODULE_UI_CLASS_API view : public sight::ui::view
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(view, sight::ui::view::IView);
+    SIGHT_DECLARE_SERVICE(view, sight::ui::view);
 
     /// Constructor. Do nothing.
     MODULE_UI_API view() noexcept = default;

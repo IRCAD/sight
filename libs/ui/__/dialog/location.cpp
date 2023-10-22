@@ -36,8 +36,8 @@ location::location()
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(location_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::location_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(location_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::location_base>(gui_obj);
         })
     ).wait();
 }
@@ -62,30 +62,30 @@ core::location::base::sptr location::show()
 
 //-----------------------------------------------------------------------------
 
-void location::setType(location::Types type)
+void location::setType(location::Types _type)
 {
-    m_implementation->setType(type);
+    m_implementation->setType(_type);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::addFilter(const std::string& filterName, const std::string& wildcardList)
+void location::addFilter(const std::string& _filter_name, const std::string& _wildcard_list)
 {
-    m_implementation->addFilter(filterName, wildcardList);
+    m_implementation->addFilter(_filter_name, _wildcard_list);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::setOption(location::Options option)
+void location::setOption(location::Options _option)
 {
-    m_implementation->setOption(option);
+    m_implementation->setOption(_option);
 }
 
 //-----------------------------------------------------------------------------
 
-void location::setTitle(const std::string& title)
+void location::setTitle(const std::string& _title)
 {
-    m_implementation->setTitle(title);
+    m_implementation->setTitle(_title);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,9 +97,9 @@ const std::string& location::getTitle()
 
 //-----------------------------------------------------------------------------
 
-void location::setDefaultLocation(core::location::base::sptr loc)
+void location::setDefaultLocation(core::location::base::sptr _loc)
 {
-    m_implementation->setDefaultLocation(loc);
+    m_implementation->setDefaultLocation(_loc);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,9 +111,9 @@ core::location::base::sptr location::getDefaultLocation()
 
 //-----------------------------------------------------------------------------
 
-void location::saveDefaultLocation(core::location::base::sptr loc)
+void location::saveDefaultLocation(core::location::base::sptr _loc)
 {
-    m_implementation->saveDefaultLocation(loc);
+    m_implementation->saveDefaultLocation(_loc);
 }
 
 //-----------------------------------------------------------------------------

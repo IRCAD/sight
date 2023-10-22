@@ -29,8 +29,8 @@
 namespace sight::core::com::exception
 {
 
-bad_run::bad_run(const std::string& err) :
-    core::exception(err)
+bad_run::bad_run(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

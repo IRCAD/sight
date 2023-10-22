@@ -44,38 +44,43 @@ void gz_buffer_image_writer::write()
     data::image::csptr image = getConcreteObject();
 
     /// test if can open archive
-    gzFile rawFile = gzopen(get_file().string().c_str(), "wb1");
-    SIGHT_ASSERT("rawFile not instanced", rawFile);
-    if(rawFile == nullptr)
+    gzFile raw_file = gzopen(get_file().string().c_str(), "wb1");
+    SIGHT_ASSERT("rawFile not instanced", raw_file);
+    if(raw_file == nullptr)
     {
         std::string str = "gz_buffer_image_writer::write unable to open ";
         str += get_file().string();
-        gzclose(rawFile);
+        gzclose(raw_file);
         throw std::ios_base::failure(str);
     }
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
     // file is OK : process now
-    const std::size_t imageSizeInBytes = image->getSizeInBytes();
+    const std::size_t image_size_in_bytes = image->getSizeInBytes();
 
-    const char* ptr          = static_cast<const char*>(image->buffer());
-    std::size_t writtenBytes = 0;
+    const char* ptr           = static_cast<const char*>(image->buffer());
+    std::size_t written_bytes = 0;
 
     int uncompressed_bytes_written = 0;
 
-    while(writtenBytes < imageSizeInBytes
+    while(written_bytes < image_size_in_bytes
           && (uncompressed_bytes_written =
-                  gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
+                  gzwrite(
+                      raw_file,
+                      ptr + written_bytes,
+                      static_cast<unsigned int>(image_size_in_bytes - written_bytes)
+                  )
+          ) > 0)
     {
-        writtenBytes += static_cast<std::size_t>(uncompressed_bytes_written);
+        written_bytes += static_cast<std::size_t>(uncompressed_bytes_written);
     }
 
-    gzclose(rawFile);
+    gzclose(raw_file);
 
-    assert(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes);
+    assert(uncompressed_bytes_written != 0 && written_bytes == image_size_in_bytes);
 
-    if(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes)
+    if(uncompressed_bytes_written != 0 && written_bytes == image_size_in_bytes)
     {
         std::string str = "gz_buffer_image_writer::write unable to write ";
         str += get_file().string();

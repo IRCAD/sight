@@ -53,11 +53,11 @@ namespace sight::geometry::data
    t1 = [-d1.(p1-p2) + d2.(p1-p2) * (d1.d2)]/delta
    @endverbatim
  */
-GEOMETRY_DATA_API bool getClosestPoints(
+GEOMETRY_DATA_API bool get_closest_points(
     const fwLine& _ray1,
     const fwLine& _ray2,
-    fwVec3d& _pointOnThis,
-    fwVec3d& _pointOnfwLine
+    fwVec3d& _point_on_this,
+    fwVec3d& _point_onfw_line
 );
 
 /**
@@ -66,7 +66,7 @@ GEOMETRY_DATA_API bool getClosestPoints(
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point);
+GEOMETRY_DATA_API fwVec3d get_closest_point(const fwLine& _ray, const fwVec3d& _point);
 
 /**
  * @brief Compute the projection of a point in a given direction and test if this intersection is inside a given radius.

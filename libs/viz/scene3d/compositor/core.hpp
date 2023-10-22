@@ -50,7 +50,7 @@ class VIZ_SCENE3D_CLASS_API core //TODO : Manage occlusion query
 {
 public:
 
-    enum class StereoModeType : std::uint8_t
+    enum class stereo_mode_t : std::uint8_t
     {
         NONE,
         AUTOSTEREO_5,
@@ -61,7 +61,7 @@ public:
     typedef std::shared_ptr<core> sptr;
 
     /// Default Compositor, one per "default" layer
-    VIZ_SCENE3D_API core(Ogre::Viewport* viewport);
+    VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
 
     /// Destructor of default compositor
     VIZ_SCENE3D_API ~core();
@@ -74,17 +74,17 @@ public:
 
     /// Set the OIT desired
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API bool setTransparencyTechnique(transparencyTechnique technique);
+    VIZ_SCENE3D_API bool setTransparencyTechnique(transparencyTechnique _technique);
 
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API void setTransparencyDepth(int depth);
+    VIZ_SCENE3D_API void setTransparencyDepth(int _depth);
 
     /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
-    VIZ_SCENE3D_API void setStereoMode(StereoModeType stereoMode);
+    VIZ_SCENE3D_API void setStereoMode(stereo_mode_t _stereo_mode);
 
     /// Return the enabled stereo mode.
-    [[nodiscard]] VIZ_SCENE3D_API StereoModeType getStereoMode() const;
+    [[nodiscard]] VIZ_SCENE3D_API stereo_mode_t getStereoMode() const;
 
     /// Re/check OIT compositor
     VIZ_SCENE3D_API void update();
@@ -96,14 +96,14 @@ private:
     //                                      const Ogre::LightList* pLightList, bool suppressRenderStateChanges);
 
     /// Set number of ping pong peels for Depth Peeling compositor
-    VIZ_SCENE3D_API void setTransparencyDepthOfDepthPeeling(int depth);
+    VIZ_SCENE3D_API void setTransparencyDepthOfDepthPeeling(int _depth);
 
     /// Set number of ping pong peels for Dual Depth Peeling compositor
-    VIZ_SCENE3D_API void setTransparencyDepthOfDualDepthPeeling(int depth);
+    VIZ_SCENE3D_API void setTransparencyDepthOfDualDepthPeeling(int _depth);
 
     /// Set number of Depth Peeling ping pong peels for Hybrid Transparency compositor
     /// - other peels computed with Weighted Blended OIT
-    VIZ_SCENE3D_API void setTransparencyDepthOfHybridTransparency(int depth);
+    VIZ_SCENE3D_API void setTransparencyDepthOfHybridTransparency(int _depth);
 
     /// Setup Default compositor (without OIT)
     VIZ_SCENE3D_API void setupDefaultTransparency();
@@ -129,7 +129,7 @@ private:
     /// Cel shading activated
     Ogre::String m_cellShadingName;
 
-    StereoModeType m_stereoMode {StereoModeType::NONE};
+    stereo_mode_t m_stereoMode {stereo_mode_t::NONE};
 
     //bool m_useOcclusionQuery;
 

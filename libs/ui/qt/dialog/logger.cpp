@@ -42,23 +42,23 @@ namespace sight::ui::qt::dialog
 
 //------------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& title)
+void logger::setTitle(const std::string& _title)
 {
-    m_title = title;
+    m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& message)
+void logger::setMessage(const std::string& _message)
 {
-    m_message = message;
+    m_message = _message;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& logger)
+void logger::setLogger(const core::log::logger::sptr& _logger)
 {
-    m_logger = logger;
+    m_logger = _logger;
 }
 
 //------------------------------------------------------------------------------
@@ -74,39 +74,39 @@ bool logger::show()
     m_dialog = new QDialog(parent);
     m_dialog->resize(500, 50);
     m_dialog->setWindowTitle(QString::fromStdString(m_title));
-    auto* mainLayout = new QVBoxLayout();
-    mainLayout->setAlignment(Qt::AlignTop);
-    m_dialog->setLayout(mainLayout);
+    auto* main_layout = new QVBoxLayout();
+    main_layout->setAlignment(Qt::AlignTop);
+    m_dialog->setLayout(main_layout);
 
     // Disable close button
     m_dialog->setWindowFlags(Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
 
     // Create icon and message widget
-    auto* messageLayout = new QHBoxLayout();
-    auto* messageWidget = new QWidget();
-    messageWidget->setSizePolicy(policy);
-    messageWidget->setLayout(messageLayout);
-    messageLayout->setAlignment(Qt::AlignTop);
+    auto* message_layout = new QHBoxLayout();
+    auto* message_widget = new QWidget();
+    message_widget->setSizePolicy(policy);
+    message_widget->setLayout(message_layout);
+    message_layout->setAlignment(Qt::AlignTop);
 
     // Create icon
-    auto* iconLabel = new QLabel();
+    auto* icon_label = new QLabel();
     if(m_logger->count(core::log::log::CRITICAL) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");
-        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
+        icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else if(m_logger->count(core::log::log::WARNING) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
-        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
+        icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/information.png");
-        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
+        icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
 
-    messageLayout->addWidget(iconLabel);
+    message_layout->addWidget(icon_label);
 
     // Create message
     std::stringstream ss;
@@ -115,26 +115,26 @@ bool logger::show()
     << m_logger->count(core::log::log::WARNING) << " warning and "
     << m_logger->count(core::log::log::INFORMATION) << " information messages.";
 
-    auto* messageLabel = new QLabel(ss.str().c_str());
-    messageLayout->addWidget(messageLabel);
+    auto* message_label = new QLabel(ss.str().c_str());
+    message_layout->addWidget(message_label);
 
     // Create button widget
-    auto* buttonLayout = new QHBoxLayout();
-    auto* buttonWidget = new QWidget();
-    buttonWidget->setSizePolicy(policy);
-    buttonWidget->setLayout(buttonLayout);
+    auto* button_layout = new QHBoxLayout();
+    auto* button_widget = new QWidget();
+    button_widget->setSizePolicy(policy);
+    button_widget->setLayout(button_layout);
 
     // Create OK button
-    auto* okButton = new QPushButton(tr("Ok"));
-    okButton->setObjectName(okButton->text());
-    okButton->setSizePolicy(policy);
-    buttonLayout->addWidget(okButton);
+    auto* ok_button = new QPushButton(tr("Ok"));
+    ok_button->setObjectName(ok_button->text());
+    ok_button->setSizePolicy(policy);
+    button_layout->addWidget(ok_button);
 
     // Create CANCEL button
-    auto* cancelButton = new QPushButton(tr("Cancel"));
-    cancelButton->setObjectName(cancelButton->text());
-    cancelButton->setSizePolicy(policy);
-    buttonLayout->addWidget(cancelButton);
+    auto* cancel_button = new QPushButton(tr("Cancel"));
+    cancel_button->setObjectName(cancel_button->text());
+    cancel_button->setSizePolicy(policy);
+    button_layout->addWidget(cancel_button);
 
     // Create a checkbox to display the logs
     auto* checkbox = new QCheckBox("Details");
@@ -143,10 +143,10 @@ bool logger::show()
         core::runtime::get_library_resource_file_path("sight::ui::qt/details-hidden.png").string();
     const auto detailsshown =
         core::runtime::get_library_resource_file_path("sight::ui::qt/details-shown.png").string();
-    std::string styleSheet;
-    styleSheet += "QCheckBox::indicator:unchecked { image: url(" + detailshidden + "); }";
-    styleSheet += "QCheckBox::indicator:checked { image: url(" + detailsshown + "); }";
-    checkbox->setStyleSheet(QString::fromStdString(styleSheet));
+    std::string style_sheet;
+    style_sheet += "QCheckBox::indicator:unchecked { image: url(" + detailshidden + "); }";
+    style_sheet += "QCheckBox::indicator:checked { image: url(" + detailsshown + "); }";
+    checkbox->setStyleSheet(QString::fromStdString(style_sheet));
 
     // Create log table
     m_logTableWidget = new QTableWidget(static_cast<int>(m_logger->count()), 2);
@@ -160,49 +160,49 @@ bool logger::show()
     int row = 0;
     for( ; it != m_logger->end() ; ++it, ++row)
     {
-        std::string levelString = "Unknown";
-        QIcon levelIcon;
+        std::string level_string = "Unknown";
+        QIcon level_icon;
         core::log::log::level_type level = it->get_level();
         if(level == core::log::log::INFORMATION)
         {
-            levelString = "Information";
+            level_string = "Information";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/information.png");
-            levelIcon = QIcon(QString::fromStdString(path.string()));
+            level_icon = QIcon(QString::fromStdString(path.string()));
         }
         else if(level == core::log::log::WARNING)
         {
-            levelString = "Warning";
+            level_string = "Warning";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
-            levelIcon = QIcon(QString::fromStdString(path.string()));
+            level_icon = QIcon(QString::fromStdString(path.string()));
         }
         else if(level == core::log::log::CRITICAL)
         {
-            levelString = "Critical";
+            level_string = "Critical";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");
-            levelIcon = QIcon(QString::fromStdString(path.string()));
+            level_icon = QIcon(QString::fromStdString(path.string()));
         }
 
-        auto* levelItem = new QTableWidgetItem(levelIcon, levelString.c_str());
-        levelItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        m_logTableWidget->setItem(row, 0, levelItem);
+        auto* level_item = new QTableWidgetItem(level_icon, level_string.c_str());
+        level_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        m_logTableWidget->setItem(row, 0, level_item);
 
-        auto* messageItem = new QTableWidgetItem(it->get_message().c_str());
-        messageItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        m_logTableWidget->setItem(row, 1, messageItem);
+        auto* message_item = new QTableWidgetItem(it->get_message().c_str());
+        message_item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        m_logTableWidget->setItem(row, 1, message_item);
     }
 
     // Add widget to dialog
-    mainLayout->addWidget(messageWidget, 0, Qt::AlignLeft);
-    mainLayout->addWidget(checkbox);
-    mainLayout->addWidget(m_logTableWidget);
-    mainLayout->addWidget(buttonWidget, 0, Qt::AlignRight);
+    main_layout->addWidget(message_widget, 0, Qt::AlignLeft);
+    main_layout->addWidget(checkbox);
+    main_layout->addWidget(m_logTableWidget);
+    main_layout->addWidget(button_widget, 0, Qt::AlignRight);
 
     // Hide log table
     m_logTableWidget->hide();
 
     // Connect buttons
-    QObject::connect(okButton, SIGNAL(clicked()), m_dialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), m_dialog, SLOT(reject()));
+    QObject::connect(ok_button, SIGNAL(clicked()), m_dialog, SLOT(accept()));
+    QObject::connect(cancel_button, SIGNAL(clicked()), m_dialog, SLOT(reject()));
     QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(displayLogs(int)));
 
     // Show dialog and return result
@@ -216,11 +216,11 @@ bool logger::show()
 
 //------------------------------------------------------------------------------
 
-void logger::displayLogs(int state)
+void logger::displayLogs(int _state)
 {
     int width = m_dialog->size().width();
 
-    if(state != 0)
+    if(_state != 0)
     {
         m_logTableWidget->show();
     }

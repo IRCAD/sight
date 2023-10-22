@@ -35,14 +35,14 @@ namespace sight::core::runtime::detail
 //------------------------------------------------------------------------------
 
 extension::extension(
-    std::shared_ptr<core::runtime::module> module,
-    const std::string& id,
-    const std::string& point,
-    xmlNodePtr xml_node
+    std::shared_ptr<core::runtime::module> _module,
+    const std::string& _id,
+    const std::string& _point,
+    xmlNodePtr _xml_node
 ) :
-    sight::core::runtime::extension(module, id, point),
+    sight::core::runtime::extension(_module, _id, _point),
     m_xml_doc(xmlNewDoc(reinterpret_cast<const xmlChar*>("1.0"))),
-    m_xml_node(xmlCopyNode(xml_node, 1))
+    m_xml_node(xmlCopyNode(_xml_node, 1))
 {
     xmlDocSetRootElement(m_xml_doc, m_xml_node);
 }
@@ -108,9 +108,9 @@ extension::validity extension::validate()
 
 //------------------------------------------------------------------------------
 
-void extension::set_config(const core::runtime::config_t& config)
+void extension::set_config(const core::runtime::config_t& _config)
 {
-    m_config = config;
+    m_config = _config;
 }
 
 //------------------------------------------------------------------------------

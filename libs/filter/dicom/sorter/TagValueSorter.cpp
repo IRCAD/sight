@@ -76,9 +76,9 @@ bool TagValueSorter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+TagValueSorter::dicom_series_container_t TagValueSorter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 )
 const
 {
@@ -88,63 +88,63 @@ const
         throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
-    data::dicom_series::DicomContainerType sortedDicom;
+    data::dicom_series::dicom_container_t sorted_dicom;
 
     OFCondition status;
-    for(const auto& item : series->getDicomContainer())
+    for(const auto& item : _series->getDicomContainer())
     {
-        const core::memory::buffer_object::sptr bufferObj = item.second;
-        const std::size_t buffSize                        = bufferObj->size();
-        core::memory::buffer_object::lock_t lock(bufferObj);
+        const core::memory::buffer_object::sptr buffer_obj = item.second;
+        const std::size_t buff_size                        = buffer_obj->size();
+        core::memory::buffer_object::lock_t lock(buffer_obj);
         char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
-        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setBuffer(buffer, offile_off_t(buff_size));
         is.setEos();
 
-        DcmFileFormat fileFormat;
-        fileFormat.transferInit();
-        if(!fileFormat.read(is).good())
+        DcmFileFormat file_format;
+        file_format.transferInit();
+        if(!file_format.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
+                "Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
 
-        fileFormat.loadAllDataIntoMemory();
-        fileFormat.transferEnd();
+        file_format.loadAllDataIntoMemory();
+        file_format.transferEnd();
 
-        DcmDataset* dataset = fileFormat.getDataset();
+        DcmDataset* dataset = file_format.getDataset();
 
         Sint32 index = 0;
         dataset->findAndGetSint32(m_tag, index);
 
-        sortedDicom[std::size_t(index)] = bufferObj;
+        sorted_dicom[std::size_t(index)] = buffer_obj;
     }
 
-    if(sortedDicom.size() != series->getDicomContainer().size())
+    if(sorted_dicom.size() != _series->getDicomContainer().size())
     {
         const std::string msg = "Unable to sort the series using the specified tag. The tag may be missing in "
                                 "some instances or several instances may have the same tag value.";
         throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
-    series->clearDicomContainer();
-    for(const auto& item : sortedDicom)
+    _series->clearDicomContainer();
+    for(const auto& item : sorted_dicom)
     {
-        series->addBinary(item.first, item.second);
+        _series->addBinary(item.first, item.second);
     }
 
-    result.push_back(series);
+    result.push_back(_series);
 
     std::stringstream ss;
     ss << "The instances have been sorted using the value of tag ("
     << std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << ","
     << std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
-    logger->information(ss.str());
+    _logger->information(ss.str());
 
     return result;
 }

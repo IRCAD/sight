@@ -72,8 +72,8 @@ class point_list;
  *
  * @section Access Buffer access
  *
- * You can access voxel values using at<type>(IndexType id) or
- * at<type>(IndexType x, IndexType y, IndexType z, IndexType c) methods. These methods are slow and should not be used
+ * You can access voxel values using at<type>(index_t id) or
+ * at<type>(index_t x, index_t y, index_t z, index_t c) methods. These methods are slow and should not be used
  * to parse the entire buffer (see iterators).
  *
  * You can also use getPixelAsString() to retrieve the value as a string (useful for displaying information).
@@ -185,8 +185,8 @@ public:
     /// image spacing
     typedef std::array<double, 3> Spacing;
 
-    typedef Size::value_type IndexType;
-    typedef std::uint8_t BufferType;
+    typedef Size::value_type index_t;
+    typedef std::uint8_t buffer_t;
 
     /// image format
     enum PixelFormat
@@ -218,12 +218,12 @@ public:
     /// Get image spacing
     const Spacing& getSpacing() const;
     /// Set image spacing
-    void setSpacing(const Spacing& spacing);
+    void setSpacing(const Spacing& _spacing);
 
     /// Get image origin
     const Origin& getOrigin() const;
     /// Set image origin
-    void setOrigin(const Origin& origin);
+    void setOrigin(const Origin& _origin);
 
     /// Get image size
     const Size& size() const;
@@ -235,14 +235,14 @@ public:
      *  @brief Get/set preferred window center
      */
     virtual std::vector<double> getWindowCenter() const noexcept;
-    virtual void setWindowCenter(const std::vector<double>& windowCenters);
+    virtual void setWindowCenter(const std::vector<double>& _window_centers);
     /// @}
 
     /** @{
      *  @brief Get/set preferred window width
      */
     virtual std::vector<double> getWindowWidth() const noexcept;
-    virtual void setWindowWidth(const std::vector<double>& windowWidths);
+    virtual void setWindowWidth(const std::vector<double>& _window_widths);
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
@@ -272,7 +272,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API virtual std::size_t resize(const Size& size, const core::type& type, PixelFormat format);
+    DATA_API virtual std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format);
     /// @}
 
     /// @brief return image size in bytes
@@ -285,35 +285,35 @@ public:
      * @{
      */
     /// Type of signal when image's buffer is added
-    typedef core::com::signal<void ()> BufferModifiedSignalType;
+    typedef core::com::signal<void ()> buffer_modified_signal_t;
     DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
-    typedef core::com::signal<void (SPTR(point))> LandmarkAddedSignalType;
+    typedef core::com::signal<void (SPTR(point))> landmark_added_signal_t;
     DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
-    typedef core::com::signal<void (SPTR(point))> LandmarkRemovedSignalType;
+    typedef core::com::signal<void (SPTR(point))> landmark_removed_signal_t;
     DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (bool)> LandmarkDisplayedSignalType;
+    typedef core::com::signal<void (bool)> landmark_displayed_signal_t;
     DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (bool)> DistanceDisplayedSignalType;
+    typedef core::com::signal<void (bool)> distance_displayed_signal_t;
     DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::signal<void (SPTR(point_list))> DistanceAddedSignalType;
+    typedef core::com::signal<void (SPTR(point_list))> distance_added_signal_t;
     DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is modified
-    using DistanceModifiedSignalType = core::com::signal<void (SPTR(point_list))>;
+    using distance_modified_signal_t = core::com::signal<void (SPTR(point_list))>;
     DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef core::com::signal<void (CSPTR(point_list))> DistanceRemovedSignalType;
+    typedef core::com::signal<void (CSPTR(point_list))> distance_removed_signal_t;
     DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
@@ -429,12 +429,12 @@ public:
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     DATA_API void setBuffer(
-        void* buf,
-        bool takeOwnership,
-        const core::type& type,
-        const image::Size& size,
-        PixelFormat format,
-        core::memory::buffer_allocation_policy::sptr policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        void* _buf,
+        bool _take_ownership,
+        const core::type& _type,
+        const image::Size& _size,
+        PixelFormat _format,
+        core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     /**
@@ -450,9 +450,9 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    T& at(IndexType id);
+    T& at(index_t _id);
     template<typename T>
-    T at(IndexType id) const;
+    T at(index_t _id) const;
     /// @}
     /**
      * @{
@@ -470,9 +470,9 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
+    T& at(index_t _x, index_t _y, index_t _z, index_t _c = 0);
     template<typename T>
-    T at(IndexType x, IndexType y, IndexType z, IndexType c = 0) const;
+    T at(index_t _x, index_t _y, index_t _z, index_t _c = 0) const;
     /// @}
     ///
 
@@ -481,14 +481,14 @@ public:
      * @param index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void* getPixel(IndexType index);
+    DATA_API void* getPixel(index_t _index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API const void* getPixel(IndexType index) const;
+    DATA_API const void* getPixel(index_t _index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
@@ -496,13 +496,13 @@ public:
      * @param pixBuf pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void setPixel(IndexType index, const BufferType* pixBuf);
+    DATA_API void setPixel(index_t _index, const buffer_t* _pix_buf);
 
     /// Return the pixel value in a std::string
     DATA_API std::string getPixelAsString(
-        IndexType x,
-        IndexType y,
-        IndexType z
+        index_t _x,
+        index_t _y,
+        index_t _z
     ) const;
 
     /// Return the buffer object
@@ -513,29 +513,29 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const image& other) const noexcept;
-    DATA_API bool operator!=(const image& other) const noexcept;
+    DATA_API bool operator==(const image& _other) const noexcept;
+    DATA_API bool operator!=(const image& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
 
     /// Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const override;
+    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
 private:
 
@@ -555,7 +555,7 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t _resize(const Size& size, const core::type& type, PixelFormat format, bool realloc);
+    DATA_API std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format, bool _realloc);
     /// @}
 
     /**
@@ -567,9 +567,9 @@ private:
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     void setBuffer(
-        void* buf,
-        bool takeOwnership                                  = false,
-        core::memory::buffer_allocation_policy::sptr policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        void* _buf,
+        bool _take_ownership                                 = false,
+        core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     //! Size of the image (in terms of points)
@@ -609,9 +609,9 @@ inline std::vector<double> image::getWindowCenter() const noexcept
 
 //-----------------------------------------------------------------------------
 
-inline void image::setWindowCenter(const std::vector<double>& windowCenters)
+inline void image::setWindowCenter(const std::vector<double>& _window_centers)
 {
-    m_windowCenters = windowCenters;
+    m_windowCenters = _window_centers;
 }
 
 //-----------------------------------------------------------------------------
@@ -623,9 +623,9 @@ inline std::vector<double> image::getWindowWidth() const noexcept
 
 //-----------------------------------------------------------------------------
 
-inline void image::setWindowWidth(const std::vector<double>& windowWidths)
+inline void image::setWindowWidth(const std::vector<double>& _window_widths)
 {
-    m_windowWidths = windowWidths;
+    m_windowWidths = _window_widths;
 }
 
 //-----------------------------------------------------------------------------
@@ -651,9 +651,9 @@ inline const image::Spacing& image::getSpacing() const
 
 //------------------------------------------------------------------------------
 
-inline void image::setSpacing(const Spacing& spacing)
+inline void image::setSpacing(const Spacing& _spacing)
 {
-    m_spacing = spacing;
+    m_spacing = _spacing;
 }
 
 //------------------------------------------------------------------------------
@@ -665,9 +665,9 @@ inline const image::Origin& image::getOrigin() const
 
 //------------------------------------------------------------------------------
 
-inline void image::setOrigin(const Origin& origin)
+inline void image::setOrigin(const Origin& _origin)
 {
-    m_origin = origin;
+    m_origin = _origin;
 }
 
 //------------------------------------------------------------------------------
@@ -754,35 +754,35 @@ auto image::crange() const
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& image::at(IndexType id)
+inline T& image::at(index_t _id)
 {
-    return *reinterpret_cast<T*>(this->getPixel(id));
+    return *reinterpret_cast<T*>(this->getPixel(_id));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T image::at(IndexType id) const
+inline T image::at(index_t _id) const
 {
-    return *reinterpret_cast<const T*>(this->getPixel(id));
+    return *reinterpret_cast<const T*>(this->getPixel(_id));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& image::at(IndexType x, IndexType y, IndexType z, IndexType c)
+inline T& image::at(index_t _x, index_t _y, index_t _z, index_t _c)
 {
-    const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
-    return *(reinterpret_cast<T*>(this->getPixel(offset)) + c);
+    const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
+    return *(reinterpret_cast<T*>(this->getPixel(offset)) + _c);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
+inline T image::at(index_t _x, index_t _y, index_t _z, index_t _c) const
 {
-    const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
-    return *(reinterpret_cast<const T*>(this->getPixel(offset)) + c);
+    const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
+    return *(reinterpret_cast<const T*>(this->getPixel(offset)) + _c);
 }
 
 } // namespace sight::data

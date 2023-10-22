@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,14 +32,14 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRSCoordNode::DicomSRSCoordNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    std::string graphicType,
-    GraphicDataContainerType graphicDataContainer
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    std::string _graphic_type,
+    graphic_data_container_t _graphic_data_container
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "SCOORD", relationship),
-    m_graphicType(std::move(graphicType)),
-    m_graphicDataContainer(std::move(graphicDataContainer))
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "SCOORD", _relationship),
+    m_graphicType(std::move(_graphic_type)),
+    m_graphicDataContainer(std::move(_graphic_data_container))
 {
     SIGHT_ASSERT(
         "Only POINT and POLYLINE are supported by SCoord node for now.",
@@ -64,27 +64,27 @@ DicomSRSCoordNode::~DicomSRSCoordNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoordNode::write(gdcm::DataSet& dataset) const
+void DicomSRSCoordNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Graphic Data - Type 1
     io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
         (m_graphicDataContainer).data(),
         m_graphicDataContainer.size(),
-        dataset
+        _dataset
     );
 
     // Graphic Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0023>(m_graphicType, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0023>(m_graphicType, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoordNode::print(std::ostream& os) const
+void DicomSRSCoordNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nGraphic Type : [" << m_graphicType << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nGraphic Type : [" << m_graphicType << "]";
 }
 
 //------------------------------------------------------------------------------

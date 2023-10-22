@@ -60,45 +60,45 @@ std::string ImagePositionPatientSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+ImagePositionPatientSplitter::dicom_series_container_t ImagePositionPatientSplitter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 )
 const
 {
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
     OFCondition status;
-    double previousIndex        = 0.;
-    unsigned int instanceNumber = 0;
-    double spacingBetweenSlices = 0.;
-    const double epsilon        = 1e-2; // Value used to find a gap
-    data::dicom_series::sptr currentSeries;
-    for(const auto& item : series->getDicomContainer())
+    double previous_index         = 0.;
+    unsigned int instance_number  = 0;
+    double spacing_between_slices = 0.;
+    const double epsilon          = 1e-2; // Value used to find a gap
+    data::dicom_series::sptr current_series;
+    for(const auto& item : _series->getDicomContainer())
     {
-        const core::memory::buffer_object::sptr bufferObj = item.second;
-        const std::size_t buffSize                        = bufferObj->size();
-        core::memory::buffer_object::lock_t lock(bufferObj);
+        const core::memory::buffer_object::sptr buffer_obj = item.second;
+        const std::size_t buff_size                        = buffer_obj->size();
+        core::memory::buffer_object::lock_t lock(buffer_obj);
         char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
-        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setBuffer(buffer, offile_off_t(buff_size));
         is.setEos();
 
-        DcmFileFormat fileFormat;
-        fileFormat.transferInit();
-        if(!fileFormat.read(is).good())
+        DcmFileFormat file_format;
+        file_format.transferInit();
+        if(!file_format.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
+                "Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
 
-        fileFormat.loadAllDataIntoMemory();
-        fileFormat.transferEnd();
+        file_format.loadAllDataIntoMemory();
+        file_format.transferEnd();
 
-        DcmDataset* dataset = fileFormat.getDataset();
+        DcmDataset* dataset = file_format.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
         {
@@ -108,59 +108,59 @@ const
             throw sight::filter::dicom::exceptions::FilterFailure(msg);
         }
 
-        fwVec3d imagePosition;
+        fwVec3d image_position;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
+            dataset->findAndGetFloat64(DCM_ImagePositionPatient, image_position[i], i);
         }
 
-        fwVec3d imageOrientationU;
-        fwVec3d imageOrientationV;
+        fwVec3d image_orientation_u;
+        fwVec3d image_orientation_v;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_u[i], i);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_v[i], i + std::size_t(3));
         }
 
         //Compute Z direction (cross product)
-        const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
+        const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
         //Compute dot product to get the index
-        const double index = geometry::data::dot(imagePosition, zVector);
+        const double index = geometry::data::dot(image_position, z_vector);
 
         //Compute spacing
-        const double spacing = index - previousIndex;
-        if(currentSeries && fabs(spacingBetweenSlices) < epsilon)
+        const double spacing = index - previous_index;
+        if(current_series && fabs(spacing_between_slices) < epsilon)
         {
-            spacingBetweenSlices = spacing;
+            spacing_between_slices = spacing;
         }
 
         // First frame or volume detected: We create a new Series
-        if(!currentSeries || (fabs(spacing - spacingBetweenSlices) > epsilon))
+        if(!current_series || (fabs(spacing - spacing_between_slices) > epsilon))
         {
-            if(currentSeries)
+            if(current_series)
             {
-                result.push_back(currentSeries);
-                currentSeries->setNumberOfInstances(currentSeries->getDicomContainer().size());
+                result.push_back(current_series);
+                current_series->setNumberOfInstances(current_series->getDicomContainer().size());
             }
 
-            instanceNumber = 0;
-            currentSeries  = std::make_shared<data::dicom_series>();
-            currentSeries->shallow_copy(series);
-            currentSeries->clearDicomContainer();
+            instance_number = 0;
+            current_series  = std::make_shared<data::dicom_series>();
+            current_series->shallow_copy(_series);
+            current_series->clearDicomContainer();
         }
 
-        currentSeries->addBinary(instanceNumber++, bufferObj);
-        previousIndex = index;
+        current_series->addBinary(instance_number++, buffer_obj);
+        previous_index = index;
     }
 
     // Push last series created
-    result.push_back(currentSeries);
-    currentSeries->setNumberOfInstances(currentSeries->getDicomContainer().size());
+    result.push_back(current_series);
+    current_series->setNumberOfInstances(current_series->getDicomContainer().size());
 
     if(result.size() > 1)
     {
-        logger->warning("Series has been split according to slice positions.");
+        _logger->warning("Series has been split according to slice positions.");
     }
 
     return result;

@@ -55,52 +55,52 @@ void DirTest::tearDown()
 
 void DirTest::writeReadFileTest()
 {
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    auto writer = std::make_shared<WriteDirArchive>(tmpDir);
-    auto reader = std::make_shared<ReadDirArchive>(tmpDir);
+    auto writer = std::make_shared<WriteDirArchive>(tmp_dir);
+    auto reader = std::make_shared<ReadDirArchive>(tmp_dir);
 
-    const std::filesystem::path testFile = "test.txt";
+    const std::filesystem::path test_file = "test.txt";
 
-    CPPUNIT_ASSERT_NO_THROW(writer->createFile(testFile));
+    CPPUNIT_ASSERT_NO_THROW(writer->createFile(test_file));
 
-    CPPUNIT_ASSERT_NO_THROW(reader->get_file(testFile));
+    CPPUNIT_ASSERT_NO_THROW(reader->get_file(test_file));
 }
 
 //------------------------------------------------------------------------------
 
 void DirTest::writeDirTest()
 {
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    auto writer = std::make_shared<WriteDirArchive>(tmpDir);
+    auto writer = std::make_shared<WriteDirArchive>(tmp_dir);
 
-    const std::filesystem::path testDir = "test";
+    const std::filesystem::path test_dir = "test";
 
-    CPPUNIT_ASSERT_NO_THROW(writer->createDir(testDir));
+    CPPUNIT_ASSERT_NO_THROW(writer->createDir(test_dir));
 
-    CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / testDir));
+    CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / test_dir));
 }
 
 //------------------------------------------------------------------------------
 
 void DirTest::putFileTest()
 {
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    auto writer = std::make_shared<WriteDirArchive>(tmpDir);
+    auto writer = std::make_shared<WriteDirArchive>(tmp_dir);
 
-    const std::filesystem::path testDir = "test";
+    const std::filesystem::path test_dir = "test";
     //cspell: ignore makao
-    const std::filesystem::path testFile = utest_data::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path test_file = utest_data::Data::dir() / "sight/image/jpg/makao01.jpg";
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
-    CPPUNIT_ASSERT_NO_THROW(writer->putFile(testFile, "image.jpg"));
+    CPPUNIT_ASSERT_NO_THROW(writer->putFile(test_file, "image.jpg"));
 
-    CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "image.jpg"));
+    CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "image.jpg"));
 }
 
 } // namespace sight::io::zip::ut

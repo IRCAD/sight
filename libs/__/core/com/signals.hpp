@@ -51,10 +51,10 @@ public:
     signals& operator=(const signals&) = delete;
 
     /// Registers SignalBase in m_signals
-    CORE_API signals& operator()(const key_t& key, const SPTR(signal_base)& signal);
+    CORE_API signals& operator()(const key_t& _key, const SPTR(signal_base)& _signal);
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR(signal_base) operator[](const key_t& key) const;
+    CORE_API SPTR(signal_base) operator[](const key_t& _key) const;
 
     /// Returns all key_t registered in m_signals
     [[nodiscard]] CORE_API signal_key_container_type get_signal_keys() const;

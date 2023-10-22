@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IText.hpp>
+#include <viz/scene3d/text.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -87,7 +87,7 @@ private:
     std::unique_ptr<PostWindowRenderListener> m_listener;
 
     /// Contains the displays stats in the overlay.
-    sight::viz::scene3d::IText::sptr m_statsText;
+    sight::viz::scene3d::text::sptr m_statsText;
 
     /// Defines the text's color.
     Ogre::ColourValue m_textColor;

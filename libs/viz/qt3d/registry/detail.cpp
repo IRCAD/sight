@@ -31,8 +31,8 @@ struct FwRenderQt3DRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    using InstantiatorType = core::lazy_instantiator<Type, FwRenderQt3DRegistryInstantiatorTag>;
-    return InstantiatorType::get_instance();
+    using instantiator_t = core::lazy_instantiator<Type, FwRenderQt3DRegistryInstantiatorTag>;
+    return instantiator_t::get_instance();
 }
 
 } // namespace sight::viz::qt3d::registry

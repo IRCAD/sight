@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,14 +56,14 @@ public:
      * @brief vtkCommand::Execute implementation
      */
     // NOLINTNEXTLINE(google-runtime-int)
-    IO_VTK_API void Execute(vtkObject* caller, unsigned long eid, void* callData) override;
+    IO_VTK_API void Execute(vtkObject* _caller, unsigned long _eid, void* _call_data) override;
 
     /**
      * @brief Sets callback
      */
-    virtual void SetCallback(Callback callback)
+    virtual void SetCallback(Callback _callback)
     {
-        this->m_callback = callback;
+        this->m_callback = _callback;
     }
 
 protected:

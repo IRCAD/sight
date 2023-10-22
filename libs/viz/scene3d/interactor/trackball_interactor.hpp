@@ -42,7 +42,7 @@ class VIZ_SCENE3D_CLASS_API trackball_interactor final : public sight::viz::scen
 public:
 
     /// Initializes the trackball.
-    VIZ_SCENE3D_API trackball_interactor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
+    VIZ_SCENE3D_API trackball_interactor(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
 
     /// Destroys the trackball.
     VIZ_SCENE3D_API ~trackball_interactor() final;
@@ -87,7 +87,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
 
     /**
      * @brief Moves the camera along the screen's axes.
@@ -106,7 +106,7 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouseX, int _mouseY) final;
+    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouse_x, int _mouse_y) final;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
@@ -114,7 +114,7 @@ public:
     VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) final;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    VIZ_SCENE3D_API void setSceneLength(float _sceneLength) final;
+    VIZ_SCENE3D_API void setSceneLength(float _scene_length) final;
 
 private:
 

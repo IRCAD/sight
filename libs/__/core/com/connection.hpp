@@ -37,8 +37,8 @@ struct CORE_CLASS_API connection
         blocker()
         = default;
 
-        blocker(connection connection) :
-            m_blocker(connection.get_blocker())
+        blocker(connection _connection) :
+            m_blocker(_connection.get_blocker())
         {
         }
 
@@ -56,8 +56,8 @@ struct CORE_CLASS_API connection
     connection()
     = default;
 
-    connection(const slot_connection_base::sptr& connection) :
-        m_connection_base(connection)
+    connection(const slot_connection_base::sptr& _connection) :
+        m_connection_base(_connection)
     {
     }
 

@@ -54,21 +54,21 @@ void uuidtest::tearDown()
 
 void uuidtest::object_uuidtest()
 {
-    const std::string UUID = "myUUID";
+    const std::string uuid = "myUUID";
 
     core::tools::object::sptr obj = std::make_shared<core::tools::object>();
 
-    CPPUNIT_ASSERT(!core::tools::object::from_uuid(UUID));
+    CPPUNIT_ASSERT(!core::tools::object::from_uuid(uuid));
 
-    obj->set_uuid(UUID);
+    obj->set_uuid(uuid);
 
-    CPPUNIT_ASSERT(core::tools::object::from_uuid(UUID));
-    CPPUNIT_ASSERT_EQUAL(UUID, obj->get_uuid());
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(UUID));
+    CPPUNIT_ASSERT(core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT_EQUAL(uuid, obj->get_uuid());
+    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(uuid));
 
-    auto obj2         = std::make_shared<core::tools::object>();
-    std::string UUID2 = obj2->get_uuid();
-    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(UUID2));
+    auto obj2          = std::make_shared<core::tools::object>();
+    std::string uui_d2 = obj2->get_uuid();
+    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(uui_d2));
 }
 
 //-----------------------------------------------------------------------------
@@ -93,20 +93,20 @@ void uuidtest::conccurent_access_on_uuid_map_test()
 
 void uuidtest::run_uuidcreation()
 {
-    std::string UUID = core::tools::UUID::generate();
+    std::string uuid = core::tools::UUID::generate();
 
     core::tools::object::sptr obj = std::make_shared<core::tools::object>();
 
-    CPPUNIT_ASSERT(!core::tools::object::from_uuid(UUID));
+    CPPUNIT_ASSERT(!core::tools::object::from_uuid(uuid));
 
-    obj->set_uuid(UUID);
+    obj->set_uuid(uuid);
 
-    CPPUNIT_ASSERT_EQUAL(UUID, obj->get_uuid());
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(UUID));
+    CPPUNIT_ASSERT_EQUAL(uuid, obj->get_uuid());
+    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(uuid));
 
-    auto obj2         = std::make_shared<core::tools::object>();
-    std::string UUID2 = obj2->get_uuid();
-    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(UUID2));
+    auto obj2          = std::make_shared<core::tools::object>();
+    std::string uui_d2 = obj2->get_uuid();
+    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(uui_d2));
 }
 
 //-----------------------------------------------------------------------------

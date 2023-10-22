@@ -160,16 +160,16 @@ void frame_grabber::stopCamera()
     if(m_isInitialized)
     {
         // Clear the timeline: send a black frame
-        auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+        auto sigPosition = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
         sigPosition->async_emit(static_cast<std::int64_t>(-1));
 
-        auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
+        auto sigDuration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
         sigDuration->async_emit(static_cast<std::int64_t>(-1));
 
         const auto frameTL = m_frame.lock();
         this->clearTimeline(*frameTL);
 
-        auto sig = this->signal<grabber::CameraStoppedSignalType>(grabber::CAMERA_STOPPED_SIG);
+        auto sig = this->signal<grabber::camera_stopped_signal_t>(grabber::CAMERA_STOPPED_SIG);
         sig->async_emit();
 
         this->setStartState(false);
@@ -225,10 +225,10 @@ void frame_grabber::readImages(const std::filesystem::path& folder, const std::s
 
         m_isInitialized = true;
 
-        auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
+        auto sigDuration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
         sigDuration->async_emit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
 
-        auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+        auto sigPosition = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
         sigPosition->async_emit(0);
 
         m_timer = m_worker->create_timer();
@@ -279,11 +279,11 @@ void frame_grabber::grabImage()
         const auto frameTL = m_frame.lock();
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
-            auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+            auto sigPosition = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
             sigPosition->async_emit(static_cast<std::int64_t>(m_imageCount) * m_fps);
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::BufferType) bufferOut = frameTL->createBuffer(timestamp);
+            SPTR(data::frame_tl::buffer_t) bufferOut = frameTL->createBuffer(timestamp);
             float* frameBuffOut = reinterpret_cast<float*>(bufferOut->addElement(0));
 
             for(const auto& pt : inputCloud.points)

@@ -59,21 +59,21 @@ public:
      *
      * @param[in]   activater   a shared pointer to an activator
      */
-    void add(SPTR(activater) activater);
+    void add(SPTR(activater) _activater);
 
     /**
      * @brief       Adds a new starter.
      *
      * @param[in]   starter a shared pointer to a starter
      */
-    void add_starter(const std::string& identifier);
+    void add_starter(const std::string& _identifier);
 
     /**
      * @brief       Adds a new stopper.
      *
      * @param[in]   stopper a shared pointer to a stopper
      */
-    void add_stopper(const std::string& identifier, int priority);
+    void add_stopper(const std::string& _identifier, int _priority);
 
     /**
      * @brief   Starts the profile.
@@ -85,7 +85,7 @@ public:
      * @brief   Run the profile.
      */
     int run() final;
-    void set_run_callback(run_callback_type callback) final;
+    void set_run_callback(run_callback_type _callback) final;
 
     static int default_run();
 
@@ -127,7 +127,7 @@ private:
  *
  * @param       prof profile
  */
-void set_current_profile(profile::sptr prof);
+void set_current_profile(profile::sptr _prof);
 
 /**
  * @brief       Get current profile.

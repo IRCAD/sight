@@ -68,7 +68,7 @@ void matrix_functions_test::checkMultVecMatrix()
         const fwVec3d source = {{0, 1, 0}};
 
         fwVec3d result;
-        geometry::data::multVecMatrix(matrix, source, result);
+        geometry::data::mult_vec_matrix(matrix, source, result);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0, result[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0, result[1], 0.00001);
@@ -86,14 +86,14 @@ void matrix_functions_test::checkMultVecMatrix()
         const fwVec3d source = {{0, 0, 0}};
 
         fwVec3d result;
-        geometry::data::multVecMatrix(matrix, source, result);
+        geometry::data::mult_vec_matrix(matrix, source, result);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(52.3, result[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(-12., result[1], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, result[2], 0.00001);
 
         const fwVec3d source2 = {{0, 10, 0}};
-        geometry::data::multVecMatrix(matrix, source2, result);
+        geometry::data::mult_vec_matrix(matrix, source2, result);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(52.3, result[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(-12, result[1], 0.00001);
@@ -105,13 +105,13 @@ void matrix_functions_test::checkMultVecMatrix()
 
 void matrix_functions_test::checkRotationMatrix()
 {
-    const double X = 7.8;
-    const double Y = 0.6;
-    const double Z = 2.6;
+    const double x = 7.8;
+    const double y = 0.6;
+    const double z = 2.6;
 
-    const fwVec3d vec = {{X, Y, Z}};
+    const fwVec3d vec = {{x, y, z}};
 
-    fwMatrix4x4 result = geometry::data::getRotationMatrix(vec);
+    fwMatrix4x4 result = geometry::data::get_rotation_matrix(vec);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.076696, result[0][0], 0.0001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.997054, result[0][1], 0.0001);
@@ -147,7 +147,7 @@ void matrix_functions_test::checkInverse()
     }
     };
 
-    fwMatrix4x4 result = geometry::data::getInverse(mat);
+    fwMatrix4x4 result = geometry::data::get_inverse(mat);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.885131908604589, result[0][0], 0.0001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.190212289294002, result[0][1], 0.0001);
@@ -188,14 +188,14 @@ void matrix_functions_test::multiplicationTest()
         {28, 29, 30, 31}
     }
     };
-    const fwMatrix4x4 expectedResult {{
+    const fwMatrix4x4 expected_result {{
         {152, 158, 164, 170},
         {504, 526, 548, 570},
         {856, 894, 932, 970},
         {1208, 1262, 1316, 1370}
     }
     };
-    const fwMatrix4x4 actualResult = mat1 * mat2;
+    const fwMatrix4x4 actual_result = mat1 * mat2;
 
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
@@ -203,8 +203,8 @@ void matrix_functions_test::multiplicationTest()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "i=" + std::to_string(i) + ", j=" + std::to_string(j),
-                expectedResult[i][j],
-                actualResult[i][j],
+                expected_result[i][j],
+                actual_result[i][j],
                 0.0001
             );
         }

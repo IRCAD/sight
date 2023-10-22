@@ -23,7 +23,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Dialog
@@ -40,8 +40,8 @@ public:
      * @{
      */
     template<typename T>
-    static void take(Tester& tester, const std::string& desc, const std::string& childName             = "");
-    GUITEST_API static void take(Tester& tester, const std::string& desc, const std::string& childName = "");
+    static void take(Tester& _tester, const std::string& _desc, const std::string& _child_name             = "");
+    GUITEST_API static void take(Tester& _tester, const std::string& _desc, const std::string& _child_name = "");
     /// @}
 
     /**
@@ -55,8 +55,8 @@ public:
      * @{
      */
     template<typename T>
-    static void maybeTake(Tester& tester, const std::string& desc, const std::string& childName             = "");
-    GUITEST_API static void maybeTake(Tester& tester, const std::string& desc, const std::string& childName = "");
+    static void maybeTake(Tester& _tester, const std::string& _desc, const std::string& _child_name             = "");
+    GUITEST_API static void maybeTake(Tester& _tester, const std::string& _desc, const std::string& _child_name = "");
     /// @}
 };
 

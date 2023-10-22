@@ -35,28 +35,28 @@ base::~base()
 
 //-----------------------------------------------------------------------------
 
-filter::FilterType base::getFilterType() const
+filter::filter_t base::get_filter_type() const
 {
     return filter::COMPOSITE;
 }
 
 //-----------------------------------------------------------------------------
 
-base::DicomSeriesContainerType base::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+base::dicom_series_container_t base::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 ) const
 {
-    DicomSeriesContainerType result;
-    result.push_back(series);
+    dicom_series_container_t result;
+    result.push_back(_series);
     // For every filter
     for(const sight::filter::dicom::filter::sptr& filter : m_filterContainer)
     {
-        DicomSeriesContainerType filtered;
+        dicom_series_container_t filtered;
         // For every series
         for(const data::dicom_series::sptr& s : result)
         {
-            DicomSeriesContainerType tempo = filter->apply(s, logger);
+            dicom_series_container_t tempo = filter->apply(s, _logger);
             filtered.reserve(filtered.size() + tempo.size());
             std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
         }
@@ -69,23 +69,23 @@ base::DicomSeriesContainerType base::apply(
 
 //-----------------------------------------------------------------------------
 
-base::DicomSeriesContainerType base::forcedApply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+base::dicom_series_container_t base::forcedApply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 ) const
 {
-    DicomSeriesContainerType result;
-    result.push_back(series);
+    dicom_series_container_t result;
+    result.push_back(_series);
     // For every filters
     for(const sight::filter::dicom::filter::sptr& filter : m_filterContainer)
     {
-        DicomSeriesContainerType filtered;
+        dicom_series_container_t filtered;
         // For every series
         for(const data::dicom_series::sptr& s : result)
         {
             try
             {
-                DicomSeriesContainerType tempo = filter->apply(s, logger);
+                dicom_series_container_t tempo = filter->apply(s, _logger);
                 filtered.reserve(filtered.size() + tempo.size());
                 std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
             }
@@ -104,16 +104,16 @@ base::DicomSeriesContainerType base::forcedApply(
 
 //-----------------------------------------------------------------------------
 
-void base::addChild(const sight::filter::dicom::filter::sptr& filter)
+void base::addChild(const sight::filter::dicom::filter::sptr& _filter)
 {
-    m_filterContainer.push_back(filter);
+    m_filterContainer.push_back(_filter);
 }
 
 //-----------------------------------------------------------------------------
 
-void base::removeChild(const sight::filter::dicom::filter::sptr& filter)
+void base::removeChild(const sight::filter::dicom::filter::sptr& _filter)
 {
-    auto it = std::find(m_filterContainer.begin(), m_filterContainer.end(), filter);
+    auto it = std::find(m_filterContainer.begin(), m_filterContainer.end(), _filter);
     if(it != m_filterContainer.end())
     {
         m_filterContainer.erase(it);
@@ -122,7 +122,7 @@ void base::removeChild(const sight::filter::dicom::filter::sptr& filter)
 
 //-----------------------------------------------------------------------------
 
-base::FilterContainerType& base::getChildren()
+base::filter_container_t& base::getChildren()
 {
     return m_filterContainer;
 }

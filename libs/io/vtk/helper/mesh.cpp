@@ -43,26 +43,26 @@ namespace sight::io::vtk::helper
 
 //------------------------------------------------------------------------------
 
-void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
+void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
 {
-    vtkPoints* points = dataset.GetPoints();
+    vtkPoints* points = _dataset.GetPoints();
     if(points != nullptr)
     {
-        mesh.clear();
-        const vtkIdType numberOfPoints = points->GetNumberOfPoints();
-        const vtkIdType numberOfCells  = dataset.GetNumberOfCells();
+        _mesh.clear();
+        const vtkIdType number_of_points = points->GetNumberOfPoints();
+        const vtkIdType number_of_cells  = _dataset.GetNumberOfCells();
 
-        data::mesh::Attributes attributes                 = data::mesh::Attributes::NONE;
-        vtkSmartPointer<vtkUnsignedCharArray> pointColors = nullptr;
-        vtkSmartPointer<vtkUnsignedCharArray> cellColors  = nullptr;
-        vtkSmartPointer<vtkFloatArray> pointNormals       = nullptr;
-        vtkSmartPointer<vtkFloatArray> cellNormals        = nullptr;
-        vtkSmartPointer<vtkFloatArray> pointTexCoords     = nullptr;
-        vtkSmartPointer<vtkFloatArray> cellTexCoords      = nullptr;
+        data::mesh::Attributes attributes                  = data::mesh::Attributes::NONE;
+        vtkSmartPointer<vtkUnsignedCharArray> point_colors = nullptr;
+        vtkSmartPointer<vtkUnsignedCharArray> cell_colors  = nullptr;
+        vtkSmartPointer<vtkFloatArray> point_normals       = nullptr;
+        vtkSmartPointer<vtkFloatArray> cell_normals        = nullptr;
+        vtkSmartPointer<vtkFloatArray> point_tex_coords    = nullptr;
+        vtkSmartPointer<vtkFloatArray> cell_tex_coords     = nullptr;
 
         const std::array color_array_name {"Colors", "RGB", "RGBA"};
 
-        auto* const point_data = dataset.GetPointData();
+        auto* const point_data = _dataset.GetPointData();
         for(const auto& color_array : color_array_name)
         {
             if(point_data->HasArray(color_array) != 0)
@@ -71,14 +71,14 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                 point_data->GetAbstractArray(color_array, idx);
                 if(point_data->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
-                    attributes  = attributes | data::mesh::Attributes::POINT_COLORS;
-                    pointColors = vtkUnsignedCharArray::SafeDownCast(point_data->GetScalars(color_array));
+                    attributes   = attributes | data::mesh::Attributes::POINT_COLORS;
+                    point_colors = vtkUnsignedCharArray::SafeDownCast(point_data->GetScalars(color_array));
                     break;
                 }
             }
         }
 
-        auto* const cell_data = dataset.GetCellData();
+        auto* const cell_data = _dataset.GetCellData();
         for(const auto& color_array : color_array_name)
         {
             if(cell_data->HasArray(color_array) != 0)
@@ -87,8 +87,8 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                 cell_data->GetAbstractArray(color_array, idx);
                 if(cell_data->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
-                    attributes = attributes | data::mesh::Attributes::CELL_COLORS;
-                    cellColors = vtkUnsignedCharArray::SafeDownCast(cell_data->GetScalars(color_array));
+                    attributes  = attributes | data::mesh::Attributes::CELL_COLORS;
+                    cell_colors = vtkUnsignedCharArray::SafeDownCast(cell_data->GetScalars(color_array));
                     break;
                 }
             }
@@ -96,67 +96,67 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
 
         if(point_data->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
         {
-            attributes   = attributes | data::mesh::Attributes::POINT_NORMALS;
-            pointNormals = vtkFloatArray::SafeDownCast(point_data->GetNormals());
+            attributes    = attributes | data::mesh::Attributes::POINT_NORMALS;
+            point_normals = vtkFloatArray::SafeDownCast(point_data->GetNormals());
         }
 
         if(cell_data->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
         {
-            attributes  = attributes | data::mesh::Attributes::CELL_NORMALS;
-            cellNormals = vtkFloatArray::SafeDownCast(cell_data->GetNormals());
+            attributes   = attributes | data::mesh::Attributes::CELL_NORMALS;
+            cell_normals = vtkFloatArray::SafeDownCast(cell_data->GetNormals());
         }
 
         if(point_data->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
         {
-            attributes     = attributes | data::mesh::Attributes::POINT_TEX_COORDS;
-            pointTexCoords = vtkFloatArray::SafeDownCast(point_data->GetTCoords());
+            attributes       = attributes | data::mesh::Attributes::POINT_TEX_COORDS;
+            point_tex_coords = vtkFloatArray::SafeDownCast(point_data->GetTCoords());
         }
 
         if(cell_data->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
         {
-            attributes    = attributes | data::mesh::Attributes::CELL_TEX_COORDS;
-            cellTexCoords = vtkFloatArray::SafeDownCast(cell_data->GetTCoords());
+            attributes      = attributes | data::mesh::Attributes::CELL_TEX_COORDS;
+            cell_tex_coords = vtkFloatArray::SafeDownCast(cell_data->GetTCoords());
         }
 
-        const auto dumpLock = mesh.dump_lock();
+        const auto dump_lock = _mesh.dump_lock();
 
-        int firstCellType = (numberOfCells > 0) ? dataset.GetCell(0)->GetCellType() : VTK_EMPTY_CELL;
+        int first_cell_type = (number_of_cells > 0) ? _dataset.GetCell(0)->GetCellType() : VTK_EMPTY_CELL;
 
-        static std::map<int, data::mesh::CellType> s_getCellType = {
-            {VTK_VERTEX, data::mesh::CellType::POINT},
-            {VTK_LINE, data::mesh::CellType::LINE},
-            {VTK_TRIANGLE, data::mesh::CellType::TRIANGLE},
-            {VTK_QUAD, data::mesh::CellType::QUAD},
-            {VTK_TETRA, data::mesh::CellType::TETRA},
+        static std::map<int, data::mesh::cell_type_t> s_get_cell_type = {
+            {VTK_VERTEX, data::mesh::cell_type_t::POINT},
+            {VTK_LINE, data::mesh::cell_type_t::LINE},
+            {VTK_TRIANGLE, data::mesh::cell_type_t::TRIANGLE},
+            {VTK_QUAD, data::mesh::cell_type_t::QUAD},
+            {VTK_TETRA, data::mesh::cell_type_t::TETRA},
         };
 
-        if(numberOfPoints > 0 && numberOfCells > 0)
+        if(number_of_points > 0 && number_of_cells > 0)
         {
-            mesh.resize(
-                static_cast<data::mesh::size_t>(numberOfPoints),
-                static_cast<data::mesh::size_t>(numberOfCells),
-                s_getCellType[firstCellType],
+            _mesh.resize(
+                static_cast<data::mesh::size_t>(number_of_points),
+                static_cast<data::mesh::size_t>(number_of_cells),
+                s_get_cell_type[first_cell_type],
                 attributes
             );
         }
 
         {
             vtkIdType i = 0;
-            for(auto& pos : mesh.range<data::iterator::point::xyz>())
+            for(auto& pos : _mesh.range<data::iterator::point::xyz>())
             {
                 const double* point = points->GetPoint(i++);
                 pos = {static_cast<float>(point[0]), static_cast<float>(point[1]), static_cast<float>(point[2])};
             }
         }
 
-        if(pointColors != nullptr)
+        if(point_colors != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& c : mesh.range<data::iterator::point::rgba>())
+            for(auto& c : _mesh.range<data::iterator::point::rgba>())
             {
-                if(pointColors->GetNumberOfComponents() == 3)
+                if(point_colors->GetNumberOfComponents() == 3)
                 {
-                    auto* const color = pointColors->GetPointer(i++ *3);
+                    auto* const color = point_colors->GetPointer(i++ *3);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -164,7 +164,7 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                 }
                 else
                 {
-                    auto* const color = pointColors->GetPointer(i++ *4);
+                    auto* const color = point_colors->GetPointer(i++ *4);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -173,51 +173,51 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
             }
         }
 
-        if(pointNormals != nullptr)
+        if(point_normals != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& n : mesh.range<data::iterator::point::nxyz>())
+            for(auto& n : _mesh.range<data::iterator::point::nxyz>())
             {
-                auto* const normal = pointNormals->GetPointer(i++ *3);
+                auto* const normal = point_normals->GetPointer(i++ *3);
                 n.nx = normal[0];
                 n.ny = normal[1];
                 n.nz = normal[2];
             }
         }
 
-        if(pointTexCoords != nullptr)
+        if(point_tex_coords != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& uv : mesh.range<data::iterator::point::uv>())
+            for(auto& uv : _mesh.range<data::iterator::point::uv>())
             {
-                auto* const texCoords = pointTexCoords->GetPointer(i++ *2);
-                uv.u = texCoords[0];
-                uv.v = texCoords[1];
+                auto* const tex_coords = point_tex_coords->GetPointer(i++ *2);
+                uv.u = tex_coords[0];
+                uv.v = tex_coords[1];
             }
         }
 
-        auto getVtkCell = [&dataset](auto i, [[maybe_unused]] int numId)
-                          {
-                              const auto cell   = dataset.GetCell(i);
-                              const auto idList = cell->GetPointIds();
-                              SIGHT_ASSERT(
-                                  "Wrong number of ids: " << idList->GetNumberOfIds(),
-                                  idList->GetNumberOfIds() == numId
-                              );
-                              return std::make_pair(idList, cell->GetCellType());
-                          };
+        auto get_vtk_cell = [&_dataset](auto _i, [[maybe_unused]] int _num_id)
+                            {
+                                const auto cell    = _dataset.GetCell(_i);
+                                const auto id_list = cell->GetPointIds();
+                                SIGHT_ASSERT(
+                                    "Wrong number of ids: " << id_list->GetNumberOfIds(),
+                                    id_list->GetNumberOfIds() == _num_id
+                                );
+                                return std::make_pair(id_list, cell->GetCellType());
+                            };
 
         {
             std::size_t skip = 0;
             vtkIdType i      = 0;
-            switch(firstCellType)
+            switch(first_cell_type)
             {
                 case VTK_VERTEX:
 
-                    for(auto& cell : mesh.range<data::iterator::cell::point>())
+                    for(auto& cell : _mesh.range<data::iterator::cell::point>())
                     {
-                        const auto& [idList, cellType] = getVtkCell(i++, 1);
-                        if(firstCellType != cellType)
+                        const auto& [idList, cellType] = get_vtk_cell(i++, 1);
+                        if(first_cell_type != cellType)
                         {
                             ++skip;
                             continue;
@@ -230,10 +230,10 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
 
                 case VTK_LINE:
 
-                    for(auto& cell : mesh.range<data::iterator::cell::line>())
+                    for(auto& cell : _mesh.range<data::iterator::cell::line>())
                     {
-                        const auto& [idList, cellType] = getVtkCell(i++, 2);
-                        if(firstCellType != cellType)
+                        const auto& [idList, cellType] = get_vtk_cell(i++, 2);
+                        if(first_cell_type != cellType)
                         {
                             ++skip;
                             continue;
@@ -246,10 +246,10 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                     break;
 
                 case VTK_TRIANGLE:
-                    for(auto& cell : mesh.range<data::iterator::cell::triangle>())
+                    for(auto& cell : _mesh.range<data::iterator::cell::triangle>())
                     {
-                        const auto& [idList, cellType] = getVtkCell(i++, 3);
-                        if(firstCellType != cellType)
+                        const auto& [idList, cellType] = get_vtk_cell(i++, 3);
+                        if(first_cell_type != cellType)
                         {
                             ++skip;
                             continue;
@@ -265,10 +265,10 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                 case VTK_QUAD:
                 case VTK_TETRA:
 
-                    for(auto& cell : mesh.range<data::iterator::cell::quad>())
+                    for(auto& cell : _mesh.range<data::iterator::cell::quad>())
                     {
-                        const auto& [idList, cellType] = getVtkCell(i++, 4);
-                        if(firstCellType != cellType)
+                        const auto& [idList, cellType] = get_vtk_cell(i++, 4);
+                        if(first_cell_type != cellType)
                         {
                             ++skip;
                             continue;
@@ -287,20 +287,20 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                     break;
 
                 default:
-                    SIGHT_THROW("VTK Mesh type " << firstCellType << " not supported.");
+                    SIGHT_THROW("VTK Mesh type " << first_cell_type << " not supported.");
             }
 
             SIGHT_ERROR_IF(skip << " mixed cells were skipped, we only support a single cell type in a mesh", skip);
         }
 
-        if(cellColors != nullptr)
+        if(cell_colors != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& c : mesh.range<data::iterator::cell::rgba>())
+            for(auto& c : _mesh.range<data::iterator::cell::rgba>())
             {
-                if(cellColors->GetNumberOfComponents() == 3)
+                if(cell_colors->GetNumberOfComponents() == 3)
                 {
-                    auto* const color = cellColors->GetPointer(i++ *3);
+                    auto* const color = cell_colors->GetPointer(i++ *3);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -308,7 +308,7 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
                 }
                 else
                 {
-                    auto* const color = cellColors->GetPointer(i++ *4);
+                    auto* const color = cell_colors->GetPointer(i++ *4);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -317,26 +317,26 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
             }
         }
 
-        if(cellNormals != nullptr)
+        if(cell_normals != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& n : mesh.range<data::iterator::cell::nxyz>())
+            for(auto& n : _mesh.range<data::iterator::cell::nxyz>())
             {
-                auto* const normal = cellNormals->GetPointer(i++ *3);
+                auto* const normal = cell_normals->GetPointer(i++ *3);
                 n.nx = normal[0];
                 n.ny = normal[1];
                 n.nz = normal[2];
             }
         }
 
-        if(cellTexCoords != nullptr)
+        if(cell_tex_coords != nullptr)
         {
             vtkIdType i = 0;
-            for(auto& uv : mesh.range<data::iterator::cell::uv>())
+            for(auto& uv : _mesh.range<data::iterator::cell::uv>())
             {
-                auto* const texCoords = cellTexCoords->GetPointer(i++ *2);
-                uv.u = texCoords[0];
-                uv.v = texCoords[1];
+                auto* const tex_coords = cell_tex_coords->GetPointer(i++ *2);
+                uv.u = tex_coords[0];
+                uv.v = tex_coords[1];
             }
         }
     }
@@ -344,21 +344,21 @@ void fromVTKPointSet(vtkPointSet& dataset, data::mesh& mesh)
 
 //------------------------------------------------------------------------------
 
-void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::mesh& meshSrc)
+void update_points_and_attributes(vtkPointSet& _point_set_dst, const data::mesh& _mesh_src)
 {
-    vtkPoints* dataPoints = pointSetDst.GetPoints();
+    vtkPoints* data_points = _point_set_dst.GetPoints();
 
-    const auto nbPoints = static_cast<vtkIdType>(meshSrc.numPoints());
+    const auto nb_points = static_cast<vtkIdType>(_mesh_src.numPoints());
 
-    if(nbPoints != dataPoints->GetNumberOfPoints())
+    if(nb_points != data_points->GetNumberOfPoints())
     {
-        dataPoints->SetNumberOfPoints(nbPoints);
+        data_points->SetNumberOfPoints(nb_points);
     }
 
     vtkIdType i = 0;
-    for(const auto& pos : meshSrc.crange<data::iterator::point::xyz>())
+    for(const auto& pos : _mesh_src.crange<data::iterator::point::xyz>())
     {
-        dataPoints->SetPoint(
+        data_points->SetPoint(
             i++,
             static_cast<double>(pos.x),
             static_cast<double>(pos.y),
@@ -366,243 +366,243 @@ void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::mesh& meshS
         );
     }
 
-    unsigned char* newColors            = nullptr;
-    float* newNormals                   = nullptr;
-    float* newTexCoords                 = nullptr;
-    const std::size_t nbColorComponents = 4;
-    if(meshSrc.has<data::mesh::Attributes::POINT_COLORS>())
+    unsigned char* new_colors             = nullptr;
+    float* new_normals                    = nullptr;
+    float* new_tex_coords                 = nullptr;
+    const std::size_t nb_color_components = 4;
+    if(_mesh_src.has<data::mesh::Attributes::POINT_COLORS>())
     {
-        newColors = new unsigned char [static_cast<std::size_t>(nbPoints) * nbColorComponents];
-        i         = 0;
-        for(const auto& c : meshSrc.crange<data::iterator::point::rgba>())
-        {
-            newColors[i * 4]     = c.r;
-            newColors[i * 4 + 1] = c.g;
-            newColors[i * 4 + 2] = c.b;
-            newColors[i * 4 + 3] = c.a;
-            ++i;
-        }
-    }
-
-    if(meshSrc.has<data::mesh::Attributes::POINT_NORMALS>())
-    {
-        newNormals = new float [static_cast<std::size_t>(nbPoints * 3)];
+        new_colors = new unsigned char [static_cast<std::size_t>(nb_points) * nb_color_components];
         i          = 0;
-        for(const auto& n : meshSrc.crange<data::iterator::point::nxyz>())
+        for(const auto& c : _mesh_src.crange<data::iterator::point::rgba>())
         {
-            newNormals[i * 3]     = n.nx;
-            newNormals[i * 3 + 1] = n.ny;
-            newNormals[i * 3 + 2] = n.nz;
+            new_colors[i * 4]     = c.r;
+            new_colors[i * 4 + 1] = c.g;
+            new_colors[i * 4 + 2] = c.b;
+            new_colors[i * 4 + 3] = c.a;
             ++i;
         }
     }
 
-    if(meshSrc.has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    if(_mesh_src.has<data::mesh::Attributes::POINT_NORMALS>())
     {
-        newTexCoords = new float [static_cast<std::size_t>(nbPoints * 2)];
-        i            = 0;
-        for(const auto& uv : meshSrc.crange<data::iterator::point::uv>())
+        new_normals = new float [static_cast<std::size_t>(nb_points * 3)];
+        i           = 0;
+        for(const auto& n : _mesh_src.crange<data::iterator::point::nxyz>())
         {
-            newTexCoords[i * 2]     = uv.u;
-            newTexCoords[i * 2 + 1] = uv.v;
+            new_normals[i * 3]     = n.nx;
+            new_normals[i * 3 + 1] = n.ny;
+            new_normals[i * 3 + 2] = n.nz;
             ++i;
         }
     }
 
-    if(meshSrc.has<data::mesh::Attributes::POINT_COLORS>())
+    if(_mesh_src.has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    {
+        new_tex_coords = new float [static_cast<std::size_t>(nb_points * 2)];
+        i              = 0;
+        for(const auto& uv : _mesh_src.crange<data::iterator::point::uv>())
+        {
+            new_tex_coords[i * 2]     = uv.u;
+            new_tex_coords[i * 2 + 1] = uv.v;
+            ++i;
+        }
+    }
+
+    if(_mesh_src.has<data::mesh::Attributes::POINT_COLORS>())
     {
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colors->SetNumberOfComponents(static_cast<int>(nbColorComponents));
+        colors->SetNumberOfComponents(static_cast<int>(nb_color_components));
         colors->SetName("Colors");
         colors->SetArray(
-            newColors,
-            nbPoints * static_cast<vtkIdType>(nbColorComponents),
+            new_colors,
+            nb_points * static_cast<vtkIdType>(nb_color_components),
             0,
             vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE
         );
-        pointSetDst.GetPointData()->SetScalars(colors);
+        _point_set_dst.GetPointData()->SetScalars(colors);
     }
-    else if(pointSetDst.GetPointData()->HasArray("Colors") != 0)
+    else if(_point_set_dst.GetPointData()->HasArray("Colors") != 0)
     {
-        pointSetDst.GetPointData()->RemoveArray("Colors");
+        _point_set_dst.GetPointData()->RemoveArray("Colors");
     }
 
-    if(meshSrc.has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh_src.has<data::mesh::Attributes::POINT_NORMALS>())
     {
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         normals->SetNumberOfComponents(3);
-        normals->SetArray(newNormals, nbPoints * 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+        normals->SetArray(new_normals, nb_points * 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
-        pointSetDst.GetPointData()->SetNormals(normals);
+        _point_set_dst.GetPointData()->SetNormals(normals);
     }
-    else if(pointSetDst.GetPointData()->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
+    else if(_point_set_dst.GetPointData()->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
     {
-        pointSetDst.GetPointData()->RemoveArray(vtkDataSetAttributes::NORMALS);
-    }
-
-    if(meshSrc.has<data::mesh::Attributes::POINT_TEX_COORDS>())
-    {
-        vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-        texCoords->SetNumberOfComponents(2);
-        texCoords->SetArray(newTexCoords, nbPoints * 2, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
-        pointSetDst.GetPointData()->SetTCoords(texCoords);
-    }
-    else if(pointSetDst.GetPointData()->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
-    {
-        pointSetDst.GetPointData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
+        _point_set_dst.GetPointData()->RemoveArray(vtkDataSetAttributes::NORMALS);
     }
 
-    dataPoints->Modified();
-    pointSetDst.Modified();
+    if(_mesh_src.has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    {
+        vtkSmartPointer<vtkFloatArray> tex_coords = vtkSmartPointer<vtkFloatArray>::New();
+        tex_coords->SetNumberOfComponents(2);
+        tex_coords->SetArray(new_tex_coords, nb_points * 2, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+        _point_set_dst.GetPointData()->SetTCoords(tex_coords);
+    }
+    else if(_point_set_dst.GetPointData()->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
+    {
+        _point_set_dst.GetPointData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
+    }
+
+    data_points->Modified();
+    _point_set_dst.Modified();
 }
 
 //------------------------------------------------------------------------------
 
-void toVTKPointSet(const data::mesh& mesh, vtkPointSet& dataset)
+void to_vtk_point_set(const data::mesh& _mesh, vtkPointSet& _dataset)
 {
     const vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
-    dataset.SetPoints(pts);
+    _dataset.SetPoints(pts);
 
-    const auto nbCells  = mesh.numCells();
-    const auto dumpLock = mesh.dump_lock();
+    const auto nb_cells  = _mesh.numCells();
+    const auto dump_lock = _mesh.dump_lock();
 
-    if(nbCells > 0)
+    if(nb_cells > 0)
     {
-        vtkPolyData* polyData     = vtkPolyData::SafeDownCast(&dataset);
-        vtkUnstructuredGrid* grid = vtkUnstructuredGrid::SafeDownCast(&dataset);
+        vtkPolyData* poly_data    = vtkPolyData::SafeDownCast(&_dataset);
+        vtkUnstructuredGrid* grid = vtkUnstructuredGrid::SafeDownCast(&_dataset);
         SIGHT_ASSERT(
             "Pointset must be either a vtkPolyData or a vtkUnstructuredGrid",
-            (polyData && !grid) || (!polyData && grid)
+            (poly_data && !grid) || (!poly_data && grid)
         );
 
-        if(polyData != nullptr)
+        if(poly_data != nullptr)
         {
-            polyData->Allocate(static_cast<int>(nbCells));
+            poly_data->Allocate(static_cast<int>(nb_cells));
         }
         else
         {
-            grid->Allocate(static_cast<int>(nbCells));
+            grid->Allocate(static_cast<int>(nb_cells));
         }
 
-        unsigned char* newColors            = nullptr;
-        float* newNormals                   = nullptr;
-        float* newTexCoords                 = nullptr;
-        const std::size_t nbColorComponents = 4;
+        unsigned char* new_colors             = nullptr;
+        float* new_normals                    = nullptr;
+        float* new_tex_coords                 = nullptr;
+        const std::size_t nb_color_components = 4;
 
-        if(mesh.has<data::mesh::Attributes::CELL_COLORS>())
+        if(_mesh.has<data::mesh::Attributes::CELL_COLORS>())
         {
-            newColors = new unsigned char [nbCells * nbColorComponents];
+            new_colors = new unsigned char [nb_cells * nb_color_components];
 
             vtkIdType i = 0;
-            for(const auto& c : mesh.crange<data::iterator::cell::rgba>())
+            for(const auto& c : _mesh.crange<data::iterator::cell::rgba>())
             {
-                newColors[i * 4]     = c.r;
-                newColors[i * 4 + 1] = c.g;
-                newColors[i * 4 + 2] = c.b;
-                newColors[i * 4 + 3] = c.a;
+                new_colors[i * 4]     = c.r;
+                new_colors[i * 4 + 1] = c.g;
+                new_colors[i * 4 + 2] = c.b;
+                new_colors[i * 4 + 3] = c.a;
                 ++i;
             }
         }
 
-        if(mesh.has<data::mesh::Attributes::CELL_NORMALS>())
+        if(_mesh.has<data::mesh::Attributes::CELL_NORMALS>())
         {
-            newNormals = new float [nbCells * 3LL];
+            new_normals = new float [nb_cells * 3LL];
             vtkIdType i = 0;
-            for(const auto& n : mesh.crange<data::iterator::cell::nxyz>())
+            for(const auto& n : _mesh.crange<data::iterator::cell::nxyz>())
             {
-                newNormals[i * 3]     = n.nx;
-                newNormals[i * 3 + 1] = n.ny;
-                newNormals[i * 3 + 2] = n.nz;
+                new_normals[i * 3]     = n.nx;
+                new_normals[i * 3 + 1] = n.ny;
+                new_normals[i * 3 + 2] = n.nz;
                 ++i;
             }
         }
 
-        if(mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
+        if(_mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
         {
-            newTexCoords = new float [nbCells * 2LL];
+            new_tex_coords = new float [nb_cells * 2LL];
             vtkIdType i = 0;
-            for(const auto& uv : mesh.crange<data::iterator::cell::uv>())
+            for(const auto& uv : _mesh.crange<data::iterator::cell::uv>())
             {
-                newTexCoords[i * 2]     = uv.u;
-                newTexCoords[i * 2 + 1] = uv.v;
+                new_tex_coords[i * 2]     = uv.u;
+                new_tex_coords[i * 2 + 1] = uv.v;
                 ++i;
             }
         }
 
-        auto insertNextCell = [&polyData, &grid](auto typeVtkCell, auto i, auto cell)
-                              {
-                                  if(polyData)
-                                  {
-                                      polyData->InsertNextCell(typeVtkCell, i, cell);
-                                  }
-                                  else
-                                  {
-                                      grid->InsertNextCell(typeVtkCell, i, cell);
-                                  }
-                              };
+        auto insert_next_cell = [&poly_data, &grid](auto _type_vtk_cell, auto _i, auto _cell)
+                                {
+                                    if(poly_data)
+                                    {
+                                        poly_data->InsertNextCell(_type_vtk_cell, _i, _cell);
+                                    }
+                                    else
+                                    {
+                                        grid->InsertNextCell(_type_vtk_cell, _i, _cell);
+                                    }
+                                };
 
-        int typeVtkCell = 0;
+        int type_vtk_cell = 0;
         std::array<vtkIdType, 4> cell {};
-        switch(mesh.getCellType())
+        switch(_mesh.get_cell_type())
         {
-            case data::mesh::CellType::POINT:
-                typeVtkCell = VTK_VERTEX;
-                for(const auto& p : mesh.crange<data::iterator::cell::point>())
+            case data::mesh::cell_type_t::POINT:
+                type_vtk_cell = VTK_VERTEX;
+                for(const auto& p : _mesh.crange<data::iterator::cell::point>())
                 {
                     cell[0] = static_cast<vtkIdType>(p.pt);
-                    insertNextCell(typeVtkCell, 1, cell.data());
+                    insert_next_cell(type_vtk_cell, 1, cell.data());
                 }
 
                 break;
 
-            case data::mesh::CellType::LINE:
-                typeVtkCell = VTK_LINE;
+            case data::mesh::cell_type_t::LINE:
+                type_vtk_cell = VTK_LINE;
 
-                for(const auto& p : mesh.crange<data::iterator::cell::line>())
+                for(const auto& p : _mesh.crange<data::iterator::cell::line>())
                 {
                     cell[0] = static_cast<vtkIdType>(p.pt[0]);
                     cell[1] = static_cast<vtkIdType>(p.pt[1]);
-                    insertNextCell(typeVtkCell, 2, cell.data());
+                    insert_next_cell(type_vtk_cell, 2, cell.data());
                 }
 
                 break;
 
-            case data::mesh::CellType::TRIANGLE:
-                typeVtkCell = VTK_TRIANGLE;
+            case data::mesh::cell_type_t::TRIANGLE:
+                type_vtk_cell = VTK_TRIANGLE;
 
-                for(const auto& p : mesh.crange<data::iterator::cell::triangle>())
-                {
-                    cell[0] = static_cast<vtkIdType>(p.pt[0]);
-                    cell[1] = static_cast<vtkIdType>(p.pt[1]);
-                    cell[2] = static_cast<vtkIdType>(p.pt[2]);
-                    insertNextCell(typeVtkCell, 3, cell.data());
-                }
-
-                break;
-
-            case data::mesh::CellType::QUAD:
-                typeVtkCell = VTK_QUAD;
-
-                for(const auto& p : mesh.crange<data::iterator::cell::quad>())
+                for(const auto& p : _mesh.crange<data::iterator::cell::triangle>())
                 {
                     cell[0] = static_cast<vtkIdType>(p.pt[0]);
                     cell[1] = static_cast<vtkIdType>(p.pt[1]);
                     cell[2] = static_cast<vtkIdType>(p.pt[2]);
-                    cell[3] = static_cast<vtkIdType>(p.pt[3]);
-                    insertNextCell(typeVtkCell, 4, cell.data());
+                    insert_next_cell(type_vtk_cell, 3, cell.data());
                 }
 
                 break;
 
-            case data::mesh::CellType::TETRA:
-                typeVtkCell = VTK_TETRA;
-                for(const auto& p : mesh.crange<data::iterator::cell::tetra>())
+            case data::mesh::cell_type_t::QUAD:
+                type_vtk_cell = VTK_QUAD;
+
+                for(const auto& p : _mesh.crange<data::iterator::cell::quad>())
                 {
                     cell[0] = static_cast<vtkIdType>(p.pt[0]);
                     cell[1] = static_cast<vtkIdType>(p.pt[1]);
                     cell[2] = static_cast<vtkIdType>(p.pt[2]);
                     cell[3] = static_cast<vtkIdType>(p.pt[3]);
-                    insertNextCell(typeVtkCell, 4, cell.data());
+                    insert_next_cell(type_vtk_cell, 4, cell.data());
+                }
+
+                break;
+
+            case data::mesh::cell_type_t::TETRA:
+                type_vtk_cell = VTK_TETRA;
+                for(const auto& p : _mesh.crange<data::iterator::cell::tetra>())
+                {
+                    cell[0] = static_cast<vtkIdType>(p.pt[0]);
+                    cell[1] = static_cast<vtkIdType>(p.pt[1]);
+                    cell[2] = static_cast<vtkIdType>(p.pt[2]);
+                    cell[3] = static_cast<vtkIdType>(p.pt[3]);
+                    insert_next_cell(type_vtk_cell, 4, cell.data());
                 }
 
                 break;
@@ -611,109 +611,114 @@ void toVTKPointSet(const data::mesh& mesh, vtkPointSet& dataset)
                 SIGHT_THROW("Mesh type not supported.");
         }
 
-        if(mesh.has<data::mesh::Attributes::CELL_COLORS>())
+        if(_mesh.has<data::mesh::Attributes::CELL_COLORS>())
         {
             vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-            colors->SetNumberOfComponents(static_cast<int>(nbColorComponents));
+            colors->SetNumberOfComponents(static_cast<int>(nb_color_components));
             colors->SetName("Colors");
             colors->SetArray(
-                newColors,
-                static_cast<vtkIdType>(nbCells) * static_cast<vtkIdType>(nbColorComponents),
+                new_colors,
+                static_cast<vtkIdType>(nb_cells) * static_cast<vtkIdType>(nb_color_components),
                 0,
                 vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE
             );
-            dataset.GetCellData()->SetScalars(colors);
+            _dataset.GetCellData()->SetScalars(colors);
         }
-        else if(dataset.GetCellData()->HasArray("Colors") != 0)
+        else if(_dataset.GetCellData()->HasArray("Colors") != 0)
         {
-            dataset.GetCellData()->RemoveArray("Colors");
+            _dataset.GetCellData()->RemoveArray("Colors");
         }
 
-        if(mesh.has<data::mesh::Attributes::CELL_NORMALS>())
+        if(_mesh.has<data::mesh::Attributes::CELL_NORMALS>())
         {
             vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
             normals->SetNumberOfComponents(3);
-            normals->SetArray(newNormals, static_cast<vtkIdType>(nbCells) * 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
-
-            dataset.GetCellData()->SetNormals(normals);
-        }
-        else if(dataset.GetCellData()->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
-        {
-            dataset.GetCellData()->RemoveArray(vtkDataSetAttributes::NORMALS);
-        }
-
-        if(mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
-        {
-            vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-            texCoords->SetNumberOfComponents(2);
-            texCoords->SetArray(
-                newTexCoords,
-                static_cast<vtkIdType>(nbCells) * 2,
+            normals->SetArray(
+                new_normals,
+                static_cast<vtkIdType>(nb_cells) * 3,
                 0,
                 vtkFloatArray::VTK_DATA_ARRAY_DELETE
             );
-            dataset.GetCellData()->SetTCoords(texCoords);
+
+            _dataset.GetCellData()->SetNormals(normals);
         }
-        else if(dataset.GetCellData()->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
+        else if(_dataset.GetCellData()->GetAttribute(vtkDataSetAttributes::NORMALS) != nullptr)
         {
-            dataset.GetCellData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
+            _dataset.GetCellData()->RemoveArray(vtkDataSetAttributes::NORMALS);
         }
 
-        dataset.Modified();
+        if(_mesh.has<data::mesh::Attributes::CELL_TEX_COORDS>())
+        {
+            vtkSmartPointer<vtkFloatArray> tex_coords = vtkSmartPointer<vtkFloatArray>::New();
+            tex_coords->SetNumberOfComponents(2);
+            tex_coords->SetArray(
+                new_tex_coords,
+                static_cast<vtkIdType>(nb_cells) * 2,
+                0,
+                vtkFloatArray::VTK_DATA_ARRAY_DELETE
+            );
+            _dataset.GetCellData()->SetTCoords(tex_coords);
+        }
+        else if(_dataset.GetCellData()->GetAttribute(vtkDataSetAttributes::TCOORDS) != nullptr)
+        {
+            _dataset.GetCellData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
+        }
+
+        _dataset.Modified();
     }
 
-    updatePointsAndAttributes(dataset, mesh);
+    update_points_and_attributes(_dataset, _mesh);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> polyData, data::mesh::sptr mesh)
+void mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh)
 {
-    fromVTKPointSet(*polyData, *mesh);
+    from_vtk_point_set(*_poly_data, *_mesh);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, data::mesh::sptr mesh)
+void mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh)
 {
-    fromVTKPointSet(*grid, *mesh);
+    from_vtk_point_set(*_grid, *_mesh);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::toVTKMesh(const data::mesh::csptr& mesh, vtkSmartPointer<vtkPolyData> polyData)
+void mesh::toVTKMesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data)
 {
-    toVTKPointSet(*mesh, *polyData);
+    to_vtk_point_set(*_mesh, *_poly_data);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::toVTKGrid(const data::mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid)
+void mesh::toVTKGrid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid)
 {
-    toVTKPointSet(*mesh, *grid);
+    to_vtk_point_set(*_mesh, *_grid);
 }
 
 //-----------------------------------------------------------------------------
 
-double mesh::computeVolume(const data::mesh::csptr& mesh)
+double mesh::computeVolume(const data::mesh::csptr& _mesh)
 {
-    vtkSmartPointer<vtkPolyData> vtkMeshRaw = vtkSmartPointer<vtkPolyData>::New();
-    mesh::toVTKMesh(mesh, vtkMeshRaw);
+    vtkSmartPointer<vtkPolyData> vtk_mesh_raw = vtkSmartPointer<vtkPolyData>::New();
+    mesh::toVTKMesh(_mesh, vtk_mesh_raw);
 
     // identify and fill holes in meshes
-    vtkSmartPointer<vtkFillHolesFilter> holesFilter = vtkSmartPointer<vtkFillHolesFilter>::New();
-    holesFilter->SetHoleSize(2000);
-    holesFilter->SetInputData(vtkMeshRaw);
-    holesFilter->Update();
-    if(holesFilter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are
-                                                         // present
+    vtkSmartPointer<vtkFillHolesFilter> holes_filter = vtkSmartPointer<vtkFillHolesFilter>::New();
+    holes_filter->SetHoleSize(2000);
+    holes_filter->SetInputData(vtk_mesh_raw);
+    holes_filter->Update();
+    if(holes_filter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are
+                                                          // present
     {
-        vtkMeshRaw = holesFilter->GetOutput();
+        vtk_mesh_raw = holes_filter->GetOutput();
     }
 
     // compute normals for polygonal mesh
     const vtkSmartPointer<vtkPolyDataNormals> filter = vtkSmartPointer<vtkPolyDataNormals>::New();
-    filter->SetInputData(vtkMeshRaw);
+    filter->SetInputData(vtk_mesh_raw);
     filter->AutoOrientNormalsOn();
     filter->FlipNormalsOff();
 

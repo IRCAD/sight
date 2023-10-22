@@ -108,26 +108,26 @@ struct signal_test_class
 
     //------------------------------------------------------------------------------
 
-    float method1(float f)
+    float method1(float _f)
     {
         m_method1 = true;
-        return 2 * f;
+        return 2 * _f;
     }
 
     //------------------------------------------------------------------------------
 
-    float method2(float f, int /*unused*/)
+    float method2(float _f, int /*unused*/)
     {
         m_method2 = true;
-        return 2 * f;
+        return 2 * _f;
     }
 
     //------------------------------------------------------------------------------
 
-    float method3(float f, double /*unused*/, std::string /*unused*/)
+    float method3(float _f, double /*unused*/, std::string /*unused*/)
     {
         m_method3 = true;
-        return 2 * f;
+        return 2 * _f;
     }
 
     bool m_method00 {false};

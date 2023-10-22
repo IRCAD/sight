@@ -48,7 +48,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "errorCompu
 
 point_list_registration::point_list_registration()
 {
-    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
     new_slot(CHANGE_MODE, &point_list_registration::changeMode, this);
 }
 
@@ -61,8 +61,8 @@ point_list_registration::~point_list_registration()
 
 void point_list_registration::configuring()
 {
-    const auto configTree = this->get_config();
-    const auto config     = configTree.get_child_optional("config.<xmlattr>");
+    const auto config_tree = this->get_config();
+    const auto config      = config_tree.get_child_optional("config.<xmlattr>");
 
     if(config)
     {
@@ -110,41 +110,41 @@ void point_list_registration::stopping()
 
 void point_list_registration::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
-    const auto registeredPL = m_registeredPL.lock();
-    SIGHT_ASSERT("No 'registeredPL' found", registeredPL);
-    const auto referencePL = m_referencePL.lock();
-    SIGHT_ASSERT("No 'referencePL' found", referencePL);
+    const auto registered_pl = m_registeredPL.lock();
+    SIGHT_ASSERT("No 'registeredPL' found", registered_pl);
+    const auto reference_pl = m_referencePL.lock();
+    SIGHT_ASSERT("No 'referencePL' found", reference_pl);
 
-    if(registeredPL->getPoints().size() >= 3
-       && registeredPL->getPoints().size() == referencePL->getPoints().size())
+    if(registered_pl->getPoints().size() >= 3
+       && registered_pl->getPoints().size() == reference_pl->getPoints().size())
     {
-        vtkSmartPointer<vtkLandmarkTransform> landmarkTransform = vtkSmartPointer<vtkLandmarkTransform>::New();
+        vtkSmartPointer<vtkLandmarkTransform> landmark_transform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
-        vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
-        vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkPoints> source_pts = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkPoints> target_pts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& firstPoint    = referencePL->getPoints()[0];
-        const auto& firstPointReg = registeredPL->getPoints()[0];
+        const auto& first_point     = reference_pl->getPoints()[0];
+        const auto& first_point_reg = registered_pl->getPoints()[0];
 
         // If the points have labels ...
-        if(!firstPoint->getLabel().empty() && !firstPointReg->getLabel().empty())
+        if(!first_point->getLabel().empty() && !first_point_reg->getLabel().empty())
         {
             // ... Then match them according to that label.
-            for(const data::point::sptr& pointRef : referencePL->getPoints())
+            for(const data::point::sptr& point_ref : reference_pl->getPoints())
             {
-                const std::string labelRef = pointRef->getLabel();
+                const std::string label_ref = point_ref->getLabel();
 
-                for(const data::point::sptr& pointReg : registeredPL->getPoints())
+                for(const data::point::sptr& point_reg : registered_pl->getPoints())
                 {
-                    const std::string labelReg = pointRef->getLabel();
+                    const std::string label_reg = point_ref->getLabel();
 
-                    if(labelRef == labelReg)
+                    if(label_ref == label_reg)
                     {
-                        auto coord = pointRef->getCoord();
-                        sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                        auto coord = point_ref->getCoord();
+                        source_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                        coord = pointReg->getCoord();
-                        targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                        coord = point_reg->getCoord();
+                        target_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
                     }
                 }
             }
@@ -152,39 +152,39 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
         else
         {
             // ... Else match them according to their order.
-            for(const auto& refPoint : referencePL->getPoints())
+            for(const auto& ref_point : reference_pl->getPoints())
             {
-                const auto& coords = refPoint->getCoord();
-                sourcePts->InsertNextPoint(coords[0], coords[1], coords[2]);
+                const auto& coords = ref_point->getCoord();
+                source_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
 
-            for(const auto& regPoint : registeredPL->getPoints())
+            for(const auto& reg_point : registered_pl->getPoints())
             {
-                const auto& coords = regPoint->getCoord();
-                targetPts->InsertNextPoint(coords[0], coords[1], coords[2]);
+                const auto& coords = reg_point->getCoord();
+                target_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
         }
 
-        landmarkTransform->SetSourceLandmarks(sourcePts);
-        landmarkTransform->SetTargetLandmarks(targetPts);
+        landmark_transform->SetSourceLandmarks(source_pts);
+        landmark_transform->SetTargetLandmarks(target_pts);
 
         if(m_registrationMode == AFFINE)
         {
-            landmarkTransform->SetModeToAffine();
+            landmark_transform->SetModeToAffine();
         }
         else if(m_registrationMode == SIMILARITY)
         {
-            landmarkTransform->SetModeToSimilarity();
+            landmark_transform->SetModeToSimilarity();
         }
         else
         {
-            landmarkTransform->SetModeToRigidBody();
+            landmark_transform->SetModeToRigidBody();
         }
 
-        landmarkTransform->Update();
+        landmark_transform->Update();
 
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
-        vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
+        vtkSmartPointer<vtkMatrix4x4> m = landmark_transform->GetMatrix();
         m->Invert();
 
         auto matrix = m_output.lock();
@@ -199,36 +199,36 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
         }
 
         //compute RMSE
-        double errorValue = 0.;
+        double error_value = 0.;
 
-        for(vtkIdType i = 0 ; i < sourcePts->GetNumberOfPoints() ; ++i)
+        for(vtkIdType i = 0 ; i < source_pts->GetNumberOfPoints() ; ++i)
         {
             std::array<double, 3> p1 {};
-            sourcePts->GetPoint(i, p1.data());
+            source_pts->GetPoint(i, p1.data());
             std::array<double, 3> p2 {};
-            targetPts->GetPoint(i, p2.data());
+            target_pts->GetPoint(i, p2.data());
 
             // to have homogeneous coordinates (x,y,z,w)
-            std::array p2H {1., 1., 1., 1.};
-            std::copy(std::begin(p2), std::end(p2), std::begin(p2H));
+            std::array p2_h {1., 1., 1., 1.};
+            std::copy(std::begin(p2), std::end(p2), std::begin(p2_h));
 
             //p' = M*p
-            std::array<double, 4> newP {};
-            m->MultiplyPoint(p2H.data(), newP.data());
+            std::array<double, 4> new_p {};
+            m->MultiplyPoint(p2_h.data(), new_p.data());
 
-            errorValue += std::sqrt(
-                ((p1[0] - newP[0]) * (p1[0] - newP[0]))
-                + ((p1[1] - newP[1]) * (p1[1] - newP[1]))
-                + ((p1[2] - newP[2]) * (p1[2] - newP[2]))
+            error_value += std::sqrt(
+                ((p1[0] - new_p[0]) * (p1[0] - new_p[0]))
+                + ((p1[1] - new_p[1]) * (p1[1] - new_p[1]))
+                + ((p1[2] - new_p[2]) * (p1[2] - new_p[2]))
             );
         }
 
-        errorValue /= static_cast<double>(sourcePts->GetNumberOfPoints());
+        error_value /= static_cast<double>(source_pts->GetNumberOfPoints());
 
-        this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(errorValue);
+        this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(error_value);
 
         // Notify Matrix modified
-        auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         {
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
             sig->async_emit();
@@ -236,7 +236,7 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
     }
     else
     {
-        if(registeredPL->getPoints().size() < 3)
+        if(registered_pl->getPoints().size() < 3)
         {
             sight::ui::dialog::message::show(
                 "Error",
@@ -247,8 +247,8 @@ void point_list_registration::computeRegistration(core::hires_clock::type /*time
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
-            msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
-                referencePL->getPoints().size()
+            msg += std::to_string(registered_pl->getPoints().size()) + " != " + std::to_string(
+                reference_pl->getPoints().size()
             );
             sight::ui::dialog::message::show(
                 "Error",

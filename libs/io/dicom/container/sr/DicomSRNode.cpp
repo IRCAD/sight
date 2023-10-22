@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,13 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRNode::DicomSRNode(
-    DicomCodedAttribute codedAttribute,
-    std::string type,
-    std::string relationship
+    DicomCodedAttribute _coded_attribute,
+    std::string _type,
+    std::string _relationship
 ) :
-    m_codedAttribute(std::move(codedAttribute)),
-    m_type(std::move(type)),
-    m_relationship(std::move(relationship))
+    m_codedAttribute(std::move(_coded_attribute)),
+    m_type(std::move(_type)),
+    m_relationship(std::move(_relationship))
 {
 }
 
@@ -49,84 +49,84 @@ DicomSRNode::~DicomSRNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::addSubNode(const SPTR(DicomSRNode)& node)
+void DicomSRNode::addSubNode(const SPTR(DicomSRNode)& _node)
 {
-    m_subNodeContainer.push_back(node);
+    m_subNodeContainer.push_back(_node);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::write(gdcm::DataSet& dataset) const
+void DicomSRNode::write(gdcm::DataSet& _dataset) const
 {
     // Value Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa040>(m_type, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa040>(m_type, _dataset);
 
     // Relationship Value - Type 1 (Shouldn't be there for root node)
     if(!m_relationship.empty())
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa010>(m_relationship, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa010>(m_relationship, _dataset);
     }
 
     // Concept Name Code Sequence - Type 1C
     if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
     {
-        gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence =
+        gdcm::SmartPointer<gdcm::SequenceOfItems> code_sequence =
             this->createConceptNameCodeSequence(m_codedAttribute);
-        io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(codeSequence, dataset);
+        io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(code_sequence, _dataset);
     }
 
     // Content sequence - Type 1C
     if(!m_subNodeContainer.empty())
     {
-        this->writeContentSequence(dataset);
+        this->writeContentSequence(_dataset);
     }
 }
 
 //------------------------------------------------------------------------------
 
 gdcm::SmartPointer<gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequence(
-    const DicomCodedAttribute& codedAttribute
+    const DicomCodedAttribute& _coded_attribute
 ) const
 {
     // Write code sequence
-    gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence = new gdcm::SequenceOfItems();
-    codeSequence->SetLengthToUndefined();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> code_sequence = new gdcm::SequenceOfItems();
+    code_sequence->SetLengthToUndefined();
 
     // Create item (shall be one)
     gdcm::Item item;
     item.SetVLToUndefined();
-    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& item_dataset = item.GetNestedDataSet();
 
     // Code value - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0100>(codedAttribute.getCodeValue(), itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0100>(_coded_attribute.getCodeValue(), item_dataset);
 
     // Coding Scheme Designator - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0102>(
-        codedAttribute.getCodingSchemeDesignator(),
-        itemDataset
+        _coded_attribute.getCodingSchemeDesignator(),
+        item_dataset
     );
 
     // Coding Scheme Version - Type 1C
     if(!m_codedAttribute.getCodingSchemeVersion().empty())
     {
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0103>(
-            codedAttribute.getCodingSchemeVersion(),
-            itemDataset
+            _coded_attribute.getCodingSchemeVersion(),
+            item_dataset
         );
     }
 
     // Code Meaning - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0104>(codedAttribute.getCodeMeaning(), itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0104>(_coded_attribute.getCodeMeaning(), item_dataset);
 
     // Insert in a sequence
-    codeSequence->AddItem(item);
+    code_sequence->AddItem(item);
 
-    return codeSequence;
+    return code_sequence;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::writeContentSequence(gdcm::DataSet& dataset) const
+void DicomSRNode::writeContentSequence(gdcm::DataSet& _dataset) const
 {
     // Create the content sequence
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
@@ -136,22 +136,22 @@ void DicomSRNode::writeContentSequence(gdcm::DataSet& dataset) const
     {
         gdcm::Item item;
         item.SetVLToUndefined();
-        gdcm::DataSet& itemDataset = item.GetNestedDataSet();
-        child->write(itemDataset);
+        gdcm::DataSet& item_dataset = item.GetNestedDataSet();
+        child->write(item_dataset);
         sequence->AddItem(item);
     }
 
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa730>(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa730>(sequence, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNode::print(std::ostream& os) const
+void DicomSRNode::print(std::ostream& _os) const
 {
-    os << m_type;
+    _os << m_type;
     if(!m_codedAttribute.isEmpty())
     {
-        os << "\\n[" << m_codedAttribute << "]";
+        _os << "\\n[" << m_codedAttribute << "]";
     }
 }
 

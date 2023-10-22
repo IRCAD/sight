@@ -79,7 +79,7 @@ protected:
     MODULE_UI_QT_API void starting() override;
     MODULE_UI_QT_API void stopping() override;
     MODULE_UI_QT_API void updating() override;
-    MODULE_UI_QT_API void info(std::ostream& stream) override;
+    MODULE_UI_QT_API void info(std::ostream& _stream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -97,28 +97,28 @@ protected:
 
 private Q_SLOTS:
 
-    void onReconstructionCheck(QListWidgetItem* currentItem);
+    void onReconstructionCheck(QListWidgetItem* _current_item);
     void onResetClick();
     void onSaveClick();
     void onLoadClick();
 
     /// Slot to check all the organs of the list
-    void onSelectAllChanged(int state);
+    void onSelectAllChanged(int _state);
 
 private:
 
     void refresh();
-    static void notifyTransformationMatrix(data::matrix4::sptr aTransMat);
+    static void notifyTransformationMatrix(data::matrix4::sptr _a_trans_mat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();
 
-    // ReconstructionMapType
-    typedef std::map<std::string, data::reconstruction::sptr> ReconstructionMapType;
-    typedef std::map<std::string, data::matrix4::sptr> InnerMatMappingType;
-    typedef std::map<std::string, InnerMatMappingType> SaveMappingType;
+    // reconstruction_map_t
+    typedef std::map<std::string, data::reconstruction::sptr> reconstruction_map_t;
+    typedef std::map<std::string, data::matrix4::sptr> inner_mat_mapping_t;
+    typedef std::map<std::string, inner_mat_mapping_t> save_mapping_t;
 
-    ReconstructionMapType m_reconstructionMap;
+    reconstruction_map_t m_reconstructionMap;
     QPointer<QPushButton> m_saveButton;
     QPointer<QPushButton> m_loadButton;
     QPointer<QPushButton> m_resetButton;
@@ -127,7 +127,7 @@ private:
     QPointer<QCheckBox> m_selectAllCheckBox;
 
     //variables for the functionalities of saving & loading
-    SaveMappingType m_saveListing;
+    save_mapping_t m_saveListing;
     unsigned int m_saveCount {0};
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";

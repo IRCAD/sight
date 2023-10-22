@@ -48,7 +48,7 @@ constexpr static auto PASSWORD = "This_is_a_password";
 
 //------------------------------------------------------------------------------
 
-inline static std::smatch parse_log_line(const std::string& line)
+inline static std::smatch parse_log_line(const std::string& _line)
 {
     static const std::regex regex =
         []
@@ -70,7 +70,7 @@ inline static std::smatch parse_log_line(const std::string& line)
 
     std::smatch match;
 
-    std::regex_search(line, match, regex);
+    std::regex_search(_line, match, regex);
 
     return match;
 }
@@ -78,13 +78,13 @@ inline static std::smatch parse_log_line(const std::string& line)
 //------------------------------------------------------------------------------
 
 inline static std::filesystem::path decrypt(
-    const std::filesystem::path& log_archive,
-    const core::crypto::secure_string& password
+    const std::filesystem::path& _log_archive,
+    const core::crypto::secure_string& _password
 )
 {
-    if(!std::filesystem::exists(log_archive) || !std::filesystem::is_regular_file(log_archive))
+    if(!std::filesystem::exists(_log_archive) || !std::filesystem::is_regular_file(_log_archive))
     {
-        throw std::runtime_error("Log archive '" + log_archive.string() + "' doesn't exist.");
+        throw std::runtime_error("Log archive '" + _log_archive.string() + "' doesn't exist.");
     }
 
     // Find the logger binary
@@ -97,11 +97,11 @@ inline static std::filesystem::path decrypt(
         boost::process::args = {
             "-b",
             "-i",
-            core::crypto::to_base64(log_archive.string()),
+            core::crypto::to_base64(_log_archive.string()),
             "-p",
-            core::crypto::to_base64(password).c_str(), // NOLINT(readability-redundant-string-cstr)
+            core::crypto::to_base64(_password).c_str(), // NOLINT(readability-redundant-string-cstr)
             "-d",
-            core::crypto::to_base64(log_archive.parent_path().string())
+            core::crypto::to_base64(_log_archive.parent_path().string())
         },
         boost::process::std_out > boost::process::null,
         boost::process::std_err > remote_err,
@@ -119,7 +119,7 @@ inline static std::filesystem::path decrypt(
         throw std::runtime_error(ss.str());
     }
 
-    const auto& log_file = log_archive.parent_path() / LOG_FILE;
+    const auto& log_file = _log_archive.parent_path() / LOG_FILE;
     if(std::filesystem::exists(log_file) && std::filesystem::is_regular_file(log_file))
     {
         return log_file;
@@ -200,14 +200,14 @@ inline static void stop_logger()
 
 template<typename T>
 inline static void test_log_archive(
-    const std::filesystem::path& log_archive,
-    const char* const password,
-    const T& messages
+    const std::filesystem::path& _log_archive,
+    const char* const _password,
+    const T& _messages
 )
 {
     // Try to decrypt the first log archive
     std::filesystem::path decrypted_log_path;
-    CPPUNIT_ASSERT_NO_THROW(decrypted_log_path = decrypt(log_archive, password));
+    CPPUNIT_ASSERT_NO_THROW(decrypted_log_path = decrypt(_log_archive, _password));
 
     CPPUNIT_ASSERT_MESSAGE(
         decrypted_log_path.string() + " doesn't exist.",
@@ -217,7 +217,7 @@ inline static void test_log_archive(
     // Read the first decrypted log
     std::ifstream decrypted_stream(decrypted_log_path.string());
 
-    for(const auto& message : messages)
+    for(const auto& message : _messages)
     {
         std::string line;
         std::getline(decrypted_stream, line);

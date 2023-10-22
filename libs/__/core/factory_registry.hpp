@@ -58,21 +58,21 @@ public:
     /**
      * @brief Add a factory to the registry.
      */
-    void add_factory(const key_type& name, factory_type factory)
+    void add_factory(const key_type& _name, factory_type _factory)
     {
         // get exclusive access
         core::mt::write_lock lock(m_mutex);
-        m_registry[name] = factory;
+        m_registry[_name] = _factory;
     }
 
     /**
      * @brief returns the factory associated with the key.
      */
-    virtual factory_type get_factory(const key_type& key) const
+    virtual factory_type get_factory(const key_type& _key) const
     {
         // get shared access
         core::mt::read_lock lock(m_mutex);
-        auto iter = m_registry.find(key);
+        auto iter = m_registry.find(_key);
         factory_type factory;
         if(iter != m_registry.end())
         {
@@ -93,7 +93,7 @@ public:
             m_registry.begin(),
             m_registry.end(),
             std::back_inserter(vect_keys),
-            [](const auto& e){return e.first;});
+            [](const auto& _e){return _e.first;});
         return vect_keys;
     }
 
@@ -125,9 +125,9 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key.
      * @return Created instance.
      */
-    return_type create(const key_type& key) const
+    return_type create(const key_type& _key) const
     {
-        factory_type factory = this->get_factory(key);
+        factory_type factory = this->get_factory(_key);
 
         if(!factory)
         {
@@ -156,13 +156,13 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key, passing arg1 to the factory.
      * @return Created instance.
      */
-    return_type create(const key_type& key, arg1type& arg1) const
+    return_type create(const key_type& _key, arg1type& _arg1) const
     {
-        factory_type factory = this->get_factory(key);
+        factory_type factory = this->get_factory(_key);
         return_type obj;
         if(factory)
         {
-            obj = factory(arg1);
+            obj = factory(_arg1);
         }
 
         return obj;

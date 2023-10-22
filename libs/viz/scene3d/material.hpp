@@ -46,35 +46,35 @@ public:
     VIZ_SCENE3D_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     /// Constructor
-    VIZ_SCENE3D_API material(const std::string& _name, const std::string& _templateName);
+    VIZ_SCENE3D_API material(const std::string& _name, const std::string& _template_name);
 
     /// Destructor
     VIZ_SCENE3D_API ~material();
 
     /// Updates material options mode (standard, point normals or cells normals)
-    VIZ_SCENE3D_API void updateOptionsMode(int _optionsMode);
+    VIZ_SCENE3D_API void updateOptionsMode(int _options_mode);
 
     /// Updates material polygon mode (surface, point or wireframe)
-    VIZ_SCENE3D_API void updatePolygonMode(int _polygonMode);
+    VIZ_SCENE3D_API void updatePolygonMode(int _polygon_mode);
 
     /// Update material shading mode (flat/phong)
     VIZ_SCENE3D_API void updateShadingMode(
-        int _shadingMode,
-        int _numLights,
-        bool _hasDiffuseTexture,
-        bool useTextureAlpha
+        int _shading_mode,
+        int _num_lights,
+        bool _has_diffuse_texture,
+        bool _use_texture_alpha
     );
 
     /// Update material color
-    VIZ_SCENE3D_API void updateRGBAMode(data::material::sptr _sightMaterial);
+    VIZ_SCENE3D_API void updateRGBAMode(data::material::sptr _sight_material);
 
-    void setHasMeshNormal(bool _hasMeshNormal);
-    void setHasUV(bool _hasUV);
-    void setHasVertexColor(bool _hasVertexColor);
-    void setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName);
+    void setHasMeshNormal(bool _has_mesh_normal);
+    void setHasUV(bool _has_uv);
+    void setHasVertexColor(bool _has_vertex_color);
+    void setHasPrimitiveColor(bool _has_primitive_color, const std::string& _texture_name);
 
     /// Set the type of primitive
-    void setPrimitiveType(data::mesh::CellType _type);
+    void set_primitive_type(data::mesh::cell_type_t _type);
 
     /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
     void setMeshSize(float _size);
@@ -83,7 +83,7 @@ public:
     VIZ_SCENE3D_API void setDiffuseTexture(const Ogre::TexturePtr& _texture);
 
     /// Set the material template used
-    VIZ_SCENE3D_API void setTemplate(const std::string& _templateName);
+    VIZ_SCENE3D_API void setTemplate(const std::string& _template_name);
 
 private:
 
@@ -111,7 +111,7 @@ private:
     bool m_hasPrimitiveColor {false};
 
     /// Primitive type of the associated mesh
-    data::mesh::CellType m_primitiveType {data::mesh::CellType::TRIANGLE};
+    data::mesh::cell_type_t m_primitiveType {data::mesh::cell_type_t::TRIANGLE};
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
@@ -125,36 +125,36 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasMeshNormal(bool _hasMeshNormal)
+inline void material::setHasMeshNormal(bool _has_mesh_normal)
 {
-    m_hasMeshNormal = _hasMeshNormal;
+    m_hasMeshNormal = _has_mesh_normal;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasUV(bool _hasUV)
+inline void material::setHasUV(bool _has_uv)
 {
-    m_hasUV = _hasUV;
+    m_hasUV = _has_uv;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasVertexColor(bool _hasVertexColor)
+inline void material::setHasVertexColor(bool _has_vertex_color)
 {
-    m_hasVertexColor = _hasVertexColor;
+    m_hasVertexColor = _has_vertex_color;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName)
+inline void material::setHasPrimitiveColor(bool _has_primitive_color, const std::string& _texture_name)
 {
-    m_hasPrimitiveColor            = _hasPrimitiveColor;
-    m_perPrimitiveColorTextureName = _textureName;
+    m_hasPrimitiveColor            = _has_primitive_color;
+    m_perPrimitiveColorTextureName = _texture_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setPrimitiveType(data::mesh::CellType _type)
+inline void material::set_primitive_type(data::mesh::cell_type_t _type)
 {
     m_primitiveType = _type;
 }

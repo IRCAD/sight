@@ -28,7 +28,7 @@
 #include <service/registry.hpp>
 
 #include <viz/scene3d/registry/adaptor.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 namespace sight::viz::scene3d
 {
@@ -79,24 +79,24 @@ void adaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = sight::service::getServices("sight::viz::scene3d::render");
+        auto services_vector = sight::service::get_services("sight::viz::scene3d::render");
 
         auto& registry = viz::scene3d::registry::get_adaptor_registry();
-        auto layerCfg  = registry[this->get_id()];
+        auto layer_cfg = registry[this->get_id()];
 
         auto result =
             std::find_if(
-                servicesVector.begin(),
-                servicesVector.end(),
-                [layerCfg](const service::base::sptr& srv)
+                services_vector.begin(),
+                services_vector.end(),
+                [layer_cfg](const service::base::sptr& _srv)
             {
-                return srv->get_id() == layerCfg.render;
+                return _srv->get_id() == layer_cfg.render;
             });
-        SIGHT_ASSERT("Can't find '" + layerCfg.render + "' render service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + layer_cfg.render + "' render service.", result != services_vector.end());
 
         m_renderService = std::dynamic_pointer_cast<viz::scene3d::render>(*result);
 
-        m_layerID = layerCfg.layer.empty() ? m_cfgLayerID : layerCfg.layer;
+        m_layerID = layer_cfg.layer.empty() ? m_cfgLayerID : layer_cfg.layer;
     }
 }
 
@@ -133,7 +133,7 @@ render::sptr adaptor::getRenderService() const
 
 //------------------------------------------------------------------------------
 
-Layer::sptr adaptor::getLayer() const
+layer::sptr adaptor::getLayer() const
 {
     return this->getRenderService()->getLayer(m_layerID);
 }
@@ -149,20 +149,20 @@ Ogre::SceneManager* adaptor::getSceneManager()
 
 void adaptor::requestRender()
 {
-    auto renderService = this->getRenderService();
-    if((renderService->status() == service::base::STARTED
-        || renderService->status() == service::base::SWAPPING)
-       && renderService->getRenderMode() == viz::scene3d::render::RenderMode::AUTO)
+    auto render_service = this->getRenderService();
+    if((render_service->status() == service::base::STARTED
+        || render_service->status() == service::base::SWAPPING)
+       && render_service->getRenderMode() == viz::scene3d::render::RenderMode::AUTO)
     {
-        renderService->requestRender();
+        render_service->requestRender();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void adaptor::updateVisibility(bool _isVisible)
+void adaptor::updateVisibility(bool _is_visible)
 {
-    m_isVisible = _isVisible;
+    m_isVisible = _is_visible;
     this->setVisible(m_isVisible);
 }
 

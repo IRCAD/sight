@@ -26,7 +26,7 @@
 
 #include <utest_data/generator/image.hpp>
 
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgrePrerequisites.h>
@@ -55,14 +55,14 @@ void utils_test::tearDown()
 
 void utils_test::convertOgreColorToFwColor()
 {
-    data::color::sptr refColor = std::make_shared<data::color>();
-    refColor->setRGBA(1.F, 1.F, 1.F, 1.F);
+    data::color::sptr ref_color = std::make_shared<data::color>();
+    ref_color->setRGBA(1.F, 1.F, 1.F, 1.F);
 
-    data::color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
-    CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor->green()) == static_cast<int>(refColor->green()));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor->blue()) == static_cast<int>(refColor->blue()));
-    CPPUNIT_ASSERT(static_cast<int>(resultColor->alpha()) == static_cast<int>(refColor->alpha()));
+    data::color::sptr result_color = viz::scene3d::utils::convertOgreColorToFwColor(Ogre::ColourValue());
+    CPPUNIT_ASSERT(static_cast<int>(result_color->red()) == static_cast<int>(ref_color->red()));
+    CPPUNIT_ASSERT(static_cast<int>(result_color->green()) == static_cast<int>(ref_color->green()));
+    CPPUNIT_ASSERT(static_cast<int>(result_color->blue()) == static_cast<int>(ref_color->blue()));
+    CPPUNIT_ASSERT(static_cast<int>(result_color->alpha()) == static_cast<int>(ref_color->alpha()));
 }
 
 //------------------------------------------------------------------------------
@@ -81,61 +81,61 @@ void utils_test::convertOgreMatrixToTM3D()
             coeff = dist(rng);
         }
 
-        const Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
+        const Ogre::Matrix4 ogre_mat0 = viz::scene3d::utils::convertTM3DToOgreMx(mat0);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), double(ogreMat0[l][c]));
+                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), double(ogre_mat0[l][c]));
             }
         }
 
         // Convert back to TM3D.
-        data::matrix4::sptr mat0Copy = std::make_shared<data::matrix4>();
+        data::matrix4::sptr mat0_copy = std::make_shared<data::matrix4>();
 
-        viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat0, mat0Copy);
+        viz::scene3d::utils::copyOgreMxToTM3D(ogre_mat0, mat0_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), (*mat0Copy)(l, c));
-                CPPUNIT_ASSERT_EQUAL(double(ogreMat0[l][c]), (*mat0Copy)(l, c));
+                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), (*mat0_copy)(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogre_mat0[l][c]), (*mat0_copy)(l, c));
             }
         }
     }
 
     // Convert from ogre to Sight and back to ogre.
     {
-        Ogre::Matrix4 ogreMat1;
+        Ogre::Matrix4 ogre_mat1;
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                ogreMat1[l][c] = dist(rng);
+                ogre_mat1[l][c] = dist(rng);
             }
         }
 
-        data::matrix4::sptr mat1Copy = std::make_shared<data::matrix4>();
-        viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat1, mat1Copy);
+        data::matrix4::sptr mat1_copy = std::make_shared<data::matrix4>();
+        viz::scene3d::utils::copyOgreMxToTM3D(ogre_mat1, mat1_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL(double(ogreMat1[l][c]), (*mat1Copy)(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogre_mat1[l][c]), (*mat1_copy)(l, c));
             }
         }
 
-        const Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
+        const Ogre::Matrix4 ogre_mat1_copy = viz::scene3d::utils::convertTM3DToOgreMx(mat1_copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c]);
-                CPPUNIT_ASSERT_EQUAL((*mat1Copy)(l, c), double(ogreMat1Copy[l][c]));
+                CPPUNIT_ASSERT_EQUAL(ogre_mat1[l][c], ogre_mat1_copy[l][c]);
+                CPPUNIT_ASSERT_EQUAL((*mat1_copy)(l, c), double(ogre_mat1_copy[l][c]));
             }
         }
     }
@@ -151,7 +151,7 @@ void utils_test::worldToSliceTest()
     Ogre::Vector3 world_outside_im = {50., -1., 5.};
 
     // Spacing is 0, throw exception.
-    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_inside_im), core::exception);
+    CPPUNIT_ASSERT_THROW(utils::worldToSlices(*image, world_inside_im), core::exception);
 
     utest_data::generator::image::generateImage(
         image,
@@ -164,13 +164,13 @@ void utils_test::worldToSliceTest()
 
     Ogre::Vector3i slice_idx;
 
-    CPPUNIT_ASSERT_NO_THROW(slice_idx = Utils::worldToSlices(*image, world_inside_im));
+    CPPUNIT_ASSERT_NO_THROW(slice_idx = utils::worldToSlices(*image, world_inside_im));
 
     CPPUNIT_ASSERT_EQUAL(20, slice_idx[0]);
     CPPUNIT_ASSERT_EQUAL(10, slice_idx[1]);
     CPPUNIT_ASSERT_EQUAL(5, slice_idx[2]);
 
-    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_outside_im), core::exception);
+    CPPUNIT_ASSERT_THROW(utils::worldToSlices(*image, world_outside_im), core::exception);
 }
 
 //------------------------------------------------------------------------------

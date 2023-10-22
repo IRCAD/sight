@@ -33,39 +33,39 @@ namespace sight::data::tools
 
 //------------------------------------------------------------------------------
 
-void color::hexaStringToRGBA(const std::string& _hexaColor, std::array<std::uint8_t, 4>& _rgba)
+void color::hexaStringToRGBA(const std::string& _hexa_color, std::array<std::uint8_t, 4>& _rgba)
 {
     SIGHT_THROW_IF(
         "Color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " + _hexaColor,
-        _hexaColor[0] != '#'
-        || (_hexaColor.length() != 7 && _hexaColor.length() != 9)
+        "hexadecimal digits. Given color: " + _hexa_color,
+        _hexa_color[0] != '#'
+        || (_hexa_color.length() != 7 && _hexa_color.length() != 9)
     );
 
-    std::string redString   = _hexaColor.substr(1, 2);
-    std::string greenString = _hexaColor.substr(3, 2);
-    std::string blueString  = _hexaColor.substr(5, 2);
-    int r                   = 0;
-    int g                   = 0;
-    int b                   = 0;
-    int a                   = 255;
+    std::string red_string   = _hexa_color.substr(1, 2);
+    std::string green_string = _hexa_color.substr(3, 2);
+    std::string blue_string  = _hexa_color.substr(5, 2);
+    int r                    = 0;
+    int g                    = 0;
+    int b                    = 0;
+    int a                    = 255;
 
     std::istringstream iss;
-    iss.str(redString);
+    iss.str(red_string);
     iss >> std::hex >> r;
     iss.clear();
-    iss.str(greenString);
+    iss.str(green_string);
     iss >> std::hex >> g;
     iss.clear();
-    iss.str(blueString);
+    iss.str(blue_string);
     iss >> std::hex >> b;
 
     _rgba[3] = 255;
-    if(_hexaColor.length() == 9)
+    if(_hexa_color.length() == 9)
     {
-        std::string alphaString = _hexaColor.substr(7, 2);
+        std::string alpha_string = _hexa_color.substr(7, 2);
         iss.clear();
-        iss.str(alphaString);
+        iss.str(alpha_string);
         iss >> std::hex >> a;
     }
 

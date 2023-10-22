@@ -103,25 +103,25 @@ public:
      * @{
      */
     IO_API static const core::com::signals::key_t POSITION_MODIFIED_SIG;
-    using PositionModifiedSignalType = core::com::signal<void (int64_t)>;
+    using position_modified_signal_t = core::com::signal<void (int64_t)>;
 
     IO_API static const core::com::signals::key_t DURATION_MODIFIED_SIG;
-    using DurationModifiedSignalType = core::com::signal<void (int64_t)>;
+    using duration_modified_signal_t = core::com::signal<void (int64_t)>;
 
     IO_API static const core::com::signals::key_t FRAME_PRESENTED_SIG;
-    using FramePresentedSignalType = core::com::signal<void ()>;
+    using frame_presented_signal_t = core::com::signal<void ()>;
 
     IO_API static const core::com::signals::key_t CAMERA_STARTED_SIG;
-    using CameraStartedSignalType = core::com::signal<void ()>;
+    using camera_started_signal_t = core::com::signal<void ()>;
 
     IO_API static const core::com::signals::key_t CAMERA_STOPPED_SIG;
-    using CameraStoppedSignalType = core::com::signal<void ()>;
+    using camera_stopped_signal_t = core::com::signal<void ()>;
 
     IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
-    using ParameterChangedSignalType = core::com::signal<void (ui::parameter_t, std::string)>;
+    using parameter_changed_signal_t = core::com::signal<void (ui::parameter_t, std::string)>;
 
     IO_API static const core::com::signals::key_t JOB_CREATED_SIG;
-    using JobCreatedSignalType = core::com::signal<void (core::jobs::base::sptr)>;
+    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
     IO_API static const core::com::signals::key_t FPS_CHANGED_SIG;
     using FPSChangedSignalType = sight::core::com::signal<void (double)>;
@@ -167,7 +167,7 @@ public:
     /**
      * @brief API for setting a new position in the video. Needs to be reimplemented in child classes
      */
-    IO_API virtual void setPosition(int64_t position) = 0;
+    IO_API virtual void setPosition(int64_t _position) = 0;
 
     /**
      * @brief API to get the previous image in frame by frame mode.
@@ -182,7 +182,7 @@ public:
     /**
      * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
      */
-    IO_API virtual void setStep(int step, std::string key);
+    IO_API virtual void setStep(int _step, std::string _key);
 
     /// SLOT: Requests the grabber internal settings.
     IO_API virtual void requestSettings();
@@ -191,16 +191,16 @@ public:
     IO_API virtual void optimize();
 
     /// SLOT: Adds a region of interest center.
-    IO_API virtual void addROICenter(sight::data::point::sptr p);
+    IO_API virtual void addROICenter(sight::data::point::sptr _p);
 
     /// SLOT: Removes a region of interest center.
-    IO_API virtual void removeROICenter(sight::data::point::sptr p);
+    IO_API virtual void removeROICenter(sight::data::point::sptr _p);
 
     /// SLOT: Sets a parameter value with its key.
-    IO_API virtual void setParameter(ui::parameter_t value, std::string key);
+    IO_API virtual void setParameter(ui::parameter_t _value, std::string _key);
 
     /// SLOT: Forward FPS data
-    IO_API virtual void forwardFPSChanged(double fps);
+    IO_API virtual void forwardFPSChanged(double _fps);
 
 protected:
 
@@ -208,12 +208,12 @@ protected:
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    IO_API static void clearTimeline(data::frame_tl& tl);
+    IO_API static void clearTimeline(data::frame_tl& _tl);
 
     /**
      * @brief sets the current start state of the grabber.
      */
-    IO_API void setStartState(bool state);
+    IO_API void setStartState(bool _state);
     bool started() const;
 
     data::ptr<data::frame_tl, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};

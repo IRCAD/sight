@@ -42,8 +42,8 @@ static const core::com::signals::key_t CAMERA_REMAINED_SIG = "cameraRemained";
 
 optical_flow::optical_flow() noexcept
 {
-    m_motionSignal   = new_signal<MotionSignalType>(CAMERA_MOVED_SIG);
-    m_noMotionSignal = new_signal<NoMotionSignalType>(CAMERA_REMAINED_SIG);
+    m_motionSignal   = new_signal<motion_signal_t>(CAMERA_MOVED_SIG);
+    m_noMotionSignal = new_signal<no_motion_signal_t>(CAMERA_REMAINED_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -55,8 +55,8 @@ optical_flow::~optical_flow() noexcept =
 
 void optical_flow::configuring()
 {
-    const auto configTree = this->get_config();
-    const auto config     = configTree.get_child_optional("config.<xmlattr>");
+    const auto config_tree = this->get_config();
+    const auto config      = config_tree.get_child_optional("config.<xmlattr>");
 
     if(config)
     {
@@ -83,14 +83,14 @@ void optical_flow::updating()
         return;
     }
 
-    cv::Mat tempImg;
-    cv::Mat grayImg;
+    cv::Mat temp_img;
+    cv::Mat gray_img;
 
     // Scope to lock frameTL
     {
-        const auto frameTL = m_timeline.lock();
-        SIGHT_ASSERT(" Input " << s_FRAME_TIMELINE_INPUT << " cannot be null", frameTL);
-        core::hires_clock::type timestamp = frameTL->getNewerTimestamp();
+        const auto frame_tl = m_timeline.lock();
+        SIGHT_ASSERT(" Input " << s_FRAME_TIMELINE_INPUT << " cannot be null", frame_tl);
+        core::hires_clock::type timestamp = frame_tl->getNewerTimestamp();
         if(timestamp < m_lastTimestamp + m_latency)
         {
             return;
@@ -98,40 +98,40 @@ void optical_flow::updating()
 
         m_lastTimestamp = timestamp;
 
-        CSPTR(data::frame_tl::BufferType) buffer = frameTL->getClosestBuffer(frameTL->getNewerTimestamp());
+        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->getClosestBuffer(frame_tl->getNewerTimestamp());
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        auto* frameBuff = const_cast<std::uint8_t*>(&buffer->getElement(0));
+        auto* frame_buff = const_cast<std::uint8_t*>(&buffer->getElement(0));
 
-        tempImg = io::opencv::frame_tl::moveToCv(frameTL.get_shared(), frameBuff);
+        temp_img = io::opencv::frame_tl::move_to_cv(frame_tl.get_shared(), frame_buff);
 
         // Use a specific size for images:
         // good balance between computation time & image quality for features tracking.
-        const cv::MatSize sizeOfFrame = tempImg.size;
+        const cv::MatSize size_of_frame = temp_img.size;
         cv::Size s;
 
         // If image is small enough no need to re-scale it.
-        if(sizeOfFrame[0] > 640)
+        if(size_of_frame[0] > 640)
         {
-            s.width  = static_cast<int>(std::round(static_cast<float>(sizeOfFrame[0]) / m_imageScaleFactor));
-            s.height = static_cast<int>(std::round(static_cast<float>(sizeOfFrame[1]) / m_imageScaleFactor));
-            cv::resize(tempImg, tempImg, s);
+            s.width  = static_cast<int>(std::round(static_cast<float>(size_of_frame[0]) / m_imageScaleFactor));
+            s.height = static_cast<int>(std::round(static_cast<float>(size_of_frame[1]) / m_imageScaleFactor));
+            cv::resize(temp_img, temp_img, s);
         }
 
-        if(frameTL->numComponents() == 1)
+        if(frame_tl->numComponents() == 1)
         {
-            grayImg = tempImg;
+            gray_img = temp_img;
         }
-        else if(frameTL->numComponents() == 3)
+        else if(frame_tl->numComponents() == 3)
         {
-            cv::cvtColor(tempImg, grayImg, cv::COLOR_RGB2GRAY);
+            cv::cvtColor(temp_img, gray_img, cv::COLOR_RGB2GRAY);
         }
-        else if(frameTL->numComponents() == 4)
+        else if(frame_tl->numComponents() == 4)
         {
-            cv::cvtColor(tempImg, grayImg, cv::COLOR_RGBA2GRAY);
+            cv::cvtColor(temp_img, gray_img, cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << frameTL->numComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << frame_tl->numComponents() << ").");
         }
     }
 
@@ -139,7 +139,7 @@ void optical_flow::updating()
     {
         m_mainMutex.lock();
 
-        m_lastGrayImg = grayImg;
+        m_lastGrayImg = gray_img;
         // Detect "good" features in frame. (parameters coming from opencv/samples/cpp/lkdemo.cpp).
         cv::goodFeaturesToTrack(m_lastGrayImg, m_lastCorners, 2000, 0.01, 10);
         m_initialization = true;
@@ -149,25 +149,25 @@ void optical_flow::updating()
         return;
     }
 
-    cv::Mat currentCorners;
-    cv::Vec2f cornersDiff;
+    cv::Mat current_corners;
+    cv::Vec2f corners_diff;
     std::vector<uchar> status;
     std::vector<float> err;
     int acc         = 0; // Incremented each time the flow of a feature has been found.
-    long double RMS = 0; // Root mean square difference between each detected corners.
+    long double rms = 0; // Root mean square difference between each detected corners.
     int n_move      = 0; // Incremented each time a corners has moved.
 
     m_mainMutex.lock();
 
     SIGHT_ASSERT(
         "last image and current image should have same size: " << m_lastGrayImg.size << " , "
-        << grayImg.size
+        << gray_img.size
         ,
-        m_lastGrayImg.size == grayImg.size
+        m_lastGrayImg.size == gray_img.size
     );
 
     // Optical flow (Lucas-Kanade version).
-    cv::calcOpticalFlowPyrLK(m_lastGrayImg, grayImg, m_lastCorners, currentCorners, status, err);
+    cv::calcOpticalFlowPyrLK(m_lastGrayImg, gray_img, m_lastCorners, current_corners, status, err);
 
     for(int index = 0 ; index < m_lastCorners.size().height ; index++)
     {
@@ -176,12 +176,12 @@ void optical_flow::updating()
         // the flow for the corresponding features has been found, otherwise, it is set to 0.
         if(status[static_cast<std::size_t>(index)] != 0U)
         {
-            cornersDiff = m_lastCorners.at<cv::Vec2f>(index) - currentCorners.at<cv::Vec2f>(index);
-            RMS        +=
-                static_cast<long double>(cornersDiff[0] * cornersDiff[0] + cornersDiff[1] * cornersDiff[1]);
+            corners_diff = m_lastCorners.at<cv::Vec2f>(index) - current_corners.at<cv::Vec2f>(index);
+            rms         +=
+                static_cast<long double>(corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]);
 
             // Check if corners has moved.
-            if((cornersDiff[0] * cornersDiff[0] + cornersDiff[1] * cornersDiff[1]) > 2)
+            if((corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]) > 2)
             {
                 ++n_move;
             }
@@ -192,27 +192,27 @@ void optical_flow::updating()
 
     if(acc != 0)
     {
-        RMS = RMS / static_cast<long double>(acc);
-        RMS = std::sqrt(RMS);
+        rms = rms / static_cast<long double>(acc);
+        rms = std::sqrt(rms);
     }
 
     // If movement is > 100 pixel and at least 80% of detected points has moved:
     // we can say that the camera is moving (values find empirically).
-    if((RMS > 100) && ((static_cast<float>(n_move) / (static_cast<float>(acc))) > 0.8F) && !m_motion)
+    if((rms > 100) && ((static_cast<float>(n_move) / (static_cast<float>(acc))) > 0.8F) && !m_motion)
     {
         m_motion = !m_motion;
         m_motionSignal->async_emit();
     }
     // No movement or movement on few points (ex: an object moving on the video):
     // we can assume that camera is not moving.
-    else if((RMS < 1 || ((static_cast<float>(n_move) / (static_cast<float>(acc))) < 0.5F)) && m_motion)
+    else if((rms < 1 || ((static_cast<float>(n_move) / (static_cast<float>(acc))) < 0.5F)) && m_motion)
     {
         m_motion = !m_motion;
         m_noMotionSignal->async_emit();
     }
 
     // Keep last image.
-    m_lastGrayImg = grayImg;
+    m_lastGrayImg = gray_img;
     // Detect "good" features in the frame. (parameters coming from opencv/samples/cpp/lkdemo.cpp).
     cv::goodFeaturesToTrack(m_lastGrayImg, m_lastCorners, 2000, 0.01, 10);
 

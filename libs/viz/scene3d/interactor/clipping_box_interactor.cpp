@@ -22,7 +22,7 @@
 
 #include "viz/scene3d/interactor/clipping_box_interactor.hpp"
 
-#include "viz/scene3d/Layer.hpp"
+#include "viz/scene3d/layer.hpp"
 
 namespace sight::viz::scene3d::interactor
 {
@@ -30,29 +30,29 @@ namespace sight::viz::scene3d::interactor
 //------------------------------------------------------------------------------
 
 clipping_box_interactor::clipping_box_interactor(
-    Layer::sptr _layer,
-    bool _layerOrderDependant,
+    layer::sptr _layer,
+    bool _layer_order_dependant,
     const std::string& _id,
-    Ogre::SceneNode* _parentSceneNode,
-    const Ogre::Matrix4& _clippingMatrix,
-    const widget::clipping_box::ClippingUpdateCallbackType& _clippingUpdateCb,
-    const std::string& _boxMtlName,
-    const std::string& _handleMtlName
+    Ogre::SceneNode* _parent_scene_node,
+    const Ogre::Matrix4& _clipping_matrix,
+    const widget::clipping_box::clipping_update_callback_t& _clipping_update_cb,
+    const std::string& _box_mtl_name,
+    const std::string& _handle_mtl_name
 ) noexcept :
-    base(_layer, _layerOrderDependant),
-    m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
-             _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
+    base(_layer, _layer_order_dependant),
+    m_widget(_id, _parent_scene_node, _layer->getDefaultCamera(), _layer->getSceneManager(),
+             _clipping_matrix, _clipping_update_cb, _box_mtl_name, _handle_mtl_name)
 {
     SIGHT_ASSERT("This interactor must know its layer.", _layer);
 }
 
 //------------------------------------------------------------------------------
 
-Ogre::MovableObject* clipping_box_interactor::pickObject(int x, int y)
+Ogre::MovableObject* clipping_box_interactor::pickObject(int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
-        const auto result = viz::scene3d::Utils::pickObject(x, y, 0xFFFFFFFF, *layer->getSceneManager());
+        const auto result = viz::scene3d::utils::pickObject(_x, _y, 0xFFFFFFFF, *layer->getSceneManager());
 
         return result.has_value() ? result->first : nullptr;
     }
@@ -62,23 +62,23 @@ Ogre::MovableObject* clipping_box_interactor::pickObject(int x, int y)
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::mouseMoveEvent(MouseButton button, Modifier /*_mods*/, int x, int y, int dx, int dy)
+void clipping_box_interactor::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy)
 {
     if(m_widget.getVisibility()) // If a widget is present in the scene.
     {
         bool interacted = m_pickedObject != nullptr;
 
-        if(button == LEFT && interacted)
+        if(_button == LEFT && interacted)
         {
-            m_widget.widgetPicked(m_pickedObject, x, y);
+            m_widget.widgetPicked(m_pickedObject, _x, _y);
         }
-        else if(button == MIDDLE)
+        else if(_button == MIDDLE)
         {
-            interacted = m_widget.move_clipping_box(x, y, -dx, -dy);
+            interacted = m_widget.move_clipping_box(_x, _y, -_dx, -_dy);
         }
-        else if(button == RIGHT)
+        else if(_button == RIGHT)
         {
-            interacted = m_widget.scale_clipping_box(x, y, dy);
+            interacted = m_widget.scale_clipping_box(_x, _y, _dy);
         }
 
         if(interacted)
@@ -103,32 +103,32 @@ void clipping_box_interactor::buttonReleaseEvent(MouseButton /*_button*/, Modifi
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::buttonPressEvent(MouseButton button, Modifier /*_mods*/, int x, int y)
+void clipping_box_interactor::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     if(m_widget.getVisibility())
     {
         bool interacted = false;
-        if(button == LEFT)
+        if(_button == LEFT)
         {
-            m_pickedObject = pickObject(x, y);
+            m_pickedObject = pickObject(_x, _y);
 
             interacted = m_widget.belongsToWidget(m_pickedObject);
             if(interacted)
             {
-                m_widget.widgetPicked(m_pickedObject, x, y);
+                m_widget.widgetPicked(m_pickedObject, _x, _y);
             }
             else
             {
                 m_pickedObject = nullptr;
             }
         }
-        else if(button == MIDDLE)
+        else if(_button == MIDDLE)
         {
-            interacted = m_widget.move_clipping_box(x, y, 0, 0);
+            interacted = m_widget.move_clipping_box(_x, _y, 0, 0);
         }
-        else if(button == RIGHT)
+        else if(_button == RIGHT)
         {
-            interacted = m_widget.scale_clipping_box(x, y, 0);
+            interacted = m_widget.scale_clipping_box(_x, _y, 0);
         }
 
         if(interacted)
@@ -141,19 +141,19 @@ void clipping_box_interactor::buttonPressEvent(MouseButton button, Modifier /*_m
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
+void clipping_box_interactor::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
 {
     if(m_widget.getVisibility())
     {
         // Convert back the scale from "delta"
-        if(_scaleFactor < 0)
+        if(_scale_factor < 0)
         {
-            _scaleFactor = -1.0 / _scaleFactor;
+            _scale_factor = -1.0 / _scale_factor;
         }
 
-        const auto dy = int(((_centerY * _scaleFactor) - _centerY) * 0.5);
+        const auto dy = int(((_center_y * _scale_factor) - _center_y) * 0.5);
 
-        if(m_widget.scale_clipping_box(_centerX, _centerY, dy) || m_pickedObject != nullptr)
+        if(m_widget.scale_clipping_box(_center_x, _center_y, dy) || m_pickedObject != nullptr)
         {
             cancelFurtherLayerInteractions();
         }
@@ -208,9 +208,9 @@ Ogre::Matrix4 clipping_box_interactor::get_clipping_transform() const
 
 //------------------------------------------------------------------------------
 
-void clipping_box_interactor::updateFromTransform(const Ogre::Matrix4& _clippingTrf)
+void clipping_box_interactor::updateFromTransform(const Ogre::Matrix4& _clipping_trf)
 {
-    m_widget.updateFromTransform(_clippingTrf);
+    m_widget.updateFromTransform(_clipping_trf);
 }
 
 //------------------------------------------------------------------------------

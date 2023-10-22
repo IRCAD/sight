@@ -61,11 +61,11 @@ void ImagePositionPatientSorterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
+double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj)
 {
     gdcm::ImageReader reader;
-    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-    reader.SetStream(*streamInfo.stream);
+    const core::memory::buffer_manager::stream_info stream_info = _buffer_obj->get_stream_info();
+    reader.SetStream(*stream_info.stream);
 
     if(!reader.Read())
     {
@@ -83,30 +83,30 @@ double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
     }
 
     // Retrieve image position
-    const gdcm::Image& gdcmImage = reader.GetImage();
-    const double* gdcmOrigin     = gdcmImage.GetOrigin();
-    const fwVec3d imagePosition  = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
+    const gdcm::Image& gdcm_image = reader.GetImage();
+    const double* gdcm_origin     = gdcm_image.GetOrigin();
+    const fwVec3d image_position  = {{gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]}};
 
     // Retrieve image orientation
-    const double* directionCosines  = gdcmImage.GetDirectionCosines();
-    const fwVec3d imageOrientationU = {{
-        std::round(directionCosines[0]),
-        std::round(directionCosines[1]),
-        std::round(directionCosines[2])
+    const double* direction_cosines   = gdcm_image.GetDirectionCosines();
+    const fwVec3d image_orientation_u = {{
+        std::round(direction_cosines[0]),
+        std::round(direction_cosines[1]),
+        std::round(direction_cosines[2])
     }
     };
-    const fwVec3d imageOrientationV = {{
-        std::round(directionCosines[3]),
-        std::round(directionCosines[4]),
-        std::round(directionCosines[5])
+    const fwVec3d image_orientation_v = {{
+        std::round(direction_cosines[3]),
+        std::round(direction_cosines[4]),
+        std::round(direction_cosines[5])
     }
     };
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
-    const double index = geometry::data::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(image_position, z_vector);
 
     return index;
 }
@@ -133,31 +133,31 @@ void ImagePositionPatientSorterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Apply filter
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::ImagePositionPatientSorter"
     );
     CPPUNIT_ASSERT(filter);
-    CPPUNIT_ASSERT_NO_THROW(sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
+    CPPUNIT_ASSERT_NO_THROW(sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true));
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
-    dicomSeries = dicomSeriesContainer[0];
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicom_series_container.size());
+    dicom_series = dicom_series_container[0];
 
-    double oldPosition = -1.0;
+    double old_position = -1.0;
 
-    const data::dicom_series::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
-    for(std::size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->numInstances() ; ++index)
+    const data::dicom_series::dicom_container_t& dicom_container = dicom_series->getDicomContainer();
+    for(std::size_t index = dicom_series->getFirstInstanceNumber() ; index < dicom_series->numInstances() ; ++index)
     {
-        const double position = getInstanceZPosition(dicomContainer.at(index));
+        const double position = get_instance_z_position(dicom_container.at(index));
 
         // Check that the position is bigger that the previous one
-        CPPUNIT_ASSERT_LESS(position, oldPosition);
-        oldPosition = position;
+        CPPUNIT_ASSERT_LESS(position, old_position);
+        old_position = position;
     }
 }
 
@@ -183,10 +183,10 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Apply filter
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
@@ -194,7 +194,7 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     );
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_THROW(
-        sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
+        sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, false),
         sight::filter::dicom::exceptions::FilterFailure
     );
 }

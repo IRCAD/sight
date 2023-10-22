@@ -34,17 +34,17 @@
 #include <ui/__/dialog/input.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/qt/series/SelectorDialog.hpp>
+#include <ui/qt/series/selector_dialog.hpp>
 
 namespace sight::module::io::dicom
 {
 
 /// Debug function to print the files associated to series in a series_set
-inline static auto printSeriesSet(const sight::data::series_set& series_set)
+inline static auto print_series_set(const sight::data::series_set& _series_set)
 {
     std::stringstream ss;
 
-    for(const auto& series : series_set)
+    for(const auto& series : _series_set)
     {
         ss << series->getSeriesInstanceUID() << " { ";
 
@@ -81,9 +81,9 @@ public:
     readerImpl& operator=(readerImpl&&)      = delete;
 
     /// Constructor
-    inline explicit readerImpl(reader* const reader) noexcept :
-        m_owner(reader),
-        m_job_created_signal(reader->new_signal<JobCreatedSignal>("jobCreated"))
+    inline explicit readerImpl(reader* const _reader) noexcept :
+        M_OWNER(_reader),
+        m_job_created_signal(_reader->new_signal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -91,12 +91,12 @@ public:
     inline ~readerImpl() noexcept = default;
 
     /// Pointer to the public interface
-    reader* const m_owner;
+    reader* const M_OWNER;
 
     /// Clear location and selected series
     inline void clear()
     {
-        m_owner->clearLocations();
+        M_OWNER->clearLocations();
         m_reader.reset();
         m_selection.reset();
     }
@@ -108,14 +108,14 @@ public:
         static auto default_location = std::make_shared<core::location::single_folder>();
 
         if(m_dialog_policy == DialogPolicy::ALWAYS
-           || (m_dialog_policy == DialogPolicy::ONCE && !m_owner->hasLocationDefined()))
+           || (m_dialog_policy == DialogPolicy::ONCE && !M_OWNER->hasLocationDefined()))
         {
             sight::ui::dialog::location location_dialog;
 
             // Set dialog options
-            if(!m_owner->m_windowTitle.empty())
+            if(!M_OWNER->m_windowTitle.empty())
             {
-                location_dialog.setTitle(m_owner->m_windowTitle);
+                location_dialog.setTitle(M_OWNER->m_windowTitle);
             }
             else
             {
@@ -139,7 +139,7 @@ public:
 
             // Set the selected location
             const auto& selected_folder = selected_location->get_folder();
-            m_owner->set_folder(selected_folder);
+            M_OWNER->set_folder(selected_folder);
 
             // Save default location for later use
             default_location->set_folder(selected_folder.parent_path());
@@ -160,7 +160,7 @@ public:
         m_reader = std::make_shared<sight::io::dicom::Reader>();
 
         // Set the folder from the service location
-        m_reader->set_folder(m_owner->get_folder());
+        m_reader->set_folder(M_OWNER->get_folder());
 
         // Set filters
         m_reader->setFilters(m_filters);
@@ -197,7 +197,7 @@ public:
             const auto result = core::thread::get_default_worker()->post_task<std::pair<bool, data::series_set::sptr> >(
                 [this, selection]
                 {
-                    sight::ui::qt::series::selector selector(selection, m_displayedColumns);
+                    sight::ui::qt::series::selector_dialog selector(selection, m_displayedColumns);
                     if(selector.exec() != QDialog::Rejected)
                     {
                         return std::make_pair(true, selector.get_selection());
@@ -226,9 +226,9 @@ public:
     /// Default filters to use when scanning for DICOM files
     data::series::SopKeywords m_filters {
         data::series::dicomTypesToSops(
-            static_cast<data::series::DicomTypes>(data::series::DicomType::IMAGE)
-            | static_cast<data::series::DicomTypes>(data::series::DicomType::MODEL)
-            | static_cast<data::series::DicomTypes>(data::series::DicomType::REPORT)
+            static_cast<data::series::DicomTypes>(data::series::dicom_t::IMAGE)
+            | static_cast<data::series::DicomTypes>(data::series::dicom_t::MODEL)
+            | static_cast<data::series::DicomTypes>(data::series::dicom_t::REPORT)
         )
     };
 
@@ -316,9 +316,9 @@ void reader::configuring()
         if(m_pimpl->m_filters.empty())
         {
             m_pimpl->m_filters = data::series::dicomTypesToSops(
-                static_cast<data::series::DicomTypes>(data::series::DicomType::IMAGE)
-                | static_cast<data::series::DicomTypes>(data::series::DicomType::MODEL)
-                | static_cast<data::series::DicomTypes>(data::series::DicomType::REPORT)
+                static_cast<data::series::DicomTypes>(data::series::dicom_t::IMAGE)
+                | static_cast<data::series::DicomTypes>(data::series::dicom_t::MODEL)
+                | static_cast<data::series::DicomTypes>(data::series::dicom_t::REPORT)
             );
         }
     }
@@ -326,9 +326,9 @@ void reader::configuring()
     const auto& config = tree.get_child_optional("config.<xmlattr>");
     if(config.is_initialized())
     {
-        if(std::string displayedColumns = config->get("displayedColumns", ""); !displayedColumns.empty())
+        if(std::string displayed_columns = config->get("displayedColumns", ""); !displayed_columns.empty())
         {
-            m_pimpl->m_displayedColumns = displayedColumns;
+            m_pimpl->m_displayedColumns = displayed_columns;
         }
     }
 }
@@ -350,24 +350,24 @@ void reader::updating()
 
     const auto read_job = std::make_shared<core::jobs::job>(
         "Sorting selected series",
-        [&](core::jobs::job& job)
+        [&](core::jobs::job& _job)
         {
             // Set cursor to busy state. It will be reset to default even if exception occurs
             const sight::ui::BusyCursor busy_cursor;
 
-            job.done_work(10);
+            _job.done_work(10);
 
             SIGHT_THROW_IF("No series were selected.", !m_pimpl->m_selection || m_pimpl->m_selection->empty());
 
             // Sort the series
             m_pimpl->m_reader->sort();
 
-            job.done_work(20);
+            _job.done_work(20);
 
             // Really read the series
             m_pimpl->m_reader->read();
 
-            job.done_work(90);
+            _job.done_work(90);
 
             // Get the series set from the reader
             if(const auto& read = m_pimpl->m_reader->getConcreteObject(); read != nullptr && !read->empty())
@@ -384,7 +384,7 @@ void reader::updating()
                 output->shallow_copy(read);
             }
 
-            job.done();
+            _job.done();
         },
         this->worker()
     );
@@ -437,7 +437,7 @@ void reader::openLocationDialog()
            // Show the series selection dialog, if needed
            && m_pimpl->showSelection())
         {
-            SIGHT_DEBUG("Selected series: " << printSeriesSet(*m_pimpl->m_selection));
+            SIGHT_DEBUG("Selected series: " << print_series_set(*m_pimpl->m_selection));
 
             // Everything seems going well, exit
             return;

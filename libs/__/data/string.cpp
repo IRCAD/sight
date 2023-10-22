@@ -33,13 +33,13 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-void string::shallow_copy(const object::csptr& source)
+void string::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const string>(source);
+    const auto& other = std::dynamic_pointer_cast<const string>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -52,13 +52,13 @@ void string::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void string::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void string::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const string>(source);
+    const auto& other = std::dynamic_pointer_cast<const string>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -66,7 +66,7 @@ void string::deep_copy(const object::csptr& source, const std::unique_ptr<deep_c
 
     m_value = other->m_value;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 } // namespace sight::data

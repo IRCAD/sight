@@ -58,7 +58,7 @@ public:
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::container::widget::sptr parent, const std::string& id) final;
+    UI_QT_API void createLayout(ui::container::widget::sptr _parent, const std::string& _id) final;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -69,7 +69,7 @@ public:
     /// Modify a layout element, depending of the key.
     /// @param parameter The parameter of the action.
     /// @param key The action to perform.
-    UI_QT_API void modifyLayout(const ui::parameter_t& parameter, const std::string& key) final;
+    UI_QT_API void modifyLayout(const ui::parameter_t& _parameter, const std::string& _key) final;
 
 private:
 

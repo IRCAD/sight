@@ -32,42 +32,42 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-void multVecMatrix(const fwMatrix4x4& matrix, const fwVec3d& source, fwVec3d& dest)
+void mult_vec_matrix(const fwMatrix4x4& _matrix, const fwVec3d& _source, fwVec3d& _dest)
 {
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
 
-    glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
-                     matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
-                     matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
-                     matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
+    glm::dmat4x4 mat(_matrix[0][0], _matrix[1][0], _matrix[2][0], _matrix[3][0],
+                     _matrix[0][1], _matrix[1][1], _matrix[2][1], _matrix[3][1],
+                     _matrix[0][2], _matrix[1][2], _matrix[2][2], _matrix[3][2],
+                     _matrix[0][3], _matrix[1][3], _matrix[2][3], _matrix[3][3]);
 
-    glm::dvec4 vec(source[0], source[1], source[2], 1.0);
+    glm::dvec4 vec(_source[0], _source[1], _source[2], 1.0);
     glm::dvec4 res = mat * vec;
 
-    dest[0] = res[0];
-    dest[1] = res[1];
-    dest[2] = res[2];
+    _dest[0] = res[0];
+    _dest[1] = res[1];
+    _dest[2] = res[2];
 }
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 getInverse(const fwMatrix4x4& matrix)
+fwMatrix4x4 get_inverse(const fwMatrix4x4& _matrix)
 {
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
 
-    glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
-                     matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
-                     matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
-                     matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
+    glm::dmat4x4 mat(_matrix[0][0], _matrix[1][0], _matrix[2][0], _matrix[3][0],
+                     _matrix[0][1], _matrix[1][1], _matrix[2][1], _matrix[3][1],
+                     _matrix[0][2], _matrix[1][2], _matrix[2][2], _matrix[3][2],
+                     _matrix[0][3], _matrix[1][3], _matrix[2][3], _matrix[3][3]);
 
-    glm::dmat4x4 matInv = glm::inverse(mat);
+    glm::dmat4x4 mat_inv = glm::inverse(mat);
 
-    fwMatrix4x4 inverse = {{{{matInv[0][0], matInv[1][0], matInv[2][0], matInv[3][0]}},
-        {{matInv[0][1], matInv[1][1], matInv[2][1], matInv[3][1]}},
-        {{matInv[0][2], matInv[1][2], matInv[2][2], matInv[3][2]}},
-        {{matInv[0][3], matInv[1][3], matInv[2][3], matInv[3][3]
+    fwMatrix4x4 inverse = {{{{mat_inv[0][0], mat_inv[1][0], mat_inv[2][0], mat_inv[3][0]}},
+        {{mat_inv[0][1], mat_inv[1][1], mat_inv[2][1], mat_inv[3][1]}},
+        {{mat_inv[0][2], mat_inv[1][2], mat_inv[2][2], mat_inv[3][2]}},
+        {{mat_inv[0][3], mat_inv[1][3], mat_inv[2][3], mat_inv[3][3]
         }
         }
     }
@@ -77,15 +77,15 @@ fwMatrix4x4 getInverse(const fwMatrix4x4& matrix)
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
+fwMatrix4x4 get_rotation_matrix(const fwVec3d& _vec_norm)
 {
-    fwMatrix4x4 R;
+    fwMatrix4x4 r;
 
-    const double FV0 = _vecNorm[0];
-    const double FV1 = _vecNorm[1];
-    const double YP  = sqrt(FV0 * FV0 + FV1 * FV1);
-    const double RZ  = -atan2(FV0, FV1);
-    const double RX  = -atan2(YP, _vecNorm[2]);
+    const double f_v0 = _vec_norm[0];
+    const double f_v1 = _vec_norm[1];
+    const double yp   = sqrt(f_v0 * f_v0 + f_v1 * f_v1);
+    const double rz   = -atan2(f_v0, f_v1);
+    const double rx   = -atan2(yp, _vec_norm[2]);
 
     //     Rotation Matrix
     //     [     cos(z)           sin(z)         0     0 ]
@@ -96,27 +96,27 @@ fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
     //     [                                             ]
     //     [        0                0           0     1 ]
 
-    R[0][0] = cos(RZ);
-    R[0][1] = sin(RZ);
-    R[0][2] = 0;
-    R[0][3] = 0.;
+    r[0][0] = cos(rz);
+    r[0][1] = sin(rz);
+    r[0][2] = 0;
+    r[0][3] = 0.;
 
-    R[1][0] = -cos(RX) * sin(RZ);
-    R[1][1] = cos(RX) * cos(RZ);
-    R[1][2] = sin(RX);
-    R[1][3] = 0.;
+    r[1][0] = -cos(rx) * sin(rz);
+    r[1][1] = cos(rx) * cos(rz);
+    r[1][2] = sin(rx);
+    r[1][3] = 0.;
 
-    R[2][0] = sin(RX) * sin(RZ);
-    R[2][1] = -sin(RX) * cos(RZ);
-    R[2][2] = cos(RX);
-    R[2][3] = 0.;
+    r[2][0] = sin(rx) * sin(rz);
+    r[2][1] = -sin(rx) * cos(rz);
+    r[2][2] = cos(rx);
+    r[2][3] = 0.;
 
-    R[3][0] = 0.;
-    R[3][1] = 0.;
-    R[3][2] = 0.;
-    R[3][3] = 1.;
+    r[3][0] = 0.;
+    r[3][1] = 0.;
+    r[3][2] = 0.;
+    r[3][3] = 1.;
 
-    return R;
+    return r;
 }
 
 //------------------------------------------------------------------------------
@@ -125,17 +125,17 @@ fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 operator*(const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2)
+fwMatrix4x4 operator*(const fwMatrix4x4& _matrix1, const fwMatrix4x4& _matrix2)
 {
-    glm::dmat4x4 mat1(matrix1[0][0], matrix1[1][0], matrix1[2][0], matrix1[3][0],
-                      matrix1[0][1], matrix1[1][1], matrix1[2][1], matrix1[3][1],
-                      matrix1[0][2], matrix1[1][2], matrix1[2][2], matrix1[3][2],
-                      matrix1[0][3], matrix1[1][3], matrix1[2][3], matrix1[3][3]);
+    glm::dmat4x4 mat1(_matrix1[0][0], _matrix1[1][0], _matrix1[2][0], _matrix1[3][0],
+                      _matrix1[0][1], _matrix1[1][1], _matrix1[2][1], _matrix1[3][1],
+                      _matrix1[0][2], _matrix1[1][2], _matrix1[2][2], _matrix1[3][2],
+                      _matrix1[0][3], _matrix1[1][3], _matrix1[2][3], _matrix1[3][3]);
 
-    glm::dmat4x4 mat2(matrix2[0][0], matrix2[1][0], matrix2[2][0], matrix2[3][0],
-                      matrix2[0][1], matrix2[1][1], matrix2[2][1], matrix2[3][1],
-                      matrix2[0][2], matrix2[1][2], matrix2[2][2], matrix2[3][2],
-                      matrix2[0][3], matrix2[1][3], matrix2[2][3], matrix2[3][3]);
+    glm::dmat4x4 mat2(_matrix2[0][0], _matrix2[1][0], _matrix2[2][0], _matrix2[3][0],
+                      _matrix2[0][1], _matrix2[1][1], _matrix2[2][1], _matrix2[3][1],
+                      _matrix2[0][2], _matrix2[1][2], _matrix2[2][2], _matrix2[3][2],
+                      _matrix2[0][3], _matrix2[1][3], _matrix2[2][3], _matrix2[3][3]);
 
     glm::dmat4x4 prod = mat1 * mat2;
 

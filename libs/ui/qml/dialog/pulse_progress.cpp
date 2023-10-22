@@ -45,16 +45,16 @@ namespace sight::ui::qml::dialog
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& title)
+void pulse_progress::setTitle(const std::string& _title)
 {
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& msg)
+void pulse_progress::setMessage(const std::string& _msg)
 {
-    m_message = QString::fromStdString(msg);
+    m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
@@ -65,18 +65,18 @@ void pulse_progress::show()
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath =
+    const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/pulse_progress.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("pulseProgressDialog", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialogPath, context);
+    QObject* window = engine->createComponent(dialog_path, context);
     SIGHT_ASSERT("The Qml File pulse_progress is not found or not loaded", window);
     // keep window to destroy it
 
     // Create a QFutureWatcher and connect signals and slots.
-    QFutureWatcher<void> futureWatcher;
+    QFutureWatcher<void> future_watcher;
 
     window->setProperty("title", m_title);
     auto* dialog = window->findChild<QObject*>("dialog");
@@ -87,9 +87,9 @@ void pulse_progress::show()
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
-    QObject::connect(&futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(&future_watcher, SIGNAL(finished()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    futureWatcher.setFuture(QtConcurrent::run(m_stuff));
+    future_watcher.setFuture(QtConcurrent::run(m_stuff));
     qGuiApp->installEventFilter(this);
     loop.exec();
     qGuiApp->removeEventFilter(this);
@@ -98,9 +98,9 @@ void pulse_progress::show()
 
 //------------------------------------------------------------------------------
 
-bool pulse_progress::eventFilter(QObject* /*watched*/, QEvent* event)
+bool pulse_progress::eventFilter(QObject* /*watched*/, QEvent* _event)
 {
-    return event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride;
+    return _event->type() == QEvent::Shortcut || _event->type() == QEvent::ShortcutOverride;
 }
 
 //------------------------------------------------------------------------------

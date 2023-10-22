@@ -33,7 +33,7 @@ static const core::com::signals::key_t PICKED_SIG = "picked";
 
 picker::picker() noexcept
 {
-    m_pickedSig = new_signal<sight::viz::scene3d::interactor::mesh_picker_interactor::PointClickedSigType>(PICKED_SIG);
+    m_pickedSig = new_signal<sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t>(PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,16 +51,16 @@ void picker::configuring()
     m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
 
-    const std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
-    if(!hexaMask.empty())
+    const std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 }
 

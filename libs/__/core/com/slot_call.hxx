@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(__FWCOM_SLOTCALL_HPP__)
+#if !defined(FWCOM_SLOTCALL_HPP)
 #error core/com/slot_call.hpp not included
 #endif
 
@@ -42,29 +42,29 @@ namespace sight::core::com
 //------------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-std::function<R()> slot_call<R(A ...)>::bind_call(A ... args) const
+std::function<R()> slot_call<R(A ...)>::bind_call(A ... _args) const
 {
-    return [ =, this]{return call(args ...);};
+    return [ =, this]{return call(_args ...);};
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
 typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(
-    const core::thread::worker::sptr& worker,
-    A ... args
+    const core::thread::worker::sptr& _worker,
+    A ... _args
 ) const
 {
-    if(!worker)
+    if(!_worker)
     {
         SIGHT_THROW_EXCEPTION(core::com::exception::no_worker("No valid worker."));
     }
 
     return post_weak_call(
-        worker,
+        _worker,
         core::com::util::weakcall(
             std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
-            this->bind_call(args ...)
+            this->bind_call(_args ...)
         )
     );
 }
@@ -72,7 +72,7 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(A ... args) const
+typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(A ... _args) const
 {
     core::mt::read_lock lock(this->m_worker_mutex);
 
@@ -87,7 +87,7 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
             this->m_worker,
             core::com::util::weakcall(
                 std::dynamic_pointer_cast<const slot_base>(source_slot),
-                this->bind_call(args ...),
+                this->bind_call(_args ...),
                 this->m_worker,
                 std::dynamic_pointer_cast<const slot_base>(this->shared_from_this())
             )
@@ -99,7 +99,7 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
             this->m_worker,
             core::com::util::weakcall(
                 std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
-                this->bind_call(args ...),
+                this->bind_call(_args ...),
                 this->m_worker
             )
         );
@@ -110,14 +110,14 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
 
 template<typename R, typename ... A>
 template<typename WEAKCALL>
-std::shared_future<R> slot_call<R(A ...)>::post_weak_call(const core::thread::worker::sptr& worker, WEAKCALL f)
+std::shared_future<R> slot_call<R(A ...)>::post_weak_call(const core::thread::worker::sptr& _worker, WEAKCALL _f)
 {
-    std::packaged_task<R()> task(f);
+    std::packaged_task<R()> task(_f);
     std::future<R> future = task.get_future();
 
     std::function<void()> f_task = core::thread::move_task_into_function(task);
 
-    worker->post(f_task);
+    _worker->post(f_task);
 
     return future;
 }

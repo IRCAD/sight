@@ -88,15 +88,15 @@ struct SERVICE_CLASS_API connections_t
     connections_t() = default;
     SERVICE_API connections_t(
         std::initializer_list<std::tuple<const std::string_view, core::com::signals::key_t,
-                                         core::com::slots::key_t> > init
+                                         core::com::slots::key_t> > _init
     );
 
     SERVICE_API void push(
-        std::string_view key,
-        const core::com::signals::key_t& sig,
-        const core::com::slots::key_t& slot
+        std::string_view _key,
+        const core::com::signals::key_t& _sig,
+        const core::com::slots::key_t& _slot
     );
-    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator find(std::string_view key) const;
+    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator find(std::string_view _key) const;
     [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator end() const;
     [[nodiscard]] SERVICE_API bool empty() const;
     [[nodiscard]] SERVICE_API std::size_t size() const;
@@ -117,7 +117,7 @@ struct SERVICE_CLASS_API connections_t
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
  * - \b swapped() : Emitted when the service has swapped.
- * - \b notified(NotificationType _type, std::string _message): Emitted when the service wants to pop a notification.
+ * - \b notified(notification_t _type, std::string _message): Emitted when the service wants to pop a notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -190,7 +190,7 @@ public:
     using shared_future_t = std::shared_future<void>;
 
     /// Sets a worker to all service slots
-    SERVICE_API void set_worker(SPTR(core::thread::worker) worker);
+    SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
     SERVICE_API SPTR(core::thread::worker) worker() const;
     //@}
 
@@ -205,7 +205,7 @@ public:
      * @param[in] ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    SERVICE_API void set_config(const config_t& ptree);
+    SERVICE_API void set_config(const config_t& _ptree);
 
     /// Return the service configuration
     SERVICE_API const base::config_t& get_config() const;
@@ -223,7 +223,7 @@ public:
      * @post m_configurationState == CONFIGURED
      * @param[in] ptree property tree
      */
-    SERVICE_API void configure(const config_t& ptree);
+    SERVICE_API void configure(const config_t& _ptree);
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Does nothing otherwise.

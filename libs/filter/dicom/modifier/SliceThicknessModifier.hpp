@@ -44,9 +44,9 @@ public:
     FILTER_DICOM_API ~SliceThicknessModifier() override = default;
 
     /// Override
-    FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API dicom_series_container_t apply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
@@ -62,13 +62,13 @@ protected:
      *  tags.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj) const;
+    FILTER_DICOM_API virtual double getInstanceZPosition(const core::memory::buffer_object::sptr& _buffer_obj) const;
 
     /**
      * @brief Get the SliceThickness value from an instance.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double getSliceThickness(const core::memory::buffer_object::sptr& bufferObj) const;
+    FILTER_DICOM_API virtual double getSliceThickness(const core::memory::buffer_object::sptr& _buffer_obj) const;
 
     /// Filter name
     static const std::string s_FILTER_NAME;

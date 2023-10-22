@@ -47,19 +47,19 @@ namespace sight::ui::qml::dialog
 //------------------------------------------------------------------------------
 
 progress::progress(
-    const std::string& title,
-    const std::string& message
+    const std::string& _title,
+    const std::string& _message
 )
 {
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     // find if toolBar exist on the ApplicationWindow
-    const auto& rootObjects = engine->getRootObjects();
-    QObject* toolBar        = nullptr;
-    for(const auto& root : rootObjects)
+    const auto& root_objects = engine->getRootObjects();
+    QObject* tool_bar        = nullptr;
+    for(const auto& root : root_objects)
     {
-        toolBar = root->findChild<QObject*>("fwGuiQml_ProgressBar");
-        if(toolBar != nullptr)
+        tool_bar = root->findChild<QObject*>("fwGuiQml_ProgressBar");
+        if(tool_bar != nullptr)
         {
             break;
         }
@@ -67,39 +67,39 @@ progress::progress(
 
     // TODO: find a way to remove the context from rootContext but instead only on the object
     engine->getRootContext()->setContextProperty("progressDialog", this);
-    if(toolBar != nullptr)
+    if(tool_bar != nullptr)
     {
         // get the path of the qml ui file in the 'rc' directory
-        const auto& dialogPath =
+        const auto& dialog_path =
             core::runtime::get_library_resource_file_path("ui_qml/dialog/Progress.qml");
         // load the qml ui component
-        m_dialog = engine->createComponent(dialogPath);
+        m_dialog = engine->createComponent(dialog_path);
         SIGHT_ASSERT("The Qml File progress is not found or not loaded", m_dialog);
         auto* item = qobject_cast<QQuickItem*>(m_dialog);
         // get ownership to not get Progress qml destroyed
         QQmlEngine::setObjectOwnership(item, QQmlEngine::CppOwnership);
         // set visual parent of progress qml for render
-        item->setParent(toolBar);
+        item->setParent(tool_bar);
         // set the progress qml inside the root
-        item->setParentItem(qobject_cast<QQuickItem*>(toolBar));
+        item->setParentItem(qobject_cast<QQuickItem*>(tool_bar));
     }
     else
     {
         // get the path of the qml ui file in the 'rc' directory
-        const auto& dialogPath =
+        const auto& dialog_path =
             core::runtime::get_library_resource_file_path("ui_qml/dialog/progress.qml");
         // load the qml ui component
-        m_window = engine->createComponent(dialogPath);
+        m_window = engine->createComponent(dialog_path);
         SIGHT_ASSERT("The Qml File progress is not found or not loaded", m_window);
-        m_window->setProperty("title", QString::fromStdString(title));
+        m_window->setProperty("title", QString::fromStdString(_title));
         m_dialog = m_window->findChild<QObject*>("dialog");
         SIGHT_ASSERT("The dialog is not found inside the window", m_dialog);
         QMetaObject::invokeMethod(m_dialog, "open");
     }
 
     m_visible = true;
-    this->progress::setTitle(title);
-    this->progress::setMessage(message);
+    this->progress::setTitle(_title);
+    this->progress::setMessage(_message);
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ progress::~progress()
 
 //------------------------------------------------------------------------------
 
-void progress::operator()(float percent, std::string msg)
+void progress::operator()(float _percent, std::string _msg)
 {
     SIGHT_ASSERT("m_dialog not instanced", m_dialog);
     // check if the dialog box has been closed by the user and cancel the progress
@@ -132,22 +132,22 @@ void progress::operator()(float percent, std::string msg)
         return;
     }
 
-    const int& value = static_cast<int>(percent * 100);
+    const int& value = static_cast<int>(_percent * 100);
     if(value != this->m_value)
     {
         this->m_value = value;
-        this->setMessage(msg);
+        this->setMessage(_msg);
         this->setTitle(m_title.toStdString());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void progress::setTitle(const std::string& title)
+void progress::setTitle(const std::string& _title)
 {
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
     if(m_window != nullptr)
     {
         Q_EMIT titleChanged();
@@ -156,7 +156,7 @@ void progress::setTitle(const std::string& title)
 
 //------------------------------------------------------------------------------
 
-void progress::setMessage(const std::string& msg)
+void progress::setMessage(const std::string& _msg)
 {
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
@@ -167,7 +167,7 @@ void progress::setMessage(const std::string& msg)
         message += " - ";
     }
 
-    message = message + QString::fromStdString(msg);
+    message = message + QString::fromStdString(_msg);
     if(m_visible)
     {
         QMetaObject::invokeMethod(m_dialog, "changeValue", Q_ARG(QVariant, message), Q_ARG(QVariant, qreal(m_value)));

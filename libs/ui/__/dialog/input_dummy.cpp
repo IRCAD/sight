@@ -66,9 +66,9 @@ std::pair<std::string, bool> input_dummy::getInput()
 
 //------------------------------------------------------------------------------
 
-void input_dummy::pushInput(const std::string& input)
+void input_dummy::pushInput(const std::string& _input)
 {
-    inputs.push(input);
+    inputs.push(_input);
 }
 
 //------------------------------------------------------------------------------

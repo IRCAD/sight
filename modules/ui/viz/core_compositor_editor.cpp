@@ -66,21 +66,21 @@ void core_compositor_editor::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
     auto* layout = new QVBoxLayout();
 
-    auto* labelLayerSelector = new QLabel(tr("3D layer selected"));
-    layout->addWidget(labelLayerSelector);
+    auto* label_layer_selector = new QLabel(tr("3D layer selected"));
+    layout->addWidget(label_layer_selector);
     m_layersBox = new QComboBox();
     layout->addWidget(m_layersBox);
 
     // Transparency depth management
     {
-        auto* labelTransparency = new QLabel(tr("Transparency depth"));
-        layout->addWidget(labelTransparency);
+        auto* label_transparency = new QLabel(tr("Transparency depth"));
+        layout->addWidget(label_transparency);
         m_transparencyDepthSlider = new QSlider(Qt::Horizontal);
         layout->addWidget(m_transparencyDepthSlider);
         m_transparencyDepthSlider->setEnabled(false);
@@ -92,77 +92,77 @@ void core_compositor_editor::starting()
 
     // Transparency selector
     {
-        auto* groupBox       = new QGroupBox(tr("Transparency technique"));
-        auto* layoutGroupBox = new QVBoxLayout();
-        groupBox->setLayout(layoutGroupBox);
-        layout->addWidget(groupBox);
+        auto* group_box        = new QGroupBox(tr("Transparency technique"));
+        auto* layout_group_box = new QVBoxLayout();
+        group_box->setLayout(layout_group_box);
+        layout->addWidget(group_box);
 
-        m_transparencyButtonGroup = new QButtonGroup(groupBox);
+        m_transparencyButtonGroup = new QButtonGroup(group_box);
 
-        m_buttonDefault = new QRadioButton(tr("Default"), groupBox);
+        m_buttonDefault = new QRadioButton(tr("Default"), group_box);
         m_buttonDefault->setMinimumSize(m_buttonDefault->sizeHint());
         m_buttonDefault->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDefault, 0);
-        layoutGroupBox->addWidget(m_buttonDefault);
+        layout_group_box->addWidget(m_buttonDefault);
         m_labelDefault = new QLabel(tr("<i>No Order Independent Transparency</i>"));
         m_labelDefault->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelDefault);
+        layout_group_box->addWidget(m_labelDefault);
 
-        m_buttonDepthPeeling = new QRadioButton(tr("Depth Peeling"), groupBox);
+        m_buttonDepthPeeling = new QRadioButton(tr("Depth Peeling"), group_box);
         m_buttonDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDepthPeeling, 1);
-        layoutGroupBox->addWidget(m_buttonDepthPeeling);
+        layout_group_box->addWidget(m_buttonDepthPeeling);
         m_labelDepthPeeling = new QLabel(tr("<i>Exact color blending but slowest technique</i>"));
         m_labelDepthPeeling->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelDepthPeeling);
+        layout_group_box->addWidget(m_labelDepthPeeling);
 
         m_buttonDualDepthPeeling =
-            new QRadioButton(tr("Dual Depth Peeling"), groupBox);
+            new QRadioButton(tr("Dual Depth Peeling"), group_box);
         m_buttonDualDepthPeeling->setMinimumSize(m_buttonDualDepthPeeling->sizeHint());
         m_buttonDualDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDualDepthPeeling, 2);
-        layoutGroupBox->addWidget(m_buttonDualDepthPeeling);
+        layout_group_box->addWidget(m_buttonDualDepthPeeling);
         m_labelDualDepthPeeling = new QLabel(tr("<i>Exact color blending but slow technique</i>"));
         m_labelDualDepthPeeling->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelDualDepthPeeling);
+        layout_group_box->addWidget(m_labelDualDepthPeeling);
 
         m_buttonWeightedBlendedOIT =
-            new QRadioButton(tr("Weighted Blended OIT"), groupBox);
+            new QRadioButton(tr("Weighted Blended OIT"), group_box);
         m_buttonWeightedBlendedOIT->setMinimumSize(m_buttonWeightedBlendedOIT->sizeHint());
         m_buttonWeightedBlendedOIT->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonWeightedBlendedOIT, 3);
-        layoutGroupBox->addWidget(m_buttonWeightedBlendedOIT);
+        layout_group_box->addWidget(m_buttonWeightedBlendedOIT);
         m_labelWeightedBlendedOIT = new QLabel(tr("<i>Approximative color blending but fastest</i>"));
         m_labelWeightedBlendedOIT->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelWeightedBlendedOIT);
+        layout_group_box->addWidget(m_labelWeightedBlendedOIT);
 
         m_buttonHybridTransparency =
-            new QRadioButton(tr("Hybrid transparency"), groupBox);
+            new QRadioButton(tr("Hybrid transparency"), group_box);
         m_buttonHybridTransparency->setMinimumSize(m_buttonHybridTransparency->sizeHint());
         m_buttonHybridTransparency->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonHybridTransparency, 4);
-        layoutGroupBox->addWidget(m_buttonHybridTransparency);
+        layout_group_box->addWidget(m_buttonHybridTransparency);
         m_labelHybridTransparency =
             new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"));
         m_labelHybridTransparency->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelHybridTransparency);
+        layout_group_box->addWidget(m_labelHybridTransparency);
 
-        m_buttonCelShadingDepthPeeling = new QRadioButton(tr("CelShading + Depth Peeling"), groupBox);
+        m_buttonCelShadingDepthPeeling = new QRadioButton(tr("CelShading + Depth Peeling"), group_box);
         m_buttonCelShadingDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonCelShadingDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonCelShadingDepthPeeling, 5);
-        layoutGroupBox->addWidget(m_buttonCelShadingDepthPeeling);
+        layout_group_box->addWidget(m_buttonCelShadingDepthPeeling);
         m_labelCelShadingDepthPeeling = new QLabel(
             tr(
                 "<i>Depth peeling with an edge detection per layer.</i>"
             )
         );
         m_labelCelShadingDepthPeeling->setEnabled(false);
-        layoutGroupBox->addWidget(m_labelCelShadingDepthPeeling);
+        layout_group_box->addWidget(m_labelCelShadingDepthPeeling);
     }
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->refreshRenderers();
 
@@ -185,21 +185,21 @@ void core_compositor_editor::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = sight::service::getServices("sight::viz::scene3d::render");
+    const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
     for(const auto& srv : renderers)
     {
         sight::viz::scene3d::render::sptr render = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
 
-        for(auto& layerMap : render->getLayers())
+        for(auto& layer_map : render->getLayers())
         {
             // Adds default layers (3D scene)
-            if(layerMap.second->isCoreCompositorEnabled())
+            if(layer_map.second->isCoreCompositorEnabled())
             {
-                const std::string id = layerMap.first;
-                std::string renderID = render->get_id();
-                m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
-                m_layers.push_back(layerMap.second);
+                const std::string id  = layer_map.first;
+                std::string render_id = render->get_id();
+                m_layersBox->addItem(QString::fromStdString(render_id + " : " + id));
+                m_layers.push_back(layer_map.second);
             }
         }
     }
@@ -222,7 +222,7 @@ void core_compositor_editor::updating()
 
 //------------------------------------------------------------------------------
 
-void core_compositor_editor::onSelectedLayerItem(int index)
+void core_compositor_editor::onSelectedLayerItem(int _index)
 {
     namespace compositor = sight::viz::scene3d::compositor;
 
@@ -244,7 +244,7 @@ void core_compositor_editor::onSelectedLayerItem(int index)
     }
 
     // Reloads buttons to match layer's parameters
-    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(_index)];
 
     // If the layer is not yet started, we can't use its default compositor
     auto layer = m_currentLayer.lock();
@@ -283,56 +283,56 @@ void core_compositor_editor::onSelectedLayerItem(int index)
 
 //------------------------------------------------------------------------------
 
-void core_compositor_editor::onEditTransparencyDepth(int depth)
+void core_compositor_editor::onEditTransparencyDepth(int _depth)
 {
     auto layer = m_currentLayer.lock();
     if(layer)
     {
-        layer->setTransparencyDepth(depth);
+        layer->setTransparencyDepth(_depth);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void core_compositor_editor::onEditTransparency(int index)
+void core_compositor_editor::onEditTransparency(int _index)
 {
     namespace compositor = sight::viz::scene3d::compositor;
 
     auto layer = m_currentLayer.lock();
     if(layer)
     {
-        bool transparencyUpdated = false;
-        switch(index)
+        bool transparency_updated = false;
+        switch(_index)
         {
             case 0:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::DEFAULT);
+                transparency_updated = layer->setTransparencyTechnique(compositor::DEFAULT);
                 break;
 
             case 1:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::DEPTHPEELING);
+                transparency_updated = layer->setTransparencyTechnique(compositor::DEPTHPEELING);
                 break;
 
             case 2:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::DUALDEPTHPEELING);
+                transparency_updated = layer->setTransparencyTechnique(compositor::DUALDEPTHPEELING);
                 break;
 
             case 3:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::WEIGHTEDBLENDEDOIT);
+                transparency_updated = layer->setTransparencyTechnique(compositor::WEIGHTEDBLENDEDOIT);
                 break;
 
             case 4:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::HYBRIDTRANSPARENCY);
+                transparency_updated = layer->setTransparencyTechnique(compositor::HYBRIDTRANSPARENCY);
                 break;
 
             case 5:
-                transparencyUpdated = layer->setTransparencyTechnique(compositor::CELLSHADING_DEPTHPEELING);
+                transparency_updated = layer->setTransparencyTechnique(compositor::CELLSHADING_DEPTHPEELING);
                 break;
 
             default:
-                transparencyUpdated = false;
+                transparency_updated = false;
         }
 
-        if(!transparencyUpdated)
+        if(!transparency_updated)
         {
             m_transparencyButtonGroup->button(0)->setChecked(true);
         }

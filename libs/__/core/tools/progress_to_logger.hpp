@@ -45,7 +45,7 @@ public:
      * @param[in] prefix  allow to add a prefix in the formated log message
      * @param[in] postfix  allow to add a postfix in the formated log message
      */
-    CORE_API progress_to_logger(std::string prefix, std::string postfix = " %");
+    CORE_API progress_to_logger(std::string _prefix, std::string _postfix = " %");
 
     /// default destructor, do nothing
     CORE_API virtual ~progress_to_logger();
@@ -54,7 +54,7 @@ public:
      * @brief the handler effective code : send formated progress information to the log system SpyLog.
      * The formated ouput look like [prefix] msg percent [postfix]
      */
-    CORE_API void operator()(float percent, const std::string& msg);
+    CORE_API void operator()(float _percent, const std::string& _msg);
 
 protected:
 

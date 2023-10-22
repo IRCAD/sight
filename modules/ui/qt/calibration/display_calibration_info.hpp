@@ -104,7 +104,7 @@ private:
     void stopConfig();
 
     /// Slot: Launch an appConfig to display an image on an external window.
-    void displayImage(std::size_t idx);
+    void displayImage(std::size_t _idx);
     /**
      * @}
      */

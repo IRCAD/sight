@@ -51,11 +51,11 @@ public:
     /// Destructor. Do nothing.
     UI_API ~cursor_base() override = default;
 
-    typedef std::string FactoryRegistryKeyType;
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    typedef std::string factory_registry_key_t;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the cursor
-    UI_API virtual void setCursor(state_t cursor, bool setOverridenAsDefault = true) = 0;
+    UI_API virtual void setCursor(state_t _cursor, bool _set_overriden_as_default = true) = 0;
 
     /// Set the default cursor
     UI_API virtual void setDefaultCursor() = 0;

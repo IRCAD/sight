@@ -65,7 +65,7 @@ public:
     static void equalityTest();
 
     static data::transfer_function::sptr createTFColor();
-    static void checkTFColor(data::transfer_function::sptr tf);
+    static void checkTFColor(data::transfer_function::sptr _tf);
 };
 
 } // namespace sight::data::ut

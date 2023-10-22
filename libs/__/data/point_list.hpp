@@ -64,7 +64,7 @@ public:
      * @brief Sets point vector
      * @param[in] _vPoints The vector of points to set
      */
-    void setPoints(const PointListContainer& _vPoints);
+    void setPoints(const PointListContainer& _v_points);
     /**
      * @brief Adds a Point in the pointlist
      * @param[in] _p The point to push
@@ -87,12 +87,12 @@ public:
     /**
      * @brief Signal emitted when a Point is added
      */
-    typedef core::com::signal<void (point::sptr)> PointAddedSignalType;
+    typedef core::com::signal<void (point::sptr)> point_added_signal_t;
     DATA_API static const core::com::signals::key_t POINT_ADDED_SIG;
     /**
      * @brief Signal emitted when a Point is removed
      */
-    typedef core::com::signal<void (point::sptr)> PointRemovedSignalType;
+    typedef core::com::signal<void (point::sptr)> point_removed_signal_t;
     DATA_API static const core::com::signals::key_t POINT_REMOVED_SIG;
 /**
  * @}
@@ -100,22 +100,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const point_list& other) const noexcept;
-    DATA_API bool operator!=(const point_list& other) const noexcept;
+    DATA_API bool operator==(const point_list& _other) const noexcept;
+    DATA_API bool operator!=(const point_list& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -142,9 +142,9 @@ inline const point_list::PointListContainer& point_list::getPoints() const
 
 //-----------------------------------------------------------------------------
 
-inline void point_list::setPoints(const point_list::PointListContainer& _vPoints)
+inline void point_list::setPoints(const point_list::PointListContainer& _v_points)
 {
-    this->m_vPoints = _vPoints;
+    this->m_vPoints = _v_points;
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +169,6 @@ inline void point_list::clear()
     this->m_vPoints.clear();
 }
 
-DATA_API std::ostream& operator<<(std::ostream& out, const point_list& pl);
+DATA_API std::ostream& operator<<(std::ostream& _out, const point_list& _pl);
 
 } // end namespace sight::data

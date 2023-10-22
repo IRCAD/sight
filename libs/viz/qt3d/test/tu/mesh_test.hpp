@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::qt3dTest::ut
+namespace sight::viz::qt3d_test::ut
 {
 
 class mesh_test : public CPPUNIT_NS::TestFixture

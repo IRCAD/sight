@@ -81,7 +81,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    typedef core::com::signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> error_computed_signal_t;
     ///@}
 
     MODULE_FILTER_POINT_API point_list_registration();
@@ -91,7 +91,7 @@ public:
 protected:
 
     /// Register a point list slot
-    MODULE_FILTER_POINT_API void computeRegistration(core::hires_clock::type timestamp) override;
+    MODULE_FILTER_POINT_API void computeRegistration(core::hires_clock::type _timestamp) override;
 
     /// Registration Mode (default: RIGID)
     typedef enum Mode
@@ -99,7 +99,7 @@ protected:
         RIGID,      /*!< rigid mode of VTK registration */
         SIMILARITY, /*!< similarity mode of VTK registration */
         AFFINE      /*!< affine mode of VTK registration */
-    } RegistrationModeType;
+    } registration_mode_t;
 
     /// Configures the service
     MODULE_FILTER_POINT_API void configuring() override;
@@ -128,7 +128,7 @@ private:
     std::string m_matrixKey;
 
     ///Registration Mode
-    RegistrationModeType m_registrationMode {RIGID};
+    registration_mode_t m_registrationMode {RIGID};
 
     sight::data::ptr<sight::data::point_list, sight::data::Access::inout> m_registeredPL {this, "registeredPL"};
     sight::data::ptr<sight::data::point_list, sight::data::Access::inout> m_referencePL {this, "referencePL"};

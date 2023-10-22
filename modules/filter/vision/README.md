@@ -18,7 +18,7 @@ This module uses **OpenCV** & **Realsense** libraries.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_filter_vision ...)
+add_dependencies(my_target module_filter_vision ...)
 ```
 
 ### XML

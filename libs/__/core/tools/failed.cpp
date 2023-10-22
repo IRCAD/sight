@@ -25,8 +25,8 @@
 namespace sight::core::tools
 {
 
-failed::failed(const std::string& message) noexcept :
-    core::exception(message)
+failed::failed(const std::string& _message) noexcept :
+    core::exception(_message)
 {
 }
 

@@ -49,22 +49,22 @@ public:
     /// Identifier of the role UID in the series tree item.
     MODULE_UI_QT_API static const int s_UID_ROLE;
 
-    typedef std::map<std::string, std::string> ObjectIconMapType;
+    typedef std::map<std::string, std::string> object_icon_map_t;
 
     /// Defines common header columns used in the tree widget of all created tabs.
-    enum class ColumnCommunType : int
+    enum class column_commun_t : int
     {
         ID = 0
     };
 
     /// Defines header columns used in the tree widget of all data.
-    enum class ColumnObjectType : int
+    enum class column_object_t : int
     {
         DESC = 1
     };
 
     /// Defines header columns used in the tree widget of all series.
-    enum class ColumnSeriesType : int
+    enum class column_series_t : int
     {
         NAME = 1,
         SEX,
@@ -78,7 +78,7 @@ public:
     };
 
     /// Defines header columns used in the tree widget of image series.
-    enum ColumnImageSeriesType : int
+    enum column_image_series_t : int
     {
         BODY_PART_EXAMINED = 10,
         PATIENT_POSITION,
@@ -125,7 +125,7 @@ public:
      */
     MODULE_UI_QT_API bool checkAndComputeData(
         const data::activity::sptr& _activity,
-        std::string& _errorMsg
+        std::string& _error_msg
     );
 
     /**
@@ -134,24 +134,24 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    MODULE_UI_QT_API data::object::sptr checkData(std::size_t _index, std::string& _errorMsg);
+    MODULE_UI_QT_API data::object::sptr checkData(std::size_t _index, std::string& _error_msg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
      * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
      */
-    inline void setIOSelectorConfig(const std::string& _ioSelectorSrvConfig)
+    inline void setIOSelectorConfig(const std::string& _io_selector_srv_config)
     {
-        m_ioSelectorSrvConfig = _ioSelectorSrvConfig;
+        m_ioSelectorSrvConfig = _io_selector_srv_config;
     }
 
     /**
      * @brief Sets the IO selector configuration used to import data from a series set.
      * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
      */
-    inline void setSDBIOSelectorConfig(const std::string& _ioSelectorSrvConfig)
+    inline void setSDBIOSelectorConfig(const std::string& _io_selector_srv_config)
     {
-        m_sdbIoSelectorSrvConfig = _ioSelectorSrvConfig;
+        m_sdbIoSelectorSrvConfig = _io_selector_srv_config;
     }
 
     /// Removes all the widget tabs.
@@ -161,9 +161,9 @@ public:
      * @brief Sets the map that defines the icon associated to an object.
      * @param _objectIcons the map associating an object type to an icon.
      */
-    void setObjectIconAssociation(const ObjectIconMapType& _objectIcons)
+    void setObjectIconAssociation(const object_icon_map_t& _object_icons)
     {
-        m_objectIcons = _objectIcons;
+        m_objectIcons = _object_icons;
     }
 
 protected:
@@ -173,8 +173,8 @@ protected:
 
 private:
 
-    typedef std::vector<data::object::csptr> ImportedObjectType;
-    typedef std::vector<QPointer<QTreeWidget> > TreeContainerType;
+    typedef std::vector<data::object::csptr> imported_object_t;
+    typedef std::vector<QPointer<QTreeWidget> > tree_container_t;
 
     /// Imports an object required for the selected tab.
     void importObject();
@@ -193,7 +193,7 @@ private:
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
-    static data::object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
+    static data::object::sptr readObject(const std::string& _classname, const std::string& _io_selector_srv_config);
 
     /// Removes the selected object in the current tree.
     void removeSelectedObjects();
@@ -212,7 +212,7 @@ private:
      * @param index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
-    void addObjectItem(std::size_t index, const data::object::csptr& _obj);
+    void addObjectItem(std::size_t _index, const data::object::csptr& _obj);
 
     /// Sets the activity information
     sight::activity::extension::activity_info m_activityInfo;
@@ -224,13 +224,13 @@ private:
     std::string m_sdbIoSelectorSrvConfig;
 
     /// Stores references on the imported object before to add them in the activity.
-    ImportedObjectType m_importedObject;
+    imported_object_t m_importedObject;
 
     /// Stores the tree widget of each tab.
-    TreeContainerType m_treeWidgets;
+    tree_container_t m_treeWidgets;
 
     /// Associates an icon to an object type.
-    ObjectIconMapType m_objectIcons;
+    object_icon_map_t m_objectIcons;
 };
 
 } // namespace sight::module::ui::qt::activity

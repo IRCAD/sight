@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,35 +30,35 @@ namespace sight::io::http
 Request::Request()
 = default;
 
-Request::Request(std::string url) :
-    m_url(std::move(url))
+Request::Request(std::string _url) :
+    m_url(std::move(_url))
 {
 }
 
 //------------------------------------------------------------------------------
 
-Request::sptr Request::New(const std::string& url)
+Request::sptr Request::New(const std::string& _url)
 {
-    return std::make_shared<Request>(url);
+    return std::make_shared<Request>(_url);
 }
 
 //------------------------------------------------------------------------------
 
-void Request::addHeader(const std::string& key, const std::string& value)
+void Request::addHeader(const std::string& _key, const std::string& _value)
 {
-    m_headers[key] = value;
+    m_headers[_key] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-void Request::setHeaders(const HeadersType& headers)
+void Request::setHeaders(const headers_t& _headers)
 {
-    m_headers = headers;
+    m_headers = _headers;
 }
 
 //------------------------------------------------------------------------------
 
-const Request::HeadersType& Request::getHeaders() const
+const Request::headers_t& Request::getHeaders() const
 {
     return m_headers;
 }
@@ -72,9 +72,9 @@ const std::string& Request::getUrl() const
 
 //------------------------------------------------------------------------------
 
-void Request::setUrl(const std::string& url)
+void Request::setUrl(const std::string& _url)
 {
-    m_url = url;
+    m_url = _url;
 }
 
 } // namespace sight::io::http

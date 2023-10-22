@@ -33,7 +33,7 @@
 namespace sight::viz::scene3d
 {
 
-class R2VBRenderable;
+class r2vb_renderable;
 
 /**
  * @brief   Manages a generic mesh
@@ -77,42 +77,42 @@ public:
     );
 
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void setDynamicVertices(bool _isDynamic);
+    VIZ_SCENE3D_API void setDynamicVertices(bool _is_dynamic);
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void setDynamic(bool _isDynamic);
+    VIZ_SCENE3D_API void setDynamic(bool _is_dynamic);
 
     VIZ_SCENE3D_API void setVisible(bool _visible);
-    VIZ_SCENE3D_API void updateMesh(const data::mesh::csptr& _mesh, bool _pointsOnly = false);
-    VIZ_SCENE3D_API void updateMesh(const data::point_list::csptr& _pointList);
-    VIZ_SCENE3D_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(
+    VIZ_SCENE3D_API void updateMesh(const data::mesh::csptr& _mesh, bool _points_only = false);
+    VIZ_SCENE3D_API void updateMesh(const data::point_list::csptr& _point_list);
+    VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > updateR2VB(
         const data::mesh::csptr& _mesh,
-        Ogre::SceneManager& _sceneMgr,
-        const std::string& _materialName
+        Ogre::SceneManager& _scene_mgr,
+        const std::string& _material_name
     );
 
     /// Updates the vertices position
     VIZ_SCENE3D_API void updateVertices(const data::mesh::csptr& _mesh);
     /// Updates the vertices position
-    VIZ_SCENE3D_API void updateVertices(const data::point_list::csptr& mesh);
+    VIZ_SCENE3D_API void updateVertices(const data::point_list::csptr& _mesh);
     /// Updates the vertices colors.
     VIZ_SCENE3D_API void updateColors(const data::mesh::csptr& _mesh);
     /// Updates the vertices texture coordinates.
     VIZ_SCENE3D_API void updateTexCoords(const data::mesh::csptr& _mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
-    VIZ_SCENE3D_API void clearMesh(Ogre::SceneManager& _sceneMgr);
+    VIZ_SCENE3D_API void clearMesh(Ogre::SceneManager& _scene_mgr);
 
-    VIZ_SCENE3D_API void updateMaterial(viz::scene3d::material* _material, bool _isR2VB) const;
+    VIZ_SCENE3D_API void updateMaterial(viz::scene3d::material* _material, bool _is_r2_vb) const;
 
     [[nodiscard]] VIZ_SCENE3D_API bool hasColorLayerChanged(const data::mesh::csptr& _mesh) const;
 
-    VIZ_SCENE3D_API Ogre::Entity* createEntity(Ogre::SceneManager& _sceneMgr);
+    VIZ_SCENE3D_API Ogre::Entity* createEntity(Ogre::SceneManager& _scene_mgr);
 
     VIZ_SCENE3D_API void invalidateR2VB();
 
 private:
 
     /// Returns true if the bounding box of a ogre mesh is valid (not NaN or infinite values)
-    static bool areBoundsValid(const Ogre::MeshPtr& _ogreMesh);
+    static bool areBoundsValid(const Ogre::MeshPtr& _ogre_mesh);
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
     static const unsigned int s_maxTextureSize = 2048;
@@ -123,12 +123,12 @@ private:
     /// Binding for each layer
     std::array<std::uint16_t, NUM_BINDINGS> m_binding {};
 
-    data::mesh::CellType m_cellType {data::mesh::CellType::_SIZE};
+    data::mesh::cell_type_t m_cellType {data::mesh::cell_type_t::_SIZE};
     /// Pointers on submeshes need for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
     Ogre::SubMesh* m_subMesh {nullptr};
 
-    /// Texture used to store per-primitive color
+    /// texture used to store per-primitive color
     Ogre::TexturePtr m_perPrimitiveColorTexture;
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
@@ -138,7 +138,7 @@ private:
     /// mesh data for r2vb input - contains only line lists with adjacency information primitives
     Ogre::MeshPtr m_r2vbMesh;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map<data::mesh::CellType, viz::scene3d::R2VBRenderable*> m_r2vbObject;
+    std::map<data::mesh::cell_type_t, viz::scene3d::r2vb_renderable*> m_r2vbObject;
 
     /// Defines if there is a normal layer
     bool m_hasNormal {false};
@@ -156,16 +156,16 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamic(bool _isDynamic)
+inline void mesh::setDynamic(bool _is_dynamic)
 {
-    m_isDynamic = _isDynamic;
+    m_isDynamic = _is_dynamic;
 }
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamicVertices(bool _isDynamic)
+inline void mesh::setDynamicVertices(bool _is_dynamic)
 {
-    m_isDynamicVertices = _isDynamic;
+    m_isDynamicVertices = _is_dynamic;
 }
 
 //------------------------------------------------------------------------------

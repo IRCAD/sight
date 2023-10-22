@@ -46,12 +46,12 @@ public:
      * @brief   Test if process is Active
      * @return  true if the process is running
      */
-    CORE_API static bool is_process_running(int pid) noexcept;
+    CORE_API static bool is_process_running(int _pid) noexcept;
 
     /**
      * @brief   Terminate a process
      */
-    CORE_API static void kill_process(int pid) noexcept;
+    CORE_API static void kill_process(int _pid) noexcept;
 
     /**
      * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
@@ -71,7 +71,7 @@ public:
     /// @{
     [[deprecated("Removed in sight 23.0.")]] CORE_API static const std::filesystem::path& get_temp_path() noexcept;
     [[deprecated("Removed in sight 23.0.")]] CORE_API static std::filesystem::path get_temporary_folder(
-        const std::string& sub_folder_prefix = ""
+        const std::string& _sub_folder_prefix = ""
     ) noexcept;
     /// @}
 };

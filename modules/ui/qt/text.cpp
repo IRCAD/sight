@@ -56,12 +56,12 @@ void text::configuring()
 
     QString color = "white";
 
-    if(const auto colorCfg = config.get_optional<std::string>("color"); colorCfg.has_value())
+    if(const auto color_cfg = config.get_optional<std::string>("color"); color_cfg.has_value())
     {
-        const QString txtColor = QString::fromStdString(colorCfg.value());
-        if(!txtColor.isEmpty())
+        const QString txt_color = QString::fromStdString(color_cfg.value());
+        if(!txt_color.isEmpty())
         {
-            color = txtColor;
+            color = txt_color;
         }
     }
 
@@ -73,14 +73,14 @@ void text::configuring()
 void text::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QHBoxLayout();
     layout->addWidget(m_label);
 
     layout->setAlignment(Qt::AlignCenter);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 }
 
 //------------------------------------------------------------------------------

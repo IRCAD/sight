@@ -79,7 +79,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(mesh_writer, sight::io::service::writer);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Constructor. Do nothing.
@@ -142,7 +142,7 @@ private:
      */
     std::filesystem::path m_fsMeshPath;
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 
     /// Extension selected in file dialog
     std::string m_selectedExtension;

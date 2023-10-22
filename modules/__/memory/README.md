@@ -4,7 +4,7 @@ Contains services to manage memory and lock objects to prevent dump.
 
 ## Services
 
-- **LockDumpSrv** : performs dumps-locks on objects. They are unlocked when the service stops.
+- **lock_dump** : performs dumps-locks on objects. They are unlocked when the service stops.
 - **dump_policy** : configures dumping policy.
 
 ## How to use it
@@ -12,7 +12,7 @@ Contains services to manage memory and lock objects to prevent dump.
 ### CMake
 
 ```cmake
-target_link_libraries(myTarget <PUBLIC|PRIVATE> module_memory)
+target_link_libraries(my_target <PUBLIC|PRIVATE> module_memory)
 ```
 
 ### XML

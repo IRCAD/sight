@@ -27,7 +27,7 @@
 #include <ui/__/editor.hpp>
 
 #include <viz/scene3d/compositor/chain_manager.hpp>
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -82,10 +82,10 @@ private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer
-    void onSelectedLayerItem(int index);
+    void onSelectedLayerItem(int _index);
 
     /// Slot: called when a mode is selected
-    void onSelectedModeItem(int index);
+    void onSelectedModeItem(int _index);
 
 private:
 
@@ -95,8 +95,8 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QComboBox> m_modeBox;
 
-    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
-    sight::viz::scene3d::Layer::wptr m_currentLayer;
+    std::vector<sight::viz::scene3d::layer::wptr> m_layers;
+    sight::viz::scene3d::layer::wptr m_currentLayer;
 };
 
 } // namespace sight::module::ui::viz

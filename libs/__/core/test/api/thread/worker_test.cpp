@@ -85,9 +85,9 @@ struct test_handler
 
     //------------------------------------------------------------------------------
 
-    void set_worker_id(core::thread::thread_id_t id)
+    void set_worker_id(core::thread::thread_id_t _id)
     {
-        m_worker_thread_id = id;
+        m_worker_thread_id = _id;
     }
 
     std::atomic_int m_step {0};

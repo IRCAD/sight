@@ -48,7 +48,7 @@ protected:
     /// Implementation of the interface must allocate a core::memory::buffer_object::lock_t and store it into the
     /// parameter
     /// @param locks The vector of locks to store the new lock
-    CORE_API virtual void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const = 0;
+    CORE_API virtual void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const = 0;
 };
 
 } // namespace sight::core::memory

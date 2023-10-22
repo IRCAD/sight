@@ -67,26 +67,26 @@ public:
     /// Destructor. Do nothing.
     UI_API ~message_base() override;
 
-    typedef std::string FactoryRegistryKeyType;
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    typedef std::string factory_registry_key_t;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the message box
-    UI_API virtual void setTitle(const std::string& title) = 0;
+    UI_API virtual void setTitle(const std::string& _title) = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& msg) = 0;
+    UI_API virtual void setMessage(const std::string& _msg) = 0;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API virtual void setIcon(Icons icon) = 0;
+    UI_API virtual void setIcon(Icons _icon) = 0;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL, RETRY)
-    UI_API virtual void addButton(Buttons button) = 0;
+    UI_API virtual void addButton(Buttons _button) = 0;
 
     /// Set the default button
-    UI_API virtual void setDefaultButton(Buttons button) = 0;
+    UI_API virtual void setDefaultButton(Buttons _button) = 0;
 
     /// Add a custom button to this dialog
-    UI_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) = 0;
+    UI_API virtual void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) = 0;
 
     /// Show the message box and return the clicked button.
     UI_API virtual Buttons show() = 0;

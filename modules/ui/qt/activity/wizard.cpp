@@ -67,9 +67,9 @@ wizard::wizard() noexcept
     new_slot(CREATE_ACTIVITY_SLOT, &wizard::createActivity, this);
     new_slot(UPDATE_ACTIVITY_SLOT, &wizard::updateActivity, this);
 
-    m_sigActivityCreated = new_signal<ActivityCreatedSignalType>(ACTIVITY_CREATED_SIG);
-    m_sigActivityUpdated = new_signal<ActivityUpdatedSignalType>(ACTIVITY_UPDATED_SIG);
-    m_sigCanceled        = new_signal<CanceledSignalType>(CANCELED_SIG);
+    m_sigActivityCreated = new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG);
+    m_sigActivityUpdated = new_signal<activity_updated_signal_t>(ACTIVITY_UPDATED_SIG);
+    m_sigCanceled        = new_signal<canceled_signal_t>(CANCELED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -97,15 +97,15 @@ void wizard::configuring()
     m_confirmUpdate = config.get("confirm", m_confirmUpdate);
     m_isCancelable  = config.get("cancel", m_isCancelable);
 
-    const auto iconsCfg = config.get_child("icons");
-    const auto iconCfg  = iconsCfg.equal_range("icon");
-    for(auto itIcon = iconCfg.first ; itIcon != iconCfg.second ; ++itIcon)
+    const auto icons_cfg = config.get_child("icons");
+    const auto icon_cfg  = icons_cfg.equal_range("icon");
+    for(auto it_icon = icon_cfg.first ; it_icon != icon_cfg.second ; ++it_icon)
     {
-        const auto anotherIconCfg = itIcon->second.get_child("<xmlattr>");
+        const auto another_icon_cfg = it_icon->second.get_child("<xmlattr>");
 
-        const auto type = anotherIconCfg.get<std::string>("type");
+        const auto type = another_icon_cfg.get<std::string>("type");
         SIGHT_ASSERT("'type' attribute must not be empty", !type.empty());
-        const auto icon = anotherIconCfg.get<std::string>("icon");
+        const auto icon = another_icon_cfg.get<std::string>("icon");
         SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
         const auto file = core::runtime::get_resource_file_path(icon);
@@ -121,9 +121,9 @@ void wizard::starting()
 {
     sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
+    QWidget* const container = qt_container->getQtContainer();
 
     auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -154,23 +154,23 @@ void wizard::starting()
 
     layout->addWidget(m_DataView, 1);
 
-    auto* buttonLayout = new QHBoxLayout();
-    layout->addLayout(buttonLayout);
+    auto* button_layout = new QHBoxLayout();
+    layout->addLayout(button_layout);
 
     if(m_isCancelable)
     {
         m_cancelButton = new QPushButton("Cancel");
         m_cancelButton->setToolTip("Cancel the activity creation");
-        buttonLayout->addWidget(m_cancelButton);
+        button_layout->addWidget(m_cancelButton);
     }
 
     m_resetButton = new QPushButton("Clear");
     m_resetButton->setToolTip("Clear the current selected data");
-    buttonLayout->addWidget(m_resetButton);
+    button_layout->addWidget(m_resetButton);
 
     m_okButton = new QPushButton("Apply");
     m_okButton->setToolTip("Create or update the activity with the selected data");
-    buttonLayout->addWidget(m_okButton);
+    button_layout->addWidget(m_okButton);
 
     container->setLayout(layout);
 
@@ -227,11 +227,11 @@ void wizard::updating()
 
 //------------------------------------------------------------------------------
 
-void wizard::createActivity(std::string activityID)
+void wizard::createActivity(std::string _activity_id)
 {
     m_mode = Mode::CREATE;
     activity_info info;
-    info = activity::getDefault()->getInfo(activityID);
+    info = activity::getDefault()->getInfo(_activity_id);
 
     // load activity module
     core::runtime::start_module(info.bundleId);
@@ -242,19 +242,19 @@ void wizard::createActivity(std::string activityID)
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
 
-    bool needConfig = false;
+    bool need_config = false;
 
     // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
     for(const auto& req : info.requirements)
     {
         if(req.maxOccurs > 0)
         {
-            needConfig = true;
+            need_config = true;
             break;
         }
     }
 
-    if(needConfig)
+    if(need_config)
     {
         m_DataView->fillInformation(info);
         if(m_DataView->count() > 1)
@@ -285,10 +285,10 @@ void wizard::createActivity(std::string activityID)
 
 //------------------------------------------------------------------------------
 
-void wizard::updateActivity(data::activity::sptr activity)
+void wizard::updateActivity(data::activity::sptr _activity)
 {
     activity_info info;
-    info = activity::getDefault()->getInfo(activity->getActivityConfigId());
+    info = activity::getDefault()->getInfo(_activity->getActivityConfigId());
 
     // load activity module
     core::runtime::start_module(info.bundleId);
@@ -297,21 +297,21 @@ void wizard::updateActivity(data::activity::sptr activity)
     m_description->setText(QString::fromStdString(info.description));
 
     m_mode         = Mode::UPDATE;
-    m_new_activity = activity;
+    m_new_activity = _activity;
 
-    bool needConfig = false;
+    bool need_config = false;
 
     // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
     for(const auto& req : info.requirements)
     {
         if(req.maxOccurs != 0)
         {
-            needConfig = true;
+            need_config = true;
             break;
         }
     }
 
-    if(needConfig)
+    if(need_config)
     {
         m_DataView->fillInformation(m_new_activity);
         if(m_DataView->count() > 1)
@@ -322,8 +322,8 @@ void wizard::updateActivity(data::activity::sptr activity)
     else
     {
         // Start immediately without popping any configuration UI
-        data::object::ModifiedSignalType::sptr sig;
-        sig = m_new_activity->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        data::object::modified_signal_t::sptr sig;
+        sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig->async_emit();
         m_sigActivityUpdated->async_emit(m_new_activity);
     }
@@ -331,9 +331,9 @@ void wizard::updateActivity(data::activity::sptr activity)
 
 //------------------------------------------------------------------------------
 
-void wizard::onTabChanged(int index)
+void wizard::onTabChanged(int _index)
 {
-    if(index == m_DataView->count() - 1)
+    if(_index == m_DataView->count() - 1)
     {
         m_okButton->setText("Apply");
     }
@@ -372,19 +372,19 @@ void wizard::onCancel()
 
 void wizard::onBuildActivity()
 {
-    int index   = m_DataView->currentIndex();
-    int lastTab = m_DataView->count() - 1;
+    int index    = m_DataView->currentIndex();
+    int last_tab = m_DataView->count() - 1;
 
     if(index < 0)
     {
         return;
     }
 
-    std::string errorMsg;
+    std::string error_msg;
     // Check current data
-    if(m_DataView->checkData(std::size_t(index), errorMsg))
+    if(m_DataView->checkData(std::size_t(index), error_msg))
     {
-        if(index != lastTab)
+        if(index != last_tab)
         {
             // enable and select the next tab
             m_DataView->setTabEnabled(index + 1, true);
@@ -417,7 +417,7 @@ void wizard::onBuildActivity()
             }
 
             // check all data and create/update the activity
-            bool ok = m_DataView->checkAndComputeData(m_new_activity, errorMsg);
+            bool ok = m_DataView->checkAndComputeData(m_new_activity, error_msg);
             if(ok)
             {
                 if(m_mode == Mode::CREATE)
@@ -447,8 +447,8 @@ void wizard::onBuildActivity()
                 }
                 else // m_mode == Mode::UPDATE
                 {
-                    data::object::ModifiedSignalType::sptr sig;
-                    sig = m_new_activity->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                    data::object::modified_signal_t::sptr sig;
+                    sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                     sig->async_emit();
                     m_sigActivityUpdated->async_emit(m_new_activity);
                 }
@@ -456,15 +456,15 @@ void wizard::onBuildActivity()
             else
             {
                 QString message = "This activity can not be created : \n";
-                message.append(QString::fromStdString(errorMsg));
+                message.append(QString::fromStdString(error_msg));
                 QMessageBox::warning(qApp->activeWindow(), "Activity Creation", message);
-                SIGHT_ERROR(errorMsg);
+                SIGHT_ERROR(error_msg);
             }
         }
     }
     else
     {
-        QMessageBox::warning(qApp->activeWindow(), "Error", QString::fromStdString(errorMsg));
+        QMessageBox::warning(qApp->activeWindow(), "Error", QString::fromStdString(error_msg));
     }
 }
 

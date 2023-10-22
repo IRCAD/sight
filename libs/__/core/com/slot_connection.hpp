@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SLOTCONNECTION_HPP__
+#define FWCOM_SLOTCONNECTION_HPP
 
 #include "core/com/slot_base.hpp"
 #include "core/com/slot_connection_base.hpp"
@@ -70,13 +70,13 @@ struct CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
     ~slot_connection() override;
 
     /// Build a new connection with the given signal and slot.
-    slot_connection(const signal_sptr_type& signal, const slot_run_sptr_type& slot);
+    slot_connection(const signal_sptr_type& _signal, const slot_run_sptr_type& _slot);
 
     /// Build a new connection with the given signal, slot and wrapper.
     slot_connection(
-        const signal_sptr_type& signal,
-        const SPTR(slot_base)& slot,
-        const slot_wrapper_sptr_type& slot_wrapper
+        const signal_sptr_type& _signal,
+        const SPTR(slot_base)& _slot,
+        const slot_wrapper_sptr_type& _slot_wrapper
     );
 
     protected:
@@ -88,10 +88,10 @@ struct CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
         void connect_no_lock() override;
 
         /// *NOT THREAD SAFE* Disconnect the related signal.
-        void disconnect_signal_no_lock(const signal_sptr_type& sig);
+        void disconnect_signal_no_lock(const signal_sptr_type& _sig);
 
         /// *NOT THREAD SAFE* Disconnect the related slot.
-        void disconnect_slot_no_lock(const SPTR(slot_base)& slot);
+        void disconnect_slot_no_lock(const SPTR(slot_base)& _slot);
 
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
         void disconnect_weak_lock() override;

@@ -99,19 +99,19 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
     // get dropped data in tree widget
     if(_event->type() == QEvent::Drop)
     {
-        auto* dropEvent = static_cast<QDropEvent*>(_event);
+        auto* drop_event = static_cast<QDropEvent*>(_event);
 
         auto index                       = static_cast<std::size_t>(this->currentIndex());
         activity_requirement requirement = m_activityInfo.requirements[index];
         QPointer<QTreeWidget> tree       = m_treeWidgets[index];
 
         // get dropped item from event mimedata
-        const QMimeData* qMimeData = dropEvent->mimeData();
+        const QMimeData* q_mime_data = drop_event->mimeData();
 
-        QByteArray encoded = qMimeData->data("application/x-qabstractitemmodeldatalist");
+        QByteArray encoded = q_mime_data->data("application/x-qabstractitemmodeldatalist");
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
-        QList<QTreeWidgetItem*> itemList;
+        QList<QTreeWidgetItem*> item_list;
         QTreeWidgetItem* item = nullptr;
 
         // Get the dropped item
@@ -120,28 +120,28 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
             int row = 0;
             int col = 0;
 
-            QMap<int, QVariant> roleDataMap;
+            QMap<int, QVariant> role_data_map;
 
-            stream >> row >> col >> roleDataMap;
+            stream >> row >> col >> role_data_map;
 
             if(col == 0)
             {
                 item = new QTreeWidgetItem();
-                itemList.push_back(item);
+                item_list.push_back(item);
             }
 
             SIGHT_ASSERT("item is null", item != nullptr);
 
-            QList<int> keys = roleDataMap.keys();
+            QList<int> keys = role_data_map.keys();
             for(int key : keys)
             {
-                item->setData(col, key, roleDataMap[key]);
+                item->setData(col, key, role_data_map[key]);
             }
         }
 
         // check if the limit number of data is exceeded
-        int nbChild = tree->topLevelItemCount() + itemList.size();
-        if(static_cast<unsigned int>(nbChild) > requirement.maxOccurs)
+        int nb_child = tree->topLevelItemCount() + item_list.size();
+        if(static_cast<unsigned int>(nb_child) > requirement.maxOccurs)
         {
             QMessageBox::warning(
                 this,
@@ -153,10 +153,10 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
         else
         {
             // add the dropped item in the tree
-            for(QTreeWidgetItem* itemToAdd : itemList)
+            for(QTreeWidgetItem* item_to_add : item_list)
             {
-                itemToAdd->setFlags(itemToAdd->flags() & ~Qt::ItemIsDropEnabled);
-                std::string uid = itemToAdd->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
+                item_to_add->setFlags(item_to_add->flags() & ~Qt::ItemIsDropEnabled);
+                std::string uid = item_to_add->data(int(column_commun_t::ID), s_UID_ROLE).toString().toStdString();
                 if(!uid.empty())
                 {
                     // insert the object if it is in the required type
@@ -164,7 +164,7 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
                     if(obj && obj->is_a(requirement.type))
                     {
                         // Insert the new object
-                        tree->addTopLevelItem(itemToAdd);
+                        tree->addTopLevelItem(item_to_add);
                     }
                 }
             }
@@ -175,8 +175,8 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
 
     if(_event->type() == QEvent::KeyPress)
     {
-        auto* keyEvent = static_cast<QKeyEvent*>(_event);
-        if(keyEvent->key() == Qt::Key_Delete)
+        auto* key_event = static_cast<QKeyEvent*>(_event);
+        if(key_event->key() == Qt::Key_Delete)
         {
             this->removeSelectedObjects();
             return true;
@@ -194,21 +194,21 @@ void DataView::fillInformation(const activity_info& _info)
     m_activityInfo = _info;
     this->clear();
 
-    const activity_info::RequirementsType& reqVect = m_activityInfo.requirements;
-    for(const auto& req : reqVect)
+    const activity_info::requirements_t& req_vect = m_activityInfo.requirements;
+    for(const auto& req : req_vect)
     {
         auto* const layout = new QVBoxLayout();
         auto* const widget = new QWidget();
         widget->setLayout(layout);
 
-        auto* const infoLayout = new QHBoxLayout();
-        layout->addLayout(infoLayout);
+        auto* const info_layout = new QHBoxLayout();
+        layout->addLayout(info_layout);
 
-        auto* const typeLayout = new QVBoxLayout();
-        auto* const txtLayout  = new QVBoxLayout();
-        infoLayout->addLayout(typeLayout);
-        infoLayout->addSpacerItem(new QSpacerItem(20, 0));
-        infoLayout->addLayout(txtLayout, 1);
+        auto* const type_layout = new QVBoxLayout();
+        auto* const txt_layout  = new QVBoxLayout();
+        info_layout->addLayout(type_layout);
+        info_layout->addSpacerItem(new QSpacerItem(20, 0));
+        info_layout->addLayout(txt_layout, 1);
 
         auto iter = m_objectIcons.find(req.type);
         if(iter != m_objectIcons.end())
@@ -220,7 +220,7 @@ void DataView::fillInformation(const activity_info& _info)
             icon->setAlignment(Qt::AlignHCenter);
             QPixmap pixmap(filename);
             icon->setPixmap(pixmap.scaled(100, 100, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            typeLayout->addWidget(icon);
+            type_layout->addWidget(icon);
         }
         else
         {
@@ -229,17 +229,17 @@ void DataView::fillInformation(const activity_info& _info)
 
         auto* const type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
         type->setAlignment(Qt::AlignHCenter);
-        typeLayout->addWidget(type);
+        type_layout->addWidget(type);
 
         auto* const name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
         name->setStyleSheet("QLabel { font: bold; }");
-        txtLayout->addWidget(name);
+        txt_layout->addWidget(name);
 
         auto* const description = new QLabel(QString::fromStdString(req.description));
         description->setStyleSheet("QLabel { font: italic; }");
-        txtLayout->addWidget(description);
+        txt_layout->addWidget(description);
 
-        txtLayout->addStretch();
+        txt_layout->addStretch();
 
         auto* const nb = new QLabel();
         nb->setStyleSheet("QLabel { font: bold; }");
@@ -258,55 +258,55 @@ void DataView::fillInformation(const activity_info& _info)
         }
         else
         {
-            QString nbObj("Number of required object");
+            QString nb_obj("Number of required object");
             if(req.maxOccurs == std::numeric_limits<unsigned int>::max())
             {
-                nbObj.append(QString(" >= %1").arg(req.minOccurs));
+                nb_obj.append(QString(" >= %1").arg(req.minOccurs));
             }
             else
             {
-                nbObj.append(QString(": [%1-%2]").arg(req.minOccurs).arg(req.maxOccurs));
+                nb_obj.append(QString(": [%1-%2]").arg(req.minOccurs).arg(req.maxOccurs));
             }
 
-            nb->setText(nbObj);
+            nb->setText(nb_obj);
         }
 
         QStringList headers;
         headers << "" << "Description";
 
-        auto* const treeLayout   = new QHBoxLayout();
-        auto* const buttonLayout = new QVBoxLayout();
+        auto* const tree_layout   = new QHBoxLayout();
+        auto* const button_layout = new QVBoxLayout();
         if(req.type == "sight::data::string" || req.type == "sight::data::boolean"
            || req.type == "sight::data::integer" || req.type == "sight::data::real"
            || req.type == "sight::data::matrix4")
         {
-            auto* const buttonNew = new QPushButton("New");
-            buttonNew->setToolTip("Create a new empty object");
-            buttonLayout->addWidget(buttonNew);
-            QObject::connect(buttonNew, &QPushButton::clicked, this, &DataView::createNewObject);
+            auto* const button_new = new QPushButton("New");
+            button_new->setToolTip("Create a new empty object");
+            button_layout->addWidget(button_new);
+            QObject::connect(button_new, &QPushButton::clicked, this, &DataView::createNewObject);
         }
 
-        auto* const buttonAdd    = new QPushButton("Load");
-        auto* const buttonRemove = new QPushButton("Remove");
-        auto* const buttonClear  = new QPushButton("Clear");
-        buttonLayout->addWidget(buttonAdd);
-        buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
+        auto* const button_add    = new QPushButton("Load");
+        auto* const button_remove = new QPushButton("Remove");
+        auto* const button_clear  = new QPushButton("Clear");
+        button_layout->addWidget(button_add);
+        button_add->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
 
         // If the type is a Series, we add a button to import the data from a series_set,
         // we also improve the tree header by adding more informations.
-        data::object::sptr newObject = data::factory::make(req.type);
-        if(newObject && std::dynamic_pointer_cast<data::series>(newObject))
+        data::object::sptr new_object = data::factory::make(req.type);
+        if(new_object && std::dynamic_pointer_cast<data::series>(new_object))
         {
-            auto* const buttonAddFromSDB = new QPushButton("Import");
-            buttonLayout->addWidget(buttonAddFromSDB);
-            buttonAddFromSDB->setToolTip(
+            auto* const button_add_from_sdb = new QPushButton("Import");
+            button_layout->addWidget(button_add_from_sdb);
+            button_add_from_sdb->setToolTip(
                 QString(
                     "Import a series_set and extract the N first objects of type '%1', with "
                     "N the maximum number of required objects."
                 ).
                 arg(QString::fromStdString(req.type))
             );
-            QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &DataView::importObjectFromSDB);
+            QObject::connect(button_add_from_sdb, &QPushButton::clicked, this, &DataView::importObjectFromSDB);
 
             headers.clear();
             headers << "" << "Name" << "Sex" << "Birthdate"
@@ -314,24 +314,24 @@ void DataView::fillInformation(const activity_info& _info)
             << "Study description" << "Date" << "Time"
             << "Patient age";
 
-            if(std::dynamic_pointer_cast<data::image_series>(newObject))
+            if(std::dynamic_pointer_cast<data::image_series>(new_object))
             {
                 headers << "Body part examined" << "Patient position" << "Contrast agent" << "Acquisition time"
                 << "Contrast/bolus time";
             }
         }
 
-        buttonLayout->addWidget(buttonRemove);
-        buttonRemove->setToolTip(QString("Remove the selected objects"));
-        buttonLayout->addWidget(buttonClear);
-        buttonClear->setToolTip(QString("Remove all the objects"));
-        buttonLayout->addStretch();
-        QObject::connect(buttonAdd, &QPushButton::clicked, this, &DataView::importObject);
-        QObject::connect(buttonRemove, &QPushButton::clicked, this, &DataView::removeSelectedObjects);
-        QObject::connect(buttonClear, &QPushButton::clicked, this, &DataView::clearTree);
+        button_layout->addWidget(button_remove);
+        button_remove->setToolTip(QString("Remove the selected objects"));
+        button_layout->addWidget(button_clear);
+        button_clear->setToolTip(QString("Remove all the objects"));
+        button_layout->addStretch();
+        QObject::connect(button_add, &QPushButton::clicked, this, &DataView::importObject);
+        QObject::connect(button_remove, &QPushButton::clicked, this, &DataView::removeSelectedObjects);
+        QObject::connect(button_clear, &QPushButton::clicked, this, &DataView::clearTree);
 
-        treeLayout->addLayout(buttonLayout);
-        treeLayout->addWidget(tree, 1);
+        tree_layout->addLayout(button_layout);
+        tree_layout->addWidget(tree, 1);
 
         tree->setHeaderLabels(headers);
         tree->setAlternatingRowColors(true);
@@ -346,7 +346,7 @@ void DataView::fillInformation(const activity_info& _info)
             this,
             &DataView::onTreeItemDoubleClicked
         );
-        layout->addLayout(treeLayout, 1);
+        layout->addLayout(tree_layout, 1);
 
         //TODO better management of composite container
     }
@@ -388,9 +388,9 @@ void DataView::fillInformation(const data::activity::sptr& _activity)
                     data::vector::sptr vector = std::dynamic_pointer_cast<data::vector>(obj);
                     if(vector)
                     {
-                        for(const auto& subObj : *vector)
+                        for(const auto& sub_obj : *vector)
                         {
-                            this->addObjectItem(i, subObj);
+                            this->addObjectItem(i, sub_obj);
                         }
                     }
                     else
@@ -403,9 +403,9 @@ void DataView::fillInformation(const data::activity::sptr& _activity)
                     data::composite::sptr composite = std::dynamic_pointer_cast<data::composite>(obj);
                     if(composite)
                     {
-                        for(const auto& subObj : *composite)
+                        for(const auto& sub_obj : *composite)
                         {
-                            this->addObjectItem(i, subObj.second);
+                            this->addObjectItem(i, sub_obj.second);
                         }
                     }
                     else
@@ -422,7 +422,7 @@ void DataView::fillInformation(const data::activity::sptr& _activity)
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMsg)
+data::object::sptr DataView::checkData(std::size_t _index, std::string& _error_msg)
 {
     data::object::sptr object;
 
@@ -439,7 +439,7 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             QTreeWidgetItem* item = tree->topLevelItem(0);
 
             std::string uid =
-                item->data(int(ColumnCommunType::ID), DataView::s_UID_ROLE).toString().toStdString();
+                item->data(int(column_commun_t::ID), DataView::s_UID_ROLE).toString().toStdString();
 
             data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
             if(obj && obj->is_a(req.type))
@@ -448,7 +448,7 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             }
             else
             {
-                _errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
+                _error_msg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
             }
         }
         else
@@ -459,23 +459,23 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             }
             else
             {
-                _errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
+                _error_msg += "\n - The parameter '" + req.name + "' is required but is not defined.";
             }
         }
     }
     else // optional object or several objects
     {
-        auto nbObj = static_cast<unsigned int>(tree->topLevelItemCount());
+        auto nb_obj = static_cast<unsigned int>(tree->topLevelItemCount());
 
-        if(nbObj < req.minOccurs)
+        if(nb_obj < req.minOccurs)
         {
-            _errorMsg += "\n - The parameter '" + req.name + "' must contain at least "
-                         + std::to_string(req.minOccurs) + " elements.";
+            _error_msg += "\n - The parameter '" + req.name + "' must contain at least "
+                          + std::to_string(req.minOccurs) + " elements.";
         }
-        else if(nbObj > req.maxOccurs)
+        else if(nb_obj > req.maxOccurs)
         {
-            _errorMsg += "\n - The parameter '" + req.name + "' must contain at most "
-                         + std::to_string(req.maxOccurs) + " elements.";
+            _error_msg += "\n - The parameter '" + req.name + "' must contain at most "
+                          + std::to_string(req.maxOccurs) + " elements.";
         }
         else
         {
@@ -483,11 +483,11 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             {
                 data::vector::sptr vector = std::make_shared<data::vector>();
 
-                for(unsigned int i = 0 ; i < nbObj ; ++i)
+                for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
-                    QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
-                    std::string uid           =
-                        itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
+                    QTreeWidgetItem* item_data = tree->topLevelItem(int(i));
+                    std::string uid            =
+                        item_data->data(int(column_commun_t::ID), s_UID_ROLE).toString().toStdString();
 
                     data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
@@ -496,8 +496,8 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     }
                     else
                     {
-                        ok         = false;
-                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok          = false;
+                        _error_msg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
 
@@ -510,11 +510,11 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             {
                 data::composite::sptr composite = std::make_shared<data::composite>();
 
-                for(unsigned int i = 0 ; i < nbObj ; ++i)
+                for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
-                    QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
-                    std::string uid           =
-                        itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
+                    QTreeWidgetItem* item_data = tree->topLevelItem(int(i));
+                    std::string uid            =
+                        item_data->data(int(column_commun_t::ID), s_UID_ROLE).toString().toStdString();
 
                     data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
@@ -524,8 +524,8 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     }
                     else
                     {
-                        ok         = false;
-                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok          = false;
+                        _error_msg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
 
@@ -540,15 +540,15 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
     if(object && !req.validator.empty())
     {
         /// Process object validator
-        auto validator     = sight::activity::validator::factory::make(req.validator);
-        auto dataValidator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
-        SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
+        auto validator      = sight::activity::validator::factory::make(req.validator);
+        auto data_validator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
+        SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", data_validator);
 
-        sight::activity::validator::return_t validation = dataValidator->validate(object);
+        sight::activity::validator::return_t validation = data_validator->validate(object);
         if(!validation.first)
         {
-            _errorMsg += "\n" + validation.second;
-            object     = nullptr;
+            _error_msg += "\n" + validation.second;
+            object      = nullptr;
         }
     }
 
@@ -557,10 +557,10 @@ data::object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
 
 //-----------------------------------------------------------------------------
 
-bool DataView::checkAndComputeData(const data::activity::sptr& activity, std::string& errorMsg)
+bool DataView::checkAndComputeData(const data::activity::sptr& _activity, std::string& _error_msg)
 {
     bool ok = true;
-    errorMsg += "The required data are not correct:";
+    _error_msg += "The required data are not correct:";
 
     // Check if all required data are present
     for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
@@ -570,28 +570,28 @@ bool DataView::checkAndComputeData(const data::activity::sptr& activity, std::st
         data::object::sptr obj = this->checkData(i, msg);
         if(obj)
         {
-            (*activity)[req.name] = obj;
+            (*_activity)[req.name] = obj;
         }
         else
         {
-            ok        = false;
-            errorMsg += msg;
+            ok          = false;
+            _error_msg += msg;
         }
     }
 
-    for(const std::string& validatotImpl : m_activityInfo.validatorsImpl)
+    for(const std::string& validatot_impl : m_activityInfo.validatorsImpl)
     {
         /// Process activity validator
-        auto validator         = sight::activity::validator::factory::make(validatotImpl);
-        auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
+        auto validator          = sight::activity::validator::factory::make(validatot_impl);
+        auto activity_validator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
-        SIGHT_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
+        SIGHT_ASSERT("Validator '" + validatot_impl + "' instantiation failed", activity_validator);
 
-        sight::activity::validator::return_t validation = activityValidator->validate(activity);
+        sight::activity::validator::return_t validation = activity_validator->validate(_activity);
         if(!validation.first)
         {
-            ok        = false;
-            errorMsg += "\n" + validation.second;
+            ok          = false;
+            _error_msg += "\n" + validation.second;
         }
     }
 
@@ -602,18 +602,18 @@ bool DataView::checkAndComputeData(const data::activity::sptr& activity, std::st
 
 void DataView::removeSelectedObjects()
 {
-    auto tabIndex                 = static_cast<std::size_t>(this->currentIndex());
-    QPointer<QTreeWidget> tree    = m_treeWidgets[tabIndex];
+    auto tab_index                = static_cast<std::size_t>(this->currentIndex());
+    QPointer<QTreeWidget> tree    = m_treeWidgets[tab_index];
     QList<QTreeWidgetItem*> items = tree->selectedItems();
     for(QTreeWidgetItem* item : items)
     {
         if(item != nullptr)
         {
-            int itemIndex                 = tree->indexOfTopLevelItem(item);
-            QTreeWidgetItem* itemToRemove = tree->takeTopLevelItem(itemIndex);
-            if(itemToRemove != nullptr)
+            int item_index                  = tree->indexOfTopLevelItem(item);
+            QTreeWidgetItem* item_to_remove = tree->takeTopLevelItem(item_index);
+            if(item_to_remove != nullptr)
             {
-                delete itemToRemove;
+                delete item_to_remove;
                 this->update();
             }
         }
@@ -624,8 +624,8 @@ void DataView::removeSelectedObjects()
 
 void DataView::clearTree()
 {
-    auto tabIndex              = static_cast<std::size_t>(this->currentIndex());
-    QPointer<QTreeWidget> tree = m_treeWidgets[tabIndex];
+    auto tab_index             = static_cast<std::size_t>(this->currentIndex());
+    QPointer<QTreeWidget> tree = m_treeWidgets[tab_index];
     tree->clear();
 }
 
@@ -641,9 +641,9 @@ void DataView::createNewObject()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    auto nb_items = static_cast<unsigned int>(tree->topLevelItemCount());
 
-    if(nbItems >= req.maxOccurs)
+    if(nb_items >= req.maxOccurs)
     {
         const QString message("Can't create more '" + QString::fromStdString(type)
                               + "', please remove one to create another.");
@@ -651,10 +651,10 @@ void DataView::createNewObject()
         return;
     }
 
-    data::object::sptr newObject = data::factory::make(type);
+    data::object::sptr new_object = data::factory::make(type);
 
-    m_importedObject.push_back(newObject);
-    this->addObjectItem(index, newObject);
+    m_importedObject.push_back(new_object);
+    this->addObjectItem(index, new_object);
 }
 
 //-----------------------------------------------------------------------------
@@ -669,9 +669,9 @@ void DataView::importObject()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    const auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const auto nb_items = static_cast<unsigned int>(tree->topLevelItemCount());
 
-    if(nbItems >= req.maxOccurs)
+    if(nb_items >= req.maxOccurs)
     {
         const QString message("Can't load more '" + QString::fromStdString(type)
                               + "', please remove one to load another.");
@@ -700,9 +700,9 @@ void DataView::importObjectFromSDB()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    const auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const auto nb_items = static_cast<unsigned int>(tree->topLevelItemCount());
 
-    if(nbItems >= req.maxOccurs)
+    if(nb_items >= req.maxOccurs)
     {
         const QString message("Can't load more '" + QString::fromStdString(type)
                               + "', please remove one to load another.");
@@ -710,12 +710,12 @@ void DataView::importObjectFromSDB()
         return;
     }
 
-    data::object::sptr newObject = data::factory::make(type);
-    if(newObject)
+    data::object::sptr new_object = data::factory::make(type);
+    if(new_object)
     {
         SIGHT_ERROR_IF(
             "Imported object must inherit from 'Series'.",
-            !std::dynamic_pointer_cast<data::series>(newObject)
+            !std::dynamic_pointer_cast<data::series>(new_object)
         );
 
         // We use the series_set reader and then extract the object of this type.
@@ -727,17 +727,17 @@ void DataView::importObjectFromSDB()
         auto series_set = std::dynamic_pointer_cast<data::series_set>(obj);
         if(series_set)
         {
-            unsigned int nbImportedObj = 0;
+            unsigned int nb_imported_obj = 0;
             for(const data::series::sptr& series : *series_set)
             {
                 if(series->is_a(type))
                 {
-                    ++nbImportedObj;
+                    ++nb_imported_obj;
                     m_importedObject.push_back(series);
 
                     this->addObjectItem(index, series);
 
-                    if(nbImportedObj >= req.maxOccurs)
+                    if(nb_imported_obj >= req.maxOccurs)
                     {
                         break;
                     }
@@ -749,7 +749,7 @@ void DataView::importObjectFromSDB()
     {
         std::string msg = "Can not create object '" + type + "'";
         SIGHT_ERROR(msg);
-        QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
+        QMessageBox message_box(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
     }
 }
 
@@ -757,30 +757,30 @@ void DataView::importObjectFromSDB()
 
 data::object::sptr DataView::readObject(
     const std::string& _classname,
-    const std::string& _ioSelectorSrvConfig
+    const std::string& _io_selector_srv_config
 )
 {
     data::object::sptr obj;
-    service::base::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("sight::module::ui::io::selector");
+    service::base::sptr io_selector_srv;
+    io_selector_srv = service::add("sight::module::ui::io::selector");
 
-    auto ioConfig = service::extension::config::getDefault()->get_service_config(
-        _ioSelectorSrvConfig,
+    auto io_config = service::extension::config::getDefault()->get_service_config(
+        _io_selector_srv_config,
         "sight::module::ui::io::selector"
     );
 
-    ioConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
+    io_config.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
         obj = data::factory::make(_classname);
-        ioSelectorSrv->set_config(ioConfig);
-        ioSelectorSrv->configure();
-        ioSelectorSrv->set_inout(obj, io::service::s_DATA_KEY);
-        ioSelectorSrv->start();
-        ioSelectorSrv->update();
-        ioSelectorSrv->stop();
-        service::unregisterService(ioSelectorSrv);
+        io_selector_srv->set_config(io_config);
+        io_selector_srv->configure();
+        io_selector_srv->set_inout(obj, io::service::s_DATA_KEY);
+        io_selector_srv->start();
+        io_selector_srv->update();
+        io_selector_srv->stop();
+        service::unregister_service(io_selector_srv);
     }
     catch(std::exception& e)
     {
@@ -788,13 +788,13 @@ data::object::sptr DataView::readObject(
         msg << "The object can not be imported: " << e.what();
         SIGHT_ERROR(msg.str());
 
-        QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg.str()), QMessageBox::Ok);
-        if(ioSelectorSrv->started())
+        QMessageBox message_box(QMessageBox::Warning, "Error", QString::fromStdString(msg.str()), QMessageBox::Ok);
+        if(io_selector_srv->started())
         {
-            ioSelectorSrv->stop();
+            io_selector_srv->stop();
         }
 
-        service::unregisterService(ioSelectorSrv);
+        service::unregister_service(io_selector_srv);
     }
     return obj;
 }
@@ -805,20 +805,20 @@ void DataView::addObjectItem(std::size_t _index, const data::object::csptr& _obj
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
-    auto* const newItem = new QTreeWidgetItem();
-    newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
-    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->get_id())));
+    auto* const new_item = new QTreeWidgetItem();
+    new_item->setFlags(new_item->flags() & ~Qt::ItemIsDropEnabled);
+    new_item->setData(int(column_commun_t::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->get_id())));
 
-    const auto series   = std::dynamic_pointer_cast<const data::series>(_obj);
-    const auto strObj   = std::dynamic_pointer_cast<const data::string>(_obj);
-    const auto intObj   = std::dynamic_pointer_cast<const data::integer>(_obj);
-    const auto floatObj = std::dynamic_pointer_cast<const data::real>(_obj);
-    const auto boolObj  = std::dynamic_pointer_cast<const data::boolean>(_obj);
-    const auto trf      = std::dynamic_pointer_cast<const data::matrix4>(_obj);
+    const auto series    = std::dynamic_pointer_cast<const data::series>(_obj);
+    const auto str_obj   = std::dynamic_pointer_cast<const data::string>(_obj);
+    const auto int_obj   = std::dynamic_pointer_cast<const data::integer>(_obj);
+    const auto float_obj = std::dynamic_pointer_cast<const data::real>(_obj);
+    const auto bool_obj  = std::dynamic_pointer_cast<const data::boolean>(_obj);
+    const auto trf       = std::dynamic_pointer_cast<const data::matrix4>(_obj);
     if(series)
     {
-        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatientName()));
-        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatientSex()));
+        new_item->setText(int(column_series_t::NAME), QString::fromStdString(series->getPatientName()));
+        new_item->setText(int(column_series_t::SEX), QString::fromStdString(series->getPatientSex()));
         std::string birthdate = series->getPatientBirthDate();
         if(!birthdate.empty() && birthdate != "unknown")
         {
@@ -826,13 +826,13 @@ void DataView::addObjectItem(std::size_t _index, const data::object::csptr& _obj
             birthdate.insert(7, "-");
         }
 
-        newItem->setText(int(ColumnSeriesType::BIRTHDATE), QString::fromStdString(birthdate));
+        new_item->setText(int(column_series_t::BIRTHDATE), QString::fromStdString(birthdate));
 
-        newItem->setText(int(ColumnSeriesType::MODALITY), QString::fromStdString(series->getModality()));
-        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getSeriesDescription()));
+        new_item->setText(int(column_series_t::MODALITY), QString::fromStdString(series->getModality()));
+        new_item->setText(int(column_series_t::MODALITY_DESC), QString::fromStdString(series->getSeriesDescription()));
 
-        newItem->setText(
-            int(ColumnSeriesType::STUDY_DESC),
+        new_item->setText(
+            int(column_series_t::STUDY_DESC),
             QString::fromStdString(series->getStudyDescription())
         );
         std::string date = series->getSeriesDate();
@@ -842,7 +842,7 @@ void DataView::addObjectItem(std::size_t _index, const data::object::csptr& _obj
             date.insert(7, "/");
         }
 
-        newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
+        new_item->setText(int(column_series_t::DATE), QString::fromStdString(date));
 
         std::string time = series->getSeriesTime();
         if(!time.empty())
@@ -851,179 +851,179 @@ void DataView::addObjectItem(std::size_t _index, const data::object::csptr& _obj
             time.insert(5, ":");
         }
 
-        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time.substr(0, 8)));
+        new_item->setText(int(column_series_t::TIME), QString::fromStdString(time.substr(0, 8)));
 
-        std::string patientAge = series->getPatientAge();
-        if(!patientAge.empty())
+        std::string patient_age = series->getPatientAge();
+        if(!patient_age.empty())
         {
-            patientAge.insert(3, " ");
-            if(patientAge[0] == '0')
+            patient_age.insert(3, " ");
+            if(patient_age[0] == '0')
             {
-                patientAge.erase(0, 1);
+                patient_age.erase(0, 1);
             }
         }
 
-        newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
+        new_item->setText(int(column_series_t::PATIENT_AGE), QString::fromStdString(patient_age));
 
-        const auto imageSeries = std::dynamic_pointer_cast<const data::image_series>(_obj);
-        if(imageSeries)
+        const auto image_series = std::dynamic_pointer_cast<const data::image_series>(_obj);
+        if(image_series)
         {
-            newItem->setText(
-                int(ColumnImageSeriesType::BODY_PART_EXAMINED),
-                QString::fromStdString(imageSeries->getBodyPartExamined())
+            new_item->setText(
+                int(column_image_series_t::BODY_PART_EXAMINED),
+                QString::fromStdString(image_series->getBodyPartExamined())
             );
-            std::string patientPosition = imageSeries->getPatientPosition();
-            if(!patientPosition.empty())
+            std::string patient_position = image_series->getPatientPosition();
+            if(!patient_position.empty())
             {
                 // Code string can contains leading or trailing spaces, we removed it first.
                 const std::string::const_iterator forward =
                     std::remove_if(
-                        patientPosition.begin(),
-                        patientPosition.end(),
+                        patient_position.begin(),
+                        patient_position.end(),
                         [&](unsigned char _c)
                     {
                         return _c == ' ';
                     });
-                patientPosition.erase(forward, patientPosition.end());
-                if(patientPosition == "HFP")
+                patient_position.erase(forward, patient_position.end());
+                if(patient_position == "HFP")
                 {
-                    patientPosition = "Head First-Prone";
+                    patient_position = "Head First-Prone";
                 }
-                else if(patientPosition == "HFS")
+                else if(patient_position == "HFS")
                 {
-                    patientPosition = "Head First-Supine";
+                    patient_position = "Head First-Supine";
                 }
-                else if(patientPosition == "HFDR")
+                else if(patient_position == "HFDR")
                 {
-                    patientPosition = "Head First-Decubitus Right";
+                    patient_position = "Head First-Decubitus Right";
                 }
-                else if(patientPosition == "HFDL")
+                else if(patient_position == "HFDL")
                 {
-                    patientPosition = "Head First-Decubitus Left";
+                    patient_position = "Head First-Decubitus Left";
                 }
-                else if(patientPosition == "FFDR")
+                else if(patient_position == "FFDR")
                 {
-                    patientPosition = "Feet First-Decubitus Right";
+                    patient_position = "Feet First-Decubitus Right";
                 }
-                else if(patientPosition == "FFDL")
+                else if(patient_position == "FFDL")
                 {
-                    patientPosition = "Feet First-Decubitus Left";
+                    patient_position = "Feet First-Decubitus Left";
                 }
-                else if(patientPosition == "FFP")
+                else if(patient_position == "FFP")
                 {
-                    patientPosition = "Feet First-Prone";
+                    patient_position = "Feet First-Prone";
                 }
-                else if(patientPosition == "FFS")
+                else if(patient_position == "FFS")
                 {
-                    patientPosition = "Feet First-Supine";
+                    patient_position = "Feet First-Supine";
                 }
-                else if(patientPosition == "LFP")
+                else if(patient_position == "LFP")
                 {
-                    patientPosition = "Left First-Prone";
+                    patient_position = "Left First-Prone";
                 }
-                else if(patientPosition == "LFS")
+                else if(patient_position == "LFS")
                 {
-                    patientPosition = "Left First-Supine";
+                    patient_position = "Left First-Supine";
                 }
-                else if(patientPosition == "RFP")
+                else if(patient_position == "RFP")
                 {
-                    patientPosition = "Right First-Prone";
+                    patient_position = "Right First-Prone";
                 }
-                else if(patientPosition == "RFS")
+                else if(patient_position == "RFS")
                 {
-                    patientPosition = "Right First-Supine";
+                    patient_position = "Right First-Supine";
                 }
-                else if(patientPosition == "AFDR")
+                else if(patient_position == "AFDR")
                 {
-                    patientPosition = "Anterior First-Decubitus Right";
+                    patient_position = "Anterior First-Decubitus Right";
                 }
-                else if(patientPosition == "AFDL")
+                else if(patient_position == "AFDL")
                 {
-                    patientPosition = "Anterior First-Decubitus Left";
+                    patient_position = "Anterior First-Decubitus Left";
                 }
-                else if(patientPosition == "PFDR")
+                else if(patient_position == "PFDR")
                 {
-                    patientPosition = "Posterior First-Decubitus Right";
+                    patient_position = "Posterior First-Decubitus Right";
                 }
-                else if(patientPosition == "PFDL")
+                else if(patient_position == "PFDL")
                 {
-                    patientPosition = "Posterior First-Decubitus Left";
+                    patient_position = "Posterior First-Decubitus Left";
                 }
             }
 
-            newItem->setText(
-                int(ColumnImageSeriesType::PATIENT_POSITION),
-                QString::fromStdString(patientPosition)
+            new_item->setText(
+                int(column_image_series_t::PATIENT_POSITION),
+                QString::fromStdString(patient_position)
             );
-            newItem->setText(
-                int(ColumnImageSeriesType::CONTRAST_AGENT),
-                QString::fromStdString(imageSeries->getContrastBolusAgent())
+            new_item->setText(
+                int(column_image_series_t::CONTRAST_AGENT),
+                QString::fromStdString(image_series->getContrastBolusAgent())
             );
-            std::string acquisitionTime = imageSeries->getAcquisitionTime();
-            if(!acquisitionTime.empty())
+            std::string acquisition_time = image_series->getAcquisitionTime();
+            if(!acquisition_time.empty())
             {
-                acquisitionTime.insert(2, ":");
-                acquisitionTime.insert(5, ":");
+                acquisition_time.insert(2, ":");
+                acquisition_time.insert(5, ":");
             }
 
-            newItem->setText(
-                int(ColumnImageSeriesType::ACQUISITION_TIME),
-                QString::fromStdString(acquisitionTime.substr(0, 8))
+            new_item->setText(
+                int(column_image_series_t::ACQUISITION_TIME),
+                QString::fromStdString(acquisition_time.substr(0, 8))
             );
-            std::string contrastTime = imageSeries->getContrastBolusStartTime();
-            if(!contrastTime.empty())
+            std::string contrast_time = image_series->getContrastBolusStartTime();
+            if(!contrast_time.empty())
             {
-                contrastTime.insert(2, ":");
-                contrastTime.insert(5, ":");
+                contrast_time.insert(2, ":");
+                contrast_time.insert(5, ":");
             }
 
-            newItem->setText(
-                int(ColumnImageSeriesType::CONTRAST_BOLUS_START_TIME),
-                QString::fromStdString(contrastTime.substr(0, 8))
+            new_item->setText(
+                int(column_image_series_t::CONTRAST_BOLUS_START_TIME),
+                QString::fromStdString(contrast_time.substr(0, 8))
             );
         }
     }
-    else if(strObj)
+    else if(str_obj)
     {
-        std::string description = strObj->value();
+        std::string description = str_obj->value();
         if(description.empty())
         {
             description = _obj->get_classname();
         }
 
-        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(description));
+        new_item->setText(int(column_object_t::DESC), QString::fromStdString(description));
     }
-    else if(intObj)
+    else if(int_obj)
     {
-        newItem->setText(int(ColumnObjectType::DESC), QString("%1").arg(intObj->value()));
+        new_item->setText(int(column_object_t::DESC), QString("%1").arg(int_obj->value()));
     }
-    else if(floatObj)
+    else if(float_obj)
     {
-        newItem->setText(int(ColumnObjectType::DESC), QString("%1").arg(floatObj->value()));
+        new_item->setText(int(column_object_t::DESC), QString("%1").arg(float_obj->value()));
     }
-    else if(boolObj)
+    else if(bool_obj)
     {
-        newItem->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false");
+        new_item->setText(int(column_object_t::DESC), bool_obj->value() ? "true" : "false");
     }
     else if(trf)
     {
         std::stringstream str;
         str << *trf;
-        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(str.str()));
+        new_item->setText(int(column_object_t::DESC), QString::fromStdString(str.str()));
     }
     else
     {
-        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(_obj->get_classname()));
+        new_item->setText(int(column_object_t::DESC), QString::fromStdString(_obj->get_classname()));
     }
 
     // set icon
     auto iter = m_objectIcons.find(_obj->get_classname());
     if(iter != m_objectIcons.end())
     {
-        newItem->setIcon(int(ColumnCommunType::ID), QIcon(QString::fromStdString(iter->second)));
+        new_item->setIcon(int(column_commun_t::ID), QIcon(QString::fromStdString(iter->second)));
     }
 
-    tree->addTopLevelItem(newItem);
+    tree->addTopLevelItem(new_item);
     for(int i = 0 ; i < tree->columnCount() ; ++i)
     {
         tree->resizeColumnToContents(i);
@@ -1036,7 +1036,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
 {
     if(_item != nullptr)
     {
-        std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
+        std::string uid = _item->data(int(column_commun_t::ID), s_UID_ROLE).toString().toStdString();
         if(!uid.empty())
         {
             data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
@@ -1045,74 +1045,74 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                 if(obj->is_a("sight::data::string"))
                 {
                     data::string::sptr str = std::dynamic_pointer_cast<data::string>(obj);
-                    bool isOkClicked       = false;
+                    bool is_ok_clicked     = false;
                     QString value          = QInputDialog::getText(
                         this,
                         "Edition",
                         "Enter the String value:",
                         QLineEdit::Normal,
                         QString::fromStdString(str->value()),
-                        &isOkClicked
+                        &is_ok_clicked
                     );
 
-                    if(isOkClicked)
+                    if(is_ok_clicked)
                     {
                         str->value() = value.toStdString();
-                        _item->setText(int(ColumnObjectType::DESC), value);
+                        _item->setText(int(column_object_t::DESC), value);
                     }
                 }
                 else if(obj->is_a("sight::data::integer"))
                 {
-                    data::integer::sptr intObj = std::dynamic_pointer_cast<data::integer>(obj);
+                    data::integer::sptr int_obj = std::dynamic_pointer_cast<data::integer>(obj);
 
-                    bool isOkClicked = false;
-                    int value        = QInputDialog::getInt(
+                    bool is_ok_clicked = false;
+                    int value          = QInputDialog::getInt(
                         this,
                         "Edition",
                         "Enter the Integer value:",
-                        int(intObj->value()),
+                        int(int_obj->value()),
                         std::numeric_limits<int>::min(),
                         std::numeric_limits<int>::max(),
                         1,
-                        &isOkClicked
+                        &is_ok_clicked
                     );
-                    if(isOkClicked)
+                    if(is_ok_clicked)
                     {
-                        intObj->value() = value;
-                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
+                        int_obj->value() = value;
+                        _item->setText(int(column_object_t::DESC), QString("%1").arg(value));
                     }
                 }
                 else if(obj->is_a("sight::data::real"))
                 {
-                    data::real::sptr floatObj = std::dynamic_pointer_cast<data::real>(obj);
+                    data::real::sptr float_obj = std::dynamic_pointer_cast<data::real>(obj);
 
-                    bool isOkClicked = false;
-                    double value     = QInputDialog::getDouble(
+                    bool is_ok_clicked = false;
+                    double value       = QInputDialog::getDouble(
                         this,
                         "Edition",
                         "Enter the Integer value:",
-                        floatObj->value(),
+                        float_obj->value(),
                         std::numeric_limits<int>::min(),
                         std::numeric_limits<int>::max(),
                         3,
-                        &isOkClicked
+                        &is_ok_clicked
                     );
-                    if(isOkClicked)
+                    if(is_ok_clicked)
                     {
-                        floatObj->value() = static_cast<float>(value);
-                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
+                        float_obj->value() = static_cast<float>(value);
+                        _item->setText(int(column_object_t::DESC), QString("%1").arg(value));
                     }
                 }
                 else if(obj->is_a("sight::data::boolean"))
                 {
-                    data::boolean::sptr boolObj        = std::dynamic_pointer_cast<data::boolean>(obj);
+                    data::boolean::sptr bool_obj       = std::dynamic_pointer_cast<data::boolean>(obj);
                     QMessageBox::StandardButton button = QMessageBox::question(
                         this,
                         "Edition",
                         "Defines the Boolean value"
                     );
-                    boolObj->value() = (button == QMessageBox::Yes);
-                    _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false");
+                    bool_obj->value() = (button == QMessageBox::Yes);
+                    _item->setText(int(column_object_t::DESC), bool_obj->value() ? "true" : "false");
                 }
                 else if(obj->is_a("sight::data::matrix4"))
                 {
@@ -1120,25 +1120,25 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                     std::stringstream str;
                     str << *trf;
 
-                    bool isOkClicked = false;
-                    QString value    = QInputDialog::getMultiLineText(
+                    bool is_ok_clicked = false;
+                    QString value      = QInputDialog::getMultiLineText(
                         this,
                         "Edition",
                         "Enter the Matrix coefficient (separated by a space):",
                         QString::fromStdString(str.str()),
-                        &isOkClicked
+                        &is_ok_clicked
                     );
 
-                    QStringList coeffList = value.trimmed().split(QRegularExpression("\\s+"));
-                    if(isOkClicked && coeffList.size() == 16)
+                    QStringList coeff_list = value.trimmed().split(QRegularExpression("\\s+"));
+                    if(is_ok_clicked && coeff_list.size() == 16)
                     {
                         data::matrix4::container_type coeffs;
 
-                        bool conversionOK = false;
+                        bool conversion_ok = false;
                         for(int i = 0 ; i < 16 ; ++i)
                         {
-                            coeffs[std::size_t(i)] = coeffList[i].toDouble(&conversionOK);
-                            if(!conversionOK)
+                            coeffs[std::size_t(i)] = coeff_list[i].toDouble(&conversion_ok);
+                            if(!conversion_ok)
                             {
                                 QMessageBox::warning(
                                     this,
@@ -1150,9 +1150,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                         }
 
                         (*trf) = coeffs;
-                        _item->setText(int(ColumnObjectType::DESC), value.trimmed());
+                        _item->setText(int(column_object_t::DESC), value.trimmed());
                     }
-                    else if(isOkClicked)
+                    else if(is_ok_clicked)
                     {
                         QMessageBox::warning(
                             this,

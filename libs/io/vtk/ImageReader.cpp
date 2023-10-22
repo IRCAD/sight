@@ -61,7 +61,7 @@ void ImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::sptr pImage = getConcreteObject();
+    data::image::sptr p_image = getConcreteObject();
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
@@ -69,9 +69,9 @@ void ImageReader::read()
     vtkSmartPointer<vtkLambdaCommand> progress_callback;
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [this](vtkObject* caller, std::uint64_t, void*)
+        [this](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
+            auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
             m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
@@ -94,7 +94,7 @@ void ImageReader::read()
     SIGHT_THROW_IF("ImageReader cannot read VTK image file :" << this->get_file().string(), !img);
     try
     {
-        io::vtk::fromVTKImage(img, pImage);
+        io::vtk::from_vtk_image(img, p_image);
     }
     catch(std::exception& e)
     {

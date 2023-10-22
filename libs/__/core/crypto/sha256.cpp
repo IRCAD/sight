@@ -32,21 +32,21 @@ namespace sight::core::crypto
 
 //------------------------------------------------------------------------------
 
-void hash(const secure_string& message, std::array<unsigned char, HASH_SIZE>& output)
+void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _output)
 {
     // Compute SHA256 using openssl
-    SHA256(reinterpret_cast<const std::uint8_t*>(message.data()), message.size(), output.data());
+    SHA256(reinterpret_cast<const std::uint8_t*>(_message.data()), _message.size(), _output.data());
 }
 
 //------------------------------------------------------------------------------
 
-secure_string hash(const secure_string& message)
+secure_string hash(const secure_string& _message)
 {
     // The hash array
     std::array<unsigned char, HASH_SIZE> output {};
 
     // Compute SHA256 using openssl
-    hash(message, output);
+    hash(_message, output);
 
     // Convert the hash to an hexadecimal string
     std::ostringstream stream;

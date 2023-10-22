@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,8 +73,8 @@ public:
     /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
     /// @param format the format of the archive. @see sight::io::zip::Archive::ArchiveFormat
     IO_ZIP_API static ArchiveWriter::uptr get(
-        const std::filesystem::path& archive_path,
-        ArchiveFormat format = ArchiveFormat::DEFAULT
+        const std::filesystem::path& _archive_path,
+        ArchiveFormat _format = ArchiveFormat::DEFAULT
     );
 
     /// Returns an std::ostream to read an archived file
@@ -83,11 +83,11 @@ public:
     /// @param method the compression algorithm to use.
     /// @param level the compression level to use.
     IO_ZIP_API virtual std::unique_ptr<std::ostream> openFile(
-        const std::filesystem::path& file_path,
-        const core::crypto::secure_string& password = "",
-        Method method                               = Method::DEFAULT,
-        Level level                                 = Level::DEFAULT
-    )                                               = 0;
+        const std::filesystem::path& _file_path,
+        const core::crypto::secure_string& _password = "",
+        Method _method                               = Method::DEFAULT,
+        Level _level                                 = Level::DEFAULT
+    )                                                = 0;
 
     /// Returns true for raw archive
     [[nodiscard]] IO_ZIP_API virtual bool isRaw() const = 0;
@@ -95,7 +95,7 @@ public:
 protected:
 
     /// Constructor
-    IO_ZIP_API ArchiveWriter(const std::filesystem::path& archive_path);
+    IO_ZIP_API ArchiveWriter(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

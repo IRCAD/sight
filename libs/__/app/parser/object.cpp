@@ -41,22 +41,22 @@ void object::updating()
 void object::createConfig(core::tools::object::sptr _obj)
 {
     // Declaration of attributes values
-    const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT      = "new";
-    const std::string GET_OBJECT        = "ref";
+    const std::string object_build_mode = "src";
+    const std::string build_object      = "new";
+    const std::string get_object        = "ref";
 
-    data::object::sptr associatedObject = std::dynamic_pointer_cast<data::object>(_obj);
-    SIGHT_ASSERT("associatedObject not instanced", associatedObject);
+    data::object::sptr associated_object = std::dynamic_pointer_cast<data::object>(_obj);
+    SIGHT_ASSERT("associatedObject not instanced", associated_object);
 
     for(const auto& elem : m_cfg)
     {
         if(elem.first == "item")
         {
-            const auto buildMode = elem.second.get<std::string>(OBJECT_BUILD_MODE, BUILD_OBJECT);
+            const auto build_mode = elem.second.get<std::string>(object_build_mode, build_object);
             SIGHT_ASSERT(
-                "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
-                                                   "or GET_OBJECT.",
-                buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
+                "The buildMode \"" << build_mode << "\" is not supported, it should be either BUILD_OBJECT"
+                                                    "or GET_OBJECT.",
+                build_mode == build_object || build_mode == get_object
             );
 
             const auto key = elem.second.get<std::string>("<xmlattr>.key");
@@ -65,12 +65,12 @@ void object::createConfig(core::tools::object::sptr _obj)
                 elem.second.count("object") == 1
             );
 
-            if(buildMode == BUILD_OBJECT)
+            if(build_mode == build_object)
             {
                 // Test if key already exist in object
                 SIGHT_ASSERT(
                     "The key " << key << " already exists in the object.",
-                    !associatedObject->getField(
+                    !associated_object->get_field(
                         key
                     )
                 );
@@ -81,10 +81,10 @@ void object::createConfig(core::tools::object::sptr _obj)
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();
-                data::object::sptr localObj = ctm->getConfigRoot();
+                data::object::sptr local_obj = ctm->getConfigRoot();
 
                 // Add object
-                associatedObject->setField(key, localObj);
+                associated_object->set_field(key, local_obj);
             }
             else // if( buildMode == GET_OBJECT )
             {

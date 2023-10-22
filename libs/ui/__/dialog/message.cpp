@@ -32,14 +32,14 @@ namespace sight::ui::dialog
 //-----------------------------------------------------------------------------
 
 message::Buttons message::show(
-    const std::string& title,
-    const std::string& message,
-    message::Icons icon
+    const std::string& _title,
+    const std::string& _message,
+    message::Icons _icon
 )
 {
-    ui::dialog::message messageBox(title, message, icon);
-    messageBox.addButton(ui::dialog::message::OK);
-    return messageBox.show();
+    ui::dialog::message message_box(_title, _message, _icon);
+    message_box.addButton(ui::dialog::message::OK);
+    return message_box.show();
 }
 
 //-----------------------------------------------------------------------------
@@ -50,8 +50,8 @@ message::message()
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(message_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::message_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(message_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::message_base>(gui_obj);
         })
     ).wait();
 }
@@ -59,23 +59,23 @@ message::message()
 //-----------------------------------------------------------------------------
 
 message::message(
-    const std::string& title,
-    const std::string& message,
-    message::Icons icon
+    const std::string& _title,
+    const std::string& _message,
+    message::Icons _icon
 )
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(message_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::message_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(message_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::message_base>(gui_obj);
 
             if(m_implementation)
             {
-                m_implementation->setTitle(title);
-                m_implementation->setMessage(message);
-                m_implementation->setIcon(icon);
+                m_implementation->setTitle(_title);
+                m_implementation->setMessage(_message);
+                m_implementation->setIcon(_icon);
             }
         })
     ).wait();
@@ -88,7 +88,7 @@ message::~message()
 
 //-----------------------------------------------------------------------------
 
-void message::setTitle(const std::string& title)
+void message::setTitle(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -96,7 +96,7 @@ void message::setTitle(const std::string& title)
         {
             if(m_implementation)
             {
-                m_implementation->setTitle(title);
+                m_implementation->setTitle(_title);
             }
         })
     ).wait();
@@ -104,7 +104,7 @@ void message::setTitle(const std::string& title)
 
 //-----------------------------------------------------------------------------
 
-void message::setMessage(const std::string& msg)
+void message::setMessage(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -112,7 +112,7 @@ void message::setMessage(const std::string& msg)
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(msg);
+                m_implementation->setMessage(_msg);
             }
         })
     ).wait();
@@ -120,7 +120,7 @@ void message::setMessage(const std::string& msg)
 
 //-----------------------------------------------------------------------------
 
-void message::setIcon(message::Icons icon)
+void message::setIcon(message::Icons _icon)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -128,7 +128,7 @@ void message::setIcon(message::Icons icon)
         {
             if(m_implementation)
             {
-                m_implementation->setIcon(icon);
+                m_implementation->setIcon(_icon);
             }
         })
     ).wait();
@@ -136,7 +136,7 @@ void message::setIcon(message::Icons icon)
 
 //-----------------------------------------------------------------------------
 
-void message::addButton(message::Buttons button)
+void message::addButton(message::Buttons _button)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -144,7 +144,7 @@ void message::addButton(message::Buttons button)
         {
             if(m_implementation)
             {
-                m_implementation->addButton(button);
+                m_implementation->addButton(_button);
             }
         })
     ).wait();
@@ -152,7 +152,7 @@ void message::addButton(message::Buttons button)
 
 //-----------------------------------------------------------------------------
 
-void message::setDefaultButton(message::Buttons button)
+void message::setDefaultButton(message::Buttons _button)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -160,7 +160,7 @@ void message::setDefaultButton(message::Buttons button)
         {
             if(m_implementation)
             {
-                m_implementation->setDefaultButton(button);
+                m_implementation->setDefaultButton(_button);
             }
         })
     ).wait();
@@ -168,7 +168,7 @@ void message::setDefaultButton(message::Buttons button)
 
 //-----------------------------------------------------------------------------
 
-void message::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void message::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
@@ -176,7 +176,7 @@ void message::addCustomButton(const std::string& label, std::function<void()> cl
         {
             if(m_implementation)
             {
-                m_implementation->addCustomButton(label, clickedFn);
+                m_implementation->addCustomButton(_label, _clicked_fn);
             }
         })
     ).wait();

@@ -65,50 +65,50 @@ void transform_depth_map2mm::updating()
     const auto camera_set = m_camera_set.lock();
     SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
 
-    data::camera::csptr depthCamera = camera_set->get_camera(0);
+    data::camera::csptr depth_camera = camera_set->get_camera(0);
 
-    const double scale = depthCamera->getScale();
+    const double scale = depth_camera->getScale();
 
-    auto originFrame = m_originDepth.lock();
-    SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", originFrame);
+    auto origin_frame = m_originDepth.lock();
+    SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", origin_frame);
 
-    const auto type = originFrame->getType();
+    const auto type = origin_frame->getType();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
-    const auto size = originFrame->size();
+    const auto size = origin_frame->size();
 
-    auto scaledFrame = m_scaledDepth.lock();
-    SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaledFrame);
+    auto scaled_frame = m_scaledDepth.lock();
+    SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaled_frame);
 
-    if(size != scaledFrame->size())
+    if(size != scaled_frame->size())
     {
-        scaledFrame->resize(size, originFrame->getType(), originFrame->getPixelFormat());
+        scaled_frame->resize(size, origin_frame->getType(), origin_frame->getPixelFormat());
 
         const data::image::Origin origin = {0., 0., 0.};
-        scaledFrame->setOrigin(origin);
+        scaled_frame->setOrigin(origin);
         const data::image::Spacing spacing = {1., 1., 1.};
-        scaledFrame->setSpacing(spacing);
-        scaledFrame->setWindowWidth({1});
-        scaledFrame->setWindowCenter({0});
+        scaled_frame->setSpacing(spacing);
+        scaled_frame->setWindowWidth({1});
+        scaled_frame->setWindowCenter({0});
     }
 
-    const auto origDumpLock   = originFrame->dump_lock();
-    const auto scaledDumpLock = scaledFrame->dump_lock();
+    const auto orig_dump_lock   = origin_frame->dump_lock();
+    const auto scaled_dump_lock = scaled_frame->dump_lock();
 
-    auto depthBufferInItr     = originFrame->begin<std::uint16_t>();
-    const auto depthBufferEnd = originFrame->end<std::uint16_t>();
-    auto depthBufferOutItr    = scaledFrame->begin<std::uint16_t>();
+    auto depth_buffer_in_itr    = origin_frame->begin<std::uint16_t>();
+    const auto depth_buffer_end = origin_frame->end<std::uint16_t>();
+    auto depth_buffer_out_itr   = scaled_frame->begin<std::uint16_t>();
 
-    for( ; depthBufferInItr != depthBufferEnd ; ++depthBufferInItr, ++depthBufferOutItr)
+    for( ; depth_buffer_in_itr != depth_buffer_end ; ++depth_buffer_in_itr, ++depth_buffer_out_itr)
     {
-        *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr) * scale);
+        *depth_buffer_out_itr = static_cast<std::uint16_t>((*depth_buffer_in_itr) * scale);
     }
 
-    auto sig = scaledFrame->signal<data::image::ModifiedSignalType>(data::image::MODIFIED_SIG);
+    auto sig = scaled_frame->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
     m_sigComputed->async_emit();

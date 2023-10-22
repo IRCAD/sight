@@ -26,7 +26,7 @@
 
 #include <core/tools/dispatcher.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/matrix4.hpp>
 
 #include <filter/image/metric.hpp>
@@ -67,7 +67,7 @@ void mip_matching_registration_test::tearDown()
 
 void mip_matching_registration_test::identityTest()
 {
-    data::image::csptr moving = createSphereImage<std::uint16_t, 3>();
+    data::image::csptr moving = create_sphere_image<std::uint16_t, 3>();
     data::image::csptr fixed  = data::object::copy(moving);
     data::matrix4::sptr mat   = std::make_shared<data::matrix4>();
 
@@ -92,7 +92,7 @@ void mip_matching_registration_test::identityTest()
 
 void mip_matching_registration_test::translateTransformTest()
 {
-    data::image::csptr moving = createSphereImage<std::uint16_t, 3>();
+    data::image::csptr moving = create_sphere_image<std::uint16_t, 3>();
     data::image::sptr fixed   = std::make_shared<data::image>();
 
     data::matrix4::sptr transform = std::make_shared<data::matrix4>();
@@ -123,54 +123,54 @@ void mip_matching_registration_test::translateTransformTest()
 
 void mip_matching_registration_test::translateTransformWithScalesTest()
 {
-    using ImageType = itk::Image<std::uint16_t, 3>;
+    using image_t = itk::Image<std::uint16_t, 3>;
 
     // Create the moving image
-    auto movingSpacing = ImageType::SpacingType(1.);
-    movingSpacing[1] = 1.3;
-    data::image::sptr moving = createSphereImage<std::uint16_t, 3>(movingSpacing);
+    auto moving_spacing = image_t::SpacingType(1.);
+    moving_spacing[1] = 1.3;
+    data::image::sptr moving = create_sphere_image<std::uint16_t, 3>(moving_spacing);
     data::image::sptr fixed  = std::make_shared<data::image>();
     moving->setOrigin({107., 50., -30.});
 
     // Translate the image a bit
-    std::array<double, 3> vTrans {{4., 19., 7.}};
+    std::array<double, 3> v_trans {{4., 19., 7.}};
     data::matrix4::sptr transform = std::make_shared<data::matrix4>();
-    (*transform)(0, 3) = vTrans[0];
-    (*transform)(1, 3) = vTrans[1];
-    (*transform)(2, 3) = vTrans[2];
+    (*transform)(0, 3) = v_trans[0];
+    (*transform)(1, 3) = v_trans[1];
+    (*transform)(2, 3) = v_trans[2];
     sight::filter::image::resampler::resample(moving, fixed, transform);
-    auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}};
-    auto movingOrigin = moving->getOrigin();
-    fixed->setOrigin(fixedOrigin);
+    auto fixed_origin  = std::array<double, 3> {{20., 10., 35.}};
+    auto moving_origin = moving->getOrigin();
+    fixed->setOrigin(fixed_origin);
     std::array<float, 3> expected {
         {
-            float(movingOrigin[0] + vTrans[0] - fixedOrigin[0]),
-            float(movingOrigin[1] + vTrans[1] - fixedOrigin[1]),
-            float(movingOrigin[2] + vTrans[2] - fixedOrigin[2])
+            float(moving_origin[0] + v_trans[0] - fixed_origin[0]),
+            float(moving_origin[1] + v_trans[1] - fixed_origin[1]),
+            float(moving_origin[2] + v_trans[2] - fixed_origin[2])
         }
     };
 
-    auto itkFixed = io::itk::moveToItk<ImageType>(fixed);
+    auto itk_fixed = io::itk::move_to_itk<image_t>(fixed);
 
     // Resample the image to get a different spacing
-    ImageType::SizeType newSize {};
-    ImageType::SpacingType newSpacing(2.);
+    image_t::SizeType new_size {};
+    image_t::SpacingType new_spacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * double(moving->size()[i]));
+        new_size[i] = static_cast<unsigned int>(moving_spacing[i] / new_spacing[i] * double(moving->size()[i]));
     }
 
-    auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
-    resample->SetInput(itkFixed);
-    resample->SetSize(newSize);
-    resample->SetOutputSpacing(newSpacing);
-    resample->SetOutputOrigin(itkFixed->GetOrigin());
+    auto resample = itk::ResampleImageFilter<image_t, image_t>::New();
+    resample->SetInput(itk_fixed);
+    resample->SetSize(new_size);
+    resample->SetOutputSpacing(new_spacing);
+    resample->SetOutputOrigin(itk_fixed->GetOrigin());
     resample->Update();
-    auto* resampled        = resample->GetOutput();
-    auto resampledF4sFixed = io::itk::moveFromItk<ImageType>(resampled, true);
+    auto* resampled          = resample->GetOutput();
+    auto resampled_f4s_fixed = io::itk::move_from_itk<image_t>(resampled, true);
 
     filter::image::RegistrationDispatch::Parameters params;
-    params.fixed     = resampledF4sFixed;
+    params.fixed     = resampled_f4s_fixed;
     params.moving    = moving;
     params.transform = std::make_shared<data::matrix4>();
     core::type type = moving->getType();
@@ -181,7 +181,7 @@ void mip_matching_registration_test::translateTransformWithScalesTest()
             "Actual transform does not match expected results",
             double(expected[i]),
             (*params.transform)(i, 3),
-            double(movingSpacing[i])
+            double(moving_spacing[i])
         );
     }
 }

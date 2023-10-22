@@ -26,13 +26,13 @@
 
 #include <core/com/signal.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/PickingCross.hpp>
+#include <viz/scene3d/picking_cross.hpp>
 #include <viz/scene3d/plane.hpp>
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 #include <viz/scene3d/transformable.hpp>
 
@@ -87,7 +87,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API negato2d final :
 {
 public:
 
-    using OrientationMode = data::helper::MedicalImage::orientation_t;
+    using OrientationMode = data::helper::medical_image::orientation_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d, sight::viz::scene3d::adaptor);
@@ -178,7 +178,7 @@ private:
      * @param _frontalIndex new frontal slice index.
      * @param _sagittalIndex new sagittal slice index.
      */
-    void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
+    void changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index);
 
     /**
      * @brief SLOT: Update slices index to match x,y,z world coordinates
@@ -199,7 +199,7 @@ private:
     void pickIntensity(int _x, int _y);
 
     /// Contains the texture which will be displayed on the negato.
-    sight::viz::scene3d::Texture::sptr m_3DOgreTexture;
+    sight::viz::scene3d::texture::sptr m_3DOgreTexture;
 
     /// Contains and manages the textures used to store the transfer function (GPU point of view).
     sight::viz::scene3d::transfer_function::uptr m_gpuTF;
@@ -208,7 +208,7 @@ private:
     std::unique_ptr<sight::viz::scene3d::plane> m_plane {nullptr};
 
     /// Contains the widget displayed to pick intensities.
-    std::unique_ptr<sight::viz::scene3d::PickingCross> m_pickingCross;
+    std::unique_ptr<sight::viz::scene3d::picking_cross> m_pickingCross;
 
     /// Enables/disables the usage of the transfer function alpha channel.
     bool m_enableAlpha {false};
@@ -241,8 +241,8 @@ private:
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using PickedVoxelSigType = core::com::signal<void (std::string)>;
-    PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
+    using picked_voxel_sig_t = core::com::signal<void (std::string)>;
+    picked_voxel_sig_t::sptr m_pickedVoxelSignal {nullptr};
 
     static constexpr std::string_view s_IMAGE_IN = "image";
     static constexpr std::string_view s_TF_IN    = "tf";

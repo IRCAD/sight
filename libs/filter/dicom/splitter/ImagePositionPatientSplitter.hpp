@@ -48,9 +48,9 @@ public:
     FILTER_DICOM_API ~ImagePositionPatientSplitter() override = default;
 
     /// Override
-    FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API dicom_series_container_t apply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const override;
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;

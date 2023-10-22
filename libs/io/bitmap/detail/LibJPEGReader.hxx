@@ -71,12 +71,12 @@ public:
     }
 
     /// Reading
-    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
     {
         // Get input size
-        istream.seekg(0, std::ios::end);
-        const auto stream_size = istream.tellg();
-        istream.seekg(0, std::ios::beg);
+        _istream.seekg(0, std::ios::end);
+        const auto stream_size = _istream.tellg();
+        _istream.seekg(0, std::ios::beg);
 
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
@@ -88,7 +88,7 @@ public:
         }
 
         // Read input data..
-        istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
+        _istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
 
         // Set jpeg source
         jpeg_mem_src(&m_cinfo, m_input_buffer.data(), static_cast<unsigned long>(input_buffer_size));
@@ -192,7 +192,7 @@ public:
             }();
 
         // Allocate destination image
-        image.resize(
+        _image.resize(
             {m_cinfo.output_width, m_cinfo.output_height, 0},
             component_type,
             pixel_format
@@ -205,7 +205,7 @@ public:
         {
             // jpeg_read_scanlines expects an array of pointers to scanlines.
             row_pointer[0] = reinterpret_cast<unsigned char*>(
-                image.getPixel(m_cinfo.output_scanline * m_cinfo.image_width)
+                _image.getPixel(m_cinfo.output_scanline * m_cinfo.image_width)
             );
 
             SIGHT_THROW_IF(
@@ -241,28 +241,28 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpegErrorExit(j_common_ptr cinfo)
+    inline static void jpegErrorExit(j_common_ptr _cinfo)
     {
-        char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
         // Create the message
-        (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
 
         // Use exception instead of longjmp/setjmp
-        SIGHT_THROW(jpegLastErrorMsg);
+        SIGHT_THROW(jpeg_last_error_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void jpegOutputMessage(j_common_ptr cinfo)
+    inline static void jpegOutputMessage(j_common_ptr _cinfo)
     {
-        char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
 
         // Create the message
-        (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
 
         // Log recoverable error
-        SIGHT_WARN(jpegLastErrorMsg);
+        SIGHT_WARN(jpeg_last_error_msg);
     }
 
     struct jpeg_error_mgr m_jerr {};

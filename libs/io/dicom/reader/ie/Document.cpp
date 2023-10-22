@@ -33,16 +33,16 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 Document::Document(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::image::sptr& image,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::image::sptr& _image,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::image>(dicomSeries, reader, instance, image,
-                                                          logger, progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::image>(_dicom_series, _reader, _instance, _image,
+                                                          _logger, _progress, _cancel)
 {
 }
 
@@ -56,17 +56,17 @@ Document::~Document()
 void Document::readSR()
 {
     // Retrieve dataset
-    const gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset_root = m_reader->GetFile().GetDataSet();
 
     // Create SR from Dataset
-    SPTR(io::dicom::container::sr::DicomSRContainerNode) rootContainerNode =
-        io::dicom::helper::StructuredReport::readSR(datasetRoot);
+    SPTR(io::dicom::container::sr::DicomSRContainerNode) root_container_node =
+        io::dicom::helper::StructuredReport::readSR(dataset_root);
 
-    if(rootContainerNode)
+    if(root_container_node)
     {
         // Try to read a measurement report
         io::dicom::reader::tid::MeasurementReport report(m_dicomSeries, m_reader, m_instance, m_object, m_logger);
-        report.readSR(rootContainerNode);
+        report.readSR(root_container_node);
     }
 }
 

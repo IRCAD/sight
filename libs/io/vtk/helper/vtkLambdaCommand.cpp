@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,11 +29,11 @@ namespace sight::io::vtk::helper
 
 //------------------------------------------------------------------------------
 
-void vtkLambdaCommand::Execute(vtkObject* caller, unsigned long event, void* callData) // NOLINT(google-runtime-int)
+void vtkLambdaCommand::Execute(vtkObject* _caller, unsigned long _event, void* _call_data) // NOLINT(google-runtime-int)
 {
     if(m_callback)
     {
-        m_callback(caller, event, callData);
+        m_callback(_caller, _event, _call_data);
     }
 }
 

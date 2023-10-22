@@ -117,15 +117,15 @@ public:
 
 private:
 
-    void genericAddInCompositeTest(const std::string& slotName, bool alreadyPresent = false);
-    void genericAddInVectorTest(const std::string& slotName, bool alreadyPresent    = false);
-    void genericAddInSeriesSetTest(const std::string& slotName, bool alreadyPresent = false);
-    void genericAddInFieldTest(const std::string& slotName, bool alreadyPresent     = false);
+    void genericAddInCompositeTest(const std::string& _slot_name, bool _already_present = false);
+    void genericAddInVectorTest(const std::string& _slot_name, bool _already_present    = false);
+    void genericAddInSeriesSetTest(const std::string& _slot_name, bool _already_present = false);
+    void genericAddInFieldTest(const std::string& _slot_name, bool _already_present     = false);
 
-    void genericRemoveInCompositeTest(const std::string& slotName);
-    void genericRemoveInVectorTest(const std::string& slotName);
-    void genericRemoveInSeriesSetTest(const std::string& slotName);
-    void genericRemoveInFieldTest(const std::string& slotName);
+    void genericRemoveInCompositeTest(const std::string& _slot_name);
+    void genericRemoveInVectorTest(const std::string& _slot_name);
+    void genericRemoveInSeriesSetTest(const std::string& _slot_name);
+    void genericRemoveInFieldTest(const std::string& _slot_name);
 
     service::base::sptr m_manage;
 };

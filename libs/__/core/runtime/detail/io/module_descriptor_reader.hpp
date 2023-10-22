@@ -65,7 +65,7 @@ public:
      *
      * @return      a container with all created modules
      */
-    static module_container create_modules(const std::filesystem::path& location);
+    static module_container create_modules(const std::filesystem::path& _location);
 
     /**
      * @brief       Look for a descriptor at the specified location,
@@ -75,7 +75,7 @@ public:
      *
      * @return      a shared pointer to the created module
      */
-    static std::shared_ptr<module> create_module(const std::filesystem::path& location);
+    static std::shared_ptr<module> create_module(const std::filesystem::path& _location);
 
     /**
      * @brief   Processes a configuration element XML node.
@@ -85,7 +85,7 @@ public:
      *
      * @return  a pointer to the created configuration element
      */
-    static void process_configuration(xmlNodePtr node, core::runtime::config_t& parent_config);
+    static void process_configuration(xmlNodePtr _node, core::runtime::config_t& _parent_config);
 
     /**
      * @brief   Processes an extension XML node.
@@ -95,7 +95,7 @@ public:
      *
      * @return  a pointer to the created extension
      */
-    static std::shared_ptr<extension> process_extension(xmlNodePtr node, const std::shared_ptr<module> module);
+    static std::shared_ptr<extension> process_extension(xmlNodePtr _node, const std::shared_ptr<module> _module);
 
     /**
      * Processes a node that is a point
@@ -104,7 +104,7 @@ public:
      * @param   module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
-    static point_extensions_pair_type process_point(xmlNodePtr node, const std::shared_ptr<module> module);
+    static point_extensions_pair_type process_point(xmlNodePtr _node, const std::shared_ptr<module> _module);
 
     /**
      * @brief   Processes an extension point XML node.
@@ -115,8 +115,8 @@ public:
      * @return  a pointer to the created extension point
      */
     static std::shared_ptr<extension_point> process_extension_point(
-        xmlNodePtr node,
-        const std::shared_ptr<module> module
+        xmlNodePtr _node,
+        const std::shared_ptr<module> _module
     );
 
     /**
@@ -127,7 +127,7 @@ public:
      *
      * @return  a pointer to the created module
      */
-    static std::shared_ptr<detail::module> process_plugin(xmlNodePtr node, const std::filesystem::path& location);
+    static std::shared_ptr<detail::module> process_plugin(xmlNodePtr _node, const std::filesystem::path& _location);
 
     /**
      * Processes a node that is a requirement
@@ -136,7 +136,7 @@ public:
      *
      * @return  a string containing the requirement's value
      */
-    static std::string process_requirement(xmlNodePtr node);
+    static std::string process_requirement(xmlNodePtr _node);
 };
 
 } // namespace io

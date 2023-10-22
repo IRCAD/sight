@@ -47,10 +47,10 @@ public:
 
 private:
 
-    static std::vector<std::string> log_to_vector(const std::stringstream& logs_stream);
+    static std::vector<std::string> log_to_vector(const std::stringstream& _logs_stream);
     static void check_log(
-        const std::vector<std::string>& log_messages_ref,
-        const std::vector<std::string>& log_messages
+        const std::vector<std::string>& _log_messages_ref,
+        const std::vector<std::string>& _log_messages
     );
 
     std::stringstream m_ostream;

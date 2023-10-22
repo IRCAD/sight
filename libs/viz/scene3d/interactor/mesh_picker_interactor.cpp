@@ -25,14 +25,14 @@
 #include <core/com/signal.hxx>
 
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
 namespace sight::viz::scene3d::interactor
 {
 
-mesh_picker_interactor::mesh_picker_interactor(Layer::sptr _layer, bool _layerOrderDependant) noexcept :
-    base(_layer, _layerOrderDependant)
+mesh_picker_interactor::mesh_picker_interactor(layer::sptr _layer, bool _layer_order_dependant) noexcept :
+    base(_layer, _layer_order_dependant)
 {
 }
 
@@ -43,16 +43,16 @@ mesh_picker_interactor::~mesh_picker_interactor() noexcept =
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::setPointClickedSig(const PointClickedSigType::sptr& _sig)
+void mesh_picker_interactor::setPointClickedSig(const point_clicked_sig_t::sptr& _sig)
 {
     m_pointClickedSig = _sig;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh_picker_interactor::setQueryMask(std::uint32_t _queryMask)
+void mesh_picker_interactor::setQueryMask(std::uint32_t _query_mask)
 {
-    m_queryMask = _queryMask;
+    m_queryMask = _query_mask;
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void mesh_picker_interactor::pick(MouseButton _button, Modifier _mod, int _x, in
             return;
         }
 
-        if(auto result = viz::scene3d::Utils::pickObject(_x, _y, m_queryMask, *layer->getSceneManager());
+        if(auto result = viz::scene3d::utils::pickObject(_x, _y, m_queryMask, *layer->getSceneManager());
            result != std::nullopt)
         {
             Ogre::Vector3 click = result->second;
@@ -76,19 +76,19 @@ void mesh_picker_interactor::pick(MouseButton _button, Modifier _mod, int _x, in
             info.m_worldPos[1] = static_cast<double>(click.y);
             info.m_worldPos[2] = static_cast<double>(click.z);
 
-            using PickingEventType = data::tools::picking_info::Event;
+            using picking_event_t = data::tools::picking_info::Event;
             switch(_button)
             {
                 case MouseButton::LEFT:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_LEFT_DOWN : PickingEventType::MOUSE_LEFT_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_LEFT_DOWN : picking_event_t::MOUSE_LEFT_UP;
                     break;
 
                 case MouseButton::RIGHT:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_RIGHT_DOWN : PickingEventType::MOUSE_RIGHT_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_RIGHT_DOWN : picking_event_t::MOUSE_RIGHT_UP;
                     break;
 
                 case MouseButton::MIDDLE:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_MIDDLE_DOWN : picking_event_t::MOUSE_MIDDLE_UP;
                     break;
 
                 default:

@@ -58,26 +58,26 @@ void cross_type_action_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::test(const std::string& crossType, double expectedScale)
+void cross_type_action_test::test(const std::string& _cross_type, double _expected_scale)
 {
     boost::property_tree::ptree ptree;
-    ptree.put("crossType", crossType);
+    ptree.put("crossType", _cross_type);
     m_cross_type_action->set_config(ptree);
-    double scale               = -1;
-    auto crossTypeModifiedSlot = core::com::new_slot(
+    double scale                  = -1;
+    auto cross_type_modified_slot = core::com::new_slot(
         [&scale](double _scale)
         {
             scale = _scale;
         });
     m_worker = core::thread::worker::make();
-    crossTypeModifiedSlot->set_worker(m_worker);
-    m_cross_type_action->signal("crossTypeModified")->connect(crossTypeModifiedSlot);
+    cross_type_modified_slot->set_worker(m_worker);
+    m_cross_type_action->signal("crossTypeModified")->connect(cross_type_modified_slot);
     CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->configure());
     CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->start().get());
 
     CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->update().get());
-    SIGHT_TEST_WAIT(expectedScale == scale);
-    CPPUNIT_ASSERT_EQUAL(expectedScale, scale);
+    SIGHT_TEST_WAIT(_expected_scale == scale);
+    CPPUNIT_ASSERT_EQUAL(_expected_scale, scale);
 }
 
 //------------------------------------------------------------------------------

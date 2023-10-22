@@ -38,33 +38,33 @@ template<class P, std::size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-sight::data::image::sptr createSphereImage(itk::Vector<double, N> spacing = itk::Vector<double, N>(1.))
+sight::data::image::sptr create_sphere_image(itk::Vector<double, N> _spacing = itk::Vector<double, N>(1.))
 {
-    using ImageType                      = itk::Image<P, N>;
-    using EllipseType                    = itk::EllipseSpatialObject<N>;
-    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
-    using TransformType                  = typename EllipseType::TransformType;
+    using image_t                        = itk::Image<P, N>;
+    using ellipse_t                      = itk::EllipseSpatialObject<N>;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<ellipse_t, image_t>;
+    using transform_t                    = typename ellipse_t::TransformType;
     static_assert(std::is_arithmetic<P>::value, "P type must be numeric");
 
-    typename ImageType::Pointer image                            = ImageType::New();
-    typename SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
+    typename image_t::Pointer image                               = image_t::New();
+    typename SpatialObjectToImageFilterType::Pointer image_filter = SpatialObjectToImageFilterType::New();
 
-    typename ImageType::SizeType size = {100, 100, 100};
-    imageFilter->SetSize(size);
+    typename image_t::SizeType size = {100, 100, 100};
+    image_filter->SetSize(size);
 
-    imageFilter->SetSpacing(spacing);
+    image_filter->SetSpacing(_spacing);
 
-    typename EllipseType::Pointer ellipse = EllipseType::New();
-    typename EllipseType::ArrayType radiusArray;
-    radiusArray[0] = 10;
-    radiusArray[1] = 15;
-    radiusArray[2] = 20;
-    ellipse->SetRadiusInObjectSpace(radiusArray);
+    typename ellipse_t::Pointer ellipse = ellipse_t::New();
+    typename ellipse_t::ArrayType radius_array;
+    radius_array[0] = 10;
+    radius_array[1] = 15;
+    radius_array[2] = 20;
+    ellipse->SetRadiusInObjectSpace(radius_array);
 
-    typename TransformType::Pointer transform = TransformType::New();
+    typename transform_t::Pointer transform = transform_t::New();
     transform->SetIdentity();
 
-    typename TransformType::OutputVectorType translation;
+    typename transform_t::OutputVectorType translation;
 
     translation[0] = 50;
     translation[1] = 50;
@@ -73,19 +73,19 @@ sight::data::image::sptr createSphereImage(itk::Vector<double, N> spacing = itk:
 
     ellipse->SetObjectToParentTransform(transform);
 
-    imageFilter->SetInput(ellipse);
+    image_filter->SetInput(ellipse);
 
     ellipse->SetDefaultInsideValue(std::numeric_limits<P>::max());
     ellipse->SetDefaultOutsideValue(0);
-    imageFilter->SetUseObjectValue(true);
-    imageFilter->SetOutsideValue(0);
+    image_filter->SetUseObjectValue(true);
+    image_filter->SetOutsideValue(0);
 
-    imageFilter->Update();
+    image_filter->Update();
 
-    image->Graft(imageFilter->GetOutput());
+    image->Graft(image_filter->GetOutput());
 
-    auto outputImage = std::make_shared<sight::data::image>();
-    sight::io::itk::moveFromItk(image, outputImage);
+    auto output_image = std::make_shared<sight::data::image>();
+    sight::io::itk::move_from_itk(image, output_image);
 
-    return outputImage;
+    return output_image;
 }

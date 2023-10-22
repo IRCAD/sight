@@ -32,7 +32,7 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class Action;
+class action;
 
 }
 
@@ -167,19 +167,19 @@ public:
     UI_API void actionServiceStarting();
 
     /// Checks or unchecks the action service.
-    UI_API virtual void setChecked(bool checked);
+    UI_API virtual void setChecked(bool _checked);
 
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool checked() const;
 
     /// Enables or disables the action service.
-    UI_API void setEnabled(bool enabled);
+    UI_API void setEnabled(bool _enabled);
 
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool enabled() const;
 
     /// Shows or hides the action.
-    UI_API void setVisible(bool isVisible);
+    UI_API void setVisible(bool _is_visible);
 
     /// Shows the action.
     UI_API void show();
@@ -213,7 +213,7 @@ protected:
 
 private:
 
-    SPTR(ui::detail::registry::Action) m_registry;
+    SPTR(ui::detail::registry::action) m_registry;
 
     /// Handles the information of the action state inversion.
     bool m_inverted {false};
@@ -231,8 +231,8 @@ class LockAction
 {
 public:
 
-    LockAction(action::wptr action) :
-        m_action(action)
+    LockAction(action::wptr _action) :
+        m_action(_action)
     {
         m_action.lock()->setEnabled(false);
     }

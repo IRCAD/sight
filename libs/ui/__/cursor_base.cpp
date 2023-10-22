@@ -25,7 +25,7 @@
 namespace sight::ui
 {
 
-const cursor_base::FactoryRegistryKeyType cursor_base::REGISTRY_KEY = "::ui::cursor";
+const cursor_base::factory_registry_key_t cursor_base::REGISTRY_KEY = "::ui::cursor";
 
 //-----------------------------------------------------------------------------
 

@@ -27,7 +27,7 @@
 #include <core/com/slot.hpp>
 #include <core/com/slot.hxx>
 
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/string.hpp>
 
 // Registers the fixture into the 'registry'
@@ -54,217 +54,217 @@ void field_helper_test::tearDown()
 
 void field_helper_test::testHelper()
 {
-    const std::string FIELD_ID1 = "FIELD_ID1";
-    const std::string FIELD_ID2 = "FIELD_ID2";
-    const std::string FIELD_ID3 = "FIELD_ID3";
+    const std::string field_i_d1 = "FIELD_ID1";
+    const std::string field_i_d2 = "FIELD_ID2";
+    const std::string field_i_d3 = "FIELD_ID3";
 
     data::object::sptr nullobj;
-    data::object::sptr obj       = std::make_shared<data::string>();
-    data::object::sptr fieldObj1 = std::make_shared<data::string>();
-    data::object::sptr fieldObj2 = std::make_shared<data::string>();
-    data::object::sptr fieldObj3 = std::make_shared<data::string>();
+    data::object::sptr obj        = std::make_shared<data::string>();
+    data::object::sptr field_obj1 = std::make_shared<data::string>();
+    data::object::sptr field_obj2 = std::make_shared<data::string>();
+    data::object::sptr field_obj3 = std::make_shared<data::string>();
 
     core::thread::worker::sptr worker = core::thread::worker::make();
 
     // Setup to test notifications
-    unsigned int numAddedNotif = 0;
+    unsigned int num_added_notif = 0;
     std::mutex mutex;
     std::condition_variable condition;
 
-    data::object::FieldsContainerType addedFields;
-    std::function<void(data::object::FieldsContainerType)> fnAdd =
-        [&](data::object::FieldsContainerType f)
+    data::object::fields_container_t added_fields;
+    std::function<void(data::object::fields_container_t)> fn_add =
+        [&](data::object::fields_container_t _f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
-                ++numAddedNotif;
-                addedFields = f;
+                ++num_added_notif;
+                added_fields = _f;
             }
             condition.notify_one();
         };
 
-    auto slotAdded = core::com::new_slot(fnAdd);
-    slotAdded->set_worker(worker);
-    auto sigAdded = obj->signal<data::object::AddedFieldsSignalType>(data::object::ADDED_FIELDS_SIG);
-    sigAdded->connect(slotAdded);
+    auto slot_added = core::com::new_slot(fn_add);
+    slot_added->set_worker(worker);
+    auto sig_added = obj->signal<data::object::added_fields_signal_t>(data::object::ADDED_FIELDS_SIG);
+    sig_added->connect(slot_added);
 
-    unsigned int numRemovedNotif = 0;
-    data::object::FieldsContainerType removedFields;
+    unsigned int num_removed_notif = 0;
+    data::object::fields_container_t removed_fields;
 
-    std::function<void(data::object::FieldsContainerType)> fnRemove =
-        [&](data::object::FieldsContainerType f)
+    std::function<void(data::object::fields_container_t)> fn_remove =
+        [&](data::object::fields_container_t _f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
-                ++numRemovedNotif;
-                removedFields = f;
+                ++num_removed_notif;
+                removed_fields = _f;
             }
             condition.notify_one();
         };
-    auto slotRemoved = core::com::new_slot(fnRemove);
-    slotRemoved->set_worker(worker);
-    auto sigRemoved = obj->signal<data::object::RemovedFieldsSignalType>(data::object::REMOVED_FIELDS_SIG);
-    sigRemoved->connect(slotRemoved);
+    auto slot_removed = core::com::new_slot(fn_remove);
+    slot_removed->set_worker(worker);
+    auto sig_removed = obj->signal<data::object::removed_fields_signal_t>(data::object::REMOVED_FIELDS_SIG);
+    sig_removed->connect(slot_removed);
 
-    unsigned int numChangedNotif = 0;
-    data::object::FieldsContainerType newFields;
-    data::object::FieldsContainerType oldFields;
+    unsigned int num_changed_notif = 0;
+    data::object::fields_container_t new_fields;
+    data::object::fields_container_t old_fields;
 
-    std::function<void(data::object::FieldsContainerType, data::object::FieldsContainerType)> fnChange =
-        [&](data::object::FieldsContainerType newF, data::object::FieldsContainerType oldF)
+    std::function<void(data::object::fields_container_t, data::object::fields_container_t)> fn_change =
+        [&](data::object::fields_container_t _new_f, data::object::fields_container_t _old_f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
-                ++numChangedNotif;
-                newFields = newF;
-                oldFields = oldF;
+                ++num_changed_notif;
+                new_fields = _new_f;
+                old_fields = _old_f;
             }
             condition.notify_one();
         };
-    auto slotChanged = core::com::new_slot(fnChange);
-    slotChanged->set_worker(worker);
-    auto sigChanged = obj->signal<data::object::ChangedFieldsSignalType>(data::object::CHANGED_FIELDS_SIG);
-    sigChanged->connect(slotChanged);
+    auto slot_changed = core::com::new_slot(fn_change);
+    slot_changed->set_worker(worker);
+    auto sig_changed = obj->signal<data::object::changed_fields_signal_t>(data::object::CHANGED_FIELDS_SIG);
+    sig_changed->connect(slot_changed);
 
-    auto clearArrays = [&](){addedFields.clear(); removedFields.clear(); newFields.clear(); oldFields.clear();};
+    auto clear_arrays = [&](){added_fields.clear(); removed_fields.clear(); new_fields.clear(); old_fields.clear();};
 
     {
-        // Test setField()
-        data::helper::Field fieldHelper(obj);
-        fieldHelper.setField(FIELD_ID1, fieldObj1);
-        fieldHelper.setField(FIELD_ID2, fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj1);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj2);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        // Test set_field()
+        data::helper::field field_helper(obj);
+        field_helper.set_field(field_i_d1, field_obj1);
+        field_helper.set_field(field_i_d2, field_obj2);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj1);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj2);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&]{return numAddedNotif == 1;});
+        condition.wait(lock, [&]{return num_added_notif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), oldFields.size());
-        CPPUNIT_ASSERT(addedFields[FIELD_ID1] == fieldObj1);
-        CPPUNIT_ASSERT(addedFields[FIELD_ID2] == fieldObj2);
-        clearArrays();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), added_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removed_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), new_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), old_fields.size());
+        CPPUNIT_ASSERT(added_fields[field_i_d1] == field_obj1);
+        CPPUNIT_ASSERT(added_fields[field_i_d2] == field_obj2);
+        clear_arrays();
     }
 
     {
-        // Test setFields()
-        data::object::FieldMapType fieldsWithObj1 = {{FIELD_ID1, fieldObj3}};
-        data::helper::Field fieldHelper(obj);
-        fieldHelper.setFields(fieldsWithObj1);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj3);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        // Test set_fields()
+        data::object::field_map_t fields_with_obj1 = {{field_i_d1, field_obj3}};
+        data::helper::field field_helper(obj);
+        field_helper.set_fields(fields_with_obj1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj3);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&]{return numRemovedNotif == 1 && numChangedNotif == 1;});
+        condition.wait(lock, [&]{return num_removed_notif == 1 && num_changed_notif == 1;});
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
-        CPPUNIT_ASSERT(removedFields[FIELD_ID2] == fieldObj2);
-        CPPUNIT_ASSERT(oldFields[FIELD_ID1] == fieldObj1);
-        CPPUNIT_ASSERT(newFields[FIELD_ID1] == fieldObj3);
-        clearArrays();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), added_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removed_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), new_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), old_fields.size());
+        CPPUNIT_ASSERT(removed_fields[field_i_d2] == field_obj2);
+        CPPUNIT_ASSERT(old_fields[field_i_d1] == field_obj1);
+        CPPUNIT_ASSERT(new_fields[field_i_d1] == field_obj3);
+        clear_arrays();
     }
 
     {
-        // Test replacement with setField()
-        data::helper::Field fieldHelper(obj);
-        fieldHelper.setField(FIELD_ID1, fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        // Test replacement with set_field()
+        data::helper::field field_helper(obj);
+        field_helper.set_field(field_i_d1, field_obj2);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj2);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
 
         // Notify explicitly, this should change nothing since the destructor skip it in this case
-        fieldHelper.notify();
+        field_helper.notify();
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&]{return numChangedNotif == 2;});
+        condition.wait(lock, [&]{return num_changed_notif == 2;});
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
-        CPPUNIT_ASSERT(oldFields[FIELD_ID1] == fieldObj3);
-        CPPUNIT_ASSERT(newFields[FIELD_ID1] == fieldObj2);
-        clearArrays();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), added_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), removed_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), new_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), old_fields.size());
+        CPPUNIT_ASSERT(old_fields[field_i_d1] == field_obj3);
+        CPPUNIT_ASSERT(new_fields[field_i_d1] == field_obj2);
+        clear_arrays();
     }
 
     {
         // Test add(), addOrSwap() and remove()
-        data::helper::Field fieldHelper(obj);
-        fieldHelper.add(FIELD_ID2, fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj1);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        data::helper::field field_helper(obj);
+        field_helper.add(field_i_d2, field_obj1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj2);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj1);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
 
-        fieldHelper.addOrSwap(FIELD_ID2, fieldObj3);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        field_helper.addOrSwap(field_i_d2, field_obj3);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == field_obj2);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj3);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
 
-        fieldHelper.remove(FIELD_ID1);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        field_helper.remove(field_i_d1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj3);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
 
-        fieldHelper.add(FIELD_ID3, fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == fieldObj3);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == fieldObj1);
+        field_helper.add(field_i_d3, field_obj1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == field_obj3);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == field_obj1);
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&]{return numAddedNotif == 2 && numRemovedNotif == 2 && numChangedNotif == 3;});
+        condition.wait(lock, [&]{return num_added_notif == 2 && num_removed_notif == 2 && num_changed_notif == 3;});
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), addedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removedFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), newFields.size());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), oldFields.size());
-        CPPUNIT_ASSERT(addedFields[FIELD_ID2] == fieldObj1);
-        CPPUNIT_ASSERT(addedFields[FIELD_ID3] == fieldObj1);
-        CPPUNIT_ASSERT(oldFields[FIELD_ID2] == fieldObj1);
-        CPPUNIT_ASSERT(newFields[FIELD_ID2] == fieldObj3);
-        CPPUNIT_ASSERT(removedFields[FIELD_ID1] == fieldObj2);
-        clearArrays();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), added_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), removed_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), new_fields.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), old_fields.size());
+        CPPUNIT_ASSERT(added_fields[field_i_d2] == field_obj1);
+        CPPUNIT_ASSERT(added_fields[field_i_d3] == field_obj1);
+        CPPUNIT_ASSERT(old_fields[field_i_d2] == field_obj1);
+        CPPUNIT_ASSERT(new_fields[field_i_d2] == field_obj3);
+        CPPUNIT_ASSERT(removed_fields[field_i_d1] == field_obj2);
+        clear_arrays();
     }
 
     {
         // Test clear()
-        data::helper::Field fieldHelper(obj);
-        fieldHelper.clear();
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->getFields().size());
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID2) == nullobj);
-        CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
+        data::helper::field field_helper(obj);
+        field_helper.clear();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), obj->get_fields().size());
+        CPPUNIT_ASSERT(obj->get_field(field_i_d1) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d2) == nullobj);
+        CPPUNIT_ASSERT(obj->get_field(field_i_d3) == nullobj);
     }
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&]{return numRemovedNotif == 3;});
+        condition.wait(lock, [&]{return num_removed_notif == 3;});
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), removedFields.size());
-        CPPUNIT_ASSERT(removedFields[FIELD_ID2] == fieldObj3);
-        CPPUNIT_ASSERT(removedFields[FIELD_ID3] == fieldObj1);
-        clearArrays();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), removed_fields.size());
+        CPPUNIT_ASSERT(removed_fields[field_i_d2] == field_obj3);
+        CPPUNIT_ASSERT(removed_fields[field_i_d3] == field_obj1);
+        clear_arrays();
     }
 
     worker->stop();

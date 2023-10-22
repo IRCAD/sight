@@ -681,25 +681,25 @@ DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotographyStereographicP
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_name
     =
-        "Wide Field Ophthalmic Photography Stereographic Projection Image Storage";
+        "Wide field Ophthalmic Photography Stereographic Projection Image Storage";
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.5";
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_iod =
-    "Wide Field Ophthalmic Photography Stereographic Projection Image IOD";
+    "Wide field Ophthalmic Photography Stereographic Projection Image IOD";
 template<>
 DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_keyword =
     Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage;
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_name =
-    "Wide Field Ophthalmic Photography 3D Coordinates Image Storage";
+    "Wide field Ophthalmic Photography 3D Coordinates Image Storage";
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.6";
 template<>
 DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_iod =
-    "Wide Field Ophthalmic Photography 3D Coordinates Image IOD";
+    "Wide field Ophthalmic Photography 3D Coordinates Image IOD";
 template<>
 DATA_API const Keyword Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_keyword =
     Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage;

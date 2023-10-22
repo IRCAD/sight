@@ -48,49 +48,49 @@ void camera_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-data::camera::sptr initCamera()
+data::camera::sptr init_camera()
 {
-    const double CX                             = safe_rand() % 10000 / 100.;
-    const double CY                             = safe_rand() % 10000 / 100.;
-    const double FX                             = safe_rand() % 10000 / 100.;
-    const double FY                             = safe_rand() % 10000 / 100.;
-    const double SKEW                           = safe_rand() % 10000 / 100.;
-    const double K1                             = safe_rand() % 10000 / 100.;
-    const double K2                             = safe_rand() % 10000 / 100.;
-    const double P1                             = safe_rand() % 10000 / 100.;
-    const double P2                             = safe_rand() % 10000 / 100.;
-    const double K3                             = safe_rand() % 10000 / 100.;
-    const bool IS_CALIBRATED                    = true;
-    const std::string DESC                      = "My camera";
-    const std::string CAM_ID                    = "CAM_461384568";
-    const std::size_t WIDTH                     = 800;
-    const std::size_t HEIGHT                    = 800;
-    const data::camera::SourceType CAMERASOURCE = data::camera::DEVICE;
-    const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.F;
-    const data::camera::PixelFormat PIXELFORMAT = data::camera::RGBA32;
-    const std::string VIDEOFILE                 = "/tmp/video.mp4";
-    const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
-    const double SCALE                          = 0.9996;
+    const double cx                             = safe_rand() % 10000 / 100.;
+    const double cy                             = safe_rand() % 10000 / 100.;
+    const double fx                             = safe_rand() % 10000 / 100.;
+    const double fy                             = safe_rand() % 10000 / 100.;
+    const double skew                           = safe_rand() % 10000 / 100.;
+    const double k1                             = safe_rand() % 10000 / 100.;
+    const double k2                             = safe_rand() % 10000 / 100.;
+    const double p1                             = safe_rand() % 10000 / 100.;
+    const double p2                             = safe_rand() % 10000 / 100.;
+    const double k3                             = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                    = true;
+    const std::string desc                      = "My camera";
+    const std::string cam_id                    = "CAM_461384568";
+    const std::size_t width                     = 800;
+    const std::size_t height                    = 800;
+    const data::camera::source_t camerasource   = data::camera::DEVICE;
+    const std::string cameraid                  = "/dev/video0";
+    const float maximumframerate                = 30.F;
+    const data::camera::PixelFormat pixelformat = data::camera::RGBA32;
+    const std::string videofile                 = "/tmp/video.mp4";
+    const std::string streamurl                 = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                          = 0.9996;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
-    camera->setCx(CX);
-    camera->setCy(CY);
-    camera->setFx(FX);
-    camera->setFy(FY);
-    camera->setSkew(SKEW);
-    camera->setDistortionCoefficient(K1, K2, P1, P2, K3);
-    camera->setIsCalibrated(IS_CALIBRATED);
-    camera->setDescription(DESC);
-    camera->setCameraID(CAM_ID);
-    camera->setWidth(WIDTH);
-    camera->setHeight(HEIGHT);
-    camera->setCameraSource(CAMERASOURCE);
-    camera->setMaximumFrameRate(MAXIMUMFRAMERATE);
-    camera->setPixelFormat(PIXELFORMAT);
-    camera->setVideoFile(VIDEOFILE);
-    camera->setStreamUrl(STREAMURL);
-    camera->setScale(SCALE);
+    camera->setCx(cx);
+    camera->setCy(cy);
+    camera->setFx(fx);
+    camera->setFy(fy);
+    camera->setSkew(skew);
+    camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
+    camera->setIsCalibrated(is_calibrated);
+    camera->setDescription(desc);
+    camera->setCameraID(cam_id);
+    camera->setWidth(width);
+    camera->setHeight(height);
+    camera->setCameraSource(camerasource);
+    camera->setMaximumFrameRate(maximumframerate);
+    camera->setPixelFormat(pixelformat);
+    camera->setVideoFile(videofile);
+    camera->setStreamUrl(streamurl);
+    camera->setScale(scale);
 
     return camera;
 }
@@ -99,80 +99,80 @@ data::camera::sptr initCamera()
 
 void camera_test::paramTest()
 {
-    const double CX                             = safe_rand() % 10000 / 100.;
-    const double CY                             = safe_rand() % 10000 / 100.;
-    const double FX                             = safe_rand() % 10000 / 100.;
-    const double FY                             = safe_rand() % 10000 / 100.;
-    const double SKEW                           = safe_rand() % 10000 / 100.;
-    const double K1                             = safe_rand() % 10000 / 100.;
-    const double K2                             = safe_rand() % 10000 / 100.;
-    const double P1                             = safe_rand() % 10000 / 100.;
-    const double P2                             = safe_rand() % 10000 / 100.;
-    const double K3                             = safe_rand() % 10000 / 100.;
-    const bool IS_CALIBRATED                    = true;
-    const std::string DESC                      = "My camera";
-    const std::string CAM_ID                    = "CAM_461384568";
-    const std::size_t WIDTH                     = 800;
-    const std::size_t HEIGHT                    = 800;
-    const data::camera::SourceType CAMERASOURCE = data::camera::DEVICE;
-    const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.F;
-    const data::camera::PixelFormat PIXELFORMAT = data::camera::RGBA32;
-    const std::string VIDEOFILE                 = "/tmp/video.mp4";
-    const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
-    const double SCALE                          = 0.9796;
+    const double cx                             = safe_rand() % 10000 / 100.;
+    const double cy                             = safe_rand() % 10000 / 100.;
+    const double fx                             = safe_rand() % 10000 / 100.;
+    const double fy                             = safe_rand() % 10000 / 100.;
+    const double skew                           = safe_rand() % 10000 / 100.;
+    const double k1                             = safe_rand() % 10000 / 100.;
+    const double k2                             = safe_rand() % 10000 / 100.;
+    const double p1                             = safe_rand() % 10000 / 100.;
+    const double p2                             = safe_rand() % 10000 / 100.;
+    const double k3                             = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                    = true;
+    const std::string desc                      = "My camera";
+    const std::string cam_id                    = "CAM_461384568";
+    const std::size_t width                     = 800;
+    const std::size_t height                    = 800;
+    const data::camera::source_t camerasource   = data::camera::DEVICE;
+    const std::string cameraid                  = "/dev/video0";
+    const float maximumframerate                = 30.F;
+    const data::camera::PixelFormat pixelformat = data::camera::RGBA32;
+    const std::string videofile                 = "/tmp/video.mp4";
+    const std::string streamurl                 = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                          = 0.9796;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
-    camera->setCx(CX);
-    camera->setCy(CY);
-    camera->setFx(FX);
-    camera->setFy(FY);
-    camera->setSkew(SKEW);
-    camera->setDistortionCoefficient(K1, K2, P1, P2, K3);
-    camera->setIsCalibrated(IS_CALIBRATED);
-    camera->setDescription(DESC);
-    camera->setCameraID(CAM_ID);
+    camera->setCx(cx);
+    camera->setCy(cy);
+    camera->setFx(fx);
+    camera->setFy(fy);
+    camera->setSkew(skew);
+    camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
+    camera->setIsCalibrated(is_calibrated);
+    camera->setDescription(desc);
+    camera->setCameraID(cam_id);
 
-    camera->setWidth(WIDTH);
-    camera->setHeight(HEIGHT);
-    camera->setCameraSource(CAMERASOURCE);
-    camera->setMaximumFrameRate(MAXIMUMFRAMERATE);
-    camera->setPixelFormat(PIXELFORMAT);
-    camera->setVideoFile(VIDEOFILE);
-    camera->setStreamUrl(STREAMURL);
-    camera->setScale(SCALE);
+    camera->setWidth(width);
+    camera->setHeight(height);
+    camera->setCameraSource(camerasource);
+    camera->setMaximumFrameRate(maximumframerate);
+    camera->setPixelFormat(pixelformat);
+    camera->setVideoFile(videofile);
+    camera->setStreamUrl(streamurl);
+    camera->setScale(scale);
 
-    CPPUNIT_ASSERT_EQUAL(CX, camera->getCx());
-    CPPUNIT_ASSERT_EQUAL(CY, camera->getCy());
-    CPPUNIT_ASSERT_EQUAL(FX, camera->getFx());
-    CPPUNIT_ASSERT_EQUAL(FY, camera->getFy());
-    CPPUNIT_ASSERT_EQUAL(SKEW, camera->getSkew());
+    CPPUNIT_ASSERT_EQUAL(cx, camera->getCx());
+    CPPUNIT_ASSERT_EQUAL(cy, camera->getCy());
+    CPPUNIT_ASSERT_EQUAL(fx, camera->getFx());
+    CPPUNIT_ASSERT_EQUAL(fy, camera->getFy());
+    CPPUNIT_ASSERT_EQUAL(skew, camera->getSkew());
 
-    data::camera::DistArrayType dist = camera->getDistortionCoefficient();
-    CPPUNIT_ASSERT_EQUAL(K1, dist[0]);
-    CPPUNIT_ASSERT_EQUAL(K2, dist[1]);
-    CPPUNIT_ASSERT_EQUAL(P1, dist[2]);
-    CPPUNIT_ASSERT_EQUAL(P2, dist[3]);
-    CPPUNIT_ASSERT_EQUAL(K3, dist[4]);
+    data::camera::dist_array_t dist = camera->getDistortionCoefficient();
+    CPPUNIT_ASSERT_EQUAL(k1, dist[0]);
+    CPPUNIT_ASSERT_EQUAL(k2, dist[1]);
+    CPPUNIT_ASSERT_EQUAL(p1, dist[2]);
+    CPPUNIT_ASSERT_EQUAL(p2, dist[3]);
+    CPPUNIT_ASSERT_EQUAL(k3, dist[4]);
 
-    CPPUNIT_ASSERT_EQUAL(IS_CALIBRATED, camera->getIsCalibrated());
-    CPPUNIT_ASSERT_EQUAL(DESC, camera->getDescription());
-    CPPUNIT_ASSERT_EQUAL(CAM_ID, camera->getCameraID());
-    CPPUNIT_ASSERT_EQUAL(WIDTH, camera->getWidth());
-    CPPUNIT_ASSERT_EQUAL(HEIGHT, camera->getHeight());
-    CPPUNIT_ASSERT_EQUAL(CAMERASOURCE, camera->getCameraSource());
-    CPPUNIT_ASSERT_EQUAL(MAXIMUMFRAMERATE, camera->getMaximumFrameRate());
-    CPPUNIT_ASSERT_EQUAL(PIXELFORMAT, camera->getPixelFormat());
-    CPPUNIT_ASSERT_EQUAL(VIDEOFILE, camera->getVideoFile().string());
-    CPPUNIT_ASSERT_EQUAL(STREAMURL, camera->getStreamUrl());
-    CPPUNIT_ASSERT_EQUAL(SCALE, camera->getScale());
+    CPPUNIT_ASSERT_EQUAL(is_calibrated, camera->getIsCalibrated());
+    CPPUNIT_ASSERT_EQUAL(desc, camera->getDescription());
+    CPPUNIT_ASSERT_EQUAL(cam_id, camera->getCameraID());
+    CPPUNIT_ASSERT_EQUAL(width, camera->getWidth());
+    CPPUNIT_ASSERT_EQUAL(height, camera->getHeight());
+    CPPUNIT_ASSERT_EQUAL(camerasource, camera->getCameraSource());
+    CPPUNIT_ASSERT_EQUAL(maximumframerate, camera->getMaximumFrameRate());
+    CPPUNIT_ASSERT_EQUAL(pixelformat, camera->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(videofile, camera->getVideoFile().string());
+    CPPUNIT_ASSERT_EQUAL(streamurl, camera->getStreamUrl());
+    CPPUNIT_ASSERT_EQUAL(scale, camera->getScale());
 }
 
 //------------------------------------------------------------------------------
 
 void camera_test::shallow_copyTest()
 {
-    data::camera::sptr camera  = initCamera();
+    data::camera::sptr camera  = init_camera();
     data::camera::sptr camera2 = std::make_shared<data::camera>();
 
     CPPUNIT_ASSERT(*camera != *camera2);
@@ -187,8 +187,8 @@ void camera_test::shallow_copyTest()
     CPPUNIT_ASSERT_EQUAL(camera->getFy(), camera2->getFy());
     CPPUNIT_ASSERT_EQUAL(camera->getSkew(), camera2->getSkew());
 
-    data::camera::DistArrayType dist  = camera->getDistortionCoefficient();
-    data::camera::DistArrayType dist2 = camera2->getDistortionCoefficient();
+    data::camera::dist_array_t dist  = camera->getDistortionCoefficient();
+    data::camera::dist_array_t dist2 = camera2->getDistortionCoefficient();
     CPPUNIT_ASSERT_EQUAL(dist[0], dist2[0]);
     CPPUNIT_ASSERT_EQUAL(dist[1], dist2[1]);
     CPPUNIT_ASSERT_EQUAL(dist[2], dist2[2]);
@@ -212,7 +212,7 @@ void camera_test::shallow_copyTest()
 
 void camera_test::deep_copyTest()
 {
-    data::camera::sptr camera = initCamera();
+    data::camera::sptr camera = init_camera();
     data::camera::sptr camera2;
     camera2 = data::object::copy(camera);
     CPPUNIT_ASSERT(*camera == *camera2);

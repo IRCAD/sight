@@ -30,8 +30,8 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer begin) :
-    m_current(begin)
+constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer _begin) :
+    m_current(_begin)
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     m_begin = m_current;
@@ -44,9 +44,9 @@ constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer begin) :
 template<class FORMAT>
 template<bool isConst, typename>
 constexpr FINLINE array_iterator<FORMAT>::array_iterator(
-    const array_iterator<std::remove_const_t<FORMAT> >& other
+    const array_iterator<std::remove_const_t<FORMAT> >& _other
 ) :
-    m_current(other.m_current)
+    m_current(_other.m_current)
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     m_begin = other.m_begin;
@@ -57,17 +57,17 @@ constexpr FINLINE array_iterator<FORMAT>::array_iterator(
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE bool array_iterator<FORMAT>::operator==(const array_iterator& other) const noexcept
+constexpr FINLINE bool array_iterator<FORMAT>::operator==(const array_iterator& _other) const noexcept
 {
-    return m_current == other.m_current;
+    return m_current == _other.m_current;
 }
 
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE bool array_iterator<FORMAT>::operator!=(const array_iterator& other) const noexcept
+constexpr FINLINE bool array_iterator<FORMAT>::operator!=(const array_iterator& _other) const noexcept
 {
-    return m_current != other.m_current;
+    return m_current != _other.m_current;
 }
 
 //------------------------------------------------------------------------------
@@ -118,19 +118,19 @@ inline FINLINE const array_iterator<FORMAT> array_iterator<FORMAT>::operator++(i
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator+(difference_type index) const
+constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator+(difference_type _index) const
 {
     array_iterator tmp(*this);
-    tmp += index;
+    tmp += _index;
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator+=(difference_type index)
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator+=(difference_type _index)
 {
-    m_current += index;
+    m_current += _index;
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator out of bounds ", m_current <= m_end);
 #endif
@@ -166,19 +166,19 @@ inline FINLINE const array_iterator<FORMAT> array_iterator<FORMAT>::operator--(i
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator-(difference_type index) const
+constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator-(difference_type _index) const
 {
     array_iterator tmp(*this);
-    tmp -= index;
+    tmp -= _index;
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator-=(difference_type index)
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator-=(difference_type _index)
 {
-    m_current -= index;
+    m_current -= _index;
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator out of bounds ", m_begin <= m_current);
 #endif
@@ -189,10 +189,10 @@ inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator-=(differ
 
 template<class FORMAT>
 constexpr FINLINE typename array_iterator<FORMAT>::difference_type array_iterator<FORMAT>::operator-(
-    const array_iterator& other
+    const array_iterator& _other
 ) const noexcept
 {
-    return m_current - other.m_current;
+    return m_current - _other.m_current;
 }
 
 //------------------------------------------------------------------------------

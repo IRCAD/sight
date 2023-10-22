@@ -47,8 +47,8 @@ public:
     /// Destroyes the slide builder.
     UI_QT_API ~slideview() override = default;
 
-    /// Create the Qt container @ref ui::qt::widget::SlideBar.
-    UI_QT_API void createContainer(ui::container::widget::sptr parent) override;
+    /// Create the Qt container @ref ui::qt::widget::slide_bar.
+    UI_QT_API void createContainer(ui::container::widget::sptr _parent) override;
 
     /// Destroyes the container.
     UI_QT_API void destroyContainer() override;

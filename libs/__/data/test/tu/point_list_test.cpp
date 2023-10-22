@@ -139,20 +139,20 @@ void point_list_test::pushTest()
 
 void point_list_test::removeTest()
 {
-    const std::size_t nbPoints = 42;
-    data::point_list::sptr pl  = std::make_shared<data::point_list>();
+    const std::size_t nb_points = 42;
+    data::point_list::sptr pl   = std::make_shared<data::point_list>();
 
     // Remove first
     {
         // Build a list
-        for(std::size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
             pl->pushBack(p);
         }
 
         // remove the first
-        std::size_t size = nbPoints;
+        std::size_t size = nb_points;
         while(!pl->getPoints().empty())
         {
             pl->remove(0);
@@ -165,14 +165,14 @@ void point_list_test::removeTest()
     // Remove last
     {
         // Build a list
-        for(std::size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
             pl->pushBack(p);
         }
 
         // remove the last
-        std::size_t size = nbPoints;
+        std::size_t size = nb_points;
         while(!pl->getPoints().empty())
         {
             const std::size_t index = pl->getPoints().size() - 1;
@@ -186,13 +186,13 @@ void point_list_test::removeTest()
     // Check that the correct one is removed
     {
         // Build a list
-        for(std::size_t i = 0 ; i < nbPoints ; ++i)
+        for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
             const auto p = std::make_shared<data::point>(static_cast<float>(i), .0F, .0F);
             pl->pushBack(p);
         }
 
-        std::size_t size = nbPoints;
+        std::size_t size = nb_points;
         while(!pl->getPoints().empty())
         {
             const std::size_t index = size / 2;
@@ -211,21 +211,21 @@ void point_list_test::removeTest()
 
 void point_list_test::clearTest()
 {
-    const std::size_t nbPoints = 42;
-    data::point_list::sptr pl  = std::make_shared<data::point_list>();
+    const std::size_t nb_points = 42;
+    data::point_list::sptr pl   = std::make_shared<data::point_list>();
 
     CPPUNIT_ASSERT(pl->getPoints().empty());
     pl->clear();
     CPPUNIT_ASSERT(pl->getPoints().empty());
 
     // Build a list
-    for(std::size_t i = 0 ; i < nbPoints ; i++)
+    for(std::size_t i = 0 ; i < nb_points ; i++)
     {
         const auto p = std::make_shared<data::point>(.0F, .0F, .0F);
         pl->pushBack(p);
     }
 
-    CPPUNIT_ASSERT(pl->getPoints().size() == nbPoints);
+    CPPUNIT_ASSERT(pl->getPoints().size() == nb_points);
     pl->clear();
     CPPUNIT_ASSERT(pl->getPoints().empty());
 }

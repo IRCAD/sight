@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Button
@@ -37,14 +37,14 @@ public:
      * @param tester The current tester
      * @param button How to get the button to be clicked
      */
-    GUITEST_API static void push(Tester& tester, const Select& button);
+    GUITEST_API static void push(Tester& _tester, const Select& _button);
 
     /**
      * Click on a button in a menu bar
      * @param tester The current tester
      * @param button How to get the menu bar button to be clicked
      */
-    GUITEST_API static void pushMenuBarItem(Tester& tester, const Select& button);
+    GUITEST_API static void pushMenuBarItem(Tester& _tester, const Select& _button);
 
     /**
      * Wait for a button to be clickable
@@ -52,8 +52,8 @@ public:
      * @param button How to get the button to wait
      */
     GUITEST_API static void waitForClickability(
-        Tester& tester,
-        const Select& button
+        Tester& _tester,
+        const Select& _button
     );
 };
 

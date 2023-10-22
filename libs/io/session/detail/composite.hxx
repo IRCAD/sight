@@ -34,38 +34,38 @@ namespace sight::io::session::detail::composite
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto composite = helper::safe_cast<data::composite>(object);
+    const auto composite = helper::safe_cast<data::composite>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::composite>(tree, 1);
+    helper::write_version<data::composite>(_tree, 1);
 
     // composite is map of child object..
-    children = std::map<std::string, data::object::csptr>(composite->cbegin(), composite->cend());
+    _children = std::map<std::string, data::object::csptr>(composite->cbegin(), composite->cend());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::composite::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto composite = helper::cast_or_create<data::composite>(object);
+    auto composite = helper::cast_or_create<data::composite>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::composite>(tree, 0, 1);
+    helper::read_version<data::composite>(_tree, 0, 1);
 
-    composite->operator=(children);
+    composite->operator=(_children);
 
     return composite;
 }

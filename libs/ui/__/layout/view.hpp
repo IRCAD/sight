@@ -52,14 +52,14 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    UI_API virtual void initialize(const ui::config_t& configuration) = 0;
+    UI_API virtual void initialize(const ui::config_t& _configuration) = 0;
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_API virtual void createLayout(ui::container::widget::sptr parent, const std::string& id) = 0;
+    UI_API virtual void createLayout(ui::container::widget::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -75,7 +75,7 @@ public:
     /// Modify a layout element, depending of the key.
     /// @param parameter The parameter of the action.
     /// @param key The action to perform.
-    UI_API virtual void modifyLayout(const ui::parameter_t& parameter, const std::string& key);
+    UI_API virtual void modifyLayout(const ui::parameter_t& _parameter, const std::string& _key);
 
 protected:
 

@@ -76,18 +76,18 @@ void synchronizer::starting()
 {
     const config_t configuration = this->get_config();
 
-    const auto inConfig = configuration.equal_range("in");
-    for(auto itConfig = inConfig.first ; itConfig != inConfig.second ; ++itConfig)
+    const auto in_config = configuration.equal_range("in");
+    for(auto it_config = in_config.first ; it_config != in_config.second ; ++it_config)
     {
-        const std::string group = itConfig->second.get<std::string>("<xmlattr>.group", "");
+        const std::string group = it_config->second.get<std::string>("<xmlattr>.group", "");
         if(group == configKey::s_FRAMETL_INPUT)
         {
-            const auto keyConfig = itConfig->second.equal_range(configKey::s_KEY);
-            for(auto frameTLConfig = keyConfig.first ;
-                frameTLConfig != keyConfig.second ;
-                ++frameTLConfig)
+            const auto key_config = it_config->second.equal_range(configKey::s_KEY);
+            for(auto frame_tl_config = key_config.first ;
+                frame_tl_config != key_config.second ;
+                ++frame_tl_config)
             {
-                int delay = frameTLConfig->second.get<int>(
+                int delay = frame_tl_config->second.get<int>(
                     configKey::s_TL_DELAY,
                     0
                 );
@@ -102,12 +102,12 @@ void synchronizer::starting()
         }
         else if(group == configKey::s_MATRIXTL_INPUT)
         {
-            const auto keyConfig = itConfig->second.equal_range(configKey::s_KEY);
-            for(auto matrixTLConfig = keyConfig.first ;
-                matrixTLConfig != keyConfig.second ;
-                ++matrixTLConfig)
+            const auto key_config = it_config->second.equal_range(configKey::s_KEY);
+            for(auto matrix_tl_config = key_config.first ;
+                matrix_tl_config != key_config.second ;
+                ++matrix_tl_config)
             {
-                int delay = matrixTLConfig->second.get<int>(
+                int delay = matrix_tl_config->second.get<int>(
                     configKey::s_TL_DELAY,
                     0
                 );
@@ -122,28 +122,28 @@ void synchronizer::starting()
         }
     }
 
-    const auto inoutsConfig = configuration.equal_range("inout");
-    for(auto itConfig = inoutsConfig.first ; itConfig != inoutsConfig.second ; ++itConfig)
+    const auto inouts_config = configuration.equal_range("inout");
+    for(auto it_config = inouts_config.first ; it_config != inouts_config.second ; ++it_config)
     {
-        const std::string group = itConfig->second.get<std::string>("<xmlattr>.group", "");
+        const std::string group = it_config->second.get<std::string>("<xmlattr>.group", "");
 
         if(group == configKey::s_FRAME_INOUT)
         {
-            std::size_t frameIndex = 0;
-            const auto keyConfig   = itConfig->second.equal_range(configKey::s_KEY);
-            for(auto frameOutVarConfig = keyConfig.first ;
-                frameOutVarConfig != keyConfig.second ;
-                ++frameOutVarConfig, ++frameIndex)
+            std::size_t frame_index = 0;
+            const auto key_config   = it_config->second.equal_range(configKey::s_KEY);
+            for(auto frame_out_var_config = key_config.first ;
+                frame_out_var_config != key_config.second ;
+                ++frame_out_var_config, ++frame_index)
             {
-                const std::size_t tlIndex = frameOutVarConfig->second.get<std::size_t>(
+                const std::size_t tl_index = frame_out_var_config->second.get<std::size_t>(
                     configKey::s_OUTVAR_TL_INDEX,
                     0
                 );
-                const unsigned int elementIndex = frameOutVarConfig->second.get<unsigned int>(
+                const unsigned int element_index = frame_out_var_config->second.get<unsigned int>(
                     configKey::s_OUTVAR_ELEMENT_INDEX,
                     0
                 );
-                const bool sendStatus = frameOutVarConfig->second.get<bool>(
+                const bool send_status = frame_out_var_config->second.get<bool>(
                     configKey::s_OUTVAR_SEND_STATUS,
                     false
                 );
@@ -151,11 +151,11 @@ void synchronizer::starting()
                 m_frameOutVarParameters.emplace_back(
                     outVarParameter(
                     {
-                        frameIndex,
-                        tlIndex,
-                        elementIndex,
+                        frame_index,
+                        tl_index,
+                        element_index,
                         false,
-                        sendStatus,
+                        send_status,
                         0
                     })
                 );
@@ -163,21 +163,21 @@ void synchronizer::starting()
         }
         else if(group == configKey::s_MATRIX_INOUT)
         {
-            std::size_t matrixIndex = 0;
-            const auto keyConfig    = itConfig->second.equal_range(configKey::s_KEY);
-            for(auto matrixOutVarConfig = keyConfig.first ;
-                matrixOutVarConfig != keyConfig.second ;
-                ++matrixOutVarConfig, ++matrixIndex)
+            std::size_t matrix_index = 0;
+            const auto key_config    = it_config->second.equal_range(configKey::s_KEY);
+            for(auto matrix_out_var_config = key_config.first ;
+                matrix_out_var_config != key_config.second ;
+                ++matrix_out_var_config, ++matrix_index)
             {
-                const std::size_t tlIndex = matrixOutVarConfig->second.get<std::size_t>(
+                const std::size_t tl_index = matrix_out_var_config->second.get<std::size_t>(
                     configKey::s_OUTVAR_TL_INDEX,
                     0
                 );
-                const unsigned int elementIndex = matrixOutVarConfig->second.get<unsigned int>(
+                const unsigned int element_index = matrix_out_var_config->second.get<unsigned int>(
                     configKey::s_OUTVAR_ELEMENT_INDEX,
                     0
                 );
-                const bool sendStatus = matrixOutVarConfig->second.get<bool>(
+                const bool send_status = matrix_out_var_config->second.get<bool>(
                     configKey::s_OUTVAR_SEND_STATUS,
                     false
                 );
@@ -185,11 +185,11 @@ void synchronizer::starting()
                 m_matrixOutVarParameters.emplace_back(
                     outVarParameter(
                     {
-                        matrixIndex,
-                        tlIndex,
-                        elementIndex,
+                        matrix_index,
+                        tl_index,
+                        element_index,
                         false,
-                        sendStatus,
+                        send_status,
                         0
                     })
                 );
@@ -251,8 +251,8 @@ void synchronizer::synchronize()
 
     // do the synchronisation
     // step 1: get the TL implicated in the synchronization
-    std::vector<std::size_t> frameTl_populated_index;
-    std::vector<core::hires_clock::type> frameTl_populated_timestamp;
+    std::vector<std::size_t> frame_tl_populated_index;
+    std::vector<core::hires_clock::type> frame_tl_populated_timestamp;
 
     for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
@@ -266,14 +266,14 @@ void synchronizer::synchronize()
             //treat only the tl with some data inside.
             if(tl_newest_timestamp > 0)
             {
-                frameTl_populated_timestamp.push_back(tl_newest_timestamp);
-                frameTl_populated_index.push_back(i);
+                frame_tl_populated_timestamp.push_back(tl_newest_timestamp);
+                frame_tl_populated_index.push_back(i);
             }
         }
     }
 
-    std::vector<std::size_t> matrixTl_populated_index;
-    std::vector<core::hires_clock::type> matrixTl_populated_timestamp;
+    std::vector<std::size_t> matrix_tl_populated_index;
+    std::vector<core::hires_clock::type> matrix_tl_populated_timestamp;
 
     for(std::size_t i = 0 ; i != m_matrixTLs.size() ; ++i)
     {
@@ -286,8 +286,8 @@ void synchronizer::synchronize()
             //treat only the tl with some data inside.
             if(tl_newest_timestamp > 0)
             {
-                matrixTl_populated_timestamp.push_back(tl_newest_timestamp);
-                matrixTl_populated_index.push_back(i);
+                matrix_tl_populated_timestamp.push_back(tl_newest_timestamp);
+                matrix_tl_populated_index.push_back(i);
             }
         }
     }
@@ -295,23 +295,23 @@ void synchronizer::synchronize()
     // step 2: find the synchronization timestamp
 
     // Timestamp reference for the synchronization
-    const auto frameTl_max_timestamp = frameTl_populated_timestamp.empty() ? 0 : *(std::max_element(
-                                                                                       frameTl_populated_timestamp.
-                                                                                       begin(),
-                                                                                       frameTl_populated_timestamp.
-                                                                                       end()
+    const auto frame_tl_max_timestamp = frame_tl_populated_timestamp.empty() ? 0 : *(std::max_element(
+                                                                                         frame_tl_populated_timestamp.
+                                                                                         begin(),
+                                                                                         frame_tl_populated_timestamp.
+                                                                                         end()
     ));
 
-    const auto matrixTl_max_timestamp = matrixTl_populated_timestamp.empty() ? 0 : *(std::max_element(
-                                                                                         matrixTl_populated_timestamp
-                                                                                         .begin(),
-                                                                                         matrixTl_populated_timestamp
-                                                                                         .end()
+    const auto matrix_tl_max_timestamp = matrix_tl_populated_timestamp.empty() ? 0 : *(std::max_element(
+                                                                                           matrix_tl_populated_timestamp
+                                                                                           .begin(),
+                                                                                           matrix_tl_populated_timestamp
+                                                                                           .end()
     ));
 
-    core::hires_clock::type maxSynchronizationTimestamp = std::max(
-        frameTl_max_timestamp,
-        matrixTl_max_timestamp
+    core::hires_clock::type max_synchronization_timestamp = std::max(
+        frame_tl_max_timestamp,
+        matrix_tl_max_timestamp
     );
 
     // This gives the most recent timestamp provided in a TL.
@@ -322,7 +322,7 @@ void synchronizer::synchronize()
     // This should allow a synchronization around a reference timestamp which is up to date, while being consensual
     // over the populated TL.
 
-    if(maxSynchronizationTimestamp == 0)
+    if(max_synchronization_timestamp == 0)
     {
         // there is nothing to synchronize
         SIGHT_INFO("skip synch, because there is nothing to synch");
@@ -330,48 +330,48 @@ void synchronizer::synchronize()
         return;
     }
 
-    core::hires_clock::type synchronizationTimestamp = maxSynchronizationTimestamp;
-    std::vector<std::size_t> frameTl_to_synch_index;
-    for(std::size_t i = 0 ; i < frameTl_populated_timestamp.size() ; i++)
+    core::hires_clock::type synchronization_timestamp = max_synchronization_timestamp;
+    std::vector<std::size_t> frame_tl_to_synch_index;
+    for(std::size_t i = 0 ; i < frame_tl_populated_timestamp.size() ; i++)
     {
-        if(maxSynchronizationTimestamp - frameTl_populated_timestamp[i] < m_tolerance)
+        if(max_synchronization_timestamp - frame_tl_populated_timestamp[i] < m_tolerance)
         {
-            synchronizationTimestamp = std::min(synchronizationTimestamp, frameTl_populated_timestamp[i]);
-            frameTl_to_synch_index.push_back(frameTl_populated_index[i]);
+            synchronization_timestamp = std::min(synchronization_timestamp, frame_tl_populated_timestamp[i]);
+            frame_tl_to_synch_index.push_back(frame_tl_populated_index[i]);
         }
     }
 
-    std::vector<std::size_t> matrixTl_to_synch_index;
-    for(std::size_t i = 0 ; i < matrixTl_populated_timestamp.size() ; i++)
+    std::vector<std::size_t> matrix_tl_to_synch_index;
+    for(std::size_t i = 0 ; i < matrix_tl_populated_timestamp.size() ; i++)
     {
-        if(maxSynchronizationTimestamp - matrixTl_populated_timestamp[i] < m_tolerance)
+        if(max_synchronization_timestamp - matrix_tl_populated_timestamp[i] < m_tolerance)
         {
-            synchronizationTimestamp = std::min(synchronizationTimestamp, matrixTl_populated_timestamp[i]);
-            matrixTl_to_synch_index.push_back(matrixTl_populated_index[i]);
+            synchronization_timestamp = std::min(synchronization_timestamp, matrix_tl_populated_timestamp[i]);
+            matrix_tl_to_synch_index.push_back(matrix_tl_populated_index[i]);
         }
     }
 
     //step 3: get the matrix + frame and populate the output
 
-    if(m_lastTimeStamp != synchronizationTimestamp)
+    if(m_lastTimeStamp != synchronization_timestamp)
     {
-        m_lastTimeStamp = synchronizationTimestamp;
+        m_lastTimeStamp = synchronization_timestamp;
 
-        for(const std::size_t tlIndex : frameTl_to_synch_index)
+        for(const std::size_t tl_index : frame_tl_to_synch_index)
         {
-            copyFrameFromTLtoOutput(tlIndex, synchronizationTimestamp);
+            copyFrameFromTLtoOutput(tl_index, synchronization_timestamp);
         }
 
-        for(const std::size_t tlIndex : matrixTl_to_synch_index)
+        for(const std::size_t tl_index : matrix_tl_to_synch_index)
         {
-            copyMatrixFromTLtoOutput(tlIndex, synchronizationTimestamp);
+            copyMatrixFromTLtoOutput(tl_index, synchronization_timestamp);
         }
 
         this->signal<signals::timestamp_signal_t>(signals::SYNCHRONIZATION_DONE_SIG)->async_emit(
-            synchronizationTimestamp
+            synchronization_timestamp
         );
-        sendFrameVarStatus(frameTl_to_synch_index);
-        sendMatrixVarStatus(matrixTl_to_synch_index);
+        sendFrameVarStatus(frame_tl_to_synch_index);
+        sendMatrixVarStatus(matrix_tl_to_synch_index);
 
         // synchronisation has been done with success, reset the mask
         m_updateMask = m_legacyAutoSync ? OBJECT_RECEIVED : 0;
@@ -385,14 +385,14 @@ void synchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-std::vector<synchronizer::outVarParameter> synchronizer::getFrameTlOutputVarIndex(std::size_t frameTLIndex)
+std::vector<synchronizer::outVarParameter> synchronizer::getFrameTlOutputVarIndex(std::size_t _frame_tl_index)
 {
     std::vector<outVarParameter> result;
-    for(auto outvarParam : m_frameOutVarParameters)
+    for(auto outvar_param : m_frameOutVarParameters)
     {
-        if(outvarParam.tlIndex == frameTLIndex)
+        if(outvar_param.tlIndex == _frame_tl_index)
         {
-            result.push_back(outvarParam);
+            result.push_back(outvar_param);
         }
     }
 
@@ -402,35 +402,35 @@ std::vector<synchronizer::outVarParameter> synchronizer::getFrameTlOutputVarInde
 // ----------------------------------------------------------------------------
 
 void synchronizer::copyFrameFromTLtoOutput(
-    std::size_t frameTLIndex,
-    core::hires_clock::type synchronizationTimestamp
+    std::size_t _frame_tl_index,
+    core::hires_clock::type _synchronization_timestamp
 )
 {
-    const auto frameTL = m_frameTLs[frameTLIndex].lock();
-    CSPTR(data::frame_tl::BufferType) buffer =
-        frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
+    const auto frame_tl = m_frameTLs[_frame_tl_index].lock();
+    CSPTR(data::frame_tl::buffer_t) buffer =
+        frame_tl->getClosestBuffer(_synchronization_timestamp - m_frameTLDelay[_frame_tl_index]);
 
-    data::image::Size frameTLsize = {frameTL->getWidth(), frameTL->getHeight(), 0};
+    data::image::Size frame_tl_size = {frame_tl->getWidth(), frame_tl->getHeight(), 0};
 
-    std::size_t frameTlNumComponents               = frameTL->numComponents();
-    core::type frameTlType                         = frameTL->getType();
-    data::frame_tl::PixelFormat frameTlPixelFormat = frameTL->getPixelFormat();
+    std::size_t frame_tl_num_components               = frame_tl->numComponents();
+    core::type frame_tl_type                          = frame_tl->getType();
+    data::frame_tl::PixelFormat frame_tl_pixel_format = frame_tl->getPixelFormat();
 
     if(buffer)
     {
-        for(const outVarParameter outputVarParam : getFrameTlOutputVarIndex(frameTLIndex))
+        for(const outVarParameter output_var_param : getFrameTlOutputVarIndex(_frame_tl_index))
         {
-            const std::size_t frameOutIndex        = outputVarParam.outVarIndex;
-            const unsigned int frameTlElementIndex = outputVarParam.tlElementIndex;
+            const std::size_t frame_out_index         = output_var_param.outVarIndex;
+            const unsigned int frame_tl_element_index = output_var_param.tlElementIndex;
 
-            const auto frame = m_frames[frameOutIndex].lock();
-            SIGHT_ASSERT("image with index '" << frameOutIndex << "' does not exist", frame);
+            const auto frame = m_frames[frame_out_index].lock();
+            SIGHT_ASSERT("image with index '" << frame_out_index << "' does not exist", frame);
 
             // Check if frame dimensions have changed
-            if(frameTLsize != frame->size() || frameTlNumComponents != frame->numComponents())
+            if(frame_tl_size != frame->size() || frame_tl_num_components != frame->numComponents())
             {
                 data::image::PixelFormat format {data::image::UNDEFINED};
-                switch(frameTlPixelFormat)
+                switch(frame_tl_pixel_format)
                 {
                     case data::frame_tl::PixelFormat::GRAY_SCALE:
                         format = data::image::GRAY_SCALE;
@@ -457,7 +457,7 @@ void synchronizer::copyFrameFromTLtoOutput(
                         return;
                 }
 
-                frame->resize(frameTLsize, frameTlType, format);
+                frame->resize(frame_tl_size, frame_tl_type, format);
                 const data::image::Origin origin = {0., 0., 0.};
                 frame->setOrigin(origin);
                 const data::image::Spacing spacing = {1., 1., 1.};
@@ -470,24 +470,25 @@ void synchronizer::copyFrameFromTLtoOutput(
             // The value must be set after the previous `if`, in order to prevent the data
             // from being erased in case of resize (frameTLSize has a 0 value as 3 dimension)
             // and thus prevent the timestamp to be lost
-            if(auto imageSeries = std::dynamic_pointer_cast<sight::data::image_series>(frame.get_shared()); imageSeries)
+            if(auto image_series =
+                   std::dynamic_pointer_cast<sight::data::image_series>(frame.get_shared()); image_series)
             {
-                imageSeries->setFrameAcquisitionTimePoint(synchronizationTimestamp);
+                image_series->setFrameAcquisitionTimePoint(_synchronization_timestamp);
             }
 
-            const std::uint8_t* frameBuff = &buffer->getElement(frameTlElementIndex);
-            auto iter                     = frame->begin<std::uint8_t>();
-            std::memcpy(&*iter, frameBuff, buffer->size());
+            const std::uint8_t* frame_buff = &buffer->getElement(frame_tl_element_index);
+            auto iter                      = frame->begin<std::uint8_t>();
+            std::memcpy(&*iter, frame_buff, buffer->size());
 
             // Notify
-            auto sig = frame->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
+            auto sig = frame->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
             sig->async_emit();
         }
     }
     else
     {
         SIGHT_ERROR(
-            "Buffer not found for timestamp " << synchronizationTimestamp << " in timeline 'frame" << frameTLIndex
+            "Buffer not found for timestamp " << _synchronization_timestamp << " in timeline 'frame" << _frame_tl_index
             << "'."
         );
     }
@@ -496,15 +497,15 @@ void synchronizer::copyFrameFromTLtoOutput(
 // ----------------------------------------------------------------------------
 
 std::vector<synchronizer::outVarParameter> synchronizer::getMatrixTlOutputVarIndex(
-    std::size_t matrixTLIndex
+    std::size_t _matrix_tl_index
 )
 {
     std::vector<outVarParameter> result;
-    for(auto outvarParam : m_matrixOutVarParameters)
+    for(auto outvar_param : m_matrixOutVarParameters)
     {
-        if(outvarParam.tlIndex == matrixTLIndex)
+        if(outvar_param.tlIndex == _matrix_tl_index)
         {
-            result.push_back(outvarParam);
+            result.push_back(outvar_param);
         }
     }
 
@@ -514,26 +515,26 @@ std::vector<synchronizer::outVarParameter> synchronizer::getMatrixTlOutputVarInd
 //------------------------------------------------------------------------------
 
 void synchronizer::copyMatrixFromTLtoOutput(
-    std::size_t matrixTLIndex,
-    core::hires_clock::type synchronizationTimestamp
+    std::size_t _matrix_tl_index,
+    core::hires_clock::type _synchronization_timestamp
 )
 {
-    const auto matrixTL = m_matrixTLs[matrixTLIndex].lock();
-    CSPTR(data::matrix_tl::BufferType) buffer =
-        matrixTL->getClosestBuffer(synchronizationTimestamp - m_matrixTLDelay[matrixTLIndex]);
+    const auto matrix_tl = m_matrixTLs[_matrix_tl_index].lock();
+    CSPTR(data::matrix_tl::buffer_t) buffer =
+        matrix_tl->getClosestBuffer(_synchronization_timestamp - m_matrixTLDelay[_matrix_tl_index]);
 
     if(buffer)
     {
-        for(const auto outputVarParam : getMatrixTlOutputVarIndex(matrixTLIndex))
+        for(const auto output_var_param : getMatrixTlOutputVarIndex(_matrix_tl_index))
         {
-            const std::size_t matrixOutIndex        = outputVarParam.outVarIndex;
-            const unsigned int matrixTlElementIndex = outputVarParam.tlElementIndex;
+            const std::size_t matrix_out_index         = output_var_param.outVarIndex;
+            const unsigned int matrix_tl_element_index = output_var_param.tlElementIndex;
 
-            if(buffer->isPresent(matrixTlElementIndex))
+            if(buffer->isPresent(matrix_tl_element_index))
             {
-                auto matrix = m_matrix[matrixOutIndex].lock();
-                SIGHT_ASSERT("Matrix with indices '" << matrixOutIndex << "' does not exist", matrix);
-                const auto& values = buffer->getElement(matrixTlElementIndex);
+                auto matrix = m_matrix[matrix_out_index].lock();
+                SIGHT_ASSERT("Matrix with indices '" << matrix_out_index << "' does not exist", matrix);
+                const auto& values = buffer->getElement(matrix_tl_element_index);
                 for(std::uint8_t i = 0 ; i < 4 ; ++i)
                 {
                     for(std::uint8_t j = 0 ; j < 4 ; ++j)
@@ -542,7 +543,7 @@ void synchronizer::copyMatrixFromTLtoOutput(
                     }
                 }
 
-                auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 sig->async_emit();
             }
         }
@@ -550,7 +551,7 @@ void synchronizer::copyMatrixFromTLtoOutput(
     else
     {
         SIGHT_ERROR(
-            "Buffer not found for timestamp " << synchronizationTimestamp << " in timeline 'matrix" << matrixTLIndex
+            "Buffer not found for timestamp " << _synchronization_timestamp << " in timeline 'matrix" << _matrix_tl_index
             << "'."
         );
     }
@@ -558,25 +559,28 @@ void synchronizer::copyMatrixFromTLtoOutput(
 
 //-----------------------------------------------------------------------------
 
-void synchronizer::sendFrameVarStatus(const std::vector<std::size_t>& synchFrameTLIndex)
+void synchronizer::sendFrameVarStatus(const std::vector<std::size_t>& _synch_frame_tl_index)
 {
-    for(auto& outputVarParam : m_frameOutVarParameters)
+    for(auto& output_var_param : m_frameOutVarParameters)
     {
-        if(outputVarParam.signalSynchronization)
+        if(output_var_param.signalSynchronization)
         {
             //a signal should be send when synchronized/un-synchronized
-            bool isSynch =
+            bool is_synch =
                 std::find(
-                    synchFrameTLIndex.begin(),
-                    synchFrameTLIndex.end(),
-                    outputVarParam.tlIndex
-                ) != synchFrameTLIndex.end();
-            if(outputVarParam.isSynchronized != isSynch)
+                    _synch_frame_tl_index.begin(),
+                    _synch_frame_tl_index.end(),
+                    output_var_param.tlIndex
+                ) != _synch_frame_tl_index.end();
+            if(output_var_param.isSynchronized != is_synch)
             {
-                outputVarParam.isSynchronized = isSynch;
-                const auto signalKey =
-                    isSynch ? signals::FRAME_SYNCHRONIZED_SIG : signals::FRAME_UNSYNCHRONIZED_SIG;
-                this->signal<signals::int_signal_t>(signalKey)->async_emit(static_cast<int>(outputVarParam.outVarIndex));
+                output_var_param.isSynchronized = is_synch;
+                const auto signal_key =
+                    is_synch ? signals::FRAME_SYNCHRONIZED_SIG : signals::FRAME_UNSYNCHRONIZED_SIG;
+                this->signal<signals::int_signal_t>(signal_key)->async_emit(
+                    static_cast<int>(output_var_param.
+                                     outVarIndex)
+                );
             }
         }
     }
@@ -584,25 +588,28 @@ void synchronizer::sendFrameVarStatus(const std::vector<std::size_t>& synchFrame
 
 //-----------------------------------------------------------------------------
 
-void synchronizer::sendMatrixVarStatus(const std::vector<std::size_t>& synchMatrixTLIndex)
+void synchronizer::sendMatrixVarStatus(const std::vector<std::size_t>& _synch_matrix_tl_index)
 {
-    for(auto& outputVarParam : m_matrixOutVarParameters)
+    for(auto& output_var_param : m_matrixOutVarParameters)
     {
-        if(outputVarParam.signalSynchronization)
+        if(output_var_param.signalSynchronization)
         {
             //a signal should be send when synchronized/un-synchronized
-            bool isSynch =
+            bool is_synch =
                 std::find(
-                    synchMatrixTLIndex.begin(),
-                    synchMatrixTLIndex.end(),
-                    outputVarParam.tlIndex
-                ) != synchMatrixTLIndex.end();
-            if(outputVarParam.isSynchronized != isSynch)
+                    _synch_matrix_tl_index.begin(),
+                    _synch_matrix_tl_index.end(),
+                    output_var_param.tlIndex
+                ) != _synch_matrix_tl_index.end();
+            if(output_var_param.isSynchronized != is_synch)
             {
-                outputVarParam.isSynchronized = isSynch;
-                const auto signalKey =
-                    isSynch ? signals::MATRIX_SYNCHRONIZED_SIG : signals::MATRIX_UNSYNCHRONIZED_SIG;
-                this->signal<signals::int_signal_t>(signalKey)->async_emit(static_cast<int>(outputVarParam.outVarIndex));
+                output_var_param.isSynchronized = is_synch;
+                const auto signal_key =
+                    is_synch ? signals::MATRIX_SYNCHRONIZED_SIG : signals::MATRIX_UNSYNCHRONIZED_SIG;
+                this->signal<signals::int_signal_t>(signal_key)->async_emit(
+                    static_cast<int>(output_var_param.
+                                     outVarIndex)
+                );
             }
         }
     }
@@ -618,23 +625,23 @@ void synchronizer::resetTimeline()
 //-----------------------------------------------------------------------------
 
 void synchronizer::setFrameBinding(
-    std::size_t _tlIndex,
-    unsigned int _elementIndex,
-    std::size_t _outputVarIndex
+    std::size_t _tl_index,
+    unsigned int _element_index,
+    std::size_t _output_var_index
 )
 {
-    for(auto& outputVarParam : m_frameOutVarParameters)
+    for(auto& output_var_param : m_frameOutVarParameters)
     {
-        if(outputVarParam.outVarIndex == _outputVarIndex)
+        if(output_var_param.outVarIndex == _output_var_index)
         {
-            outputVarParam.tlIndex        = _tlIndex;
-            outputVarParam.tlElementIndex = _elementIndex;
+            output_var_param.tlIndex        = _tl_index;
+            output_var_param.tlElementIndex = _element_index;
             return;
         }
     }
 
     SIGHT_WARN(
-        "The outputVar Index " << _outputVarIndex
+        "The outputVar Index " << _output_var_index
         << " provided in the slot setFrameBinding has not been found."
     );
 }
@@ -642,34 +649,34 @@ void synchronizer::setFrameBinding(
 //-----------------------------------------------------------------------------
 
 void synchronizer::setMatrixBinding(
-    std::size_t _tlIndex,
-    unsigned int _elementIndex,
-    std::size_t _outputVarIndex
+    std::size_t _tl_index,
+    unsigned int _element_index,
+    std::size_t _output_var_index
 )
 {
-    for(auto& outputVarParam : m_matrixOutVarParameters)
+    for(auto& output_var_param : m_matrixOutVarParameters)
     {
-        if(outputVarParam.outVarIndex == _outputVarIndex)
+        if(output_var_param.outVarIndex == _output_var_index)
         {
-            outputVarParam.tlIndex        = _tlIndex;
-            outputVarParam.tlElementIndex = _elementIndex;
+            output_var_param.tlIndex        = _tl_index;
+            output_var_param.tlElementIndex = _element_index;
             return;
         }
     }
 
     SIGHT_WARN(
-        "The outputVar Index " << _outputVarIndex
+        "The outputVar Index " << _output_var_index
         << " provided in the slot setMatrixBinding has not been found."
     );
 }
 
 //-----------------------------------------------------------------------------
 
-void synchronizer::setDelay(int val, std::string key)
+void synchronizer::setDelay(int _val, std::string _key)
 {
-    if(val < 0)
+    if(_val < 0)
     {
-        SIGHT_ERROR("The delay set for " << key << " is negative. A positive value is expected");
+        SIGHT_ERROR("The delay set for " << _key << " is negative. A positive value is expected");
         return;
     }
 
@@ -678,50 +685,50 @@ void synchronizer::setDelay(int val, std::string key)
      * it means that the value is a delay set for the i th frameTL
      * This works respectively for matrixDelay_i and matrixTL
      */
-    if(key.rfind(slots::FRAME_DELAY_PREFIX, 0) == 0)
+    if(_key.rfind(slots::FRAME_DELAY_PREFIX, 0) == 0)
     {
         try
         {
             static constexpr size_t frameDelayKeySize = std::size(slots::FRAME_DELAY_PREFIX);
-            const size_t frameTLIndex                 = static_cast<size_t>(std::stoul(key.substr(frameDelayKeySize)));
-            if(frameTLIndex < m_frameTLDelay.size())
+            const size_t frame_tl_index               = static_cast<size_t>(std::stoul(_key.substr(frameDelayKeySize)));
+            if(frame_tl_index < m_frameTLDelay.size())
             {
-                m_frameTLDelay[frameTLIndex] = val;
+                m_frameTLDelay[frame_tl_index] = _val;
             }
             else
             {
                 SIGHT_ERROR(
-                    "The frameTL index " << frameTLIndex
+                    "The frameTL index " << frame_tl_index
                     << " provided in the update delay slot is out of bound"
                 );
             }
         }
         catch(...)
         {
-            SIGHT_ERROR("The frameTL index provided in the update delay slot is not a proper number: " << key);
+            SIGHT_ERROR("The frameTL index provided in the update delay slot is not a proper number: " << _key);
         }
     }
-    else if(key.rfind(slots::MATRIX_DELAY_PREFIX, 0) == 0)
+    else if(_key.rfind(slots::MATRIX_DELAY_PREFIX, 0) == 0)
     {
         try
         {
             static constexpr size_t matrixDelayKeySize = std::size(slots::MATRIX_DELAY_PREFIX);
-            const size_t matrixTLIndex                 =
-                static_cast<size_t>(std::stoul(key.substr(matrixDelayKeySize)));
-            if(matrixTLIndex < m_matrixTLDelay.size())
+            const size_t matrix_tl_index               =
+                static_cast<size_t>(std::stoul(_key.substr(matrixDelayKeySize)));
+            if(matrix_tl_index < m_matrixTLDelay.size())
             {
-                m_matrixTLDelay[matrixTLIndex] = val;
+                m_matrixTLDelay[matrix_tl_index] = _val;
             }
             else
             {
                 SIGHT_ERROR(
-                    "The matrixTL index " << matrixTLIndex << " provided in the update delay slot is out of bound"
+                    "The matrixTL index " << matrix_tl_index << " provided in the update delay slot is out of bound"
                 );
             }
         }
         catch(...)
         {
-            SIGHT_ERROR("The matrixTL index provided in the update delay slot is not a proper number: " << key);
+            SIGHT_ERROR("The matrixTL index provided in the update delay slot is not a proper number: " << _key);
         }
     }
     else

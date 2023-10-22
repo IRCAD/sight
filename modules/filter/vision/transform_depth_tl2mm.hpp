@@ -97,7 +97,7 @@ protected:
 private:
 
     /// Apply the scale on the depth map
-    void compute(core::hires_clock::type timestamp);
+    void compute(core::hires_clock::type _timestamp);
 
     /// timestamp of the last process
     core::hires_clock::type m_lastTimestamp {0};

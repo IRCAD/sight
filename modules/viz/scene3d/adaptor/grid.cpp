@@ -27,7 +27,7 @@
 
 #include <data/tools/color.hpp>
 
-#include <viz/scene3d/helper/ManualObject.hpp>
+#include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <Ogre.h>
@@ -83,9 +83,9 @@ void grid::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
 
-    m_line = sceneMgr->createManualObject(this->get_id() + "_grid");
+    m_line = scene_mgr->createManualObject(this->get_id() + "_grid");
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
@@ -147,21 +147,21 @@ void grid::stopping()
 
 //-----------------------------------------------------------------------------
 
-void grid::attachNode(Ogre::MovableObject* object)
+void grid::attachNode(Ogre::MovableObject* _object)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    SIGHT_ASSERT("Transform node shouldn't be null", transNode);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    transNode->setVisible(m_isVisible);
-    transNode->attachObject(object);
+    trans_node->setVisible(m_isVisible);
+    trans_node->attachObject(_object);
 }
 
 //-----------------------------------------------------------------------------
 
-void grid::drawGrid(bool _existingLine)
+void grid::drawGrid(bool _existing_line)
 {
-    if(!_existingLine)
+    if(!_existing_line)
     {
         m_line->begin(
             m_materialAdaptor->getMaterialName(),
@@ -174,43 +174,43 @@ void grid::drawGrid(bool _existingLine)
         m_line->beginUpdate(0);
     }
 
-    const auto halfSize = m_size * 0.5F;
-    const auto stepSize = m_size / static_cast<float>(m_step);
+    const auto half_size = m_size * 0.5F;
+    const auto step_size = m_size / static_cast<float>(m_step);
 
-    float x = -halfSize;
+    float x = -half_size;
     for(std::size_t i = 0 ; i <= m_step ; ++i)
     {
-        sight::viz::scene3d::helper::ManualObject::drawDashedLine(
+        sight::viz::scene3d::helper::manual_object::drawDashedLine(
             m_line,
-            Ogre::Vector3(x, m_elevation, -halfSize),
-            Ogre::Vector3(x, m_elevation, halfSize),
+            Ogre::Vector3(x, m_elevation, -half_size),
+            Ogre::Vector3(x, m_elevation, half_size),
             m_dashLength,
             m_dashLength,
             m_color
         );
-        x += stepSize;
+        x += step_size;
     }
 
-    float y = -halfSize;
+    float y = -half_size;
     for(std::size_t i = 0 ; i <= m_step ; ++i)
     {
-        sight::viz::scene3d::helper::ManualObject::drawDashedLine(
+        sight::viz::scene3d::helper::manual_object::drawDashedLine(
             m_line,
-            Ogre::Vector3(-halfSize, m_elevation, y),
-            Ogre::Vector3(halfSize, m_elevation, y),
+            Ogre::Vector3(-half_size, m_elevation, y),
+            Ogre::Vector3(half_size, m_elevation, y),
             m_dashLength,
             m_dashLength,
             m_color
         );
-        y += stepSize;
+        y += step_size;
     }
 
     m_line->end();
 
     // Set the bounding box
-    Ogre::Vector3 bbMin(-halfSize, 0.F, -halfSize);
-    Ogre::Vector3 bbMax(halfSize, 0.F, halfSize);
-    Ogre::AxisAlignedBox box(bbMin, bbMax);
+    Ogre::Vector3 bb_min(-half_size, 0.F, -half_size);
+    Ogre::Vector3 bb_max(half_size, 0.F, half_size);
+    Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 }
 
@@ -218,9 +218,9 @@ void grid::drawGrid(bool _existingLine)
 
 void grid::setVisible(bool /*_visible*/)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    transNode->setVisible(m_isVisible);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    trans_node->setVisible(m_isVisible);
     this->updating();
 }
 

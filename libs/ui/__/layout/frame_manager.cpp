@@ -31,7 +31,7 @@
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-const frame_manager::RegistryKeyType frame_manager::REGISTRY_KEY = "sight::ui::layout::frame";
+const frame_manager::registry_key_t frame_manager::REGISTRY_KEY = "sight::ui::layout::frame";
 
 const std::string frame_manager::SOFTWARE_UI         = "SOFTWARE_UI";
 const std::string frame_manager::FRAME_STATE_UI      = "FRAME_STATE_UI";
@@ -53,44 +53,44 @@ const std::string frame_manager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_UI";
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameKey(const std::string& name)
+inline static std::string get_frame_key(const std::string& _name)
 {
-    return std::string(frame_manager::SOFTWARE_UI) + "." + name;
+    return std::string(frame_manager::SOFTWARE_UI) + "." + _name;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameStateKey(const std::string& name)
+inline static std::string get_frame_state_key(const std::string& _name)
 {
-    return getFrameKey(name) + "." + frame_manager::FRAME_STATE_UI;
+    return get_frame_key(_name) + "." + frame_manager::FRAME_STATE_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameWKey(const std::string& name)
+inline static std::string get_frame_w_key(const std::string& _name)
 {
-    return getFrameKey(name) + "." + frame_manager::FRAME_SIZE_W_UI;
+    return get_frame_key(_name) + "." + frame_manager::FRAME_SIZE_W_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameHKey(const std::string& name)
+inline static std::string get_frame_h_key(const std::string& _name)
 {
-    return getFrameKey(name) + "." + frame_manager::FRAME_SIZE_H_UI;
+    return get_frame_key(_name) + "." + frame_manager::FRAME_SIZE_H_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameXKey(const std::string& name)
+inline static std::string get_frame_x_key(const std::string& _name)
 {
-    return getFrameKey(name) + "." + frame_manager::FRAME_POSITION_X_UI;
+    return get_frame_key(_name) + "." + frame_manager::FRAME_POSITION_X_UI;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameYKey(const std::string& name)
+inline static std::string get_frame_y_key(const std::string& _name)
 {
-    return getFrameKey(name) + "." + frame_manager::FRAME_POSITION_Y_UI;
+    return get_frame_key(_name) + "." + frame_manager::FRAME_POSITION_Y_UI;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,13 +102,13 @@ frame_manager::frame_manager()
 
 //-----------------------------------------------------------------------------
 
-void frame_manager::initialize(const ui::config_t& configuration)
+void frame_manager::initialize(const ui::config_t& _configuration)
 {
-    m_frameInfo.m_name       = configuration.get<std::string>("name", m_frameInfo.m_name);
-    m_frameInfo.m_version    = configuration.get<std::string>("version", "");
-    m_frameInfo.m_visibility = configuration.get<bool>("visibility", m_frameInfo.m_visibility);
+    m_frameInfo.m_name       = _configuration.get<std::string>("name", m_frameInfo.m_name);
+    m_frameInfo.m_version    = _configuration.get<std::string>("version", "");
+    m_frameInfo.m_visibility = _configuration.get<bool>("visibility", m_frameInfo.m_visibility);
 
-    if(const auto icon = configuration.get_optional<std::string>("icon"); icon.has_value())
+    if(const auto icon = _configuration.get_optional<std::string>("icon"); icon.has_value())
     {
         m_frameInfo.m_iconPath = core::runtime::get_module_resource_file_path(icon.value());
         SIGHT_ASSERT(
@@ -117,12 +117,15 @@ void frame_manager::initialize(const ui::config_t& configuration)
         );
     }
 
-    m_frameInfo.m_minSize.first  = configuration.get<int>("minSize.<xmlattr>.width", m_frameInfo.m_minSize.first);
-    m_frameInfo.m_minSize.second = configuration.get<int>("minSize.<xmlattr>.height", m_frameInfo.m_minSize.second);
-    m_frameInfo.m_maxSize.first  = configuration.get<int>("maxSize.<xmlattr>.width", m_frameInfo.m_maxSize.first);
-    m_frameInfo.m_maxSize.second = configuration.get<int>("maxSize.<xmlattr>.height", m_frameInfo.m_maxSize.second);
+    m_frameInfo.m_minSize.first  = _configuration.get<int>("minSize.<xmlattr>.width", m_frameInfo.m_minSize.first);
+    m_frameInfo.m_minSize.second = _configuration.get<int>("minSize.<xmlattr>.height", m_frameInfo.m_minSize.second);
+    m_frameInfo.m_maxSize.first  = _configuration.get<int>("maxSize.<xmlattr>.width", m_frameInfo.m_maxSize.first);
+    m_frameInfo.m_maxSize.second = _configuration.get<int>(
+        "maxSize.<xmlattr>.height",
+        m_frameInfo.m_maxSize.second
+    );
 
-    if(const auto mode = configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
+    if(const auto mode = _configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
         if(mode.value() == "DEFAULT")
         {
@@ -142,9 +145,11 @@ void frame_manager::initialize(const ui::config_t& configuration)
         }
     }
 
-    if(const auto qssClass = configuration.get_optional<std::string>("style.<xmlattr>.QSSClass"); qssClass.has_value())
+    if(const auto qss_class = _configuration.get_optional<std::string>(
+           "style.<xmlattr>.QSSClass"
+    ); qss_class.has_value())
     {
-        m_frameInfo.m_qssClass = qssClass.get();
+        m_frameInfo.m_qssClass = qss_class.get();
     }
 
     this->readConfig();
@@ -152,9 +157,9 @@ void frame_manager::initialize(const ui::config_t& configuration)
 
 //-----------------------------------------------------------------------------
 
-void frame_manager::setCloseCallback(CloseCallback fct)
+void frame_manager::setCloseCallback(CloseCallback _fct)
 {
-    this->m_closeCallback = fct;
+    this->m_closeCallback = _fct;
 }
 
 //-----------------------------------------------------------------------------
@@ -170,25 +175,25 @@ void frame_manager::readConfig()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
 
         m_frameInfo.m_state =
             static_cast<FrameState>(preferences.get(
-                                        getFrameStateKey(m_frameInfo.m_name),
+                                        get_frame_state_key(m_frameInfo.m_name),
                                         static_cast<std::uint8_t>(m_frameInfo.m_state)
             ));
-        m_frameInfo.m_size.first     = preferences.get(getFrameWKey(m_frameInfo.m_name), m_frameInfo.m_size.first);
-        m_frameInfo.m_size.second    = preferences.get(getFrameHKey(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        m_frameInfo.m_size.first     = preferences.get(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        m_frameInfo.m_size.second    = preferences.get(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
         m_frameInfo.m_position.first = preferences.get(
-            getFrameXKey(m_frameInfo.m_name),
+            get_frame_x_key(m_frameInfo.m_name),
             m_frameInfo.m_position.first
         );
         m_frameInfo.m_position.second = preferences.get(
-            getFrameYKey(m_frameInfo.m_name),
+            get_frame_y_key(m_frameInfo.m_name),
             m_frameInfo.m_position.second
         );
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         return;
     }
@@ -200,19 +205,19 @@ void frame_manager::writeConfig() const
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
 
         if(m_frameInfo.m_state != FrameState::ICONIZED)
         {
-            preferences.put(getFrameStateKey(m_frameInfo.m_name), static_cast<std::uint8_t>(m_frameInfo.m_state));
+            preferences.put(get_frame_state_key(m_frameInfo.m_name), static_cast<std::uint8_t>(m_frameInfo.m_state));
         }
 
-        preferences.put(getFrameWKey(m_frameInfo.m_name), m_frameInfo.m_size.first);
-        preferences.put(getFrameHKey(m_frameInfo.m_name), m_frameInfo.m_size.second);
-        preferences.put(getFrameXKey(m_frameInfo.m_name), m_frameInfo.m_position.first);
-        preferences.put(getFrameYKey(m_frameInfo.m_name), m_frameInfo.m_position.second);
+        preferences.put(get_frame_w_key(m_frameInfo.m_name), m_frameInfo.m_size.first);
+        preferences.put(get_frame_h_key(m_frameInfo.m_name), m_frameInfo.m_size.second);
+        preferences.put(get_frame_x_key(m_frameInfo.m_name), m_frameInfo.m_position.first);
+        preferences.put(get_frame_y_key(m_frameInfo.m_name), m_frameInfo.m_position.second);
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         return;
     }

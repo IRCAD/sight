@@ -108,13 +108,13 @@ void distortion::stopping()
 
 void distortion::updating()
 {
-    const auto inputImage = m_image.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
+    const auto input_image = m_image.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", input_image);
 
-    if(inputImage && m_calibrationMismatch)
+    if(input_image && m_calibrationMismatch)
     {
-        const auto inputSize = inputImage->size();
-        if(inputSize != m_prevImageSize)
+        const auto input_size = input_image->size();
+        if(input_size != m_prevImageSize)
         {
             // Reset the error detection boolean
             m_calibrationMismatch = false;
@@ -140,33 +140,33 @@ void distortion::updating()
     {
         // Simple copy of the input image
 
-        auto outputImage = m_output.lock();
+        auto output_image = m_output.lock();
 
-        SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", outputImage);
+        SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", output_image);
 
-        if(inputImage && outputImage)
+        if(input_image && output_image)
         {
             // Since we shallow copy the input image when no remap is done,
             // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
             {
-                reallocated = inputImage->buffer() != outputImage->buffer();
+                reallocated = input_image->buffer() != output_image->buffer();
             }
 
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
-            outputImage->shallow_copy(inputImage.get_shared());
+            output_image->shallow_copy(input_image.get_shared());
 
             if(reallocated)
             {
-                auto sig = outputImage->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                auto sig = output_image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 {
                     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
                     sig->async_emit();
                 }
             }
 
-            auto sig = outputImage->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
+            auto sig = output_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
             {
                 core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
                 sig->async_emit();
@@ -179,26 +179,26 @@ void distortion::updating()
 
 void distortion::remap()
 {
-    const auto inputImage = m_image.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
-    auto outputImage = m_output.lock();
-    SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", outputImage);
+    const auto input_image = m_image.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", input_image);
+    auto output_image = m_output.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", output_image);
 
-    if(!inputImage || !outputImage || m_calibrationMismatch)
+    if(!input_image || !output_image || m_calibrationMismatch)
     {
         return;
     }
 
     FW_PROFILE_AVG("distort", 5);
 
-    auto sig = inputImage->signal<data::object::ModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
+    auto sig = input_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
 
     // Blocking signals early allows to discard any event while we are updating
     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
 
-    const auto inputSize = inputImage->size();
+    const auto input_size = input_image->size();
 
-    if(inputImage->getSizeInBytes() == 0 || inputImage->numDimensions() < 2)
+    if(input_image->getSizeInBytes() == 0 || input_image->numDimensions() < 2)
     {
         SIGHT_WARN("Can not remap this image, it is empty.");
         return;
@@ -207,12 +207,12 @@ void distortion::remap()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("No '" << s_CAMERA_INPUT << "' found.", camera);
 
-    if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
+    if(input_size[0] != camera->getWidth() || input_size[1] != camera->getHeight())
     {
         std::stringstream msg;
         msg << "Can not distort/undistort, the camera calibration resolution ["
         << camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size ["
-        << inputSize[0] << "x" << inputSize[1] << "]";
+        << input_size[0] << "x" << input_size[1] << "]";
 
         sight::ui::dialog::message::show(
             "Error",
@@ -221,48 +221,48 @@ void distortion::remap()
         );
 
         m_calibrationMismatch = true;
-        m_prevImageSize       = inputSize;
+        m_prevImageSize       = input_size;
         return;
     }
 
-    const auto prevSize = outputImage->size();
+    const auto prev_size = output_image->size();
 
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
     {
-        realloc = inputImage->buffer() == outputImage->buffer();
+        realloc = input_image->buffer() == output_image->buffer();
     }
-    if(prevSize != inputSize || realloc)
+    if(prev_size != input_size || realloc)
     {
-        data::image::Size size = {inputSize[0], inputSize[1], 0};
+        data::image::Size size = {input_size[0], input_size[1], 0};
 
         // Since we may have shared the pointer on the input image, we can't use data::image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
-        data::image::sptr tmpImage = std::make_shared<data::image>();
-        outputImage->shallow_copy(tmpImage);
-        outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
+        data::image::sptr tmp_image = std::make_shared<data::image>();
+        output_image->shallow_copy(tmp_image);
+        output_image->resize(size, input_image->getType(), input_image->getPixelFormat());
 
         const data::image::Origin origin = {0., 0., 0.};
-        outputImage->setOrigin(origin);
+        output_image->setOrigin(origin);
 
         const data::image::Spacing spacing = {1., 1., 1.};
-        outputImage->setSpacing(spacing);
-        outputImage->setWindowWidth({1});
-        outputImage->setWindowCenter({0});
+        output_image->setSpacing(spacing);
+        output_image->setWindowWidth({1});
+        output_image->setWindowCenter({0});
     }
 
-    const auto newSize = outputImage->size();
+    const auto new_size = output_image->size();
 
     // Get cv::Mat from data::image
-    cv::Mat img = io::opencv::image::moveToCv(inputImage.get_shared());
+    cv::Mat img = io::opencv::image::move_to_cv(input_image.get_shared());
 
-    cv::Mat undistortedImage;
+    cv::Mat undistorted_image;
 
 #ifndef OPENCV_CUDA_SUPPORT
-    if(outputImage.get_shared() != inputImage.get_shared())
+    if(output_image.get_shared() != input_image.get_shared())
     {
-        undistortedImage = io::opencv::image::moveToCv(outputImage.get_shared());
+        undistorted_image = io::opencv::image::move_to_cv(output_image.get_shared());
     }
 #endif
 
@@ -275,41 +275,41 @@ void distortion::remap()
         cv::cuda::remap(image_gpu, image_gpu_rect, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
         undistortedImage = cv::Mat(image_gpu_rect);
 
-        io::opencv::image::copyFromCv(outputImage.get_shared(), undistortedImage);
+        io::opencv::image::copy_from_cv(outputImage.get_shared(), undistortedImage);
 #else
         FW_PROFILE_AVG("cv::remap", 5);
 
-        cv::remap(img, undistortedImage, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::remap(img, undistorted_image, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
-        const auto outDumpLock = outputImage->dump_lock();
-        if(outputImage.get_shared() == inputImage.get_shared())
+        const auto out_dump_lock = output_image->dump_lock();
+        if(output_image.get_shared() == input_image.get_shared())
         {
             // Copy new image.
             // According to OpenCv's doc, if img and undistortedImage have
             // the same size and type, no reallocation will be done. i.e:
             // this call should copy the undistorted image to the video's
             // frameBuffer.
-            undistortedImage.copyTo(img);
-            SIGHT_ASSERT("OpenCV did something wrong.", img.data == inputImage->buffer());
+            undistorted_image.copyTo(img);
+            SIGHT_ASSERT("OpenCV did something wrong.", img.data == input_image->buffer());
         }
         else
         {
-            SIGHT_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->buffer());
+            SIGHT_ASSERT("OpenCV did something wrong.", undistorted_image.data == output_image->buffer());
         }
 #endif // OPENCV_CUDA_SUPPORT
     }
 
-    if(prevSize != newSize)
+    if(prev_size != new_size)
     {
-        auto sigModified = outputImage->signal<data::image::ModifiedSignalType>(data::image::MODIFIED_SIG);
+        auto sig_modified = output_image->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
         {
-            core::com::connection::blocker anotherBlock(sigModified->get_connection(slot(service::slots::UPDATE)));
-            sigModified->async_emit();
+            core::com::connection::blocker another_block(sig_modified->get_connection(slot(service::slots::UPDATE)));
+            sig_modified->async_emit();
         }
     }
 
-    auto sigOut = outputImage->signal<data::object::ModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
-    sigOut->async_emit();
+    auto sig_out = output_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
+    sig_out->async_emit();
 }
 
 // ----------------------------------------------------------------------------
@@ -335,12 +335,12 @@ void distortion::calibrate()
     SIGHT_ASSERT("Object 'camera' is not found.", camera);
 
     cv::Mat intrinsics;
-    cv::Mat distCoefs;
+    cv::Mat dist_coefs;
     cv::Size size;
 
-    std::tie(intrinsics, size, distCoefs) = io::opencv::camera::copyToCv(camera.get_shared());
+    std::tie(intrinsics, size, dist_coefs) = io::opencv::camera::copyToCv(camera.get_shared());
 
-    std::vector<cv::Mat> xyMaps(2);
+    std::vector<cv::Mat> xy_maps(2);
 
     if(m_distort)
     {
@@ -358,11 +358,11 @@ void distortion::calibrate()
                 pixel_locations_src.row(i),
                 fractional_locations_dst.row(i),
                 intrinsics,
-                distCoefs
+                dist_coefs
             );
         }
 
-        cv::Mat pixelLocations = cv::Mat(size, CV_32FC2);
+        cv::Mat pixel_locations = cv::Mat(size, CV_32FC2);
 
         // Output from undistortPoints is normalized point coordinates
         const auto fx = static_cast<float>(intrinsics.at<double>(0, 0));
@@ -376,23 +376,23 @@ void distortion::calibrate()
             {
                 const float x = fractional_locations_dst.at<cv::Point2f>(i, j).x * fx + cx;
                 const float y = fractional_locations_dst.at<cv::Point2f>(i, j).y * fy + cy;
-                pixelLocations.at<cv::Point2f>(i, j) = cv::Point2f(x, y);
+                pixel_locations.at<cv::Point2f>(i, j) = cv::Point2f(x, y);
             }
         }
 
-        cv::split(pixelLocations, xyMaps);
+        cv::split(pixel_locations, xy_maps);
     }
     else
     {
         cv::initUndistortRectifyMap(
             intrinsics,
-            distCoefs,
+            dist_coefs,
             cv::Mat(),
             intrinsics,
             size,
             CV_32FC1,
-            xyMaps[0],
-            xyMaps[1]
+            xy_maps[0],
+            xy_maps[1]
         );
     }
 
@@ -400,13 +400,13 @@ void distortion::calibrate()
 
     if(map)
     {
-        cv::Mat cvMap;
-        cv::merge(xyMaps, cvMap);
+        cv::Mat cv_map;
+        cv::merge(xy_maps, cv_map);
 
-        io::opencv::image::copyFromCv(*map, cvMap);
+        io::opencv::image::copy_from_cv(*map, cv_map);
 
-        auto sigModified = map->signal<data::image::ModifiedSignalType>(data::image::MODIFIED_SIG);
-        sigModified->async_emit();
+        auto sig_modified = map->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
+        sig_modified->async_emit();
     }
     else
     {
@@ -414,8 +414,8 @@ void distortion::calibrate()
         m_map_x = cv::cuda::GpuMat(xyMaps[0]);
         m_map_y = cv::cuda::GpuMat(xyMaps[1]);
 #else
-        m_map_x = xyMaps[0];
-        m_map_y = xyMaps[1];
+        m_map_x = xy_maps[0];
+        m_map_y = xy_maps[1];
 #endif // OPENCV_CUDA_SUPPORT
     }
 }

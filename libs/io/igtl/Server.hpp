@@ -66,14 +66,14 @@ public:
      *
      * @param[in] port the port to listen
      */
-    IO_IGTL_API void start(std::uint16_t port);
+    IO_IGTL_API void start(std::uint16_t _port);
 
     /**
      * @brief method to wait a connection
      *
      * @param[in] msec time to wait in millisecond
      */
-    IO_IGTL_API Client::sptr waitForConnection(int msec = 0);
+    IO_IGTL_API Client::sptr waitForConnection(int _msec = 0);
 
     /**
      * @brief method to stop the server
@@ -88,12 +88,12 @@ public:
     /**
      * @brief method to broadcast to all client the obj
      */
-    IO_IGTL_API void broadcast(const data::object::csptr& obj);
+    IO_IGTL_API void broadcast(const data::object::csptr& _obj);
 
     /**
      * @brief method to broadcast to all client a msg
      */
-    IO_IGTL_API void broadcast(::igtl::MessageBase::Pointer msg);
+    IO_IGTL_API void broadcast(::igtl::MessageBase::Pointer _msg);
 
     /**
      * @brief get the port
@@ -127,8 +127,8 @@ public:
      *  @return Message
      */
     IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(
-        ::igtl::MessageHeader::Pointer header,
-        unsigned int client
+        ::igtl::MessageHeader::Pointer _header,
+        unsigned int _client
     );
 
     /**
@@ -136,12 +136,12 @@ public:
      *
      * @return a vector of smart pointer of fwData object
      */
-    IO_IGTL_API std::vector<data::object::sptr> receiveObjects(std::vector<std::string>& deviceNames);
+    IO_IGTL_API std::vector<data::object::sptr> receiveObjects(std::vector<std::string>& _device_names);
 
     /**
      * @brief set the device name when a message is sent
      */
-    IO_IGTL_API void setMessageDeviceName(const std::string& deviceName);
+    IO_IGTL_API void setMessageDeviceName(const std::string& _device_name);
 
     /// Sets the receive timeout in ms.
     inline void setReceiveTimeout(std::optional<unsigned int> _timeout);
@@ -152,7 +152,7 @@ public:
 private:
 
     /// Patched version of igtlServer::CreateServer.
-    int createServer(std::uint16_t port);
+    int createServer(std::uint16_t _port);
 
     static void removeClient(Client::sptr _client);
 

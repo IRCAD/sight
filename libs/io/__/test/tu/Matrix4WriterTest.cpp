@@ -38,25 +38,25 @@ namespace sight::io::ut
 
 void Matrix4WriterTest::basicTest()
 {
-    auto matrixWriter              = std::make_shared<writer::matrix4_writer>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + matrixWriter->extension());
-    auto matrixIn                  = std::make_shared<data::matrix4>();
-    std::iota(matrixIn->begin(), matrixIn->end(), 0);
-    matrixWriter->set_object(matrixIn);
+    auto matrix_writer             = std::make_shared<writer::matrix4_writer>();
+    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + matrix_writer->extension());
+    auto matrix_in                 = std::make_shared<data::matrix4>();
+    std::iota(matrix_in->begin(), matrix_in->end(), 0);
+    matrix_writer->set_object(matrix_in);
     std::filesystem::remove(filepath);
-    matrixWriter->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(matrixWriter->write());
-    constexpr std::string_view expectedContent = R"(0 1 2 3
+    matrix_writer->set_file(filepath);
+    CPPUNIT_ASSERT_NO_THROW(matrix_writer->write());
+    constexpr std::string_view expected_content = R"(0 1 2 3
 4 5 6 7
 8 9 10 11
 12 13 14 15)";
-    std::string actualContent;
+    std::string actual_content;
     {
         std::ifstream in(filepath);
-        std::getline(in, actualContent, '\0');
-        boost::trim(actualContent);
+        std::getline(in, actual_content, '\0');
+        boost::trim(actual_content);
     }
-    CPPUNIT_ASSERT_EQUAL(std::string(expectedContent), actualContent);
+    CPPUNIT_ASSERT_EQUAL(std::string(expected_content), actual_content);
 }
 
 } // namespace sight::io::ut

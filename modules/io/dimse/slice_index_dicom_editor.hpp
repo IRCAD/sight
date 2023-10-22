@@ -131,7 +131,7 @@ private:
      * @brief Pulls the slice from the PACS.
      * @param _selectedSliceIndex index of the slice to pull.
      */
-    void pullSlice(std::size_t _selectedSliceIndex) const;
+    void pullSlice(std::size_t _selected_slice_index) const;
 
     /**
      * @brief Reads a local slice.
@@ -139,8 +139,8 @@ private:
      * @param _selectedSliceIndex index of the slice to read.
      */
     void readSlice(
-        const data::mt::locked_ptr<data::dicom_series>& _dicomSeries,
-        std::size_t _selectedSliceIndex
+        const data::mt::locked_ptr<data::dicom_series>& _dicom_series,
+        std::size_t _selected_slice_index
     ) const;
 
     /// Contains the worker of the series enquire thread.

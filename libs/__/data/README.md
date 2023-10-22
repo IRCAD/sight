@@ -34,7 +34,7 @@ All concrete data classes implement this interface.
 - **Activity**: contains information and data of an application activity.
 - **dicom_series**: contains a DICOM series.
 - **Equipment**: contains an equipment information.
-- **Histogram**: contains the histogram of a `sight::data::image`.
+- **histogram**: contains the histogram of a `sight::data::image`.
 - **image_series**: a `sight::data::image` with the associated medical data.
 - **Landmarks**: defines a set of spatial (3D) or color (4D) points.
 - **model_series**: holds a medical data.
@@ -92,5 +92,5 @@ All concrete data classes implement this interface.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> data)
+target_link_libraries( my_target <PUBLIC|PRIVATE> data)
 ```

@@ -33,8 +33,8 @@ const core::com::signals::key_t select_dialog::MODEL_SELECTED_SIG = "modelSelect
 
 select_dialog::select_dialog()
 {
-    new_signal<SelectedSignalType>(IMAGE_SELECTED_SIG);
-    new_signal<SelectedSignalType>(MODEL_SELECTED_SIG);
+    new_signal<selected_signal_t>(IMAGE_SELECTED_SIG);
+    new_signal<selected_signal_t>(MODEL_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -64,19 +64,19 @@ void select_dialog::updating()
         " the user to pick a series"
     );
 
-    auto firstElement = series_set->front();
+    auto first_element = series_set->front();
 
-    if(auto modelSeries = std::dynamic_pointer_cast<sight::data::model_series>(firstElement); modelSeries)
+    if(auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(first_element); model_series)
     {
-        m_modelSeries = modelSeries;
-        auto sig = this->signal<data::object::ModifiedSignalType>(MODEL_SELECTED_SIG);
+        m_modelSeries = model_series;
+        auto sig = this->signal<data::object::modified_signal_t>(MODEL_SELECTED_SIG);
         sig->async_emit();
     }
-    else if(auto imageSeries = std::dynamic_pointer_cast<sight::data::image_series>(firstElement); imageSeries)
+    else if(auto image_series = std::dynamic_pointer_cast<sight::data::image_series>(first_element); image_series)
     {
-        m_imageSeries = imageSeries;
-        m_image       = imageSeries;
-        auto sig = this->signal<data::object::ModifiedSignalType>(IMAGE_SELECTED_SIG);
+        m_imageSeries = image_series;
+        m_image       = image_series;
+        auto sig = this->signal<data::object::modified_signal_t>(IMAGE_SELECTED_SIG);
         sig->async_emit();
     }
 }

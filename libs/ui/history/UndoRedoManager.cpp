@@ -29,16 +29,16 @@ namespace sight::ui::history
 
 //-----------------------------------------------------------------------------
 
-UndoRedoManager::UndoRedoManager(std::size_t maxMemory, std::size_t maxCommands) :
-    m_maxMemory(maxMemory),
-    m_maxCommands(maxCommands == 0 ? 1 : maxCommands)
+UndoRedoManager::UndoRedoManager(std::size_t _max_memory, std::size_t _max_commands) :
+    m_maxMemory(_max_memory),
+    m_maxCommands(_max_commands == 0 ? 1 : _max_commands)
 {
-    SIGHT_ASSERT("The number of commands must be greater than 0", maxCommands > 0);
+    SIGHT_ASSERT("The number of commands must be greater than 0", _max_commands > 0);
 }
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::enqueue(command::sptr cmd)
+bool UndoRedoManager::enqueue(command::sptr _cmd)
 {
     if(m_maxMemory == 0)
     {
@@ -46,7 +46,7 @@ bool UndoRedoManager::enqueue(command::sptr cmd)
         return false;
     }
 
-    if(cmd->size() > m_maxMemory)
+    if(_cmd->size() > m_maxMemory)
     {
         SIGHT_WARN("The current command is bigger than the maximum history size");
         return false;
@@ -69,13 +69,13 @@ bool UndoRedoManager::enqueue(command::sptr cmd)
     }
 
     // Remove the oldest commands if we reached the maximum history size.
-    while(m_usedMemory + cmd->size() > m_maxMemory)
+    while(m_usedMemory + _cmd->size() > m_maxMemory)
     {
         popFront();
     }
 
-    m_commandQueue.push_back(cmd);
-    m_usedMemory  += cmd->size();
+    m_commandQueue.push_back(_cmd);
+    m_usedMemory  += _cmd->size();
     m_commandIndex = static_cast<std::int64_t>(m_commandQueue.size() - 1);
 
     return true;
@@ -143,10 +143,10 @@ std::size_t UndoRedoManager::getCommandCount() const
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setCommandCount(std::size_t cmdCount)
+void UndoRedoManager::setCommandCount(std::size_t _cmd_count)
 {
     this->clear();
-    m_maxCommands = cmdCount;
+    m_maxCommands = _cmd_count;
 }
 
 //-----------------------------------------------------------------------------
@@ -158,10 +158,10 @@ std::size_t UndoRedoManager::getHistorySize() const
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::setHistorySize(std::size_t histSize)
+void UndoRedoManager::setHistorySize(std::size_t _hist_size)
 {
     this->clear();
-    m_maxMemory = histSize;
+    m_maxMemory = _hist_size;
 }
 
 //-----------------------------------------------------------------------------

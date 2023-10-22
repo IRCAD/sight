@@ -92,10 +92,10 @@ protected:
 
 private:
 
-    typedef std::vector<bool> InvertVectorType;
+    typedef std::vector<bool> invert_vector_t;
 
     /// Vector to specify if matrix must be inverted.
-    InvertVectorType m_invertVector;
+    invert_vector_t m_invertVector;
 
     static constexpr std::string_view s_MATRIX_GROUP_INPUT = "matrix";
     data::ptr_vector<data::matrix4, sight::data::Access::in> m_matrices {this, s_MATRIX_GROUP_INPUT, true};

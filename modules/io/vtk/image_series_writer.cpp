@@ -59,7 +59,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 image_series_writer::image_series_writer() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -73,21 +73,21 @@ sight::io::service::IOPathType image_series_writer::getIOPathType() const
 
 void image_series_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("Vtk", "*.vtk");
-    dialogFile.addFilter("Vti", "*.vti");
-    dialogFile.addFilter("MetaImage", "*.mhd");
-    dialogFile.setOption(ui::dialog::location::WRITE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("Vtk", "*.vtk");
+    dialog_file.addFilter("Vti", "*.vti");
+    dialog_file.addFilter("MetaImage", "*.mhd");
+    dialog_file.setOption(ui::dialog::location::WRITE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         this->set_file(result->get_file());
     }
     else
@@ -131,8 +131,8 @@ void image_series_writer::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked      = m_data.lock();
-        const auto imageSeries = std::dynamic_pointer_cast<const data::image_series>(locked.get_shared());
+        const auto locked       = m_data.lock();
+        const auto image_series = std::dynamic_pointer_cast<const data::image_series>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -140,11 +140,11 @@ void image_series_writer::updating()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            imageSeries
+            image_series
         );
 
         sight::ui::BusyCursor cursor;
-        image_writer::saveImage(this->get_file(), imageSeries, m_sigJobCreated);
+        image_writer::saveImage(this->get_file(), image_series, m_sigJobCreated);
         m_writeFailed = false;
     }
 }

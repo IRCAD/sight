@@ -33,27 +33,27 @@ namespace sight::core::memory
 //------------------------------------------------------------------------------
 
 void buffer_malloc_policy::allocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
-    if(size > 0)
+    if(_size > 0)
     {
         try
         {
-            buffer = malloc(size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+            _buffer = malloc(_size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
         }
         catch(...)
         {
-            buffer = nullptr;
+            _buffer = nullptr;
         }
 
-        if(buffer == nullptr)
+        if(_buffer == nullptr)
         {
             SIGHT_THROW_EXCEPTION_MSG(
                 core::memory::exception::memory,
                 "Cannot allocate memory ("
-                << core::memory::byte_size(core::memory::byte_size::size_t(size)) << ")."
+                << core::memory::byte_size(core::memory::byte_size::size_t(_size)) << ")."
             );
         }
     }
@@ -62,53 +62,53 @@ void buffer_malloc_policy::allocate(
 //------------------------------------------------------------------------------
 
 void buffer_malloc_policy::reallocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
     buffer_t new_buffer = nullptr;
-    if(size > 0)
+    if(_size > 0)
     {
-        new_buffer = realloc(buffer, size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+        new_buffer = realloc(_buffer, _size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
     }
     else
     {
-        free(buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+        free(_buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
         new_buffer = nullptr;
     }
 
-    if(new_buffer == nullptr && size > 0)
+    if(new_buffer == nullptr && _size > 0)
     {
         SIGHT_THROW_EXCEPTION_MSG(
             core::memory::exception::memory,
             "Cannot allocate memory ("
-            << core::memory::byte_size(core::memory::byte_size::size_t(size)) << ")."
+            << core::memory::byte_size(core::memory::byte_size::size_t(_size)) << ")."
         );
     }
 
-    buffer = new_buffer;
+    _buffer = new_buffer;
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_malloc_policy::destroy(buffer_t& buffer)
+void buffer_malloc_policy::destroy(buffer_t& _buffer)
 {
-    free(buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
-    buffer = nullptr;
+    free(_buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+    _buffer = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void buffer_new_policy::allocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
     try
     {
-        if(size > 0)
+        if(_size > 0)
         {
-            buffer = new char [size];
+            _buffer = new char [_size];
         }
     }
     catch(std::bad_alloc& ba)
@@ -123,12 +123,12 @@ void buffer_new_policy::allocate(
 //------------------------------------------------------------------------------
 
 void buffer_new_policy::reallocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(size);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_size);
     SIGHT_THROW_EXCEPTION_MSG(
         core::memory::exception::memory,
         "Reallocation not managed for buffer allocated with 'new' operator."
@@ -137,21 +137,21 @@ void buffer_new_policy::reallocate(
 
 //------------------------------------------------------------------------------
 
-void buffer_new_policy::destroy(buffer_t& buffer)
+void buffer_new_policy::destroy(buffer_t& _buffer)
 {
-    delete[] static_cast<char*>(buffer);
-    buffer = nullptr;
+    delete[] static_cast<char*>(_buffer);
+    _buffer = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void buffer_no_alloc_policy::allocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(size);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_size);
     SIGHT_THROW_EXCEPTION_MSG(
         core::memory::exception::memory,
         "No Allocation Policy should not be called."
@@ -161,12 +161,12 @@ void buffer_no_alloc_policy::allocate(
 //------------------------------------------------------------------------------
 
 void buffer_no_alloc_policy::reallocate(
-    buffer_t& buffer,
-    buffer_allocation_policy::size_type size
+    buffer_t& _buffer,
+    buffer_allocation_policy::size_type _size
 )
 {
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(size);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_size);
     SIGHT_THROW_EXCEPTION_MSG(
         core::memory::exception::memory,
         "No Allocation Policy should not be called."
@@ -175,9 +175,9 @@ void buffer_no_alloc_policy::reallocate(
 
 //------------------------------------------------------------------------------
 
-void buffer_no_alloc_policy::destroy(buffer_t& buffer)
+void buffer_no_alloc_policy::destroy(buffer_t& _buffer)
 {
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_buffer);
     SIGHT_ASSERT("No Alloc Policy should not be called", 0);
 }
 

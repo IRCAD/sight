@@ -23,8 +23,8 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/R2VBRenderable.hpp"
+#include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/r2vb_renderable.hpp"
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 #include "viz/scene3d/vr/illum_ambient_occlusion_sat.hpp"
 #include "viz/scene3d/vr/ray_entry_compositor.hpp"
@@ -92,14 +92,14 @@ public:
     struct shadows_data_t
     {
         /// Constructor.
-        shadows_data_t(const shadows_parameters_t& parameters = {}) :
-            parameters(parameters),
+        shadows_data_t(const shadows_parameters_t& _parameters = {}) :
+            parameters(_parameters),
             factors(
             {
-                parameters.colour_bleeding.r,
-                parameters.colour_bleeding.g,
-                parameters.colour_bleeding.b,
-                parameters.ao.factor
+                _parameters.colour_bleeding.r,
+                _parameters.colour_bleeding.g,
+                _parameters.colour_bleeding.b,
+                _parameters.ao.factor
             })
         {
         }
@@ -117,7 +117,7 @@ public:
      * @param parentId                  ID of the service using this renderer
      * @param sceneManager              The scene manager being used.
      * @param volumeNode                This object's node.
-     * @param image                     Texture holding the 3D image to be rendered. Created if not specified.
+     * @param image                     texture holding the 3D image to be rendered. Created if not specified.
      * @param buffer (optional)         Enable buffering for the textures updates. Default is false.
      * @param preintegration (optional) Enable preintegration. Default is false.
      * @param shadows (optional)        Shadows parameters. Uses default if not specified.
@@ -125,57 +125,57 @@ public:
      * @param shader (optional)         Raycasting fragment shader. Default is "RayTracedVolume_FP.glsl".
      */
     VIZ_SCENE3D_API ray_tracing_volume_renderer(
-        std::string parentId,
-        Layer::sptr layer,
-        Ogre::SceneNode* parentNode,
-        sight::data::image::csptr image,
-        sight::data::image::csptr mask,
-        sight::data::transfer_function::csptr tf,
-        std::uint16_t samples,
-        bool buffer                                                      = false,
-        bool preintegration                                              = false,
-        std::optional<shadows_parameters_t> shadows                      = {},
-        std::optional<illum_ambient_occlusion_sat::sat_parameters_t> sat = {},
-        std::optional<std::string> shader                                = {});
+        std::string _parent_id,
+        layer::sptr _layer,
+        Ogre::SceneNode* _parent_node,
+        sight::data::image::csptr _image,
+        sight::data::image::csptr _mask,
+        sight::data::transfer_function::csptr _tf,
+        std::uint16_t _samples,
+        bool _buffer                                                      = false,
+        bool _preintegration                                              = false,
+        std::optional<shadows_parameters_t> _shadows                      = {},
+        std::optional<illum_ambient_occlusion_sat::sat_parameters_t> _sat = {},
+        std::optional<std::string> _shader                                = {});
 
     /// Does nothing.
     VIZ_SCENE3D_API ~ray_tracing_volume_renderer() override;
 
     /// Updates the raycasting material and sample distance. Also creates the entry point if not done yet.
-    VIZ_SCENE3D_API void update(const data::transfer_function::csptr& tf) override;
+    VIZ_SCENE3D_API void update(const data::transfer_function::csptr& _tf) override;
 
     /// Function called when a new image is being rendered.
-    VIZ_SCENE3D_API void updateImage(data::image::csptr image, data::transfer_function::csptr tf) override;
+    VIZ_SCENE3D_API void updateImage(data::image::csptr _image, data::transfer_function::csptr _tf) override;
 
     /// Function called when the mask is updated.
-    VIZ_SCENE3D_API void updateMask(data::image::csptr mask);
+    VIZ_SCENE3D_API void updateMask(data::image::csptr _mask);
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API void updateVolumeTF(const data::transfer_function::csptr& tf) override;
+    VIZ_SCENE3D_API void updateVolumeTF(const data::transfer_function::csptr& _tf) override;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API void setSampling(uint16_t nbSamples, const data::transfer_function::csptr& tf) override;
+    VIZ_SCENE3D_API void setSampling(uint16_t _nb_samples, const data::transfer_function::csptr& _tf) override;
 
     /// Sets the opacity correction factor.
-    VIZ_SCENE3D_API void setOpacityCorrection(int opacityCorrection);
+    VIZ_SCENE3D_API void setOpacityCorrection(int _opacity_correction);
 
     /// Ambient occlusion factor setter.
     /// Returns 'true' if a render update is necessary, i.e. ambient occlusion is enabled.
     [[nodiscard]]
-    VIZ_SCENE3D_API virtual bool setAOFactor(float factor);
+    VIZ_SCENE3D_API virtual bool setAOFactor(float _factor);
 
     /// Color bleeding factor setter.
     /// Returns 'true' if a render update is necessary, i.e. colour bleeding is enabled.
     [[nodiscard]]
-    VIZ_SCENE3D_API virtual bool setColorBleedingFactor(float factor);
+    VIZ_SCENE3D_API virtual bool setColorBleedingFactor(float _factor);
 
     /// Color bleeding factor setter.
     /// Returns 'true' if a render update is necessary, i.e. colour bleeding is enabled.
     [[nodiscard]]
-    VIZ_SCENE3D_API virtual bool setColorBleedingFactor(const Ogre::Vector3& factors);
+    VIZ_SCENE3D_API virtual bool setColorBleedingFactor(const Ogre::Vector3& _factors);
 
     /// Toggles ambient occlusion.
-    VIZ_SCENE3D_API virtual void toggleAmbientOcclusion(bool enable);
+    VIZ_SCENE3D_API virtual void toggleAmbientOcclusion(bool _enable);
 
     /**
      * @brief Enables the ambient occlusion and soft shadows SAT.
@@ -186,20 +186,20 @@ public:
     VIZ_SCENE3D_API virtual void disableAmbientOcclusion();
 
     /// Sets pre-integrated mode.
-    VIZ_SCENE3D_API void setPreIntegratedRendering(bool preIntegratedRendering) override;
+    VIZ_SCENE3D_API void setPreIntegratedRendering(bool _pre_integrated_rendering) override;
 
     /// Sets color bleeding usage.
-    VIZ_SCENE3D_API virtual void toggleColorBleeding(bool enable);
+    VIZ_SCENE3D_API virtual void toggleColorBleeding(bool _enable);
 
     /// Sets soft shadows usage.
-    VIZ_SCENE3D_API virtual void toggleShadows(bool enable);
+    VIZ_SCENE3D_API virtual void toggleShadows(bool _enable);
 
     /// Sets the focal distance used for stereo rendering.
     /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
-    VIZ_SCENE3D_API void setFocalLength(float focalLength);
+    VIZ_SCENE3D_API void setFocalLength(float _focal_length);
 
     /// Computes image positions, updates the proxy geometry.
-    VIZ_SCENE3D_API void clipImage(const Ogre::AxisAlignedBox& clippingBox) override;
+    VIZ_SCENE3D_API void clipImage(const Ogre::AxisAlignedBox& _clipping_box) override;
 
     /// Returns whether or not the volume is visible.
     [[nodiscard]] VIZ_SCENE3D_API bool isVisible() const;
@@ -211,31 +211,31 @@ public:
      * @brief Sets the SAT size ratio.
      * @param ratio value of the SAT size ratio.
      */
-    VIZ_SCENE3D_API void updateSATSizeRatio(unsigned ratio);
+    VIZ_SCENE3D_API void updateSATSizeRatio(unsigned _ratio);
 
     /**
      * @brief Sets the SAT shells number.
      * @param count the number of shells used by the SAT.
      */
-    VIZ_SCENE3D_API void updateSATShellsNumber(unsigned count);
+    VIZ_SCENE3D_API void updateSATShellsNumber(unsigned _count);
 
     /**
      * @brief Sets the SAT shells radius.
      * @param radius the shells radius used by the SAT.
      */
-    VIZ_SCENE3D_API void updateSATShellRadius(unsigned radius);
+    VIZ_SCENE3D_API void updateSATShellRadius(unsigned _radius);
 
     /**
      * @brief Sets the SAT cone angle.
      * @param angle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
-    VIZ_SCENE3D_API void updateSATConeAngle(float angle);
+    VIZ_SCENE3D_API void updateSATConeAngle(float _angle);
 
     /**
      * @brief Sets the SAT cone samples.
      * @param samples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
-    VIZ_SCENE3D_API void updateSATConeSamples(unsigned samples);
+    VIZ_SCENE3D_API void updateSATConeSamples(unsigned _samples);
 
     /// Updates the SAT with the current 3D texture, transfer function and sampling rate.
     VIZ_SCENE3D_API virtual void updateSAT();
@@ -272,10 +272,10 @@ protected:
     struct options_t
     {
         ///Constructor
-        options_t(const std::string& vertex = "", const std::string& fragment = "") :
-            vertex(vertex),
-            fragment(fragment),
-            hash(std::hash<std::string> {}(vertex + fragment))
+        options_t(const std::string& _vertex = "", const std::string& _fragment = "") :
+            vertex(_vertex),
+            fragment(_fragment),
+            hash(std::hash<std::string> {}(_vertex + _fragment))
         {
         }
 
@@ -293,14 +293,14 @@ protected:
     struct material_light_t
     {
         material_light_t(
-            const Ogre::ColourValue& diffuse  = Ogre::ColourValue(1.2F, 1.2F, 1.2F, 1.F),
-            const Ogre::ColourValue& specular = Ogre::ColourValue(2.5F, 2.5F, 2.5F, 1.F),
-            float shininess                   = 20.F
+            const Ogre::ColourValue& _diffuse  = Ogre::ColourValue(1.2F, 1.2F, 1.2F, 1.F),
+            const Ogre::ColourValue& _specular = Ogre::ColourValue(2.5F, 2.5F, 2.5F, 1.F),
+            float _shininess                   = 20.F
         ) :
 
-            diffuse(diffuse),
-            specular(specular),
-            shininess(shininess)
+            diffuse(_diffuse),
+            specular(_specular),
+            shininess(_shininess)
         {
         }
 
@@ -317,7 +317,7 @@ protected:
     //-----------------------------------------------------------------------------
 
     /// Sets all texture units needed by the material during the ray casting pass.
-    VIZ_SCENE3D_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass) const;
+    VIZ_SCENE3D_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* _ray_casting_pass) const;
 
     /**
      * @brief Generates the material used to render the volume.
@@ -329,8 +329,8 @@ protected:
 
     /// Sets the default diffuse, specular and shininess of a material.
     VIZ_SCENE3D_API static void setMaterialLightParams(
-        Ogre::MaterialPtr mtl,
-        const std::optional<material_light_t>& light = {});
+        Ogre::MaterialPtr _mtl,
+        const std::optional<material_light_t>& _light = {});
 
     //-----------------------------------------------------------------------------
 
@@ -364,7 +364,7 @@ protected:
     /// Only seems to update them when instancing the corresponding material
     Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
 
-    viz::scene3d::Layer::wptr m_layer;
+    viz::scene3d::layer::wptr m_layer;
 
     /// Compositor used to compute volume ray entry/exit points.
     ray_entry_compositor::uptr m_rayEntryCompositor {nullptr};
@@ -410,15 +410,15 @@ inline auto ray_tracing_volume_renderer::shadows() const -> const shadows_data_t
 //------------------------------------------------------------------------------
 
 inline void ray_tracing_volume_renderer::setMaterialLightParams(
-    Ogre::MaterialPtr mtl,
-    const std::optional<material_light_t>& light
+    Ogre::MaterialPtr _mtl,
+    const std::optional<material_light_t>& _light
 )
 {
-    const material_light_t& components = light.value_or(material_light_t {});
+    const material_light_t& components = _light.value_or(material_light_t {});
 
-    mtl->setDiffuse(components.diffuse);
-    mtl->setSpecular(components.specular);
-    mtl->setShininess(components.shininess);
+    _mtl->setDiffuse(components.diffuse);
+    _mtl->setSpecular(components.specular);
+    _mtl->setShininess(components.shininess);
 }
 
 } // namespace sight::viz::scene3d::vr

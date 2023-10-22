@@ -33,105 +33,105 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-static cv::Mat toCv(const data::image::csptr& _image, bool _copy)
+static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
 {
-    const auto imageType = _image->getType();
-    const auto imageComp = _image->numComponents();
+    const auto image_type = _image->getType();
+    const auto image_comp = _image->numComponents();
 
-    const auto cvType = io::opencv::type::toCv(imageType, imageComp);
+    const auto cv_type = io::opencv::type::toCv(image_type, image_comp);
 
-    const auto dumpLock = _image->dump_lock();
+    const auto dump_lock = _image->dump_lock();
 
     SIGHT_ASSERT("Empty image buffer", _image->buffer());
 
-    const auto imageSize = _image->size();
-    std::vector<int> cvSize;
+    const auto image_size = _image->size();
+    std::vector<int> cv_size;
     for(std::size_t i = 0 ; i < _image->numDimensions() ; ++i)
     {
-        cvSize.push_back(static_cast<int>(imageSize[i]));
+        cv_size.push_back(static_cast<int>(image_size[i]));
     }
 
-    if(cvSize.size() == 1)
+    if(cv_size.size() == 1)
     {
         // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
-        cvSize.push_back(1);
+        cv_size.push_back(1);
     }
 
     // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
-    std::reverse(cvSize.begin(), cvSize.end());
+    std::reverse(cv_size.begin(), cv_size.end());
 
-    cv::Mat cvImage;
+    cv::Mat cv_image;
     if(_copy)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->buffer()));
-        cvImage = mat.clone();
+        cv::Mat mat = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
+        cv_image = mat.clone();
     }
     else
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->buffer()));
+        cv_image = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
     }
 
-    return cvImage;
+    return cv_image;
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat image::moveToCv(data::image::sptr& _image)
+cv::Mat image::move_to_cv(data::image::sptr& _image)
 {
-    return toCv(_image, false);
+    return to_cv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat image::moveToCv(const data::image::csptr& _image)
+cv::Mat image::move_to_cv(const data::image::csptr& _image)
 {
-    return toCv(_image, false);
+    return to_cv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void image::copyFromCv(data::image& _image, const cv::Mat& _cvImage)
+void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
 {
-    const auto prevImageType = _image.getType();
-    const auto prevImageComp = _image.numComponents();
+    const auto prev_image_type = _image.getType();
+    const auto prev_image_comp = _image.numComponents();
 
-    const auto imageFormat = io::opencv::type::fromCv(_cvImage.type());
-    const auto imageType   = imageFormat.first;
-    const auto imageComp   = imageFormat.second;
-    SIGHT_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
-    SIGHT_ASSERT("Number of dimension should be between 1 and 3", _cvImage.dims >= 1 && _cvImage.dims <= 3);
+    const auto image_format = io::opencv::type::fromCv(_cv_image.type());
+    const auto image_type   = image_format.first;
+    const auto image_comp   = image_format.second;
+    SIGHT_ASSERT("Number of components should be between 1 and 4", image_comp >= 1 && image_comp <= 4);
+    SIGHT_ASSERT("Number of dimension should be between 1 and 3", _cv_image.dims >= 1 && _cv_image.dims <= 3);
 
-    data::image::Size imageSize = {0, 0, 0};
+    data::image::Size image_size = {0, 0, 0};
 
-    if(_cvImage.dims == 1)
+    if(_cv_image.dims == 1)
     {
-        imageSize[0] = std::size_t(_cvImage.size[0]);
+        image_size[0] = std::size_t(_cv_image.size[0]);
     }
-    else if(_cvImage.dims == 2 && _cvImage.rows == 1)
+    else if(_cv_image.dims == 2 && _cv_image.rows == 1)
     {
         // This means this is actually a 1D image so remove the first dimension (==1)
-        imageSize[0] = std::size_t(_cvImage.size[1]);
-        imageSize[1] = 0;
+        image_size[0] = std::size_t(_cv_image.size[1]);
+        image_size[1] = 0;
     }
-    else if(_cvImage.dims == 2)
+    else if(_cv_image.dims == 2)
     {
-        imageSize[0] = std::size_t(_cvImage.size[1]);
-        imageSize[1] = std::size_t(_cvImage.size[0]);
+        image_size[0] = std::size_t(_cv_image.size[1]);
+        image_size[1] = std::size_t(_cv_image.size[0]);
     }
     else // 3D
     {
-        imageSize[0] = std::size_t(_cvImage.size[2]);
-        imageSize[1] = std::size_t(_cvImage.size[1]);
-        imageSize[2] = std::size_t(_cvImage.size[0]);
+        image_size[0] = std::size_t(_cv_image.size[2]);
+        image_size[1] = std::size_t(_cv_image.size[1]);
+        image_size[2] = std::size_t(_cv_image.size[0]);
     }
 
-    const auto prevImageSize = _image.size();
-    if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
+    const auto prev_image_size = _image.size();
+    if(prev_image_comp != image_comp || prev_image_type != image_type || image_size != prev_image_size)
     {
         data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
-        switch(imageComp)
+        switch(image_comp)
         {
             case 1:
                 format = data::image::PixelFormat::GRAY_SCALE;
@@ -153,21 +153,21 @@ void image::copyFromCv(data::image& _image, const cv::Mat& _cvImage)
                 SIGHT_FATAL("Unhandled OpenCV format");
         }
 
-        _image.resize(imageSize, imageType, format);
+        _image.resize(image_size, image_type, format);
     }
 
-    const auto dumpLock = _image.dump_lock();
+    const auto dump_lock = _image.dump_lock();
     SIGHT_ASSERT("Empty image buffer", _image.getAllocatedSizeInBytes() > 0);
 
     auto buffer = _image.begin<std::uint8_t>();
-    std::copy(_cvImage.data, _cvImage.data + _image.getSizeInBytes(), buffer);
+    std::copy(_cv_image.data, _cv_image.data + _image.getSizeInBytes(), buffer);
 }
 
 //------------------------------------------------------------------------------
 
 cv::Mat image::copyToCv(const data::image::csptr& _image)
 {
-    return toCv(_image, true);
+    return to_cv(_image, true);
 }
 
 //------------------------------------------------------------------------------

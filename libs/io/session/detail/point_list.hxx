@@ -35,22 +35,22 @@ namespace sight::io::session::detail::point_list
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto pointList = helper::safe_cast<data::point_list>(object);
+    const auto point_list = helper::safe_cast<data::point_list>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::point_list>(tree, 1);
+    helper::write_version<data::point_list>(_tree, 1);
 
     // Add points to children list
     int index = 0;
-    for(const auto& point : pointList->getPoints())
+    for(const auto& point : point_list->getPoints())
     {
-        children[data::point::classname() + std::to_string(index++)] = point;
+        _children[data::point::classname() + std::to_string(index++)] = point;
     }
 }
 
@@ -58,35 +58,35 @@ inline static void write(
 
 inline static data::point_list::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto pointList = helper::cast_or_create<data::point_list>(object);
+    auto point_list = helper::cast_or_create<data::point_list>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::point_list>(tree, 0, 1);
+    helper::read_version<data::point_list>(_tree, 0, 1);
 
     // Deserialize points
     // Clearing is required in case the object is reused
-    pointList->getPoints().clear();
+    point_list->getPoints().clear();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::point::classname() + std::to_string(index));
+        const auto& it = _children.find(data::point::classname() + std::to_string(index));
 
-        if(it == children.cend())
+        if(it == _children.cend())
         {
             break;
         }
 
-        pointList->pushBack(helper::cast_or_create<data::point>(it->second));
+        point_list->pushBack(helper::cast_or_create<data::point>(it->second));
     }
 
-    return pointList;
+    return point_list;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::point_list, write, read);

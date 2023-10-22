@@ -33,13 +33,13 @@ struct LogInitialization
 {
     LogInitialization()
     {
-        std::string logFile = "fwTest.log";
+        std::string log_file = "fwTest.log";
 
-        FILE* pFile = fopen(logFile.c_str(), "w");
-        if(pFile == nullptr)
+        FILE* p_file = fopen(log_file.c_str(), "w");
+        if(p_file == nullptr)
         {
             std::error_code err;
-            std::filesystem::path sysTmp = std::filesystem::temp_directory_path(err);
+            std::filesystem::path sys_tmp = std::filesystem::temp_directory_path(err);
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
@@ -48,20 +48,20 @@ struct LogInitialization
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
-                sysTmp  = sysTmp / logFile;
-                logFile = sysTmp.string();
-                core::log::spy_logger::add_file_log(logFile);
+                sys_tmp  = sys_tmp / log_file;
+                log_file = sys_tmp.string();
+                core::log::spy_logger::add_file_log(log_file);
             }
         }
         else
         {
             // creates SLM.log in default logFile directory
-            if(fclose(pFile) != 0)
+            if(fclose(p_file) != 0)
             {
                 perror("fclose");
             }
 
-            core::log::spy_logger::add_file_log(logFile);
+            core::log::spy_logger::add_file_log(log_file);
         }
     }
 };

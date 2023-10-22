@@ -43,7 +43,7 @@ Contains adaptors available for the generic scene.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_viz_scene3d ... )
+add_dependencies(my_target module_viz_scene3d ... )
 ```
 
 ### XML

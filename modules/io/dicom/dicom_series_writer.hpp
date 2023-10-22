@@ -105,8 +105,8 @@ private:
 
     /// Save the selected Dicom series
     void saveDicomSeries(
-        const std::filesystem::path folder,
-        const CSPTR(data::dicom_series)& series
+        const std::filesystem::path _folder,
+        const CSPTR(data::dicom_series)& _series
     ) const;
 
     /// Signal emitted when a job is created

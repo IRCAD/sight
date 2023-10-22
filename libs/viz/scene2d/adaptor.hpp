@@ -42,7 +42,7 @@ public:
     SIGHT_DECLARE_SERVICE(adaptor, service::base);
 
     /// Set the zValue.
-    VIZ_SCENE2D_API void setZValue(float _zValue);
+    VIZ_SCENE2D_API void setZValue(float _z_value);
 
     /// Get the zValue.
     VIZ_SCENE2D_API float getZValue() const;
@@ -87,7 +87,7 @@ protected:
     VIZ_SCENE2D_API double getViewSizeRatio() const;
 
     /// Converts a point in pixel units into a viewport coordinates
-    VIZ_SCENE2D_API vec2d_t viewToViewport(const scene2d::data::Viewport& viewport) const;
+    VIZ_SCENE2D_API vec2d_t viewToViewport(const scene2d::data::Viewport& _viewport) const;
 
     /// The x Axis.
     scene2d::data::Axis::sptr m_xAxis;

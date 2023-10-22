@@ -55,30 +55,30 @@ void image::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    const auto genericSceneId = this->get_id() + "-genericScene";
-    sight::ui::registry::registerSIDContainer(genericSceneId, qtContainer);
+    const auto generic_scene_id = this->get_id() + "-genericScene";
+    sight::ui::registry::register_sid_container(generic_scene_id, qt_container);
 
     // create and register the render service
-    service::config_t renderConfig;
-    renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
-    renderConfig.put("scene.layer.<xmlattr>.id", "default");
-    renderConfig.put("scene.layer.<xmlattr>.order", "1");
-    renderConfig.put("scene.layer.<xmlattr>.transparency", "");
+    service::config_t render_config;
+    render_config.put("scene.background.<xmlattr>.color", "#36393E");
+    render_config.put("scene.layer.<xmlattr>.id", "default");
+    render_config.put("scene.layer.<xmlattr>.order", "1");
+    render_config.put("scene.layer.<xmlattr>.transparency", "");
 
-    service::config_t interactorCfg;
-    interactorCfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
-    service::config_t negatoCfg;
-    negatoCfg.put("<xmlattr>.uid", this->get_id() + "negato3DAdaptor");
+    service::config_t interactor_cfg;
+    interactor_cfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
+    service::config_t negato_cfg;
+    negato_cfg.put("<xmlattr>.uid", this->get_id() + "negato3DAdaptor");
 
-    renderConfig.add_child("scene.layer.adaptor", interactorCfg);
-    renderConfig.add_child("scene.layer.adaptor", negatoCfg);
+    render_config.add_child("scene.layer.adaptor", interactor_cfg);
+    render_config.add_child("scene.layer.adaptor", negato_cfg);
 
     m_renderSrv = sight::service::add("sight::viz::scene3d::render");
-    m_renderSrv->set_config(renderConfig);
-    m_renderSrv->set_id(genericSceneId);
+    m_renderSrv->set_config(render_config);
+    m_renderSrv->set_id(generic_scene_id);
 
     m_renderSrv->configure();
 
@@ -90,10 +90,10 @@ void image::starting()
     m_tf = data::transfer_function::createDefaultTF();
 
     auto image = m_image.lock();
-    service::config_t negatoConfig;
-    negatoConfig.put("config.<xmlattr>.interactive", "true");
+    service::config_t negato_config;
+    negato_config.put("config.<xmlattr>.interactive", "true");
     m_negatoSrv = sight::service::add("sight::module::viz::scene3d::adaptor::negato3d");
-    m_negatoSrv->set_config(negatoConfig);
+    m_negatoSrv->set_config(negato_config);
     m_negatoSrv->set_input(image.get_shared(), "image", true);
     m_negatoSrv->set_inout(m_tf, "tf", true);
     m_negatoSrv->set_id(this->get_id() + "negato3DAdaptor");
@@ -130,7 +130,7 @@ void image::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    sight::ui::registry::unregisterSIDContainer(this->get_id() + "-genericScene");
+    sight::ui::registry::unregister_sid_container(this->get_id() + "-genericScene");
 
     sight::service::remove(m_negatoSrv);
     sight::service::remove(m_interactorSrv);

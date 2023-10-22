@@ -45,17 +45,17 @@ enum class Backend : std::uint8_t
 /// Return the extension associated with the given backend
 /// @arg backend: the selected backend
 /// @return one or more extension as string set
-[[nodiscard]] IO_BITMAP_API data::sequenced_set<std::string> extensions(Backend backend);
+[[nodiscard]] IO_BITMAP_API data::sequenced_set<std::string> extensions(Backend _backend);
 
 /// Returns the label and the wildcard to use in file open dialog to filter input
 /// @arg backend: the selected backend
 /// @return default filter to use with the given backend
-[[nodiscard]] IO_BITMAP_API std::pair<std::string, std::string> wildcardFilter(Backend backend);
+[[nodiscard]] IO_BITMAP_API std::pair<std::string, std::string> wildcard_filter(Backend _backend);
 
 /// @return true is nvJPEG is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nvJPEG();
+[[nodiscard]] IO_BITMAP_API bool nv_jpeg();
 
-/// @return true is nvJPEG2K is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nvJPEG2K();
+/// @return true is nv_jpeg_2k is available (support built in AND CUDA capable GPU available)
+[[nodiscard]] IO_BITMAP_API bool nv_jpeg_2k();
 
 } // namespace sight::io::bitmap

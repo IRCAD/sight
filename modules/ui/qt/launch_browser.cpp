@@ -77,12 +77,12 @@ void launch_browser::updating()
         path  = path.parent_path(); // install folder path
         path /= url.path().toStdString();
 
-        QString urlStr = QString::fromStdString("file:///" + path.string());
-        url = QUrl(urlStr, QUrl::TolerantMode);
+        QString url_str = QString::fromStdString("file:///" + path.string());
+        url = QUrl(url_str, QUrl::TolerantMode);
     }
 
-    bool isSuccess = QDesktopServices::openUrl(url);
-    SIGHT_WARN_IF("Browser wasn't successfully launched.", !isSuccess);
+    bool is_success = QDesktopServices::openUrl(url);
+    SIGHT_WARN_IF("Browser wasn't successfully launched.", !is_success);
 }
 
 //------------------------------------------------------------------------------

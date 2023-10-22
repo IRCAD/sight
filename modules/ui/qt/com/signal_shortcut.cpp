@@ -47,7 +47,7 @@ static const core::com::signals::key_t ACTIVATED_SIG = "activated";
 
 signal_shortcut::signal_shortcut() noexcept
 {
-    new_signal<ActivatedShortcutSignalType>(ACTIVATED_SIG);
+    new_signal<activated_shortcut_signal_t>(ACTIVATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,13 +59,13 @@ signal_shortcut::~signal_shortcut() noexcept =
 
 void signal_shortcut::configuring()
 {
-    const auto configTree     = this->get_config();
-    const auto configShortcut = configTree.get_child("config.<xmlattr>");
-    m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
+    const auto config_tree     = this->get_config();
+    const auto config_shortcut = config_tree.get_child("config.<xmlattr>");
+    m_shortcut = config_shortcut.get<std::string>("shortcut", m_shortcut);
     SIGHT_ASSERT("Shortcut must not be empty", !m_shortcut.empty());
 
-    m_wid = configShortcut.get<std::string>("wid", m_wid);
-    m_sid = configShortcut.get<std::string>("sid", m_sid);
+    m_wid = config_shortcut.get<std::string>("wid", m_wid);
+    m_sid = config_shortcut.get<std::string>("sid", m_sid);
     SIGHT_ASSERT(
         "Either The wid or sid attribute must be specified for signal_shortcut",
         !m_wid.empty() || !m_sid.empty()
@@ -81,13 +81,13 @@ void signal_shortcut::starting()
     // Either get the container via a service id
     if(!m_sid.empty())
     {
-        bool sidExists = core::tools::id::exist(m_sid);
+        bool sid_exists = core::tools::id::exist(m_sid);
 
-        if(sidExists)
+        if(sid_exists)
         {
             service::base::sptr service = service::get(m_sid);
-            auto containerSrv           = std::dynamic_pointer_cast<sight::ui::service>(service);
-            fwc = containerSrv->getContainer();
+            auto container_srv          = std::dynamic_pointer_cast<sight::ui::service>(service);
+            fwc = container_srv->getContainer();
         }
         else
         {
@@ -97,7 +97,7 @@ void signal_shortcut::starting()
     // or a window id
     else if(!m_wid.empty())
     {
-        fwc = sight::ui::registry::getWIDContainer(m_wid);
+        fwc = sight::ui::registry::get_wid_container(m_wid);
         if(!fwc)
         {
             SIGHT_ERROR("Invalid window id " << m_wid);
@@ -114,8 +114,8 @@ void signal_shortcut::starting()
                 // Get the associated widget to use as parent for the shortcut
                 QWidget* widget = qtc->getQtContainer();
                 // Create a key sequence from the string and its associated QShortcut
-                QKeySequence shortcutSequence = QKeySequence(QString::fromStdString(m_shortcut));
-                m_shortcutObject = new QShortcut(shortcutSequence, widget);
+                QKeySequence shortcut_sequence = QKeySequence(QString::fromStdString(m_shortcut));
+                m_shortcutObject = new QShortcut(shortcut_sequence, widget);
             }
 
             // Connect the activated signal to the onActivation method of this class
@@ -151,7 +151,7 @@ void signal_shortcut::updating()
 
 void signal_shortcut::onActivation()
 {
-    this->signal<ActivatedShortcutSignalType>(ACTIVATED_SIG)->async_emit();
+    this->signal<activated_shortcut_signal_t>(ACTIVATED_SIG)->async_emit();
 }
 
 } // namespace sight::module::ui::qt::com

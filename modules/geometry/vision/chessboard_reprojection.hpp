@@ -116,7 +116,7 @@ protected:
 
 private:
 
-    using ErrorComputedSignalType = core::com::signal<void (double)>;
+    using error_computed_signal_t = core::com::signal<void (double)>;
 
     /// Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();
@@ -152,7 +152,7 @@ private:
     std::vector<cv::Point3f> m_chessboardModel;
 
     /// Signal sent when the reprojection error is computed.
-    ErrorComputedSignalType::sptr m_errorComputedSig;
+    error_computed_signal_t::sptr m_errorComputedSig;
 
     static constexpr std::string_view s_TRANSFORM_INPUT           = "transform";
     static constexpr std::string_view s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";

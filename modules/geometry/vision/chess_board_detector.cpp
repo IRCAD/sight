@@ -25,13 +25,13 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/image.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -50,8 +50,8 @@ static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFoun
 // ----------------------------------------------------------------------------
 
 chess_board_detector::chess_board_detector() noexcept :
-    m_sigChessboardDetected(new_signal<ChessboardDetectedSignalType>(CHESSBOARD_DETECTED_SIG)),
-    m_sigChessboardFound(new_signal<ChessboardFoundSignalType>(CHESSBOARD_FOUND_SIG))
+    m_sigChessboardDetected(new_signal<chessboard_detected_signal_t>(CHESSBOARD_DETECTED_SIG)),
+    m_sigChessboardFound(new_signal<chessboard_found_signal_t>(CHESSBOARD_FOUND_SIG))
 {
     new_slot(RECORD_POINTS_SLOT, &chess_board_detector::recordPoints, this);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chess_board_detector::updateChessboardSize, this);
@@ -71,14 +71,14 @@ void chess_board_detector::configuring()
         m_image.size() == m_calInfo.size()
     );
 
-    const config_t config      = this->get_config();
-    const config_t boardConfig = config.get_child("board");
+    const config_t config       = this->get_config();
+    const config_t board_config = config.get_child("board");
 
-    m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
+    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
     SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
+    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
     SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_scaleKey = boardConfig.get<std::string>("<xmlattr>.scale");
+    m_scaleKey = board_config.get<std::string>("<xmlattr>.scale");
 }
 
 // ----------------------------------------------------------------------------
@@ -87,38 +87,38 @@ void chess_board_detector::starting()
 {
     this->updateChessboardSize();
 
-    const std::size_t imageGroupSize = m_image.size();
+    const std::size_t image_group_size = m_image.size();
 
-    m_images.resize(imageGroupSize);
-    m_pointLists.resize(imageGroupSize);
+    m_images.resize(image_group_size);
+    m_pointLists.resize(image_group_size);
 }
 
 // ----------------------------------------------------------------------------
 
 void chess_board_detector::updating()
 {
-    const std::size_t imageGroupSize = m_image.size();
+    const std::size_t image_group_size = m_image.size();
 
     // Run parallel detections in separate threads.
-    std::vector<std::thread> detectionJobs;
-    for(std::size_t i = 1 ; i < imageGroupSize ; ++i)
+    std::vector<std::thread> detection_jobs;
+    for(std::size_t i = 1 ; i < image_group_size ; ++i)
     {
-        detectionJobs.emplace_back(&chess_board_detector::doDetection, this, i);
+        detection_jobs.emplace_back(&chess_board_detector::doDetection, this, i);
     }
 
     // Detection in the first image is done on the service's worker.
     this->doDetection(0);
 
-    for(auto& detectionJob : detectionJobs)
+    for(auto& detection_job : detection_jobs)
     {
-        detectionJob.join();
+        detection_job.join();
     }
 
-    const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
+    const bool all_detected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
-    m_sigChessboardDetected->async_emit(allDetected);
+    m_sigChessboardDetected->async_emit(all_detected);
 
-    if(allDetected)
+    if(all_detected)
     {
         m_sigChessboardFound->async_emit();
     }
@@ -147,23 +147,23 @@ service::connections_t chess_board_detector::auto_connections() const
 
 void chess_board_detector::recordPoints()
 {
-    const std::size_t calibGroupSize = m_calInfo.size();
+    const std::size_t calib_group_size = m_calInfo.size();
 
-    const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
+    const bool all_detected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
-    if(allDetected)
+    if(all_detected)
     {
-        for(std::size_t i = 0 ; i < calibGroupSize ; ++i)
+        for(std::size_t i = 0 ; i < calib_group_size ; ++i)
         {
-            auto calInfo = m_calInfo[i].lock();
-            SIGHT_ASSERT("Missing 'calibInfo' in-out.", calInfo);
+            auto cal_info = m_calInfo[i].lock();
+            SIGHT_ASSERT("Missing 'calibInfo' in-out.", cal_info);
 
             if(m_pointLists[i])
             {
-                calInfo->addRecord(m_images[i], m_pointLists[i]);
+                cal_info->addRecord(m_images[i], m_pointLists[i]);
 
                 // Notify
-                auto sig = calInfo->signal<data::calibration_info::AddedRecordSignalType>(
+                auto sig = cal_info->signal<data::calibration_info::added_record_signal_t>(
                     data::calibration_info::ADDED_RECORD_SIG
                 );
 
@@ -171,7 +171,7 @@ void chess_board_detector::recordPoints()
             }
             else
             {
-                calInfo->addRecord(m_images[i], std::make_shared<data::point_list>());
+                cal_info->addRecord(m_images[i], std::make_shared<data::point_list>());
             }
         }
     }
@@ -183,7 +183,7 @@ void chess_board_detector::updateChessboardSize()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         m_width  = preferences.get(m_widthKey, m_width);
         m_height = preferences.get(m_heightKey, m_height);
         m_scale  = preferences.get(m_scaleKey, m_scale);
@@ -194,7 +194,7 @@ void chess_board_detector::updateChessboardSize()
             SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }
@@ -202,45 +202,45 @@ void chess_board_detector::updateChessboardSize()
 
 // ----------------------------------------------------------------------------
 
-void chess_board_detector::doDetection(std::size_t _imageIndex)
+void chess_board_detector::doDetection(std::size_t _image_index)
 {
-    const auto img = m_image[_imageIndex].lock();
+    const auto img = m_image[_image_index].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);
 
-    const bool isValid = data::helper::MedicalImage::checkImageValidity(img.get_shared());
+    const bool is_valid = data::helper::medical_image::check_image_validity(img.get_shared());
 
-    if(isValid)
+    if(is_valid)
     {
-        const cv::Mat cvImg = io::opencv::image::moveToCv(img.get_shared());
+        const cv::Mat cv_img = io::opencv::image::move_to_cv(img.get_shared());
 
-        m_pointLists[_imageIndex] =
-            sight::geometry::vision::helper::detectChessboard(cvImg, m_width, m_height, m_scale);
+        m_pointLists[_image_index] =
+            sight::geometry::vision::helper::detect_chessboard(cv_img, m_width, m_height, m_scale);
 
-        if(m_pointLists[_imageIndex] != nullptr)
+        if(m_pointLists[_image_index] != nullptr)
         {
-            m_images[_imageIndex] = std::make_shared<data::image>();
-            m_images[_imageIndex]->deep_copy(img.get_shared());
+            m_images[_image_index] = std::make_shared<data::image>();
+            m_images[_image_index]->deep_copy(img.get_shared());
         }
         else
         {
-            m_images[_imageIndex] = nullptr;
+            m_images[_image_index] = nullptr;
         }
 
-        const bool outputDetection = (m_detection.size() == m_image.size());
-        if(outputDetection)
+        const bool output_detection = (m_detection.size() == m_image.size());
+        if(output_detection)
         {
-            auto outPl = m_detection[_imageIndex].lock();
+            auto out_pl = m_detection[_image_index].lock();
 
-            if(m_pointLists[_imageIndex] != nullptr)
+            if(m_pointLists[_image_index] != nullptr)
             {
-                outPl->deep_copy(m_pointLists[_imageIndex]);
+                out_pl->deep_copy(m_pointLists[_image_index]);
             }
             else
             {
-                outPl->getPoints().clear();
+                out_pl->getPoints().clear();
             }
 
-            auto sig = outPl->signal<data::point_list::ModifiedSignalType>(data::point_list::MODIFIED_SIG);
+            auto sig = out_pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
             sig->async_emit();
         }
     }

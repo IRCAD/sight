@@ -35,26 +35,26 @@ namespace sight::service
  * @brief Create a service of type serviceType
  * @return a pointer to the new service
  */
-SERVICE_API service::base::sptr add(const std::string& _implType, const std::string& _id = "");
+SERVICE_API service::base::sptr add(const std::string& _impl_type, const std::string& _id = "");
 
 /**
  * @brief Create a service of type serviceType
  * @return a pointer to the new service with the given template type
  */
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _implType, const std::string& _id = "");
+SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _id = "");
 
 //@}
 
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
+SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _id)
 {
-    service::base::sptr genericSrv = service::add(_implType, _id);
-    auto srv                       = std::dynamic_pointer_cast<SERVICE>(genericSrv);
+    service::base::sptr generic_srv = service::add(_impl_type, _id);
+    auto srv                        = std::dynamic_pointer_cast<SERVICE>(generic_srv);
     SIGHT_THROW_IF(
-        "Failed to cast service from factory type '" + _implType + "' into '"
+        "Failed to cast service from factory type '" + _impl_type + "' into '"
         + core::type_demangler<SERVICE>().get_classname() + "'",
         !srv
     );
@@ -69,7 +69,7 @@ SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
  */
 inline void remove(const SPTR(service::base)& _srv)
 {
-    service::unregisterService(_srv);
+    service::unregister_service(_srv);
 }
 
 /**
@@ -78,7 +78,7 @@ inline void remove(const SPTR(service::base)& _srv)
  *
 
  */
-SERVICE_API service::base::sptr get(std::string uid);
+SERVICE_API service::base::sptr get(std::string _uid);
 
 //------------------------------------------------------------------------------
 

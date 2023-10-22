@@ -52,9 +52,9 @@
 
 #include "viz/scene3d/detail/collision_tools.hpp"
 
-#include "viz/scene3d/factory/R2VBRenderable.hpp"
-#include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/R2VBRenderable.hpp"
+#include "viz/scene3d/factory/r2vb_renderable.hpp"
+#include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/r2vb_renderable.hpp"
 
 #include <cmath>
 #include <functional>
@@ -62,10 +62,10 @@
 namespace sight::viz::scene3d::detail
 {
 
-collision_tools::collision_tools(Ogre::SceneManager& _sceneMgr, std::uint32_t _queryMask) :
-    mSceneMgr(_sceneMgr)
+collision_tools::collision_tools(Ogre::SceneManager& _scene_mgr, std::uint32_t _query_mask) :
+    mSceneMgr(_scene_mgr)
 {
-    mRaySceneQuery = mSceneMgr.createRayQuery(Ogre::Ray(), _queryMask);
+    mRaySceneQuery = mSceneMgr.createRayQuery(Ogre::Ray(), _query_mask);
     if(nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
@@ -83,27 +83,27 @@ collision_tools::~collision_tools()
 //------------------------------------------------------------------------------
 
 bool collision_tools::collidesWithEntity(
-    const Ogre::Vector3& _fromPoint,
-    const Ogre::Vector3& _toPoint,
-    const Ogre::uint32 _queryMask,
-    const float _collisionRadius,
-    const float _rayHeightLevel
+    const Ogre::Vector3& _from_point,
+    const Ogre::Vector3& _to_point,
+    const Ogre::uint32 _query_mask,
+    const float _collision_radius,
+    const float _ray_height_level
 ) const
 {
-    Ogre::Vector3 fromPointAdj(_fromPoint.x, _fromPoint.y + _rayHeightLevel, _fromPoint.z);
-    Ogre::Vector3 toPointAdj(_toPoint.x, _toPoint.y + _rayHeightLevel, _toPoint.z);
-    Ogre::Vector3 normal = toPointAdj - fromPointAdj;
-    float distToDest     = normal.normalise();
+    Ogre::Vector3 from_point_adj(_from_point.x, _from_point.y + _ray_height_level, _from_point.z);
+    Ogre::Vector3 to_point_adj(_to_point.x, _to_point.y + _ray_height_level, _to_point.z);
+    Ogre::Vector3 normal = to_point_adj - from_point_adj;
+    float dist_to_dest   = normal.normalise();
 
     std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
-               float> res = raycastFromPoint(fromPointAdj, normal, _queryMask);
+               float> res = raycastFromPoint(from_point_adj, normal, _query_mask);
 
     if(std::get<0>(res))
     {
-        float distToColl = 0.0F;
-        distToColl  = std::get<3>(res);
-        distToColl -= _collisionRadius;
-        return distToColl <= distToDest;
+        float dist_to_coll = 0.0F;
+        dist_to_coll  = std::get<3>(res);
+        dist_to_coll -= _collision_radius;
+        return dist_to_coll <= dist_to_dest;
     }
 
     return false;
@@ -115,7 +115,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     Ogre::RenderWindow* _rw,
     Ogre::Camera* _camera,
     const Ogre::Vector2& _mousecoords,
-    const Ogre::uint32 _queryMask
+    const Ogre::uint32 _query_mask
 ) const
 {
     // Create the ray to test
@@ -123,7 +123,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     Ogre::Real ty = _mousecoords.y / static_cast<Ogre::Real>(_rw->getHeight());
     Ogre::Ray ray = _camera->getCameraToViewportRay(tx, ty);
 
-    return raycast(ray, _queryMask);
+    return raycast(ray, _query_mask);
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
 std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycastFromPoint(
     const Ogre::Vector3& _point,
     const Ogre::Vector3& _normal,
-    const Ogre::uint32 _queryMask
+    const Ogre::uint32 _query_mask
 ) const
 {
     // create the ray to test
@@ -139,19 +139,19 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     ray.setOrigin(_point);
     ray.setDirection(_normal);
 
-    return raycast(ray, _queryMask);
+    return raycast(ray, _query_mask);
 }
 
 //------------------------------------------------------------------------------
 
 std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast(
     const Ogre::Ray& _ray,
-    const Ogre::uint32 _queryMask
+    const Ogre::uint32 _query_mask
 ) const
 {
     Ogre::Vector3 result {0.0, 0.0, 0.0};
     Ogre::MovableObject* target = nullptr;
-    float closestDistance       = NAN;
+    float closest_distance      = NAN;
 
     // Check we are initialised.
     if(mRaySceneQuery != nullptr)
@@ -159,17 +159,17 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
         // Create a query object.
         mRaySceneQuery->setRay(_ray);
         mRaySceneQuery->setSortByDistance(true);
-        mRaySceneQuery->setQueryMask(_queryMask);
+        mRaySceneQuery->setQueryMask(_query_mask);
         // Execute the query, returns a vector of hits.
         if(mRaySceneQuery->execute().empty())
         {
             // Raycast did not hit an objects bounding box.
-            return std::make_tuple(false, result, target, closestDistance);
+            return std::make_tuple(false, result, target, closest_distance);
         }
     }
     else
     {
-        return std::make_tuple(false, result, target, closestDistance);
+        return std::make_tuple(false, result, target, closest_distance);
     }
 
     // At this point we have raycast to a series of different objects bounding boxes.
@@ -177,27 +177,27 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     // There are some minor optimizations (distance based) that mean we wont have to
     // check all of the objects most of the time, but the worst case scenario is that
     // we need to test every triangle of every object.
-    closestDistance = -1.0F;
-    Ogre::Vector3 closestResult;
-    Ogre::RaySceneQueryResult& queryResult = mRaySceneQuery->getLastResults();
-    for(auto& qrIdx : queryResult)
+    closest_distance = -1.0F;
+    Ogre::Vector3 closest_result;
+    Ogre::RaySceneQueryResult& query_result = mRaySceneQuery->getLastResults();
+    for(auto& qr_idx : query_result)
     {
         // Stop checking if we have found a raycast hit that is closer
         // than all remaining entities.
-        if((closestDistance >= 0.0F)
-           && (closestDistance < qrIdx.distance))
+        if((closest_distance >= 0.0F)
+           && (closest_distance < qr_idx.distance))
         {
             break;
         }
 
         // Get the entity to check.
-        Ogre::MovableObject* const entity = qrIdx.movable;
+        Ogre::MovableObject* const entity = qr_idx.movable;
 
-        const bool isEntity = qrIdx.movable->getMovableType() == "Entity";
-        const bool isR2VB   = qrIdx.movable->getMovableType() == factory::R2VBRenderable::FACTORY_TYPE_NAME;
+        const bool is_entity = qr_idx.movable->getMovableType() == "Entity";
+        const bool is_r2_vb  = qr_idx.movable->getMovableType() == factory::r2vb_renderable::FACTORY_TYPE_NAME;
 
         // Only check this result if its a hit against an entity.
-        if((entity != nullptr) && (isEntity || isR2VB))
+        if((entity != nullptr) && (is_entity || is_r2_vb))
         {
             if(!entity->isVisible())
             {
@@ -208,21 +208,21 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
             const Ogre::Quaternion orientation = entity->getParentNode()->_getDerivedOrientation();
             const Ogre::Vector3 scale          = entity->getParentNode()->_getDerivedScale();
 
-            const Ogre::MeshPtr mesh = isEntity
+            const Ogre::MeshPtr mesh = is_entity
                                        ? static_cast<Ogre::Entity*>(entity)->getMesh()
-                                       : static_cast<viz::scene3d::R2VBRenderable*>(entity)->getMesh();
+                                       : static_cast<viz::scene3d::r2vb_renderable*>(entity)->getMesh();
 
             std::vector<Ogre::Vector3> vertices;
-            bool addedShared = false;
+            bool added_shared = false;
 
             for(const Ogre::SubMesh* const submesh : mesh->getSubMeshes())
             {
                 // Store vertices one time if data are shared, else the vector is refilled each time.
-                if((!submesh->useSharedVertices) || !addedShared)
+                if((!submesh->useSharedVertices) || !added_shared)
                 {
                     if(submesh->useSharedVertices)
                     {
-                        addedShared = true;
+                        added_shared = true;
                         vertices.resize(mesh->sharedVertexData->vertexCount);
                     }
                     else
@@ -231,23 +231,25 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         vertices.resize(submesh->vertexData->vertexCount);
                     }
 
-                    const Ogre::VertexData* vertexData =
+                    const Ogre::VertexData* vertex_data =
                         submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-                    const Ogre::VertexElement* const posElem =
-                        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
+                    const Ogre::VertexElement* const pos_elem =
+                        vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
                     const Ogre::HardwareVertexBufferSharedPtr vertex_buffer =
-                        vertexData->vertexBufferBinding->getBuffer(
-                            posElem->getSource()
+                        vertex_data->vertexBufferBinding->getBuffer(
+                            pos_elem->getSource()
                         );
 
                     auto* vertex =
                         static_cast<unsigned char*>(vertex_buffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-                    float* pReal = nullptr;
+                    float* p_real = nullptr;
 
-                    for(std::size_t j = 0 ; j < vertexData->vertexCount ; ++j, vertex += vertex_buffer->getVertexSize())
+                    for(std::size_t j = 0 ;
+                        j < vertex_data->vertexCount ;
+                        ++j, vertex += vertex_buffer->getVertexSize())
                     {
-                        posElem->baseVertexPointerToElement(vertex, &pReal);
-                        Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
+                        pos_elem->baseVertexPointerToElement(vertex, &p_real);
+                        Ogre::Vector3 pt(p_real[0], p_real[1], p_real[2]);
                         vertices[j] = (orientation * (pt * scale)) + position;
                     }
 
@@ -257,33 +259,33 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                 // Retrieve the index buffer to loop over vertices.
                 std::vector<Ogre::uint32> indices;
                 {
-                    const Ogre::IndexData* const indexData        = submesh->indexData;
-                    const Ogre::HardwareIndexBufferSharedPtr ibuf = indexData->indexBuffer;
+                    const Ogre::IndexData* const index_data       = submesh->indexData;
+                    const Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
 
                     // Billboars do not define an entity, they do not contain any index buffer.
                     if(ibuf != nullptr)
                     {
                         const bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
 
-                        const auto* const pLong =
+                        const auto* const p_long =
                             static_cast<const Ogre::uint32*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-                        const auto* const pShort = reinterpret_cast<const std::uint16_t*>(pLong);
+                        const auto* const p_short = reinterpret_cast<const std::uint16_t*>(p_long);
 
-                        indices.resize(indexData->indexCount);
+                        indices.resize(index_data->indexCount);
 
                         // Iterate over index buffer.
                         if(use32bitindexes)
                         {
-                            for(std::size_t k = 0 ; k < indexData->indexCount ; ++k)
+                            for(std::size_t k = 0 ; k < index_data->indexCount ; ++k)
                             {
-                                indices[k] = pLong[k];
+                                indices[k] = p_long[k];
                             }
                         }
                         else
                         {
-                            for(std::size_t k = 0 ; k < indexData->indexCount ; ++k)
+                            for(std::size_t k = 0 ; k < index_data->indexCount ; ++k)
                             {
-                                indices[k] = static_cast<Ogre::uint32>(pShort[k]);
+                                indices[k] = static_cast<Ogre::uint32>(p_short[k]);
                             }
                         }
 
@@ -295,12 +297,12 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                 const Ogre::MaterialPtr material = Ogre::MaterialManager::getSingletonPtr()->getByName(
                     submesh->getMaterialName()
                 );
-                bool positiveSide = true;
-                bool negativeSide = true;
+                bool positive_side = true;
+                bool negative_side = true;
                 if(material != nullptr)
                 {
-                    positiveSide = false;
-                    negativeSide = false;
+                    positive_side = false;
+                    negative_side = false;
                     const auto* tech = material->getBestTechnique();
                     SIGHT_ASSERT("'" + material->getName() + "' does not have any suitable technique.", tech);
                     const auto& passes = tech->getPasses();
@@ -310,20 +312,20 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                     );
                     for(const Ogre::Pass* pass : passes)
                     {
-                        const Ogre::CullingMode cullingMode = pass->getCullingMode();
-                        switch(cullingMode)
+                        const Ogre::CullingMode culling_mode = pass->getCullingMode();
+                        switch(culling_mode)
                         {
                             case Ogre::CULL_NONE:
-                                positiveSide = true;
-                                negativeSide = true;
+                                positive_side = true;
+                                negative_side = true;
                                 break;
 
                             case Ogre::CULL_CLOCKWISE:
-                                positiveSide = true;
+                                positive_side = true;
                                 break;
 
                             case Ogre::CULL_ANTICLOCKWISE:
-                                negativeSide = true;
+                                negative_side = true;
                                 break;
 
                             default:
@@ -334,7 +336,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                 }
 
                 // Check intersections depending on the render operation type.
-                bool newClosestFound = false;
+                bool new_closest_found = false;
                 switch(submesh->operationType)
                 {
                     // Points list is used for billboard.
@@ -343,15 +345,15 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         // We do not have faces, we simply check all vertices and compute the distance from the picked
                         // point
                         const Ogre::Camera* const camera = mSceneMgr.getCamera(
-                            viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME
+                            viz::scene3d::layer::s_DEFAULT_CAMERA_NAME
                         );
-                        const Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
-                        const Ogre::Matrix4 projMatrix = camera->getProjectionMatrixWithRSDepth();
+                        const Ogre::Matrix4 view_matrix = camera->getViewMatrix();
+                        const Ogre::Matrix4 proj_matrix = camera->getProjectionMatrixWithRSDepth();
 
-                        const Ogre::Matrix4 viewProjMatrix = projMatrix * viewMatrix;
+                        const Ogre::Matrix4 view_proj_matrix = proj_matrix * view_matrix;
 
-                        const Ogre::Vector3 resPointWVP = viewProjMatrix * _ray.getPoint(qrIdx.distance);
-                        const Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.F) + 0.5F;
+                        const Ogre::Vector3 res_point_wvp = view_proj_matrix * _ray.getPoint(qr_idx.distance);
+                        const Ogre::Vector2 res_point_ss  = (res_point_wvp.xy() / 2.F) + 0.5F;
 
                         static const Ogre::Real s_TOLERANCE = 0.02F;
 
@@ -359,14 +361,14 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(unsigned int indice : indices)
                             {
-                                const Ogre::Vector3 pointWVP = viewProjMatrix * vertices[indice];
-                                const Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.F) + 0.5F;
+                                const Ogre::Vector3 point_wvp = view_proj_matrix * vertices[indice];
+                                const Ogre::Vector2 point_ss  = (point_wvp.xy() / 2.F) + 0.5F;
 
-                                if(((closestDistance < 0.0F) || (qrIdx.distance < closestDistance))
-                                   && resPointSS.distance(pointSS) < s_TOLERANCE)
+                                if(((closest_distance < 0.0F) || (qr_idx.distance < closest_distance))
+                                   && res_point_ss.distance(point_ss) < s_TOLERANCE)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = vertices[indice].distance(_ray.getOrigin());
+                                    new_closest_found = true;
+                                    closest_distance  = vertices[indice].distance(_ray.getOrigin());
                                 }
                             }
                         }
@@ -374,14 +376,14 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(auto& vertice : vertices)
                             {
-                                const Ogre::Vector3 pointWVP = viewProjMatrix * vertice;
-                                const Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.F) + 0.5F;
+                                const Ogre::Vector3 point_wvp = view_proj_matrix * vertice;
+                                const Ogre::Vector2 point_ss  = (point_wvp.xy() / 2.F) + 0.5F;
 
-                                if(((closestDistance < 0.0F) || (qrIdx.distance < closestDistance))
-                                   && resPointSS.distance(pointSS) < s_TOLERANCE)
+                                if(((closest_distance < 0.0F) || (qr_idx.distance < closest_distance))
+                                   && res_point_ss.distance(point_ss) < s_TOLERANCE)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = vertice.distance(_ray.getOrigin());
+                                    new_closest_found = true;
+                                    closest_distance  = vertice.distance(_ray.getOrigin());
                                 }
                             }
                         }
@@ -395,34 +397,34 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(std::size_t i = 0 ; i < indices.size() ; i += 4)
                             {
-                                const auto firstHit = intersect(
+                                const auto first_hit = intersect(
                                     _ray,
                                     vertices[indices[i]],
                                     vertices[indices[i + 1]],
                                     vertices[indices[i + 2]],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(firstHit.first)
+                                if(first_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = firstHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = first_hit.second;
                                 }
 
-                                const auto secondHit = intersect(
+                                const auto second_hit = intersect(
                                     _ray,
                                     vertices[indices[i + 2]],
                                     vertices[indices[i + 3]],
                                     vertices[indices[i]],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(secondHit.first)
+                                if(second_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = secondHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = second_hit.second;
                                 }
                             }
                         }
@@ -430,34 +432,34 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(std::size_t i = 0 ; i < vertices.size() ; i += 4)
                             {
-                                const auto firstHit = intersect(
+                                const auto first_hit = intersect(
                                     _ray,
                                     vertices[i],
                                     vertices[i + 1],
                                     vertices[i + 2],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(firstHit.first)
+                                if(first_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = firstHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = first_hit.second;
                                 }
 
-                                const auto secondHit = intersect(
+                                const auto second_hit = intersect(
                                     _ray,
                                     vertices[i + 2],
                                     vertices[i + 3],
                                     vertices[i],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(secondHit.first)
+                                if(second_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = secondHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = second_hit.second;
                                 }
                             }
                         }
@@ -470,19 +472,19 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(std::size_t i = 0 ; i < indices.size() ; i += 3)
                             {
-                                const auto firstHit = intersect(
+                                const auto first_hit = intersect(
                                     _ray,
                                     vertices[indices[i]],
                                     vertices[indices[i + 1]],
                                     vertices[indices[i + 2]],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(firstHit.first)
+                                if(first_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = firstHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = first_hit.second;
                                 }
                             }
                         }
@@ -490,19 +492,19 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         {
                             for(std::size_t i = 0 ; i < vertices.size() ; i += 3)
                             {
-                                const auto firstHit = intersect(
+                                const auto first_hit = intersect(
                                     _ray,
                                     vertices[i],
                                     vertices[i + 1],
                                     vertices[i + 2],
-                                    closestDistance,
-                                    positiveSide,
-                                    negativeSide
+                                    closest_distance,
+                                    positive_side,
+                                    negative_side
                                 );
-                                if(firstHit.first)
+                                if(first_hit.first)
                                 {
-                                    newClosestFound = true;
-                                    closestDistance = firstHit.second;
+                                    new_closest_found = true;
+                                    closest_distance  = first_hit.second;
                                 }
                             }
                         }
@@ -514,17 +516,17 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                         break;
                 }
 
-                if(newClosestFound)
+                if(new_closest_found)
                 {
-                    target        = entity;
-                    closestResult = _ray.getPoint(closestDistance);
+                    target         = entity;
+                    closest_result = _ray.getPoint(closest_distance);
                 }
             }
         }
     }
 
-    const bool collisionSuccess = (closestDistance >= 0.0F);
-    return std::make_tuple(collisionSuccess, closestResult, target, closestDistance);
+    const bool collision_success = (closest_distance >= 0.0F);
+    return std::make_tuple(collision_success, closest_result, target, closest_distance);
 }
 
 //------------------------------------------------------------------------------
@@ -534,15 +536,15 @@ std::pair<bool, float> collision_tools::intersect(
     const Ogre::Vector3& _a,
     const Ogre::Vector3& _b,
     const Ogre::Vector3& _c,
-    const float _closestDistance,
-    bool _positiveSide,
-    bool _negativeSide
+    const float _closest_distance,
+    bool _positive_side,
+    bool _negative_side
 )
 {
-    const std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(_ray, _a, _b, _c, _positiveSide, _negativeSide);
+    const std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(_ray, _a, _b, _c, _positive_side, _negative_side);
     if(hit.first)
     {
-        if((_closestDistance < 0.0F) || (hit.second < _closestDistance))
+        if((_closest_distance < 0.0F) || (hit.second < _closest_distance))
         {
             return {true, hit.second};
         }

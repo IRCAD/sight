@@ -41,19 +41,19 @@ const core::com::signals::key_t point_list::POINT_REMOVED_SIG = "pointRemoved";
 
 point_list::point_list()
 {
-    new_signal<PointAddedSignalType>(POINT_ADDED_SIG);
-    new_signal<PointRemovedSignalType>(POINT_REMOVED_SIG);
+    new_signal<point_added_signal_t>(POINT_ADDED_SIG);
+    new_signal<point_removed_signal_t>(POINT_REMOVED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::shallow_copy(const object::csptr& source)
+void point_list::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const point_list>(source);
+    const auto& other = std::dynamic_pointer_cast<const point_list>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -66,13 +66,13 @@ void point_list::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void point_list::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void point_list::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const point_list>(source);
+    const auto& other = std::dynamic_pointer_cast<const point_list>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -81,50 +81,50 @@ void point_list::deep_copy(const object::csptr& source, const std::unique_ptr<de
     m_vPoints.clear();
     for(const PointListContainer::value_type& point : other->m_vPoints)
     {
-        m_vPoints.push_back(data::object::copy(point, cache));
+        m_vPoints.push_back(data::object::copy(point, _cache));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool point_list::operator==(const point_list& other) const noexcept
+bool point_list::operator==(const point_list& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vPoints, other.m_vPoints))
+    if(!core::tools::is_equal(m_vPoints, _other.m_vPoints))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool point_list::operator!=(const point_list& other) const noexcept
+bool point_list::operator!=(const point_list& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& out, const sight::data::point_list& pl)
+std::ostream& operator<<(std::ostream& _out, const sight::data::point_list& _pl)
 {
-    out << "{";
+    _out << "{";
     bool first = true;
-    for(const auto& e : pl.getPoints())
+    for(const auto& e : _pl.getPoints())
     {
         if(!first)
         {
-            out << ", ";
+            _out << ", ";
         }
 
-        out << *e;
+        _out << *e;
         first = false;
     }
 
-    return out << "}";
+    return _out << "}";
 }
 
 } // namespace sight::data

@@ -64,37 +64,37 @@ public:
      * @brief Retrieves data over network
      * @param request the request
      */
-    IO_HTTP_API QByteArray get(Request::sptr request);
+    IO_HTTP_API QByteArray get(Request::sptr _request);
 
     /**
      * @brief Retrieves data over network
      * @param request the request
      */
-    IO_HTTP_API std::string get_file(Request::sptr request);
+    IO_HTTP_API std::string get_file(Request::sptr _request);
 
     /**
      * @brief Performs head request
      * @param request the request
      * @return headers resulting of the request
      */
-    IO_HTTP_API Request::HeadersType head(Request::sptr request);
+    IO_HTTP_API Request::headers_t head(Request::sptr _request);
 
     /**
      * @brief Performs POST request
      * @param request the request
      * @return body The body content
      */
-    IO_HTTP_API QByteArray post(Request::sptr request, const QByteArray& body);
+    IO_HTTP_API QByteArray post(Request::sptr _request, const QByteArray& _body);
 
 public Q_SLOTS:
 
     /// Slot triggered when an error occurs.
-    static void processError(QNetworkReply::NetworkError errorCode);
+    static void processError(QNetworkReply::NetworkError _error_code);
 
 private:
 
     /// Set request headers with given values.
-    static void computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers);
+    static void computeHeaders(QNetworkRequest& _request, const Request::headers_t& _headers);
 };
 
 } // namespace sight::io::http

@@ -83,8 +83,8 @@ Here is the list of uncategorised services:
 ### Series
 
 -**InsertSeries**: Used as a placeholder in `module::ui::qt::editor::selector` UI to insert create and insert new series.
--**Selector**: represents the `Series` in a hierarchical view (Study/Patient->Series)
--**SelectorModel**: represents the 	`Selector` model.
+-**selector**: represents the `Series` in a hierarchical view (Study/Patient->Series)
+-**selector_model**: represents the 	`selector` model.
 -**selector**: shows information about the medical data. It allows to manipulate (select, erase, ...) studies and series.
 -**viewer**: displays a preview of the selected series in the `Vector`. For the moment, it works only on a single selection.
 
@@ -110,7 +110,7 @@ Here is the list of uncategorised services:
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_qt ... )
+add_dependencies(my_target module_ui_qt ... )
 ```
 
 ### XML

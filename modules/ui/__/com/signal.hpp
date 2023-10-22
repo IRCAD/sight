@@ -30,7 +30,7 @@ namespace sight::module::ui::com
 {
 
 /**
- * @brief   Action that sends a signal when it is triggered
+ * @brief   action that sends a signal when it is triggered
  * * @deprecated Replaced by sight::module::ui::action since Sight 22.0, will be removed in Sight 24.0
  *
  * @section Signals Signals
@@ -54,7 +54,7 @@ public:
     SIGHT_DECLARE_SERVICE(signal, sight::ui::action);
 
     /// Type of triggered signal
-    typedef core::com::signal<void (bool)> TriggeredSignalType;
+    typedef core::com::signal<void (bool)> triggered_signal_t;
 
     /**
      * @brief Constructor. Do nothing.
@@ -84,9 +84,9 @@ protected:
     MODULE_UI_API void info(std::ostream& _sstream) override;
 
     /// Signal trigerred when action has been triggered
-    SPTR(TriggeredSignalType) m_sigTriggered;
+    SPTR(triggered_signal_t) m_sigTriggered;
     /// Signal trigerred when action has been cancelled
-    SPTR(TriggeredSignalType) m_sigCancelled;
+    SPTR(triggered_signal_t) m_sigCancelled;
 };
 
 } // namespace sight::module::ui::com

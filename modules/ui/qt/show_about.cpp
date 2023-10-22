@@ -102,18 +102,18 @@ void show_about::updating()
     htmlView->load(url);
     QObject::connect(htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
 #else
-    auto* htmlView = new QTextBrowser(dialog);
-    htmlView->setSource(url);
-    htmlView->setOpenExternalLinks(true);
-    htmlView->setMinimumSize(m_size);
-    QStringList searchPaths;
-    searchPaths.append(QString::fromStdString(m_fsAboutPath.parent_path().string()));
-    htmlView->setSearchPaths(searchPaths);
+    auto* html_view = new QTextBrowser(dialog);
+    html_view->setSource(url);
+    html_view->setOpenExternalLinks(true);
+    html_view->setMinimumSize(m_size);
+    QStringList search_paths;
+    search_paths.append(QString::fromStdString(m_fsAboutPath.parent_path().string()));
+    html_view->setSearchPaths(search_paths);
 #endif
-    auto* okButton = new QPushButton(QObject::tr("Ok"));
-    auto* h_layout = new QHBoxLayout();
+    auto* ok_button = new QPushButton(QObject::tr("Ok"));
+    auto* h_layout  = new QHBoxLayout();
     h_layout->addStretch();
-    h_layout->addWidget(okButton);
+    h_layout->addWidget(ok_button);
     h_layout->setContentsMargins(5, 5, 5, 5);
 
     auto* line = new QFrame(dialog);
@@ -121,14 +121,14 @@ void show_about::updating()
     line->setFrameShadow(QFrame::Sunken);
 
     auto* layout = new QVBoxLayout();
-    layout->addWidget(htmlView, 0);
+    layout->addWidget(html_view, 0);
     layout->addWidget(line, 0);
     layout->addLayout(h_layout, 0);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     dialog->setLayout(layout);
 
-    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
+    QObject::connect(ok_button, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
     dialog->setModal(true);
     dialog->show();
@@ -150,9 +150,9 @@ void show_about::stopping()
 
 //------------------------------------------------------------------------------
 
-void show_about::onUrlClicked(const QUrl& url)
+void show_about::onUrlClicked(const QUrl& _url)
 {
-    QDesktopServices::openUrl(url);
+    QDesktopServices::openUrl(_url);
 }
 
 //------------------------------------------------------------------------------

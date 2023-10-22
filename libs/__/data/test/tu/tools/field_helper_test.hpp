@@ -28,7 +28,7 @@ namespace sight::data::tools::ut
 {
 
 /**
- * @brief   Test data::helper::Field methods.
+ * @brief   Test data::helper::field methods.
  */
 class field_helper_test : public CPPUNIT_NS::TestFixture
 {

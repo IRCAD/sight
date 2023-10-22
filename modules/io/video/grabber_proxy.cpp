@@ -99,20 +99,20 @@ void grabber_proxy::configuring()
 {
     const auto config = this->get_config();
 
-    auto itSubConfig = config.find("config");
+    auto it_sub_config = config.find("config");
 
     m_selectedServices.clear();
     m_serviceToConfig.clear();
 
-    if(itSubConfig != config.not_found())
+    if(it_sub_config != config.not_found())
     {
-        const auto& subConfig = itSubConfig->second;
+        const auto& sub_config = it_sub_config->second;
 
-        m_type = subConfig.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB"
-                 ? CameraType::RGB
-                 : CameraType::RGBD;
+        m_type = sub_config.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB"
+                 ? camera_t::RGB
+                 : camera_t::RGBD;
 
-        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
+        const std::string mode = sub_config.get<std::string>("selection.<xmlattr>.mode", "exclude");
         SIGHT_ASSERT(
             "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
             "'exclude' (to exclude the selection of the selector list).",
@@ -121,35 +121,35 @@ void grabber_proxy::configuring()
         m_exclude = (mode == "exclude");
         SIGHT_DEBUG("selection mode => " << (m_exclude ? "Exclude" : "Include"));
 
-        const auto selectionCfg = subConfig.equal_range("addSelection");
-        for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
+        const auto selection_cfg = sub_config.equal_range("addSelection");
+        for(auto it_selection = selection_cfg.first ; it_selection != selection_cfg.second ; ++it_selection)
         {
-            const auto service = itSelection->second.get<std::string>("<xmlattr>.service");
+            const auto service = it_selection->second.get<std::string>("<xmlattr>.service");
             m_selectedServices.insert(service);
             SIGHT_DEBUG("add selection => " + service);
 
-            const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
+            const std::string config_id = it_selection->second.get<std::string>("<xmlattr>.config", "");
             // Check if service is not empty.
             SIGHT_ASSERT("add selection with config but service is missing", !service.empty());
-            m_serviceToConfig[service].push_back(configId);
+            m_serviceToConfig[service].push_back(config_id);
             SIGHT_DEBUG(
-                std::string("add config '") + configId + "' for service '" + service + "'"
+                std::string("add config '") + config_id + "' for service '" + service + "'"
             );
         }
 
-        const auto configCfg = subConfig.equal_range("config");
-        for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
+        const auto config_cfg = sub_config.equal_range("config");
+        for(auto it_cfg = config_cfg.first ; it_cfg != config_cfg.second ; ++it_cfg)
         {
-            const auto service  = itCfg->second.get<std::string>("<xmlattr>.service");
-            const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
+            const auto service   = it_cfg->second.get<std::string>("<xmlattr>.service");
+            const auto config_id = it_cfg->second.get<std::string>("<xmlattr>.id");
 
-            m_serviceToConfig[service].push_back(configId);
+            m_serviceToConfig[service].push_back(config_id);
             SIGHT_DEBUG(
-                std::string("add config '") + configId + "' for service '" + service + "'"
+                std::string("add config '") + config_id + "' for service '" + service + "'"
             );
         }
 
-        m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
+        m_guiTitle = sub_config.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
     }
 }
 
@@ -168,111 +168,111 @@ void grabber_proxy::startCamera()
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::startTargetCamera(std::string impl)
+void grabber_proxy::startTargetCamera(std::string _impl)
 {
     if(m_services.empty())
     {
         if(m_grabberImpl.empty())
         {
-            const auto srvFactory       = service::extension::factory::get();
-            const auto srvConfigFactory = service::extension::config::getDefault();
+            const auto srv_factory        = service::extension::factory::get();
+            const auto srv_config_factory = service::extension::config::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
-            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
+            auto grabbers_impl = srv_factory->getImplementationIdFromObjectAndType(
                 "sight::data::frame_tl",
                 "sight::io::service::rgbd_grabber"
             );
 
-            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
+            auto rgb_grabbers_impl = srv_factory->getImplementationIdFromObjectAndType(
                 "sight::data::frame_tl",
                 "sight::io::service::grabber"
             );
 
-            std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
+            std::move(rgb_grabbers_impl.begin(), rgb_grabbers_impl.end(), std::back_inserter(grabbers_impl));
 
             // If we asked for a specific implementation
             // Filter the other out
-            if(!impl.empty())
+            if(!_impl.empty())
             {
                 std::erase_if(
-                    grabbersImpl,
-                    [&](std::string g)
+                    grabbers_impl,
+                    [&](std::string _g)
                     {
-                        return g != impl;
+                        return _g != _impl;
                     });
             }
 
-            data::camera::SourceType sourceType = data::camera::UNKNOWN;
+            data::camera::source_t source_type = data::camera::UNKNOWN;
 
-            std::size_t numCamerasInSeries = 1;
+            std::size_t num_cameras_in_series = 1;
 
             {
-                auto cameraInput = m_camera.lock();
-                auto camera      = std::dynamic_pointer_cast<const data::camera>(cameraInput.get_shared());
+                auto camera_input = m_camera.lock();
+                auto camera       = std::dynamic_pointer_cast<const data::camera>(camera_input.get_shared());
                 if(camera)
                 {
-                    sourceType = camera->getCameraSource();
+                    source_type = camera->getCameraSource();
                 }
                 else
                 {
-                    auto camera_set = std::dynamic_pointer_cast<const data::camera_set>(cameraInput.get_shared());
+                    auto camera_set = std::dynamic_pointer_cast<const data::camera_set>(camera_input.get_shared());
                     if(camera_set)
                     {
-                        numCamerasInSeries = camera_set->size();
-                        SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
+                        num_cameras_in_series = camera_set->size();
+                        SIGHT_ASSERT("Camera Series is empty", num_cameras_in_series);
 
                         // Assume same source on all cameras
-                        sourceType = camera_set->get_camera(0)->getCameraSource();
+                        source_type = camera_set->get_camera(0)->getCameraSource();
                     }
                 }
             }
 
-            std::vector<std::string> availableExtensionsSelector;
-            std::map<std::string, std::size_t> implToNumTL;
+            std::vector<std::string> available_extensions_selector;
+            std::map<std::string, std::size_t> impl_to_num_tl;
 
-            for(const auto& srvImpl : grabbersImpl)
+            for(const auto& srv_impl : grabbers_impl)
             {
-                if(srvImpl != "sight::module::io::video::grabber_proxy")
+                if(srv_impl != "sight::module::io::video::grabber_proxy")
                 {
-                    SIGHT_DEBUG("Evaluating if implementation '" + srvImpl + "' is suitable...");
-                    auto objectsType  = srvFactory->getServiceObjects(srvImpl);
+                    SIGHT_DEBUG("Evaluating if implementation '" + srv_impl + "' is suitable...");
+                    auto objects_type = srv_factory->getServiceObjects(srv_impl);
                     const auto config = this->get_config();
 
                     // 1. Verify that we have the same number of timelines
-                    objectsType.erase(
+                    objects_type.erase(
                         std::remove_if(
-                            objectsType.begin(),
-                            objectsType.end(),
+                            objects_type.begin(),
+                            objects_type.end(),
                             [&](const std::string& _type)
                         {
                             return _type != "data::frame_tl";
                         }),
-                        objectsType.end()
+                        objects_type.end()
                     );
 
-                    std::size_t numTL = 0;
-                    auto inoutsCfg    = config.equal_range("inout");
-                    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
+                    std::size_t num_tl = 0;
+                    auto inouts_cfg    = config.equal_range("inout");
+                    for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
                     {
-                        service::config_t parameterCfg;
+                        service::config_t parameter_cfg;
 
-                        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
+                        const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->inout(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->get_classname() == "data::frame_tl")
                         {
-                            ++numTL;
+                            ++num_tl;
                         }
                     }
 
-                    if(numTL > objectsType.size())
+                    if(num_tl > objects_type.size())
                     {
-                        if(objectsType.size() == 1 && numCamerasInSeries == numTL)
+                        if(objects_type.size() == 1 && num_cameras_in_series == num_tl)
                         {
                             // We have only one TL, we may emulate a grabber with several timelines using multiple
                             // services
-                            implToNumTL[srvImpl] = numTL;
+                            impl_to_num_tl[srv_impl] = num_tl;
                         }
                         else
                         {
@@ -281,115 +281,115 @@ void grabber_proxy::startTargetCamera(std::string impl)
                     }
                     else
                     {
-                        implToNumTL[srvImpl] = 1;
+                        impl_to_num_tl[srv_impl] = 1;
                     }
 
                     // 2. Filter against the source type
-                    if(sourceType != data::camera::UNKNOWN)
+                    if(source_type != data::camera::UNKNOWN)
                     {
-                        const auto tags = srvFactory->getServiceTags(srvImpl);
+                        const auto tags = srv_factory->getServiceTags(srv_impl);
 
                         const boost::char_separator<char> sep(",");
                         const boost::tokenizer<boost::char_separator<char> > tokens(tags, sep);
-                        bool capsMatch = false;
+                        bool caps_match = false;
                         for(const auto& token : tokens)
                         {
                             // Remove trailing and leading spaces.
-                            const auto trimedToken = boost::algorithm::trim_copy(token);
+                            const auto trimed_token = boost::algorithm::trim_copy(token);
 
-                            data::camera::SourceType handledSourceType = data::camera::UNKNOWN;
-                            if(trimedToken == "FILE")
+                            data::camera::source_t handled_source_type = data::camera::UNKNOWN;
+                            if(trimed_token == "FILE")
                             {
-                                handledSourceType = data::camera::FILE;
+                                handled_source_type = data::camera::FILE;
                             }
-                            else if(trimedToken == "STREAM")
+                            else if(trimed_token == "STREAM")
                             {
-                                handledSourceType = data::camera::STREAM;
+                                handled_source_type = data::camera::STREAM;
                             }
-                            else if(trimedToken == "DEVICE")
+                            else if(trimed_token == "DEVICE")
                             {
-                                handledSourceType = data::camera::DEVICE;
+                                handled_source_type = data::camera::DEVICE;
                             }
 
-                            if(handledSourceType == sourceType)
+                            if(handled_source_type == source_type)
                             {
-                                capsMatch = true;
+                                caps_match = true;
                                 break;
                             }
                         }
 
-                        if(!capsMatch)
+                        if(!caps_match)
                         {
                             continue;
                         }
                     }
 
-                    availableExtensionsSelector.push_back(srvImpl);
+                    available_extensions_selector.push_back(srv_impl);
                 }
             }
 
             // 3. Check if specific service or configuration should be included/excluded
             {
-                std::map<std::string, std::pair<std::string, std::string> > descToExtension;
+                std::map<std::string, std::pair<std::string, std::string> > desc_to_extension;
                 std::vector<std::string> descriptions;
 
-                const auto& srvConfigRegistry = service::extension::config::getDefault();
-                for(const auto& extension : availableExtensionsSelector)
+                const auto& srv_config_registry = service::extension::config::getDefault();
+                for(const auto& extension : available_extensions_selector)
                 {
                     // We need to test first if extension have specific configurations to include/exclude.
-                    const auto configsIt = m_serviceToConfig.find(extension);
-                    std::vector<std::string> selectableConfigs;
+                    const auto configs_it = m_serviceToConfig.find(extension);
+                    std::vector<std::string> selectable_configs;
 
                     if(!m_exclude) // Include mode
                     {
                         // Available service/configs are the ones the proxy's configuration.
-                        if(configsIt != m_serviceToConfig.end())
+                        if(configs_it != m_serviceToConfig.end())
                         {
-                            selectableConfigs = configsIt->second;
+                            selectable_configs = configs_it->second;
                         }
                     }
                     else // Exclude mode
                     {
                         // Find all configurations for the given grabber.
-                        selectableConfigs = srvConfigFactory->getAllConfigForService(extension, true);
-                        selectableConfigs.emplace_back(""); // Add the empty config (default grabber).
+                        selectable_configs = srv_config_factory->getAllConfigForService(extension, true);
+                        selectable_configs.emplace_back(""); // Add the empty config (default grabber).
 
                         // Remove configs from the grabber's list.
-                        if(configsIt != m_serviceToConfig.end())
+                        if(configs_it != m_serviceToConfig.end())
                         {
-                            const auto& excludedConfigs = configsIt->second;
-                            const auto isExcludedConfig = [&excludedConfigs](const std::string& _cfgName) -> bool
-                                                          {
-                                                              return std::find(
-                                                                  excludedConfigs.begin(),
-                                                                  excludedConfigs.end(),
-                                                                  _cfgName
-                                                              ) != excludedConfigs.end();
-                                                          };
+                            const auto& excluded_configs = configs_it->second;
+                            const auto is_excluded_config = [&excluded_configs](const std::string& _cfg_name) -> bool
+                                                            {
+                                                                return std::find(
+                                                                    excluded_configs.begin(),
+                                                                    excluded_configs.end(),
+                                                                    _cfg_name
+                                                                ) != excluded_configs.end();
+                                                            };
 
                             // Remove the ones excluded by the grabber proxy.
-                            selectableConfigs.erase(
+                            selectable_configs.erase(
                                 std::remove_if(
-                                    selectableConfigs.begin(),
-                                    selectableConfigs.end(),
-                                    isExcludedConfig
+                                    selectable_configs.begin(),
+                                    selectable_configs.end(),
+                                    is_excluded_config
                                 ),
-                                selectableConfigs.end()
+                                selectable_configs.end()
                             );
                         }
                     }
 
                     // Fill the description list with the available config's descriptions.
-                    for(const auto& config : selectableConfigs)
+                    for(const auto& config : selectable_configs)
                     {
-                        const auto desc = config.empty() ? srvFactory->getServiceDescription(extension)
-                                                         : srvConfigRegistry->getConfigDesc(config);
-                        descToExtension[desc] = std::make_pair(extension, config);
+                        const auto desc = config.empty() ? srv_factory->getServiceDescription(extension)
+                                                         : srv_config_registry->getConfigDesc(config);
+                        desc_to_extension[desc] = std::make_pair(extension, config);
                         descriptions.push_back(desc);
                     }
                 }
 
-                std::string selectedDesc;
+                std::string selected_desc;
                 if(descriptions.empty())
                 {
                     const std::string msg = "No video grabber implementation found.\n";
@@ -404,7 +404,7 @@ void grabber_proxy::startTargetCamera(std::string impl)
                 if(descriptions.size() == 1)
                 {
                     /// Select the only remaining description.
-                    selectedDesc = descriptions[0];
+                    selected_desc = descriptions[0];
                 }
                 else
                 {
@@ -415,10 +415,10 @@ void grabber_proxy::startTargetCamera(std::string impl)
                     selector.setTitle(m_guiTitle);
                     selector.set_choices(descriptions);
                     const auto& choices = selector.show();
-                    selectedDesc = choices.empty() ? std::string() : choices.front();
+                    selected_desc = choices.empty() ? std::string() : choices.front();
                 }
 
-                std::tie(m_grabberImpl, m_grabberConfig) = descToExtension[selectedDesc];
+                std::tie(m_grabberImpl, m_grabberConfig) = desc_to_extension[selected_desc];
             }
 
             if(m_grabberImpl.empty())
@@ -428,42 +428,42 @@ void grabber_proxy::startTargetCamera(std::string impl)
                 return;
             }
 
-            m_services.resize(implToNumTL[m_grabberImpl]);
+            m_services.resize(impl_to_num_tl[m_grabberImpl]);
 
-            std::size_t srvCount = 0;
+            std::size_t srv_count = 0;
             for(auto& srv : m_services)
             {
                 srv = this->registerService<grabber>(m_grabberImpl);
 
-                auto cameraInput = m_camera.lock();
-                auto camera      = std::dynamic_pointer_cast<const data::camera>(cameraInput.get_shared());
+                auto camera_input = m_camera.lock();
+                auto camera       = std::dynamic_pointer_cast<const data::camera>(camera_input.get_shared());
                 if(camera)
                 {
                     srv->set_input(camera, s_CAMERA_INPUT);
                 }
                 else
                 {
-                    auto camera_set = std::dynamic_pointer_cast<const data::camera_set>(cameraInput.get_shared());
+                    auto camera_set = std::dynamic_pointer_cast<const data::camera_set>(camera_input.get_shared());
                     if(camera_set)
                     {
                         #ifdef DEBUG
-                        const std::size_t numCameras = camera_set->size();
+                        const std::size_t num_cameras = camera_set->size();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
-                            srvCount < numCameras
+                            srv_count < num_cameras
                         );
                         #endif
 
-                        srv->set_input(camera_set->get_camera(srvCount), s_CAMERA_INPUT);
+                        srv->set_input(camera_set->get_camera(srv_count), s_CAMERA_INPUT);
                     }
                 }
 
-                std::size_t inputTLCount = 0;
-                const auto proxyConfig   = this->get_config();
-                auto inoutsCfg           = proxyConfig.equal_range("inout");
-                for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
+                std::size_t input_tl_count = 0;
+                const auto proxy_config    = this->get_config();
+                auto inouts_cfg            = proxy_config.equal_range("inout");
+                for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
                 {
-                    const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
+                    const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
                     auto inout = this->inout(key).lock();
@@ -471,32 +471,32 @@ void grabber_proxy::startTargetCamera(std::string impl)
                     {
                         if(key == grabber::s_FRAMETL_INOUT)
                         {
-                            auto frameTL = std::dynamic_pointer_cast<data::frame_tl>(inout.get_shared());
+                            auto frame_tl = std::dynamic_pointer_cast<data::frame_tl>(inout.get_shared());
                             if(m_services.size() > 1)
                             {
-                                if(inputTLCount == srvCount)
+                                if(input_tl_count == srv_count)
                                 {
                                     // We are emulating a grabber with several ones, reuse the first TL slot
-                                    srv->set_inout(frameTL, grabber::s_FRAMETL_INOUT);
+                                    srv->set_inout(frame_tl, grabber::s_FRAMETL_INOUT);
                                     break;
                                 }
                             }
                             else
                             {
-                                srv->set_inout(frameTL, grabber::s_FRAMETL_INOUT);
+                                srv->set_inout(frame_tl, grabber::s_FRAMETL_INOUT);
                             }
                         }
                     }
 
-                    ++inputTLCount;
+                    ++input_tl_count;
                 }
 
                 if(!m_grabberConfig.empty())
                 {
-                    const auto& srvConfigRegistry = service::extension::config::getDefault();
-                    const auto srvCfg             =
-                        srvConfigRegistry->get_service_config(m_grabberConfig, m_grabberImpl);
-                    srv->set_config(srvCfg);
+                    const auto& srv_config_registry = service::extension::config::getDefault();
+                    const auto srv_cfg              =
+                        srv_config_registry->get_service_config(m_grabberConfig, m_grabberImpl);
+                    srv->set_config(srv_cfg);
                     srv->configure();
                 }
 
@@ -532,7 +532,7 @@ void grabber_proxy::startTargetCamera(std::string impl)
                     grabber::FORWARD_FPS_CHANGED_SLOT
                 );
 
-                ++srvCount;
+                ++srv_count;
             }
         }
     }
@@ -584,13 +584,13 @@ void grabber_proxy::toggleLoopMode()
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::setPosition(std::int64_t position)
+void grabber_proxy::setPosition(std::int64_t _position)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->setPosition(position);
+            srv->setPosition(_position);
         }
     }
 }
@@ -623,26 +623,26 @@ void grabber_proxy::nextImage()
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::setStep(int step, std::string key)
+void grabber_proxy::setStep(int _step, std::string _key)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->setParameter(step, key);
+            srv->setParameter(_step, _key);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::setParameter(ui::parameter_t value, std::string key)
+void grabber_proxy::setParameter(ui::parameter_t _value, std::string _key)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->setParameter(value, key);
+            srv->setParameter(_value, _key);
         }
     }
 }
@@ -675,26 +675,26 @@ void grabber_proxy::optimize()
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::addROICenter(sight::data::point::sptr p)
+void grabber_proxy::addROICenter(sight::data::point::sptr _p)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->addROICenter(p);
+            srv->addROICenter(_p);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::removeROICenter(sight::data::point::sptr p)
+void grabber_proxy::removeROICenter(sight::data::point::sptr _p)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->removeROICenter(p);
+            srv->removeROICenter(_p);
         }
     }
 }
@@ -722,25 +722,25 @@ void grabber_proxy::reconfigure()
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::modifyPosition(int64_t position)
+void grabber_proxy::modifyPosition(int64_t _position)
 {
-    auto sig = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(position));
+    auto sig = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+    sig->async_emit(static_cast<std::int64_t>(_position));
 }
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::modifyDuration(int64_t duration)
+void grabber_proxy::modifyDuration(int64_t _duration)
 {
-    auto sig = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(duration));
+    auto sig = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
+    sig->async_emit(static_cast<std::int64_t>(_duration));
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwdStartCamera()
 {
-    auto sig = this->signal<CameraStartedSignalType>(CAMERA_STARTED_SIG);
+    auto sig = this->signal<camera_started_signal_t>(CAMERA_STARTED_SIG);
     sig->async_emit();
 }
 
@@ -748,7 +748,7 @@ void grabber_proxy::fwdStartCamera()
 
 void grabber_proxy::fwdStopCamera()
 {
-    auto sig = this->signal<CameraStoppedSignalType>(CAMERA_STOPPED_SIG);
+    auto sig = this->signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
     sig->async_emit();
 }
 
@@ -756,39 +756,39 @@ void grabber_proxy::fwdStopCamera()
 
 void grabber_proxy::fwdPresentFrame()
 {
-    auto sig = this->signal<FramePresentedSignalType>(FRAME_PRESENTED_SIG);
+    auto sig = this->signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
     sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::fwdNotify(service::Notification notification)
+void grabber_proxy::fwdNotify(service::Notification _notification)
 {
-    notifier::m_notified_sig->async_emit(std::move(notification));
+    notifier::M_NOTIFIED_SIG->async_emit(std::move(_notification));
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::fwdSetParameter(ui::parameter_t value, std::string key)
+void grabber_proxy::fwdSetParameter(ui::parameter_t _value, std::string _key)
 {
-    auto sig = this->signal<grabber::ParameterChangedSignalType>(grabber::PARAMETER_CHANGED_SIG);
-    sig->async_emit(value, key);
+    auto sig = this->signal<grabber::parameter_changed_signal_t>(grabber::PARAMETER_CHANGED_SIG);
+    sig->async_emit(_value, _key);
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::fwdCreateJob(sight::core::jobs::base::sptr job)
+void grabber_proxy::fwdCreateJob(sight::core::jobs::base::sptr _job)
 {
-    auto sig = this->signal<grabber::JobCreatedSignalType>(grabber::JOB_CREATED_SIG);
-    sig->async_emit(job);
+    auto sig = this->signal<grabber::job_created_signal_t>(grabber::JOB_CREATED_SIG);
+    sig->async_emit(_job);
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::forwardFPSChanged(double fps)
+void grabber_proxy::forwardFPSChanged(double _fps)
 {
     auto sig = this->signal<grabber::FPSChangedSignalType>(grabber::FPS_CHANGED_SIG);
-    sig->async_emit(fps);
+    sig->async_emit(_fps);
 }
 
 //------------------------------------------------------------------------------

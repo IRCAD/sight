@@ -49,7 +49,7 @@ static const core::com::slots::key_t SENABLE_SIG     = "enable";
 static const core::com::slots::key_t DISABLE_SIG     = "disable";
 
 selection_menu_button::selection_menu_button() noexcept :
-    m_sigSelected(new_signal<SelectedSignalType>(SELECTED_SIG))
+    m_sigSelected(new_signal<selected_signal_t>(SELECTED_SIG))
 {
     new_slot(SET_ENABLED_SIG, &selection_menu_button::setEnabled, this);
     new_slot(SENABLE_SIG, &selection_menu_button::enable, this);
@@ -83,7 +83,7 @@ void selection_menu_button::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     m_dropDownButton = new QPushButton(QString::fromStdString(m_text));
     m_dropDownButton->setToolTip(QString::fromStdString(m_toolTip));
@@ -109,11 +109,11 @@ void selection_menu_button::starting()
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
-    auto* vLayout = new QVBoxLayout();
-    vLayout->addWidget(m_dropDownButton);
-    vLayout->setContentsMargins(0, 0, 0, 0);
+    auto* v_layout = new QVBoxLayout();
+    v_layout->addWidget(m_dropDownButton);
+    v_layout->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(vLayout);
+    qt_container->setLayout(v_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -143,11 +143,11 @@ void selection_menu_button::info(std::ostream& /*_sstream*/)
 
 //------------------------------------------------------------------------------
 
-void selection_menu_button::onSelection(QAction* action)
+void selection_menu_button::onSelection(QAction* _action)
 {
-    if(action->isChecked())
+    if(_action->isChecked())
     {
-        int value = action->data().toInt();
+        int value = _action->data().toInt();
         m_sigSelected->async_emit(value);
         return;
     }
@@ -155,9 +155,9 @@ void selection_menu_button::onSelection(QAction* action)
 
 //------------------------------------------------------------------------------
 
-void selection_menu_button::setEnabled(bool enabled)
+void selection_menu_button::setEnabled(bool _enabled)
 {
-    m_dropDownButton->setEnabled(enabled);
+    m_dropDownButton->setEnabled(_enabled);
 }
 
 //------------------------------------------------------------------------------

@@ -45,7 +45,7 @@ public:
      * @return SOP Class Name according to UID
      * @note If the UID is not registered, the function returns the UID
      */
-    IO_DICOM_API static std::string getSOPClassName(const std::string& sop_classUID);
+    IO_DICOM_API static std::string getSOPClassName(const std::string& _sop_class_uid);
 
     /**
      * @brief Returns whether the SOP Class is hazardous or not
@@ -55,7 +55,7 @@ public:
      * the anonymization process (like pictures, pdf report, etc.)
      * @note If the UID is not registered, the function returns true
      */
-    IO_DICOM_API static bool isHazardousSOPClass(const std::string& sop_classUID);
+    IO_DICOM_API static bool isHazardousSOPClass(const std::string& _sop_class_uid);
 
 private:
 

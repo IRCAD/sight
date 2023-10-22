@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(__FWCOM_SLOTS_HPP__)
+#if !defined(FWCOM_SLOTS_HPP)
 #error core/com/slots.hpp not included
 #endif
 
@@ -34,23 +34,23 @@ namespace sight::core::com
 
 // Only define it when core/com/has_slots.hpp has been included
 // This saves us a file like core/com/has_slots.hxx
-#if defined(__FWCOM_HASSLOTS_HPP__)
+#if defined(FWCOM_HASSLOTS_HPP)
 template<typename F, typename A>
 SPTR(slot<typename core::com::util::convert_function_type<F>::type>)
-has_slots::new_slot(const core::com::slots::key_t& key, F f, A a)
+has_slots::new_slot(const core::com::slots::key_t& _key, F _f, A _a)
 {
-    auto slot = core::com::new_slot(f, a);
-    this->m_slots(key, slot);
+    auto slot = core::com::new_slot(_f, _a);
+    this->m_slots(_key, slot);
     return slot;
 }
 
 // Prototype used for lambdas functions
 template<typename F>
 SPTR(slot<core::lambda_to_function_t<F> >)
-has_slots::new_slot(const core::com::slots::key_t& key, F f)
+has_slots::new_slot(const core::com::slots::key_t& _key, F _f)
 {
-    auto slot = core::com::new_slot(f);
-    this->m_slots(key, slot);
+    auto slot = core::com::new_slot(_f);
+    this->m_slots(_key, slot);
     return slot;
 }
 
@@ -58,13 +58,13 @@ has_slots::new_slot(const core::com::slots::key_t& key, F f)
 
 template<typename F>
 auto has_slots::new_slot(
-    const core::com::slots::key_t& key,
-    F f
+    const core::com::slots::key_t& _key,
+    F _f
 ) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
                       SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>)>
 {
-    auto slot = core::com::new_slot(f);
-    this->m_slots(key, slot);
+    auto slot = core::com::new_slot(_f);
+    this->m_slots(_key, slot);
     return slot;
 }
 #endif

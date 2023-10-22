@@ -62,12 +62,12 @@ void fwMetrics::updating()
     stream << "base: ";
     stream << service::extension::factory::get()->get_factory_keys().size();
 
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle("FactoryRegistry Information");
-    messageBox.setMessage(stream.str());
-    messageBox.setIcon(ui::dialog::message::INFO);
-    messageBox.addButton(ui::dialog::message::OK);
-    messageBox.show();
+    sight::ui::dialog::message message_box;
+    message_box.setTitle("FactoryRegistry Information");
+    message_box.setMessage(stream.str());
+    message_box.setIcon(ui::dialog::message::INFO);
+    message_box.addButton(ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

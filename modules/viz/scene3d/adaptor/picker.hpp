@@ -93,7 +93,7 @@ private:
     std::shared_ptr<sight::viz::scene3d::interactor::mesh_picker_interactor> m_interactor;
 
     /// Defines the signal sent on picking events.
-    sight::viz::scene3d::interactor::mesh_picker_interactor::PointClickedSigType::sptr m_pickedSig;
+    sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t::sptr m_pickedSig;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

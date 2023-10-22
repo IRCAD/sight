@@ -46,7 +46,7 @@ public:
      * @brief Default constructor
      */
     DATA_API matrix4();
-    DATA_API matrix4(std::initializer_list<value_type> init_list);
+    DATA_API matrix4(std::initializer_list<value_type> _init_list);
 
     //! @brief destructor
     DATA_API ~matrix4() noexcept override = default;
@@ -55,47 +55,47 @@ public:
     using container<matrix4::container_type>::container;
     using container<matrix4::container_type>::operator=;
 
-    DATA_API matrix4& operator=(std::initializer_list<value_type> init_list);
+    DATA_API matrix4& operator=(std::initializer_list<value_type> _init_list);
 
     /**
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    [[nodiscard]] constexpr matrix4::value_type& operator()(std::size_t l, std::size_t c) noexcept;
-    [[nodiscard]] constexpr const matrix4::value_type& operator()(std::size_t l, std::size_t c) const noexcept;
+    [[nodiscard]] constexpr matrix4::value_type& operator()(std::size_t _l, std::size_t _c) noexcept;
+    [[nodiscard]] constexpr const matrix4::value_type& operator()(std::size_t _l, std::size_t _c) const noexcept;
     /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
     static const std::size_t MATRIX_SIZE = 4;
 
     /// Print the coefficients of the matrix
-    friend std::ostream& operator<<(std::ostream& s, const matrix4& mat)
+    friend std::ostream& operator<<(std::ostream& _s, const matrix4& _mat)
     {
         for(std::size_t l = 0 ; l < MATRIX_SIZE ; l++)
         {
             for(std::size_t c = 0 ; c < MATRIX_SIZE ; c++)
             {
-                s << mat(l, c) << "\t";
+                _s << _mat(l, c) << "\t";
             }
 
-            s << std::endl;
+            _s << std::endl;
         }
 
-        return s;
+        return _s;
     }
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
     [[nodiscard]] static constexpr container_type identity() noexcept;
@@ -112,17 +112,17 @@ protected:
 
 //------------------------------------------------------------------------------
 
-constexpr matrix4::value_type& matrix4::operator()(std::size_t l, std::size_t c) noexcept
+constexpr matrix4::value_type& matrix4::operator()(std::size_t _l, std::size_t _c) noexcept
 {
-    const std::size_t pos = l * MATRIX_SIZE + c;
+    const std::size_t pos = _l * MATRIX_SIZE + _c;
     return this->at(pos);
 }
 
 //------------------------------------------------------------------------------
 
-constexpr const matrix4::value_type& matrix4::operator()(std::size_t l, std::size_t c) const noexcept
+constexpr const matrix4::value_type& matrix4::operator()(std::size_t _l, std::size_t _c) const noexcept
 {
-    const std::size_t pos = l * MATRIX_SIZE + c;
+    const std::size_t pos = _l * MATRIX_SIZE + _c;
     return this->at(pos);
 }
 

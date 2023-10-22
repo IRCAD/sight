@@ -23,7 +23,7 @@
 #include "labeling_test.hpp"
 
 #include <data/array.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
 
@@ -54,24 +54,24 @@ void labeling_test::computeCentroids()
     // Initial image creation
     data::image::sptr img = std::make_shared<data::image>();
 
-    const core::type type                 = core::type::UINT8;
-    const data::image::Size imgSize       = {256, 256, 256};
-    const data::image::Spacing imgSpacing = {1., 1., 1.};
-    const data::image::Origin imgOrigin   = {0., 0., 0.};
-    uint8_t val                           = 0;
+    const core::type type                  = core::type::UINT8;
+    const data::image::Size img_size       = {256, 256, 256};
+    const data::image::Spacing img_spacing = {1., 1., 1.};
+    const data::image::Origin img_origin   = {0., 0., 0.};
+    uint8_t val                            = 0;
 
-    img->setSpacing(imgSpacing);
-    img->setOrigin(imgOrigin);
-    img->resize(imgSize, type, data::image::PixelFormat::GRAY_SCALE);
+    img->setSpacing(img_spacing);
+    img->setOrigin(img_origin);
+    img->resize(img_size, type, data::image::PixelFormat::GRAY_SCALE);
 
-    const auto dumpLock = img->dump_lock();
+    const auto dump_lock = img->dump_lock();
 
     // Setup image with 0 values
-    for(unsigned int x = 0 ; x < imgSize[0] ; ++x)
+    for(unsigned int x = 0 ; x < img_size[0] ; ++x)
     {
-        for(unsigned int y = 0 ; y < imgSize[1] ; ++y)
+        for(unsigned int y = 0 ; y < img_size[1] ; ++y)
         {
-            for(unsigned int z = 0 ; z < imgSize[2] ; ++z)
+            for(unsigned int z = 0 ; z < img_size[2] ; ++z)
             {
                 img->at<std::uint8_t>(x, y, z) = val;
             }
@@ -79,29 +79,29 @@ void labeling_test::computeCentroids()
     }
 
     // Add pre-defined features into the images
-    std::vector<std::vector<unsigned int> > featureOrigin;
-    std::vector<std::vector<unsigned int> > featureSize;
+    std::vector<std::vector<unsigned int> > feature_origin;
+    std::vector<std::vector<unsigned int> > feature_size;
 
     // feature 1
-    featureOrigin.emplace_back(3, 96);
-    featureSize.emplace_back(3, 64);
+    feature_origin.emplace_back(3, 96);
+    feature_size.emplace_back(3, 64);
 
     // feature 2
-    featureOrigin.emplace_back(3, 16);
-    featureSize.emplace_back(3, 16);
+    feature_origin.emplace_back(3, 16);
+    feature_size.emplace_back(3, 16);
 
     // feature 3
-    featureOrigin.emplace_back(3, 255);
-    featureSize.emplace_back(3, 1);
+    feature_origin.emplace_back(3, 255);
+    feature_size.emplace_back(3, 1);
 
     // Setup the image with the pre-defined features
-    for(unsigned int f = 0 ; f < featureOrigin.size() ; ++f)
+    for(unsigned int f = 0 ; f < feature_origin.size() ; ++f)
     {
-        for(unsigned int x = featureOrigin[f][0] ; x < featureOrigin[f][0] + featureSize[f][0] ; ++x)
+        for(unsigned int x = feature_origin[f][0] ; x < feature_origin[f][0] + feature_size[f][0] ; ++x)
         {
-            for(unsigned int y = featureOrigin[f][1] ; y < featureOrigin[f][1] + featureSize[f][1] ; ++y)
+            for(unsigned int y = feature_origin[f][1] ; y < feature_origin[f][1] + feature_size[f][1] ; ++y)
             {
-                for(unsigned int z = featureOrigin[f][2] ; z < featureOrigin[f][2] + featureSize[f][2] ; ++z)
+                for(unsigned int z = feature_origin[f][2] ; z < feature_origin[f][2] + feature_size[f][2] ; ++z)
                 {
                     val                            = static_cast<uint8_t>(f + 1);
                     img->at<std::uint8_t>(x, y, z) = val;
@@ -110,27 +110,27 @@ void labeling_test::computeCentroids()
         }
     }
 
-    std::vector<std::vector<std::size_t> > pointListLabels;
-    std::vector<data::point_list::sptr> pointListCentroids;
+    std::vector<std::vector<std::size_t> > point_list_labels;
+    std::vector<data::point_list::sptr> point_list_centroids;
 
     // Call the ITK operator
-    filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
+    filter::image::compute_centroids(img, point_list_centroids, point_list_labels);
 
-    data::point_list::sptr landmarks = data::helper::MedicalImage::getLandmarks(*img);
+    data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*img);
 
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);
     // Ensure that we have as many landmarks as we defined features
-    CPPUNIT_ASSERT_EQUAL(landmarks->getPoints().size(), featureOrigin.size());
+    CPPUNIT_ASSERT_EQUAL(landmarks->getPoints().size(), feature_origin.size());
 
     // Check that the landmarks are placed at the centroids of the defined features
-    for(unsigned int f = 0 ; f < featureOrigin.size() ; ++f)
+    for(unsigned int f = 0 ; f < feature_origin.size() ; ++f)
     {
         data::point::sptr p = landmarks->getPoints().at(f);
 
-        CPPUNIT_ASSERT_EQUAL(featureOrigin[f][0] + (featureSize[f][0] - 1.0) / 2.0, p->getCoord()[0]);
-        CPPUNIT_ASSERT_EQUAL(featureOrigin[f][1] + (featureSize[f][1] - 1.0) / 2.0, p->getCoord()[1]);
-        CPPUNIT_ASSERT_EQUAL(featureOrigin[f][2] + (featureSize[f][2] - 1.0) / 2.0, p->getCoord()[2]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, p->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, p->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][2] + (feature_size[f][2] - 1.0) / 2.0, p->getCoord()[2]);
     }
 }
 

@@ -68,14 +68,14 @@ selector::selections_t selector::show()
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    const auto dialogPath = core::runtime::get_library_resource_file_path("ui_qml/dialog/selector.qml");
+    const auto dialog_path = core::runtime::get_library_resource_file_path("ui_qml/dialog/selector.qml");
     // set the root context for the model
-    engine->getRootContext()->setContextProperty("selectorModel", &model);
+    engine->getRootContext()->setContextProperty("selector_model", &model);
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("selectorDialog", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialogPath, context);
+    QObject* window = engine->createComponent(dialog_path, context);
     SIGHT_ASSERT("The Qml File selector is not found or not loaded", window);
     // keep window to destroy it
 
@@ -126,16 +126,16 @@ selector::selections_t selector::show()
 
 //------------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& msg)
+void selector::setMessage(const std::string& _msg)
 {
-    m_message = QString::fromStdString(msg);
+    m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
 
-void selector::resultDialog(QVariant selection)
+void selector::resultDialog(QVariant _selection)
 {
-    m_selection = selection.toString();
+    m_selection = _selection.toString();
 }
 
 //------------------------------------------------------------------------------

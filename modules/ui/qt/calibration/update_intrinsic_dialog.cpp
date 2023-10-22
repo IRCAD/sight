@@ -54,69 +54,69 @@ update_intrinsic_dialog::update_intrinsic_dialog() :
     m_skew(new QLabel())
 {
     //Design of the QDialog
-    QHBoxLayout* validateButtonLayout = nullptr;
-    QHBoxLayout* computeButtonLayout  = nullptr;
-    QHBoxLayout* resolutionLayout     = nullptr;
-    QVBoxLayout* mainLayout           = nullptr;
-    QGridLayout* parametersLayout     = nullptr;
-    QPushButton* validateButton       = nullptr;
-    QPushButton* cancelButton         = nullptr;
-    QPushButton* computeButton        = nullptr;
-    QPushButton* resetButton          = nullptr;
+    QHBoxLayout* validate_button_layout = nullptr;
+    QHBoxLayout* compute_button_layout  = nullptr;
+    QHBoxLayout* resolution_layout      = nullptr;
+    QVBoxLayout* main_layout            = nullptr;
+    QGridLayout* parameters_layout      = nullptr;
+    QPushButton* validate_button        = nullptr;
+    QPushButton* cancel_button          = nullptr;
+    QPushButton* compute_button         = nullptr;
+    QPushButton* reset_button           = nullptr;
 
-    parametersLayout = new QGridLayout;
-    resolutionLayout = new QHBoxLayout;
+    parameters_layout = new QGridLayout;
+    resolution_layout = new QHBoxLayout;
 
-    auto* wLabel = new QLabel("Width :");
-    auto* hLabel = new QLabel("Height :");
+    auto* w_label = new QLabel("Width :");
+    auto* h_label = new QLabel("Height :");
 
-    resolutionLayout->addWidget(wLabel);
-    resolutionLayout->addWidget(m_width);
-    resolutionLayout->addWidget(hLabel);
-    resolutionLayout->addWidget(m_height);
+    resolution_layout->addWidget(w_label);
+    resolution_layout->addWidget(m_width);
+    resolution_layout->addWidget(h_label);
+    resolution_layout->addWidget(m_height);
 
-    parametersLayout->addWidget(m_skew, 0, 2);
+    parameters_layout->addWidget(m_skew, 0, 2);
 
-    parametersLayout->addWidget(m_cx, 1, 0);
-    parametersLayout->addWidget(m_cy, 1, 1);
-    parametersLayout->addWidget(m_fx, 1, 2);
-    parametersLayout->addWidget(m_fy, 1, 3);
+    parameters_layout->addWidget(m_cx, 1, 0);
+    parameters_layout->addWidget(m_cy, 1, 1);
+    parameters_layout->addWidget(m_fx, 1, 2);
+    parameters_layout->addWidget(m_fy, 1, 3);
 
-    parametersLayout->addWidget(m_k1, 2, 0);
-    parametersLayout->addWidget(m_k2, 2, 1);
-    parametersLayout->addWidget(m_p1, 2, 2);
-    parametersLayout->addWidget(m_p2, 2, 3);
-    parametersLayout->addWidget(m_k3, 2, 4);
+    parameters_layout->addWidget(m_k1, 2, 0);
+    parameters_layout->addWidget(m_k2, 2, 1);
+    parameters_layout->addWidget(m_p1, 2, 2);
+    parameters_layout->addWidget(m_p2, 2, 3);
+    parameters_layout->addWidget(m_k3, 2, 4);
 
-    validateButtonLayout = new QHBoxLayout();
-    computeButtonLayout  = new QHBoxLayout();
-    mainLayout           = new QVBoxLayout();
+    validate_button_layout = new QHBoxLayout();
+    compute_button_layout  = new QHBoxLayout();
+    main_layout            = new QVBoxLayout();
 
-    computeButton = new QPushButton("Compute");
-    resetButton   = new QPushButton("Reset");
+    compute_button = new QPushButton("Compute");
+    reset_button   = new QPushButton("Reset");
 
-    validateButton = new QPushButton("Validate");
-    cancelButton   = new QPushButton("Cancel");
+    validate_button = new QPushButton("Validate");
+    cancel_button   = new QPushButton("Cancel");
 
-    computeButtonLayout->addWidget(computeButton);
-    computeButtonLayout->addWidget(resetButton);
+    compute_button_layout->addWidget(compute_button);
+    compute_button_layout->addWidget(reset_button);
 
-    validateButtonLayout->addWidget(validateButton);
-    validateButtonLayout->addWidget(cancelButton);
+    validate_button_layout->addWidget(validate_button);
+    validate_button_layout->addWidget(cancel_button);
 
-    mainLayout->addLayout(resolutionLayout);
-    mainLayout->addLayout(computeButtonLayout);
-    mainLayout->addLayout(parametersLayout);
-    mainLayout->addLayout(validateButtonLayout);
+    main_layout->addLayout(resolution_layout);
+    main_layout->addLayout(compute_button_layout);
+    main_layout->addLayout(parameters_layout);
+    main_layout->addLayout(validate_button_layout);
 
     this->setModal(true);
-    this->setLayout(mainLayout);
+    this->setLayout(main_layout);
     this->setWindowTitle("Calibration Edition");
 
-    QObject::connect(computeButton, SIGNAL(clicked()), this, SLOT(onPushCompute()));
-    QObject::connect(resetButton, SIGNAL(clicked()), this, SLOT(onPushReset()));
-    QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(onValidate()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(compute_button, SIGNAL(clicked()), this, SLOT(onPushCompute()));
+    QObject::connect(reset_button, SIGNAL(clicked()), this, SLOT(onPushReset()));
+    QObject::connect(validate_button, SIGNAL(clicked()), this, SLOT(onValidate()));
+    QObject::connect(cancel_button, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 //-----------------------------------------------------------------------------
@@ -126,10 +126,10 @@ update_intrinsic_dialog::~update_intrinsic_dialog()
 
 //-----------------------------------------------------------------------------
 
-void update_intrinsic_dialog::setParameters(std::array<double, 12>& parameters)
+void update_intrinsic_dialog::setParameters(std::array<double, 12>& _parameters)
 {
-    m_calibration       = parameters;
-    m_originCalibration = parameters;
+    m_calibration       = _parameters;
+    m_originCalibration = _parameters;
 
     m_ratio = m_calibration[0] / m_calibration[1];
 
@@ -157,9 +157,9 @@ void update_intrinsic_dialog::onPushCompute()
     //new resolution don't respect the original ratio
     if(std::abs(m_ratio - ratio) > 0.0001)
     {
-        sight::ui::dialog::message::sptr warningMess =
+        sight::ui::dialog::message::sptr warning_mess =
             std::make_shared<sight::ui::dialog::message>();
-        warningMess->show(
+        warning_mess->show(
             "Warning",
             "The new resolution don't respect the original resolution ratio !"
             ,

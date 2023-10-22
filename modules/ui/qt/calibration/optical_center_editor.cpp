@@ -55,42 +55,42 @@ void optical_center_editor::configuring()
 void optical_center_editor::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
-    auto* vLayout  = new QVBoxLayout();
-    auto* cxLayout = new QHBoxLayout();
-    auto* cyLayout = new QHBoxLayout();
-    auto* fyLayout = new QHBoxLayout();
+    auto* v_layout  = new QVBoxLayout();
+    auto* cx_layout = new QHBoxLayout();
+    auto* cy_layout = new QHBoxLayout();
+    auto* fy_layout = new QHBoxLayout();
 
-    auto* cxLabel = new QLabel(tr("CCD X:"));
+    auto* cx_label = new QLabel(tr("CCD X:"));
     m_cxSlider = new QSlider(Qt::Horizontal);
     m_cxLabel  = new QLabel();
 
-    cxLayout->addWidget(cxLabel);
-    cxLayout->addWidget(m_cxSlider);
-    cxLayout->addWidget(m_cxLabel);
+    cx_layout->addWidget(cx_label);
+    cx_layout->addWidget(m_cxSlider);
+    cx_layout->addWidget(m_cxLabel);
 
-    auto* cyLabel = new QLabel(tr("CCD Y:"));
+    auto* cy_label = new QLabel(tr("CCD Y:"));
     m_cySlider = new QSlider(Qt::Horizontal);
     m_cyLabel  = new QLabel();
 
-    cyLayout->addWidget(cyLabel);
-    cyLayout->addWidget(m_cySlider);
-    cyLayout->addWidget(m_cyLabel);
+    cy_layout->addWidget(cy_label);
+    cy_layout->addWidget(m_cySlider);
+    cy_layout->addWidget(m_cyLabel);
 
-    auto* fyLabel = new QLabel(tr("Fy:"));
+    auto* fy_label = new QLabel(tr("Fy:"));
     m_fySlider = new QSlider(Qt::Horizontal);
     m_fyLabel  = new QLabel();
 
-    fyLayout->addWidget(fyLabel);
-    fyLayout->addWidget(m_fySlider);
-    fyLayout->addWidget(m_fyLabel);
+    fy_layout->addWidget(fy_label);
+    fy_layout->addWidget(m_fySlider);
+    fy_layout->addWidget(m_fyLabel);
 
-    vLayout->addLayout(cxLayout);
-    vLayout->addLayout(cyLayout);
-    vLayout->addLayout(fyLayout);
+    v_layout->addLayout(cx_layout);
+    v_layout->addLayout(cy_layout);
+    v_layout->addLayout(fy_layout);
 
-    qtContainer->setLayout(vLayout);
+    qt_container->setLayout(v_layout);
 
     QObject::connect(m_cxSlider, SIGNAL(valueChanged(int)), this, SLOT(onCxSliderChanged(int)));
     QObject::connect(m_cySlider, SIGNAL(valueChanged(int)), this, SLOT(onCySliderChanged(int)));
@@ -123,21 +123,21 @@ void optical_center_editor::updating()
         matrix->fill(0.);
     }
 
-    const double dCx = (*matrix)(0, 2);
-    const double dCy = (*matrix)(1, 2);
-    const double dFy = (*matrix)(1, 1);
+    const double d_cx = (*matrix)(0, 2);
+    const double d_cy = (*matrix)(1, 2);
+    const double d_fy = (*matrix)(1, 1);
 
-    const int cx = static_cast<int>(camera->getCx() + dCx);
-    const int cy = static_cast<int>(camera->getCy() + dCy);
-    const int fy = static_cast<int>(camera->getFy() + dFy);
+    const int cx = static_cast<int>(camera->getCx() + d_cx);
+    const int cy = static_cast<int>(camera->getCy() + d_cy);
+    const int fy = static_cast<int>(camera->getFy() + d_fy);
 
-    const int deltaX  = static_cast<int>(camera->getWidth() / 5);
-    const int deltaY  = static_cast<int>(camera->getHeight() / 5);
-    const int deltaFY = static_cast<int>(camera->getFy() * .5);
+    const int delta_x  = static_cast<int>(camera->getWidth() / 5);
+    const int delta_y  = static_cast<int>(camera->getHeight() / 5);
+    const int delta_fy = static_cast<int>(camera->getFy() * .5);
 
-    m_cxSlider->setRange(cx - deltaX, cx + deltaX);
-    m_cySlider->setRange(cy - deltaY, cy + deltaY);
-    m_fySlider->setRange(fy - deltaFY, fy + deltaFY);
+    m_cxSlider->setRange(cx - delta_x, cx + delta_x);
+    m_cySlider->setRange(cy - delta_y, cy + delta_y);
+    m_fySlider->setRange(fy - delta_fy, fy + delta_fy);
 
     m_cxSlider->setValue(cx);
     m_cySlider->setValue(cy);
@@ -163,18 +163,18 @@ service::connections_t optical_center_editor::auto_connections() const
 
 //------------------------------------------------------------------------------
 
-void optical_center_editor::onCxSliderChanged(int value)
+void optical_center_editor::onCxSliderChanged(int _value)
 {
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    (*matrix)(0, 2) = value - camera->getCx();
+    (*matrix)(0, 2) = _value - camera->getCx();
 
-    m_cxLabel->setText(QString("%1").arg(value));
+    m_cxLabel->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();
@@ -183,18 +183,18 @@ void optical_center_editor::onCxSliderChanged(int value)
 
 //------------------------------------------------------------------------------
 
-void optical_center_editor::onCySliderChanged(int value)
+void optical_center_editor::onCySliderChanged(int _value)
 {
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    (*matrix)(1, 2) = value - camera->getCy();
+    (*matrix)(1, 2) = _value - camera->getCy();
 
-    m_cyLabel->setText(QString("%1").arg(value));
+    m_cyLabel->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();
@@ -203,18 +203,18 @@ void optical_center_editor::onCySliderChanged(int value)
 
 //------------------------------------------------------------------------------
 
-void optical_center_editor::onFySliderChanged(int value)
+void optical_center_editor::onFySliderChanged(int _value)
 {
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    (*matrix)(1, 1) = value - camera->getFy();
+    (*matrix)(1, 1) = _value - camera->getFy();
 
-    m_fyLabel->setText(QString("%1").arg(value));
+    m_fyLabel->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();

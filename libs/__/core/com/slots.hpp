@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SLOTS_HPP__
+#define FWCOM_SLOTS_HPP
 
 #include "core/config.hpp"
 #include "core/macros.hpp"
@@ -65,21 +65,21 @@ public:
     slots& operator=(const slots&) = delete;
 
     /// Registers SlotBase in m_slots
-    CORE_API slots& operator()(const key_t& key, const SPTR(slot_base)& slot);
+    CORE_API slots& operator()(const key_t& _key, const SPTR(slot_base)& _slot);
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
-    slots& operator()(const key_t& key, SPTR(slot<R(A ...)>)_slot)
+    slots& operator()(const key_t& _key, SPTR(slot<R(A ...)>)_slot)
     {
         SPTR(slot_base) base = std::dynamic_pointer_cast<slot_base>(_slot);
-        return this->operator()(key, base);
+        return this->operator()(_key, base);
     }
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR(slot_base) operator[](const key_t& key) const;
+    CORE_API SPTR(slot_base) operator[](const key_t& _key) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    CORE_API void set_worker(const SPTR(core::thread::worker)& worker);
+    CORE_API void set_worker(const SPTR(core::thread::worker)& _worker);
 
     /// Returns all key_t registered in m_slots
     [[nodiscard]] CORE_API slot_key_container_type get_slot_keys() const;

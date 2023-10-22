@@ -27,7 +27,7 @@
 #include <ui/__/editor.hpp>
 
 #include <viz/scene3d/compositor/chain_manager.hpp>
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -60,7 +60,7 @@ public:
      * @name Slots API
      * @{
      */
-    typedef core::com::slot<void (sight::viz::scene3d::Layer::sptr)> InitLayerSlotType;
+    typedef core::com::slot<void (sight::viz::scene3d::layer::sptr)> init_layer_slot_t;
 
     /// Slot: Populate the list of available compositors for the selected layer
     MODULE_UI_VIZ_API static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
@@ -99,15 +99,15 @@ private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer and initializes the compositor list
-    void onSelectedLayerItem(int index);
+    void onSelectedLayerItem(int _index);
 
     /// Slot: called when an item of the list widget is checked
-    void onSelectedCompositorItem(QListWidgetItem* compositorItem);
+    void onSelectedCompositorItem(QListWidgetItem* _compositor_item);
 
 private:
 
     /// Slot: Populate the list of available compositors for the selected layer
-    void initCompositorList(sight::viz::scene3d::Layer::sptr layer);
+    void initCompositorList(sight::viz::scene3d::layer::sptr _layer);
 
     /// Retrieves all the layers from the application thanks to the render services
     void refreshRenderers();
@@ -126,16 +126,16 @@ private:
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer
-    bool isEnabledCompositor(const std::string& compositorName);
+    bool isEnabledCompositor(const std::string& _compositor_name);
 
     QPointer<QComboBox> m_layersBox;
 
     QPointer<QListWidget> m_compositorChain;
 
-    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
-    sight::viz::scene3d::Layer::wptr m_currentLayer;
+    std::vector<sight::viz::scene3d::layer::wptr> m_layers;
+    sight::viz::scene3d::layer::wptr m_currentLayer;
 
-    sight::viz::scene3d::compositor::chain_manager::CompositorChainType m_layerCompositorChain;
+    sight::viz::scene3d::compositor::chain_manager::compositor_chain_t m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
     core::com::helper::sig_slot_connection m_connections;

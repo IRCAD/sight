@@ -27,80 +27,80 @@ namespace sight::core::tools
 
 // FIX UNSIGNED
 template<>
-bool is_mapping<std::uint8_t>(const type& type)
+bool is_mapping<std::uint8_t>(const type& _type)
 {
-    return type == type::UINT8;
+    return _type == type::UINT8;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::uint16_t>(const type& type)
+bool is_mapping<std::uint16_t>(const type& _type)
 {
-    return type == type::UINT16;
+    return _type == type::UINT16;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::uint32_t>(const type& type)
+bool is_mapping<std::uint32_t>(const type& _type)
 {
-    return type == type::UINT32;
+    return _type == type::UINT32;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::uint64_t>(const type& type)
+bool is_mapping<std::uint64_t>(const type& _type)
 {
-    return type == type::UINT64;
+    return _type == type::UINT64;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::int8_t>(const type& type)
+bool is_mapping<std::int8_t>(const type& _type)
 {
-    return type == type::INT8;
+    return _type == type::INT8;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::int16_t>(const type& type)
+bool is_mapping<std::int16_t>(const type& _type)
 {
-    return type == type::INT16;
+    return _type == type::INT16;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::int32_t>(const type& type)
+bool is_mapping<std::int32_t>(const type& _type)
 {
-    return type == type::INT32;
+    return _type == type::INT32;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<std::int64_t>(const type& type)
+bool is_mapping<std::int64_t>(const type& _type)
 {
-    return type == type::INT64;
+    return _type == type::INT64;
 }
 
 // FLOATING PRECISION
 template<>
-bool is_mapping<float>(const type& type)
+bool is_mapping<float>(const type& _type)
 {
-    return type == type::FLOAT;
+    return _type == type::FLOAT;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool is_mapping<double>(const type& type)
+bool is_mapping<double>(const type& _type)
 {
-    return type == type::DOUBLE;
+    return _type == type::DOUBLE;
 }
 
 } // namespace sight::core::tools

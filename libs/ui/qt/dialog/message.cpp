@@ -55,56 +55,56 @@ MessageDialogQtButtonType messageDialogQtButton = {
 
 //------------------------------------------------------------------------------
 
-void message::setTitle(const std::string& title)
+void message::setTitle(const std::string& _title)
 {
-    m_title = title;
+    m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-void message::setMessage(const std::string& msg)
+void message::setMessage(const std::string& _msg)
 {
-    m_message = msg;
+    m_message = _msg;
 }
 
 //------------------------------------------------------------------------------
 
-void message::setIcon(message::Icons icon)
+void message::setIcon(message::Icons _icon)
 {
-    m_icon = icon;
+    m_icon = _icon;
 }
 
 //------------------------------------------------------------------------------
 
-void message::addButton(message::Buttons button)
+void message::addButton(message::Buttons _button)
 {
-    m_buttons = (message::Buttons) (m_buttons | button);
+    m_buttons = (message::Buttons) (m_buttons | _button);
 }
 
 //------------------------------------------------------------------------------
 
-void message::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void message::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
 {
-    auto* button = new QPushButton(QString::fromStdString(label));
+    auto* button = new QPushButton(QString::fromStdString(_label));
     m_customButtons.push_back(button);
-    QObject::connect(button, &QPushButton::clicked, clickedFn);
+    QObject::connect(button, &QPushButton::clicked, _clicked_fn);
 }
 
 //-----------------------------------------------------------------------------
 
-void message::setDefaultButton(message::Buttons button)
+void message::setDefaultButton(message::Buttons _button)
 {
-    m_defaultButton = button;
+    m_defaultButton = _button;
 }
 
 //------------------------------------------------------------------------------
 
 message::Buttons message::show()
 {
-    auto iterIcon = messageDialogQtIcons.find(m_icon);
-    SIGHT_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end());
+    auto iter_icon = messageDialogQtIcons.find(m_icon);
+    SIGHT_ASSERT("Unknown Icon", iter_icon != messageDialogQtIcons.end());
 
-    QMessageBox::Icon icon               = iterIcon->second;
+    QMessageBox::Icon icon               = iter_icon->second;
     QString title                        = QString::fromStdString(m_title);
     QString text                         = QString::fromStdString(m_message);
     QMessageBox::StandardButtons buttons = QMessageBox::NoButton;
@@ -119,9 +119,9 @@ message::Buttons message::show()
 
     QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
 
-    for(auto* customButton : m_customButtons)
+    for(auto* custom_button : m_customButtons)
     {
-        box.addButton(customButton, QMessageBox::ActionRole);
+        box.addButton(custom_button, QMessageBox::ActionRole);
     }
 
     auto iter = messageDialogQtButton.find(m_defaultButton);

@@ -40,20 +40,20 @@ void point_list::copyToCv(const data::point_list::csptr& _src, std::vector<cv::P
     _dst.clear();
     for(const auto& point : _src->getPoints())
     {
-        cv::Point2d cvPoint;
-        copyToCv(point, cvPoint);
-        _dst.push_back(cvPoint);
+        cv::Point2d cv_point;
+        copyToCv(point, cv_point);
+        _dst.push_back(cv_point);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::copyFromCv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst)
+void point_list::copy_from_cv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst)
 {
     _dst->getPoints().clear();
-    for(const auto& cvPoint : _src)
+    for(const auto& cv_point : _src)
     {
-        _dst->getPoints().push_back(std::make_shared<data::point>(cvPoint.x, cvPoint.y, 0.));
+        _dst->getPoints().push_back(std::make_shared<data::point>(cv_point.x, cv_point.y, 0.));
     }
 }
 

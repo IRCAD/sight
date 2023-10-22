@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,19 +45,19 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API virtual void write(gdcm::DataSet& _dataset) const;
 
     /**
      * @brief Add a sub node
      * @param[in] node Node that must be added
      */
-    IO_DICOM_API void addSubNode(const SPTR(DicomSRNode)& node);
+    IO_DICOM_API void addSubNode(const SPTR(DicomSRNode)& _node);
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<<(std::ostream& os, const DicomSRNode& node)
+    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const DicomSRNode& _node)
     {
-        node.print(os);
-        return os;
+        _node.print(_os);
+        return _os;
     }
 
     /// Get Sub node container
@@ -67,9 +67,9 @@ public:
     }
 
     /// Set Sub node container
-    void setSubNodeContainer(const SubNodeContainer& subNodeContainer)
+    void setSubNodeContainer(const SubNodeContainer& _sub_node_container)
     {
-        m_subNodeContainer = subNodeContainer;
+        m_subNodeContainer = _sub_node_container;
     }
 
     /// Get Coded attribute
@@ -79,9 +79,9 @@ public:
     }
 
     /// Set Coded attribute
-    void setCodedAttribute(const DicomCodedAttribute& codedAttribute)
+    void setCodedAttribute(const DicomCodedAttribute& _coded_attribute)
     {
-        m_codedAttribute = codedAttribute;
+        m_codedAttribute = _coded_attribute;
     }
 
     /// Get Type
@@ -91,9 +91,9 @@ public:
     }
 
     /// Set Type
-    void setType(const std::string& type)
+    void setType(const std::string& _type)
     {
-        m_type = type;
+        m_type = _type;
     }
 
     /// Get Relationship
@@ -103,25 +103,25 @@ public:
     }
 
     /// Set Relationship
-    void setRelationship(const std::string& relationship)
+    void setRelationship(const std::string& _relationship)
     {
-        m_relationship = relationship;
+        m_relationship = _relationship;
     }
 
 protected:
 
     /// Constructor
     DicomSRNode(
-        DicomCodedAttribute codedAttribute,
-        std::string type,
-        std::string relationship = ""
+        DicomCodedAttribute _coded_attribute,
+        std::string _type,
+        std::string _relationship = ""
     );
 
     /// Destructor
     virtual ~DicomSRNode();
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    virtual void print(std::ostream& _os) const;
 
     /**
      * @brief Create a concept name code sequence
@@ -129,7 +129,7 @@ protected:
      * @param[in] codedAttribute Coded attribute to write
      */
     [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> createConceptNameCodeSequence(
-        const DicomCodedAttribute& codedAttribute
+        const DicomCodedAttribute& _coded_attribute
     ) const;
 
     /**
@@ -137,7 +137,7 @@ protected:
      * @see PS 3.3  Table 8.8-1
      * @param[in] dataset Destination dataset
      */
-    void writeContentSequence(gdcm::DataSet& dataset) const;
+    void writeContentSequence(gdcm::DataSet& _dataset) const;
 
     /// SubNode container
     SubNodeContainer m_subNodeContainer;

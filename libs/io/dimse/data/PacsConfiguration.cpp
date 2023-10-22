@@ -32,13 +32,13 @@ namespace sight::io::dimse::data
 
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::shallow_copy(const sight::data::object::csptr& source)
+void PacsConfiguration::shallow_copy(const sight::data::object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const PacsConfiguration>(source);
+    const auto& other = std::dynamic_pointer_cast<const PacsConfiguration>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)

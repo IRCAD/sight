@@ -159,7 +159,7 @@ protected:
     MODULE_IO_VIDEO_API void startCamera() final;
 
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API void startTargetCamera(std::string impl);
+    MODULE_IO_VIDEO_API void startTargetCamera(std::string _impl);
 
     /// Stop camera.
     MODULE_IO_VIDEO_API void stopCamera() final;
@@ -171,7 +171,7 @@ protected:
     MODULE_IO_VIDEO_API void toggleLoopMode() final;
 
     /// Set the new position in the video.
-    MODULE_IO_VIDEO_API void setPosition(std::int64_t position) final;
+    MODULE_IO_VIDEO_API void setPosition(std::int64_t _position) final;
 
     /// Get the previous image in frame by frame mode.
     MODULE_IO_VIDEO_API void previousImage() override;
@@ -180,10 +180,10 @@ protected:
     MODULE_IO_VIDEO_API void nextImage() override;
 
     /// Set step used on readPrevious/readNext slots.
-    MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
+    MODULE_IO_VIDEO_API void setStep(int _step, std::string _key) override;
 
     /// Sets internal parameters values.
-    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t value, std::string key) final;
+    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t _value, std::string _key) final;
 
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
@@ -192,17 +192,17 @@ protected:
     MODULE_IO_VIDEO_API void optimize() final;
 
     /// SLOT: Adds a region of interest center.
-    MODULE_IO_VIDEO_API void addROICenter(sight::data::point::sptr p) final;
+    MODULE_IO_VIDEO_API void addROICenter(sight::data::point::sptr _p) final;
 
     /// SLOT: Removes a region of interest center.
-    MODULE_IO_VIDEO_API void removeROICenter(sight::data::point::sptr p) final;
+    MODULE_IO_VIDEO_API void removeROICenter(sight::data::point::sptr _p) final;
 /** @} */
 
 private:
 
     typedef std::pair<std::string, service::config_t> ServiceConfigPair;
 
-    enum class CameraType : std::uint8_t
+    enum class camera_t : std::uint8_t
     {
         RGB,
         RGBD
@@ -217,10 +217,10 @@ private:
     void reconfigure();
 
     /// Position in the video has changed.
-    void modifyPosition(int64_t position);
+    void modifyPosition(int64_t _position);
 
     /// Duration of the video has changed.
-    void modifyDuration(int64_t duration);
+    void modifyDuration(int64_t _duration);
 
     /// The playback has started in the sub-service.
     void fwdStartCamera();
@@ -232,20 +232,20 @@ private:
     void fwdPresentFrame();
 
     /// A named parameter has been emitted in the sub-service.
-    void fwdSetParameter(ui::parameter_t value, std::string key);
+    void fwdSetParameter(ui::parameter_t _value, std::string _key);
 
     /// A job has been created in the proxied service.
-    void fwdCreateJob(sight::core::jobs::base::sptr job);
+    void fwdCreateJob(sight::core::jobs::base::sptr _job);
 
     // Forwards notifications
-    void fwdNotify(service::Notification notification);
+    void fwdNotify(service::Notification _notification);
     /** @} */
 
     /// Forward FPS data
-    void forwardFPSChanged(double fps) final;
+    void forwardFPSChanged(double _fps) final;
 
     /// Camera type (RGB, RGBD,...)
-    CameraType m_type {CameraType::RGB};
+    camera_t m_type {camera_t::RGB};
 
     /// Grabber implementation chosen by the user.
     std::string m_grabberImpl;

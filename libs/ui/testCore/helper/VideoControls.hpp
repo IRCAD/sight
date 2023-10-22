@@ -23,7 +23,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class VideoControls
@@ -36,42 +36,46 @@ public:
      * @param controlsName The objectName of the video controls interface
      * @param path The path of the video file to be loaded
      */
-    GUITEST_API static void load(Tester& tester, const std::string& controlsName, const std::filesystem::path& path);
+    GUITEST_API static void load(
+        Tester& _tester,
+        const std::string& _controls_name,
+        const std::filesystem::path& _path
+    );
 
     /**
      * Start the video being played using the video controls interface.
      * @param tester The current tester
      * @param controlsName The objectName of the video controls interface
      */
-    GUITEST_API static void start(Tester& tester, const std::string& controlsName);
+    GUITEST_API static void start(Tester& _tester, const std::string& _controls_name);
 
     /**
      * Pause the video being played using the video controls interface.
      * @param tester The current tester
      * @param controlsName The objectName of the video controls interface
      */
-    GUITEST_API static void pause(Tester& tester, const std::string& controlsName);
+    GUITEST_API static void pause(Tester& _tester, const std::string& _controls_name);
 
     /**
      * Play the video being played using the video controls interface.
      * @param tester The current tester
      * @param controlsName The objectName of the video controls interface
      */
-    GUITEST_API static void play(Tester& tester, const std::string& controlsName);
+    GUITEST_API static void play(Tester& _tester, const std::string& _controls_name);
 
     /**
      * Stop the video being played using the video controls interface.
      * @param tester The current tester
      * @param controlsName The objectName of the video controls interface
      */
-    GUITEST_API static void stop(Tester& tester, const std::string& controlsName);
+    GUITEST_API static void stop(Tester& _tester, const std::string& _controls_name);
 
     /**
      * Loop the video being played using the video controls interface.
      * @param tester The current tester
      * @param controlsName The objectName of the video controls interface
      */
-    GUITEST_API static void loop(Tester& tester, const std::string& controlsName);
+    GUITEST_API static void loop(Tester& _tester, const std::string& _controls_name);
 };
 
 }

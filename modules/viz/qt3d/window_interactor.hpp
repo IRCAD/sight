@@ -70,7 +70,7 @@ public:
      */
     MODULE_VIZ_QT3D_API void createContainer(ui::container::widget::sptr _parent) final;
 
-    MODULE_VIZ_QT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView) final;
+    MODULE_VIZ_QT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3d_view) final;
 
 private:
 

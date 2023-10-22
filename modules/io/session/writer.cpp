@@ -58,9 +58,9 @@ public:
     WriterImpl& operator=(WriterImpl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(writer* const writer) noexcept :
-        m_writer(writer),
-        m_job_created_signal(writer->new_signal<JobCreatedSignal>("jobCreated"))
+    inline explicit WriterImpl(writer* const _writer) noexcept :
+        M_WRITER(_writer),
+        m_job_created_signal(_writer->new_signal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -68,7 +68,7 @@ public:
     inline ~WriterImpl() noexcept = default;
 
     /// Pointer to the public interface
-    writer* const m_writer;
+    writer* const M_WRITER;
 
     /// Extension name to use for session file
     std::string m_extension_name {".zip"};
@@ -209,7 +209,7 @@ void writer::updating()
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Generate temporary file
-    const core::os::temp_file tempFile;
+    const core::os::temp_file temp_file;
 
     // Ask password if needed
     const secure_string& password =
@@ -221,17 +221,17 @@ void writer::updating()
                 return secure_string();
             }
 
-            const secure_string& globalPassword = password_keeper::get_global_password();
+            const secure_string& global_password = password_keeper::get_global_password();
 
             if((m_pimpl->m_password_policy == password_keeper::password_policy::ALWAYS)
                || (m_pimpl->m_password_policy == password_keeper::password_policy::GLOBAL
-                   && globalPassword.empty()))
+                   && global_password.empty()))
             {
                 const auto& [newPassword, ok] =
                     sight::ui::dialog::input::showInputDialog(
                         "Enter Password",
                         "Password:",
-                        globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
+                        global_password.c_str(), // NOLINT(readability-redundant-string-cstr)
                         sight::ui::dialog::input::EchoMode::PASSWORD
 
                     );
@@ -239,14 +239,14 @@ void writer::updating()
                 return secure_string(newPassword);
             }
 
-            return globalPassword;
+            return global_password;
         }();
 
-    const auto writeJob = std::make_shared<core::jobs::job>(
-        "Writing " + tempFile.string() + " file",
-        [&](core::jobs::job& runningJob)
+    const auto write_job = std::make_shared<core::jobs::job>(
+        "Writing " + temp_file.string() + " file",
+        [&](core::jobs::job& _running_job)
         {
-            runningJob.done_work(10);
+            _running_job.done_work(10);
 
             // Create the session writer
             auto writer = std::make_shared<sight::io::session::SessionWriter>();
@@ -254,40 +254,40 @@ void writer::updating()
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
                 writer->set_object(data.get_shared());
-                writer->set_file(tempFile);
+                writer->set_file(temp_file);
                 writer->setPassword(password);
                 writer->setEncryptionPolicy(m_pimpl->m_encryption_policy);
                 writer->setArchiveFormat(m_pimpl->m_archive_format);
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::BusyCursor busyCursor;
+            const sight::ui::BusyCursor busy_cursor;
 
             // Write the file
             writer->write();
 
-            runningJob.done();
+            _running_job.done();
         },
         this->worker()
     );
 
-    const auto renameJob = std::make_shared<core::jobs::job>(
-        "Rename file" + tempFile.string() + " to " + filepath.string() + ".",
-        [&](core::jobs::job& runningJob)
+    const auto rename_job = std::make_shared<core::jobs::job>(
+        "Rename file" + temp_file.string() + " to " + filepath.string() + ".",
+        [&](core::jobs::job& _running_job)
         {
-            runningJob.done_work(80);
+            _running_job.done_work(80);
 
             // Robust rename
-            core::tools::system::robust_rename(tempFile, filepath, true);
+            core::tools::system::robust_rename(temp_file, filepath, true);
 
-            runningJob.done();
+            _running_job.done();
         },
         this->worker()
     );
 
     core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " writer");
-    jobs->add(writeJob);
-    jobs->add(renameJob);
+    jobs->add(write_job);
+    jobs->add(rename_job);
     jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
@@ -322,37 +322,37 @@ void writer::updating()
 
 void writer::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::single_folder>();
+    static auto default_location = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location locationDialog;
+    sight::ui::dialog::location location_dialog;
 
     // Set window title
     if(!m_windowTitle.empty())
     {
-        locationDialog.setTitle(m_windowTitle);
+        location_dialog.setTitle(m_windowTitle);
     }
     else
     {
-        locationDialog.setTitle("Enter file name");
+        location_dialog.setTitle("Enter file name");
     }
 
-    locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::dialog::location::WRITE);
-    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
-    locationDialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
+    location_dialog.setDefaultLocation(default_location);
+    location_dialog.setOption(ui::dialog::location::WRITE);
+    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
 
     // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
 
     if(result)
     {
         const auto& filepath = result->get_file();
         set_file(filepath);
-        m_pimpl->m_extension_name = locationDialog.getSelectedExtensions().front();
+        m_pimpl->m_extension_name = location_dialog.getSelectedExtensions().front();
 
         // Save default location for later use
-        defaultLocation->set_folder(filepath.parent_path());
-        locationDialog.saveDefaultLocation(defaultLocation);
+        default_location->set_folder(filepath.parent_path());
+        location_dialog.saveDefaultLocation(default_location);
     }
     else
     {

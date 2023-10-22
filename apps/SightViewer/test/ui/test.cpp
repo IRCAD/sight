@@ -35,7 +35,7 @@
 namespace sight::sightviewer::test::ui
 {
 
-namespace helper = sight::ui::testCore::helper;
+namespace helper = sight::ui::test_core::helper;
 
 //------------------------------------------------------------------------------
 
@@ -48,64 +48,64 @@ std::filesystem::path test::getProfilePath()
 //------------------------------------------------------------------------------
 
 void test::openFile(
-    sight::ui::testCore::Tester& tester,
-    const std::string& format,
-    const std::filesystem::path& path
+    sight::ui::test_core::Tester& _tester,
+    const std::string& _format,
+    const std::filesystem::path& _path
 )
 {
     // Click on the "Load series" button
-    helper::Button::push(tester, "toolBarView/Load series");
+    helper::Button::push(_tester, "toolBarView/Load series");
 
     // Once we clicked the button, a selection window should appear. We select the format we want.
-    helper::selector_dialog::select(tester, format);
+    helper::selector_dialog::select(_tester, _format);
 
     // Fill the file dialog, tap PATH
-    helper::FileDialog::fill(tester, path);
+    helper::FileDialog::fill(_tester, _path);
 
-    if(format == "DICOM" || format == "Nifti or Inr images")
+    if(_format == "DICOM" || _format == "Nifti or Inr images")
     {
         // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::Button::waitForClickability(
-            tester,
-            helper::Select("toolBarView/Show/hide volume").withTimeout(sight::ui::testCore::Tester::DEFAULT_TIMEOUT*5)
+            _tester,
+            helper::Select("toolBarView/Show/hide volume").withTimeout(sight::ui::test_core::Tester::DEFAULT_TIMEOUT*5)
         );
     }
-    else if(format == "VTK")
+    else if(_format == "VTK")
     {
         // The Show/hide mesh button becomes enabled when the image is loaded.
-        helper::Button::waitForClickability(tester, "toolBarView/Show/hide mesh");
+        helper::Button::waitForClickability(_tester, "toolBarView/Show/hide mesh");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void test::saveSnapshot(sight::ui::testCore::Tester& tester, const std::filesystem::path& path)
+void test::saveSnapshot(sight::ui::test_core::Tester& _tester, const std::filesystem::path& _path)
 {
     // Click on the "snapshot" button
-    helper::Button::push(tester, "topToolbarView/Snapshot");
+    helper::Button::push(_tester, "topToolbarView/Snapshot");
 
     // Fill the file dialog, tap PATH
-    helper::FileDialog::fill(tester, path);
+    helper::FileDialog::fill(_tester, _path);
 
     // Once we have pressed Enter, the path must be created...
-    tester.doubt(
+    _tester.doubt(
         "the snapshot is saved",
-        [&path](QObject*) -> bool {return std::filesystem::exists(path);},
-        sight::ui::testCore::Tester::DEFAULT_TIMEOUT*2
+        [&_path](QObject*) -> bool {return std::filesystem::exists(_path);},
+        sight::ui::test_core::Tester::DEFAULT_TIMEOUT*2
     );
     // ...and the image should be valid.
-    bool ok = QTest::qWaitFor([&path]() -> bool {return !QImage(QString::fromStdString(path.string())).isNull();});
+    bool ok = QTest::qWaitFor([&_path]() -> bool {return !QImage(QString::fromStdString(_path.string())).isNull();});
     CPPUNIT_ASSERT_MESSAGE("The writer didn't finish writing", ok);
 }
 
 //------------------------------------------------------------------------------
 
-void test::resetNegatos(sight::ui::testCore::Tester& tester)
+void test::resetNegatos(sight::ui::test_core::Tester& _tester)
 {
     const std::array negatos {"topScenesView/1", "bottomScenesView/0", "bottomScenesView/1"};
     for(std::string parent : negatos)
     {
-        helper::Slider::set(tester, helper::Select::fromParent(parent, "negatoSlicerSrv"), 0);
+        helper::Slider::set(_tester, helper::Select::fromParent(parent, "negatoSlicerSrv"), 0);
     }
 }
 

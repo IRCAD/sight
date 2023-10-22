@@ -32,15 +32,15 @@ namespace sight::io::dicom::writer::ie
 //------------------------------------------------------------------------------
 
 FrameOfReference::FrameOfReference(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::series::csptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(gdcm::Writer)& _writer,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const data::series::csptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(writer, instance, series,
-                                                           logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
+                                                           _logger, _progress, _cancel)
 {
 }
 
@@ -57,8 +57,8 @@ void FrameOfReference::writeFrameOfReferenceModule()
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Frame of Reference UID
-    const std::string frameOfReferenceUID = m_instance->getFrameOfReferenceUID();
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0052>(frameOfReferenceUID, dataset);
+    const std::string frame_of_reference_uid = m_instance->getFrameOfReferenceUID();
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0052>(frame_of_reference_uid, dataset);
 
     // Position Reference Indicator - Type 2
     io::dicom::helper::DicomDataWriter::setEmptyTagValue<0x0020, 0x1040>(dataset);

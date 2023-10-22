@@ -60,43 +60,43 @@ std::string ImagePositionPatientSorter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+ImagePositionPatientSorter::dicom_series_container_t ImagePositionPatientSorter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 ) const
 {
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
-    using SortedDicomMapType = std::map<double, core::memory::buffer_object::sptr>;
-    SortedDicomMapType sortedDicom;
+    using sorted_dicom_map_t = std::map<double, core::memory::buffer_object::sptr>;
+    sorted_dicom_map_t sorted_dicom;
 
     OFCondition status;
 
-    for(const auto& item : series->getDicomContainer())
+    for(const auto& item : _series->getDicomContainer())
     {
-        const core::memory::buffer_object::sptr bufferObj = item.second;
-        const std::size_t buffSize                        = bufferObj->size();
-        core::memory::buffer_object::lock_t lock(bufferObj);
+        const core::memory::buffer_object::sptr buffer_obj = item.second;
+        const std::size_t buff_size                        = buffer_obj->size();
+        core::memory::buffer_object::lock_t lock(buffer_obj);
         char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
-        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setBuffer(buffer, offile_off_t(buff_size));
         is.setEos();
 
-        DcmFileFormat fileFormat;
-        fileFormat.transferInit();
-        if(!fileFormat.read(is).good())
+        DcmFileFormat file_format;
+        file_format.transferInit();
+        if(!file_format.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
+                "Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
 
-        fileFormat.loadAllDataIntoMemory();
-        fileFormat.transferEnd();
+        file_format.loadAllDataIntoMemory();
+        file_format.transferEnd();
 
-        DcmDataset* dataset = fileFormat.getDataset();
+        DcmDataset* dataset = file_format.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
         {
@@ -106,30 +106,30 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
             throw sight::filter::dicom::exceptions::FilterFailure(msg);
         }
 
-        fwVec3d imagePosition;
+        fwVec3d image_position;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
+            dataset->findAndGetFloat64(DCM_ImagePositionPatient, image_position[i], i);
         }
 
-        fwVec3d imageOrientationU;
-        fwVec3d imageOrientationV;
+        fwVec3d image_orientation_u;
+        fwVec3d image_orientation_v;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_u[i], i);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_v[i], i + std::size_t(3));
         }
 
         //Compute Z direction (cross product)
-        const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
+        const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
         //Compute dot product to get the index
-        const double index = geometry::data::dot(imagePosition, zVector);
+        const double index = geometry::data::dot(image_position, z_vector);
 
-        sortedDicom[index] = bufferObj;
+        sorted_dicom[index] = buffer_obj;
     }
 
-    if(sortedDicom.size() != series->getDicomContainer().size())
+    if(sorted_dicom.size() != _series->getDicomContainer().size())
     {
         const std::string msg =
             "Unable to sort the series using the ImagePositionPatient tag. Some images have the same "
@@ -138,16 +138,16 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
-    series->clearDicomContainer();
+    _series->clearDicomContainer();
     std::size_t index = 0;
-    for(const auto& item : sortedDicom)
+    for(const auto& item : sorted_dicom)
     {
-        series->addBinary(index++, item.second);
+        _series->addBinary(index++, item.second);
     }
 
-    result.push_back(series);
+    result.push_back(_series);
 
-    logger->information("The instances have been sorted using the slices positions.");
+    _logger->information("The instances have been sorted using the slices positions.");
 
     return result;
 }

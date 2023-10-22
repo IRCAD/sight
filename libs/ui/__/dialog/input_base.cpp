@@ -25,7 +25,7 @@
 namespace sight::ui::dialog
 {
 
-const input_base::FactoryRegistryKeyType input_base::REGISTRY_KEY = "::ui::dialog::input";
+const input_base::factory_registry_key_t input_base::REGISTRY_KEY = "::ui::dialog::input";
 
 input_base::input_base()
 = default;

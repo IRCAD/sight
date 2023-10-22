@@ -45,60 +45,60 @@ constexpr static auto s_uuid {"uuid"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
+    const core::crypto::secure_string& _password = ""
 )
 {
-    const auto dicomSeries = helper::safe_cast<data::dicom_series>(object);
+    const auto dicom_series = helper::safe_cast<data::dicom_series>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::dicom_series>(tree, 1);
+    helper::write_version<data::dicom_series>(_tree, 1);
 
     // Since dicom_series inherits from Series, we could use SeriesSerializer
-    series::write(archive, tree, dicomSeries, children, password);
+    series::write(_archive, _tree, dicom_series, _children, _password);
 
     // Serialize other attributes
-    tree.put(s_NumberOfInstances, dicomSeries->numInstances());
-    tree.put(s_FirstInstanceNumber, dicomSeries->getFirstInstanceNumber());
+    _tree.put(s_NumberOfInstances, dicom_series->numInstances());
+    _tree.put(s_FirstInstanceNumber, dicom_series->getFirstInstanceNumber());
 
     // sop_classUIDs
-    boost::property_tree::ptree sopClassUIDsTree;
-    for(const auto& sopClassUID : dicomSeries->getSOPClassUIDs())
+    boost::property_tree::ptree sop_class_ui_ds_tree;
+    for(const auto& sop_class_uid : dicom_series->getSOPClassUIDs())
     {
-        sopClassUIDsTree.add(s_sop_classUID, core::crypto::to_base64(sopClassUID));
+        sop_class_ui_ds_tree.add(s_sop_classUID, core::crypto::to_base64(sop_class_uid));
     }
 
-    tree.add_child(s_sop_classUIDs, sopClassUIDsTree);
+    _tree.add_child(s_sop_classUIDs, sop_class_ui_ds_tree);
 
     // ComputedTagValues
-    boost::property_tree::ptree computedTagValuesTree;
-    for(const auto& [tag, value] : dicomSeries->getComputedTagValues())
+    boost::property_tree::ptree computed_tag_values_tree;
+    for(const auto& [tag, value] : dicom_series->getComputedTagValues())
     {
-        computedTagValuesTree.add(tag, core::crypto::to_base64(value));
+        computed_tag_values_tree.add(tag, core::crypto::to_base64(value));
     }
 
-    tree.add_child(s_ComputedTagValues, computedTagValuesTree);
+    _tree.add_child(s_ComputedTagValues, computed_tag_values_tree);
 
     // Stores DICOM data.
     /// @todo This must be changed to store all of this as real DICOM files
     /// This requires a complete overhaul of DICOM management, especially "filtering" part as this are
     /// destructive operations.
-    boost::property_tree::ptree instancesTree;
-    for(const auto& [key, bufferObject] : dicomSeries->getDicomContainer())
+    boost::property_tree::ptree instances_tree;
+    for(const auto& [key, bufferObject] : dicom_series->getDicomContainer())
     {
-        boost::property_tree::ptree instanceTree;
+        boost::property_tree::ptree instance_tree;
 
         // Store the instance number and the size to the tree
-        instanceTree.put(s_Number, key);
-        instanceTree.put(s_Size, bufferObject->size());
+        instance_tree.put(s_Number, key);
+        instance_tree.put(s_Size, bufferObject->size());
 
         // Create the output file inside the archive
-        const auto& ostream = archive.openFile(
-            std::filesystem::path(dicomSeries->get_uuid() + "/" + std::to_string(key) + ".dcm"),
-            password
+        const auto& ostream = _archive.openFile(
+            std::filesystem::path(dicom_series->get_uuid() + "/" + std::to_string(key) + ".dcm"),
+            _password
         );
 
         // Write the data
@@ -107,95 +107,95 @@ inline static void write(
             static_cast<std::streamsize>(bufferObject->size())
         );
 
-        instancesTree.add_child(s_Instance, instanceTree);
+        instances_tree.add_child(s_Instance, instance_tree);
     }
 
-    tree.add_child(s_Instances, instancesTree);
+    _tree.add_child(s_Instances, instances_tree);
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::dicom_series::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto dicomSeries = helper::cast_or_create<data::dicom_series>(object);
+    auto dicom_series = helper::cast_or_create<data::dicom_series>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::dicom_series>(tree, 0, 1);
+    helper::read_version<data::dicom_series>(_tree, 0, 1);
 
     // Since dicom_series inherits from Series, we could use SeriesDeserializer
-    series::read(archive, tree, children, dicomSeries, password);
+    series::read(_archive, _tree, _children, dicom_series, _password);
 
     // Deserialize other attributes
-    dicomSeries->setNumberOfInstances(tree.get<std::size_t>(s_NumberOfInstances));
-    dicomSeries->setFirstInstanceNumber(tree.get<std::size_t>(s_FirstInstanceNumber));
+    dicom_series->setNumberOfInstances(_tree.get<std::size_t>(s_NumberOfInstances));
+    dicom_series->setFirstInstanceNumber(_tree.get<std::size_t>(s_FirstInstanceNumber));
 
     // sop_classUIDs
-    std::set<std::string> sopClassUIDs;
-    for(const auto& [key, value] : tree.get_child(s_sop_classUIDs))
+    std::set<std::string> sop_class_ui_ds;
+    for(const auto& [key, value] : _tree.get_child(s_sop_classUIDs))
     {
-        sopClassUIDs.insert(core::crypto::from_base64(value.get_value<std::string>()));
+        sop_class_ui_ds.insert(core::crypto::from_base64(value.get_value<std::string>()));
     }
 
-    dicomSeries->setSOPClassUIDs(sopClassUIDs);
+    dicom_series->setSOPClassUIDs(sop_class_ui_ds);
 
     // ComputedTagValues
-    std::map<std::string, std::string> computedTagValues;
+    std::map<std::string, std::string> computed_tag_values;
 
-    for(const auto& [tag, value] : tree.get_child(s_ComputedTagValues))
+    for(const auto& [tag, value] : _tree.get_child(s_ComputedTagValues))
     {
-        computedTagValues[tag] = core::crypto::from_base64(value.get_value<std::string>());
+        computed_tag_values[tag] = core::crypto::from_base64(value.get_value<std::string>());
     }
 
-    dicomSeries->setComputedTagValues(computedTagValues);
+    dicom_series->setComputedTagValues(computed_tag_values);
 
     // Dicom Instances
-    const auto& uuid = tree.get<std::string>(s_uuid);
-    std::map<std::size_t, core::memory::buffer_object::sptr> dicomContainer;
+    const auto& uuid = _tree.get<std::string>(s_uuid);
+    std::map<std::size_t, core::memory::buffer_object::sptr> dicom_container;
 
-    for(const auto& [key, instance] : tree.get_child(s_Instances))
+    for(const auto& [key, instance] : _tree.get_child(s_Instances))
     {
         // Buffer
-        const auto instanceNumber = instance.get<std::size_t>(s_Number);
-        const auto size           = instance.get<std::size_t>(s_Size, 0);
+        const auto instance_number = instance.get<std::size_t>(s_Number);
+        const auto size            = instance.get<std::size_t>(s_Size, 0);
 
         SIGHT_THROW_IF(
-            dicomSeries->get_classname()
+            dicom_series->get_classname()
             << " (UUID="
             << uuid
             << "): Incorrect buffer size stored for Instance '"
-            << instanceNumber
+            << instance_number
             << "'.",
             size == 0
         );
 
-        auto bufferObject = std::make_shared<core::memory::buffer_object>(true);
-        core::memory::buffer_object::lock_t lockerSource(bufferObject);
-        bufferObject->allocate(size);
+        auto buffer_object = std::make_shared<core::memory::buffer_object>(true);
+        core::memory::buffer_object::lock_t locker_source(buffer_object);
+        buffer_object->allocate(size);
 
         // Create the istream from the input file inside the archive
-        const auto& istream = archive.openFile(
-            std::filesystem::path(uuid + "/" + std::to_string(instanceNumber) + ".dcm"),
-            password
+        const auto& istream = _archive.openFile(
+            std::filesystem::path(uuid + "/" + std::to_string(instance_number) + ".dcm"),
+            _password
         );
 
         istream->read(
-            static_cast<char*>(bufferObject->buffer()),
-            static_cast<std::streamsize>(bufferObject->size())
+            static_cast<char*>(buffer_object->buffer()),
+            static_cast<std::streamsize>(buffer_object->size())
         );
 
-        dicomContainer[instanceNumber] = bufferObject;
+        dicom_container[instance_number] = buffer_object;
     }
 
-    dicomSeries->setDicomContainer(dicomContainer);
+    dicom_series->setDicomContainer(dicom_container);
 
-    return dicomSeries;
+    return dicom_series;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::dicom_series, write, read);

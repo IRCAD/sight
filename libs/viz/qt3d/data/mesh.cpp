@@ -92,7 +92,7 @@ void mesh::setMaterial(viz::qt3d::data::material* _material)
 
 void mesh::setScene(sight::viz::qt3d::core::GenericScene* _scene)
 {
-    SIGHT_ASSERT("Scene can't be set to null value.", _scene);
+    SIGHT_ASSERT("scene can't be set to null value.", _scene);
     m_scene = _scene;
 }
 
@@ -179,17 +179,17 @@ void mesh::buildBuffers(sight::data::mesh::sptr _mesh)
     }
 
     // Declares data arrays which are associated with QBuffers.
-    QByteArray posBufferData;
-    posBufferData.resize(static_cast<int>(static_cast<std::size_t>(m_numberOfPoints) * m_vertexSize * sizeof(float)));
-    auto* rawPosBufferData = reinterpret_cast<float*>(posBufferData.data());
+    QByteArray pos_buffer_data;
+    pos_buffer_data.resize(static_cast<int>(static_cast<std::size_t>(m_numberOfPoints) * m_vertexSize * sizeof(float)));
+    auto* raw_pos_buffer_data = reinterpret_cast<float*>(pos_buffer_data.data());
 
-    QByteArray normalBufferData;
-    normalBufferData.resize(static_cast<int>(std::size_t(m_numberOfPoints) * m_vertexSize * sizeof(float)));
-    auto* rawNormalBufferData = reinterpret_cast<float*>(normalBufferData.data());
+    QByteArray normal_buffer_data;
+    normal_buffer_data.resize(static_cast<int>(std::size_t(m_numberOfPoints) * m_vertexSize * sizeof(float)));
+    auto* raw_normal_buffer_data = reinterpret_cast<float*>(normal_buffer_data.data());
 
-    QByteArray indexBufferData;
-    indexBufferData.resize(3 * static_cast<int>(_mesh->numCells()) * static_cast<int>(sizeof(unsigned int)));
-    auto* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
+    QByteArray index_buffer_data;
+    index_buffer_data.resize(3 * static_cast<int>(_mesh->numCells()) * static_cast<int>(sizeof(unsigned int)));
+    auto* raw_index_buffer_data = reinterpret_cast<unsigned int*>(index_buffer_data.data());
 
     // Checks if the mesh has normals. If not, generates them.
     if(!_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
@@ -197,78 +197,78 @@ void mesh::buildBuffers(sight::data::mesh::sptr _mesh)
         geometry::data::mesh::generatePointNormals(_mesh);
     }
 
-    float minX     = 0;
-    float maxX     = 0;
-    float minY     = 0;
-    float maxY     = 0;
-    float minZ     = 0;
-    float maxZ     = 0;
-    bool minMaxSet = false;
+    float min_x      = 0;
+    float max_x      = 0;
+    float min_y      = 0;
+    float max_y      = 0;
+    float min_z      = 0;
+    float max_z      = 0;
+    bool min_max_set = false;
 
     // Iterates over points and registers each point in position and normal buffers.
     namespace point = sight::data::iterator::point;
     namespace cell  = sight::data::iterator::cell;
 
-    unsigned int countPts = 0;
+    unsigned int count_pts = 0;
     for(const auto& [p, n] : _mesh->czip_range<point::xyz, point::nxyz>())
     {
-        rawPosBufferData[countPts]     = p.x;
-        rawPosBufferData[countPts + 1] = p.y;
-        rawPosBufferData[countPts + 2] = p.z;
+        raw_pos_buffer_data[count_pts]     = p.x;
+        raw_pos_buffer_data[count_pts + 1] = p.y;
+        raw_pos_buffer_data[count_pts + 2] = p.z;
 
-        rawNormalBufferData[countPts]     = n.nx;
-        rawNormalBufferData[countPts + 1] = n.ny;
-        rawNormalBufferData[countPts + 2] = n.nz;
+        raw_normal_buffer_data[count_pts]     = n.nx;
+        raw_normal_buffer_data[count_pts + 1] = n.ny;
+        raw_normal_buffer_data[count_pts + 2] = n.nz;
 
-        countPts += 3;
+        count_pts += 3;
 
         // Computes mesh extents and center. Needed to center camera.
-        if(!minMaxSet)
+        if(!min_max_set)
         {
-            minX      = p.x;
-            maxX      = p.x;
-            minY      = p.y;
-            maxY      = p.y;
-            minZ      = p.z;
-            maxZ      = p.z;
-            minMaxSet = true;
+            min_x       = p.x;
+            max_x       = p.x;
+            min_y       = p.y;
+            max_y       = p.y;
+            min_z       = p.z;
+            max_z       = p.z;
+            min_max_set = true;
         }
         else
         {
-            if(p.x < minX)
+            if(p.x < min_x)
             {
-                minX = p.x;
+                min_x = p.x;
             }
 
-            if(p.x > maxX)
+            if(p.x > max_x)
             {
-                maxX = p.x;
+                max_x = p.x;
             }
 
-            if(p.y < minY)
+            if(p.y < min_y)
             {
-                minY = p.y;
+                min_y = p.y;
             }
 
-            if(p.y > maxY)
+            if(p.y > max_y)
             {
-                maxY = p.y;
+                max_y = p.y;
             }
 
-            if(p.z < minZ)
+            if(p.z < min_z)
             {
-                maxZ = p.z;
+                max_z = p.z;
             }
 
-            if(p.z > maxZ)
+            if(p.z > max_z)
             {
-                maxZ = p.z;
+                max_z = p.z;
             }
         }
     }
 
-    m_minExtent = QVector3D(minX, minY, minZ);
-    m_maxExtent = QVector3D(maxX, maxY, maxZ);
+    m_minExtent = QVector3D(min_x, min_y, min_z);
+    m_maxExtent = QVector3D(max_x, max_y, max_z);
 
     m_meshCenter =
         QVector3D(
@@ -278,67 +278,67 @@ void mesh::buildBuffers(sight::data::mesh::sptr _mesh)
         );
 
     // Iterates over cells and registers points index in index buffer.
-    const auto cellType = _mesh->getCellType();
+    const auto cell_type = _mesh->get_cell_type();
 
     // TODO: The loop before is probably not optimal and would need some extra optimization work
     // See comments in https://git.ircad.fr/sight/sight/-/merge_requests/476
-    unsigned int countIndex = 0;
+    unsigned int count_index = 0;
 
-    if(cellType == sight::data::mesh::CellType::TRIANGLE)
+    if(cell_type == sight::data::mesh::cell_type_t::TRIANGLE)
     {
         for(const auto& cell : _mesh->crange<cell::triangle>())
         {
-            rawIndexBufferData[countIndex++] = cell.pt[0];
-            rawIndexBufferData[countIndex++] = cell.pt[1];
-            rawIndexBufferData[countIndex++] = cell.pt[2];
+            raw_index_buffer_data[count_index++] = cell.pt[0];
+            raw_index_buffer_data[count_index++] = cell.pt[1];
+            raw_index_buffer_data[count_index++] = cell.pt[2];
         }
     }
-    else if(cellType == sight::data::mesh::CellType::QUAD)
+    else if(cell_type == sight::data::mesh::cell_type_t::QUAD)
     {
         // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
         // triangle mesh.
-        indexBufferData.resize(
+        index_buffer_data.resize(
             6 * static_cast<int>(_mesh->numCells())
             * static_cast<int>(sizeof(unsigned int))
         );
-        rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
+        raw_index_buffer_data = reinterpret_cast<unsigned int*>(index_buffer_data.data());
 
         m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->numCells()));
 
         this->addComputeEntityToScene(static_cast<int>(_mesh->numCells()));
         for(const auto& cell : _mesh->crange<cell::quad>())
         {
-            rawIndexBufferData[countIndex++] = cell.pt[0];
-            rawIndexBufferData[countIndex++] = cell.pt[1];
-            rawIndexBufferData[countIndex++] = cell.pt[2];
-            rawIndexBufferData[countIndex++] = cell.pt[3];
+            raw_index_buffer_data[count_index++] = cell.pt[0];
+            raw_index_buffer_data[count_index++] = cell.pt[1];
+            raw_index_buffer_data[count_index++] = cell.pt[2];
+            raw_index_buffer_data[count_index++] = cell.pt[3];
 
-            rawIndexBufferData[countIndex++]     = 0;
-            rawIndexBufferData[countIndex++ + 1] = cell.pt[0];
-            rawIndexBufferData[countIndex++ + 2] = 0;
+            raw_index_buffer_data[count_index++]     = 0;
+            raw_index_buffer_data[count_index++ + 1] = cell.pt[0];
+            raw_index_buffer_data[count_index++ + 2] = 0;
         }
     }
 
     // Associates QBuffers with respective data arrays.
-    m_posBuffer->setData(posBufferData);
-    m_normalBuffer->setData(normalBufferData);
-    m_indexBuffer->setData(indexBufferData);
+    m_posBuffer->setData(pos_buffer_data);
+    m_normalBuffer->setData(normal_buffer_data);
+    m_indexBuffer->setData(index_buffer_data);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::addComputeEntityToScene(int _numberOfCells)
+void mesh::addComputeEntityToScene(int _number_of_cells)
 {
-    auto* const computeEntity  = new Qt3DCore::QEntity(m_scene);
-    auto* const computeCommand = new Qt3DRender::QComputeCommand(computeEntity);
+    auto* const compute_entity  = new Qt3DCore::QEntity(m_scene);
+    auto* const compute_command = new Qt3DRender::QComputeCommand(compute_entity);
 
-    auto* const computeMat = new viz::qt3d::ComputeMaterial();
-    computeMat->setIndexBuffer(m_indexBuffer);
+    auto* const compute_mat = new viz::qt3d::ComputeMaterial();
+    compute_mat->setIndexBuffer(m_indexBuffer);
 
-    computeEntity->addComponent(computeMat);
-    computeEntity->addComponent(computeCommand);
+    compute_entity->addComponent(compute_mat);
+    compute_entity->addComponent(compute_command);
 
-    computeMat->updateFrameGraph(m_scene->getFrameGraph(), _numberOfCells);
+    compute_mat->updateFrameGraph(m_scene->getFrameGraph(), _number_of_cells);
 }
 
 } // namespace sight::viz::qt3d::data

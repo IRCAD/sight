@@ -38,8 +38,8 @@ typedef win32 library_impl_type;
 
 //------------------------------------------------------------------------------
 
-library::library(const std::filesystem::path& module_path) noexcept :
-    m_implementor(std::make_unique<library_impl_type>(module_path))
+library::library(const std::filesystem::path& _module_path) noexcept :
+    m_implementor(std::make_unique<library_impl_type>(_module_path))
 {
 }
 

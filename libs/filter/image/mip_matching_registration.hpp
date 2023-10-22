@@ -66,12 +66,12 @@ struct RegistrationDispatch
     //------------------------------------------------------------------------------
 
     template<typename PIXELTYPE>
-    void operator()(Parameters& params)
+    void operator()(Parameters& _params)
     {
         filter::image::mip_matching_registration<PIXELTYPE>::registerImage(
-            params.moving,
-            params.fixed,
-            params.transform
+            _params.moving,
+            _params.fixed,
+            _params.transform
         );
     }
 };
@@ -116,11 +116,11 @@ private:
     using Image2DPtrType = typename itk::Image<float, 2>::Pointer;
 
     using MIPFilterType           = itk::MaximumProjectionImageFilter<Image3DType, Image2DType>;
-    using CorrelationFilterType   = itk::FFTNormalizedCorrelationImageFilter<Image2DType, Image2DType>;
+    using correlation_filter_t    = itk::FFTNormalizedCorrelationImageFilter<Image2DType, Image2DType>;
     using ExtractFilter3Dto2DType = itk::RegionOfInterestImageFilter<Image3DType, Image2DType>;
     using ExtractFilter2Dto2DType = itk::RegionOfInterestImageFilter<Image2DType, Image2DType>;
-    using FlipFilterType          = itk::FlipImageFilter<Image3DType>;
-    using MinMaxCalculatorType    = itk::MinimumMaximumImageCalculator<Image2DType>;
+    using flip_filter_t           = itk::FlipImageFilter<Image3DType>;
+    using min_max_calculator_t    = itk::MinimumMaximumImageCalculator<Image2DType>;
 
     /**
      * @brief Compute the maximum intensity projection (MIP) of an image along the specified axis.
@@ -144,14 +144,14 @@ void mip_matching_registration<PIX>::registerImage(
     data::matrix4::sptr& _transform
 )
 {
-    const double fixedVoxelVolume = std::accumulate(
+    const double fixed_voxel_volume = std::accumulate(
         _fixed->getSpacing().begin(),
         _fixed->getSpacing().end(),
         1.,
         std::multiplies<double>()
     );
 
-    const double movingVoxelVolume = std::accumulate(
+    const double moving_voxel_volume = std::accumulate(
         _moving->getSpacing().begin(),
         _moving->getSpacing().end(),
         1.,
@@ -162,30 +162,30 @@ void mip_matching_registration<PIX>::registerImage(
     data::image::csptr moving = _moving;
 
     // Resample the image with the smallest voxels to match the other's voxel size.
-    if(fixedVoxelVolume < movingVoxelVolume)
+    if(fixed_voxel_volume < moving_voxel_volume)
     {
-        auto inverseTransform = std::make_shared<data::matrix4>();
-        geometry::data::invert(*_transform, *inverseTransform);
+        auto inverse_transform = std::make_shared<data::matrix4>();
+        geometry::data::invert(*_transform, *inverse_transform);
 
-        fixed = filter::image::resampler::resample(_fixed, inverseTransform, _moving->getSpacing());
+        fixed = filter::image::resampler::resample(_fixed, inverse_transform, _moving->getSpacing());
     }
     else
     {
         moving = filter::image::resampler::resample(_moving, _transform, _fixed->getSpacing());
     }
 
-    const Image3DPtrType itkMoving = castTo<PIX>(moving);
-    const Image3DPtrType itkFixed  = castTo<PIX>(fixed);
+    const Image3DPtrType itk_moving = cast_to<PIX>(moving);
+    const Image3DPtrType itk_fixed  = cast_to<PIX>(fixed);
 
-    const auto movingMipX = computeMIP(itkMoving, Direction::X);
-    const auto movingMipY = computeMIP(itkMoving, Direction::Y);
-    const auto fixedMipX  = computeMIP(itkFixed, Direction::X);
-    const auto fixedMipY  = computeMIP(itkFixed, Direction::Y);
+    const auto moving_mip_x = computeMIP(itk_moving, Direction::X);
+    const auto moving_mip_y = computeMIP(itk_moving, Direction::Y);
+    const auto fixed_mip_x  = computeMIP(itk_fixed, Direction::X);
+    const auto fixed_mip_y  = computeMIP(itk_fixed, Direction::Y);
 
-    const auto transX = matchTemplate(fixedMipX, movingMipX);
-    const auto transY = matchTemplate(fixedMipY, movingMipY);
+    const auto trans_x = matchTemplate(fixed_mip_x, moving_mip_x);
+    const auto trans_y = matchTemplate(fixed_mip_y, moving_mip_y);
 
-    const std::array<double, 3> res {{transY[0], transX[1], transY[1]}};
+    const std::array<double, 3> res {{trans_y[0], trans_x[1], trans_y[1]}};
 
     data::matrix4 translation;
     for(std::uint8_t i = 0 ; i != 3 ; ++i)
@@ -224,32 +224,32 @@ typename mip_matching_registration<PIX>::Image2DType::PointType mip_matching_reg
     // origin by setting it to some arbitrary value and adding the translation vector between origins to the computed
     // registration.
     Image2DType::PointType origin(0.);
-    itk::Vector<Image2DType::PointValueType, 2> tOrigin = img->GetOrigin() - _template->GetOrigin();
+    itk::Vector<Image2DType::PointValueType, 2> t_origin = img->GetOrigin() - _template->GetOrigin();
     _template->SetOrigin(origin);
     img->SetOrigin(origin);
-    auto templateSize = _template->GetLargestPossibleRegion().GetSize();
+    auto template_size = _template->GetLargestPossibleRegion().GetSize();
 
     // Compute normalized correlation between both images.
-    auto correlation = CorrelationFilterType::New();
+    auto correlation = correlation_filter_t::New();
     correlation->SetFixedImage(img);
     correlation->SetMovingImage(_template);
     correlation->SetRequiredFractionOfOverlappingPixels(0.2F);
     correlation->Update();
 
     // Find the position with the best correlation.
-    auto maxCorrelationFinder = MinMaxCalculatorType::New();
-    maxCorrelationFinder->SetImage(correlation->GetOutput());
-    maxCorrelationFinder->Compute();
-    auto maxIdx = maxCorrelationFinder->GetIndexOfMaximum();
+    auto max_correlation_finder = min_max_calculator_t::New();
+    max_correlation_finder->SetImage(correlation->GetOutput());
+    max_correlation_finder->Compute();
+    auto max_idx = max_correlation_finder->GetIndexOfMaximum();
 
     // Go from pixel coordinates back to physical coordinates
     auto spacing = img->GetSpacing();
-    maxIdx[0] -= static_cast<std::int64_t>(templateSize[0] - 1);
-    maxIdx[1] -= static_cast<std::int64_t>(templateSize[1] - 1);
+    max_idx[0] -= static_cast<std::int64_t>(template_size[0] - 1);
+    max_idx[1] -= static_cast<std::int64_t>(template_size[1] - 1);
     Image2DType::PointType p;
-    p[0] = static_cast<double>(maxIdx[0]) * spacing[0];
-    p[1] = static_cast<double>(maxIdx[1]) * spacing[1];
-    p   += tOrigin;
+    p[0] = static_cast<double>(max_idx[0]) * spacing[0];
+    p[1] = static_cast<double>(max_idx[1]) * spacing[1];
+    p   += t_origin;
 
     return p;
 }

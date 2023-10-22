@@ -84,43 +84,43 @@ void camera_config_launcher::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QHBoxLayout();
 
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString::fromStdString(
-                      core::runtime::get_module_resource_file_path(
-                          "sight::module::ui::icons",
-                          "Import.svg"
-                      )
-                      .string()
+    QIcon add_icon(QString::fromStdString(
+                       core::runtime::get_module_resource_file_path(
+                           "sight::module::ui::icons",
+                           "Import.svg"
+                       )
+                       .string()
     ));
-    m_addButton = new QPushButton(addIcon, "");
+    m_addButton = new QPushButton(add_icon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon importIcon(QString::fromStdString(
-                         core::runtime::get_module_resource_file_path(
-                             "sight::module::ui::icons",
-                             "CameraSeries.svg"
-                         )
-                         .string()
+    QIcon import_icon(QString::fromStdString(
+                          core::runtime::get_module_resource_file_path(
+                              "sight::module::ui::icons",
+                              "CameraSeries.svg"
+                          )
+                          .string()
     ));
-    m_importButton = new QPushButton(importIcon, "");
+    m_importButton = new QPushButton(import_icon, "");
     m_importButton->setToolTip("Import an intrinsic calibration.");
     layout->addWidget(m_importButton);
 
-    QIcon removeIcon(QString::fromStdString(
-                         core::runtime::get_module_resource_file_path(
-                             "sight::module::ui::icons",
-                             "remove.svg"
-                         )
-                         .string()
+    QIcon remove_icon(QString::fromStdString(
+                          core::runtime::get_module_resource_file_path(
+                              "sight::module::ui::icons",
+                              "remove.svg"
+                          )
+                          .string()
     ));
-    m_removeButton = new QPushButton(removeIcon, "");
+    m_removeButton = new QPushButton(remove_icon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);
 
@@ -128,15 +128,15 @@ void camera_config_launcher::starting()
     layout->addWidget(m_extrinsicButton);
     m_extrinsicButton->setCheckable(true);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
-    std::size_t nbCam = 0;
+    std::size_t nb_cam = 0;
     {
         const auto camera_set = m_camera_set.lock();
         SIGHT_ASSERT("Missing cameraSet.", camera_set);
-        nbCam = camera_set->size();
+        nb_cam = camera_set->size();
     }
-    if(nbCam == 0)
+    if(nb_cam == 0)
     {
         this->addCamera();
 
@@ -145,15 +145,15 @@ void camera_config_launcher::starting()
     }
     else
     {
-        for(std::size_t i = 0 ; i < nbCam ; ++i)
+        for(std::size_t i = 0 ; i < nb_cam ; ++i)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
         }
 
-        const bool moreThanOneCamera = (nbCam > 1);
+        const bool more_than_one_camera = (nb_cam > 1);
 
-        m_extrinsicButton->setEnabled(moreThanOneCamera);
-        m_removeButton->setEnabled(moreThanOneCamera);
+        m_extrinsicButton->setEnabled(more_than_one_camera);
+        m_removeButton->setEnabled(more_than_one_camera);
 
         this->startIntrinsicConfig(0);
     }
@@ -183,17 +183,17 @@ void camera_config_launcher::updating()
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onCameraChanged(int index)
+void camera_config_launcher::onCameraChanged(int _index)
 {
     {
-        const auto cameraSet = m_camera_set.lock();
+        const auto camera_set = m_camera_set.lock();
         SIGHT_ASSERT(
-            "Bad index: " << index,
-            index >= 0 && static_cast<std::size_t>(index) < cameraSet->size()
+            "Bad index: " << _index,
+            _index >= 0 && static_cast<std::size_t>(_index) < camera_set->size()
         );
     }
 
-    if(index == 0)
+    if(_index == 0)
     {
         m_extrinsicButton->setChecked(false);
         m_extrinsicButton->setEnabled(false);
@@ -205,11 +205,11 @@ void camera_config_launcher::onCameraChanged(int index)
 
     if(m_extrinsicButton->isChecked())
     {
-        this->startExtrinsicConfig(static_cast<std::size_t>(index));
+        this->startExtrinsicConfig(static_cast<std::size_t>(_index));
     }
     else
     {
-        this->startIntrinsicConfig(static_cast<std::size_t>(index));
+        this->startIntrinsicConfig(static_cast<std::size_t>(_index));
     }
 }
 
@@ -269,12 +269,12 @@ void camera_config_launcher::onImportClicked()
         {
             for(std::size_t n_camera = 0, end = camera_set->size() ; n_camera != end ; ++n_camera)
             {
-                const auto& camera   = camera_set->get_camera(n_camera);
-                const auto& cameraID =
+                const auto& camera    = camera_set->get_camera(n_camera);
+                const auto& camera_id =
                     camera->getCameraID() + " [" + std::to_string(n_set) + ", " + std::to_string(n_camera) + "]";
 
-                camera_map.insert(std::make_pair(cameraID, camera));
-                cameras << QString::fromStdString(cameraID);
+                camera_map.insert(std::make_pair(camera_id, camera));
+                cameras << QString::fromStdString(camera_id);
             }
 
             ++n_set;
@@ -299,10 +299,10 @@ void camera_config_launcher::onImportClicked()
     }
     else
     {
-        auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-        bool ok          = false;
-        auto selected    = QInputDialog::getItem(
-            qtContainer->getQtContainer(),
+        auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+        bool ok           = false;
+        auto selected     = QInputDialog::getItem(
+            qt_container->getQtContainer(),
             "Please select a camera",
             "Camera",
             cameras,
@@ -313,13 +313,13 @@ void camera_config_launcher::onImportClicked()
 
         if(ok)
         {
-            const auto selectedStd    = selected.toStdString();
-            const auto selectedCamera = camera_map[selectedStd];
-            const auto camIdx         = m_cameraComboBox->currentIndex();
-            const auto camera_set     = m_camera_set.lock();
-            auto camera               = camera_set->get_camera(std::size_t(camIdx));
-            camera->deep_copy(selectedCamera);
-            camera->signal<data::camera::IntrinsicCalibratedSignalType>(
+            const auto selected_std    = selected.toStdString();
+            const auto selected_camera = camera_map[selected_std];
+            const auto cam_idx         = m_cameraComboBox->currentIndex();
+            const auto camera_set      = m_camera_set.lock();
+            auto camera                = camera_set->get_camera(std::size_t(cam_idx));
+            camera->deep_copy(selected_camera);
+            camera->signal<data::camera::intrinsic_calibrated_signal_t>(
                 data::camera::INTRINSIC_CALIBRATED_SIG
             )
             ->async_emit();
@@ -348,12 +348,12 @@ void camera_config_launcher::onRemoveClicked()
             sig->async_emit(camera);
 
             // Remove calibrationInfo
-            std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
-            const auto activity            = m_activity.lock();
-            activity->erase(calibrationInfoKey);
+            std::string calibration_info_key = "calibrationInfo_" + std::to_string(index);
+            const auto activity              = m_activity.lock();
+            activity->erase(calibration_info_key);
 
-            const std::size_t nbCam = camera_set->size();
-            if(nbCam == 1)
+            const std::size_t nb_cam = camera_set->size();
+            if(nb_cam == 1)
             {
                 m_extrinsicButton->setEnabled(false);
                 m_removeButton->setEnabled(false);
@@ -361,7 +361,7 @@ void camera_config_launcher::onRemoveClicked()
 
             // Renamed all items from 1 to nbCam
             m_cameraComboBox->clear();
-            for(std::size_t i = 0 ; i < nbCam ; ++i)
+            for(std::size_t i = 0 ; i < nb_cam ; ++i)
             {
                 m_cameraComboBox->addItem(QString("Camera %1").arg(i + 1));
             }
@@ -380,7 +380,7 @@ void camera_config_launcher::onRemoveClicked()
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::onExtrinsicToggled(bool checked)
+void camera_config_launcher::onExtrinsicToggled(bool _checked)
 {
     std::size_t index = 0;
     {
@@ -388,7 +388,7 @@ void camera_config_launcher::onExtrinsicToggled(bool checked)
         index = static_cast<std::size_t>(m_cameraComboBox->currentIndex());
         SIGHT_ASSERT("Bad index: " << index, index < camera_set->size());
     }
-    if(checked)
+    if(_checked)
     {
         this->startExtrinsicConfig(index);
     }
@@ -400,39 +400,39 @@ void camera_config_launcher::onExtrinsicToggled(bool checked)
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::startIntrinsicConfig(std::size_t index)
+void camera_config_launcher::startIntrinsicConfig(std::size_t _index)
 {
-    sight::app::field_adaptor_t replaceMap;
+    sight::app::field_adaptor_t replace_map;
     {
         const auto camera_set     = m_camera_set.lock();
-        data::camera::sptr camera = camera_set->get_camera(index);
+        data::camera::sptr camera = camera_set->get_camera(_index);
 
-        std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
+        std::string calibration_info_key = "calibrationInfo_" + std::to_string(_index);
 
         const auto activity = m_activity.lock();
-        auto calibInfo      = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibrationInfoKey]);
+        auto calib_info     = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibration_info_key]);
 
-        replaceMap["camera"]          = camera->get_id();
-        replaceMap["calibrationInfo"] = calibInfo->get_id();
+        replace_map["camera"]          = camera->get_id();
+        replace_map["calibrationInfo"] = calib_info->get_id();
     }
 
     m_extrinsicLauncher.stopConfig();
     m_intrinsicLauncher.stopConfig();
-    m_intrinsicLauncher.startConfig(this->get_sptr(), replaceMap);
+    m_intrinsicLauncher.startConfig(this->get_sptr(), replace_map);
 }
 
 //------------------------------------------------------------------------------
 
-void camera_config_launcher::startExtrinsicConfig(std::size_t index)
+void camera_config_launcher::startExtrinsicConfig(std::size_t _index)
 {
-    sight::app::field_adaptor_t replaceMap;
+    sight::app::field_adaptor_t replace_map;
     {
-        const std::size_t cameraIdx = std::max(index, std::size_t(1));
+        const std::size_t camera_idx = std::max(_index, std::size_t(1));
 
         const auto camera_set = m_camera_set.lock();
 
         data::camera::sptr camera1 = camera_set->get_camera(0);
-        data::camera::sptr camera2 = camera_set->get_camera(cameraIdx);
+        data::camera::sptr camera2 = camera_set->get_camera(camera_idx);
 
         // Check if the two cameras are calibrated
         if(!camera1->getIsCalibrated() || !camera2->getIsCalibrated())
@@ -444,56 +444,56 @@ void camera_config_launcher::startExtrinsicConfig(std::size_t index)
 
         // cspell: ignore Extr
         // Add 2 calibration info in Activity if not exist
-        std::string calibrationInfo1Key = "calibrationInfoExtr0_" + std::to_string(cameraIdx);
-        std::string calibrationInfo2Key = "calibrationInfoExtr1_" + std::to_string(cameraIdx);
-        const auto activity             = m_activity.lock();
-        data::calibration_info::sptr calibInfo1;
-        data::calibration_info::sptr calibInfo2;
+        std::string calibration_info1_key = "calibrationInfoExtr0_" + std::to_string(camera_idx);
+        std::string calibration_info2_key = "calibrationInfoExtr1_" + std::to_string(camera_idx);
+        const auto activity               = m_activity.lock();
+        data::calibration_info::sptr calib_info1;
+        data::calibration_info::sptr calib_info2;
         // Get the calibrationInfo from the activity if it exists or create it.
-        if(activity->find(calibrationInfo1Key) == activity->end()
-           || activity->find(calibrationInfo2Key) == activity->end())
+        if(activity->find(calibration_info1_key) == activity->end()
+           || activity->find(calibration_info2_key) == activity->end())
         {
-            calibInfo1 = std::make_shared<data::calibration_info>();
-            calibInfo2 = std::make_shared<data::calibration_info>();
+            calib_info1 = std::make_shared<data::calibration_info>();
+            calib_info2 = std::make_shared<data::calibration_info>();
 
-            (*activity)[calibrationInfo1Key] = calibInfo1;
-            (*activity)[calibrationInfo2Key] = calibInfo2;
+            (*activity)[calibration_info1_key] = calib_info1;
+            (*activity)[calibration_info2_key] = calib_info2;
         }
         else
         {
-            calibInfo1 = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibrationInfo1Key]);
-            calibInfo2 = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibrationInfo2Key]);
+            calib_info1 = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibration_info1_key]);
+            calib_info2 = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibration_info2_key]);
         }
 
-        replaceMap["camera1"]          = camera1->get_id();
-        replaceMap["camera2"]          = camera2->get_id();
-        replaceMap["calibrationInfo1"] = calibInfo1->get_id();
-        replaceMap["calibrationInfo2"] = calibInfo2->get_id();
-        replaceMap["camIndex"]         = std::to_string(index);
+        replace_map["camera1"]          = camera1->get_id();
+        replace_map["camera2"]          = camera2->get_id();
+        replace_map["calibrationInfo1"] = calib_info1->get_id();
+        replace_map["calibrationInfo2"] = calib_info2->get_id();
+        replace_map["camIndex"]         = std::to_string(_index);
     }
 
     m_extrinsicLauncher.stopConfig();
     m_intrinsicLauncher.stopConfig();
-    m_extrinsicLauncher.startConfig(this->get_sptr(), replaceMap);
+    m_extrinsicLauncher.startConfig(this->get_sptr(), replace_map);
 }
 
 //------------------------------------------------------------------------------
 
 void camera_config_launcher::addCamera()
 {
-    std::size_t nbCam = 0;
+    std::size_t nb_cam = 0;
     {
         const auto camera_set = m_camera_set.lock();
-        nbCam = camera_set->size();
+        nb_cam = camera_set->size();
 
         data::camera::sptr camera = std::make_shared<data::camera>();
 
         // Add the CalibrationInfo in activity to be saved in activity
-        std::string calibrationInfoKey         = "calibrationInfo_" + std::to_string(nbCam);
-        data::calibration_info::sptr calibInfo = std::make_shared<data::calibration_info>();
+        std::string calibration_info_key        = "calibrationInfo_" + std::to_string(nb_cam);
+        data::calibration_info::sptr calib_info = std::make_shared<data::calibration_info>();
 
         const auto activity = m_activity.lock();
-        (*activity)[calibrationInfoKey] = calibInfo;
+        (*activity)[calibration_info_key] = calib_info;
 
         // Add the camera
         camera_set->add_camera(camera);
@@ -504,10 +504,10 @@ void camera_config_launcher::addCamera()
     }
 
     m_cameraComboBox->blockSignals(true);
-    m_cameraComboBox->addItem(QString("Camera %1").arg(nbCam + 1));
-    m_cameraComboBox->setCurrentIndex(static_cast<int>(nbCam));
+    m_cameraComboBox->addItem(QString("Camera %1").arg(nb_cam + 1));
+    m_cameraComboBox->setCurrentIndex(static_cast<int>(nb_cam));
     m_extrinsicButton->setChecked(false);
-    this->startIntrinsicConfig(nbCam);
+    this->startIntrinsicConfig(nb_cam);
     m_cameraComboBox->blockSignals(false);
 }
 

@@ -34,7 +34,7 @@ class CORE_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    CORE_API exception(const std::string& err);
+    CORE_API exception(const std::string& _err);
 
     CORE_API ~exception() override = default;
 };

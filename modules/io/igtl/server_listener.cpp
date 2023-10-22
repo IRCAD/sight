@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <functional>
 
@@ -54,14 +54,14 @@ void server_listener::configuring()
 
     m_portConfig = config.get("port", "4242");
 
-    const config_t configInOut = config.get_child("inout");
-    const auto keyCfg          = configInOut.equal_range("key");
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
+    const config_t config_in_out = config.get_child("inout");
+    const auto key_cfg           = config_in_out.equal_range("key");
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg)
     {
-        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName  = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(deviceName);
-        m_server->addAuthorizedDevice(deviceName);
+        const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
+        const std::string device_name = attr.get("deviceName", "Sight");
+        m_deviceNames.push_back(device_name);
+        m_server->addAuthorizedDevice(device_name);
     }
 
     m_server->setFilteringByDeviceName(true);
@@ -73,7 +73,7 @@ void server_listener::starting()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
 
         m_server->start(port);
@@ -129,26 +129,27 @@ void server_listener::receiveObject()
     {
         while(m_server->started())
         {
-            std::vector<std::string> deviceNamesReceive;
-            std::vector<data::object::sptr> receiveObjects = m_server->receiveObjects(deviceNamesReceive);
+            std::vector<std::string> device_names_receive;
+            std::vector<data::object::sptr> receive_objects = m_server->receiveObjects(device_names_receive);
 
             std::size_t client = 0;
-            for(const auto& receiveObject : receiveObjects)
+            for(const auto& receive_object : receive_objects)
             {
-                if(receiveObject)
+                if(receive_object)
                 {
-                    const std::string deviceName = deviceNamesReceive[client];
+                    const std::string device_name = device_names_receive[client];
 
-                    const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
+                    const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), device_name);
                     if(iter != m_deviceNames.end())
                     {
-                        const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
+                        const auto index_receive_object = std::distance(m_deviceNames.begin(), iter);
+                        const auto obj                  =
+                            m_objects[static_cast<std::size_t>(index_receive_object)].lock();
 
-                        obj->shallow_copy(receiveObject);
+                        obj->shallow_copy(receive_object);
 
-                        data::object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                        data::object::modified_signal_t::sptr sig;
+                        sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                         sig->async_emit();
                     }
                 }

@@ -11,7 +11,7 @@ This module supplies one service related to video using [PCL](https://pointcloud
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_pcl ... )
+add_dependencies(my_target module_io_pcl ... )
 ```
 
 ### XML

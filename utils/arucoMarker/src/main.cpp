@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,9 +33,9 @@ namespace po = boost::program_options;
 
 int main(int argc, char** argv)
 {
-    int id         = 0;
-    int size       = 0;
-    int borderBits = 0;
+    int id          = 0;
+    int size        = 0;
+    int border_bits = 0;
     std::string file;
     try
     {
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
             "set the output file"
         )
             ("size,s", po::value<int>(&size)->required()->default_value(300), "set the size in pixels for the marker")
-            ("border,b", po::value<int>(&borderBits)->default_value(1), "width of the marker border");
+            ("border,b", po::value<int>(&border_bits)->default_value(1), "width of the marker border");
 
         po::positional_options_description pos;
         pos.add("makerid", 1).add("file", 1).add("size", 1);
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         //Use the aruco original dictionary
         dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
 
-        cv::aruco::drawMarker(dictionary, id, size, marker, borderBits);
+        cv::aruco::drawMarker(dictionary, id, size, marker, border_bits);
 
         cv::imwrite(file, marker);
     }

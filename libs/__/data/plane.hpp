@@ -67,14 +67,14 @@ public:
      */
     PointContainer& getPoints();
     const PointContainer& getPoints() const;
-    void setPoints(const PointContainer& _vPoints);
+    void setPoints(const PointContainer& _v_points);
     /// @}
 
     /** @{
      *  @brief get/set flag if the plane is an intersection one (else an union one)
      */
     bool getIsIntersection() const;
-    void setIsIntersection(bool _isIntersection);
+    void setIsIntersection(bool _is_intersection);
     /// @}
 
     /**
@@ -82,7 +82,7 @@ public:
      * @{
      */
     /// Signal emitted when plane is selected/deselected
-    typedef core::com::signal<void (bool)> SelectedSignalType;
+    typedef core::com::signal<void (bool)> selected_signal_t;
     DATA_API static const core::com::signals::key_t SELECTED_SIG;
 /**
  * @}
@@ -90,22 +90,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const plane& other) const noexcept;
-    DATA_API bool operator!=(const plane& other) const noexcept;
+    DATA_API bool operator==(const plane& _other) const noexcept;
+    DATA_API bool operator!=(const plane& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -133,9 +133,9 @@ inline const plane::PointContainer& plane::getPoints() const
 
 //-----------------------------------------------------------------------------
 
-inline void plane::setPoints(const plane::PointContainer& _vPoints)
+inline void plane::setPoints(const plane::PointContainer& _v_points)
 {
-    this->m_vPoints = _vPoints;
+    this->m_vPoints = _v_points;
 }
 
 //-----------------------------------------------------------------------------
@@ -147,9 +147,9 @@ inline bool plane::getIsIntersection() const
 
 //-----------------------------------------------------------------------------
 
-inline void plane::setIsIntersection(bool _isIntersection)
+inline void plane::setIsIntersection(bool _is_intersection)
 {
-    this->m_isIntersection = _isIntersection;
+    this->m_isIntersection = _is_intersection;
 }
 
 //-----------------------------------------------------------------------------

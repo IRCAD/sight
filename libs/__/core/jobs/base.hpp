@@ -128,7 +128,7 @@ public:
      *
      * @param name The name of the job.
      */
-    CORE_API base(std::string name = "");
+    CORE_API base(std::string _name = "");
 
     /// Default destructor.
     CORE_API virtual ~base();
@@ -152,7 +152,7 @@ public:
     CORE_API bool is_cancelable() const;
 
     /// Setter on cancelable.
-    CORE_API void set_cancelable(bool cancel);
+    CORE_API void set_cancelable(bool _cancel);
 
     /**
      * @brief Run the current job
@@ -197,42 +197,42 @@ public:
      *
      * @param callback cancel callback
      */
-    CORE_API void add_simple_cancel_hook(cancel_hook callback);
+    CORE_API void add_simple_cancel_hook(cancel_hook _callback);
 
     /**
      * @brief Add cancel callback to sequence for cancel hook
      *
      * @param callback job cancel callback, taking a base as parameter
      */
-    CORE_API void add_cancel_hook(job_cancel_hook callback);
+    CORE_API void add_cancel_hook(job_cancel_hook _callback);
 
     /**
      * @brief Add job done work unit callback to sequence for done work hook
      *
      * @param callback job done work unit callback, taking a base as parameter
      */
-    CORE_API void add_done_work_hook(done_work_hook callback);
+    CORE_API void add_done_work_hook(done_work_hook _callback);
 
     /**
      * @brief Add job work unit callback to sequence for total work unit hook
      *
      * @param callback job work unit callback, taking a base as parameter
      */
-    CORE_API void add_total_work_units_hook(total_work_units_hook callback);
+    CORE_API void add_total_work_units_hook(total_work_units_hook _callback);
 
     /**
      * @brief Add job log callback to sequence for log hook
      *
      * @param callback job log callback, taking a std::string message as parameter
      */
-    CORE_API void add_log_hook(log_hook callback);
+    CORE_API void add_log_hook(log_hook _callback);
 
     /**
      * @brief Add job state callback to sequence for state hook
      *
      * @param callback job state callback, taking a State as parameter
      */
-    CORE_API void add_state_hook(state_hook callback);
+    CORE_API void add_state_hook(state_hook _callback);
 
     /**
      * @brief Log a message.
@@ -242,7 +242,7 @@ public:
      *
      * @param log the message to log
      */
-    CORE_API void log(const std::string& message);
+    CORE_API void log(const std::string& _message);
 
 protected:
 
@@ -268,13 +268,13 @@ protected:
     CORE_API state get_state_no_lock() const;
 
     /// Setter on the state
-    CORE_API void set_state(state state);
+    CORE_API void set_state(state _state);
 
     /// Setter on the state without mutex lock
-    CORE_API void set_state_no_lock(state state);
+    CORE_API void set_state_no_lock(state _state);
 
     /// Setter on done work units
-    CORE_API void done_work(std::uint64_t units);
+    CORE_API void done_work(std::uint64_t _units);
 
     /**
      * @brief Setter on done work units
@@ -283,7 +283,7 @@ protected:
      * @param units new done work units
      * @param lock mutex to upgrade to write lock
      */
-    CORE_API void done_work(std::uint64_t units, core::mt::read_to_write_lock& lock);
+    CORE_API void done_work(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
 
     /// Set done work units to total work units
     CORE_API void done();
@@ -293,7 +293,7 @@ protected:
      *
      * @param units New total for work units.
      */
-    CORE_API void set_total_work_units(std::uint64_t units);
+    CORE_API void set_total_work_units(std::uint64_t _units);
 
     /**
      * @brief Setter on total work units
@@ -302,49 +302,49 @@ protected:
      * @param units new total work units
      * @param lock mutex to upgrade to write lock
      */
-    CORE_API void set_total_work_units_upgrade_lock(std::uint64_t units, core::mt::read_to_write_lock& lock);
+    CORE_API void set_total_work_units_upgrade_lock(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
 
     /**
      * @brief Add job cancel callback to sequence without mutex lock for cancel hook
      *
      * @param callback job cancel callback, taking a base as parameter or not
      */
-    CORE_API void add_cancel_hook_no_lock(job_cancel_hook callback);
+    CORE_API void add_cancel_hook_no_lock(job_cancel_hook _callback);
 
     /**
      * @brief Add job done work unit callback to sequence without mutex lock for done work hook
      *
      * @param callback job done work unit callback, taking a base as parameter
      */
-    CORE_API void add_done_work_hook_no_lock(done_work_hook callback);
+    CORE_API void add_done_work_hook_no_lock(done_work_hook _callback);
 
     /**
      * @brief Add job work unit callback to sequence without mutex lock for total work unit hook
      *
      * @param callback job work unit callback, taking a base as parameter
      */
-    CORE_API void add_total_work_units_hook_no_lock(total_work_units_hook callback);
+    CORE_API void add_total_work_units_hook_no_lock(total_work_units_hook _callback);
 
     /**
      * @brief Add job log callback to sequence without mutex lock for log hook
      *
      * @param callback job log callback, taking a std::string message as parameter
      */
-    CORE_API void add_log_hook_no_lock(log_hook callback);
+    CORE_API void add_log_hook_no_lock(log_hook _callback);
 
     /**
      * @brief Add cancel callback to sequence without mutex lock for state hook
      *
      * @param callback cancel callback, taking a State as parameter
      */
-    CORE_API void add_state_hook_no_lock(state_hook callback);
+    CORE_API void add_state_hook_no_lock(state_hook _callback);
 
     /**
      * @brief Add a message to thelog sequence.
      *
      * @param message the message to add to the sequence
      */
-    CORE_API void log_no_lock(const std::string& message);
+    CORE_API void log_no_lock(const std::string& _message);
 
     /// Signal emitted when cancel has been requested
     SPTR(cancel_requested_signal) m_sig_cancel_requested;

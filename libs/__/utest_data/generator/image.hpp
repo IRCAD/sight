@@ -43,9 +43,9 @@ public:
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     UTEST_DATA_API static void generateRandomImage(
-        data::image::sptr image,
-        core::type type,
-        std::uint32_t seed = 0
+        data::image::sptr _image,
+        core::type _type,
+        std::uint32_t _seed = 0
     );
 
     /// Generate an image.
@@ -57,20 +57,20 @@ public:
     /// @param [in] origin image origin
     /// @param [in] seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
     UTEST_DATA_API static void generateImage(
-        data::image::sptr image,
-        const data::image::Size& sizes           = {64, 64, 64},
-        const data::image::Spacing& spacing      = {0, 0, 0},
-        const data::image::Origin& origin        = {0, 0, 0},
-        const core::type& type                   = core::type::UINT8,
-        const data::image::PixelFormat& format   = data::image::PixelFormat::GRAY_SCALE,
-        const std::optional<std::uint32_t>& seed = std::nullopt
+        data::image::sptr _image,
+        const data::image::Size& _sizes           = {64, 64, 64},
+        const data::image::Spacing& _spacing      = {0, 0, 0},
+        const data::image::Origin& _origin        = {0, 0, 0},
+        const core::type& _type                   = core::type::UINT8,
+        const data::image::PixelFormat& _format   = data::image::PixelFormat::GRAY_SCALE,
+        const std::optional<std::uint32_t>& _seed = std::nullopt
     );
 
     /// Fill image array with random value
-    UTEST_DATA_API static void randomizeImage(data::image::sptr image, std::uint32_t seed = 0);
+    UTEST_DATA_API static void randomizeImage(data::image::sptr _image, std::uint32_t _seed = 0);
 
     /// Fill array with random value
-    UTEST_DATA_API static void randomizeArray(data::array::sptr array, std::uint32_t seed = 0);
+    UTEST_DATA_API static void randomizeArray(data::array::sptr _array, std::uint32_t _seed = 0);
 };
 
 } // namespace sight::utest_data::generator

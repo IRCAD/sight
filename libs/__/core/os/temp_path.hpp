@@ -55,9 +55,9 @@ public:
 
     /// Convenience operators
     /// @{
-    inline std::filesystem::path operator/(const std::filesystem::path& other) const noexcept;
-    inline std::string operator+(const std::string& other) const noexcept;
-    inline bool operator==(const temp_path& other) const noexcept;
+    inline std::filesystem::path operator/(const std::filesystem::path& _other) const noexcept;
+    inline std::string operator+(const std::string& _other) const noexcept;
+    inline bool operator==(const temp_path& _other) const noexcept;
     inline std::string string() const noexcept;
     /// @}
 
@@ -68,13 +68,13 @@ public:
     /// Returns the root path of all temporary directories.
     /// This directory will only be deleted at application exit.
     /// @param subdirectory_prefix if set, creates a subdirectory with the given prefix
-    CORE_API static std::filesystem::path shared_directory(const std::string& subdirectory_prefix = std::string());
+    CORE_API static std::filesystem::path shared_directory(const std::string& _subdirectory_prefix = std::string());
 
 protected:
 
     /// Constructor / Destructor
     /// @{
-    CORE_API temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& path_and_stream);
+    CORE_API temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream);
     CORE_API virtual ~temp_path() noexcept;
     /// @}
 
@@ -84,52 +84,52 @@ protected:
 private:
 
     /// Holds the path to remove at destruction
-    const std::filesystem::path m_path;
+    const std::filesystem::path M_PATH;
 };
 
 inline temp_path::operator std::filesystem::path() const noexcept
 {
-    return m_path;
+    return M_PATH;
 }
 
 inline temp_path::operator std::string() const noexcept
 {
-    return m_path.string();
+    return M_PATH.string();
 }
 
 //------------------------------------------------------------------------------
 
-inline std::filesystem::path temp_path::operator/(const std::filesystem::path& other) const noexcept
+inline std::filesystem::path temp_path::operator/(const std::filesystem::path& _other) const noexcept
 {
-    return m_path / other;
+    return M_PATH / _other;
 }
 
 //------------------------------------------------------------------------------
 
-inline std::string temp_path::operator+(const std::string& other) const noexcept
+inline std::string temp_path::operator+(const std::string& _other) const noexcept
 {
-    return m_path.string() + other;
+    return M_PATH.string() + _other;
 }
 
 //------------------------------------------------------------------------------
 
-inline bool temp_path::operator==(const temp_path& other) const noexcept
+inline bool temp_path::operator==(const temp_path& _other) const noexcept
 {
-    return m_path == other.m_path;
+    return M_PATH == _other.M_PATH;
 }
 
 //------------------------------------------------------------------------------
 
 inline std::string temp_path::string() const noexcept
 {
-    return m_path.string();
+    return M_PATH.string();
 }
 
 //------------------------------------------------------------------------------
 
 inline const std::filesystem::path& temp_path::path() const noexcept
 {
-    return m_path;
+    return M_PATH;
 }
 
 /**
@@ -145,20 +145,20 @@ public:
     /// Constructor
     /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
-    CORE_API temp_dir(const std::optional<std::filesystem::path>& path = std::nullopt);
+    CORE_API temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
 
     /// Destructor
     CORE_API ~temp_dir() noexcept override = default;
 
     /// Convenience operator
-    inline bool operator==(const temp_dir& other) const noexcept;
+    inline bool operator==(const temp_dir& _other) const noexcept;
 };
 
 //------------------------------------------------------------------------------
 
-inline bool temp_dir::operator==(const temp_dir& other) const noexcept
+inline bool temp_dir::operator==(const temp_dir& _other) const noexcept
 {
-    return temp_path::operator==(other);
+    return temp_path::operator==(_other);
 }
 
 /**
@@ -177,8 +177,8 @@ public:
     /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
     CORE_API temp_file(
-        const std::optional<std::ios_base::openmode>& openmode = std::nullopt,
-        const std::optional<std::filesystem::path>& path       = std::nullopt
+        const std::optional<std::ios_base::openmode>& _openmode = std::nullopt,
+        const std::optional<std::filesystem::path>& _path       = std::nullopt
     );
 
     /// Destructor
@@ -190,11 +190,11 @@ public:
     /// Convenience operators
     /// @{
     /// Equality operator
-    inline bool operator==(const temp_file& other) const noexcept;
+    inline bool operator==(const temp_file& _other) const noexcept;
 
     /// Stream operator
     template<typename T>
-    inline friend std::ostream& operator<<(temp_file& os, const T& t);
+    inline friend std::ostream& operator<<(temp_file& _os, const T& _t);
     /// @}
 
     /// Returns an unique temporary file path. The file will be deleted when application exit.
@@ -204,7 +204,7 @@ public:
     /// application exit.
     /// @param openmode Open mode of the stream.
     CORE_API static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > unique_stream(
-        const std::optional<std::ios_base::openmode>& openmode = std::ios_base::out | std::ios_base::trunc
+        const std::optional<std::ios_base::openmode>& _openmode = std::ios_base::out | std::ios_base::trunc
     );
 
     /// Returns the ofstream if any. Will be closed when instance is destructed.
@@ -218,17 +218,17 @@ inline temp_file::operator std::ostream& ()
 
 //------------------------------------------------------------------------------
 
-inline bool temp_file::operator==(const temp_file& other) const noexcept
+inline bool temp_file::operator==(const temp_file& _other) const noexcept
 {
-    return temp_path::operator==(other);
+    return temp_path::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline std::ostream& operator<<(temp_file& os, const T& t)
+inline std::ostream& operator<<(temp_file& _os, const T& _t)
 {
-    return *os.m_ofstream << t;
+    return *_os.m_ofstream << _t;
 }
 
 //------------------------------------------------------------------------------

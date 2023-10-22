@@ -75,9 +75,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setLazyMode(bool lazyMode)
+    void setLazyMode(bool _lazy_mode)
     {
-        m_lazyMode = lazyMode;
+        m_lazyMode = _lazy_mode;
     }
 
     /// @return internal job

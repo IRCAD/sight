@@ -34,29 +34,29 @@ namespace sight::sightviewer::test::ui
 
 void LoadItk::test()
 {
-    namespace helper = sight::ui::testCore::helper;
-    const std::string testName               = "sightViewerLoadItkTest";
-    const std::string imageName              = testName + ".png";
-    const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
-    std::filesystem::remove(snapshotPath);
+    namespace helper = sight::ui::test_core::helper;
+    const std::string test_name               = "sightViewerLoadItkTest";
+    const std::string image_name              = test_name + ".png";
+    const std::filesystem::path snapshot_path = sight::ui::test_core::Tester::getImageOutputPath() / image_name;
+    std::filesystem::remove(snapshot_path);
 
-    const std::filesystem::path referencePath(utest_data::Data::dir() / "sight/ui/SightViewer" / imageName);
+    const std::filesystem::path reference_path(utest_data::Data::dir() / "sight/ui/SightViewer" / image_name);
 
     start(
-        testName,
-        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&snapshot_path, &reference_path](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "Nifti or Inr images",
                 utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
-            helper::Button::push(tester, "toolBarView/Show/hide volume");
+            helper::Button::push(_tester, "toolBarView/Show/hide volume");
 
-            saveSnapshot(tester, snapshotPath);
+            saveSnapshot(_tester, snapshot_path);
 
-            compareImages(snapshotPath, referencePath);
+            compareImages(snapshot_path, reference_path);
         },
         true
     );

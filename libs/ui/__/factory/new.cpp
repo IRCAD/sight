@@ -29,9 +29,9 @@ namespace sight::ui::factory
 
 //------------------------------------------------------------------------------
 
-ui::object::sptr make(const ui::registry::key_t& classname)
+ui::object::sptr make(const ui::registry::key_t& _classname)
 {
-    return ui::registry::get()->create(classname);
+    return ui::registry::get()->create(_classname);
 }
 
 } // namespace sight::ui::factory

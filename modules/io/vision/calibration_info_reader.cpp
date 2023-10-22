@@ -37,7 +37,7 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -69,21 +69,21 @@ sight::io::service::IOPathType calibration_info_reader::getIOPathType() const
 
 void calibration_info_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
 
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -97,14 +97,14 @@ void calibration_info_reader::configuring()
 {
     sight::io::service::reader::configuring();
 
-    const config_t config      = this->get_config();
-    const config_t boardConfig = config.get_child("board");
+    const config_t config       = this->get_config();
+    const config_t board_config = config.get_child("board");
 
-    m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
+    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
     SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
+    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
     SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_scaleKey = boardConfig.get<std::string>("<xmlattr>.scale", "");
+    m_scaleKey = board_config.get<std::string>("<xmlattr>.scale", "");
 }
 
 //------------------------------------------------------------------------------
@@ -120,92 +120,92 @@ void calibration_info_reader::updating()
 {
     if(this->hasLocationDefined())
     {
-        const auto data      = m_data.lock();
-        const auto calibInfo = std::dynamic_pointer_cast<data::calibration_info>(data.get_shared());
-        SIGHT_ASSERT("Missing calibration info.", calibInfo);
+        const auto data       = m_data.lock();
+        const auto calib_info = std::dynamic_pointer_cast<data::calibration_info>(data.get_shared());
+        SIGHT_ASSERT("Missing calibration info.", calib_info);
 
-        data::mt::locked_ptr calibInfoLock(calibInfo);
+        data::mt::locked_ptr calib_info_lock(calib_info);
 
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
 
-        using DetectionPairType = std::pair<data::image::sptr, data::point_list::sptr>;
+        using detection_pair_t = std::pair<data::image::sptr, data::point_list::sptr>;
 
         const std::filesystem::path folder = this->get_folder();
 
         // Use a map to sort input images by their filename.
-        std::map<std::string, DetectionPairType> filenameDetectionMap;
+        std::map<std::string, detection_pair_t> filename_detection_map;
 
-        for(const std::filesystem::path& dirEntry : std::filesystem::directory_iterator(folder))
+        for(const std::filesystem::path& dir_entry : std::filesystem::directory_iterator(folder))
         {
-            cv::Mat img = cv::imread(dirEntry.string(), cv::IMREAD_COLOR);
-            std::string errorMessage;
+            cv::Mat img = cv::imread(dir_entry.string(), cv::IMREAD_COLOR);
+            std::string error_message;
 
             if(!img.empty())
             {
                 cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
 
-                data::point_list::sptr chessboardPts = geometry::vision::helper::detectChessboard(
+                data::point_list::sptr chessboard_pts = geometry::vision::helper::detect_chessboard(
                     img,
                     m_width,
                     m_height,
                     m_scale
                 );
 
-                if(chessboardPts)
+                if(chessboard_pts)
                 {
-                    data::image::sptr calibImg = std::make_shared<data::image>();
-                    sight::io::opencv::image::copyFromCv(*calibImg.get(), img);
+                    data::image::sptr calib_img = std::make_shared<data::image>();
+                    sight::io::opencv::image::copy_from_cv(*calib_img.get(), img);
 
-                    calibImg->setSpacing({{1., 1., 1.}});
-                    calibImg->setOrigin({{0., 0., 0.}});
+                    calib_img->setSpacing({{1., 1., 1.}});
+                    calib_img->setOrigin({{0., 0., 0.}});
 
-                    const auto detectionPair = std::make_pair(calibImg, chessboardPts);
-                    const auto filename      = dirEntry.filename().string();
-                    filenameDetectionMap[filename] = detectionPair;
+                    const auto detection_pair = std::make_pair(calib_img, chessboard_pts);
+                    const auto filename       = dir_entry.filename().string();
+                    filename_detection_map[filename] = detection_pair;
                 }
                 else
                 {
-                    errorMessage = "Couldn't detect a chessboard in '" + dirEntry.string() + "'.\n\n"
-                                                                                             "Please make sure that the right chessboard parameters are set.";
+                    error_message = "Couldn't detect a chessboard in '" + dir_entry.string() + "'.\n\n"
+                                                                                               "Please make sure that the right chessboard parameters are set.";
                 }
             }
             else
             {
-                errorMessage = "Couldn't read '" + dirEntry.string() + "'.\n\n"
-                                                                       "Make sure it is a valid image format.";
+                error_message = "Couldn't read '" + dir_entry.string() + "'.\n\n"
+                                                                         "Make sure it is a valid image format.";
             }
 
-            if(!errorMessage.empty())
+            if(!error_message.empty())
             {
-                errorMessage += "\n\n Abort reading?";
-                sight::ui::dialog::message messageBox("Reading calibration inputs failed", errorMessage,
-                                                      sight::ui::dialog::message::WARNING);
+                error_message += "\n\n Abort reading?";
+                sight::ui::dialog::message message_box("Reading calibration inputs failed", error_message,
+                                                       sight::ui::dialog::message::WARNING);
 
-                messageBox.addButton(ui::dialog::message::YES_NO);
+                message_box.addButton(ui::dialog::message::YES_NO);
 
-                if((messageBox.show() & sight::ui::dialog::message::YES) != 0)
+                if((message_box.show() & sight::ui::dialog::message::YES) != 0)
                 {
-                    filenameDetectionMap.clear();
+                    filename_detection_map.clear();
                     m_readFailed = true;
                     break;
                 }
 
-                errorMessage.clear();
+                error_message.clear();
             }
         }
 
         cursor.setDefaultCursor();
 
-        if(!filenameDetectionMap.empty())
+        if(!filename_detection_map.empty())
         {
-            for(auto& [fname, detection] : filenameDetectionMap)
+            for(auto& [fname, detection] : filename_detection_map)
             {
                 auto& [img, chessboard] = detection;
-                calibInfo->addRecord(img, chessboard);
+                calib_info->addRecord(img, chessboard);
             }
 
-            auto sig = calibInfo->signal<data::calibration_info::AddedRecordSignalType>
+            auto sig = calib_info->signal<data::calibration_info::added_record_signal_t>
                            (data::calibration_info::MODIFIED_SIG);
 
             sig->async_emit();
@@ -229,7 +229,7 @@ void calibration_info_reader::updateChessboardSize()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
 
         if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
@@ -252,7 +252,7 @@ void calibration_info_reader::updateChessboardSize()
             }
         }
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }

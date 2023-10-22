@@ -32,29 +32,29 @@ namespace sight::sightviewer::test::ui
 
 void LoadVtk::test()
 {
-    const std::string testName  = "sightViewerLoadVtkTest";
-    const std::string imageName = testName + ".png";
-    const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
-    if(std::filesystem::exists(snapshotPath))
+    const std::string test_name  = "sightViewerLoadVtkTest";
+    const std::string image_name = test_name + ".png";
+    const std::filesystem::path snapshot_path(sight::ui::test_core::Tester::getImageOutputPath() / image_name);
+    if(std::filesystem::exists(snapshot_path))
     {
-        std::filesystem::remove(snapshotPath);
+        std::filesystem::remove(snapshot_path);
     }
 
-    const std::filesystem::path referencePath(utest_data::Data::dir() / "sight/ui/SightViewer" / imageName);
+    const std::filesystem::path reference_path(utest_data::Data::dir() / "sight/ui/SightViewer" / image_name);
 
     start(
-        testName,
-        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&snapshot_path, &reference_path](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "VTK",
                 utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 
-            saveSnapshot(tester, snapshotPath);
+            saveSnapshot(_tester, snapshot_path);
 
-            compareImages(snapshotPath, referencePath);
+            compareImages(snapshot_path, reference_path);
         },
         true
     );

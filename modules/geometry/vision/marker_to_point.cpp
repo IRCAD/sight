@@ -77,13 +77,13 @@ void marker_to_point::stopping()
 
 void marker_to_point::addPoint()
 {
-    const auto matrixTL = m_matrixTL.lock();
+    const auto matrix_tl = m_matrixTL.lock();
 
-    data::matrix4::sptr matrix3D = std::make_shared<data::matrix4>();
+    data::matrix4::sptr matrix3_d = std::make_shared<data::matrix4>();
 
-    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::matrix_tl::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
-    SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
+    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    CSPTR(data::matrix_tl::buffer_t) buffer = matrix_tl->getClosestBuffer(current_timestamp);
+    SIGHT_ASSERT("Buffer not found with timestamp " << current_timestamp, buffer);
 
     const std::array<float, 16> values = buffer->getElement(0);
 
@@ -91,26 +91,26 @@ void marker_to_point::addPoint()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            (*matrix3D)(i, j) = values[i * std::size_t(4) + j];
+            (*matrix3_d)(i, j) = values[i * std::size_t(4) + j];
         }
     }
 
     SIGHT_DEBUG(
-        "Marker Center Position : " << (*matrix3D)(0, 3) << " , "
-        << (*matrix3D)(1, 3) << " , "
-        << (*matrix3D)(2, 3)
+        "Marker Center Position : " << (*matrix3_d)(0, 3) << " , "
+        << (*matrix3_d)(1, 3) << " , "
+        << (*matrix3_d)(2, 3)
     );
 
     //Save the position and drop the orientation
     data::point::sptr p = std::make_shared<data::point>(
-        (*matrix3D)(0, 3),
-        (*matrix3D)(1, 3),
-        (*matrix3D)(2, 3)
+        (*matrix3_d)(0, 3),
+        (*matrix3_d)(1, 3),
+        (*matrix3_d)(2, 3)
     );
 
     const auto pl = m_pointList.lock();
     pl->pushBack(p);
-    auto sig = pl->signal<data::point_list::PointAddedSignalType>(data::point_list::POINT_ADDED_SIG);
+    auto sig = pl->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit(p);
@@ -127,7 +127,7 @@ void marker_to_point::clear()
     {
         pl->clear();
 
-        auto sig = pl->signal<data::point_list::ModifiedSignalType>(data::point_list::MODIFIED_SIG);
+        auto sig = pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
         {
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
             sig->async_emit();

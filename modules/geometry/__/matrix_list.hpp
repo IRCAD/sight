@@ -114,8 +114,8 @@ private:
     ///SLOT: removes a matrix.
     void removeMatrix(int /*_index*/);
 
-    typedef core::com::signal<void (int, std::string)> MatrixAddedSignalType;
-    typedef core::com::signal<void (int)> MatrixRemovedSignalType;
+    typedef core::com::signal<void (int, std::string)> matrix_added_signal_t;
+    typedef core::com::signal<void (int)> matrix_removed_signal_t;
 
     static constexpr std::string_view s_MATRICES_INOUT = "matrices";
     static constexpr std::string_view s_SELECTED_INOUT = "selectedMatrix";

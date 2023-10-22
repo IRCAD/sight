@@ -53,23 +53,23 @@ public:
     /// Destructor. Do nothing.
     UI_API ~input_base() override;
 
-    typedef std::string FactoryRegistryKeyType;
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    typedef std::string factory_registry_key_t;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the input dialog
-    UI_API virtual void setTitle(const std::string& title) = 0;
+    UI_API virtual void setTitle(const std::string& _title) = 0;
 
     /// Set the input text in the input field
-    UI_API virtual void set_input(const std::string& text) = 0;
+    UI_API virtual void set_input(const std::string& _text) = 0;
 
     /// Get the input text in the input field
     UI_API virtual std::pair<std::string, bool> getInput() = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& msg) = 0;
+    UI_API virtual void setMessage(const std::string& _msg) = 0;
 
     /// Sets the echo mode used to display input field content
-    UI_API virtual void setEchoMode(EchoMode echoMode) = 0;
+    UI_API virtual void setEchoMode(EchoMode _echo_mode) = 0;
 };
 
 } // namespace sight::ui::dialog

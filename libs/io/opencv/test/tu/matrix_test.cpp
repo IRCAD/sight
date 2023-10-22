@@ -49,13 +49,13 @@ void matrix_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyFromCvFloat()
+void matrix_test::copy_from_cvFloat()
 {
-    cv::Matx44f cvMat         = cv::Matx44f::eye();
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
+    cv::Matx44f cv_mat         = cv::Matx44f::eye();
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
 
     //identity test
-    io::opencv::matrix::copyFromCv(cvMat, fwMat);
+    io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -63,14 +63,14 @@ void matrix_test::copyFromCvFloat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j)
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j)
             );
         }
     }
 
     // 1 to 16 values
-    cvMat = cv::Matx44f(
+    cv_mat = cv::Matx44f(
         1.F,
         2.F,
         3.F,
@@ -90,7 +90,7 @@ void matrix_test::copyFromCvFloat()
     );
 
     //values test
-    io::opencv::matrix::copyFromCv(cvMat, fwMat);
+    io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -98,8 +98,8 @@ void matrix_test::copyFromCvFloat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j)
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j)
             );
         }
     }
@@ -109,11 +109,11 @@ void matrix_test::copyFromCvFloat()
 
 void matrix_test::copyToCvFloat()
 {
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
-    cv::Matx44f cvMat         = cv::Matx44f::eye();
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
+    cv::Matx44f cv_mat         = cv::Matx44f::eye();
 
     //identity test
-    io::opencv::matrix::copyToCv(fwMat, cvMat);
+    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -121,8 +121,8 @@ void matrix_test::copyToCvFloat()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                static_cast<double>(cvMat(i, j)),
+                (*fw_mat)(i, j),
+                static_cast<double>(cv_mat(i, j)),
                 1e-8
             );
         }
@@ -134,9 +134,9 @@ void matrix_test::copyToCvFloat()
         40.0, 30.0, 20.0, 10.0
     }
     };
-    (*fwMat) = array;
+    (*fw_mat) = array;
 
-    io::opencv::matrix::copyToCv(fwMat, cvMat);
+    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -144,8 +144,8 @@ void matrix_test::copyToCvFloat()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j),
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j),
                 1e-8
             );
         }
@@ -154,13 +154,13 @@ void matrix_test::copyToCvFloat()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyFromCvDouble()
+void matrix_test::copy_from_cvDouble()
 {
-    cv::Matx44d cvMat         = cv::Matx44d::eye();
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
+    cv::Matx44d cv_mat         = cv::Matx44d::eye();
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
 
     //identity test
-    io::opencv::matrix::copyFromCv(cvMat, fwMat);
+    io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -168,14 +168,14 @@ void matrix_test::copyFromCvDouble()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j)
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j)
             );
         }
     }
 
     // 1 to 16 values
-    cvMat = cv::Matx44d(
+    cv_mat = cv::Matx44d(
         1.,
         2.,
         3.,
@@ -195,7 +195,7 @@ void matrix_test::copyFromCvDouble()
     );
 
     //values test
-    io::opencv::matrix::copyFromCv(cvMat, fwMat);
+    io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -203,8 +203,8 @@ void matrix_test::copyFromCvDouble()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j)
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j)
             );
         }
     }
@@ -214,11 +214,11 @@ void matrix_test::copyFromCvDouble()
 
 void matrix_test::copyToCvDouble()
 {
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
-    cv::Matx44d cvMat         = cv::Matx44d::eye();
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
+    cv::Matx44d cv_mat         = cv::Matx44d::eye();
 
     //identity test
-    io::opencv::matrix::copyToCv(fwMat, cvMat);
+    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -226,8 +226,8 @@ void matrix_test::copyToCvDouble()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                static_cast<double>(cvMat(i, j))
+                (*fw_mat)(i, j),
+                static_cast<double>(cv_mat(i, j))
             );
         }
     }
@@ -238,10 +238,10 @@ void matrix_test::copyToCvDouble()
         40.0, 30.0, 20.0, 10.0
     }
     };
-    (*fwMat) = array;
+    (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fwMat, cvMat);
+    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -249,8 +249,8 @@ void matrix_test::copyToCvDouble()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                static_cast<double>(cvMat(i, j)),
-                (*fwMat)(i, j)
+                static_cast<double>(cv_mat(i, j)),
+                (*fw_mat)(i, j)
             );
         }
     }
@@ -258,13 +258,13 @@ void matrix_test::copyToCvDouble()
 
 //-----------------------------------------------------------------------------
 
-void matrix_test::copyFromCvMat()
+void matrix_test::copy_from_cvMat()
 {
     // identity test
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
-    cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
+    cv::Mat cv_mat             = cv::Mat::eye(4, 4, CV_64F);
 
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyFromCv(cvMat, fwMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_from_cv(cv_mat, fw_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -272,21 +272,21 @@ void matrix_test::copyFromCvMat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j)
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j)
             );
         }
     }
 
     // values test
 
-    cvMat = (cv::Mat_<double>(4, 4)
-             << 1., 2., 3., 4.,
-             5., 6., 7., 8.,
-             9., 10., 11.9874563, 12.,
-             13.123456, 14., 15., 16.);
+    cv_mat = (cv::Mat_<double>(4, 4)
+              << 1., 2., 3., 4.,
+              5., 6., 7., 8.,
+              9., 10., 11.9874563, 12.,
+              13.123456, 14., 15., 16.);
 
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyFromCv(cvMat, fwMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_from_cv(cv_mat, fw_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -294,8 +294,8 @@ void matrix_test::copyFromCvMat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j)
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j)
             );
         }
     }
@@ -305,11 +305,11 @@ void matrix_test::copyFromCvMat()
 
 void matrix_test::copyToCvMat()
 {
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
-    cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
+    cv::Mat cv_mat             = cv::Mat::eye(4, 4, CV_64F);
 
     //identity test
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fwMat, cvMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fw_mat, cv_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -317,8 +317,8 @@ void matrix_test::copyToCvMat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j)
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j)
             );
         }
     }
@@ -329,10 +329,10 @@ void matrix_test::copyToCvMat()
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
     };
-    (*fwMat) = array;
+    (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fwMat, cvMat);
+    io::opencv::matrix::copyToCv(fw_mat, cv_mat);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -340,8 +340,8 @@ void matrix_test::copyToCvMat()
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                cvMat.at<double>(i, j),
-                (*fwMat)(i, j)
+                cv_mat.at<double>(i, j),
+                (*fw_mat)(i, j)
             );
         }
     }
@@ -352,14 +352,14 @@ void matrix_test::copyToCvMat()
 void matrix_test::copyFromRvecTvec()
 {
     // Identity test.
-    cv::Mat cvMat = cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat cv_mat = cv::Mat::eye(4, 4, CV_64F);
     // Convert to rvec tvec.
-    cv::Mat tvec = cvMat(cv::Rect(3, 0, 1, 3));
+    cv::Mat tvec = cv_mat(cv::Rect(3, 0, 1, 3));
     cv::Mat rvec;
-    cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
+    cv::Rodrigues(cv_mat(cv::Rect(0, 0, 3, 3)), rvec);
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
 
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyFromCv(rvec, tvec, fwMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -367,24 +367,24 @@ void matrix_test::copyFromRvecTvec()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j),
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j),
                 1e-8
             );
         }
     }
 
     // Values test (30 degrees around X and translations on every axes).
-    cvMat = (cv::Mat_<double>(4, 4)
-             << 1., 0., 0., 4.,
-             0., 0.86601905, -0.50001100, 8.,
-             0., 0.50001100, 0.86601905, 12.,
-             0., 0., 0., 1.);
+    cv_mat = (cv::Mat_<double>(4, 4)
+              << 1., 0., 0., 4.,
+              0., 0.86601905, -0.50001100, 8.,
+              0., 0.50001100, 0.86601905, 12.,
+              0., 0., 0., 1.);
 
-    tvec = cvMat(cv::Rect(3, 0, 1, 3));
-    cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
+    tvec = cv_mat(cv::Rect(3, 0, 1, 3));
+    cv::Rodrigues(cv_mat(cv::Rect(0, 0, 3, 3)), rvec);
 
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyFromCv(rvec, tvec, fwMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -392,8 +392,8 @@ void matrix_test::copyFromRvecTvec()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j),
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j),
                 1e-8
             );
         }
@@ -404,7 +404,7 @@ void matrix_test::copyFromRvecTvec()
     rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0, 0);
     tvec = (cv::Mat_<double>(3, 1) << 4, 8, 12);
 
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyFromCv(rvec, tvec, fwMat));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -412,8 +412,8 @@ void matrix_test::copyFromRvecTvec()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
-                cvMat.at<double>(i, j),
+                (*fw_mat)(i, j),
+                cv_mat.at<double>(i, j),
                 1e-8
             );
         }
@@ -424,27 +424,27 @@ void matrix_test::copyFromRvecTvec()
 
 void matrix_test::copyToRvecTvec()
 {
-    data::matrix4::sptr fwMat = std::make_shared<data::matrix4>();
-    cv::Mat expectedRvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
-    cv::Mat expectedTvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    data::matrix4::sptr fw_mat = std::make_shared<data::matrix4>();
+    cv::Mat expected_rvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+    cv::Mat expected_tvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
     cv::Mat rvec;
     cv::Mat tvec;
 
     //identity test
-    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fwMat, rvec, tvec));
+    CPPUNIT_ASSERT_NO_THROW(io::opencv::matrix::copyToCv(fw_mat, rvec, tvec));
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "values are not equals at [" + std::to_string(i) + "]",
-            expectedRvec.at<double>(i),
+            expected_rvec.at<double>(i),
             rvec.at<double>(i),
             1e-8
         );
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "values are not equals at [" + std::to_string(i) + "]",
-            expectedTvec.at<double>(i),
+            expected_tvec.at<double>(i),
             tvec.at<double>(i),
             1e-8
         );
@@ -456,25 +456,25 @@ void matrix_test::copyToRvecTvec()
         0., 0.50001100, 0.86601905, 12.,
         0., 0., 0., 1.
     };
-    (*fwMat) = array;
+    (*fw_mat) = array;
 
     //values test
-    io::opencv::matrix::copyToCv(fwMat, rvec, tvec);
-    expectedRvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
-    expectedTvec = (cv::Mat_<double>(3, 1) << 4., 8., 12.);
+    io::opencv::matrix::copyToCv(fw_mat, rvec, tvec);
+    expected_rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
+    expected_tvec = (cv::Mat_<double>(3, 1) << 4., 8., 12.);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "values are not equals at [" + std::to_string(i) + "]",
-            expectedRvec.at<double>(i),
+            expected_rvec.at<double>(i),
             rvec.at<double>(i),
             1e-8
         );
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "values are not equals at [" + std::to_string(i) + "]",
-            expectedTvec.at<double>(i),
+            expected_tvec.at<double>(i),
             tvec.at<double>(i),
             1e-8
         );
@@ -491,7 +491,7 @@ void matrix_test::copyToRvecTvec()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
-                (*fwMat)(i, j),
+                (*fw_mat)(i, j),
                 mat4x4.at<double>(i, j),
                 1e-8
             );

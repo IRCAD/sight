@@ -62,12 +62,12 @@ void image_picker_test::basicTest()
     auto camera = std::make_shared<data::camera>();
     camera->setWidth(2);
     camera->setHeight(4);
-    auto pointList      = std::make_shared<data::point_list>();
-    auto pixelPointList = std::make_shared<data::point_list>();
+    auto point_list       = std::make_shared<data::point_list>();
+    auto pixel_point_list = std::make_shared<data::point_list>();
 
     m_imagePicker->set_input(camera, "camera");
-    m_imagePicker->set_inout(pointList, "pointList");
-    m_imagePicker->set_inout(pixelPointList, "pixelPointList");
+    m_imagePicker->set_inout(point_list, "pointList");
+    m_imagePicker->set_inout(pixel_point_list, "pixelPointList");
     CPPUNIT_ASSERT_NO_THROW(m_imagePicker->configure());
     CPPUNIT_ASSERT_NO_THROW(m_imagePicker->start().get());
 
@@ -78,40 +78,40 @@ void image_picker_test::basicTest()
     };
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->getPoints()[0]);
 
     info.m_worldPos = {1, 1, 0};
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pointList->getPoints()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixelPointList->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->getPoints()[1]);
 
     // Clicking with the right mouse button should remove the last added point
     info.m_eventId = data::tools::picking_info::Event::MOUSE_RIGHT_DOWN;
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->getPoints()[0]);
 }
 
 //------------------------------------------------------------------------------
 
 void image_picker_test::clickWithoutControlTest()
 {
-    auto camera         = std::make_shared<data::camera>();
-    auto pointList      = std::make_shared<data::point_list>();
-    auto pixelPointList = std::make_shared<data::point_list>();
+    auto camera           = std::make_shared<data::camera>();
+    auto point_list       = std::make_shared<data::point_list>();
+    auto pixel_point_list = std::make_shared<data::point_list>();
 
     m_imagePicker->set_input(camera, "camera");
-    m_imagePicker->set_inout(pointList, "pointList");
-    m_imagePicker->set_inout(pixelPointList, "pixelPointList");
+    m_imagePicker->set_inout(point_list, "pointList");
+    m_imagePicker->set_inout(pixel_point_list, "pixelPointList");
     CPPUNIT_ASSERT_NO_THROW(m_imagePicker->configure());
     CPPUNIT_ASSERT_NO_THROW(m_imagePicker->start().get());
 
@@ -124,8 +124,8 @@ void image_picker_test::clickWithoutControlTest()
     };
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT(pointList->getPoints().empty());
-    CPPUNIT_ASSERT(pixelPointList->getPoints().empty());
+    CPPUNIT_ASSERT(point_list->getPoints().empty());
+    CPPUNIT_ASSERT(pixel_point_list->getPoints().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -135,12 +135,12 @@ void image_picker_test::topLeftRefTest()
     auto camera = std::make_shared<data::camera>();
     camera->setWidth(2);
     camera->setHeight(4);
-    auto pointList      = std::make_shared<data::point_list>();
-    auto pixelPointList = std::make_shared<data::point_list>();
+    auto point_list       = std::make_shared<data::point_list>();
+    auto pixel_point_list = std::make_shared<data::point_list>();
 
     m_imagePicker->set_input(camera, "camera");
-    m_imagePicker->set_inout(pointList, "pointList");
-    m_imagePicker->set_inout(pixelPointList, "pixelPointList");
+    m_imagePicker->set_inout(point_list, "pointList");
+    m_imagePicker->set_inout(pixel_point_list, "pixelPointList");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.videoReference", "top_left");
     m_imagePicker->set_config(ptree);
@@ -154,18 +154,18 @@ void image_picker_test::topLeftRefTest()
     };
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pixel_point_list->getPoints()[0]);
 
     info.m_worldPos = {1, 1, 0};
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pointList->getPoints()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pixelPointList->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pixel_point_list->getPoints()[1]);
 }
 
 //------------------------------------------------------------------------------
@@ -175,12 +175,12 @@ void image_picker_test::singlePointModeTest()
     auto camera = std::make_shared<data::camera>();
     camera->setWidth(2);
     camera->setHeight(4);
-    auto pointList      = std::make_shared<data::point_list>();
-    auto pixelPointList = std::make_shared<data::point_list>();
+    auto point_list       = std::make_shared<data::point_list>();
+    auto pixel_point_list = std::make_shared<data::point_list>();
 
     m_imagePicker->set_input(camera, "camera");
-    m_imagePicker->set_inout(pointList, "pointList");
-    m_imagePicker->set_inout(pixelPointList, "pixelPointList");
+    m_imagePicker->set_inout(point_list, "pointList");
+    m_imagePicker->set_inout(pixel_point_list, "pixelPointList");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.singlePointMode", "true");
     m_imagePicker->set_config(ptree);
@@ -194,25 +194,25 @@ void image_picker_test::singlePointModeTest()
     };
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->getPoints()[0]);
 
     // Since the single point mode is enabled, the next click removes the last added point
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT(pointList->getPoints().empty());
-    CPPUNIT_ASSERT(pixelPointList->getPoints().empty());
+    CPPUNIT_ASSERT(point_list->getPoints().empty());
+    CPPUNIT_ASSERT(pixel_point_list->getPoints().empty());
 
     // Clicking yet another time should add another point
     info.m_worldPos = {1, 1, 0};
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->getPoints()[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -222,12 +222,12 @@ void image_picker_test::noCtrlModifierTest()
     auto camera = std::make_shared<data::camera>();
     camera->setWidth(2);
     camera->setHeight(4);
-    auto pointList      = std::make_shared<data::point_list>();
-    auto pixelPointList = std::make_shared<data::point_list>();
+    auto point_list       = std::make_shared<data::point_list>();
+    auto pixel_point_list = std::make_shared<data::point_list>();
 
     m_imagePicker->set_input(camera, "camera");
-    m_imagePicker->set_inout(pointList, "pointList");
-    m_imagePicker->set_inout(pixelPointList, "pixelPointList");
+    m_imagePicker->set_inout(point_list, "pointList");
+    m_imagePicker->set_inout(pixel_point_list, "pixelPointList");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.useCtrlModifier", "false");
     m_imagePicker->set_config(ptree);
@@ -243,20 +243,20 @@ void image_picker_test::noCtrlModifierTest()
     };
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pointList->getPoints()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixelPointList->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->getPoints()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->getPoints()[0]);
 
     // Clicking with the control modifier held should still work.
     info.m_modifierMask = data::tools::picking_info::CTRL;
     info.m_worldPos     = {1, 1, 0};
     m_imagePicker->slot("getInteraction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pointList->getPoints()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixelPointList->getPoints().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixelPointList->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->getPoints()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->getPoints()[1]);
 }
 
 //------------------------------------------------------------------------------

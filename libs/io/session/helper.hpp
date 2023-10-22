@@ -45,17 +45,17 @@ constexpr static auto s_Version {".version"};
 /// @param[in] maxVersion the maximum valid version
 template<typename T>
 inline static int read_version(
-    const boost::property_tree::ptree& tree,
-    const int minVersion = 0,
-    const int maxVersion = 0
+    const boost::property_tree::ptree& _tree,
+    const int _min_version = 0,
+    const int _max_version = 0
 )
 {
     // Add a version number. Not mandatory, but could help for future release
-    const int version = tree.get<int>(T::classname() + s_Version, -1);
+    const int version = _tree.get<int>(T::classname() + s_Version, -1);
 
     SIGHT_THROW_IF(
         T::classname() << " deserialization is not implemented for version '" << version << "'.",
-        (minVersion > 0 && minVersion > version) || (maxVersion > 0 && maxVersion < version)
+        (_min_version > 0 && _min_version > version) || (_max_version > 0 && _max_version < version)
     );
 
     return version;
@@ -65,31 +65,31 @@ inline static int read_version(
 /// @param[inout] tree boost property tree where the version must be stored
 /// @param[in] version the version number to store
 template<typename T>
-inline static void write_version(boost::property_tree::ptree& tree, const int version = 1)
+inline static void write_version(boost::property_tree::ptree& _tree, const int _version = 1)
 {
     // Add a version number. Not mandatory, but could help for future release
-    tree.put(T::classname() + s_Version, std::to_string(version));
+    _tree.put(T::classname() + s_Version, std::to_string(_version));
 }
 
 /// Convenience function to safely read strings from a tree
 /// @param[in] tree boost property tree where string data are stored
 /// @param[in] key the string data key
 inline static std::string read_string(
-    const boost::property_tree::ptree& tree,
-    const std::string& key,
-    const std::optional<std::string>& default_value = std::nullopt
+    const boost::property_tree::ptree& _tree,
+    const std::string& _key,
+    const std::optional<std::string>& _default_value = std::nullopt
 )
 {
     try
     {
-        const auto& base64 = tree.get<std::string>(key);
+        const auto& base64 = _tree.get<std::string>(_key);
         return core::crypto::from_base64(base64);
     }
     catch(...)
     {
-        if(default_value)
+        if(_default_value)
         {
-            return *default_value;
+            return *_default_value;
         }
 
         throw;
@@ -101,26 +101,26 @@ inline static std::string read_string(
 /// @param[in] key the string data key
 /// @param[in] value the string data
 inline static void write_string(
-    boost::property_tree::ptree& tree,
-    const std::string& key,
-    const std::string& value
+    boost::property_tree::ptree& _tree,
+    const std::string& _key,
+    const std::string& _value
 )
 {
-    const auto& base64 = core::crypto::to_base64(value);
-    tree.put(key, base64);
+    const auto& base64 = core::crypto::to_base64(_value);
+    _tree.put(_key, base64);
 }
 
 /// Convenience function to cast and check an object
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::sptr safe_cast(sight::data::object::sptr object)
+inline static typename T::sptr safe_cast(sight::data::object::sptr _object)
 {
-    const auto& casted = std::dynamic_pointer_cast<T>(object);
+    const auto& casted = std::dynamic_pointer_cast<T>(_object);
 
     SIGHT_THROW_IF(
         "Object '"
-        << (object ? object->get_classname() : sight::data::object::classname())
+        << (_object ? _object->get_classname() : sight::data::object::classname())
         << "' is not a '"
         << T::classname()
         << "'",
@@ -134,11 +134,11 @@ inline static typename T::sptr safe_cast(sight::data::object::sptr object)
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::sptr cast_or_create(sight::data::object::sptr object)
+inline static typename T::sptr cast_or_create(sight::data::object::sptr _object)
 {
-    if(object)
+    if(_object)
     {
-        return safe_cast<T>(object);
+        return safe_cast<T>(_object);
     }
 
     return std::make_shared<T>();
@@ -148,13 +148,13 @@ inline static typename T::sptr cast_or_create(sight::data::object::sptr object)
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::csptr safe_cast(sight::data::object::csptr object)
+inline static typename T::csptr safe_cast(sight::data::object::csptr _object)
 {
-    const auto& casted = std::dynamic_pointer_cast<const T>(object);
+    const auto& casted = std::dynamic_pointer_cast<const T>(_object);
 
     SIGHT_THROW_IF(
         "Object '"
-        << (object ? object->get_classname() : sight::data::object::classname())
+        << (_object ? _object->get_classname() : sight::data::object::classname())
         << "' is not a '"
         << T::classname()
         << "'",
@@ -173,18 +173,18 @@ inline static typename T::csptr safe_cast(sight::data::object::csptr object)
 template<typename T>
 inline static void serialize(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto& casted = safe_cast<T>(object);
+    const auto& casted = safe_cast<T>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    write_version<T>(tree, 1);
+    write_version<T>(_tree, 1);
 
-    tree.put(s_Value, casted->getValue());
+    _tree.put(s_Value, casted->getValue());
 }
 
 /// Generic deserialization function
@@ -196,20 +196,20 @@ inline static void serialize(
 template<typename T>
 inline static typename T::sptr deserialize(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    const auto& casted = cast_or_create<T>(object);
+    const auto& casted = cast_or_create<T>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    read_version<T>(tree, 0, 1);
+    read_version<T>(_tree, 0, 1);
 
     // Assign the value
-    casted->setValue(tree.get<typename T::ValueType>(s_Value));
+    casted->setValue(_tree.get<typename T::value_t>(s_Value));
 
     return casted;
 }

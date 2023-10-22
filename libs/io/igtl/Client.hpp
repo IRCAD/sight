@@ -58,7 +58,7 @@ public:
      * @brief Constructor take a igtl::ClientSocket used only by server class.
      *        You should not use this constructor, use default constructor instead
      */
-    IO_IGTL_API Client(::igtl::ClientSocket::Pointer socket);
+    IO_IGTL_API Client(::igtl::ClientSocket::Pointer _socket);
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
@@ -71,7 +71,7 @@ public:
      * @param[in] addr ip or hostname
      * @param[in] port port of server
      */
-    IO_IGTL_API void connect(const std::string& addr, std::uint16_t port);
+    IO_IGTL_API void connect(const std::string& _addr, std::uint16_t _port);
 
     /**
      * @brief method to disconnect client
@@ -92,7 +92,7 @@ private:
      * @param[in] msg exception message
      * @param[in] result throw the exception if result=true
      */
-    void throwExceptionIfFailed(const std::string& msg, bool result);
+    void throwExceptionIfFailed(const std::string& _msg, bool _result);
 };
 
 } // namespace sight::io::igtl

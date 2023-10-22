@@ -76,11 +76,11 @@ void action::updating()
     {
         if(m_sync)
         {
-            m_clicked_sig->emit();
+            M_CLICKED_SIG->emit();
         }
         else
         {
-            m_clicked_sig->async_emit();
+            M_CLICKED_SIG->async_emit();
         }
 
         if(m_key)
@@ -88,7 +88,7 @@ void action::updating()
             const bool is_checked = this->checked();
             if(m_sync)
             {
-                m_parameter_changed_sig->emit(
+                M_PARAMETER_CHANGED_SIG->emit(
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked
@@ -101,7 +101,7 @@ void action::updating()
             }
             else
             {
-                m_parameter_changed_sig->async_emit(
+                M_PARAMETER_CHANGED_SIG->async_emit(
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked

@@ -56,7 +56,7 @@ void composite_test::methode1()
 {
     const std::int64_t value = 404;
     using pair_type = data::composite::value_type;
-    const std::array<pair_type, 5> PAIRS = {
+    const std::array<pair_type, 5> pairs = {
         std::make_pair("Composite", std::make_shared<data::composite>()),
         std::make_pair("boolean true", std::make_shared<data::boolean>(true)),
         std::make_pair("boolean false", std::make_shared<data::boolean>(false)),
@@ -70,7 +70,7 @@ void composite_test::methode1()
 
     CPPUNIT_ASSERT(composite->empty());
 
-    for(const pair_type& p : PAIRS)
+    for(const pair_type& p : pairs)
     {
         (*composite)[p.first] = p.second;
     }
@@ -90,15 +90,15 @@ void composite_test::methode1()
     CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*composite)["integer"])->value());
 
     // test values
-    const std::string STR  = "string value";
+    const std::string str  = "string value";
     data::object::sptr obj = std::make_shared<data::real>();
 
-    (*composite)[STR] = obj;
+    (*composite)[str] = obj;
 
     CPPUNIT_ASSERT(composite->begin() != composite->end());
 
-    CPPUNIT_ASSERT(composite->find(STR) != composite->end());
-    CPPUNIT_ASSERT_EQUAL((*composite)[STR], obj);
+    CPPUNIT_ASSERT(composite->find(str) != composite->end());
+    CPPUNIT_ASSERT_EQUAL((*composite)[str], obj);
 }
 
 } // namespace sight::data::ut

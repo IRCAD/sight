@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,12 +51,12 @@ public:
     typedef ::igtl::MessageBase Superclass;
     typedef ::igtl::SmartPointer<Self> Pointer;
     typedef ::igtl::SmartPointer<const Self> ConstPointer;
-    typedef std::vector<char> RawDataType;
+    typedef std::vector<char> raw_data_t;
 
     igtlTypeMacro(RawMessage, ::igtl::MessageBase);
 
     /// Constructor
-    IO_IGTL_API RawMessage(std::string const& bodyType);
+    IO_IGTL_API RawMessage(std::string const& _body_type);
 
     /// Destructor
     IO_IGTL_API ~RawMessage() override;
@@ -64,33 +64,33 @@ public:
     /**
      * @brief append a string to raw data
      */
-    IO_IGTL_API void append(const RawDataType& content);
+    IO_IGTL_API void append(const raw_data_t& _content);
 
     /**
      * @brief append bytes to raw data
      */
-    IO_IGTL_API void append(const char* data, std::size_t size);
+    IO_IGTL_API void append(const char* _data, std::size_t _size);
 
     /**
      * @brief get immutable message
      *
      * @return a immutable byte vector
      */
-    IO_IGTL_API RawDataType const& getMessage() const;
+    IO_IGTL_API raw_data_t const& getMessage() const;
 
     /**
      * @brief get mutable message
      *
      * @return a mutable byte vector
      */
-    IO_IGTL_API RawDataType& getMessage();
+    IO_IGTL_API raw_data_t& getMessage();
 
     /**
      * @brief create a new igtl smart pointer to a raw message
      *
      * @return igtl smart pointer to a raw message
      */
-    IO_IGTL_API static RawMessage::Pointer New(std::string const& bodyType);
+    IO_IGTL_API static RawMessage::Pointer New(std::string const& _body_type);
 
 private:
 
@@ -106,7 +106,7 @@ private:
 private:
 
     /// raw data
-    RawDataType m_msg;
+    raw_data_t m_msg;
 };
 
 } //namespace sight::io::igtl::detail

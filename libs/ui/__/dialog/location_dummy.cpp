@@ -32,9 +32,9 @@ std::queue<std::vector<std::filesystem::path> > location_dummy::pathsList;
 
 //------------------------------------------------------------------------------
 
-void location_dummy::setType(Types type)
+void location_dummy::setType(Types _type)
 {
-    m_type = type;
+    m_type = _type;
 }
 
 //------------------------------------------------------------------------------
@@ -58,16 +58,16 @@ std::string location_dummy::getCurrentSelection() const
 
 //------------------------------------------------------------------------------
 
-void location_dummy::setPaths(const std::vector<std::filesystem::path>& files)
+void location_dummy::setPaths(const std::vector<std::filesystem::path>& _files)
 {
-    pushPaths(files);
+    pushPaths(_files);
 }
 
 //------------------------------------------------------------------------------
 
-void location_dummy::pushPaths(const std::vector<std::filesystem::path>& files)
+void location_dummy::pushPaths(const std::vector<std::filesystem::path>& _files)
 {
-    pathsList.push(files);
+    pathsList.push(_files);
 }
 
 //------------------------------------------------------------------------------
@@ -95,21 +95,21 @@ sight::core::location::base::sptr location_dummy::show()
     pathsList.pop();
     if(m_type == SINGLE_FILE)
     {
-        auto singleFile = std::make_shared<sight::core::location::single_file>();
-        singleFile->set_file(paths[0]);
-        return singleFile;
+        auto single_file = std::make_shared<sight::core::location::single_file>();
+        single_file->set_file(paths[0]);
+        return single_file;
     }
 
     if(m_type == FOLDER)
     {
-        auto singleFolder = std::make_shared<sight::core::location::single_folder>();
-        singleFolder->set_folder(paths[0]);
-        return singleFolder;
+        auto single_folder = std::make_shared<sight::core::location::single_folder>();
+        single_folder->set_folder(paths[0]);
+        return single_folder;
     }
 
-    auto multipleFiles = std::make_shared<sight::core::location::multiple_files>();
-    multipleFiles->set_files(paths);
-    return multipleFiles;
+    auto multiple_files = std::make_shared<sight::core::location::multiple_files>();
+    multiple_files->set_files(paths);
+    return multiple_files;
 }
 
 } // namespace sight::ui::dialog

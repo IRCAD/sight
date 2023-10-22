@@ -12,7 +12,7 @@ compression. It can be password protected using AES256.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_zip ...)
+add_dependencies(my_target module_io_zip ...)
 ```
 
 ### XML

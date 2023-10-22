@@ -35,11 +35,11 @@ class matrix_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(matrix_test);
-    CPPUNIT_TEST(copyFromCvFloat);
+    CPPUNIT_TEST(copy_from_cvFloat);
     CPPUNIT_TEST(copyToCvFloat);
-    CPPUNIT_TEST(copyFromCvDouble);
+    CPPUNIT_TEST(copy_from_cvDouble);
     CPPUNIT_TEST(copyToCvDouble);
-    CPPUNIT_TEST(copyFromCvMat);
+    CPPUNIT_TEST(copy_from_cvMat);
     CPPUNIT_TEST(copyToCvMat);
     CPPUNIT_TEST(copyFromRvecTvec);
     CPPUNIT_TEST(copyToRvecTvec);
@@ -52,13 +52,13 @@ public:
     void tearDown() override;
 
     ///Tests the copy from/to cv::Matx44f (float)
-    static void copyFromCvFloat();
+    static void copy_from_cvFloat();
     static void copyToCvFloat();
     ///Tests the copy from/to cv::Matx44d (double)
-    static void copyFromCvDouble();
+    static void copy_from_cvDouble();
     static void copyToCvDouble();
     ///Tests the copy from/to cv::Mat
-    static void copyFromCvMat();
+    static void copy_from_cvMat();
     static void copyToCvMat();
     ///Tests the copy from/to cv::Mat rvec tvec
     static void copyFromRvecTvec();

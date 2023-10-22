@@ -29,9 +29,9 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-transfer_function::transfer_function(const data::transfer_function::csptr& _tf, const std::string& suffixId)
+transfer_function::transfer_function(const data::transfer_function::csptr& _tf, const std::string& _suffix_id)
 {
-    m_resource = detail::tf_manager::get()->instantiate(_tf, suffixId);
+    m_resource = detail::tf_manager::get()->instantiate(_tf, _suffix_id);
 }
 
 //-----------------------------------------------------------------------------

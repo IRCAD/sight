@@ -41,11 +41,11 @@ class ACTIVITY_CLASS_API launcher
 {
 public:
 
-    typedef boost::property_tree::ptree ConfigurationType;
-    typedef activity::extension::activity_config_param ParameterType;
-    typedef activity::extension::activity_config_params_type ParametersType;
-    typedef std::map<std::string, std::string> ReplaceMapType;
-    typedef std::vector<std::string> InOutMapType;
+    typedef boost::property_tree::ptree configuration_t;
+    typedef activity::extension::activity_config_param parameter_t;
+    typedef activity::extension::activity_config_params_type parameters_t;
+    typedef std::map<std::string, std::string> replace_map_t;
+    typedef std::vector<std::string> in_out_map_t;
 
     /// Constructor. Do nothing.
     ACTIVITY_API launcher() = default;
@@ -57,8 +57,8 @@ protected:
 
     /// Parses the configuration
     ACTIVITY_API virtual void parseConfiguration(
-        const ConfigurationType& config,
-        const InOutMapType& inouts = InOutMapType()
+        const configuration_t& _config,
+        const in_out_map_t& _inouts = in_out_map_t()
     );
 
     /// Create the activity given in 'mainActivity' configuration
@@ -69,12 +69,12 @@ protected:
      * @return Return true if the given activity is valid
      */
     static ACTIVITY_API std::pair<bool, std::string> validateActivity(
-        const data::activity::csptr& activity
+        const data::activity::csptr& _activity
     );
 
     std::string m_mainActivityId; ///< configuration id of the main activity
 
-    ParametersType m_parameters; ///< parameters given in configuration
+    parameters_t m_parameters; ///< parameters given in configuration
 };
 
 } // namespace sight::activity

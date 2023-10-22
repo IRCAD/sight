@@ -47,8 +47,8 @@ public:
 
     SIGHT_DECLARE_CLASS(menu_manager, ui::object);
 
-    typedef std::string RegistryKeyType;
-    typedef std::vector<ui::menu_item_callback::sptr> CallbacksType;
+    typedef std::string registry_key_t;
+    typedef std::vector<ui::menu_item_callback::sptr> callbacks_t;
 
     typedef enum
     {
@@ -58,7 +58,7 @@ public:
         HELP,
         NEW,
         SEPARATOR
-    } ActionType;
+    } action_t;
 
     class ActionInfo
     {
@@ -75,12 +75,12 @@ public:
         std::filesystem::path m_icon;
         bool m_isCheckable {false};
         bool m_isRadio {false};
-        ActionType m_type {DEFAULT};
+        action_t m_type {DEFAULT};
         bool m_isSeparator {false};
         bool m_isMenu {false};
     };
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Destructor. Do nothing.
     UI_API ~menu_manager() override = default;
@@ -136,12 +136,12 @@ public:
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
      * - \<separator/\> : allow to divide the menu by part (draw a line).
      */
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate actions with parent menu.
      */
-    UI_API virtual void createLayout(ui::container::menu::sptr parent, const std::string& id) = 0;
+    UI_API virtual void createLayout(ui::container::menu::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -152,24 +152,24 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool isVisible) = 0;
+    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool isEnabled) = 0;
+    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool isChecked) = 0;
+    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Sets callbacks associate with menu items.
      */
-    virtual void setCallbacks(CallbacksType callbacks)
+    virtual void setCallbacks(callbacks_t _callbacks)
     {
-        m_callbacks = callbacks;
+        m_callbacks = _callbacks;
     }
 
 protected:
@@ -189,7 +189,7 @@ protected:
     std::vector<ActionInfo> m_actionInfo;
 
     /// Callbacks associate with menu items
-    CallbacksType m_callbacks;
+    callbacks_t m_callbacks;
 };
 
 } // namespace sight::ui::layout

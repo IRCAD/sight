@@ -50,12 +50,12 @@ void matrix4::createConfig(core::tools::object::sptr _obj)
         if(elem.first == "matrix")
         {
             const auto input = elem.second.get_value<std::string>();
-            std::istringstream inputString(input);
+            std::istringstream input_string(input);
 
             double coef = NAN;
             for(unsigned int k = 0 ; k < 16 ; k++)
             {
-                inputString >> coef;
+                input_string >> coef;
                 (*matrix)[k] = coef;
             }
         }

@@ -69,20 +69,20 @@ void render::configuring()
 
     // Get scene configuration
     const config_t config = this->get_config();
-    const auto sceneCfg   = config.get_child_optional(s_SCENE_CONFIG);
-    SIGHT_ASSERT("One scene must be configured.", sceneCfg);
+    const auto scene_cfg  = config.get_child_optional(s_SCENE_CONFIG);
+    SIGHT_ASSERT("One scene must be configured.", scene_cfg);
 
     // Get background tag and its attributes if it is defined.
-    const auto backgroundAttr = sceneCfg->get_child_optional(s_BACKGROUND_CONFIG + ".<xmlattr>");
-    if(backgroundAttr)
+    const auto background_attr = scene_cfg->get_child_optional(s_BACKGROUND_CONFIG + ".<xmlattr>");
+    if(background_attr)
     {
-        const std::string color = backgroundAttr->get<std::string>(s_BACKGROUND_COLOR_CONFIG, "#000000");
+        const std::string color = background_attr->get<std::string>(s_BACKGROUND_COLOR_CONFIG, "#000000");
         m_backgroundColor = QColor(QString::fromStdString(color));
     }
 
     // Get adaptor tags.
-    const auto adaptorConfigs = sceneCfg->equal_range(s_ADAPTOR_CONFIG);
-    for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
+    const auto adaptor_configs = scene_cfg->equal_range(s_ADAPTOR_CONFIG);
+    for(auto it = adaptor_configs.first ; it != adaptor_configs.second ; ++it)
     {
         const auto uid = it->second.get<std::string>("<xmlattr>.uid");
         auto& registry = viz::qt3d::registry::get_adaptor_registry();
@@ -97,9 +97,9 @@ void render::starting()
     this->create();
 
     // Instantiates render window manager.
-    auto m_interactorManager = viz::qt3d::window_interactor::createManager();
-    m_interactorManager->setRenderService(this->get_sptr());
-    m_interactorManager->createContainer(this->getContainer());
+    auto m_interactor_manager = viz::qt3d::window_interactor::createManager();
+    m_interactor_manager->setRenderService(this->get_sptr());
+    m_interactor_manager->createContainer(this->getContainer());
 
     // Renders a Qt3DWindow which is then displayed as a QWidget.
     m_3dView = new Qt3DExtras::Qt3DWindow();
@@ -126,7 +126,7 @@ void render::starting()
     m_3dView->renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::Always);
 
     // Converts Qt3D window to QWidget and places it in render service qt container.
-    m_interactorManager->set3DView(m_3dView);
+    m_interactor_manager->set3DView(m_3dView);
 }
 
 //------------------------------------------------------------------------------

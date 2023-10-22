@@ -49,7 +49,7 @@ public:
 
     SIGHT_DECLARE_CLASS(generic_field<T>, generic_field_base);
 
-    typedef T ValueType;
+    typedef T value_t;
 
     /// @brief Get the value (mutable version).
     T& value() noexcept
@@ -64,9 +64,9 @@ public:
     }
 
     /// @brief set the value
-    void setValue(const T& newValue) noexcept
+    void setValue(const T& _new_value) noexcept
     {
-        m_value = newValue;
+        m_value = _new_value;
     }
 
     /// @brief get the value
@@ -82,12 +82,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator==(const generic_field& other) const noexcept
+    inline bool operator==(const generic_field& _other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const auto& other_field = dynamic_cast<const generic_field<T>&>(other);
+            const auto& other_field = dynamic_cast<const generic_field<T>&>(_other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -106,11 +106,11 @@ public:
             // Do not forget to call superclass == operator
             // base_class have a pure virtual == operator, so we call the base class from base_class
             using base = typename base_class::base_class;
-            return base::operator==(other);
+            return base::operator==(_other);
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
         {
-            SIGHT_ASSERT("generic_field must have same ValueType: " << exp.what(), false);
+            SIGHT_ASSERT("generic_field must have same value_t: " << exp.what(), false);
         }
 
         return false;
@@ -118,12 +118,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator<(const generic_field& other) const noexcept
+    inline bool operator<(const generic_field& _other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const auto& other_field = dynamic_cast<const generic_field<T>&>(other);
+            const auto& other_field = dynamic_cast<const generic_field<T>&>(_other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -143,7 +143,7 @@ public:
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
         {
-            SIGHT_ASSERT("generic_field must have same ValueType: " << exp.what(), false);
+            SIGHT_ASSERT("generic_field must have same value_t: " << exp.what(), false);
         }
 
         return false;
@@ -151,12 +151,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>(const generic_field& other) const noexcept
+    inline bool operator>(const generic_field& _other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const auto& other_field = dynamic_cast<const generic_field<T>&>(other);
+            const auto& other_field = dynamic_cast<const generic_field<T>&>(_other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -176,7 +176,7 @@ public:
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
         {
-            SIGHT_ASSERT("generic_field must have same ValueType: " << exp.what(), false);
+            SIGHT_ASSERT("generic_field must have same value_t: " << exp.what(), false);
         }
 
         return false;
@@ -184,16 +184,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator<=(const generic_field& other) const noexcept
+    inline bool operator<=(const generic_field& _other) const noexcept
     {
-        return !(*this > other);
+        return !(*this > _other);
     }
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>=(const generic_field& other) const noexcept
+    inline bool operator>=(const generic_field& _other) const noexcept
     {
-        return !(*this < other);
+        return !(*this < _other);
     }
 
     //------------------------------------------------------------------------------
@@ -213,16 +213,16 @@ public:
 protected:
 
     template<typename GT>
-    static typename GT::sptr GenericFieldFactory(typename GT::ValueType value);
+    static typename GT::sptr GenericFieldFactory(typename GT::value_t _value);
 
-    static sptr GenericFieldFactory(T value);
+    static sptr GenericFieldFactory(T _value);
 
     /**
      * @brief Constructor.
      * @param[in] value The initial value.
      */
-    generic_field(const T value = T()) noexcept :
-        m_value(value)
+    generic_field(const T _value = T()) noexcept :
+        m_value(_value)
     {
     }
 
@@ -247,22 +247,22 @@ protected:
 
 template<typename T>
 template<typename GT>
-typename GT::sptr generic_field<T>::GenericFieldFactory(const typename GT::ValueType value)
+typename GT::sptr generic_field<T>::GenericFieldFactory(const typename GT::value_t _value)
 {
     typename GT::sptr field;
     field          = std::make_shared<GT>();
-    field->value() = value;
+    field->value() = _value;
     return field;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-typename generic_field<T>::sptr generic_field<T>::GenericFieldFactory(const T value)
+typename generic_field<T>::sptr generic_field<T>::GenericFieldFactory(const T _value)
 {
     typename generic_field<T>::sptr field;
-    field          = GenericFieldFactory<generic_field<T> >(value);
-    field->value() = value;
+    field          = GenericFieldFactory<generic_field<T> >(_value);
+    field->value() = _value;
     return field;
 }
 

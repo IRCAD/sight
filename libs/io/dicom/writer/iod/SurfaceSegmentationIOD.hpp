@@ -48,19 +48,19 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SurfaceSegmentationIOD(
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        SPTR(io::dicom::container::DicomInstance)imageInstance,
-        const std::filesystem::path& destinationPath,
-        const core::log::logger::sptr& logger = std::make_shared<core::log::logger>(),
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        SPTR(io::dicom::container::DicomInstance)_image_instance,
+        const std::filesystem::path& _destination_path,
+        const core::log::logger::sptr& _logger = std::make_shared<core::log::logger>(),
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
     IO_DICOM_API ~SurfaceSegmentationIOD() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& series) override;
+    IO_DICOM_API void write(const data::series::csptr& _series) override;
 
 protected:
 

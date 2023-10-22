@@ -62,7 +62,7 @@ public:
     bool isDestroyed() const;
 
     /// Set configuration
-    void setConfig(const config_t& cfg);
+    void setConfig(const config_t& _cfg);
 
     /**
      * @brief Set configuration
@@ -71,10 +71,10 @@ public:
      * @param autoPrefixId prefix every id with the name of the configuration .
      */
     APP_API virtual void setConfig(
-        const std::string& configId,
-        const field_adaptor_t& replaceFields = field_adaptor_t(),
-        bool autoPrefixId                    = true
-    )                                        = 0;
+        const std::string& _config_id,
+        const field_adaptor_t& _replace_fields = field_adaptor_t(),
+        bool _auto_prefix_id                   = true
+    )                                          = 0;
 
     /// Get config root
     APP_API virtual data::object::sptr getConfigRoot() const = 0;
@@ -150,9 +150,9 @@ inline bool config_manager::isDestroyed() const
 
 //------------------------------------------------------------------------------
 
-inline void config_manager::setConfig(const config_t& cfg)
+inline void config_manager::setConfig(const config_t& _cfg)
 {
-    m_cfgElem = cfg;
+    m_cfgElem = _cfg;
 }
 
 //------------------------------------------------------------------------------

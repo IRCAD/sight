@@ -30,8 +30,8 @@
 #include <data/point_list.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/mesh.hpp>
+#include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreEntity.h>
@@ -95,7 +95,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
  * - \b visible (optional, bool, default=true): the pointlist visibility at start.
- * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API point_list final :
@@ -158,7 +158,7 @@ private:
      * them.
      * @param _pointList point list used for the update.
      */
-    void updateMesh(const data::point_list::csptr& _pointList);
+    void updateMesh(const data::point_list::csptr& _point_list);
 
     /**
      * @brief Updates the point list from a mesh, checks if color, number of vertices have changed, and updates them.
@@ -169,11 +169,11 @@ private:
     /**
      * @brief Instantiates a new material adaptor.
      */
-    module::viz::scene3d::adaptor::material::sptr createMaterialService(const std::string& _meshId);
+    module::viz::scene3d::adaptor::material::sptr createMaterialService(const std::string& _mesh_id);
 
     /// Associates a new material to the managed point_list.
     /// With this method, point_list is responsible for creating a material.
-    void updateMaterialAdaptor(const std::string& _meshId);
+    void updateMaterialAdaptor(const std::string& _mesh_id);
 
     /**
      * @brief Attaches a node in the scene graph.
@@ -188,7 +188,7 @@ private:
      * @brief Creates all the labels and attach them to the sceneNode vector.
      * @param _pointList point list used to retreive each point informations.
      */
-    void createLabel(const data::point_list::csptr& _pointList);
+    void createLabel(const data::point_list::csptr& _point_list);
 
     /// Destroys all the labels and delete them from the sceneNode vector.
     void destroyLabel();
@@ -230,7 +230,7 @@ private:
     std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
-    std::vector<sight::viz::scene3d::IText::sptr> m_labels;
+    std::vector<sight::viz::scene3d::text::sptr> m_labels;
 
     /// Stores label points nodes.
     std::vector<Ogre::SceneNode*> m_nodes;
@@ -238,7 +238,7 @@ private:
     /// Contains the scene node where all of our manual objects are attached.
     Ogre::SceneNode* m_sceneNode {nullptr};
 
-    /// Defines the TrueType font source file.
+    /// Defines the true_t font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.

@@ -119,7 +119,7 @@ public:
      */
     ROIExpression getNativeExp();
     const ROIExpression& getNativeExp() const;
-    void setNativeExp(const ROIExpression& _nativeExp);
+    void setNativeExp(const ROIExpression& _native_exp);
     /// @}
 
     /**
@@ -128,16 +128,16 @@ public:
      */
     ROIExpression getNativeGeometricExp();
     const ROIExpression& getNativeGeometricExp() const;
-    void setNativeGeometricExp(const ROIExpression& _nativeGeometricExp);
+    void setNativeGeometricExp(const ROIExpression& _native_geometric_exp);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the attachmentType.
      */
-    std::string getAttachmentType();
-    const std::string& getAttachmentType() const;
-    void setAttachmentType(const std::string& _attachmentType);
+    std::string get_attachment_type();
+    const std::string& get_attachment_type() const;
+    void set_attachment_type(const std::string& _attachment_type);
     /// @}
 
     /**
@@ -155,7 +155,7 @@ public:
      */
     std::string getAnatomicRegion();
     const std::string& getAnatomicRegion() const;
-    void setAnatomicRegion(const std::string& _anatomicRegion);
+    void setAnatomicRegion(const std::string& _anatomic_region);
     /// @}
 
     /**
@@ -164,7 +164,7 @@ public:
      */
     std::string getPropertyCategory();
     const std::string& getPropertyCategory() const;
-    void setPropertyCategory(const std::string& _propertyCategory);
+    void setPropertyCategory(const std::string& _property_category);
 
     /// @}
 
@@ -172,29 +172,29 @@ public:
      * @{
      * @brief Get/Set value of the propertyType.
      */
-    std::string getPropertyType();
-    const std::string& getPropertyType() const;
-    void setPropertyType(const std::string& _propertyType);
+    std::string get_property_type();
+    const std::string& get_property_type() const;
+    void set_property_type(const std::string& _property_type);
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const structure_traits& other) const noexcept;
-    DATA_API bool operator!=(const structure_traits& other) const noexcept;
+    DATA_API bool operator==(const structure_traits& _other) const noexcept;
+    DATA_API bool operator!=(const structure_traits& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 private:
@@ -309,9 +309,9 @@ inline const structure_traits::ROIExpression& structure_traits::getNativeExp() c
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setNativeExp(const structure_traits::ROIExpression& _nativeExp)
+inline void structure_traits::setNativeExp(const structure_traits::ROIExpression& _native_exp)
 {
-    m_nativeExp = _nativeExp;
+    m_nativeExp = _native_exp;
 }
 
 //-----------------------------------------------------------------------------
@@ -330,30 +330,30 @@ inline const structure_traits::ROIExpression& structure_traits::getNativeGeometr
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setNativeGeometricExp(const structure_traits::ROIExpression& _nativeGeometricExp)
+inline void structure_traits::setNativeGeometricExp(const structure_traits::ROIExpression& _native_geometric_exp)
 {
-    m_nativeGeometricExp = _nativeGeometricExp;
+    m_nativeGeometricExp = _native_geometric_exp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string structure_traits::getAttachmentType()
+inline std::string structure_traits::get_attachment_type()
 {
     return m_attachmentType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& structure_traits::getAttachmentType() const
+inline const std::string& structure_traits::get_attachment_type() const
 {
     return m_attachmentType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setAttachmentType(const std::string& _attachmentType)
+inline void structure_traits::set_attachment_type(const std::string& _attachment_type)
 {
-    m_attachmentType = _attachmentType;
+    m_attachmentType = _attachment_type;
 }
 
 //-----------------------------------------------------------------------------
@@ -393,9 +393,9 @@ inline const std::string& structure_traits::getAnatomicRegion() const
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setAnatomicRegion(const std::string& _anatomicRegion)
+inline void structure_traits::setAnatomicRegion(const std::string& _anatomic_region)
 {
-    m_anatomicRegion = _anatomicRegion;
+    m_anatomicRegion = _anatomic_region;
 }
 
 //-----------------------------------------------------------------------------
@@ -414,30 +414,30 @@ inline const std::string& structure_traits::getPropertyCategory() const
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setPropertyCategory(const std::string& _propertyCategory)
+inline void structure_traits::setPropertyCategory(const std::string& _property_category)
 {
-    m_propertyCategory = _propertyCategory;
+    m_propertyCategory = _property_category;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string structure_traits::getPropertyType()
+inline std::string structure_traits::get_property_type()
 {
     return m_propertyType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& structure_traits::getPropertyType() const
+inline const std::string& structure_traits::get_property_type() const
 {
     return m_propertyType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void structure_traits::setPropertyType(const std::string& _propertyType)
+inline void structure_traits::set_property_type(const std::string& _property_type)
 {
-    m_propertyType = _propertyType;
+    m_propertyType = _property_type;
 }
 
 //-----------------------------------------------------------------------------

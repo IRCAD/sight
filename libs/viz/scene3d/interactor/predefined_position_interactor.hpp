@@ -23,7 +23,7 @@
 
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/interactor/base.hpp"
-#include "viz/scene3d/Layer.hpp"
+#include "viz/scene3d/layer.hpp"
 
 #include <core/thread/timer.hpp>
 
@@ -55,8 +55,8 @@ public:
 
     /// Initializes the interractor.
     VIZ_SCENE3D_API predefined_position_interactor(
-        SPTR(Layer)_layer                                   = nullptr,
-        bool _layerOrderDependant                           = true,
+        SPTR(layer)_layer                                   = nullptr,
+        bool _layer_order_dependant                         = true,
         std::vector<predefined_position_t> _positions       = {},
         const std::optional<std::string>& _default_position = std::nullopt,
         bool _animate                                       = true
@@ -99,7 +99,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -109,7 +109,7 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouseX, int _mouseY) override;
+    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
@@ -117,10 +117,10 @@ public:
     VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) override;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    VIZ_SCENE3D_API void setSceneLength(float _sceneLength) override;
+    VIZ_SCENE3D_API void setSceneLength(float _scene_length) override;
 
     /// SLOT: Sets a parameter value with its key.
-    VIZ_SCENE3D_API void setParameter(ui::parameter_t value, std::string key);
+    VIZ_SCENE3D_API void setParameter(ui::parameter_t _value, std::string _key);
 
     ///SLOT: Goes to the next predefined position (return to first one after the latest).
     VIZ_SCENE3D_API void nextPosition();
@@ -155,7 +155,7 @@ private:
      * @param dx The mouse's X displacement
      * @param dy The mouse's Y displacement
      */
-    void cameraRotateByMouse(int dx, int dy);
+    void cameraRotateByMouse(int _dx, int _dy);
 
     /**
      * @brief Goes to the predefined position at index _idx
@@ -186,7 +186,7 @@ private:
     core::thread::timer::sptr m_timer;
 
     /// Stores the initial rotation.
-    const Ogre::Quaternion m_cameraInitRotation {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
+    const Ogre::Quaternion M_CAMERA_INIT_ROTATION {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
 
     Ogre::Quaternion m_currentOrientation;
 

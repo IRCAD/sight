@@ -14,7 +14,7 @@ Contains services for reading and writing video frames.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_video ...)
+add_dependencies(my_target module_io_video ...)
 ```
 
 ### XML

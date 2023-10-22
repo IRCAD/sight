@@ -57,103 +57,103 @@ void RepresentationEditor::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
     auto* layout = new QVBoxLayout();
 
-    auto* groupBox = new QGroupBox(tr("Representation"));
-    groupBox->setObjectName(serviceID + "/" + groupBox->title());
-    auto* layoutGroupBox = new QVBoxLayout();
-    groupBox->setLayout(layoutGroupBox);
+    auto* group_box = new QGroupBox(tr("Representation"));
+    group_box->setObjectName(service_id + "/" + group_box->title());
+    auto* layout_group_box = new QVBoxLayout();
+    group_box->setLayout(layout_group_box);
 
-    m_buttonGroup = new QButtonGroup(groupBox);
-    m_buttonGroup->setObjectName(serviceID + "/buttonGroup");
+    m_buttonGroup = new QButtonGroup(group_box);
+    m_buttonGroup->setObjectName(service_id + "/buttonGroup");
 
-    auto* buttonSurface = new QRadioButton(tr("Surface"), groupBox);
-    buttonSurface->setObjectName(serviceID + "/" + buttonSurface->text());
-    buttonSurface->setMinimumSize(buttonSurface->sizeHint());
-    m_buttonGroup->addButton(buttonSurface, 0);
-    layoutGroupBox->addWidget(buttonSurface);
-    buttonSurface->setChecked(true);
+    auto* button_surface = new QRadioButton(tr("Surface"), group_box);
+    button_surface->setObjectName(service_id + "/" + button_surface->text());
+    button_surface->setMinimumSize(button_surface->sizeHint());
+    m_buttonGroup->addButton(button_surface, 0);
+    layout_group_box->addWidget(button_surface);
+    button_surface->setChecked(true);
 
-    auto* buttonPoint = new QRadioButton(tr("Point"), groupBox);
-    buttonPoint->setObjectName(serviceID + "/" + buttonPoint->text());
-    buttonPoint->setMinimumSize(buttonPoint->sizeHint());
-    m_buttonGroup->addButton(buttonPoint, 1);
-    layoutGroupBox->addWidget(buttonPoint);
+    auto* button_point = new QRadioButton(tr("Point"), group_box);
+    button_point->setObjectName(service_id + "/" + button_point->text());
+    button_point->setMinimumSize(button_point->sizeHint());
+    m_buttonGroup->addButton(button_point, 1);
+    layout_group_box->addWidget(button_point);
 
-    auto* buttonWireframe = new QRadioButton(tr("Wireframe"), groupBox);
-    buttonWireframe->setObjectName(serviceID + "/" + buttonWireframe->text());
-    buttonWireframe->setMinimumSize(buttonWireframe->sizeHint());
-    m_buttonGroup->addButton(buttonWireframe, 2);
-    layoutGroupBox->addWidget(buttonWireframe);
+    auto* button_wireframe = new QRadioButton(tr("Wireframe"), group_box);
+    button_wireframe->setObjectName(service_id + "/" + button_wireframe->text());
+    button_wireframe->setMinimumSize(button_wireframe->sizeHint());
+    m_buttonGroup->addButton(button_wireframe, 2);
+    layout_group_box->addWidget(button_wireframe);
 
-    auto* buttonEdge = new QRadioButton(tr("Edge"), groupBox);
-    buttonEdge->setObjectName(serviceID + "/" + buttonEdge->text());
-    buttonEdge->setMinimumSize(buttonEdge->sizeHint());
-    m_buttonGroup->addButton(buttonEdge, 3);
-    layoutGroupBox->addWidget(buttonEdge);
+    auto* button_edge = new QRadioButton(tr("Edge"), group_box);
+    button_edge->setObjectName(service_id + "/" + button_edge->text());
+    button_edge->setMinimumSize(button_edge->sizeHint());
+    m_buttonGroup->addButton(button_edge, 3);
+    layout_group_box->addWidget(button_edge);
 
-    // Shading group box
-    auto* groupBoxShading = new QGroupBox(tr("Shading"));
-    groupBoxShading->setObjectName(serviceID + "/" + groupBoxShading->title());
-    auto* layoutGroupBoxShading = new QVBoxLayout();
-    groupBoxShading->setLayout(layoutGroupBoxShading);
-    m_buttonGroupShading = new QButtonGroup(groupBoxShading);
-    m_buttonGroupShading->setObjectName(serviceID + "/buttonGroupShading");
+    // shading group box
+    auto* group_box_shading = new QGroupBox(tr("shading"));
+    group_box_shading->setObjectName(service_id + "/" + group_box_shading->title());
+    auto* layout_group_box_shading = new QVBoxLayout();
+    group_box_shading->setLayout(layout_group_box_shading);
+    m_buttonGroupShading = new QButtonGroup(group_box_shading);
+    m_buttonGroupShading->setObjectName(service_id + "/buttonGroupShading");
 
-    auto* buttonAmbient = new QRadioButton(tr("Ambient"), groupBoxShading);
-    buttonAmbient->setObjectName(serviceID + "/" + buttonAmbient->text());
-    buttonAmbient->setMinimumSize(buttonAmbient->sizeHint());
-    m_buttonGroupShading->addButton(buttonAmbient, 0);
-    layoutGroupBoxShading->addWidget(buttonAmbient);
-    buttonAmbient->setChecked(true);
+    auto* button_ambient = new QRadioButton(tr("Ambient"), group_box_shading);
+    button_ambient->setObjectName(service_id + "/" + button_ambient->text());
+    button_ambient->setMinimumSize(button_ambient->sizeHint());
+    m_buttonGroupShading->addButton(button_ambient, 0);
+    layout_group_box_shading->addWidget(button_ambient);
+    button_ambient->setChecked(true);
 
-    auto* buttonFlat = new QRadioButton(tr("Flat"), groupBoxShading);
-    buttonFlat->setObjectName(serviceID + "/" + buttonFlat->text());
-    buttonFlat->setMinimumSize(buttonFlat->sizeHint());
-    m_buttonGroupShading->addButton(buttonFlat, 1);
-    layoutGroupBoxShading->addWidget(buttonFlat);
-    buttonFlat->setChecked(true);
+    auto* button_flat = new QRadioButton(tr("Flat"), group_box_shading);
+    button_flat->setObjectName(service_id + "/" + button_flat->text());
+    button_flat->setMinimumSize(button_flat->sizeHint());
+    m_buttonGroupShading->addButton(button_flat, 1);
+    layout_group_box_shading->addWidget(button_flat);
+    button_flat->setChecked(true);
 
-    auto* buttonPhong = new QRadioButton(tr("Phong"), groupBoxShading);
-    buttonPhong->setObjectName(serviceID + "/" + buttonPhong->text());
-    buttonPhong->setMinimumSize(buttonPhong->sizeHint());
-    m_buttonGroupShading->addButton(buttonPhong, 2);
-    layoutGroupBoxShading->addWidget(buttonPhong);
+    auto* button_phong = new QRadioButton(tr("Phong"), group_box_shading);
+    button_phong->setObjectName(service_id + "/" + button_phong->text());
+    button_phong->setMinimumSize(button_phong->sizeHint());
+    m_buttonGroupShading->addButton(button_phong, 2);
+    layout_group_box_shading->addWidget(button_phong);
 
-    layout->addWidget(groupBox);
-    layout->addWidget(groupBoxShading);
+    layout->addWidget(group_box);
+    layout->addWidget(group_box_shading);
 
-    auto* groupBoxNormals = new QGroupBox(tr("Normals"));
-    groupBoxNormals->setObjectName(serviceID + "/" + groupBoxNormals->title());
-    auto* layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
+    auto* group_box_normals = new QGroupBox(tr("Normals"));
+    group_box_normals->setObjectName(service_id + "/" + group_box_normals->title());
+    auto* layout_group_box_normals = new QVBoxLayout(group_box_normals);
     m_normalsRadioBox = new QButtonGroup();
-    m_normalsRadioBox->setObjectName(serviceID + "/normalsRadioBox");
-    auto* pointNormalsButton = new QRadioButton(tr("Show point normals"));
-    pointNormalsButton->setObjectName(serviceID + "/" + pointNormalsButton->text());
-    auto* cellNormalsButton = new QRadioButton(tr("Show cell normals"));
-    cellNormalsButton->setObjectName(serviceID + "/" + cellNormalsButton->text());
-    auto* hideNormalsButton = new QRadioButton(tr("Hide normals"));
-    hideNormalsButton->setObjectName(serviceID + "/" + hideNormalsButton->text());
+    m_normalsRadioBox->setObjectName(service_id + "/normalsRadioBox");
+    auto* point_normals_button = new QRadioButton(tr("Show point normals"));
+    point_normals_button->setObjectName(service_id + "/" + point_normals_button->text());
+    auto* cell_normals_button = new QRadioButton(tr("Show cell normals"));
+    cell_normals_button->setObjectName(service_id + "/" + cell_normals_button->text());
+    auto* hide_normals_button = new QRadioButton(tr("Hide normals"));
+    hide_normals_button->setObjectName(service_id + "/" + hide_normals_button->text());
 
-    m_normalsRadioBox->addButton(pointNormalsButton, 1);
-    m_normalsRadioBox->addButton(cellNormalsButton, 2);
-    m_normalsRadioBox->addButton(hideNormalsButton, 0);
+    m_normalsRadioBox->addButton(point_normals_button, 1);
+    m_normalsRadioBox->addButton(cell_normals_button, 2);
+    m_normalsRadioBox->addButton(hide_normals_button, 0);
 
-    layoutGroupBoxNormals->addWidget(pointNormalsButton);
-    layoutGroupBoxNormals->addWidget(cellNormalsButton);
-    layoutGroupBoxNormals->addWidget(hideNormalsButton);
+    layout_group_box_normals->addWidget(point_normals_button);
+    layout_group_box_normals->addWidget(cell_normals_button);
+    layout_group_box_normals->addWidget(hide_normals_button);
 
-    layout->addWidget(groupBoxNormals);
+    layout->addWidget(group_box_normals);
 
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
 
-    qtContainer->setLayout(layout);
-    qtContainer->setEnabled(false);
+    qt_container->setLayout(layout);
+    qt_container->setEnabled(false);
 
     QObject::connect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
     QObject::connect(m_buttonGroupShading, SIGNAL(buttonClicked(int)), this, SLOT(onChangeShading(int)));
@@ -184,10 +184,10 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    QWidget* const container = qtContainer->getQtContainer();
+    QWidget* const container = qt_container->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
     SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
@@ -202,53 +202,53 @@ void RepresentationEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onChangeRepresentation(int id)
+void RepresentationEditor::onChangeRepresentation(int _id)
 {
-    data::material::RepresentationType selectedMode = data::material::SURFACE;
+    data::material::representation_t selected_mode = data::material::SURFACE;
 
-    switch(id)
+    switch(_id)
     {
         case 1:
-            selectedMode = data::material::POINT;
+            selected_mode = data::material::POINT;
             break;
 
         case 2:
-            selectedMode = data::material::WIREFRAME;
+            selected_mode = data::material::WIREFRAME;
             break;
 
         case 3:
-            selectedMode = data::material::EDGE;
+            selected_mode = data::material::EDGE;
             break;
 
         default: // 0 or other
-            selectedMode = data::material::SURFACE;
+            selected_mode = data::material::SURFACE;
     }
 
-    m_material->setRepresentationMode(selectedMode);
+    m_material->setRepresentationMode(selected_mode);
     this->notifyMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onChangeShading(int id)
+void RepresentationEditor::onChangeShading(int _id)
 {
-    data::material::ShadingType selectedMode = data::material::PHONG;
+    data::material::shading_t selected_mode = data::material::PHONG;
 
-    switch(id)
+    switch(_id)
     {
         case 0:
-            selectedMode = data::material::AMBIENT;
+            selected_mode = data::material::AMBIENT;
             break;
 
         case 1:
-            selectedMode = data::material::FLAT;
+            selected_mode = data::material::FLAT;
             break;
 
         default: // 2 or other
-            selectedMode = data::material::PHONG;
+            selected_mode = data::material::PHONG;
     }
 
-    m_material->setShadingMode(selectedMode);
+    m_material->setShadingMode(selected_mode);
     this->notifyMaterial();
 }
 
@@ -256,10 +256,10 @@ void RepresentationEditor::onChangeShading(int id)
 
 void RepresentationEditor::refreshRepresentation()
 {
-    int representationMode  = m_material->getRepresentationMode();
+    int representation_mode = m_material->getRepresentationMode();
     QAbstractButton* button = nullptr;
 
-    switch(representationMode)
+    switch(representation_mode)
     {
         case data::material::SURFACE:
             button = m_buttonGroup->button(0);
@@ -291,10 +291,10 @@ void RepresentationEditor::refreshRepresentation()
 
 void RepresentationEditor::refreshShading()
 {
-    int shadingMode         = m_material->getShadingMode();
+    int shading_mode        = m_material->getShadingMode();
     QAbstractButton* button = nullptr;
 
-    switch(shadingMode)
+    switch(shading_mode)
     {
         case data::material::AMBIENT:
             button = m_buttonGroupShading->button(0);
@@ -321,17 +321,17 @@ void RepresentationEditor::refreshShading()
 
 void RepresentationEditor::refreshNormals()
 {
-    QAbstractButton* buttonHide = m_normalsRadioBox->button(0);
-    buttonHide->setChecked(m_material->getOptionsMode() == data::material::STANDARD);
-    QAbstractButton* buttonNormals = m_normalsRadioBox->button(1);
-    buttonNormals->setChecked(m_material->getOptionsMode() == data::material::NORMALS);
+    QAbstractButton* button_hide = m_normalsRadioBox->button(0);
+    button_hide->setChecked(m_material->getOptionsMode() == data::material::STANDARD);
+    QAbstractButton* button_normals = m_normalsRadioBox->button(1);
+    button_normals->setChecked(m_material->getOptionsMode() == data::material::NORMALS);
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onShowNormals(int state)
+void RepresentationEditor::onShowNormals(int _state)
 {
-    switch(state)
+    switch(_state)
     {
         case 0:
             m_material->setOptionsMode(data::material::STANDARD);
@@ -346,7 +346,7 @@ void RepresentationEditor::onShowNormals(int state)
             break;
 
         default:
-            SIGHT_ASSERT("Invalid state: " << state, false);
+            SIGHT_ASSERT("Invalid state: " << _state, false);
     }
 
     this->notifyMaterial();
@@ -355,7 +355,7 @@ void RepresentationEditor::onShowNormals(int state)
     auto reconstruction = m_rec.lock();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal<data::reconstruction::MeshChangedSignalType>(
+    auto sig = reconstruction->signal<data::reconstruction::mesh_changed_signal_t>(
         data::reconstruction::MESH_CHANGED_SIG
     );
     sig->async_emit(reconstruction->getMesh());
@@ -368,8 +368,8 @@ void RepresentationEditor::notifyMaterial()
     SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
-    data::object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::object::ModifiedSignalType>(
+    data::object::modified_signal_t::sptr sig;
+    sig = reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
         data::object::MODIFIED_SIG
     );
     sig->async_emit();

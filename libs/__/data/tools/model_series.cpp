@@ -31,53 +31,53 @@ namespace sight::data::tools
 //------------------------------------------------------------------------------
 
 void model_series::addMesh(
-    const data::model_series::sptr& _modelSeries,
+    const data::model_series::sptr& _model_series,
     const data::mesh::sptr& _mesh,
-    const std::string& _organName,
-    const std::string& _structureType,
+    const std::string& _organ_name,
+    const std::string& _structure_type,
     const data::color::sptr& _colour,
-    data::material::RepresentationType _mode,
+    data::material::representation_t _mode,
     bool _visible
 )
 {
     //reconstruction creation
-    data::reconstruction::sptr reconstructionQuadMesh =
-        createReconstructionFromMesh(_mesh, _organName, _structureType, _colour, _mode, _visible);
+    data::reconstruction::sptr reconstruction_quad_mesh =
+        createReconstructionFromMesh(_mesh, _organ_name, _structure_type, _colour, _mode, _visible);
 
-    addReconstruction(_modelSeries, reconstructionQuadMesh);
+    addReconstruction(_model_series, reconstruction_quad_mesh);
 
-    auto sig = _modelSeries->signal<data::model_series::ReconstructionsAddedSignalType>(
+    auto sig = _model_series->signal<data::model_series::reconstructions_added_signal_t>(
         data::model_series::RECONSTRUCTIONS_ADDED_SIG
     );
 
-    data::model_series::ReconstructionVectorType reconstructionsVector;
-    reconstructionsVector.push_back(reconstructionQuadMesh);
-    sig->async_emit(reconstructionsVector);
+    data::model_series::reconstruction_vector_t reconstructions_vector;
+    reconstructions_vector.push_back(reconstruction_quad_mesh);
+    sig->async_emit(reconstructions_vector);
 }
 
 //------------------------------------------------------------------------------
 
 data::reconstruction::sptr model_series::createReconstructionFromMesh(
     const data::mesh::sptr& _mesh,
-    const std::string& _organName,
-    const std::string& _structureType,
+    const std::string& _organ_name,
+    const std::string& _structure_type,
     const data::color::sptr& _color,
-    data::material::RepresentationType _mode,
+    data::material::representation_t _mode,
     bool _visible
 )
 {
     data::color::sptr diffuse = std::make_shared<data::color>();
     diffuse->setRGBA(_color->red(), _color->green(), _color->blue(), _color->alpha());
-    data::material::sptr pMaterial = std::make_shared<data::material>();
-    pMaterial->setDiffuse(diffuse);
-    pMaterial->setRepresentationMode(_mode);
+    data::material::sptr p_material = std::make_shared<data::material>();
+    p_material->setDiffuse(diffuse);
+    p_material->setRepresentationMode(_mode);
 
     data::reconstruction::sptr reconstruction = std::make_shared<data::reconstruction>();
     reconstruction->setMesh(_mesh);
     reconstruction->setIsVisible(_visible);
-    reconstruction->setOrganName(_organName);
-    reconstruction->setStructureType(_structureType);
-    reconstruction->setMaterial(pMaterial);
+    reconstruction->setOrganName(_organ_name);
+    reconstruction->set_structure_type(_structure_type);
+    reconstruction->setMaterial(p_material);
 
     return reconstruction;
 }
@@ -85,20 +85,20 @@ data::reconstruction::sptr model_series::createReconstructionFromMesh(
 //------------------------------------------------------------------------------
 
 void model_series::addReconstruction(
-    const data::model_series::sptr& _modelSeries,
+    const data::model_series::sptr& _model_series,
     const data::reconstruction::sptr& _rec
 )
 {
-    data::model_series::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
+    data::model_series::reconstruction_vector_t rec_db = _model_series->getReconstructionDB();
 
     SIGHT_THROW_IF("Reconstruction is invalid.", _rec == nullptr);
     SIGHT_THROW_IF(
         "Reconstruction already exists in model_series.",
-        std::find(recDB.begin(), recDB.end(), _rec) != recDB.end()
+        std::find(rec_db.begin(), rec_db.end(), _rec) != rec_db.end()
     );
 
-    recDB.push_back(_rec);
-    _modelSeries->setReconstructionDB(recDB);
+    rec_db.push_back(_rec);
+    _model_series->setReconstructionDB(rec_db);
 }
 
 //------------------------------------------------------------------------------

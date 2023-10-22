@@ -90,50 +90,50 @@ runtime::~runtime()
 
 //------------------------------------------------------------------------------
 
-void runtime::add_module(std::shared_ptr<module> module)
+void runtime::add_module(std::shared_ptr<module> _module)
 {
-    SIGHT_DEBUG("Module " + module->identifier() + " added.")
-    m_modules.insert(module);
+    SIGHT_DEBUG("Module " + _module->identifier() + " added.")
+    m_modules.insert(_module);
     std::for_each(
-        module->extensions_begin(),
-        module->extensions_end(),
-        [this](auto e){add_extension(e);});
+        _module->extensions_begin(),
+        _module->extensions_end(),
+        [this](auto _e){add_extension(_e);});
     std::for_each(
-        module->extension_points_begin(),
-        module->extension_points_end(),
-        [this](auto&& PH1, auto&& ...){add_extension_point(std::forward<decltype(PH1)>(PH1));});
+        _module->extension_points_begin(),
+        _module->extension_points_end(),
+        [this](auto&& _p_h1, auto&& ...){add_extension_point(std::forward<decltype(_p_h1)>(_p_h1));});
     std::for_each(
-        module->executable_factories_begin(),
-        module->executable_factories_end(),
-        [this](auto&& PH1, auto&& ...){add_executable_factory(std::forward<decltype(PH1)>(PH1));});
+        _module->executable_factories_begin(),
+        _module->executable_factories_end(),
+        [this](auto&& _p_h1, auto&& ...){add_executable_factory(std::forward<decltype(_p_h1)>(_p_h1));});
 }
 
 //------------------------------------------------------------------------------
 
-void runtime::unregister_module(std::shared_ptr<module> module)
+void runtime::unregister_module(std::shared_ptr<module> _module)
 {
     std::for_each(
-        module->executable_factories_begin(),
-        module->executable_factories_end(),
-        [this](auto&& PH1, auto&& ...){unregister_executable_factory(std::forward<decltype(PH1)>(PH1));});
+        _module->executable_factories_begin(),
+        _module->executable_factories_end(),
+        [this](auto&& _p_h1, auto&& ...){unregister_executable_factory(std::forward<decltype(_p_h1)>(_p_h1));});
     std::for_each(
-        module->extension_points_begin(),
-        module->extension_points_end(),
-        [this](auto&& PH1, auto&& ...){unregister_extension_point(std::forward<decltype(PH1)>(PH1));});
+        _module->extension_points_begin(),
+        _module->extension_points_end(),
+        [this](auto&& _p_h1, auto&& ...){unregister_extension_point(std::forward<decltype(_p_h1)>(_p_h1));});
     std::for_each(
-        module->extensions_begin(),
-        module->extensions_end(),
-        [this](auto&& PH1, auto&& ...){unregister_extension(std::forward<decltype(PH1)>(PH1));});
-    m_modules.erase(module);
+        _module->extensions_begin(),
+        _module->extensions_end(),
+        [this](auto&& _p_h1, auto&& ...){unregister_extension(std::forward<decltype(_p_h1)>(_p_h1));});
+    m_modules.erase(_module);
 }
 
 //------------------------------------------------------------------------------
 
-void runtime::add_modules(const std::filesystem::path& repository)
+void runtime::add_modules(const std::filesystem::path& _repository)
 {
     for(const auto& repo : m_repositories)
     {
-        if(repo.second == repository)
+        if(repo.second == _repository)
         {
             // Avoid adding modules several times, but we don't consider this as an error for the sake of simplicity...
             return;
@@ -142,22 +142,22 @@ void runtime::add_modules(const std::filesystem::path& repository)
 
     try
     {
-        const auto modules = core::runtime::detail::io::module_descriptor_reader::create_modules(repository);
+        const auto modules = core::runtime::detail::io::module_descriptor_reader::create_modules(_repository);
         std::for_each(
             modules.begin(),
             modules.end(),
-            [this](auto&& PH1, auto&& ...)
+            [this](auto&& _p_h1, auto&& ...)
             {
-                add_module(std::forward<decltype(PH1)>(PH1));
+                add_module(std::forward<decltype(_p_h1)>(_p_h1));
             });
         const auto lib_repo_str = std::regex_replace(
-            repository.lexically_normal().string(),
+            _repository.lexically_normal().string(),
             s_match_module_path,
             MODULE_LIB_PREFIX
         );
         m_repositories.emplace_back(
             std::filesystem::weakly_canonical(std::filesystem::path(lib_repo_str)),
-            repository
+            _repository
 
         );
     }
@@ -169,29 +169,29 @@ void runtime::add_modules(const std::filesystem::path& repository)
 
 //------------------------------------------------------------------------------
 
-void runtime::add_executable_factory(std::shared_ptr<executable_factory> factory)
+void runtime::add_executable_factory(std::shared_ptr<executable_factory> _factory)
 {
     // Ensures no registered factory has the same identifier
-    const std::string type(factory->get_type());
+    const std::string type(_factory->get_type());
     if(this->find_executable_factory(type) != nullptr)
     {
         throw runtime_exception(type + ": type already used by an executable factory.");
     }
 
     // Stores the executable factory.
-    m_executable_factories.insert(factory);
+    m_executable_factories.insert(_factory);
 }
 
 //------------------------------------------------------------------------------
 
-void runtime::unregister_executable_factory(std::shared_ptr<executable_factory> factory)
+void runtime::unregister_executable_factory(std::shared_ptr<executable_factory> _factory)
 {
     // Ensures no registered factory has the same identifier.
-    const std::string type(factory->get_type());
+    const std::string type(_factory->get_type());
     SIGHT_WARN_IF("ExecutableFactory Type " + type + " not found.", this->find_executable_factory(type) == nullptr);
 
     // Removes the executable factory.
-    m_executable_factories.erase(factory);
+    m_executable_factories.erase(_factory);
 }
 
 //------------------------------------------------------------------------------
@@ -214,32 +214,32 @@ std::shared_ptr<executable_factory> runtime::find_executable_factory(const std::
 
 //------------------------------------------------------------------------------
 
-void runtime::add_extension(std::shared_ptr<detail::extension> extension)
+void runtime::add_extension(std::shared_ptr<detail::extension> _extension)
 {
     // Asserts no registered extension has the same identifier.
-    const std::string identifier(filter_id(extension->identifier()));
+    const std::string identifier(filter_id(_extension->identifier()));
     if(!identifier.empty() && this->find_extension(identifier) != nullptr)
     {
         throw runtime_exception(identifier + ": identifier already used by a registered extension.");
     }
 
     // Stores the extension.
-    m_extensions.insert(extension);
+    m_extensions.insert(_extension);
 }
 
 //------------------------------------------------------------------------------
 
-void runtime::unregister_extension(std::shared_ptr<detail::extension> extension)
+void runtime::unregister_extension(std::shared_ptr<detail::extension> _extension)
 {
     // Asserts no registered extension has the same identifier.
-    const std::string identifier(filter_id(extension->identifier()));
+    const std::string identifier(filter_id(_extension->identifier()));
     SIGHT_WARN_IF(
         "Extension " + identifier + " not found.",
         !identifier.empty() && this->find_extension(identifier) == nullptr
     );
 
     // Removes the extension.
-    m_extensions.erase(extension);
+    m_extensions.erase(_extension);
 }
 
 //------------------------------------------------------------------------------
@@ -265,37 +265,37 @@ runtime::extension_iterator runtime::extensions_end() const
 
 //------------------------------------------------------------------------------
 
-void runtime::add_extension_point(std::shared_ptr<extension_point> point)
+void runtime::add_extension_point(std::shared_ptr<extension_point> _point)
 {
     // Asserts no registered extension point has the same identifier.
-    const std::string identifier(filter_id(point->identifier()));
+    const std::string identifier(filter_id(_point->identifier()));
     if(this->find_extension_point(identifier) != nullptr)
     {
         throw runtime_exception(identifier + ": identifier already used by a registered extension point.");
     }
 
     // Stores the extension.
-    m_extension_points.insert(point);
+    m_extension_points.insert(_point);
 }
 
 //------------------------------------------------------------------------------
 
-void runtime::unregister_extension_point(std::shared_ptr<extension_point> point)
+void runtime::unregister_extension_point(std::shared_ptr<extension_point> _point)
 {
     // Asserts no registered extension point has the same identifier.
-    const std::string identifier(filter_id(point->identifier()));
+    const std::string identifier(filter_id(_point->identifier()));
     SIGHT_WARN_IF("ExtensionPoint " + identifier + " not found.", this->find_extension_point(identifier) == nullptr);
 
-    m_extension_points.erase(point);
+    m_extension_points.erase(_point);
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<core::runtime::module> runtime::find_module(const std::string& identifier) const
+std::shared_ptr<core::runtime::module> runtime::find_module(const std::string& _identifier) const
 {
-    SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
+    SIGHT_ASSERT("Module identifier should not be empty", !_identifier.empty());
 
-    const std::string id = filter_id(identifier);
+    const std::string id = filter_id(_identifier);
 
     std::shared_ptr<core::runtime::module> res_module;
     for(const auto& module : m_modules)
@@ -312,11 +312,11 @@ std::shared_ptr<core::runtime::module> runtime::find_module(const std::string& i
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<core::runtime::module> runtime::find_enabled_module(const std::string& identifier) const
+std::shared_ptr<core::runtime::module> runtime::find_enabled_module(const std::string& _identifier) const
 {
-    SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
+    SIGHT_ASSERT("Module identifier should not be empty", !_identifier.empty());
 
-    const std::string id = filter_id(identifier);
+    const std::string id = filter_id(_identifier);
 
     std::shared_ptr<core::runtime::module> res_module;
     for(const auto& module : m_modules)
@@ -346,9 +346,9 @@ runtime& runtime::get()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<core::runtime::extension> runtime::find_extension(const std::string& identifier) const
+std::shared_ptr<core::runtime::extension> runtime::find_extension(const std::string& _identifier) const
 {
-    const std::string id = filter_id(identifier);
+    const std::string id = filter_id(_identifier);
     std::shared_ptr<core::runtime::extension> res_extension;
     for(const extension_container::value_type& extension : m_extensions)
     {
@@ -387,9 +387,9 @@ std::vector<std::pair<std::filesystem::path, std::filesystem::path> > runtime::g
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<extension_point> runtime::find_extension_point(const std::string& identifier) const
+std::shared_ptr<extension_point> runtime::find_extension_point(const std::string& _identifier) const
 {
-    const std::string id = filter_id(identifier);
+    const std::string id = filter_id(_identifier);
     std::shared_ptr<extension_point> res_extension_point;
     for(const extension_point_container::value_type& extension_point : m_extension_points)
     {
@@ -405,15 +405,15 @@ std::shared_ptr<extension_point> runtime::find_extension_point(const std::string
 
 //------------------------------------------------------------------------------
 
-executable* runtime::create_executable_instance(const std::string& type) const
+executable* runtime::create_executable_instance(const std::string& _type) const
 {
     std::shared_ptr<executable_factory> factory;
 
     // Retrieves the executable factory.
-    factory = this->find_executable_factory(type);
+    factory = this->find_executable_factory(_type);
     if(factory == nullptr)
     {
-        throw runtime_exception(type + ": no executable factory found for that type.");
+        throw runtime_exception(_type + ": no executable factory found for that type.");
     }
 
     // Creates the executable instance

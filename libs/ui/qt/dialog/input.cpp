@@ -33,31 +33,31 @@ namespace sight::ui::qt::dialog
 
 //------------------------------------------------------------------------------
 
-void input::setTitle(const std::string& title)
+void input::setTitle(const std::string& _title)
 {
-    m_title = title;
+    m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-void input::setMessage(const std::string& msg)
+void input::setMessage(const std::string& _msg)
 {
-    m_message = msg;
+    m_message = _msg;
 }
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(input::EchoMode echoMode)
+void input::setEchoMode(input::EchoMode _echo_mode)
 {
-    m_echoMode = echoMode;
+    m_echoMode = _echo_mode;
 }
 
 //------------------------------------------------------------------------------
 
 /// Set the input text in the input field
-void input::set_input(const std::string& text)
+void input::set_input(const std::string& _text)
 {
-    m_input = text;
+    m_input = _text;
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ std::pair<std::string, bool> input::getInput()
     QString title = QObject::tr(m_title.c_str());
     QString text  = QObject::tr(m_message.c_str());
 
-    const QLineEdit::EchoMode echoMode =
+    const QLineEdit::EchoMode echo_mode =
         [&]
         {
             switch(m_echoMode)
@@ -87,27 +87,27 @@ std::pair<std::string, bool> input::getInput()
             }
         }();
 
-    bool IsOkClicked = false;
+    bool is_ok_clicked = false;
 
-    QString outputText = QInputDialog::getText(
+    QString output_text = QInputDialog::getText(
         qApp->activeWindow(),
         title,
         text,
-        echoMode,
+        echo_mode,
         QString::fromStdString(m_input),
-        &IsOkClicked
+        &is_ok_clicked
     );
 
-    if(IsOkClicked)
+    if(is_ok_clicked)
     {
-        m_input = outputText.toStdString();
+        m_input = output_text.toStdString();
     }
     else
     {
         m_input.clear();
     }
 
-    return std::make_pair(m_input, IsOkClicked);
+    return std::make_pair(m_input, is_ok_clicked);
 }
 
 //------------------------------------------------------------------------------

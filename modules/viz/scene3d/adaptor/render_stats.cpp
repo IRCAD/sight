@@ -38,25 +38,25 @@ class PostWindowRenderListener : public Ogre::RenderTargetListener
 {
 public:
 
-    explicit PostWindowRenderListener(render_stats& _renderStatsAdaptor) :
-        m_renderStatsAdaptor(_renderStatsAdaptor)
+    explicit PostWindowRenderListener(render_stats& _render_stats_adaptor) :
+        m_renderStatsAdaptor(_render_stats_adaptor)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) override
+    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& _evt) override
     {
         // update text every 100th frame
         if(m_frameCount++ > 100)
         {
-            auto frameStats = evt.source->getStatistics();
+            auto frame_stats = _evt.source->getStatistics();
 
-            std::ostringstream statStream;
-            statStream << "FPS=" << static_cast<int>(frameStats.lastFPS) << std::endl
-            << "Triangle count=" << frameStats.triangleCount << std::endl;
+            std::ostringstream stat_stream;
+            stat_stream << "FPS=" << static_cast<int>(frame_stats.lastFPS) << std::endl
+            << "Triangle count=" << frame_stats.triangleCount << std::endl;
 
-            m_renderStatsAdaptor.m_statsText->setText(statStream.str());
+            m_renderStatsAdaptor.m_statsText->setText(stat_stream.str());
 
             m_frameCount = 1;
         }
@@ -85,11 +85,11 @@ void render_stats::configuring()
     static const std::string s_COLOR_CONFIG     = s_CONFIG + "color";
     static const std::string s_FONT_SIZE_CONFIG = s_CONFIG + "fontSize";
 
-    const std::string color      = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
-    data::color::sptr sightColor = std::make_shared<data::color>();
-    sightColor->setRGBA(color);
+    const std::string color       = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
+    data::color::sptr sight_color = std::make_shared<data::color>();
+    sight_color->setRGBA(color);
 
-    m_textColor = Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
+    m_textColor = Ogre::ColourValue(sight_color->red(), sight_color->green(), sight_color->blue());
 
     m_fontSize = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
@@ -100,19 +100,19 @@ void render_stats::starting()
 {
     this->initialize();
 
-    sight::viz::scene3d::render::sptr renderSrv = this->getRenderService();
-    renderSrv->makeCurrent();
+    sight::viz::scene3d::render::sptr render_srv = this->getRenderService();
+    render_srv->makeCurrent();
 
-    m_statsText = sight::viz::scene3d::IText::make(this->getLayer());
+    m_statsText = sight::viz::scene3d::text::make(this->getLayer());
     m_statsText->setFontSize(m_fontSize);
     m_statsText->setPosition(0.01F, 0.01F);
     m_statsText->setTextColor(m_textColor);
 
-    const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    auto* renderWindow                           = layer->getRenderTarget();
+    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
+    auto* render_window                          = layer->getRenderTarget();
 
     m_listener = std::make_unique<module::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
-    renderWindow->addListener(m_listener.get());
+    render_window->addListener(m_listener.get());
 }
 
 //------------------------------------------------------------------------------
@@ -125,12 +125,12 @@ void render_stats::updating()
 
 void render_stats::stopping()
 {
-    sight::viz::scene3d::render::sptr renderSrv = this->getRenderService();
-    renderSrv->makeCurrent();
+    sight::viz::scene3d::render::sptr render_srv = this->getRenderService();
+    render_srv->makeCurrent();
 
-    const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    auto* renderWindow                           = layer->getRenderTarget();
-    renderWindow->removeListener(m_listener.get());
+    const sight::viz::scene3d::layer::sptr layer = this->getLayer();
+    auto* render_window                          = layer->getRenderTarget();
+    render_window->removeListener(m_listener.get());
 
     m_listener.reset();
     m_statsText = nullptr;

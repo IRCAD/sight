@@ -78,11 +78,11 @@ struct ActivitiesLessThanKey
     //------------------------------------------------------------------------------
 
     inline bool operator()(
-        const activity::extension::activity_info& a,
-        const activity::extension::activity_info& b
+        const activity::extension::activity_info& _a,
+        const activity::extension::activity_info& _b
 )
     {
-        return a.id < b.id;
+        return _a.id < _b.id;
     }
 };
 

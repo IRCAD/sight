@@ -76,19 +76,19 @@ void InstanceNumberSorterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    auto dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    auto dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Apply filter
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::InstanceNumberSorter"
     );
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
-    dicomSeries = dicomSeriesContainer[0];
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicom_series_container.size());
+    dicom_series = dicom_series_container[0];
 }
 
 //------------------------------------------------------------------------------

@@ -89,7 +89,7 @@ void point_test::setterTest()
 {
     data::point::sptr p1 = std::make_shared<data::point>();
 
-    data::point::PointCoordArrayType expected = {0.1, 0.2, 0.3};
+    data::point::point_coord_array_t expected = {0.1, 0.2, 0.3};
 
     p1->setCoord(expected);
     const auto actual = p1->getCoord();

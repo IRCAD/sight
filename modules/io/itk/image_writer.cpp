@@ -71,21 +71,21 @@ sight::io::service::IOPathType image_writer::getIOPathType() const
 
 void image_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::dialog::location::WRITE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.setOption(ui::dialog::location::WRITE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -121,33 +121,33 @@ void image_writer::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-bool image_writer::saveImage(const std::filesystem::path& imgSavePath, const data::image::csptr& image)
+bool image_writer::saveImage(const std::filesystem::path& _img_save_path, const data::image::csptr& _image)
 {
-    sight::io::writer::object_writer::sptr myWriter;
-    std::string ext = imgSavePath.extension().string();
+    sight::io::writer::object_writer::sptr my_writer;
+    std::string ext = _img_save_path.extension().string();
     boost::algorithm::to_lower(ext);
 
-    if(boost::algorithm::ends_with(imgSavePath.string(), ".inr.gz"))
+    if(boost::algorithm::ends_with(_img_save_path.string(), ".inr.gz"))
     {
-        auto inrWriter = std::make_shared<sight::io::itk::InrImageWriter>();
-        sight::ui::dialog::progress progressMeterGUI("Saving images... ");
-        inrWriter->add_handler(progressMeterGUI);
-        inrWriter->set_file(imgSavePath);
-        myWriter = inrWriter;
+        auto inr_writer = std::make_shared<sight::io::itk::InrImageWriter>();
+        sight::ui::dialog::progress progress_meter_gui("Saving images... ");
+        inr_writer->add_handler(progress_meter_gui);
+        inr_writer->set_file(_img_save_path);
+        my_writer = inr_writer;
     }
-    else if(ext == ".nii" || boost::algorithm::ends_with(imgSavePath.string(), ".nii.gz"))
+    else if(ext == ".nii" || boost::algorithm::ends_with(_img_save_path.string(), ".nii.gz"))
     {
-        auto niftiWriter = std::make_shared<sight::io::itk::NiftiImageWriter>();
-        niftiWriter->set_file(imgSavePath);
-        myWriter = niftiWriter;
+        auto nifti_writer = std::make_shared<sight::io::itk::NiftiImageWriter>();
+        nifti_writer->set_file(_img_save_path);
+        my_writer = nifti_writer;
     }
-    else if(std::filesystem::is_directory(imgSavePath))
+    else if(std::filesystem::is_directory(_img_save_path))
     {
-        auto jpgWriter = std::make_shared<sight::io::itk::JpgImageWriter>();
-        sight::ui::dialog::progress progressMeterGUI("Saving images... ");
-        jpgWriter->add_handler(progressMeterGUI);
-        jpgWriter->set_folder(imgSavePath);
-        myWriter = jpgWriter;
+        auto jpg_writer = std::make_shared<sight::io::itk::JpgImageWriter>();
+        sight::ui::dialog::progress progress_meter_gui("Saving images... ");
+        jpg_writer->add_handler(progress_meter_gui);
+        jpg_writer->set_folder(_img_save_path);
+        my_writer = jpg_writer;
     }
     else
     {
@@ -159,11 +159,11 @@ bool image_writer::saveImage(const std::filesystem::path& imgSavePath, const dat
         );
     }
 
-    myWriter->set_object(image);
+    my_writer->set_object(_image);
 
     try
     {
-        myWriter->write();
+        my_writer->write();
     }
     catch(const std::exception& e)
     {

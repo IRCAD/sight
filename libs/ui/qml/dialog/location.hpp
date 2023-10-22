@@ -53,18 +53,18 @@ public:
     UI_QML_API core::location::base::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
-    UI_QML_API void setType(location::Types type) override;
+    UI_QML_API void setType(location::Types _type) override;
 
     /// Set the type of locationDialog to open (read, write...)
-    UI_QML_API void setOption(location::Options option) override;
+    UI_QML_API void setOption(location::Options _option) override;
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
-    UI_QML_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+    UI_QML_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& msg);
+    void resultDialog(const QVariant& _msg);
 
 private:
 
@@ -84,7 +84,7 @@ private:
     std::string getCurrentSelection() const override;
 
     /// event filter for Mac
-    bool eventFilter(QObject* watched, QEvent* event) override;
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
 };
 
 } // namespace sight::ui::qml::dialog

@@ -19,7 +19,7 @@ Contains services to do basic geometrical operations  with `sight::data::matrix4
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_geometry ...)
+add_dependencies(my_target module_geometry ...)
 ```
 
 ### XML

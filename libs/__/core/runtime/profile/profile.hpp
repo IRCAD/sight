@@ -29,6 +29,6 @@
 namespace sight::core::runtime::io::profile_reader
 {
 
-CORE_API std::shared_ptr<core::runtime::profile> create_profile(const std::filesystem::path& path);
+CORE_API std::shared_ptr<core::runtime::profile> create_profile(const std::filesystem::path& _path);
 
 } // namespace sight::core::runtime::io::profile_reader

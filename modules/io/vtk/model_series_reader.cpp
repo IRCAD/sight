@@ -62,7 +62,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 model_series_reader::model_series_reader() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -76,29 +76,29 @@ sight::io::service::IOPathType model_series_reader::getIOPathType() const
 
 void model_series_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setType(ui::dialog::location::MULTI_FILES);
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
-    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
-    dialogFile.addFilter("OBJ Files(.obj)", "*.obj");
-    dialogFile.addFilter("PLY Files(.ply)", "*.ply");
-    dialogFile.addFilter("STL Files(.stl)", "*.stl");
-    dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
-    dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setType(ui::dialog::location::MULTI_FILES);
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
+    dialog_file.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
+    dialog_file.addFilter("OBJ Files(.obj)", "*.obj");
+    dialog_file.addFilter("PLY Files(.ply)", "*.ply");
+    dialog_file.addFilter("STL Files(.stl)", "*.stl");
+    dialog_file.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
+    dialog_file.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
     if(result)
     {
         const std::vector<std::filesystem::path> paths = result->get_files();
         if(!paths.empty())
         {
-            defaultDirectory->set_folder(paths[0].parent_path());
-            dialogFile.saveDefaultLocation(defaultDirectory);
+            default_directory->set_folder(paths[0].parent_path());
+            dialog_file.saveDefaultLocation(default_directory);
         }
 
         this->set_files(paths);
@@ -142,8 +142,8 @@ void model_series_reader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked      = m_data.lock();
-        const auto modelSeries = std::dynamic_pointer_cast<data::model_series>(locked.get_shared());
+        const auto locked       = m_data.lock();
+        const auto model_series = std::dynamic_pointer_cast<data::model_series>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -151,14 +151,14 @@ void model_series_reader::updating()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            modelSeries
+            model_series
         );
 
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
 
-        data::model_series::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
-        data::model_series::ReconstructionVectorType addedRecs;
+        data::model_series::reconstruction_vector_t rec_db = model_series->getReconstructionDB();
+        data::model_series::reconstruction_vector_t added_recs;
         for(const auto& file : this->get_files())
         {
             auto mesh = std::make_shared<data::mesh>();
@@ -168,19 +168,19 @@ void model_series_reader::updating()
             rec->setMesh(mesh);
             rec->setIsVisible(true);
             rec->setOrganName(file.stem().string());
-            recDB.push_back(rec);
-            addedRecs.push_back(rec);
+            rec_db.push_back(rec);
+            added_recs.push_back(rec);
         }
 
         cursor.setDefaultCursor();
-        modelSeries->setReconstructionDB(recDB);
+        model_series->setReconstructionDB(rec_db);
 
-        auto sig = modelSeries->signal<data::model_series::ReconstructionsAddedSignalType>(
+        auto sig = model_series->signal<data::model_series::reconstructions_added_signal_t>(
             data::model_series::RECONSTRUCTIONS_ADDED_SIG
         );
         {
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit(addedRecs);
+            sig->async_emit(added_recs);
         }
     }
 }
@@ -188,7 +188,7 @@ void model_series_reader::updating()
 //------------------------------------------------------------------------------
 
 template<typename READER>
-typename READER::sptr configureReader(const std::filesystem::path& _file)
+typename READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -201,27 +201,27 @@ void model_series_reader::loadMesh(const std::filesystem::path& _file, data::mes
 {
     // Test extension to provide the reader
 
-    sight::io::reader::object_reader::sptr meshReader;
+    sight::io::reader::object_reader::sptr mesh_reader;
 
     if(_file.extension() == ".vtk")
     {
-        meshReader = configureReader<sight::io::vtk::MeshReader>(_file);
+        mesh_reader = configure_reader<sight::io::vtk::MeshReader>(_file);
     }
     else if(_file.extension() == ".vtp")
     {
-        meshReader = configureReader<sight::io::vtk::VtpMeshReader>(_file);
+        mesh_reader = configure_reader<sight::io::vtk::VtpMeshReader>(_file);
     }
     else if(_file.extension() == ".obj")
     {
-        meshReader = configureReader<sight::io::vtk::ObjMeshReader>(_file);
+        mesh_reader = configure_reader<sight::io::vtk::ObjMeshReader>(_file);
     }
     else if(_file.extension() == ".stl")
     {
-        meshReader = configureReader<sight::io::vtk::StlMeshReader>(_file);
+        mesh_reader = configure_reader<sight::io::vtk::StlMeshReader>(_file);
     }
     else if(_file.extension() == ".ply")
     {
-        meshReader = configureReader<sight::io::vtk::PlyMeshReader>(_file);
+        mesh_reader = configure_reader<sight::io::vtk::PlyMeshReader>(_file);
     }
     else
     {
@@ -233,13 +233,13 @@ void model_series_reader::loadMesh(const std::filesystem::path& _file, data::mes
         );
     }
 
-    m_sigJobCreated->emit(meshReader->getJob());
+    m_sigJobCreated->emit(mesh_reader->getJob());
 
-    meshReader->set_object(_mesh);
+    mesh_reader->set_object(_mesh);
 
     try
     {
-        meshReader->read();
+        mesh_reader->read();
     }
     catch(core::tools::failed& e)
     {

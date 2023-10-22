@@ -48,7 +48,7 @@ void transfer_function_opacity::configuring()
 void transfer_function_opacity::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -58,7 +58,7 @@ void transfer_function_opacity::starting()
     layout->addWidget(m_slider, 0);
     QObject::connect(m_slider, &QSlider::valueChanged, this, &transfer_function_opacity::changeOpacity);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->updating();
 }
@@ -70,27 +70,27 @@ void transfer_function_opacity::updating()
     const auto tf      = m_tf.lock();
     const auto& pieces = tf->pieces();
 
-    double min             = 1.0;
-    double max             = 0.0;
-    const auto getMinMaxFn =
-        [&min, &max](auto& p)
+    double min                = 1.0;
+    double max                = 0.0;
+    const auto get_min_max_fn =
+        [&min, &max](auto& _p)
         {
             std::ranges::for_each(
-                *p,
-                [&min, &max](auto& v)
+                *_p,
+                [&min, &max](auto& _v)
             {
-                min = v.second.a > 0. ? std::min(v.second.a, min) : min;
-                max = std::max(v.second.a, max);
+                min = _v.second.a > 0. ? std::min(_v.second.a, min) : min;
+                max = std::max(_v.second.a, max);
             });
         };
 
     if(!m_piece.has_value())
     {
-        std::ranges::for_each(pieces, getMinMaxFn);
+        std::ranges::for_each(pieces, get_min_max_fn);
     }
     else
     {
-        getMinMaxFn(pieces[m_piece.value()]);
+        get_min_max_fn(pieces[m_piece.value()]);
     }
 
     const double window = (1 - min) * 2 + max;
@@ -112,35 +112,35 @@ void transfer_function_opacity::stopping()
 
 //------------------------------------------------------------------------------
 
-void transfer_function_opacity::changeOpacity(int value)
+void transfer_function_opacity::changeOpacity(int _value)
 {
     const auto tf      = m_tf.lock();
     const auto& pieces = tf->pieces();
 
-    const auto old_value       = static_cast<double>(m_previous_value);
-    const auto updateOpacityFn =
-        [factor = value / old_value](auto& p)
+    const auto old_value         = static_cast<double>(m_previous_value);
+    const auto update_opacity_fn =
+        [factor = _value / old_value](auto& _p)
         {
             std::ranges::for_each(
-                *p,
-                [factor](auto& v)
+                *_p,
+                [factor](auto& _v)
             {
-                v.second.a *= factor;
+                _v.second.a *= factor;
             });
         };
 
     if(!m_piece.has_value())
     {
-        std::ranges::for_each(pieces, updateOpacityFn);
+        std::ranges::for_each(pieces, update_opacity_fn);
     }
     else
     {
-        updateOpacityFn(pieces[m_piece.value()]);
+        update_opacity_fn(pieces[m_piece.value()]);
     }
 
-    m_previous_value = value;
+    m_previous_value = _value;
 
-    auto sig = tf->signal<data::object::ModifiedSignalType>(data::transfer_function::POINTS_MODIFIED_SIG);
+    auto sig = tf->signal<data::object::modified_signal_t>(data::transfer_function::POINTS_MODIFIED_SIG);
     {
         const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();

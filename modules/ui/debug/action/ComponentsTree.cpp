@@ -54,34 +54,34 @@ void ComponentsTree::updating()
 
     for(const auto& module : core::runtime::modules())
     {
-        const std::string moduleName = module->identifier();
-        const bool isModuleEnabled   = module->enabled();
-        auto* const moduleItem       = new QTreeWidgetItem();
-        if(!isModuleEnabled)
+        const std::string module_name = module->identifier();
+        const bool is_module_enabled  = module->enabled();
+        auto* const module_item       = new QTreeWidgetItem();
+        if(!is_module_enabled)
         {
-            moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
+            module_item->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
 
-        moduleItem->setText(0, QString::fromStdString(moduleName));
-        m_treeContainer->addTopLevelItem(moduleItem);
+        module_item->setText(0, QString::fromStdString(module_name));
+        m_treeContainer->addTopLevelItem(module_item);
 
         //Extensions
-        auto* extensionsItem = new QTreeWidgetItem();
-        extensionsItem->setText(0, QObject::tr("Extensions"));
-        moduleItem->addChild(extensionsItem);
+        auto* extensions_item = new QTreeWidgetItem();
+        extensions_item->setText(0, QObject::tr("Extensions"));
+        module_item->addChild(extensions_item);
 
         for(const auto& extension : module->extensions())
         {
-            const std::string point       = extension->point();
-            const bool isExtensionEnabled = extension->enabled();
-            auto* const item              = new QTreeWidgetItem();
-            if(!isExtensionEnabled)
+            const std::string point         = extension->point();
+            const bool is_extension_enabled = extension->enabled();
+            auto* const item                = new QTreeWidgetItem();
+            if(!is_extension_enabled)
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
             }
 
             item->setText(0, QString::fromStdString(point));
-            extensionsItem->addChild(item);
+            extensions_item->addChild(item);
         }
     }
 

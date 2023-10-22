@@ -48,7 +48,7 @@ class ACTIVITY_CLASS_API base : public core::base_object
 {
 public:
 
-    typedef data::activity::ConfigIdType ConfigIdType;
+    typedef data::activity::config_id_t config_id_t;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -61,10 +61,10 @@ public:
     {
     public:
 
-        Registry(std::string functorKey)
+        Registry(std::string _functor_key)
         {
             sight::activity::builder::registry::get()->add_factory(
-                functorKey,
+                _functor_key,
                 &sight::activity::builder::factory::make<T>
             );
         }
@@ -79,15 +79,15 @@ public:
      * @return specific data Activity for the specified Activity.
      */
     ACTIVITY_API virtual data::activity::sptr buildData(
-        const activity::extension::activity_info& activity_info,
-        const CSPTR(data::vector)& currentSelection
+        const activity::extension::activity_info& _activity_info,
+        const CSPTR(data::vector)& _current_selection
     ) const = 0;
 
 protected:
 
     ACTIVITY_API virtual SPTR(data::vector) getType(
-        const CSPTR(data::vector) & currentSelection,
-        const std::string& type
+        const CSPTR(data::vector) & _current_selection,
+        const std::string& _type
     ) const;
 };
 

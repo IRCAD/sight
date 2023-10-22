@@ -35,25 +35,25 @@ namespace sight::core::com::helper
 /// Helper class to register proxy connections.
 struct proxy_connections
 {
-    using SignalInfoType        = std::pair<std::string, core::com::signals::key_t>;
-    using SlotInfoType          = std::pair<std::string, core::com::slots::key_t>;
-    using SlotInfoContainerType = std::vector<SlotInfoType>;
+    using signal_info_t         = std::pair<std::string, core::com::signals::key_t>;
+    using slot_info_t           = std::pair<std::string, core::com::slots::key_t>;
+    using slot_info_container_t = std::vector<slot_info_t>;
     using UIDType               = std::string;
     using key_t                 = std::string;
-    using ProxyEltType          = std::pair<UIDType, key_t>;
-    using ProxyEltVectType      = std::vector<ProxyEltType>;
+    using proxy_elt_t           = std::pair<UIDType, key_t>;
+    using proxy_elt_vect_t      = std::vector<proxy_elt_t>;
 
     std::string m_channel;
-    ProxyEltVectType m_slots;
-    ProxyEltVectType m_signals;
+    proxy_elt_vect_t m_slots;
+    proxy_elt_vect_t m_signals;
 
     proxy_connections() :
         m_channel("undefined")
     {
     }
 
-    proxy_connections(std::string channel) :
-        m_channel(std::move(channel))
+    proxy_connections(std::string _channel) :
+        m_channel(std::move(_channel))
     {
     }
 
@@ -62,30 +62,30 @@ struct proxy_connections
 
     //------------------------------------------------------------------------------
 
-    void addSignalConnection(const UIDType& uid, const key_t& key)
+    void addSignalConnection(const UIDType& _uid, const key_t& _key)
     {
-        m_signals.push_back(std::make_pair(uid, key));
+        m_signals.push_back(std::make_pair(_uid, _key));
     }
 
     //------------------------------------------------------------------------------
 
-    void addSignalConnection(const SignalInfoType& pair)
+    void addSignalConnection(const signal_info_t& _pair)
     {
-        m_signals.push_back(pair);
+        m_signals.push_back(_pair);
     }
 
     //------------------------------------------------------------------------------
 
-    void addSlotConnection(const UIDType& uid, const key_t& key)
+    void addSlotConnection(const UIDType& _uid, const key_t& _key)
     {
-        m_slots.push_back(std::make_pair(uid, key));
+        m_slots.push_back(std::make_pair(_uid, _key));
     }
 
     //------------------------------------------------------------------------------
 
-    void addSlotConnection(const SlotInfoType& pair)
+    void addSlotConnection(const slot_info_t& _pair)
     {
-        m_slots.push_back(pair);
+        m_slots.push_back(_pair);
     }
 
     //------------------------------------------------------------------------------

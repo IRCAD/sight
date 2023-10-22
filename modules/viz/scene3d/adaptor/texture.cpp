@@ -32,7 +32,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
@@ -46,7 +46,7 @@ const core::com::signals::key_t texture::TEXTURE_SWAPPED_SIG = "textureSwapped";
 
 texture::texture() noexcept
 {
-    m_sigTextureSwapped = new_signal<TextureSwappedSignalType>(TEXTURE_SWAPPED_SIG);
+    m_sigTextureSwapped = new_signal<texture_swapped_signal_t>(TEXTURE_SWAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void texture::starting()
     // Retrieves associated Sight image
     {
         const auto image = m_image.lock();
-        m_texture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+        m_texture = std::make_shared<sight::viz::scene3d::texture>(image.get_shared());
     }
 
     this->updating();

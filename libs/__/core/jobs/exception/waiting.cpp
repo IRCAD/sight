@@ -29,8 +29,8 @@
 namespace sight::core::jobs::exception
 {
 
-waiting::waiting(const std::string& err) :
-    core::exception(err)
+waiting::waiting(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

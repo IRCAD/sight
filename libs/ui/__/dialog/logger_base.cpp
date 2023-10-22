@@ -25,7 +25,7 @@
 namespace sight::ui::dialog
 {
 
-const logger_base::FactoryRegistryKeyType logger_base::REGISTRY_KEY = "::ui::dialog::logger";
+const logger_base::factory_registry_key_t logger_base::REGISTRY_KEY = "::ui::dialog::logger";
 
 //-----------------------------------------------------------------------------
 

@@ -53,10 +53,10 @@ void activity_test::tearDown()
 
 void activity_test::activityConfigIdTest()
 {
-    const data::activity::ConfigIdType activityConfigId = "Visu2D";
+    const data::activity::config_id_t activity_config_id = "Visu2D";
     CPPUNIT_ASSERT(m_activity);
-    m_activity->setActivityConfigId(activityConfigId);
-    CPPUNIT_ASSERT_EQUAL(activityConfigId, m_activity->getActivityConfigId());
+    m_activity->setActivityConfigId(activity_config_id);
+    CPPUNIT_ASSERT_EQUAL(activity_config_id, m_activity->getActivityConfigId());
 
     auto activity2 = std::make_shared<data::activity>();
     CPPUNIT_ASSERT(*activity2 != *m_activity);

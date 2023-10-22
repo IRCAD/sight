@@ -56,7 +56,7 @@ void hires_timer::stop()
 
 //------------------------------------------------------------------------------
 
-void hires_timer::reset(core::hires_clock::type initial_value)
+void hires_timer::reset(core::hires_clock::type _initial_value)
 {
     bool was_stopped = m_stopped;
     if(!was_stopped)
@@ -66,7 +66,7 @@ void hires_timer::reset(core::hires_clock::type initial_value)
 
     m_start_time_in_micro_sec = 0.;
     m_end_time_in_micro_sec   = 0.;
-    m_cumul_time_in_micro_sec = initial_value;
+    m_cumul_time_in_micro_sec = _initial_value;
     if(!was_stopped)
     {
         this->start();

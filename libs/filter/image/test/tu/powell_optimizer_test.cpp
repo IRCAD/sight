@@ -26,8 +26,7 @@
 
 #include <filter/image/powell_optimizer.hpp>
 
-#define _USE_MATH_DEFINES // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
-#include <math.h> // NOLINT(hicpp-deprecated-headers,modernize-deprecated-headers)
+#include <boost/math/constants/constants.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::powell_optimizer_test);
 
@@ -50,47 +49,49 @@ void powell_optimizer_test::tearDown()
 
 void powell_optimizer_test::parabolaTest()
 {
-    filter::image::powell_optimizer::OptimizedFunctionType xSquared =
-        [](const filter::image::powell_optimizer::FunctionParametersType& p)
+    filter::image::powell_optimizer::optimized_function_t x_squared =
+        [](const filter::image::powell_optimizer::function_parameters_t& _p)
         {
-            return p[0] * p[0];
+            return _p[0] * _p[0];
         };
 
-    filter::image::powell_optimizer optimizer(xSquared, 1e-9, 1e-9, 1.0, 200);
+    filter::image::powell_optimizer optimizer(x_squared, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::powell_optimizer::FunctionParametersType initParams(1);
-    filter::image::powell_optimizer::FunctionParametersType finalParams(1);
-    initParams[0] = 9.0;
-    finalParams   = optimizer.optimize(initParams);
+    filter::image::powell_optimizer::function_parameters_t init_params(1);
+    filter::image::powell_optimizer::function_parameters_t final_params(1);
+    init_params[0] = 9.0;
+    final_params   = optimizer.optimize(init_params);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[0], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_params[0], 1e-9);
 }
 
 //------------------------------------------------------------------------------
 
 void powell_optimizer_test::ackleyTest()
 {
-    filter::image::powell_optimizer::OptimizedFunctionType ackleyFunction =
-        [](const filter::image::powell_optimizer::FunctionParametersType& p)
+    filter::image::powell_optimizer::optimized_function_t ackley_function =
+        [](const filter::image::powell_optimizer::function_parameters_t& _p)
         {
-            const double x   = p[0];
-            const double y   = p[1];
+            const double x   = _p[0];
+            const double y   = _p[1];
+            const double pi  = boost::math::constants::pi<double>();
+            const double e   = boost::math::constants::e<double>();
             const double res = -20 * std::exp(-0.2 * std::sqrt(0.5 * (x * x + y * y)))
-                               - std::exp(0.5 * (std::cos(2 * M_PI * x) + std::cos(2 * M_PI * y))) + M_E + 20;
+                               - std::exp(0.5 * (std::cos(2 * pi * x) + std::cos(2 * pi * y))) + e + 20;
             return res;
         };
 
-    filter::image::powell_optimizer optimizer(ackleyFunction, 1e-9, 1e-9, 1.0, 200);
+    filter::image::powell_optimizer optimizer(ackley_function, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::powell_optimizer::FunctionParametersType initParams(2);
-    filter::image::powell_optimizer::FunctionParametersType finalParams(2);
-    initParams[0] = 1.0;
-    initParams[1] = 1.5;
+    filter::image::powell_optimizer::function_parameters_t init_params(2);
+    filter::image::powell_optimizer::function_parameters_t final_params(2);
+    init_params[0] = 1.0;
+    init_params[1] = 1.5;
 
-    finalParams = optimizer.optimize(initParams);
+    final_params = optimizer.optimize(init_params);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[0], 1e-9);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[1], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_params[0], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_params[1], 1e-9);
 }
 
 //------------------------------------------------------------------------------
@@ -98,11 +99,11 @@ void powell_optimizer_test::ackleyTest()
 void powell_optimizer_test::sphereFunctionTest()
 {
     // n-dimensional sphere function.
-    filter::image::powell_optimizer::OptimizedFunctionType sphereFunction =
-        [](const filter::image::powell_optimizer::FunctionParametersType& p)
+    filter::image::powell_optimizer::optimized_function_t sphere_function =
+        [](const filter::image::powell_optimizer::function_parameters_t& _p)
         {
             double res(0.);
-            for(const auto e : p)
+            for(const auto e : _p)
             {
                 res += e * e;
             }
@@ -110,33 +111,33 @@ void powell_optimizer_test::sphereFunctionTest()
             return res;
         };
 
-    filter::image::powell_optimizer optimizer(sphereFunction, 1e-9, 1e-9, 1.0, 200);
+    filter::image::powell_optimizer optimizer(sphere_function, 1e-9, 1e-9, 1.0, 200);
 
     // 2D sphere function test.
-    filter::image::powell_optimizer::FunctionParametersType initParams(2);
-    filter::image::powell_optimizer::FunctionParametersType finalParams(2);
-    initParams[0] = 1.0;
-    initParams[1] = 1.5;
+    filter::image::powell_optimizer::function_parameters_t init_params(2);
+    filter::image::powell_optimizer::function_parameters_t final_params(2);
+    init_params[0] = 1.0;
+    init_params[1] = 1.5;
 
-    finalParams = optimizer.optimize(initParams);
+    final_params = optimizer.optimize(init_params);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[0], 1e-9);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[1], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_params[0], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_params[1], 1e-9);
 
     // 5D sphere function test.
-    filter::image::powell_optimizer::FunctionParametersType initParams2(5);
-    filter::image::powell_optimizer::FunctionParametersType finalParams2(5);
-    initParams2[0] = 1.0;
-    initParams2[1] = 1.5;
-    initParams2[2] = 0.9;
-    initParams2[3] = 0.4;
-    initParams2[4] = 1.2;
+    filter::image::powell_optimizer::function_parameters_t init_params2(5);
+    filter::image::powell_optimizer::function_parameters_t final_params2(5);
+    init_params2[0] = 1.0;
+    init_params2[1] = 1.5;
+    init_params2[2] = 0.9;
+    init_params2[3] = 0.4;
+    init_params2[4] = 1.2;
 
-    finalParams2 = optimizer.optimize(initParams2);
+    final_params2 = optimizer.optimize(init_params2);
 
-    for(const double finalParam : finalParams2)
+    for(const double final_param : final_params2)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParam, 1e-9);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0, final_param, 1e-9);
     }
 }
 
@@ -144,27 +145,27 @@ void powell_optimizer_test::sphereFunctionTest()
 
 void powell_optimizer_test::bealeFunctionTest()
 {
-    filter::image::powell_optimizer::OptimizedFunctionType bealeFunction =
-        [](const filter::image::powell_optimizer::FunctionParametersType& p)
+    filter::image::powell_optimizer::optimized_function_t beale_function =
+        [](const filter::image::powell_optimizer::function_parameters_t& _p)
         {
-            const double x = p[0];
-            const double y = p[1];
+            const double x = _p[0];
+            const double y = _p[1];
 
             return std::pow(1.5 - x + x * y, 2.) + std::pow(2.25 - x + x * std::pow(y, 2.), 2.)
                    + std::pow(2.625 - x + x * std::pow(y, 3.), 2.);
         };
 
-    filter::image::powell_optimizer optimizer(bealeFunction, 1e-9, 1e-9, 1.0, 200);
+    filter::image::powell_optimizer optimizer(beale_function, 1e-9, 1e-9, 1.0, 200);
 
-    filter::image::powell_optimizer::FunctionParametersType initParams(2);
-    filter::image::powell_optimizer::FunctionParametersType finalParams(2);
-    initParams[0] = 0;
-    initParams[1] = 0;
+    filter::image::powell_optimizer::function_parameters_t init_params(2);
+    filter::image::powell_optimizer::function_parameters_t final_params(2);
+    init_params[0] = 0;
+    init_params[1] = 0;
 
-    finalParams = optimizer.optimize(initParams);
+    final_params = optimizer.optimize(init_params);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3., finalParams[0], 1e-9);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, finalParams[1], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3., final_params[0], 1e-9);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, final_params[1], 1e-9);
 }
 
 } // namespace sight::filter::image::ut

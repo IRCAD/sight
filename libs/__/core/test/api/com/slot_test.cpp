@@ -70,10 +70,10 @@ struct A
 
     //------------------------------------------------------------------------------
 
-    float method1(float f)
+    float method1(float _f)
     {
         m_method1 = true;
-        return 2 * f;
+        return 2 * _f;
     }
 
     //------------------------------------------------------------------------------
@@ -94,17 +94,17 @@ static int last_three_sum_result = 0;
 
 //------------------------------------------------------------------------------
 
-int sum(int a, int b)
+int sum(int _a, int _b)
 {
-    last_sum_result = a + b;
+    last_sum_result = _a + _b;
     return last_sum_result;
 }
 
 //------------------------------------------------------------------------------
 
-int three_sum(int a, int b, int c)
+int three_sum(int _a, int _b, int _c)
 {
-    last_three_sum_result = a + b + c;
+    last_three_sum_result = _a + _b + _c;
     return last_three_sum_result;
 }
 
@@ -188,7 +188,7 @@ void slot_test::run_test()
     auto slot4 = core::com::new_slot(&three_sum);
     auto slot5 = core::com::new_slot(&A::method2, &a);
     auto slot6 = core::com::new_slot([&a](){a.method2(4321);});
-    auto slot7 = core::com::new_slot([&a](int x){a.method2(x);});
+    auto slot7 = core::com::new_slot([&a](int _x){a.method2(_x);});
 
     last_sum_result = 0;
     CPPUNIT_ASSERT(!a.m_method0);
@@ -426,14 +426,14 @@ struct B
 
     //------------------------------------------------------------------------------
 
-    std::thread::id wait_seconds(const unsigned int nb_seconds)
+    std::thread::id wait_seconds(const unsigned int _nb_seconds)
     {
         core::mt::write_lock lock(m_mutex);
         std::thread::id old_id = m_thread_id;
         m_thread_id = std::this_thread::get_id();
         m_first_run = false;
 
-        std::this_thread::sleep_for(std::chrono::seconds(nb_seconds));
+        std::this_thread::sleep_for(std::chrono::seconds(_nb_seconds));
 
         return old_id;
     }

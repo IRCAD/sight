@@ -30,10 +30,10 @@ namespace sight::io::session
 template<typename T>
 struct SerializerRegister
 {
-    SerializerRegister(serializer_t serializer, deserializer_t deserializer)
+    SerializerRegister(serializer_t _serializer, deserializer_t _deserializer)
     {
-        sight::io::session::SessionWriter::setSerializer(T::classname(), serializer);
-        sight::io::session::SessionReader::setDeserializer(T::classname(), deserializer);
+        sight::io::session::SessionWriter::setSerializer(T::classname(), _serializer);
+        sight::io::session::SessionReader::setDeserializer(T::classname(), _deserializer);
     }
 };
 

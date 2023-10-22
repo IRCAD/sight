@@ -91,10 +91,10 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (bool)> CanDoSignalType;
+    typedef core::com::signal<void (bool)> can_do_signal_t;
 
     /// SLOT: add a command to the history.
-    void enqueue(sight::ui::history::command::sptr command);
+    void enqueue(sight::ui::history::command::sptr _command);
 
     /// SLOT: undo the last command.
     void undo();
@@ -108,9 +108,9 @@ private:
     /// Send 'canUndo' and 'canRedo' signals.
     void emitModifiedSig() const;
 
-    CanDoSignalType::sptr m_canUndoSig;
+    can_do_signal_t::sptr m_canUndoSig;
 
-    CanDoSignalType::sptr m_canRedoSig;
+    can_do_signal_t::sptr m_canRedoSig;
 
     sight::ui::history::UndoRedoManager m_undoRedoManager;
 };

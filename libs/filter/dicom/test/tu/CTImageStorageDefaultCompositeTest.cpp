@@ -74,54 +74,55 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeriesA = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    data::dicom_series::sptr dicomSeriesB = std::make_shared<data::dicom_series>();
-    dicomSeriesB->deep_copy(dicomSeriesA);
-    CPPUNIT_ASSERT(dicomSeriesA);
-    CPPUNIT_ASSERT(dicomSeriesB);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainerA;
-    std::vector<data::dicom_series::sptr> dicomSeriesContainerB;
-    dicomSeriesContainerA.push_back(dicomSeriesA);
-    dicomSeriesContainerB.push_back(dicomSeriesB);
+    data::dicom_series::sptr dicom_series_a = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    data::dicom_series::sptr dicom_series_b = std::make_shared<data::dicom_series>();
+    dicom_series_b->deep_copy(dicom_series_a);
+    CPPUNIT_ASSERT(dicom_series_a);
+    CPPUNIT_ASSERT(dicom_series_b);
+    std::vector<data::dicom_series::sptr> dicom_series_container_a;
+    std::vector<data::dicom_series::sptr> dicom_series_container_b;
+    dicom_series_container_a.push_back(dicom_series_a);
+    dicom_series_container_b.push_back(dicom_series_b);
 
     // Apply composite filter on the first DicomSeries
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::composite::CTImageStorageDefaultComposite"
     );
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerA, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_a, filter, true);
 
     // Apply other filters on the second DicomSeries
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::AcquisitionNumberSplitter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container_b, filter, true);
 
     // Compare the two series
-    CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA.size(), dicomSeriesContainerB.size());
-    for(unsigned int j = 0 ; j < dicomSeriesContainerA.size() ; ++j) // For every series
+    CPPUNIT_ASSERT_EQUAL(dicom_series_container_a.size(), dicom_series_container_b.size());
+    for(unsigned int j = 0 ; j < dicom_series_container_a.size() ; ++j) // For every series
     {
-        for(unsigned int i = 0 ; i < dicomSeriesContainerA[j]->getDicomContainer().size() ; ++i) // For every instances
+        for(unsigned int i = 0 ; i < dicom_series_container_a[j]->getDicomContainer().size() ; ++i) // For every
+                                                                                                    // instances
         {
             CPPUNIT_ASSERT(
                 std::memcmp(
-                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->buffer(),
-                    dicomSeriesContainerB[j]->getDicomContainer().at(i)->buffer(),
-                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->size()
+                    dicom_series_container_a[j]->getDicomContainer().at(i)->buffer(),
+                    dicom_series_container_b[j]->getDicomContainer().at(i)->buffer(),
+                    dicom_series_container_a[j]->getDicomContainer().at(i)->size()
                 ) == 0
             );
         }

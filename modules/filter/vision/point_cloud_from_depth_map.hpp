@@ -124,15 +124,15 @@ private:
     /** @} */
 
     /// SLOT: update the depth range
-    void setDepthRange(int _val, std::string key);
+    void setDepthRange(int _val, std::string _key);
 
     /**
      * @brief Computes a point cloud from a depth map.
      */
     void depthMapToPointCloud(
-        const data::camera::csptr& depthCamera,
-        const data::image::csptr& depthMap,
-        const data::mesh::sptr& pointCloud
+        const data::camera::csptr& _depth_camera,
+        const data::image::csptr& _depth_map,
+        const data::mesh::sptr& _point_cloud
     ) const;
 
     /**
@@ -140,12 +140,12 @@ private:
      * map.
      */
     void depthMapToPointCloudRGB(
-        const data::camera::csptr& depthCamera,
-        const data::camera::csptr& colorCamera,
-        const data::image::csptr& depthMap,
-        const data::image::csptr& colorMap,
-        const data::matrix4::csptr& extrinsic,
-        const data::mesh::sptr& pointCloud
+        const data::camera::csptr& _depth_camera,
+        const data::camera::csptr& _color_camera,
+        const data::image::csptr& _depth_map,
+        const data::image::csptr& _color_map,
+        const data::matrix4::csptr& _extrinsic,
+        const data::mesh::sptr& _point_cloud
     ) const;
 
     /// Min value of depth used to build pointcloud.

@@ -30,44 +30,44 @@ namespace sight::filter::dicom::helper
 //------------------------------------------------------------------------------
 
 bool Filter::applyFilter(
-    DicomSeriesContainerType& dicomSeriesContainer,
-    sight::filter::dicom::filter::sptr filter,
-    bool forcedApply,
-    const core::log::logger::sptr& logger
+    dicom_series_container_t& _dicom_series_container,
+    sight::filter::dicom::filter::sptr _filter,
+    bool _forced_apply,
+    const core::log::logger::sptr& _logger
 )
 {
-    bool ignoredError = false;
-    DicomSeriesContainerType result;
+    bool ignored_error = false;
+    dicom_series_container_t result;
 
     // On every DicomSeries
-    for(const data::dicom_series::sptr& dicomSeries : dicomSeriesContainer)
+    for(const data::dicom_series::sptr& dicom_series : _dicom_series_container)
     {
         // Apply filter and copy result
-        DicomSeriesContainerType tempo;
+        dicom_series_container_t tempo;
         // Regular filter application
-        if(!forcedApply || filter->getFilterType() != sight::filter::dicom::filter::COMPOSITE)
+        if(!_forced_apply || _filter->get_filter_type() != sight::filter::dicom::filter::COMPOSITE)
         {
             try
             {
-                tempo = filter->apply(dicomSeries, logger);
+                tempo = _filter->apply(dicom_series, _logger);
             }
             catch(sight::filter::dicom::exceptions::FilterFailure& /*e*/)
             {
-                if(!forcedApply)
+                if(!_forced_apply)
                 {
                     throw;
                 }
 
-                ignoredError = true;
-                tempo.push_back(dicomSeries);
+                ignored_error = true;
+                tempo.push_back(dicom_series);
             }
         }
         // Forced filter application for composite
         else
         {
             sight::filter::dicom::composite::base::sptr composite =
-                std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(filter);
-            tempo = composite->forcedApply(dicomSeries, logger);
+                std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(_filter);
+            tempo = composite->forcedApply(dicom_series, _logger);
         }
 
         result.reserve(result.size() + tempo.size());
@@ -75,9 +75,9 @@ bool Filter::applyFilter(
     }
 
     // Copy result to DicomSeries container
-    dicomSeriesContainer = result;
+    _dicom_series_container = result;
 
-    return ignoredError;
+    return ignored_error;
 }
 
 } // namespace sight::filter::dicom::helper

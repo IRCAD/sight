@@ -59,13 +59,13 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::image& image,
-        O& output,
-        Writer::Mode mode,
+        const data::image& _image,
+        O& _output,
+        Writer::Mode _mode,
         Flag = Flag::NONE
 )
     {
-        const auto& type = image.getType();
+        const auto& type = _image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << type,
             type != core::type::UINT8
@@ -102,11 +102,11 @@ public:
             png_infop m_png_info {nullptr};
         } keeper;
 
-        const auto& pixelFormat = image.getPixelFormat();
-        const int png_format    =
+        const auto& pixel_format = _image.getPixelFormat();
+        const int png_format     =
             [&]
             {
-                switch(pixelFormat)
+                switch(pixel_format)
                 {
                     case data::image::PixelFormat::RGB:
                     case data::image::PixelFormat::BGR:
@@ -120,11 +120,11 @@ public:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
-                        SIGHT_THROW(m_name << " - Unsupported pixel format: " << pixelFormat);
+                        SIGHT_THROW(m_name << " - Unsupported pixel format: " << pixel_format);
                 }
             }();
 
-        const auto& sizes        = image.size();
+        const auto& sizes        = _image.size();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
 
@@ -143,7 +143,7 @@ public:
         // Use more memory to be faster
         png_set_compression_mem_level(keeper.m_png, 9 /*9=MAX_MEM_LEVEL*/);
 
-        switch(mode)
+        switch(_mode)
         {
             case Writer::Mode::BEST:
             {
@@ -176,7 +176,7 @@ public:
         for(std::size_t row = 0 ; row < image_height ; ++row)
         {
             // scanlines should only be read, so the const_cast should be ok..
-            m_rows[row] = reinterpret_cast<std::uint8_t*>(const_cast<void*>(image.getPixel(row * image_width)));
+            m_rows[row] = reinterpret_cast<std::uint8_t*>(const_cast<void*>(_image.getPixel(row * image_width)));
         }
 
         // Use the row pointers vector
@@ -184,7 +184,7 @@ public:
 
         int transform = PNG_TRANSFORM_IDENTITY;
 
-        if(pixelFormat == data::image::PixelFormat::BGR || pixelFormat == data::image::PixelFormat::BGRA)
+        if(pixel_format == data::image::PixelFormat::BGR || pixel_format == data::image::PixelFormat::BGRA)
         {
             transform |= PNG_TRANSFORM_BGR;
         }
@@ -197,7 +197,7 @@ public:
 
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            png_set_write_fn(keeper.m_png, &output, writeCallback, 0);
+            png_set_write_fn(keeper.m_png, &_output, writeCallback, 0);
             png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
         }
         else if constexpr(std::is_same_v<std::uint8_t*, O>
@@ -215,21 +215,21 @@ public:
 
             if constexpr(std::is_same_v<std::uint8_t**, O>)
             {
-                (*output) = new std::uint8_t[output_buffer_size];
-                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+                (*_output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*_output), output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::uint8_t*, O>)
             {
-                std::memcpy(output, output_buffer.data(), output_buffer_size);
+                std::memcpy(_output, output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
             {
-                if(output.size() < output_buffer_size)
+                if(_output.size() < output_buffer_size)
                 {
-                    output.resize(output_buffer_size);
+                    _output.resize(output_buffer_size);
                 }
 
-                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
+                std::memcpy(_output.data(), output_buffer.data(), output_buffer_size);
             }
 
             return output_buffer_size;
@@ -246,24 +246,24 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void writeCallback(png_structp png_ptr, png_bytep data, png_size_t length)
+    inline static void writeCallback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
-        auto* ostream = reinterpret_cast<std::ostream*>(png_get_io_ptr(png_ptr));
-        ostream->write(reinterpret_cast<char*>(data), std::streamsize(length));
+        auto* ostream = reinterpret_cast<std::ostream*>(png_get_io_ptr(_png_ptr));
+        ostream->write(reinterpret_cast<char*>(_data), std::streamsize(_length));
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(png_structp, png_const_charp msg)
+    inline static void warningCallback(png_structp, png_const_charp _msg)
     {
-        SIGHT_WARN(msg);
+        SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(png_structp, png_const_charp msg)
+    inline static void errorCallback(png_structp, png_const_charp _msg)
     {
-        SIGHT_THROW(msg);
+        SIGHT_THROW(_msg);
     }
 
     std::vector<png_bytep> m_rows;

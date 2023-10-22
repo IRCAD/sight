@@ -71,9 +71,9 @@ public:
      *
      * @param ls LogicStamp to compare to
      */
-    bool operator>(const logic_stamp& ls) const
+    bool operator>(const logic_stamp& _ls) const
     {
-        return this->m_modified_logical_time > ls.m_modified_logical_time;
+        return this->m_modified_logical_time > _ls.m_modified_logical_time;
     }
 
     /**
@@ -81,9 +81,9 @@ public:
      *
      * @param ls LogicStamp to compare to
      */
-    bool operator<(const logic_stamp& ls) const
+    bool operator<(const logic_stamp& _ls) const
     {
-        return this->m_modified_logical_time < ls.m_modified_logical_time;
+        return this->m_modified_logical_time < _ls.m_modified_logical_time;
     }
 
     /**

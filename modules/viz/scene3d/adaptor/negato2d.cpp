@@ -25,13 +25,13 @@
 #include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
 
@@ -59,7 +59,7 @@ negato2d::negato2d() noexcept
     new_slot(UPDATE_TF_SLOT, &negato2d::updateTF, this);
 
     m_sliceIndexChangedSig = new_signal<SliceIndexChangedSignalType>(SLICE_INDEX_CHANGED_SIG);
-    m_pickedVoxelSignal    = new_signal<PickedVoxelSigType>(PICKED_VOXEL_SIG);
+    m_pickedVoxelSignal    = new_signal<picked_voxel_sig_t>(PICKED_VOXEL_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -91,15 +91,15 @@ void negato2d::configuring()
         m_orientation = OrientationMode::X_AXIS;
     }
 
-    if(const auto filteringCfg = config.get_optional<std::string>(s_FILTERING_CONFIG); filteringCfg.has_value())
+    if(const auto filtering_cfg = config.get_optional<std::string>(s_FILTERING_CONFIG); filtering_cfg.has_value())
     {
         sight::viz::scene3d::plane::filter_t filtering(sight::viz::scene3d::plane::filter_t::LINEAR);
 
-        if(filteringCfg.value() == "none")
+        if(filtering_cfg.value() == "none")
         {
             filtering = sight::viz::scene3d::plane::filter_t::NONE;
         }
-        else if(filteringCfg.value() == "anisotropic")
+        else if(filtering_cfg.value() == "anisotropic")
         {
             filtering = sight::viz::scene3d::plane::filter_t::ANISOTROPIC;
         }
@@ -112,9 +112,9 @@ void negato2d::configuring()
     m_slicesCross = config.get<bool>(s_SLICES_CROSS_CONFIG, m_slicesCross);
     m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
 
-    const std::string transformId =
+    const std::string transform_id =
         config.get<std::string>(sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG, this->get_id() + "_transform");
-    this->setTransformId(transformId);
+    this->setTransformId(transform_id);
 }
 
 //------------------------------------------------------------------------------
@@ -126,17 +126,17 @@ void negato2d::starting()
     {
         // 3D source texture instantiation
         const auto image = m_image.lock();
-        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::texture>(image.get_shared());
 
         // TF texture initialization
         const auto tf = m_tf.lock();
         m_gpuTF = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
     }
 
-    // Scene node's instantiation
-    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
-    m_negatoSceneNode = transformNode->createChildSceneNode();
+    // scene node's instantiation
+    Ogre::SceneNode* const root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transform_node  = this->getOrCreateTransformNode(root_scene_node);
+    m_negatoSceneNode = transform_node->createChildSceneNode();
 
     // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::plane>(
@@ -157,7 +157,7 @@ void negato2d::starting()
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         this->getLayer()->addInteractor(interactor, 0);
 
-        m_pickingCross = std::make_unique<sight::viz::scene3d::PickingCross>(
+        m_pickingCross = std::make_unique<sight::viz::scene3d::picking_cross>(
             this->get_id(),
             *this->getSceneManager(),
             *m_negatoSceneNode
@@ -199,13 +199,13 @@ void negato2d::newImage()
 
     this->getRenderService()->makeCurrent();
 
-    int axialIdx    = 0;
-    int frontalIdx  = 0;
-    int sagittalIdx = 0;
+    int axial_idx    = 0;
+    int frontal_idx  = 0;
+    int sagittal_idx = 0;
     {
         const auto image = m_image.lock();
 
-        if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
             return;
         }
@@ -213,7 +213,7 @@ void negato2d::newImage()
         // Retrieves or creates the slice index fields
         m_3DOgreTexture->update();
 
-        const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+        const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
 
         // Fits the plane to the new texture
         m_plane->update(m_orientation, spacing, origin, m_enableAlpha);
@@ -222,14 +222,16 @@ void negato2d::newImage()
         m_plane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::rq::s_NEGATO_WIDGET_ID, 0);
 
         // Update Slice
-        namespace imHelper = data::helper::MedicalImage;
+        namespace imHelper = data::helper::medical_image;
 
-        axialIdx    = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)));
-        frontalIdx  = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
-        sagittalIdx = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
+        axial_idx   = std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::AXIAL).value_or(0)));
+        frontal_idx =
+            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
+        sagittal_idx =
+            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
     }
 
-    this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
+    this->changeSliceIndex(axial_idx, frontal_idx, sagittal_idx);
 
     // Update transfer function in Gpu programs
     this->updateTF();
@@ -243,20 +245,20 @@ void negato2d::changeSliceType(int _from, int _to)
 {
     const auto image = m_image.lock();
 
-    const auto toOrientation   = static_cast<OrientationMode>(_to);
-    const auto fromOrientation = static_cast<OrientationMode>(_from);
+    const auto to_orientation   = static_cast<OrientationMode>(_to);
+    const auto from_orientation = static_cast<OrientationMode>(_from);
 
-    const auto planeOrientation = m_orientation;
-    const auto newOrientation   = m_orientation == toOrientation ? fromOrientation
-                                                                 : planeOrientation
-                                  == fromOrientation ? toOrientation : planeOrientation;
+    const auto plane_orientation = m_orientation;
+    const auto new_orientation   = m_orientation == to_orientation ? from_orientation
+                                                                   : plane_orientation
+                                   == from_orientation ? to_orientation : plane_orientation;
 
-    if(planeOrientation != newOrientation)
+    if(plane_orientation != new_orientation)
     {
-        m_orientation = newOrientation;
+        m_orientation = new_orientation;
         this->getRenderService()->makeCurrent();
 
-        const auto& [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+        const auto& [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
         m_plane->update(m_orientation, spacing, origin, m_enableAlpha);
 
         // Update threshold if necessary
@@ -270,25 +272,25 @@ void negato2d::changeSliceType(int _from, int _to)
 
 //------------------------------------------------------------------------------
 
-void negato2d::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
+void negato2d::changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index)
 {
     const auto image = m_image.lock();
 
     this->getRenderService()->makeCurrent();
 
-    auto imgSize = image->size();
+    auto img_size = image->size();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
     // So we increase the image size to 2 to divide by 1.
-    imgSize[0] = imgSize[0] == 1 ? 2 : imgSize[0];
-    imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
-    imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
+    img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
+    img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
+    img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
 
     m_currentSliceIndex = {
-        static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
-        static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
-        static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
+        static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
+        static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
+        static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
     };
 
     this->updateShaderSliceIndexParameter();
@@ -308,11 +310,11 @@ void negato2d::updateSlicesFromWorld(double _x, double _y, double _z)
     Ogre::Vector3i slice_idx;
     try
     {
-        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+        slice_idx = sight::viz::scene3d::utils::worldToSlices(*image, point);
     }
-    catch(core::exception& _e)
+    catch(core::exception& e)
     {
-        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        SIGHT_WARN("Cannot update slice index: " << e.what());
         return;
     }
 
@@ -415,7 +417,7 @@ void negato2d::pickIntensity(int _x, int _y)
 {
     Ogre::SceneManager* sm = this->getSceneManager();
 
-    const auto result = sight::viz::scene3d::Utils::pickObject(_x, _y, Ogre::SceneManager::ENTITY_TYPE_MASK, *sm);
+    const auto result = sight::viz::scene3d::utils::pickObject(_x, _y, Ogre::SceneManager::ENTITY_TYPE_MASK, *sm);
 
     if(result.has_value())
     {
@@ -424,19 +426,19 @@ void negato2d::pickIntensity(int _x, int _y)
             m_picked = true;
             const auto image = m_image.lock();
 
-            if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+            if(!data::helper::medical_image::check_image_validity(image.get_shared()))
             {
                 return;
             }
 
-            const auto imageBufferLock = image->dump_lock();
+            const auto image_buffer_lock = image->dump_lock();
 
-            const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
-            auto crossLines = m_plane->computeCross(result->second, origin);
-            m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
+            const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
+            auto cross_lines = m_plane->computeCross(result->second, origin);
+            m_pickingCross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
 
-            const auto pickingText = sight::viz::scene3d::Utils::pickImage(*image, result->second, origin, spacing);
-            m_pickedVoxelSignal->async_emit(pickingText);
+            const auto picking_text = sight::viz::scene3d::utils::pickImage(*image, result->second, origin, spacing);
+            m_pickedVoxelSignal->async_emit(picking_text);
 
             this->requestRender();
         }

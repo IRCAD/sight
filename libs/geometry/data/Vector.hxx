@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,10 +41,10 @@ public:
     Point()
     = default;
 
-    Point(const std::array<float, 3>& p) :
-        x(p[0]),
-        y(p[1]),
-        z(p[2])
+    Point(const std::array<float, 3>& _p) :
+        x(_p[0]),
+        y(_p[1]),
+        z(_p[2])
     {
     }
 
@@ -57,11 +57,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool operator<(const Point& pt) const
+    bool operator<(const Point& _pt) const
     {
-        return this->x < pt.x
-               || (this->x == pt.x && this->y < pt.y)
-               || (this->x == pt.x && this->y == pt.y && this->z < pt.z);
+        return this->x < _pt.x
+               || (this->x == _pt.x && this->y < _pt.y)
+               || (this->x == _pt.x && this->y == _pt.y && this->z < _pt.z);
     }
 };
 
@@ -81,17 +81,17 @@ public:
     {
     }
 
-    Vector(const Vector& v) :
-        x(v.x),
-        y(v.y),
-        z(v.z)
+    Vector(const Vector& _v) :
+        x(_v.x),
+        y(_v.y),
+        z(_v.z)
     {
     }
 
-    Vector(const Point& p1, const Point& p2) :
-        x(p2.x - p1.x),
-        y(p2.y - p1.y),
-        z(p2.z - p1.z)
+    Vector(const Point& _p1, const Point& _p2) :
+        x(_p2.x - _p1.x),
+        y(_p2.y - _p1.y),
+        z(_p2.z - _p1.z)
     {
     }
 
@@ -104,51 +104,51 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool operator<(const Vector& v) const
+    bool operator<(const Vector& _v) const
     {
-        return x < v.x
-               || (x == v.x && y < v.y)
-               || (x == v.x && y == v.y && z < v.z);
+        return x < _v.x
+               || (x == _v.x && y < _v.y)
+               || (x == _v.x && y == _v.y && z < _v.z);
     }
 
     //------------------------------------------------------------------------------
 
-    Vector& operator=(const Vector& v) = default;
+    Vector& operator=(const Vector& _v) = default;
 
     //------------------------------------------------------------------------------
 
-    void operator-=(const Vector& v)
+    void operator-=(const Vector& _v)
     {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
+        x -= _v.x;
+        y -= _v.y;
+        z -= _v.z;
     }
 
     //------------------------------------------------------------------------------
 
-    void operator+=(const Vector& v)
+    void operator+=(const Vector& _v)
     {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+        x += _v.x;
+        y += _v.y;
+        z += _v.z;
     }
 
     //------------------------------------------------------------------------------
 
-    void operator*=(const float val)
+    void operator*=(const float _val)
     {
-        x = val * x;
-        y = val * y;
-        z = val * z;
+        x = _val * x;
+        y = _val * y;
+        z = _val * z;
     }
 
     //------------------------------------------------------------------------------
 
-    void operator/=(const float val)
+    void operator/=(const float _val)
     {
-        x = x / val;
-        y = y / val;
-        z = z / val;
+        x = x / _val;
+        y = y / _val;
+        z = z / _val;
     }
 
     //------------------------------------------------------------------------------
@@ -184,29 +184,30 @@ public:
 
     //------------------------------------------------------------------------------
 
-    T dot(Vector& v)
+    T dot(Vector& _v)
     {
-        return x * v.x + y * v.y + z * v.z;
+        return x * _v.x + y * _v.y + z * _v.z;
     }
 
     //------------------------------------------------------------------------------
 
-    void crossWith(const Vector& v)
+    void crossWith(const Vector& _v)
     {
-        T _x = y * v.z - z * v.y;
-        T _y = z * v.x - x * v.z;
-        T _z = x * v.y - y * v.x;
-        x = _x;
-        y = _y;
-        z = _z;
+        Vector v;
+        v.x = y * _v.z - z * _v.y;
+        v.y = z * _v.x - x * _v.z;
+        v.z = x * _v.y - y * _v.x;
+        x   = v.x;
+        y   = v.y;
+        z   = v.z;
     }
 
     //------------------------------------------------------------------------------
 
-    Vector cross(const Vector& v)
+    Vector cross(const Vector& _v)
     {
         Vector res(*this);
-        res.crossWith(v);
+        res.crossWith(_v);
         return res;
     }
 };

@@ -13,7 +13,7 @@ Library containing classes to manage command history.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> ui_history)
+target_link_libraries( my_target <PUBLIC|PRIVATE> ui_history)
 
 ```
 

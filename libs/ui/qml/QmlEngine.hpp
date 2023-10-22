@@ -56,18 +56,18 @@ public:
      * @brief Load and launch the qml component as the root component
      * @see Use getRootObjects() to get the main objects.
      */
-    UI_QML_API void loadMainComponent(const std::filesystem::path& file);
+    UI_QML_API void loadMainComponent(const std::filesystem::path& _file);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      * Add a context in which the component will be created instead of the root context
      */
-    UI_QML_API QObject* createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context);
+    UI_QML_API QObject* createComponent(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      */
-    UI_QML_API QObject* createComponent(const std::filesystem::path& file);
+    UI_QML_API QObject* createComponent(const std::filesystem::path& _file);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory
@@ -95,7 +95,7 @@ public:
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html
      */
-    UI_QML_API void importModulePath(const std::filesystem::path& path);
+    UI_QML_API void importModulePath(const std::filesystem::path& _path);
 
     /// Returns a list of all the root objects instantiated by the QQmlApplicationEngine
     UI_QML_API QList<QObject*> getRootObjects();

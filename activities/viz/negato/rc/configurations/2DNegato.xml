@@ -83,7 +83,7 @@
         <!-- Save the snapshot image -->
         <service uid="snapshotAct" type="sight::module::ui::action" />
 
-        <!-- Generic Scene Negato -->
+        <!-- Generic scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="negato" type="sight::viz::scene3d::render">
@@ -121,19 +121,19 @@
             <config sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::image_multi_distances" auto_connect="true">
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::image_multi_distances" auto_connect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::landmarks" auto_connect="true">
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::landmarks" auto_connect="true">
             <inout key="landmarks" uid="${landmarks}" />
             <config priority="4" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="LockImageSrv" type="sight::module::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="sight::module::memory::lock_dump">
             <inout key="target" uid="${image}" />
         </service>
 

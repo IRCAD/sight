@@ -48,7 +48,7 @@ const core::com::signals::key_t series_signal::SERIES_ADDED_SIG = "seriesAdded";
 //------------------------------------------------------------------------------
 
 series_signal::series_signal() noexcept :
-    m_sigSeriesAdded(new_signal<SeriesAddedSignalType>(SERIES_ADDED_SIG))
+    m_sigSeriesAdded(new_signal<series_added_signal_t>(SERIES_ADDED_SIG))
 {
     new_slot(REPORT_SERIES_SLOT, &series_signal::reportSeriesSlot, this);
 }
@@ -78,10 +78,10 @@ void series_signal::configuring()
 
     if(srvconfig.count("filter") == 1)
     {
-        const service::config_t& configFilter = srvconfig.get_child("filter");
-        SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+        const service::config_t& config_filter = srvconfig.get_child("filter");
+        SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", config_filter.count("mode") < 2);
 
-        const auto mode = configFilter.get<std::string>("mode");
+        const auto mode = config_filter.get<std::string>("mode");
         SIGHT_ASSERT(
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
@@ -89,7 +89,7 @@ void series_signal::configuring()
         m_filterMode = mode;
 
         // NOLINTNEXTLINE(bugprone-branch-clone)
-        BOOST_FOREACH(const config_t::value_type& v, configFilter.equal_range("type"))
+        BOOST_FOREACH(const config_t::value_type& v, config_filter.equal_range("type"))
         {
             m_types.push_back(v.second.get<std::string>(""));
         }
@@ -101,15 +101,15 @@ void series_signal::configuring()
 //------------------------------------------------------------------------------
 
 template<typename T>
-void series_signal::reportSeries(const T& addedSeries)
+void series_signal::reportSeries(const T& _added_series)
 {
-    const bool isIncludeMode = m_filterMode == "include";
+    const bool is_include_mode = m_filterMode == "include";
 
-    for(const auto& series : addedSeries)
+    for(const auto& series : _added_series)
     {
-        const auto keyIt = std::find(m_types.cbegin(), m_types.cend(), series->get_classname());
+        const auto key_it = std::find(m_types.cbegin(), m_types.cend(), series->get_classname());
 
-        if(keyIt != m_types.end() && isIncludeMode)
+        if(key_it != m_types.end() && is_include_mode)
         {
             m_sigSeriesAdded->async_emit(series);
         }
@@ -118,9 +118,9 @@ void series_signal::reportSeries(const T& addedSeries)
 
 //------------------------------------------------------------------------------
 
-void series_signal::reportSeriesSlot(sight::data::series_set::container_type addedSeries)
+void series_signal::reportSeriesSlot(sight::data::series_set::container_type _added_series)
 {
-    reportSeries(addedSeries);
+    reportSeries(_added_series);
 }
 
 //------------------------------------------------------------------------------

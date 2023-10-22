@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ class IO_IGTL_CLASS_API ScalarToBytes
 {
 public:
 
-    typedef std::vector<char> RawDataType;
+    typedef std::vector<char> raw_data_t;
 
     /**
      * @brief method to convert a scalar to his representation in bytes
@@ -68,16 +68,16 @@ public:
      * @param[in] scalar
      * @return the representation in bytes for the given scalar
      */
-    static RawDataType toBytes(T const scalar)
+    static raw_data_t toBytes(T const _scalar)
     {
-        io::igtl::detail::helper::detail::ConvertData<T> convertData {};
-        RawDataType bytes;
+        io::igtl::detail::helper::detail::ConvertData<T> convert_data {};
+        raw_data_t bytes;
 
         static_assert(std::is_arithmetic<T>::value);
-        convertData.scalar = scalar;
+        convert_data.scalar = _scalar;
         bytes.resize(sizeof(T));
 
-        std::copy(convertData.bytes.begin(), convertData.bytes.end(), bytes.begin());
+        std::copy(convert_data.bytes.begin(), convert_data.bytes.end(), bytes.begin());
 
         return bytes;
     }
@@ -88,12 +88,12 @@ public:
      * @param[in] bytes
      * @return the scalar value from bytes
      */
-    static T fromBytes(const char* const bytes)
+    static T fromBytes(const char* const _bytes)
     {
-        io::igtl::detail::helper::detail::ConvertData<T> convertData {};
-        std::copy(bytes, bytes + sizeof(T), convertData.bytes.begin());
+        io::igtl::detail::helper::detail::ConvertData<T> convert_data {};
+        std::copy(_bytes, _bytes + sizeof(T), convert_data.bytes.begin());
 
-        return convertData.scalar;
+        return convert_data.scalar;
     }
 };
 

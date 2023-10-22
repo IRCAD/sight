@@ -72,9 +72,9 @@ public:
     /// @note the definition is in Series.cpp
     /// @note Image also implements a getter/setter for this attribute that is overriden here
     /// @{
-    DATA_API void setWindowCenter(const std::vector<double>& windowCenters) override;
+    DATA_API void setWindowCenter(const std::vector<double>& _window_centers) override;
     DATA_API std::vector<double> getWindowCenter() const noexcept override;
-    DATA_API void setWindowWidth(const std::vector<double>& windowWidths) override;
+    DATA_API void setWindowWidth(const std::vector<double>& _window_widths) override;
     DATA_API std::vector<double> getWindowWidth() const noexcept override;
     /// @}
 
@@ -82,28 +82,28 @@ public:
     /// @note the definition is in Series.cpp
     /// @note Image also somewhat implements a getter/setter for this attribute
     /// @{
-    DATA_API void setRows(const std::optional<std::uint16_t>& rows       = std::nullopt) override;
-    DATA_API void setColumns(const std::optional<std::uint16_t>& columns = std::nullopt) override;
+    DATA_API void setRows(const std::optional<std::uint16_t>& _rows       = std::nullopt) override;
+    DATA_API void setColumns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const image_series& other) const noexcept;
-    DATA_API bool operator!=(const image_series& other) const noexcept;
+    DATA_API bool operator==(const image_series& _other) const noexcept;
+    DATA_API bool operator!=(const image_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
     /**
@@ -121,7 +121,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& size, const core::type& type, PixelFormat format) override;
+    DATA_API std::size_t resize(const Size& _size, const core::type& _type, PixelFormat _format) override;
     /// @}
 
     DATA_API fiducials_series::csptr getFiducials() const;

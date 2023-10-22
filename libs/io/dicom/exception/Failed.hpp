@@ -34,8 +34,8 @@ namespace sight::io::dicom::exception
  */
 struct IO_DICOM_CLASS_API Failed : core::exception
 {
-    Failed(const std::string& err) :
-        core::exception(err)
+    Failed(const std::string& _err) :
+        core::exception(_err)
     {
     }
 };

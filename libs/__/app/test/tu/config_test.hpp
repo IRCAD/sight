@@ -73,8 +73,8 @@ private:
     static service::config_t buildConfig();
 
     static app::config_manager::sptr launchAppConfigMgr(
-        const std::string& name,
-        bool autoPrefix = false
+        const std::string& _name,
+        bool _auto_prefix = false
     );
 
     app::config_manager::sptr m_appConfigMgr;

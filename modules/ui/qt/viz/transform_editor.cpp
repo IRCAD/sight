@@ -125,15 +125,15 @@ void transform_editor::starting()
     };
 
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QVBoxLayout();
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
-        auto* sliderLayout = new QHBoxLayout();
+        auto* slider_layout = new QHBoxLayout();
 
         m_sliders[i].m_sliderValue     = new QLineEdit();
         m_sliders[i].m_labelMin        = new QLabel();
@@ -145,13 +145,13 @@ void transform_editor::starting()
 
         m_sliders[i].m_labelDefinition->setText(description[i]);
 
-        sliderLayout->addWidget(m_sliders[i].m_labelDefinition, 0);
-        sliderLayout->addWidget(m_sliders[i].m_labelMin, 0);
-        sliderLayout->addWidget(m_sliders[i].m_slider, 3);
-        sliderLayout->addWidget(m_sliders[i].m_labelMax, 0);
-        sliderLayout->addWidget(m_sliders[i].m_sliderValue, 1);
+        slider_layout->addWidget(m_sliders[i].m_labelDefinition, 0);
+        slider_layout->addWidget(m_sliders[i].m_labelMin, 0);
+        slider_layout->addWidget(m_sliders[i].m_slider, 3);
+        slider_layout->addWidget(m_sliders[i].m_labelMax, 0);
+        slider_layout->addWidget(m_sliders[i].m_sliderValue, 1);
 
-        layout->addLayout(sliderLayout, 0);
+        layout->addLayout(slider_layout, 0);
         QObject::connect(m_sliders[i].m_slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
         QObject::connect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
     }
@@ -244,14 +244,14 @@ void transform_editor::onSliderChanged(int /*unused*/)
     mat[3] = glm::dvec4(tx, ty, tz, 1.);
 
     const auto matrix = m_matrix.lock();
-    geometry::data::setTF3DFromMatrix(*matrix, mat);
+    geometry::data::from_glm_mat(*matrix, mat);
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         m_sliders[i].m_sliderValue->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
     }
 
-    auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();
@@ -276,7 +276,7 @@ void transform_editor::updateFromMatrix()
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("Unable to get matrix", matrix);
 
-    const glm::dmat4x4 mat = geometry::data::getMatrixFromTF3D(*matrix);
+    const glm::dmat4x4 mat = geometry::data::to_glm_mat(*matrix);
 
     const glm::dquat quat(mat);
     const glm::dvec3 angles = glm::eulerAngles(quat);

@@ -38,34 +38,34 @@ namespace sight::core::tools::os
 
 //------------------------------------------------------------------------------
 
-std::string get_env(const std::string& name, bool* ok)
+std::string get_env(const std::string& _name, bool* _ok)
 {
 #ifdef WIN32
     std::string value;
     std::size_t required_size = 0;
     // verify if env var exists and retrieves value size
-    getenv_s(&required_size, nullptr, 0, name.c_str());
+    getenv_s(&required_size, nullptr, 0, _name.c_str());
     const bool env_var_exists = (required_size > 0);
     if(env_var_exists)
     {
         std::vector<char> data(required_size + 1);
         // get the value of the env variable.
-        getenv_s(&required_size, &data[0], required_size, name.c_str());
+        getenv_s(&required_size, &data[0], required_size, _name.c_str());
         value = std::string(&data[0], required_size - 1);
     }
 
-    if(ok != nullptr)
+    if(_ok != nullptr)
     {
-        *ok = env_var_exists;
+        *_ok = env_var_exists;
     }
 
     return value;
 #else
-    const char* value = std::getenv(name.c_str());
+    const char* value = std::getenv(_name.c_str());
     const bool exists = (value != nullptr);
-    if(ok != nullptr)
+    if(_ok != nullptr)
     {
-        *ok = exists;
+        *_ok = exists;
     }
     return {exists ? value : ""};
 #endif
@@ -73,25 +73,25 @@ std::string get_env(const std::string& name, bool* ok)
 
 //------------------------------------------------------------------------------
 
-std::string get_env(const std::string& name, const std::string& default_value)
+std::string get_env(const std::string& _name, const std::string& _default_value)
 {
     bool ok                 = false;
-    const std::string value = get_env(name, &ok);
-    return ok ? value : default_value;
+    const std::string value = get_env(_name, &ok);
+    return ok ? value : _default_value;
 }
 
 //------------------------------------------------------------------------------
 
 inline static std::filesystem::path get_user_dir(
-    const std::string& variable,
-    [[maybe_unused]] const std::string& subdirectory_fallback,
-    const std::string& company,
-    const std::string& app_name,
-    bool create_directory = false
+    const std::string& _variable,
+    [[maybe_unused]] const std::string& _subdirectory_fallback,
+    const std::string& _company,
+    const std::string& _app_name,
+    bool _create_directory = false
 )
 {
     // get the environment variable for user directory
-    std::filesystem::path dir = core::tools::os::get_env(variable);
+    std::filesystem::path dir = core::tools::os::get_env(_variable);
 
 #ifndef WIN32
     // On Unix, fallback to $HOME / subdirectory_fallback
@@ -105,7 +105,7 @@ inline static std::filesystem::path get_user_dir(
         }
         else
         {
-            dir /= subdirectory_fallback;
+            dir /= _subdirectory_fallback;
         }
     }
 #endif
@@ -116,14 +116,14 @@ inline static std::filesystem::path get_user_dir(
         dir = std::filesystem::weakly_canonical(dir);
     }
 
-    if(!company.empty())
+    if(!_company.empty())
     {
-        dir /= company;
+        dir /= _company;
     }
 
-    if(!app_name.empty())
+    if(!_app_name.empty())
     {
-        dir /= app_name;
+        dir /= _app_name;
     }
 
     if(std::filesystem::exists(dir))
@@ -133,7 +133,7 @@ inline static std::filesystem::path get_user_dir(
             !std::filesystem::is_directory(dir)
         );
     }
-    else if(create_directory)
+    else if(_create_directory)
     {
         SIGHT_INFO("Creating user application directory: " << dir.string());
         std::filesystem::create_directories(dir);
@@ -144,38 +144,46 @@ inline static std::filesystem::path get_user_dir(
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_user_data_dir(const std::string& app_name, bool create_directory, const std::string& company)
+std::filesystem::path get_user_data_dir(
+    const std::string& _app_name,
+    bool _create_directory,
+    const std::string& _company
+)
 {
 #ifdef WIN32
-    return get_user_dir("APPDATA", "", company, app_name, create_directory);
+    return get_user_dir("APPDATA", "", _company, _app_name, _create_directory);
 #else
-    return get_user_dir("XDG_DATA_HOME", ".local/share", company, app_name, create_directory);
+    return get_user_dir("XDG_DATA_HOME", ".local/share", _company, _app_name, _create_directory);
 #endif
 }
 
 //------------------------------------------------------------------------------
 
 std::filesystem::path get_user_config_dir(
-    const std::string& app_name,
-    bool create_directory,
-    const std::string& company
+    const std::string& _app_name,
+    bool _create_directory,
+    const std::string& _company
 )
 {
 #ifdef WIN32
-    return get_user_dir("APPDATA", "", company, app_name, create_directory);
+    return get_user_dir("APPDATA", "", _company, _app_name, _create_directory);
 #else
-    return get_user_dir("XDG_CONFIG_HOME", ".config", company, app_name, create_directory);
+    return get_user_dir("XDG_CONFIG_HOME", ".config", _company, _app_name, _create_directory);
 #endif
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path get_user_cache_dir(const std::string& app_name, bool create_directory, const std::string& company)
+std::filesystem::path get_user_cache_dir(
+    const std::string& _app_name,
+    bool _create_directory,
+    const std::string& _company
+)
 {
 #ifdef WIN32
-    return get_user_dir("APPDATA", "", company, app_name, create_directory);
+    return get_user_dir("APPDATA", "", _company, _app_name, _create_directory);
 #else
-    return get_user_dir("XDG_CACHE_HOME", ".cache", company, app_name, create_directory);
+    return get_user_dir("XDG_CACHE_HOME", ".cache", _company, _app_name, _create_directory);
 #endif
 }
 
@@ -219,14 +227,14 @@ struct find_module_functor
 {
     //------------------------------------------------------------------------------
 
-    static int callback(struct dl_phdr_info* info, std::size_t /*unused*/, void* /*unused*/)
+    static int callback(struct dl_phdr_info* _info, std::size_t /*unused*/, void* /*unused*/)
     {
-        const std::string lib_name(info->dlpi_name);
+        const std::string lib_name(_info->dlpi_name);
         const std::regex match_module(s_lib_name);
 
         if(std::regex_search(lib_name, match_module))
         {
-            s_location = info->dlpi_name;
+            s_location = _info->dlpi_name;
         }
 
         return 0;

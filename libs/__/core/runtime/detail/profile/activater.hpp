@@ -46,7 +46,7 @@ public:
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     a string a module version
      */
-    activater(std::string identifier, const std::string& version);
+    activater(std::string _identifier, const std::string& _version);
 
     /**
      * @brief       Adds a new parameter to the activater.
@@ -54,21 +54,21 @@ public:
      * @param[in]   identifier  a string containing the parameter name
      * @param[in]   value       a string containing the parameter value
      */
-    void add_parameter(const std::string& identifier, const std::string& value);
+    void add_parameter(const std::string& _identifier, const std::string& _value);
 
     /**
      * @brief       Adds a new disable extension point  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    void add_disable_extension_point(const std::string& identifier);
+    void add_disable_extension_point(const std::string& _identifier);
 
     /**
      * @brief       Adds a new disable extension  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    void add_disable_extension(const std::string& identifier);
+    void add_disable_extension(const std::string& _identifier);
 
     /**
      * @brief   Applies the activater on the system.
@@ -83,7 +83,7 @@ private:
     typedef std::vector<std::string> disable_extension_point_container;
     typedef std::vector<std::string> disable_extension_container;
 
-    const std::string m_identifier; ///< a module identifier
+    const std::string M_IDENTIFIER; ///< a module identifier
 
     parameter_container m_parameters;                             ///< all parameters
     disable_extension_point_container m_disable_extension_points; ///< all disable extension points

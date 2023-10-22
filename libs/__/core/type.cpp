@@ -48,11 +48,11 @@ const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
 
 //------------------------------------------------------------------------------
 
-type::type(const std::string& str)
+type::type(const std::string& _str)
 {
     for(const auto& [size, is_signed, name, type] : s_type_properties)
     {
-        if(name == str)
+        if(name == _str)
         {
             m_type = type;
             break;
@@ -83,67 +83,67 @@ const std::string& type::name() const
 
 //------------------------------------------------------------------------------
 
-std::string type::to_string(const void* value) const
+std::string type::to_string(const void* _value) const
 {
     switch(m_type)
     {
         case type_t::INT8:
         {
-            const auto& v = *(static_cast<const std::int8_t*>(value));
+            const auto& v = *(static_cast<const std::int8_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::INT16:
         {
-            const auto& v = *(static_cast<const std::int16_t*>(value));
+            const auto& v = *(static_cast<const std::int16_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::INT32:
         {
-            const auto& v = *(static_cast<const std::int32_t*>(value));
+            const auto& v = *(static_cast<const std::int32_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::INT64:
         {
-            const auto& v = *(static_cast<const std::int64_t*>(value));
+            const auto& v = *(static_cast<const std::int64_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::UINT8:
         {
-            const auto& v = *(static_cast<const std::uint8_t*>(value));
+            const auto& v = *(static_cast<const std::uint8_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::UINT16:
         {
-            const auto& v = *(static_cast<const std::uint16_t*>(value));
+            const auto& v = *(static_cast<const std::uint16_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::UINT32:
         {
-            const auto& v = *(static_cast<const std::uint32_t*>(value));
+            const auto& v = *(static_cast<const std::uint32_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::UINT64:
         {
-            const auto& v = *(static_cast<const std::uint64_t*>(value));
+            const auto& v = *(static_cast<const std::uint64_t*>(_value));
             return std::to_string(v);
         }
 
         case type_t::FLOAT:
         {
-            const auto& v = *(static_cast<const float*>(value));
+            const auto& v = *(static_cast<const float*>(_value));
             return std::to_string(v);
         }
 
         case type_t::DOUBLE:
         {
-            const auto& v = *(static_cast<const double*>(value));
+            const auto& v = *(static_cast<const double*>(_value));
             return std::to_string(v);
         }
 
@@ -156,10 +156,10 @@ std::string type::to_string(const void* value) const
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& os, const sight::core::type& type)
+std::ostream& operator<<(std::ostream& _os, const sight::core::type& _type)
 {
-    os << type.name();
-    return os;
+    _os << _type.name();
+    return _os;
 }
 
 } // namespace sight::core

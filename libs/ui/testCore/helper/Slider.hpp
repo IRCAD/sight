@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Slider
@@ -48,8 +48,8 @@ public:
      * @param times The number of times the slider must be moved
      * @{
      */
-    GUITEST_API static void move(Tester& tester, const Select& slider, Position pos);
-    GUITEST_API static void move(Tester& tester, const Select& slider, Position pos, int times);
+    GUITEST_API static void move(Tester& _tester, const Select& _slider, Position _pos);
+    GUITEST_API static void move(Tester& _tester, const Select& _slider, Position _pos, int _times);
     /// @}
 
     /**
@@ -58,7 +58,7 @@ public:
      * @param slider How to get the slider to be setted
      * @param value The new value of the slider
      */
-    GUITEST_API static void set(Tester& tester, const Select& slider, int value);
+    GUITEST_API static void set(Tester& _tester, const Select& _slider, int _value);
 };
 
 } // namespace sight::ui::testCore::helper

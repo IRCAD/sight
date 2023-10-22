@@ -101,7 +101,7 @@ private Q_SLOTS:
      * @brief onNewCalibration
      * @param cal
      */
-    void onNewCalibration(std::array<double, 12>& cal);
+    void onNewCalibration(std::array<double, 12>& _cal);
 
 private:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SLOTBASE_HPP__
+#define FWCOM_SLOTBASE_HPP
 
 #include "core/com/util/convert_function_type.hpp"
 #include "core/config.hpp"
@@ -94,14 +94,14 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      */
     unsigned int arity() const
     {
-        return m_arity;
+        return M_ARITY;
     }
 
     /// Sets Slot's Worker.
-    void set_worker(const SPTR(core::thread::worker)& worker)
+    void set_worker(const SPTR(core::thread::worker)& _worker)
     {
         core::mt::write_lock lock(m_worker_mutex);
-        m_worker = worker;
+        m_worker = _worker;
     }
 
     /// Returns Slot's Worker.
@@ -119,13 +119,13 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      * @name Run helpers
      * @{ */
     template<typename A1, typename A2, typename A3>
-    void run(A1 a1, A2 a2, A3 a3) const;
+    void run(A1 _a1, A2 _a2, A3 _a3) const;
 
     template<typename A1, typename A2>
-    void run(A1 a1, A2 a2) const;
+    void run(A1 _a1, A2 _a2) const;
 
     template<typename A1>
-    void run(A1 a1) const;
+    void run(A1 _a1) const;
 
     CORE_API void run() const;
     /**  @} */
@@ -138,13 +138,13 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      * @name Call helpers
      * @{ */
     template<typename R, typename A1, typename A2, typename A3>
-    R call(A1 a1, A2 a2, A3 a3) const;
+    R call(A1 _a1, A2 _a2, A3 _a3) const;
 
     template<typename R, typename A1, typename A2>
-    R call(A1 a1, A2 a2) const;
+    R call(A1 _a1, A2 _a2) const;
 
     template<typename R, typename A1>
-    R call(A1 a1) const;
+    R call(A1 _a1) const;
 
     template<typename R>
     R call() const;
@@ -159,13 +159,13 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      * @name Asynchronous run helpers
      * @{ */
     template<typename A1, typename A2, typename A3>
-    void_shared_future_type async_run(A1 a1, A2 a2, A3 a3) const;
+    void_shared_future_type async_run(A1 _a1, A2 _a2, A3 _a3) const;
 
     template<typename A1, typename A2>
-    void_shared_future_type async_run(A1 a1, A2 a2) const;
+    void_shared_future_type async_run(A1 _a1, A2 _a2) const;
 
     template<typename A1>
-    void_shared_future_type async_run(A1 a1) const;
+    void_shared_future_type async_run(A1 _a1) const;
 
     CORE_API void_shared_future_type async_run() const;
     /**  @} */
@@ -179,13 +179,13 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
      * @name Asynchronous call helpers
      * @{ */
     template<typename R, typename A1, typename A2, typename A3>
-    std::shared_future<R> async_call(A1 a1, A2 a2, A3 a3) const;
+    std::shared_future<R> async_call(A1 _a1, A2 _a2, A3 _a3) const;
 
     template<typename R, typename A1, typename A2>
-    std::shared_future<R> async_call(A1 a1, A2 a2) const;
+    std::shared_future<R> async_call(A1 _a1, A2 _a2) const;
 
     template<typename R, typename A1>
-    std::shared_future<R> async_call(A1 a1) const;
+    std::shared_future<R> async_call(A1 _a1) const;
 
     template<typename R>
     std::shared_future<R> async_call() const;
@@ -227,8 +227,8 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
             return std::string("function_type(") + std::string(typeid(F).name()) + std::string(")");
         }
 
-        slot_base(unsigned int arity) :
-            m_arity(arity)
+        slot_base(unsigned int _arity) :
+            M_ARITY(_arity)
         {
         }
 
@@ -236,7 +236,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
         std::string m_signature;
 
         /// Slot's arity.
-        const unsigned int m_arity;
+        const unsigned int M_ARITY;
 
         /// Slot's Worker.
         SPTR(core::thread::worker) m_worker;

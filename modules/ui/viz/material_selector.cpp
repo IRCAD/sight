@@ -24,7 +24,7 @@
 
 #include <core/com/signal.hxx>
 
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/material.hpp>
 #include <data/string.hpp>
 
@@ -33,7 +33,7 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -57,7 +57,7 @@ static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 //------------------------------------------------------------------------------
 material_selector::material_selector() noexcept
 {
-    new_signal<SelectedSignalType>(SELECTED_SIG);
+    new_signal<selected_signal_t>(SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -71,17 +71,17 @@ void material_selector::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
     // Selection
-    auto* currentMaterial = new QLabel();
-    currentMaterial->setText("Current material : ");
+    auto* current_material = new QLabel();
+    current_material->setText("Current material : ");
 
     m_materialBox = new QComboBox();
-    m_materialBox->setObjectName(serviceID + "/materialBox");
+    m_materialBox->setObjectName(service_id + "/materialBox");
 
     std::pair<std::string, std::string> elt;
     Ogre::ResourceManager::ResourceMapIterator iter = Ogre::MaterialManager::getSingleton().getResourceIterator();
@@ -96,19 +96,19 @@ void material_selector::starting()
 
     m_materialBox->setCurrentIndex(0);
 
-    auto* labelLayout = new QHBoxLayout();
-    labelLayout->addWidget(currentMaterial);
-    labelLayout->addWidget(m_materialBox);
+    auto* label_layout = new QHBoxLayout();
+    label_layout->addWidget(current_material);
+    label_layout->addWidget(m_materialBox);
 
     // Reload
     m_reloadButton = new QPushButton("Reload");
-    m_reloadButton->setObjectName(serviceID + "/" + m_reloadButton->text());
+    m_reloadButton->setObjectName(service_id + "/" + m_reloadButton->text());
 
     auto* layout = new QVBoxLayout();
-    layout->addLayout(labelLayout);
+    layout->addLayout(label_layout);
     layout->addWidget(m_reloadButton);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->updating();
 
@@ -148,44 +148,44 @@ void material_selector::updateMaterial()
 {
     const auto reconstruction     = m_reconstruction.lock();
     data::material::sptr material = reconstruction->getMaterial();
-    data::object::sptr fieldObj   = material->getField("ogreMaterial");
-    if(fieldObj != nullptr)
+    data::object::sptr field_obj  = material->get_field("ogreMaterial");
+    if(field_obj != nullptr)
     {
-        data::string::sptr field = std::dynamic_pointer_cast<data::string>(fieldObj);
+        data::string::sptr field = std::dynamic_pointer_cast<data::string>(field_obj);
         m_materialBox->setCurrentText(field->value().c_str());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void material_selector::onSelectedModeItem(const QString& text)
+void material_selector::onSelectedModeItem(const QString& _text)
 {
     const auto reconstruction     = m_reconstruction.lock();
     data::material::sptr material = reconstruction->getMaterial();
     data::string::sptr string     = std::make_shared<data::string>();
-    string->setValue(text.toStdString());
+    string->setValue(_text.toStdString());
 
-    data::helper::Field helper(material);
-    helper.setField("ogreMaterial", string);
+    data::helper::field helper(material);
+    helper.set_field("ogreMaterial", string);
     helper.notify();
 
-    auto sig = this->signal<SelectedSignalType>(SELECTED_SIG);
-    sig->async_emit(text.toStdString());
+    auto sig = this->signal<selected_signal_t>(SELECTED_SIG);
+    sig->async_emit(_text.toStdString());
 }
 
 //------------------------------------------------------------------------------
 
 void material_selector::onReloadMaterial()
 {
-    auto materialName          = m_materialBox->currentText().toStdString();
+    auto material_name         = m_materialBox->currentText().toStdString();
     Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
-        materialName,
+        material_name,
         sight::viz::scene3d::RESOURCE_GROUP
     );
 
     if(!material)
     {
-        SIGHT_ERROR("Could not find material" << materialName);
+        SIGHT_ERROR("Could not find material" << material_name);
     }
 
     material->reload();
@@ -194,7 +194,7 @@ void material_selector::onReloadMaterial()
 
     for(auto* const tech : techniques)
     {
-        SIGHT_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("technique is not set", tech);
 
         const Ogre::Technique::Passes& passes = tech->getPasses();
 

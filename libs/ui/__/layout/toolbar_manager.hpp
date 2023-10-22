@@ -102,8 +102,8 @@ public:
 
     SIGHT_DECLARE_CLASS(toolbar_manager, ui::object);
 
-    typedef std::string RegistryKeyType;
-    typedef std::vector<ui::menu_item_callback::sptr> CallbacksType;
+    typedef std::string registry_key_t;
+    typedef std::vector<ui::menu_item_callback::sptr> callbacks_t;
 
     enum class Accordion
     {
@@ -137,7 +137,7 @@ public:
         int m_size {0};
     };
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     UI_API toolbar_manager() = default;
@@ -163,12 +163,12 @@ public:
     /**
      * @brief Initialize layout managers & parse configuration.
      */
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    UI_API virtual void createLayout(ui::container::toolbar::sptr parent, const std::string& id) = 0;
+    UI_API virtual void createLayout(ui::container::toolbar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -179,29 +179,29 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool isVisible) = 0;
+    UI_API virtual void menuItemSetVisible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool isEnabled) = 0;
+    UI_API virtual void menuItemSetEnabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool isChecked) = 0;
+    UI_API virtual void menuItemSetChecked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Set the toolbar visibility.
      */
-    UI_API virtual void setVisible(bool isVisible) = 0;
+    UI_API virtual void setVisible(bool _is_visible) = 0;
 
     /**
      * @brief Sets callbacks associate with toolBar items.
      */
-    virtual void setCallbacks(CallbacksType callbacks)
+    virtual void setCallbacks(callbacks_t _callbacks)
     {
-        m_callbacks = callbacks;
+        m_callbacks = _callbacks;
     }
 
 protected:
@@ -224,7 +224,7 @@ protected:
     std::vector<ActionInfo> m_actionInfo;
 
     /// Callbacks associate with toolBar items
-    CallbacksType m_callbacks;
+    callbacks_t m_callbacks;
 
     /// String to describe the tool button style
     std::string m_style {"ToolButtonIconOnly"};

@@ -60,10 +60,10 @@ public:
     UI_QT_API selections_t show() override;
 
     /// Set the message
-    UI_QT_API void setMessage(const std::string& msg) override;
+    UI_QT_API void setMessage(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_QT_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 private:
 

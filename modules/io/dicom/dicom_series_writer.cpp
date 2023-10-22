@@ -64,20 +64,20 @@ dicom_series_writer::~dicom_series_writer() noexcept =
 
 void dicom_series_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_folder());
+        default_directory->set_folder(result->get_folder());
         this->set_folder(result->get_folder());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -171,19 +171,19 @@ void dicom_series_writer::updating()
 //------------------------------------------------------------------------------
 
 void dicom_series_writer::saveDicomSeries(
-    const std::filesystem::path folder,
-    const data::dicom_series::csptr& series
+    const std::filesystem::path _folder,
+    const data::dicom_series::csptr& _series
 ) const
 {
     auto writer = std::make_shared<sight::io::dicom::helper::DicomSeriesWriter>();
 
-    writer->set_object(series);
-    writer->set_folder(folder);
+    writer->set_object(_series);
+    writer->set_folder(_folder);
     m_sigJobCreated->emit(writer->getJob());
 
     try
     {
-        sight::ui::dialog::progress progressMeterGUI("Saving series ");
+        sight::ui::dialog::progress progress_meter_gui("Saving series ");
         writer->write();
     }
     catch(const std::exception& e)

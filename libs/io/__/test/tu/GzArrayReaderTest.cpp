@@ -39,22 +39,22 @@ namespace sight::io::ut
 
 void GzArrayReaderTest::basicTest()
 {
-    auto gzArrayReader             = std::make_shared<reader::gz_array_reader>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gzArrayReader->extension());
-    std::array<std::uint8_t, 16> arrayIn {};
-    std::iota(arrayIn.begin(), arrayIn.end(), std::uint8_t(0));
+    auto gz_array_reader           = std::make_shared<reader::gz_array_reader>();
+    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gz_array_reader->extension());
+    std::array<std::uint8_t, 16> array_in {};
+    std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
     gzFile out = gzopen(filepath.string().c_str(), "wb");
-    gzwrite(out, reinterpret_cast<char*>(arrayIn.data()), 16);
+    gzwrite(out, reinterpret_cast<char*>(array_in.data()), 16);
     gzclose(out);
-    auto arrayOut = std::make_shared<data::array>();
-    arrayOut->resize({16}, core::type::UINT8);
-    gzArrayReader->set_object(arrayOut);
-    gzArrayReader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(gzArrayReader->read());
+    auto array_out = std::make_shared<data::array>();
+    array_out->resize({16}, core::type::UINT8);
+    gz_array_reader->set_object(array_out);
+    gz_array_reader->set_file(filepath);
+    CPPUNIT_ASSERT_NO_THROW(gz_array_reader->read());
     {
-        auto arrayLock = arrayOut->dump_lock();
-        std::uint8_t i = 0;
-        for(auto it = arrayOut->begin<std::uint8_t>(), end = arrayOut->end<std::uint8_t>() ; it != end ; ++it, ++i)
+        auto array_lock = array_out->dump_lock();
+        std::uint8_t i  = 0;
+        for(auto it = array_out->begin<std::uint8_t>(), end = array_out->end<std::uint8_t>() ; it != end ; ++it, ++i)
         {
             CPPUNIT_ASSERT_EQUAL(i, *it);
         }

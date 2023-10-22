@@ -48,7 +48,7 @@ struct DeserializerStruct
 
 //------------------------------------------------------------------------------
 
-static DeserializerStruct& getDeserializer()
+static DeserializerStruct& get_deserializer()
 {
     static DeserializerStruct deserializer;
     return deserializer;
@@ -58,61 +58,61 @@ static DeserializerStruct& getDeserializer()
 
 //------------------------------------------------------------------------------
 
-deserializer_t session_deserializer::findDeserializer(const std::string& classname) const
+deserializer_t session_deserializer::findDeserializer(const std::string& _classname) const
 {
     // First try to find in the customized deserializer map
-    if(const auto& customIt = m_customDeserializers.find(classname); customIt != m_customDeserializers.cend())
+    if(const auto& custom_it = m_customDeserializers.find(_classname); custom_it != m_customDeserializers.cend())
     {
         // Return the found deserializer
-        return customIt->second;
+        return custom_it->second;
     }
 
     // Then try to find in the default deserializer map
-    if(auto function = deserializer(classname); function)
+    if(auto function = deserializer(_classname); function)
     {
         return function;
     }
 
-    SIGHT_THROW("There is no deserializer registered for class '" << classname << "'.");
+    SIGHT_THROW("There is no deserializer registered for class '" << _classname << "'.");
 }
 
 //------------------------------------------------------------------------------
 
 data::object::sptr session_deserializer::deepDeserialize(
-    std::map<std::string, data::object::sptr>& cache,
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
-    const secure_string& password,
-    const password_keeper::encryption_policy encryptionPolicy
+    std::map<std::string, data::object::sptr>& _cache,
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
+    const secure_string& _password,
+    const password_keeper::encryption_policy _encryption_policy
 ) const
 {
-    const auto& treeIt = tree.begin();
+    const auto& tree_it = _tree.begin();
 
     // Do not deserialize empty tree
-    if(treeIt == tree.end())
+    if(tree_it == _tree.end())
     {
         return {};
     }
 
-    const auto& objectTree = treeIt->second;
+    const auto& object_tree = tree_it->second;
 
     // Do not deserialize null object tree
-    if(objectTree.empty())
+    if(object_tree.empty())
     {
         return {};
     }
 
-    const auto serialized_uuid = objectTree.get<std::string>(session::s_uuid);
-    const auto& objectIt       = cache.find(serialized_uuid);
+    const auto serialized_uuid = object_tree.get<std::string>(session::s_uuid);
+    const auto& object_it      = _cache.find(serialized_uuid);
 
     // First check the cache
-    if(objectIt != cache.cend())
+    if(object_it != _cache.cend())
     {
-        return objectIt->second;
+        return object_it->second;
     }
 
     // Find the deserializer using the classname
-    const auto& classname    = treeIt->first;
+    const auto& classname    = tree_it->first;
     const auto& deserializer = findDeserializer(classname);
 
     // Try to reuse existing rather than create new one
@@ -124,35 +124,36 @@ data::object::sptr session_deserializer::deepDeserialize(
     data::mt::locked_ptr<data::object> object_guard(object);
 
     // Store the object in cache for later use and to allow circular reference
-    cache[serialized_uuid] = object;
+    _cache[serialized_uuid] = object;
 
     // Construct children map, if needed
     std::map<std::string, data::object::sptr> children;
 
-    const auto& childrenIt = objectTree.find(session::s_children);
+    const auto& children_it = object_tree.find(session::s_children);
 
-    if(childrenIt != objectTree.not_found())
+    if(children_it != object_tree.not_found())
     {
-        for(const auto& childIt : childrenIt->second)
+        for(const auto& child_it : children_it->second)
         {
-            children[childIt.first] = deepDeserialize(cache, archive, childIt.second, password, encryptionPolicy);
+            children[child_it.first] =
+                deepDeserialize(_cache, _archive, child_it.second, _password, _encryption_policy);
         }
     }
 
     // Now, we can really deserialize the object
-    const auto& newObject = deserializer(
-        archive,
-        objectTree,
+    const auto& new_object = deserializer(
+        _archive,
+        object_tree,
         children,
         object,
-        session::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
+        session::pickle(_password, secure_string(serialized_uuid), _encryption_policy)
     );
 
-    if(newObject != object)
+    if(new_object != object)
     {
         // This should not happen normally, only if the deserializer doesn't reuse object
-        newObject->set_uuid(object->get_uuid(), true);
-        cache[serialized_uuid] = newObject;
+        new_object->set_uuid(object->get_uuid(), true);
+        _cache[serialized_uuid] = new_object;
         SIGHT_ASSERT(
             "An object has been replaced by a deserializer, but it is still referenced",
             object.use_count() == 1
@@ -160,71 +161,71 @@ data::object::sptr session_deserializer::deepDeserialize(
     }
 
     // Do not forget the description
-    newObject->setDescription(helper::read_string(objectTree, session::s_description, ""));
+    new_object->setDescription(helper::read_string(object_tree, session::s_description, ""));
 
     // Construct field map
-    data::object::FieldMapType fields;
+    data::object::field_map_t fields;
 
-    if(const auto& fields_it = objectTree.find(session::s_fields); fields_it != objectTree.not_found())
+    if(const auto& fields_it = object_tree.find(session::s_fields); fields_it != object_tree.not_found())
     {
         for(const auto& field_it : fields_it->second)
         {
-            fields[field_it.first] = deepDeserialize(cache, archive, field_it.second, password, encryptionPolicy);
+            fields[field_it.first] = deepDeserialize(_cache, _archive, field_it.second, _password, _encryption_policy);
         }
     }
 
     // Assign the deserialized fields
-    newObject->setFields(fields);
+    new_object->set_fields(fields);
 
-    return newObject;
+    return new_object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_deserializer::setCustomDeserializer(const std::string& className, deserializer_t deserializer)
+void session_deserializer::setCustomDeserializer(const std::string& _class_name, deserializer_t _deserializer)
 {
-    if(deserializer)
+    if(_deserializer)
     {
         // Set the deserializer for this class name
-        m_customDeserializers[className] = deserializer;
+        m_customDeserializers[_class_name] = _deserializer;
     }
     else
     {
         // Reset the deserializer for this class name
-        m_customDeserializers.erase(className);
+        m_customDeserializers.erase(_class_name);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void session_deserializer::setDeserializer(const std::string& className, deserializer_t deserializer)
+void session_deserializer::setDeserializer(const std::string& _class_name, deserializer_t _deserializer)
 {
     // Protect serializers map
-    auto& deserializerStruct = getDeserializer();
-    std::shared_lock guard(deserializerStruct.deserializers_mutex);
+    auto& deserializer_struct = get_deserializer();
+    std::shared_lock guard(deserializer_struct.deserializers_mutex);
 
-    if(deserializer)
+    if(_deserializer)
     {
         // Set the deserializer for this class name
-        deserializerStruct.deserializers[className] = deserializer;
+        deserializer_struct.deserializers[_class_name] = _deserializer;
     }
     else
     {
         // Reset the deserializer for this class name
-        deserializerStruct.deserializers.erase(className);
+        deserializer_struct.deserializers.erase(_class_name);
     }
 }
 
 //------------------------------------------------------------------------------
 
-deserializer_t session_deserializer::deserializer(const std::string& className)
+deserializer_t session_deserializer::deserializer(const std::string& _class_name)
 {
     // Protect serializers map
-    auto& deserializerStruct = getDeserializer();
-    std::shared_lock guard(deserializerStruct.deserializers_mutex);
+    auto& deserializer_struct = get_deserializer();
+    std::shared_lock guard(deserializer_struct.deserializers_mutex);
 
-    if(const auto& it = deserializerStruct.deserializers.find(className);
-       it != deserializerStruct.deserializers.end())
+    if(const auto& it = deserializer_struct.deserializers.find(_class_name);
+       it != deserializer_struct.deserializers.end())
     {
         // Return the found deserializer
         return it->second;
@@ -236,23 +237,23 @@ deserializer_t session_deserializer::deserializer(const std::string& className)
 //------------------------------------------------------------------------------
 
 data::object::sptr session_deserializer::deserialize(
-    const std::filesystem::path& archive_path,
-    const Archive::ArchiveFormat archiveFormat,
-    const secure_string& password,
-    const password_keeper::encryption_policy encryptionPolicy
+    const std::filesystem::path& _archive_path,
+    const Archive::ArchiveFormat _archive_format,
+    const secure_string& _password,
+    const password_keeper::encryption_policy _encryption_policy
 ) const
 {
     zip::ArchiveReader::uptr archive;
     boost::property_tree::ptree tree;
 
-    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
+    if(_archive_format == Archive::ArchiveFormat::FILESYSTEM)
     {
         // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
-        if(!password.empty())
+        if(!_password.empty())
         {
             const std::string& message =
                 "Archive format '"
-                + std::string(Archive::archiveFormatToString(archiveFormat))
+                + std::string(Archive::archiveFormatToString(_archive_format))
                 + "' doesn't support encryption.";
 
             SIGHT_ASSERT(message, false);
@@ -260,30 +261,30 @@ data::object::sptr session_deserializer::deserialize(
         }
 
         // Create the archive that contain everything
-        archive = zip::ArchiveReader::get(archive_path.parent_path(), archiveFormat);
+        archive = zip::ArchiveReader::get(_archive_path.parent_path(), _archive_format);
 
         // Create the tree used to store everything and read the json archive.
-        boost::property_tree::read_json(archive_path.string(), tree);
+        boost::property_tree::read_json(_archive_path.string(), tree);
     }
     else
     {
         // Create the archive that contain everything
-        archive = zip::ArchiveReader::get(archive_path, archiveFormat);
+        archive = zip::ArchiveReader::get(_archive_path, _archive_format);
 
         // istream must be closed after this, since archive could only open files one by one
         // Create the tree used to store everything and read the index.json from the archive
-        boost::property_tree::read_json(*archive->openFile(getIndexFilePath(), password), tree);
+        boost::property_tree::read_json(*archive->openFile(getIndexFilePath(), _password), tree);
     }
 
     SIGHT_THROW_IF(
-        "Empty tree from archive '" << archive_path << "'.",
+        "Empty tree from archive '" << _archive_path << "'.",
         tree.empty()
     );
 
     // Initialize the object cache
     std::map<std::string, data::object::sptr> cache;
 
-    return deepDeserialize(cache, *archive, tree, password, encryptionPolicy);
+    return deepDeserialize(cache, *archive, tree, _password, _encryption_policy);
 }
 
 } // namespace sight::io::session::detail

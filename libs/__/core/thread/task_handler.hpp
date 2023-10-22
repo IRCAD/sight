@@ -34,10 +34,10 @@ template<typename R>
 struct task_handler
 {
     /// Constructor, moves task.
-    task_handler(std::packaged_task<R>& task);
+    task_handler(std::packaged_task<R>& _task);
 
     /// Copy constructor, moves task.
-    task_handler(const task_handler& that);
+    task_handler(const task_handler& _that);
 
     /// Copy constructor forbidden.
     task_handler& operator=(const task_handler&) = delete;
@@ -53,7 +53,7 @@ struct task_handler
 
 /// Encapsulate a packaged_task into a boost function to be easily posted on a worker.
 template<typename R>
-inline std::function<void()> move_task_into_function(std::packaged_task<R>& task);
+inline std::function<void()> move_task_into_function(std::packaged_task<R>& _task);
 
 } //namespace sight::core::thread
 

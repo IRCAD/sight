@@ -28,10 +28,10 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/transfer_function.hpp"
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/utils.hpp"
 #include "viz/scene3d/vr/pre_integration_table.hpp"
 
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -127,25 +127,25 @@ public:
      * @param preintegration (optional) Enable preintegration. Default is false.
      */
     VIZ_SCENE3D_API volume_renderer(
-        std::string parentId,
-        Ogre::SceneManager* sceneManager,
-        Ogre::SceneNode* volumeNode,
-        sight::data::image::csptr image,
-        sight::data::image::csptr mask,
-        sight::data::transfer_function::csptr tf,
-        std::uint16_t samples,
-        bool with_buffer    = false,
-        bool preintegration = false
+        std::string _parent_id,
+        Ogre::SceneManager* _scene_manager,
+        Ogre::SceneNode* _volume_node,
+        sight::data::image::csptr _image,
+        sight::data::image::csptr _mask,
+        sight::data::transfer_function::csptr _tf,
+        std::uint16_t _samples,
+        bool _with_buffer    = false,
+        bool _preintegration = false
     );
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API virtual ~volume_renderer();
 
     ///@brief Update the renderer. Base implementation only updates the samples.
-    VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& tf) = 0;
+    VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& _tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void updateImage(data::image::csptr image, data::transfer_function::csptr tf) = 0;
+    VIZ_SCENE3D_API virtual void updateImage(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
 
     /// @brief Loads the 3D texture onto the GPU.
     VIZ_SCENE3D_API virtual void loadImage();
@@ -157,16 +157,16 @@ public:
     VIZ_SCENE3D_API virtual void updateVolumeTF(const data::transfer_function::csptr&) = 0;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples, const data::transfer_function::csptr& tf) = 0;
+    VIZ_SCENE3D_API virtual void setSampling(uint16_t _nb_samples, const data::transfer_function::csptr& _tf) = 0;
 
     /// Sets/unsets pre-integrated rendering.
-    VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
+    VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool _pre_integrated_rendering) = 0;
 
     ///@brief Returns 'true' if preintegration is used, 'false' otherwise.
     [[nodiscard]] VIZ_SCENE3D_API bool preintegration() const;
 
     /// Computes image positions.
-    VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& clippingBox);
+    VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Returns the sampling rate.
     [[nodiscard]] VIZ_SCENE3D_API float samplingDistance() const;
@@ -175,14 +175,14 @@ public:
     [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
 
     /// Called when the size of the viewport changes.
-    VIZ_SCENE3D_API virtual void resizeViewport(int w, int h);
+    VIZ_SCENE3D_API virtual void resizeViewport(int _w, int _h);
 
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
     VIZ_SCENE3D_API void scaleTranslateCube(
-        const data::image::Spacing& spacing,
-        const data::image::Origin& origin
+        const data::image::Spacing& _spacing,
+        const data::image::Origin& _origin
     );
 
     /// Updates the sampling distance according to the current camera plane and slice number. Also updates
@@ -190,28 +190,28 @@ protected:
     VIZ_SCENE3D_API void updateSampleDistance();
 
     /// ID of this object's parent.
-    const std::string m_parentId;
+    const std::string M_PARENT_ID;
 
     /// This object's scene manager.
-    Ogre::SceneManager* const m_sceneManager;
+    Ogre::SceneManager* const M_SCENE_MANAGER;
 
     /// 3D Image texture.
-    Texture::sptr m_3DOgreTexture;
+    texture::sptr m_3DOgreTexture;
 
-    /// Texture used for the mask.
-    Texture::sptr m_maskTexture;
+    /// texture used for the mask.
+    texture::sptr m_maskTexture;
 
     /// TF texture used for rendering.
     transfer_function::sptr m_gpuVolumeTF;
 
     /// Contains the buffering texture for the 3D image.
-    Texture::sptr m_bufferingTexture;
+    texture::sptr m_bufferingTexture;
 
     /// Prevents from accessing the textures while they are swapped.
     std::mutex m_bufferSwapMutex;
 
     ///@brief Indicates if a intermediate buffer is used when converting to negato.
-    const bool m_with_buffer;
+    const bool M_WITH_BUFFER;
 
     /// Pre-integration table.
     pre_integration_table m_preIntegrationTable;

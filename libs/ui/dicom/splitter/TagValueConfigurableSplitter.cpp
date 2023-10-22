@@ -78,29 +78,29 @@ void TagValueConfigurableSplitter::configureWithGUI()
 {
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
-    auto* mainLayout = new QVBoxLayout();
-    dialog->setLayout(mainLayout);
+    auto* main_layout = new QVBoxLayout();
+    dialog->setLayout(main_layout);
     dialog->setMinimumWidth(500);
 
     // Create tag selectors
-    auto* tagSelector =
+    auto* tag_selector =
         new ui::dicom::widget::QTagSelectorWidget();
-    tagSelector->setTagValue(m_tag);
-    mainLayout->addWidget(tagSelector);
+    tag_selector->setTagValue(m_tag);
+    main_layout->addWidget(tag_selector);
 
     // Create buttons
-    auto* buttonBox = new QDialogButtonBox(dialog);
-    mainLayout->addWidget(buttonBox);
-    QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
-    QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
+    auto* button_box = new QDialogButtonBox(dialog);
+    main_layout->addWidget(button_box);
+    QPushButton* ok_button     = button_box->addButton(QDialogButtonBox::Ok);
+    QPushButton* cancel_button = button_box->addButton(QDialogButtonBox::Cancel);
 
-    QObject::connect(okButton, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));
-    QObject::connect(cancelButton, SIGNAL(clicked(void)), dialog, SLOT(reject(void)));
+    QObject::connect(ok_button, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));
+    QObject::connect(cancel_button, SIGNAL(clicked(void)), dialog, SLOT(reject(void)));
 
     int result = dialog->exec();
     if(result == QDialog::Accepted)
     {
-        m_tag = tagSelector->getTag();
+        m_tag = tag_selector->getTag();
     }
 }
 

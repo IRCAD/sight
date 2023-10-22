@@ -22,7 +22,7 @@
 
 #include "scene_test.hpp"
 
-#include "viz/scene3d/helper/Scene.hpp"
+#include "viz/scene3d/helper/scene.hpp"
 
 #include <OGRE/OgreSceneNode.h>
 
@@ -54,14 +54,14 @@ void scene_test::tearDown()
 
 void scene_test::getNodeById()
 {
-    auto* ogreRoot                   = Utils::getOgreRoot();
-    Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    auto* ogre_root                   = utils::getOgreRoot();
+    Ogre::SceneManager* scene_manager = ogre_root->createSceneManager("DefaultSceneManager", "test");
 
-    Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
-    ASSERT_NOT_NULL(rootNode);
+    Ogre::SceneNode* root_node = scene_manager->getRootSceneNode();
+    ASSERT_NOT_NULL(root_node);
 
-    auto* node1 = rootNode->createChildSceneNode("Node1");
-    auto* node2 = rootNode->createChildSceneNode("Node2");
+    auto* node1 = root_node->createChildSceneNode("Node1");
+    auto* node2 = root_node->createChildSceneNode("Node2");
 
     auto* node1_1 = node1->createChildSceneNode("Node1_1");
     auto* node1_2 = node1->createChildSceneNode("Node1_2");
@@ -75,33 +75,33 @@ void scene_test::getNodeById()
     auto* node1_2_2 = node1_2->createChildSceneNode("Node1_2_2");
     auto* node2_2_1 = node2_2->createChildSceneNode("Node2_2_1");
 
-    CPPUNIT_ASSERT_EQUAL(node1, viz::scene3d::helper::Scene::getNodeById("Node1", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node2, viz::scene3d::helper::Scene::getNodeById("Node2", rootNode));
+    CPPUNIT_ASSERT_EQUAL(node1, viz::scene3d::helper::scene::getNodeById("Node1", root_node));
+    CPPUNIT_ASSERT_EQUAL(node2, viz::scene3d::helper::scene::getNodeById("Node2", root_node));
 
-    CPPUNIT_ASSERT_EQUAL(node1_1, viz::scene3d::helper::Scene::getNodeById("Node1_1", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node1_2, viz::scene3d::helper::Scene::getNodeById("Node1_2", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node1_3, viz::scene3d::helper::Scene::getNodeById("Node1_3", rootNode));
+    CPPUNIT_ASSERT_EQUAL(node1_1, viz::scene3d::helper::scene::getNodeById("Node1_1", root_node));
+    CPPUNIT_ASSERT_EQUAL(node1_2, viz::scene3d::helper::scene::getNodeById("Node1_2", root_node));
+    CPPUNIT_ASSERT_EQUAL(node1_3, viz::scene3d::helper::scene::getNodeById("Node1_3", root_node));
 
-    CPPUNIT_ASSERT_EQUAL(node1_1, viz::scene3d::helper::Scene::getNodeById("Node1_1", node1));
-    CPPUNIT_ASSERT_EQUAL(node1_2, viz::scene3d::helper::Scene::getNodeById("Node1_2", node1));
-    CPPUNIT_ASSERT_EQUAL(node1_3, viz::scene3d::helper::Scene::getNodeById("Node1_3", node1));
+    CPPUNIT_ASSERT_EQUAL(node1_1, viz::scene3d::helper::scene::getNodeById("Node1_1", node1));
+    CPPUNIT_ASSERT_EQUAL(node1_2, viz::scene3d::helper::scene::getNodeById("Node1_2", node1));
+    CPPUNIT_ASSERT_EQUAL(node1_3, viz::scene3d::helper::scene::getNodeById("Node1_3", node1));
 
-    CPPUNIT_ASSERT_EQUAL(node2_1, viz::scene3d::helper::Scene::getNodeById("Node2_1", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node2_2, viz::scene3d::helper::Scene::getNodeById("Node2_2", rootNode));
+    CPPUNIT_ASSERT_EQUAL(node2_1, viz::scene3d::helper::scene::getNodeById("Node2_1", root_node));
+    CPPUNIT_ASSERT_EQUAL(node2_2, viz::scene3d::helper::scene::getNodeById("Node2_2", root_node));
 
-    CPPUNIT_ASSERT_EQUAL(node1_1_1, viz::scene3d::helper::Scene::getNodeById("Node1_1_1", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node1_2_1, viz::scene3d::helper::Scene::getNodeById("Node1_2_1", node1_2));
-    CPPUNIT_ASSERT_EQUAL(node1_2_2, viz::scene3d::helper::Scene::getNodeById("Node1_2_2", rootNode));
-    CPPUNIT_ASSERT_EQUAL(node2_2_1, viz::scene3d::helper::Scene::getNodeById("Node2_2_1", rootNode));
+    CPPUNIT_ASSERT_EQUAL(node1_1_1, viz::scene3d::helper::scene::getNodeById("Node1_1_1", root_node));
+    CPPUNIT_ASSERT_EQUAL(node1_2_1, viz::scene3d::helper::scene::getNodeById("Node1_2_1", node1_2));
+    CPPUNIT_ASSERT_EQUAL(node1_2_2, viz::scene3d::helper::scene::getNodeById("Node1_2_2", root_node));
+    CPPUNIT_ASSERT_EQUAL(node2_2_1, viz::scene3d::helper::scene::getNodeById("Node2_2_1", root_node));
 
-    Ogre::SceneNode* nullNode = nullptr;
-    CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node1_3_1", rootNode));
-    CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1_1", rootNode));
+    Ogre::SceneNode* null_node = nullptr;
+    CPPUNIT_ASSERT_EQUAL(null_node, viz::scene3d::helper::scene::getNodeById("Node1_3_1", root_node));
+    CPPUNIT_ASSERT_EQUAL(null_node, viz::scene3d::helper::scene::getNodeById("Node2_1_1", root_node));
     // cspell: ignore AHDFVHDFD
-    CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("AHDFVHDFD", rootNode));
-    CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1", node1));
+    CPPUNIT_ASSERT_EQUAL(null_node, viz::scene3d::helper::scene::getNodeById("AHDFVHDFD", root_node));
+    CPPUNIT_ASSERT_EQUAL(null_node, viz::scene3d::helper::scene::getNodeById("Node2_1", node1));
 
-    ogreRoot->destroySceneManager(sceneManager);
+    ogre_root->destroySceneManager(scene_manager);
 }
 
 //------------------------------------------------------------------------------

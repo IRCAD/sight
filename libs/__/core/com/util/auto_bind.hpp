@@ -49,7 +49,7 @@ struct auto_bind<F, 0>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -59,7 +59,7 @@ struct auto_bind<F, 1>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -69,7 +69,7 @@ struct auto_bind<F, 2>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -79,7 +79,7 @@ struct auto_bind<F, 3>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -89,7 +89,7 @@ struct auto_bind<F, 4>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -99,7 +99,7 @@ struct auto_bind<F, 5>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -109,7 +109,7 @@ struct auto_bind<F, 6>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -119,7 +119,7 @@ struct auto_bind<F, 7>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -129,7 +129,7 @@ struct auto_bind<F, 8>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /// AutoBind specialization.
@@ -139,7 +139,7 @@ struct auto_bind<F, 9>
     typedef typename convert_function_type<F>::type function_type;
 
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W f, A ... a);
+    static std::function<function_type> wrap(W _f, A ... _a);
 };
 
 /**
@@ -151,6 +151,6 @@ struct auto_bind<F, 9>
  * as second argument.
  */
 template<typename F, typename ... A>
-std::function<typename convert_function_type<F>::type> autobind(F f, A ... a);
+std::function<typename convert_function_type<F>::type> autobind(F _f, A ... _a);
 
 } // namespace sight::core::com::util

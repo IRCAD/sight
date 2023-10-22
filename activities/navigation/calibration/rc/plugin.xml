@@ -2,7 +2,7 @@
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

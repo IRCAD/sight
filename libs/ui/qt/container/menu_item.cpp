@@ -43,9 +43,9 @@ void menu_item::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void menu_item::setQtMenuItem(QAction* menuItem)
+void menu_item::setQtMenuItem(QAction* _menu_item)
 {
-    this->m_menuItem = menuItem;
+    this->m_menuItem = _menu_item;
 }
 
 //-----------------------------------------------------------------------------

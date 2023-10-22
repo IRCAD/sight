@@ -68,12 +68,12 @@ class MODULE_IO_DOCUMENT_CLASS_API pdf_writer : public sight::io::service::write
 {
 public:
 
-    typedef std::vector<QImage> ImagesScaledListType;
-    typedef std::vector<data::image::sptr> ImagesListType;
-    typedef std::vector<std::string> ImagesIDsType;
+    typedef std::vector<QImage> images_scaled_list_t;
+    typedef std::vector<data::image::sptr> images_list_t;
+    typedef std::vector<std::string> images_i_ds_t;
 
-    typedef std::vector<QWidget*> ContainersListType;
-    typedef std::vector<std::string> ContainersIDsType;
+    typedef std::vector<QWidget*> containers_list_t;
+    typedef std::vector<std::string> containers_i_ds_t;
 
     SIGHT_DECLARE_SERVICE(pdf_writer, sight::io::service::writer);
     /**
@@ -152,24 +152,24 @@ private:
      * @param data::image to convert
      * @return converted QImage
      */
-    static QImage convertFwImageToQImage(const data::image& image);
+    static QImage convertFwImageToQImage(const data::image& _image);
 
     /**
      * @brief List of images IDs to export into the PDF.
      * Filled at the configuring from the XML configuration, and used at starting().
      */
-    ImagesIDsType m_imagesUIDs;
+    images_i_ds_t m_imagesUIDs;
 
     /**
      * @brief List of containers IDs to export into the PDF.
      * Filled at configuring from the XML configuration, and used at starting().
      */
-    ContainersIDsType m_containersIDs;
+    containers_i_ds_t m_containersIDs;
 
     /**
      * @brief List of containers to export into the PDF.
      */
-    ContainersListType m_containersToExport;
+    containers_list_t m_containersToExport;
 
     static constexpr std::string_view s_IMAGE_INPUT = "image";
     data::ptr_vector<data::image, sight::data::Access::in> m_images {this, s_IMAGE_INPUT};

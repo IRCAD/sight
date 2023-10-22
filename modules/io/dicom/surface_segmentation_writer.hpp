@@ -102,8 +102,8 @@ private:
      * @param[in] model ModelSeries that must be written
      */
     void saveSurfaceSegmentation(
-        const std::filesystem::path filename,
-        const data::model_series::csptr& model
+        const std::filesystem::path _filename,
+        const data::model_series::csptr& _model
     );
 };
 

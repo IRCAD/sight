@@ -45,7 +45,7 @@ static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT = "launchActivity";
 //------------------------------------------------------------------------------
 
 view::view() :
-    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG))
+    m_sigActivityLaunched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
 {
     new_slot(LAUNCH_ACTIVITY_SLOT, &view::launchActivity, this);
 }
@@ -56,19 +56,19 @@ void view::configuring()
 {
     const config_t config = this->get_config();
 
-    sight::activity::launcher::InOutMapType inoutMap;
+    sight::activity::launcher::in_out_map_t inout_map;
     std::for_each(
         m_data.begin(),
         m_data.end(),
-        [&inoutMap](const auto& p)
+        [&inout_map](const auto& _p)
         {
-            const auto obj = p.second->lock();
+            const auto obj = _p.second->lock();
             if(obj != nullptr)
             {
-                inoutMap.push_back(obj->get_id());
+                inout_map.push_back(obj->get_id());
             }
         });
-    this->parseConfiguration(config, inoutMap);
+    this->parseConfiguration(config, inout_map);
 }
 
 //------------------------------------------------------------------------------
@@ -98,18 +98,18 @@ void view::notifyActivityCreation()
 
 //------------------------------------------------------------------------------
 
-void view::launchActivity(data::activity::sptr activity)
+void view::launchActivity(data::activity::sptr _activity)
 {
-    bool isValid = false;
+    bool is_valid = false;
     std::string message;
 
     // check if the activity can be launched
-    std::tie(isValid, message) = sight::module::ui::qml::activity::view::validateActivity(activity);
+    std::tie(is_valid, message) = sight::module::ui::qml::activity::view::validateActivity(_activity);
 
-    if(isValid)
+    if(is_valid)
     {
         auto [info, replacementMap] = sight::activity::extension::activity::getDefault()->getInfoAndReplacementMap(
-            *activity,
+            *_activity,
             m_parameters
         );
 
@@ -119,17 +119,17 @@ void view::launchActivity(data::activity::sptr activity)
         const auto path = core::runtime::get_module_resource_file_path(info.bundleId, info.appConfig.id + ".qml");
 
         // convert the replaceMap to Qt Map to send it to Qml(only QVariantMap type is implemented in Qml)
-        QVariantMap variantMap;
+        QVariantMap variant_map;
 
         for(const auto& replacement : replacementMap)
         {
-            variantMap.insert(
+            variant_map.insert(
                 QString::fromStdString(replacement.first),
                 QString::fromStdString(replacement.second)
             );
         }
 
-        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), variantMap);
+        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), variant_map);
     }
     else
     {

@@ -46,7 +46,7 @@ CORE_API std::filesystem::path working_path() noexcept;
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_path(const std::string& module_identifier) noexcept;
+CORE_API std::filesystem::path get_module_resource_path(const std::string& _module_identifier) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
@@ -57,8 +57,8 @@ CORE_API std::filesystem::path get_module_resource_path(const std::string& modul
  * @return  a system valid path
  */
 CORE_API std::filesystem::path get_module_resource_file_path(
-    const std::string& module_identifier,
-    const std::filesystem::path& path
+    const std::string& _module_identifier,
+    const std::filesystem::path& _path
 ) noexcept;
 
 /**
@@ -70,7 +70,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_file_path(const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path get_module_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
@@ -81,7 +81,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(const std::filesyst
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_library_resource_file_path(const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path get_library_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path
@@ -101,7 +101,7 @@ CORE_API std::filesystem::path get_library_resource_file_path(const std::filesys
  *
  * @return  a system valid path or an empty path if nothing is found
  */
-CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
@@ -112,8 +112,8 @@ CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::pat
  * @return  a system valid path
  */
 CORE_API std::filesystem::path get_module_resource_path(
-    std::shared_ptr<module> module,
-    const std::filesystem::path& path
+    std::shared_ptr<module> _module,
+    const std::filesystem::path& _path
 ) noexcept;
 
 /**

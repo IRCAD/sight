@@ -35,7 +35,7 @@ base::~base()
 
 //-----------------------------------------------------------------------------
 
-filter::FilterType base::getFilterType() const
+filter::filter_t base::get_filter_type() const
 {
     return filter::MODIFIER;
 }

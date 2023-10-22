@@ -24,7 +24,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -57,8 +57,8 @@ void histogram::configuring()
 {
     this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const config_t srvConfig = this->get_config();
-    const config_t config    = srvConfig.get_child("config.<xmlattr>");
+    const config_t srv_config = this->get_config();
+    const config_t config     = srv_config.get_child("config.<xmlattr>");
 
     m_scale = m_yAxis->getScale();
 
@@ -67,24 +67,24 @@ void histogram::configuring()
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    const auto cursorConfig = srvConfig.get_child_optional("config.cursor");
-    if(cursorConfig.has_value())
+    const auto cursor_config = srv_config.get_child_optional("config.cursor");
+    if(cursor_config.has_value())
     {
         std::string color;
         m_cursorEnabled = true;
 
-        color = cursorConfig->get<std::string>("<xmlattr>.color", "");
+        color = cursor_config->get<std::string>("<xmlattr>.color", "");
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorColor, color);
 
-        color = cursorConfig->get<std::string>("<xmlattr>.borderColor", "");
+        color = cursor_config->get<std::string>("<xmlattr>.borderColor", "");
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorBorderColor, color);
 
-        m_cursorSize = cursorConfig->get<double>("<xmlattr>.size", m_cursorSize);
+        m_cursorSize = cursor_config->get<double>("<xmlattr>.size", m_cursorSize);
 
-        color = cursorConfig->get<std::string>("<xmlattr>.textColor", "#FFFFFF");
+        color = cursor_config->get<std::string>("<xmlattr>.textColor", "#FFFFFF");
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_cursorLabelColor, color);
 
-        m_fontSize = cursorConfig->get<int>("<xmlattr>.fontSize", m_fontSize);
+        m_fontSize = cursor_config->get<int>("<xmlattr>.fontSize", m_fontSize);
     }
 }
 
@@ -121,7 +121,7 @@ void histogram::starting()
     }
 
     const auto image = m_image.lock();
-    m_histogram = std::make_unique<data::helper::Histogram>(image.get_shared());
+    m_histogram = std::make_unique<data::helper::histogram>(image.get_shared());
 
     onImageChange();
 }
@@ -140,7 +140,7 @@ void histogram::updating()
 
     const auto image = m_image.lock();
 
-    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+    if(data::helper::medical_image::check_image_validity(image.get_shared()))
     {
         const auto values = m_histogram->sample(m_histogramBinsWidth);
 
@@ -151,16 +151,16 @@ void histogram::updating()
             color.setAlphaF(m_opacity);
             m_color.setColor(color);
 
-            const double min     = m_histogram->min();
-            const auto binsWidth = static_cast<double>(m_histogramBinsWidth);
+            const double min      = m_histogram->min();
+            const auto bins_width = static_cast<double>(m_histogramBinsWidth);
 
             QBrush brush = QBrush(m_color.color());
 
             // Build the graphic items:
             for(std::size_t i = 0 ; i < values.size() ; ++i)
             {
-                vec2d_t pt1 = this->mapAdaptorToScene({min + static_cast<double>(i) * binsWidth, values[i]});
-                vec2d_t pt2 = this->mapAdaptorToScene({min + static_cast<double>(i + 1) * binsWidth, values[i]});
+                vec2d_t pt1 = this->mapAdaptorToScene({min + static_cast<double>(i) * bins_width, values[i]});
+                vec2d_t pt2 = this->mapAdaptorToScene({min + static_cast<double>(i + 1) * bins_width, values[i]});
 
                 QPainterPath painter(QPointF(pt1.x, 0));
                 painter.lineTo(pt1.x, pt1.y);
@@ -215,7 +215,7 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
         return;
     }
 
-    bool updatePointedPos = false;
+    bool update_pointed_pos = false;
 
     // Vertical scaling
     if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp)
@@ -244,11 +244,11 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
             m_yAxis->setScale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
         }
 
-        updatePointedPos = true;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown)
     {
@@ -273,38 +273,38 @@ void histogram::processInteraction(sight::viz::scene2d::data::Event& _event)
             m_yAxis->setScale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
         }
 
-        updatePointedPos = true;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
     {
-        updatePointedPos = true;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
-        m_isInteracting  = true;
-        updatePointedPos = true;
+        m_isInteracting    = true;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
     {
-        m_isInteracting  = false;
-        updatePointedPos = true;
+        m_isInteracting    = false;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::EnterEvent)
     {
-        m_entered        = true;
-        updatePointedPos = true;
+        m_entered          = true;
+        update_pointed_pos = true;
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::LeaveEvent)
     {
-        m_entered        = false;
-        updatePointedPos = true;
+        m_entered          = false;
+        update_pointed_pos = true;
     }
 
-    if(updatePointedPos)
+    if(update_pointed_pos)
     {
         this->updateCurrentPoint(_event);
     }
@@ -326,27 +326,27 @@ void histogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
 {
     if(m_cursorEnabled)
     {
-        const auto values              = m_histogram->sample(m_histogramBinsWidth);
-        const double histogramMinValue = m_histogram->min();
-        const auto histogramBinsWidth  = static_cast<double>(m_histogramBinsWidth);
+        const auto values                = m_histogram->sample(m_histogramBinsWidth);
+        const double histogram_min_value = m_histogram->min();
+        const auto histogram_bins_width  = static_cast<double>(m_histogramBinsWidth);
 
         // Event coordinates in scene
-        sight::viz::scene2d::vec2d_t sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-        const double histIndex                  = sceneCoord.x;
-        const double index                      = histIndex - histogramMinValue;
-        const std::size_t nbValues              = values.size() * m_histogramBinsWidth;
+        sight::viz::scene2d::vec2d_t scene_coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        const double hist_index                  = scene_coord.x;
+        const double index                       = hist_index - histogram_min_value;
+        const std::size_t nb_values              = values.size() * m_histogramBinsWidth;
 
-        const auto viewport       = m_viewport.lock();
-        const auto viewToViewport = this->viewToViewport(*viewport);
+        const auto viewport         = m_viewport.lock();
+        const auto view_to_viewport = this->viewToViewport(*viewport);
 
-        if(index >= 0.F && index < static_cast<double>(nbValues) && m_entered)
+        if(index >= 0.F && index < static_cast<double>(nb_values) && m_entered)
         {
             sight::viz::scene2d::vec2d_t coord;
-            coord.x = sceneCoord.x;
-            coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogramBinsWidth))) * m_scale;
+            coord.x = scene_coord.x;
+            coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogram_bins_width))) * m_scale;
 
             // Draw the cursor
-            const vec2d_t diameter = vec2d_t(m_cursorSize, m_cursorSize) * viewToViewport;
+            const vec2d_t diameter = vec2d_t(m_cursorSize, m_cursorSize) * view_to_viewport;
 
             const double x = coord.x - diameter.x / 2;
             const double y = coord.y - diameter.y / 2;
@@ -357,7 +357,7 @@ void histogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event)
             if(m_isInteracting)
             {
                 // Draw the cursor text
-                const vec2d_t scale = vec2d_t(m_fontSize, m_fontSize) * viewToViewport;
+                const vec2d_t scale = vec2d_t(m_fontSize, m_fontSize) * view_to_viewport;
 
                 // Event coordinates in scene
                 m_cursorLabel->setText(QString::number(static_cast<int>((coord.x))));

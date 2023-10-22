@@ -65,9 +65,9 @@ void cross_type_action::configuring()
     sight::ui::action::initialize();
 
     const auto& config = this->get_config();
-    if(const auto crossType = config.get_optional<std::string>("crossType"); crossType.has_value())
+    if(const auto cross_type = config.get_optional<std::string>("crossType"); cross_type.has_value())
     {
-        m_crossType = crossType.value();
+        m_crossType = cross_type.value();
         boost::algorithm::trim(m_crossType);
         boost::algorithm::to_lower(m_crossType);
         SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());

@@ -25,8 +25,8 @@
 namespace sight::core
 {
 
-exception::exception(const std::string& err) :
-    std::runtime_error(err)
+exception::exception(const std::string& _err) :
+    std::runtime_error(_err)
 {
 }
 

@@ -25,7 +25,7 @@
 #include "io/igtl/detail/DataConverter.hpp"
 #include "io/igtl/detail/ImageTypeConverter.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -40,7 +40,7 @@ namespace sight::io::igtl::detail::converter
 const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
 const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::image::classname();
 
-converterRegisterMacro(io::igtl::detail::converter::ImageConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::ImageConverter);
 
 ImageConverter::ImageConverter()
 = default;
@@ -52,88 +52,88 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::object::csptr _src) const
 {
-    data::image::csptr srcImg = std::dynamic_pointer_cast<const data::image>(src);
+    data::image::csptr src_img = std::dynamic_pointer_cast<const data::image>(_src);
     ::igtl::Matrix4x4 matrix;
 
-    const auto dumpLock = srcImg->dump_lock();
-    auto itr            = srcImg->begin();
-    auto itrEnd         = srcImg->end();
+    const auto dump_lock = src_img->dump_lock();
+    auto itr             = src_img->begin();
+    auto itr_end         = src_img->end();
 
     ::igtl::ImageMessage::Pointer dest = ::igtl::ImageMessage::New();
     ::igtl::IdentityMatrix(matrix);
     dest->SetMatrix(matrix);
-    dest->SetScalarType(ImageTypeConverter::getIgtlType(srcImg->getType()));
+    dest->SetScalarType(ImageTypeConverter::get_igtl_type(src_img->getType()));
     dest->SetCoordinateSystem(::igtl::ImageMessage::COORDINATE_LPS);
-    dest->SetOrigin(float(srcImg->getOrigin()[0]), float(srcImg->getOrigin()[1]), float(srcImg->getOrigin()[2]));
-    dest->SetSpacing(float(srcImg->getSpacing()[0]), float(srcImg->getSpacing()[1]), float(srcImg->getSpacing()[2]));
-    dest->SetNumComponents(static_cast<int>(srcImg->numComponents()));
+    dest->SetOrigin(float(src_img->getOrigin()[0]), float(src_img->getOrigin()[1]), float(src_img->getOrigin()[2]));
+    dest->SetSpacing(float(src_img->getSpacing()[0]), float(src_img->getSpacing()[1]), float(src_img->getSpacing()[2]));
+    dest->SetNumComponents(static_cast<int>(src_img->numComponents()));
     dest->SetDimensions(
-        static_cast<int>(srcImg->size()[0]),
-        static_cast<int>(srcImg->size()[1]),
-        static_cast<int>(srcImg->size()[2])
+        static_cast<int>(src_img->size()[0]),
+        static_cast<int>(src_img->size()[1]),
+        static_cast<int>(src_img->size()[2])
     );
     dest->AllocateScalars();
-    char* igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
-    std::copy(itr, itrEnd, igtlImgBuffer);
+    char* igtl_img_buffer = reinterpret_cast<char*>(dest->GetScalarPointer());
+    std::copy(itr, itr_end, igtl_img_buffer);
     return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
-    ::igtl::ImageMessage::Pointer srcImg;
-    char* igtlImageBuffer     = nullptr;
-    data::image::sptr destImg = std::make_shared<data::image>();
-    const auto dumpLock       = destImg->dump_lock();
-    std::array<float, 3> igtlSpacing {};
-    std::array<float, 3> igtlOrigins {};
-    std::array<int, 3> igtlDimensions {};
+    ::igtl::ImageMessage::Pointer src_img;
+    char* igtl_image_buffer    = nullptr;
+    data::image::sptr dest_img = std::make_shared<data::image>();
+    const auto dump_lock       = dest_img->dump_lock();
+    std::array<float, 3> igtl_spacing {};
+    std::array<float, 3> igtl_origins {};
+    std::array<int, 3> igtl_dimensions {};
     data::image::Spacing spacing;
     data::image::Origin origins;
     data::image::Size size;
 
-    srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(src.GetPointer()));
-    srcImg->GetSpacing(igtlSpacing.data());
-    srcImg->GetOrigin(igtlOrigins.data());
-    srcImg->GetDimensions(igtlDimensions.data());
-    std::transform(igtlSpacing.begin(), igtlSpacing.end(), spacing.begin(), boost::numeric_cast<double, float>);
-    std::copy(igtlDimensions.begin(), igtlDimensions.end(), size.begin());
-    std::transform(igtlOrigins.begin(), igtlOrigins.end(), origins.begin(), boost::numeric_cast<double, float>);
-    destImg->setOrigin(origins);
-    destImg->setSpacing(spacing);
+    src_img = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(_src.GetPointer()));
+    src_img->GetSpacing(igtl_spacing.data());
+    src_img->GetOrigin(igtl_origins.data());
+    src_img->GetDimensions(igtl_dimensions.data());
+    std::transform(igtl_spacing.begin(), igtl_spacing.end(), spacing.begin(), boost::numeric_cast<double, float>);
+    std::copy(igtl_dimensions.begin(), igtl_dimensions.end(), size.begin());
+    std::transform(igtl_origins.begin(), igtl_origins.end(), origins.begin(), boost::numeric_cast<double, float>);
+    dest_img->setOrigin(origins);
+    dest_img->setSpacing(spacing);
 
     sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
-    if(srcImg->GetNumComponents() == 1)
+    if(src_img->GetNumComponents() == 1)
     {
         format = data::image::PixelFormat::GRAY_SCALE;
     }
-    else if(srcImg->GetNumComponents() == 3)
+    else if(src_img->GetNumComponents() == 3)
     {
         format = data::image::PixelFormat::RGB;
     }
-    else if(srcImg->GetNumComponents() == 4)
+    else if(src_img->GetNumComponents() == 4)
     {
         format = data::image::PixelFormat::RGBA;
     }
     else
     {
-        SIGHT_ASSERT("invalid number of components: " + std::to_string(srcImg->GetNumComponents()), false);
+        SIGHT_ASSERT("invalid number of components: " + std::to_string(src_img->GetNumComponents()), false);
     }
 
-    destImg->resize(size, ImageTypeConverter::getFwToolsType(std::uint8_t(srcImg->GetScalarType())), format);
-    auto destIter = destImg->begin();
-    igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
-    std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), destIter);
+    dest_img->resize(size, ImageTypeConverter::get_fw_tools_type(std::uint8_t(src_img->GetScalarType())), format);
+    auto dest_iter = dest_img->begin();
+    igtl_image_buffer = reinterpret_cast<char*>(src_img->GetScalarPointer());
+    std::copy(igtl_image_buffer, igtl_image_buffer + src_img->GetImageSize(), dest_iter);
 
-    if(sight::data::helper::MedicalImage::checkImageValidity(destImg))
+    if(sight::data::helper::medical_image::check_image_validity(dest_img))
     {
-        sight::data::helper::MedicalImage::checkImageSliceIndex(destImg);
+        sight::data::helper::medical_image::check_image_slice_index(dest_img);
     }
 
-    return destImg;
+    return dest_img;
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ base::sptr ImageConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& ImageConverter::getIgtlType() const
+std::string const& ImageConverter::get_igtl_type() const
 {
     return ImageConverter::s_IGTL_TYPE;
 }

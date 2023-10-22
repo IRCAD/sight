@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    FILTER_DICOM_API FilterFailure(const std::string& message);
+    FILTER_DICOM_API FilterFailure(const std::string& _message);
 
     /// Destructor
     FILTER_DICOM_API ~FilterFailure() noexcept override;

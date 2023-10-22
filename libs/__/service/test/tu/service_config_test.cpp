@@ -54,25 +54,25 @@ void service_config_test::tearDown()
 
 void service_config_test::serviceConfigTest()
 {
-    service::extension::config::sptr currentServiceConfig;
-    currentServiceConfig = service::extension::config::getDefault();
+    service::extension::config::sptr current_service_config;
+    current_service_config = service::extension::config::getDefault();
 
     static std::atomic<unsigned int> i = 0;
-    const std::string configId("appTest" + std::to_string(i++));
+    const std::string config_id("appTest" + std::to_string(i++));
     const std::string service("sight::service::ut::test_service");
     const std::string desc("Description of config");
     service::config_t config = buildConfig();
 
-    currentServiceConfig->addServiceConfigInfo(configId, service, desc, config);
+    current_service_config->addServiceConfigInfo(config_id, service, desc, config);
 
-    const auto service_config = currentServiceConfig->get_service_config(configId, service);
+    const auto service_config = current_service_config->get_service_config(config_id, service);
     CPPUNIT_ASSERT(!service_config.empty());
     CPPUNIT_ASSERT(service_config.get_optional<std::string>("service.<xmlattr>.uid").has_value());
     CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), service_config.get<std::string>("service.<xmlattr>.uid"));
 
-    std::vector<std::string> configs = currentServiceConfig->getAllConfigForService(service);
+    std::vector<std::string> configs = current_service_config->getAllConfigForService(service);
     CPPUNIT_ASSERT(!configs.empty());
-    CPPUNIT_ASSERT(std::find(configs.begin(), configs.end(), configId) != configs.end());
+    CPPUNIT_ASSERT(std::find(configs.begin(), configs.end(), config_id) != configs.end());
 }
 
 //------------------------------------------------------------------------------
@@ -87,40 +87,40 @@ void service_config_test::concurrent_access_to_service_config_test()
 
     std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
-    service::extension::config::sptr currentServiceConfig;
-    currentServiceConfig = service::extension::config::getDefault();
-    currentServiceConfig->clear_registry();
-    std::vector<std::string> allConfigs = currentServiceConfig->getAllConfigForService(
+    service::extension::config::sptr current_service_config;
+    current_service_config = service::extension::config::getDefault();
+    current_service_config->clear_registry();
+    std::vector<std::string> all_configs = current_service_config->getAllConfigForService(
         "sight::service::ut::test_service"
     );
-    CPPUNIT_ASSERT(allConfigs.empty());
+    CPPUNIT_ASSERT(all_configs.empty());
 }
 
 //------------------------------------------------------------------------------
 
 void service_config_test::getAllConfigsTest()
 {
-    service::extension::config::sptr currentServiceConfig;
-    currentServiceConfig = service::extension::config::getDefault();
+    service::extension::config::sptr current_service_config;
+    current_service_config = service::extension::config::getDefault();
 
-    const std::string serviceName0    = "::wow::MuchService";
-    const std::string serviceName1    = "::no::BadService";
-    const std::string configIdPrefix0 = "muchServiceConfig";
-    const std::string configIdPrefix1 = "badServiceConfig";
-    const std::string configIdPrefix2 = "emptyConfig";
+    const std::string service_name0     = "::wow::MuchService";
+    const std::string service_name1     = "::no::BadService";
+    const std::string config_id_prefix0 = "muchServiceConfig";
+    const std::string config_id_prefix1 = "badServiceConfig";
+    const std::string config_id_prefix2 = "emptyConfig";
 
-    std::vector<std::string> vectConfigTest0;
-    std::vector<std::string> vectConfigTest1;
+    std::vector<std::string> vect_config_test0;
+    std::vector<std::string> vect_config_test1;
 
     for(int i = 0 ; i < 6 ; ++i)
     {
-        const std::string configId = configIdPrefix0 + std::to_string(i);
+        const std::string config_id = config_id_prefix0 + std::to_string(i);
 
-        vectConfigTest0.push_back(configId);
+        vect_config_test0.push_back(config_id);
 
-        currentServiceConfig->addServiceConfigInfo(
-            configId,
-            serviceName0,
+        current_service_config->addServiceConfigInfo(
+            config_id,
+            service_name0,
             "Much test, oh wow",
             boost::property_tree::ptree()
         );
@@ -128,13 +128,13 @@ void service_config_test::getAllConfigsTest()
 
     for(int i = 0 ; i < 4 ; ++i)
     {
-        const std::string configId = configIdPrefix1 + std::to_string(i);
+        const std::string config_id = config_id_prefix1 + std::to_string(i);
 
-        vectConfigTest1.push_back(configId);
+        vect_config_test1.push_back(config_id);
 
-        currentServiceConfig->addServiceConfigInfo(
-            configId,
-            serviceName1,
+        current_service_config->addServiceConfigInfo(
+            config_id,
+            service_name1,
             "No, bad test ! Bad !",
             boost::property_tree::ptree()
         );
@@ -142,20 +142,20 @@ void service_config_test::getAllConfigsTest()
 
     for(int i = 0 ; i < 3 ; ++i)
     {
-        const std::string configId = configIdPrefix2 + std::to_string(i);
+        const std::string config_id = config_id_prefix2 + std::to_string(i);
 
-        vectConfigTest0.push_back(configId);
-        vectConfigTest1.push_back(configId);
+        vect_config_test0.push_back(config_id);
+        vect_config_test1.push_back(config_id);
 
-        currentServiceConfig->addServiceConfigInfo(
-            configId,
+        current_service_config->addServiceConfigInfo(
+            config_id,
             "", // Empty type.
             "Such empty, much space, wow.",
             boost::property_tree::ptree()
         );
     }
 
-    const std::vector<std::string> test0 = currentServiceConfig->getAllConfigForService(serviceName0);
+    const std::vector<std::string> test0 = current_service_config->getAllConfigForService(service_name0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(9), test0.size());
 
     for(const auto& i : test0)
@@ -163,14 +163,14 @@ void service_config_test::getAllConfigsTest()
         CPPUNIT_ASSERT_EQUAL(
             true,
             std::find(
-                vectConfigTest0.begin(),
-                vectConfigTest0.end(),
+                vect_config_test0.begin(),
+                vect_config_test0.end(),
                 i
-            ) != vectConfigTest0.end()
+            ) != vect_config_test0.end()
         );
     }
 
-    const std::vector<std::string> test1 = currentServiceConfig->getAllConfigForService(serviceName1);
+    const std::vector<std::string> test1 = current_service_config->getAllConfigForService(service_name1);
     CPPUNIT_ASSERT_EQUAL(std::size_t(7), test1.size());
 
     for(const auto& i : test1)
@@ -178,46 +178,46 @@ void service_config_test::getAllConfigsTest()
         CPPUNIT_ASSERT_EQUAL(
             true,
             std::find(
-                vectConfigTest1.begin(),
-                vectConfigTest1.end(),
+                vect_config_test1.begin(),
+                vect_config_test1.end(),
                 i
-            ) != vectConfigTest1.end()
+            ) != vect_config_test1.end()
         );
     }
 
-    const std::vector<std::string> test2 = currentServiceConfig->getAllConfigForService("");
+    const std::vector<std::string> test2 = current_service_config->getAllConfigForService("");
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), test2.size());
 
     for(std::size_t i = 0 ; i < test2.size() ; ++i)
     {
-        const std::string expected = configIdPrefix2 + std::to_string(i);
+        const std::string expected = config_id_prefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test2[i]);
     }
 
-    const std::vector<std::string> test3 = currentServiceConfig->getAllConfigForService(serviceName0, true);
+    const std::vector<std::string> test3 = current_service_config->getAllConfigForService(service_name0, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(6), test3.size());
 
     for(std::size_t i = 0 ; i < test3.size() ; ++i)
     {
-        const std::string expected = configIdPrefix0 + std::to_string(i);
+        const std::string expected = config_id_prefix0 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test3[i]);
     }
 
-    const std::vector<std::string> test4 = currentServiceConfig->getAllConfigForService(serviceName1, true);
+    const std::vector<std::string> test4 = current_service_config->getAllConfigForService(service_name1, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), test4.size());
 
     for(std::size_t i = 0 ; i < test4.size() ; ++i)
     {
-        const std::string expected = configIdPrefix1 + std::to_string(i);
+        const std::string expected = config_id_prefix1 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test4[i]);
     }
 
-    const std::vector<std::string> test5 = currentServiceConfig->getAllConfigForService("", true);
+    const std::vector<std::string> test5 = current_service_config->getAllConfigForService("", true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), test5.size());
 
     for(std::size_t i = 0 ; i < test5.size() ; ++i)
     {
-        const std::string expected = configIdPrefix2 + std::to_string(i);
+        const std::string expected = config_id_prefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test5[i]);
     }
 }
@@ -228,12 +228,12 @@ service::config_t service_config_test::buildConfig()
 {
     service::config_t config;
 
-    service::config_t serviceCfg;
-    serviceCfg.add("<xmlattr>.uid", "serviceUUID");
-    serviceCfg.add("<xmlattr>.type", "serviceType");
-    serviceCfg.add("param", "Parameter");
+    service::config_t service_cfg;
+    service_cfg.add("<xmlattr>.uid", "serviceUUID");
+    service_cfg.add("<xmlattr>.type", "serviceType");
+    service_cfg.add("param", "Parameter");
 
-    config.add_child("service", serviceCfg);
+    config.add_child("service", service_cfg);
     return config;
 }
 

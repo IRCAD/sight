@@ -23,7 +23,7 @@
 #pragma once
 
 // define required by Slots.hxx
-#define __FWCOM_HASSLOTS_HPP__
+#define FWCOM_HASSLOTS_HPP
 
 #include "core/com/slots.hpp"
 #include "core/com/util/convert_function_type.hpp"
@@ -51,32 +51,32 @@ public:
     virtual ~has_slots()
     = default;
 
-    [[nodiscard]] SPTR(slot_base) slot(const slots::key_t& key) const
+    [[nodiscard]] SPTR(slot_base) slot(const slots::key_t& _key) const
     {
-        return m_slots[key];
+        return m_slots[_key];
     }
 
     template<typename slot_type>
-    [[nodiscard]] SPTR(slot_type) slot(const slots::key_t& key) const
+    [[nodiscard]] SPTR(slot_type) slot(const slots::key_t& _key) const
     {
-        SPTR(slot_type) slot = std::dynamic_pointer_cast<slot_type>(this->slot(key));
+        SPTR(slot_type) slot = std::dynamic_pointer_cast<slot_type>(this->slot(_key));
         return slot;
     }
 
     template<typename F, typename A>
     SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>) new_slot(
-        const slots::key_t& key,
-        F f,
-        A a
+        const slots::key_t& _key,
+        F _f,
+        A _a
     );
 
     template<typename F>
-    SPTR(core::com::slot<core::lambda_to_function_t<F> >) new_slot(const slots::key_t& key, F f);
+    SPTR(core::com::slot<core::lambda_to_function_t<F> >) new_slot(const slots::key_t& _key, F _f);
 
     template<typename F>
     auto new_slot(
-        const slots::key_t& key,
-        F f
+        const slots::key_t& _key,
+        F _f
     ) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
                           SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>)>;
 

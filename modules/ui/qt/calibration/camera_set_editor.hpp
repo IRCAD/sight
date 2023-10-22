@@ -67,7 +67,7 @@ public:
     SIGHT_DECLARE_SERVICE(camera_set_editor, sight::ui::editor);
 
     static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    typedef core::com::slot<void ()> UpdateInfosSlotType;
+    typedef core::com::slot<void ()> update_infos_slot_t;
 
     /**
      * @brief Constructor.

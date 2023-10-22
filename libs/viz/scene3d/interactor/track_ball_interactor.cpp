@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 #include "viz/scene3d/interactor/trackball_interactor.hpp"
-#include "viz/scene3d/Layer.hpp"
+#include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/registry/macros.hpp"
 
 #include <core/com/signal.hxx>
@@ -36,8 +36,8 @@ namespace sight::viz::scene3d::interactor
 
 // ----------------------------------------------------------------------------
 
-trackball_interactor::trackball_interactor(Layer::sptr _layer, bool _layerOrderDependant) :
-    base(_layer, _layerOrderDependant)
+trackball_interactor::trackball_interactor(layer::sptr _layer, bool _layer_order_dependant) :
+    base(_layer, _layer_order_dependant)
 {
 }
 
@@ -57,30 +57,30 @@ trackball_interactor::~trackball_interactor()
 // ----------------------------------------------------------------------------
 
 void trackball_interactor::mouseMoveEvent(
-    MouseButton button,
+    MouseButton _button,
     Modifier /*_mods*/,
     int /*_x*/,
     int /*_y*/,
-    int dx,
-    int dy
+    int _dx,
+    int _dy
 )
 {
     if(m_mouseMove)
     {
-        if(button == LEFT)
+        if(_button == LEFT)
         {
-            cameraRotate(dx, dy);
+            cameraRotate(_dx, _dy);
         }
-        else if(button == MIDDLE)
+        else if(_button == MIDDLE)
         {
-            cameraTranslate(dx, dy);
+            cameraTranslate(_dx, _dy);
         }
-        else if(button == RIGHT)
+        else if(_button == RIGHT)
         {
             Ogre::Camera* const camera = m_layer.lock()->getDefaultCamera();
-            const Ogre::Vector3 transVec(0.F, 0.F, static_cast<float>(dy));
+            const Ogre::Vector3 trans_vec(0.F, 0.F, static_cast<float>(_dy));
 
-            camera->getParentNode()->translate(transVec, Ogre::Node::TS_LOCAL);
+            camera->getParentNode()->translate(trans_vec, Ogre::Node::TS_LOCAL);
         }
 
         m_layer.lock()->requestRender();
@@ -112,31 +112,31 @@ void trackball_interactor::buttonReleaseEvent(
 
 // ----------------------------------------------------------------------------
 
-void trackball_interactor::wheelEvent(Modifier /*_mods*/, double delta, int x, int y)
+void trackball_interactor::wheelEvent(Modifier /*_mods*/, double _delta, int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
-        if(isInLayer(x, y, layer, m_layerOrderDependant))
+        if(isInLayer(_x, _y, layer, m_layerOrderDependant))
         {
-            constexpr float mouseScale = 0.01F;
+            constexpr float mouse_scale = 0.01F;
 
             // The zoom factor is reduced when coming closer and increased when going away
-            const float newZoom = m_zoom * std::pow(0.85F, static_cast<float>(delta) * mouseScale);
+            const float new_zoom = m_zoom * std::pow(0.85F, static_cast<float>(_delta) * mouse_scale);
 
             // Moreover we cannot pass through the center of the trackball
-            const float z = (m_zoom - newZoom) * 200.F / (m_mouseScale);
+            const float z = (m_zoom - new_zoom) * 200.F / (m_mouseScale);
 
             // Update the center of interest for future rotations
             m_lookAtZ -= z;
 
             this->updateCameraFocalLength();
 
-            m_zoom = newZoom;
+            m_zoom = new_zoom;
 
             // Translate the camera.
-            Ogre::Camera* const camera     = layer->getDefaultCamera();
-            Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-            camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
+            Ogre::Camera* const camera      = layer->getDefaultCamera();
+            Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
+            cam_node->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
             layer->requestRender();
         }
@@ -145,10 +145,10 @@ void trackball_interactor::wheelEvent(Modifier /*_mods*/, double delta, int x, i
 
 //------------------------------------------------------------------------------
 
-void trackball_interactor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
+void trackball_interactor::pinchGestureEvent(double _scale_factor, int _center_x, int _center_y)
 {
     // The pinch gesture is converted to a wheel event
-    wheelEvent({}, _scaleFactor * 12, _centerX, _centerY);
+    wheelEvent({}, _scale_factor * 12, _center_x, _center_y);
 }
 
 //------------------------------------------------------------------------------
@@ -166,19 +166,19 @@ void trackball_interactor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
 
 // ----------------------------------------------------------------------------
 
-void trackball_interactor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX, int _mouseY)
+void trackball_interactor::keyPressEvent(int _key, Modifier /*_mods*/, int _mouse_x, int _mouse_y)
 {
     if(auto layer = m_layer.lock())
     {
-        if(isInLayer(_mouseX, _mouseY, layer, m_layerOrderDependant))
+        if(isInLayer(_mouse_x, _mouse_y, layer, m_layerOrderDependant))
         {
-            if(key == 'R' || key == 'r')
+            if(_key == 'R' || _key == 'r')
             {
                 layer->resetCameraCoordinates();
                 layer->requestRender();
             }
 
-            if(key == 'A' || key == 'a')
+            if(_key == 'A' || _key == 'a')
             {
                 m_animate = !m_animate;
 
@@ -213,116 +213,116 @@ void trackball_interactor::keyPressEvent(int key, Modifier /*_mods*/, int _mouse
 
 void trackball_interactor::resizeEvent(int _width, int _height)
 {
-    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    Ogre::Camera* const camera                   =
-        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    const Ogre::SceneManager* const scene_manager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* const camera                    =
+        scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
 
     SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
-    const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
-    camera->setAspectRatio(aspectRatio);
+    const float aspect_ratio = static_cast<float>(_width) / static_cast<float>(_height);
+    camera->setAspectRatio(aspect_ratio);
 }
 
 // ----------------------------------------------------------------------------
 
-void trackball_interactor::cameraRotate(int dx, int dy)
+void trackball_interactor::cameraRotate(int _dx, int _dy)
 {
-    auto wDelta = static_cast<Ogre::Real>(dx);
-    auto hDelta = static_cast<Ogre::Real>(dy);
+    auto w_delta = static_cast<Ogre::Real>(_dx);
+    auto h_delta = static_cast<Ogre::Real>(_dy);
 
-    Ogre::Camera* const camera     = m_layer.lock()->getDefaultCamera();
-    Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-    const Ogre::Viewport* const vp = camera->getViewport();
+    Ogre::Camera* const camera      = m_layer.lock()->getDefaultCamera();
+    Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
+    const Ogre::Viewport* const vp  = camera->getViewport();
 
     const auto height = static_cast<float>(vp->getActualHeight());
     const auto width  = static_cast<float>(vp->getActualWidth());
 
     // Current orientation of the camera
-    const Ogre::Quaternion orientation = camNode->getOrientation();
-    const Ogre::Vector3 viewRight      = orientation.xAxis();
-    const Ogre::Vector3 viewUp         = orientation.yAxis();
+    const Ogre::Quaternion orientation = cam_node->getOrientation();
+    const Ogre::Vector3 view_right     = orientation.xAxis();
+    const Ogre::Vector3 view_up        = orientation.yAxis();
 
     // Rotate around the right vector according to the dy of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.F, 0.F, -m_lookAtZ), Ogre::Node::TS_LOCAL);
+        cam_node->translate(Ogre::Vector3(0.F, 0.F, -m_lookAtZ), Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        Ogre::Vector3 vecX(std::abs(hDelta), 0.F, 0.F);
-        Ogre::Vector3 rotateX = vecX * viewRight;
-        rotateX.normalise();
+        Ogre::Vector3 vec_x(std::abs(h_delta), 0.F, 0.F);
+        Ogre::Vector3 rotate_x = vec_x * view_right;
+        rotate_x.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateX.dotProduct(Ogre::Vector3(1.F, 0.F, 0.F)) < 0.F)
+        if(rotate_x.dotProduct(Ogre::Vector3(1.F, 0.F, 0.F)) < 0.F)
         {
-            hDelta *= -1;
+            h_delta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (hDelta * Ogre::Math::PI / height);
+        const float angle = (h_delta * Ogre::Math::PI / height);
 
         // 5 - Apply the rotation on the scene node
-        Ogre::Quaternion rotate(Ogre::Radian(angle), rotateX);
-        camNode->rotate(rotate);
+        Ogre::Quaternion rotate(Ogre::Radian(angle), rotate_x);
+        cam_node->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.F, 0.F, m_lookAtZ), Ogre::Node::TS_LOCAL);
+        cam_node->translate(Ogre::Vector3(0.F, 0.F, m_lookAtZ), Ogre::Node::TS_LOCAL);
     }
 
     // Rotate around the up vector according to the dx of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.F, 0.F, -m_lookAtZ), Ogre::Node::TS_LOCAL);
+        cam_node->translate(Ogre::Vector3(0.F, 0.F, -m_lookAtZ), Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        Ogre::Vector3 vecY(0.F, std::abs(wDelta), 0.F);
-        Ogre::Vector3 rotateY = vecY * viewUp;
-        rotateY.normalise();
+        Ogre::Vector3 vec_y(0.F, std::abs(w_delta), 0.F);
+        Ogre::Vector3 rotate_y = vec_y * view_up;
+        rotate_y.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateY.dotProduct(Ogre::Vector3(0.F, 1.F, 0.F)) < 0.F)
+        if(rotate_y.dotProduct(Ogre::Vector3(0.F, 1.F, 0.F)) < 0.F)
         {
-            wDelta *= -1;
+            w_delta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (wDelta * Ogre::Math::PI / width);
+        const float angle = (w_delta * Ogre::Math::PI / width);
 
         // 5 - Apply the rotation on the scene node
-        Ogre::Quaternion rotate(Ogre::Radian(angle), rotateY);
-        camNode->rotate(rotate);
+        Ogre::Quaternion rotate(Ogre::Radian(angle), rotate_y);
+        cam_node->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.F, 0.F, m_lookAtZ), Ogre::Node::TS_LOCAL);
+        cam_node->translate(Ogre::Vector3(0.F, 0.F, m_lookAtZ), Ogre::Node::TS_LOCAL);
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void trackball_interactor::cameraTranslate(int x_move, int y_move)
+void trackball_interactor::cameraTranslate(int _x_move, int _y_move)
 {
-    float dx = static_cast<float>(x_move) / (m_mouseScale * 10.F);
-    float dy = static_cast<float>(-y_move) / (m_mouseScale * 10.F);
+    float dx = static_cast<float>(_x_move) / (m_mouseScale * 10.F);
+    float dy = static_cast<float>(-_y_move) / (m_mouseScale * 10.F);
 
-    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    Ogre::Camera* camera                         =
-        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    Ogre::SceneNode* camNode = camera->getParentSceneNode();
+    const Ogre::SceneManager* const scene_manager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* camera                          =
+        scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
+    Ogre::SceneNode* cam_node = camera->getParentSceneNode();
 
     Ogre::Vector3 vec(dx, dy, 0.F);
 
-    camNode->translate(vec, Ogre::Node::TS_LOCAL);
+    cam_node->translate(vec, Ogre::Node::TS_LOCAL);
 }
 
 // ----------------------------------------------------------------------------
 
-void trackball_interactor::setSceneLength(float _sceneLength)
+void trackball_interactor::setSceneLength(float _scene_length)
 {
-    m_mouseScale = static_cast<float>(MOUSE_SCALE_FACTOR) / _sceneLength;
-    m_lookAtZ    = _sceneLength;
+    m_mouseScale = static_cast<float>(MOUSE_SCALE_FACTOR) / _scene_length;
+    m_lookAtZ    = _scene_length;
     m_zoom       = 1.F;
 
     this->updateCameraFocalLength();
@@ -336,12 +336,12 @@ void trackball_interactor::updateCameraFocalLength()
     // This works well for the trackball but this would need to be adjusted for an another interactor type
     // For a FPS camera style for instance, we would fix the focal length once and for all according
     // to the scale of the world
-    const float focalLength = std::max(0.001F, std::abs(m_lookAtZ));
+    const float focal_length = std::max(0.001F, std::abs(m_lookAtZ));
 
-    const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    Ogre::Camera* const camera                   =
-        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    camera->setFocalLength(focalLength);
+    const Ogre::SceneManager* const scene_manager = m_layer.lock()->getSceneManager();
+    Ogre::Camera* const camera                    =
+        scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
+    camera->setFocalLength(focal_length);
 }
 
 // ----------------------------------------------------------------------------

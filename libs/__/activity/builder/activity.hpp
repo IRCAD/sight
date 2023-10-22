@@ -37,7 +37,7 @@ public:
 
     SIGHT_DECLARE_CLASS(Activity, activity::builder::base);
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
     /// Destructor. Do nothing.
     ACTIVITY_API virtual ~Activity() = default;
@@ -51,8 +51,8 @@ public:
      * @return Activity or null
      */
     ACTIVITY_API virtual data::activity::sptr buildData(
-        const activity::extension::activity_info& activity_info,
-        const CSPTR(data::vector)& currentSelection
+        const activity::extension::activity_info& _activity_info,
+        const CSPTR(data::vector)& _current_selection
     ) const override;
 };
 

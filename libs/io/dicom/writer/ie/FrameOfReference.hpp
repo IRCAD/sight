@@ -46,12 +46,12 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API FrameOfReference(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::series::csptr& series,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::series::csptr& _series,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor

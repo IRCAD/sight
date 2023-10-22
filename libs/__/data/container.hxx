@@ -32,20 +32,20 @@ namespace sight::data
 
 /// Special templated wrapper to std::inserter, std::back_inserter, iterator that can be used in std::copy()
 template<class C>
-constexpr static auto inserter(C& container)
+constexpr static auto inserter(C& _container)
 {
     if constexpr(core::tools::is_container_associative<C>::value)
     {
-        return std::inserter(container, container.begin());
+        return std::inserter(_container, _container.begin());
     }
     else if constexpr(core::tools::is_container_back_inserter<C>::value)
     {
-        return std::back_inserter(container);
+        return std::back_inserter(_container);
     }
     else if constexpr(core::tools::is_container<C>::value)
     {
         // std::array case
-        return container.begin();
+        return _container.begin();
     }
     else
     {
@@ -54,7 +54,7 @@ constexpr static auto inserter(C& container)
             "sight::data::inserter(): Unsupported container type"
         );
 
-        return container;
+        return _container;
     }
 }
 
@@ -85,35 +85,35 @@ inline container<C>::container(C&& _container) :
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr bool container<C>::operator==(const container& other) const noexcept
+constexpr bool container<C>::operator==(const container& _other) const noexcept
 {
-    if(!core::tools::is_equal(*this, other))
+    if(!core::tools::is_equal(*this, _other))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr bool container<C>::operator!=(const container& other) const noexcept
+constexpr bool container<C>::operator!=(const container& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-inline void container<C>::shallow_copy(const object::csptr& source)
+inline void container<C>::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const container<C> >(source);
+    const auto& other = std::dynamic_pointer_cast<const container<C> >(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
@@ -166,13 +166,13 @@ constexpr bool is_data_object_fn()
 //------------------------------------------------------------------------------
 
 template<class C>
-inline void container<C>::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+inline void container<C>::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const container<C> >(source);
+    const auto& other = std::dynamic_pointer_cast<const container<C> >(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
@@ -201,7 +201,7 @@ inline void container<C>::deep_copy(const object::csptr& source, const std::uniq
         {
             if constexpr(is_data_object)
             {
-                this->container<C>::insert({key, object::copy(value, cache)});
+                this->container<C>::insert({key, object::copy(value, _cache)});
             }
             else
             {
@@ -217,9 +217,9 @@ inline void container<C>::deep_copy(const object::csptr& source, const std::uniq
                 other->cbegin(),
                 other->cend(),
                 inserter(*this),
-                [&](const auto& value)
+                [&](const auto& _value)
                 {
-                    return object::copy(value, cache);
+                    return object::copy(_value, _cache);
                 });
         }
         else
@@ -228,7 +228,7 @@ inline void container<C>::deep_copy(const object::csptr& source, const std::uniq
         }
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -252,9 +252,9 @@ template<class C>
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr container<C>::ScopedEmitter::ScopedEmitter(const container<C>& container) noexcept :
-    m_container(container),
-    m_backup(container.get_content())
+constexpr container<C>::ScopedEmitter::ScopedEmitter(const container<C>& _container) noexcept :
+    m_container(_container),
+    m_backup(_container.get_content())
 {
 }
 
@@ -269,9 +269,9 @@ inline container<C>::ScopedEmitter::~ScopedEmitter() noexcept
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void container<C>::ScopedEmitter::block(const core::com::slot_base::sptr& slot) noexcept
+constexpr void container<C>::ScopedEmitter::block(const core::com::slot_base::sptr& _slot) noexcept
 {
-    m_blockedSlots.push_back(slot);
+    m_blockedSlots.push_back(_slot);
 }
 
 //------------------------------------------------------------------------------

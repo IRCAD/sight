@@ -49,8 +49,8 @@ public:
     class_test()
     = default;
 
-    explicit class_test(int num) :
-        m_num(num)
+    explicit class_test(int _num) :
+        m_num(_num)
     {
     }
 
@@ -80,16 +80,16 @@ void macros_test::tearDown()
 
 void macros_test::factory_macro_test()
 {
-    const int NUM = 15;
+    const int num = 15;
 
     class_test::sptr class_test1;
     class_test::sptr class_test2 = std::make_shared<class_test>();
-    class_test::sptr class_test3 = std::make_shared<class_test>(NUM);
+    class_test::sptr class_test3 = std::make_shared<class_test>(num);
     class_test::sptr class_test4 = std::make_shared<class_test>();
 
     CPPUNIT_ASSERT(class_test1 == nullptr);
     CPPUNIT_ASSERT_EQUAL(class_test2->get_num(), 1);
-    CPPUNIT_ASSERT_EQUAL(class_test3->get_num(), NUM);
+    CPPUNIT_ASSERT_EQUAL(class_test3->get_num(), num);
     CPPUNIT_ASSERT_EQUAL(class_test4->get_num(), 1);
 }
 

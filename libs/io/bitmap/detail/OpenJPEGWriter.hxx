@@ -106,10 +106,10 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::image& image,
-        O& output,
+        const data::image& _image,
+        O& _output,
         Writer::Mode,
-        Flag flag = Flag::NONE
+        Flag _flag = Flag::NONE
 )
     {
         // Create codec
@@ -117,7 +117,7 @@ public:
         /// @warning Everything must be re-created and re-destroyed in one shot.
         /// @warning Doing otherwise leads to strange memory corruption, although most image codecs allows you to do so.
 
-        const auto& image_type = image.getType();
+        const auto& image_type = _image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << image_type,
             image_type != core::type::INT8
@@ -128,7 +128,7 @@ public:
             && image_type != core::type::UINT32
         );
 
-        const auto& pixel_format = image.getPixelFormat();
+        const auto& pixel_format = _image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
             pixel_format != data::image::PixelFormat::GRAY_SCALE
@@ -175,7 +175,7 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_compress(
-                flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
@@ -190,7 +190,7 @@ public:
         // Setup OPJ user stream
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            opj_stream_set_user_data(keeper.m_stream, &output, freeCallback);
+            opj_stream_set_user_data(keeper.m_stream, &_output, freeCallback);
         }
         else
         {
@@ -203,12 +203,12 @@ public:
         opj_stream_set_seek_function(keeper.m_stream, seekCallback);
 
         // Adjust parameters
-        const auto& sizes       = image.size();
+        const auto& sizes       = _image.size();
         const OPJ_UINT32 width  = OPJ_UINT32(sizes[0]);
         const OPJ_UINT32 height = OPJ_UINT32(sizes[1]);
 
         // Format can .jp2 or .j2k
-        m_parameters.cod_format = flag == Flag::J2K_STREAM ? 0 : 1;
+        m_parameters.cod_format = _flag == Flag::J2K_STREAM ? 0 : 1;
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default, but should be multiple of block size
         m_parameters.numresolution = std::min(
@@ -216,7 +216,7 @@ public:
             std::min(int(width) / m_parameters.cblockw_init, int(height) / m_parameters.cblockh_init)
         );
 
-        const OPJ_UINT32 num_components = OPJ_UINT32(image.numComponents());
+        const OPJ_UINT32 num_components = OPJ_UINT32(_image.numComponents());
         m_parameters.tcp_mct = num_components == 1 ? 0 : 1;
 
         // Build the component param array
@@ -265,11 +265,11 @@ public:
             case 8:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::int8_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::int8_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint8_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::uint8_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -277,11 +277,11 @@ public:
             case 16:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::int16_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::int16_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint16_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::uint16_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -289,11 +289,11 @@ public:
             case 32:
                 if(image_type.is_signed())
                 {
-                    toOpenJPEG<std::uint32_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::uint32_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    toOpenJPEG<std::uint32_t>(image, *keeper.m_image);
+                    toOpenJPEG<std::uint32_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -324,21 +324,21 @@ public:
 
             if constexpr(std::is_same_v<std::uint8_t**, O>)
             {
-                (*output) = new std::uint8_t[output_buffer_size];
-                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+                (*_output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*_output), output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::uint8_t*, O>)
             {
-                std::memcpy(output, output_buffer.data(), output_buffer_size);
+                std::memcpy(_output, output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
             {
-                if(output.size() < output_buffer_size)
+                if(_output.size() < output_buffer_size)
                 {
-                    output.resize(output_buffer_size);
+                    _output.resize(output_buffer_size);
                 }
 
-                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
+                std::memcpy(_output.data(), output_buffer.data(), output_buffer_size);
             }
 
             return output_buffer_size;
@@ -363,27 +363,27 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(const char* msg, void*)
+    inline static void warningCallback(const char* _msg, void*)
     {
-        SIGHT_WARN(msg);
+        SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(const char* msg, void*)
+    inline static void errorCallback(const char* _msg, void*)
     {
-        SIGHT_THROW(msg);
+        SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T writeCallback(void* p_buffer, OPJ_SIZE_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_SIZE_T writeCallback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data != nullptr)
+        if(_p_user_data != nullptr)
         {
-            auto* ostream = reinterpret_cast<std::ostream*>(p_user_data);
-            ostream->write(reinterpret_cast<char*>(p_buffer), std::streamsize(p_nb_bytes));
-            return p_nb_bytes;
+            auto* ostream = reinterpret_cast<std::ostream*>(_p_user_data);
+            ostream->write(reinterpret_cast<char*>(_p_buffer), std::streamsize(_p_nb_bytes));
+            return _p_nb_bytes;
         }
 
         return 0;
@@ -391,13 +391,13 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data != nullptr)
+        if(_p_user_data != nullptr)
         {
-            auto* ostream = reinterpret_cast<std::ostream*>(p_user_data);
-            ostream->seekp(p_nb_bytes, std::ios_base::cur);
-            return p_nb_bytes;
+            auto* ostream = reinterpret_cast<std::ostream*>(_p_user_data);
+            ostream->seekp(_p_nb_bytes, std::ios_base::cur);
+            return _p_nb_bytes;
         }
 
         return 0;
@@ -405,12 +405,12 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seekCallback(OPJ_OFF_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_BOOL seekCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data != nullptr)
+        if(_p_user_data != nullptr)
         {
-            auto* ostream = reinterpret_cast<std::ostream*>(p_user_data);
-            ostream->seekp(p_nb_bytes, std::ios_base::beg);
+            auto* ostream = reinterpret_cast<std::ostream*>(_p_user_data);
+            ostream->seekp(_p_nb_bytes, std::ios_base::beg);
             return OPJ_TRUE;
         }
 
@@ -426,9 +426,9 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toOpenJPEG(const data::image& image, opj_image_t& opj_image)
+    inline static void toOpenJPEG(const data::image& _image, opj_image_t& _opj_image)
     {
-        switch(image.getPixelFormat())
+        switch(_image.getPixelFormat())
         {
             case data::image::GRAY_SCALE:
             {
@@ -437,7 +437,7 @@ private:
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(image, opj_image);
+                toOpenJPEGPixels<Pixel>(_image, _opj_image);
                 break;
             }
 
@@ -450,7 +450,7 @@ private:
                     T b;
                 };
 
-                toOpenJPEGPixels<Pixel>(image, opj_image);
+                toOpenJPEGPixels<Pixel>(_image, _opj_image);
                 break;
             }
 
@@ -464,7 +464,7 @@ private:
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(image, opj_image);
+                toOpenJPEGPixels<Pixel>(_image, _opj_image);
                 break;
             }
 
@@ -477,7 +477,7 @@ private:
                     T r;
                 };
 
-                toOpenJPEGPixels<Pixel>(image, opj_image);
+                toOpenJPEGPixels<Pixel>(_image, _opj_image);
                 break;
             }
 
@@ -491,7 +491,7 @@ private:
                     T a;
                 };
 
-                toOpenJPEGPixels<Pixel>(image, opj_image);
+                toOpenJPEGPixels<Pixel>(_image, _opj_image);
                 break;
             }
 
@@ -503,12 +503,12 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toOpenJPEGPixels(const data::image& image, opj_image_t& opj_image)
+    inline static void toOpenJPEGPixels(const data::image& _image, opj_image_t& _opj_image)
     {
-        const auto& sizes = image.size();
+        const auto& sizes = _image.size();
 
-        auto pixel_it        = image.cbegin<P>();
-        const auto pixel_end = image.cend<P>();
+        auto pixel_it        = _image.cbegin<P>();
+        const auto pixel_end = _image.cend<P>();
 
         for(std::size_t i = 0, end = sizes[0] * sizes[1] ; i < end && pixel_it != pixel_end ; ++pixel_it)
         {
@@ -516,22 +516,22 @@ private:
 
             if constexpr(has_r<P>::value)
             {
-                opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->r);
+                _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->r);
             }
 
             if constexpr(has_g<P>::value)
             {
-                opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->g);
+                _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->g);
             }
 
             if constexpr(has_b<P>::value)
             {
-                opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->b);
+                _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->b);
             }
 
             if constexpr(has_alpha<P>::value)
             {
-                opj_image.comps[c].data[i] = OPJ_INT32(pixel_it->a);
+                _opj_image.comps[c].data[i] = OPJ_INT32(pixel_it->a);
             }
 
             ++i;

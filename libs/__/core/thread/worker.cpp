@@ -75,37 +75,37 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void add_worker(const worker_key_type& key, core::thread::worker::sptr worker)
+    void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker)
     {
         core::mt::write_lock lock(m_registry_mutex);
-        m_workers.insert(worker_map_type::value_type(key, worker));
+        m_workers.insert(worker_map_type::value_type(_key, _worker));
     }
 
     //------------------------------------------------------------------------------
 
-    void remove_worker(const worker_key_type& key)
+    void remove_worker(const worker_key_type& _key)
     {
         core::mt::write_lock lock(m_registry_mutex);
 
-        auto it = m_workers.find(key);
+        auto it = m_workers.find(_key);
 
         if(it != m_workers.end())
         {
             it->second->stop();
-            m_workers.erase(key);
+            m_workers.erase(_key);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void remove_worker(core::thread::worker::sptr worker)
+    void remove_worker(core::thread::worker::sptr _worker)
     {
         core::mt::write_lock lock(m_registry_mutex);
         for(const auto& [key, value] : m_workers)
         {
-            if(value == worker)
+            if(value == _worker)
             {
-                worker->stop();
+                _worker->stop();
 
                 m_workers.erase(key);
                 return;
@@ -117,11 +117,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    core::thread::worker::sptr get_worker(const worker_key_type& key) const
+    core::thread::worker::sptr get_worker(const worker_key_type& _key) const
     {
         core::mt::read_lock lock(m_registry_mutex);
 
-        if(auto it = m_workers.find(key); it != m_workers.end())
+        if(auto it = m_workers.find(_key); it != m_workers.end())
         {
             return it->second;
         }
@@ -145,9 +145,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void set_default_worker(const core::thread::worker::sptr& worker)
+    void set_default_worker(const core::thread::worker::sptr& _worker)
     {
-        SIGHT_THROW_IF("default worker can not be null", worker == nullptr);
+        SIGHT_THROW_IF("default worker can not be null", _worker == nullptr);
 
         SIGHT_THROW_IF(
             "Can not switch the default worker as the initial one is already used in the application",
@@ -155,7 +155,7 @@ public:
         );
 
         m_default_worker->stop();
-        m_default_worker = worker;
+        m_default_worker = _worker;
     }
 
     //------------------------------------------------------------------------------
@@ -184,30 +184,30 @@ static auto active_workers = core::thread::active_workers::get();
 
 //-----------------------------------------------------------------------------
 
-core::thread::worker::sptr get_worker(const worker_key_type& key)
+core::thread::worker::sptr get_worker(const worker_key_type& _key)
 {
-    return active_workers::get()->get_worker(key);
+    return active_workers::get()->get_worker(_key);
 }
 
 //-----------------------------------------------------------------------------
 
-void add_worker(const worker_key_type& key, core::thread::worker::sptr worker)
+void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker)
 {
-    active_workers::get()->add_worker(key, worker);
+    active_workers::get()->add_worker(_key, _worker);
 }
 
 //-----------------------------------------------------------------------------
 
-void remove_worker(const worker_key_type& key)
+void remove_worker(const worker_key_type& _key)
 {
-    active_workers::get()->remove_worker(key);
+    active_workers::get()->remove_worker(_key);
 }
 
 //-----------------------------------------------------------------------------
 
-void remove_worker(core::thread::worker::sptr worker)
+void remove_worker(core::thread::worker::sptr _worker)
 {
-    active_workers::get()->remove_worker(worker);
+    active_workers::get()->remove_worker(_worker);
 }
 
 //-----------------------------------------------------------------------------
@@ -219,9 +219,9 @@ core::thread::worker::sptr get_default_worker()
 
 //-----------------------------------------------------------------------------
 
-void set_default_worker(core::thread::worker::sptr worker)
+void set_default_worker(core::thread::worker::sptr _worker)
 {
-    active_workers::get()->set_default_worker(worker);
+    active_workers::get()->set_default_worker(_worker);
 }
 
 //------------------------------------------------------------------------------

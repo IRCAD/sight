@@ -12,7 +12,7 @@ Contains service to handle a command history. Used for instance to undo or redo 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_history ...)
+add_dependencies(my_target module_ui_history ...)
 ```
 
 ### XML

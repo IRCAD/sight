@@ -3,7 +3,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
     <extension implements="sight::app::extension::config">
@@ -296,7 +296,7 @@
 
             <service uid="showfilterSettingsAct" type="sight::module::ui::action" />
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="distanceMapRenderSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
@@ -328,7 +328,7 @@
                 <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="videoRenderSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
@@ -359,7 +359,7 @@
                 <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="reconstructionRenderSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
@@ -507,7 +507,7 @@
 
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneTFSrv" type="sight::viz::scene2d::render">
                 <scene>
@@ -569,7 +569,7 @@
                 </config>
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::render">
                 <scene>

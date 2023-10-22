@@ -86,19 +86,19 @@ void Matrix4ReaderService::configuring()
 
 void Matrix4ReaderService::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("TRF files", "*.trf");
-    dialogFile.setOption(ui::dialog::location::READ);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("TRF files", "*.trf");
+    dialog_file.setOption(ui::dialog::location::READ);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         this->set_file(result->get_file());
     }
     else
@@ -142,7 +142,7 @@ void Matrix4ReaderService::updating()
         m_readFailed = false;
 
         // Notify reading
-        const auto sig = matrix->signal<data::object::ModifiedSignalType>(
+        const auto sig = matrix->signal<data::object::modified_signal_t>(
             data::object::MODIFIED_SIG
         );
         {

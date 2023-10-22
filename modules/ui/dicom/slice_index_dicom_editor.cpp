@@ -29,7 +29,7 @@
 
 #include <data/array.hpp>
 #include <data/composite.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
 #include <data/series_set.hpp>
@@ -80,9 +80,9 @@ void slice_index_dicom_editor::configuring()
     m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
     m_delay           = config.get<std::size_t>("config.<xmlattr>.delay", m_delay);
 
-    if(const auto readerConfig = config.get_child_optional("readerConfig"); readerConfig.has_value())
+    if(const auto reader_config = config.get_child_optional("readerConfig"); reader_config.has_value())
     {
-        m_readerConfig = readerConfig.value();
+        m_readerConfig = reader_config.value();
     }
 }
 
@@ -93,13 +93,13 @@ void slice_index_dicom_editor::starting()
     m_delayTimer2 = this->worker()->create_timer();
 
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* layout = new QHBoxLayout();
 
-    const auto dicomSeries = m_dicomSeries.lock();
-    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-    m_numberOfSlices = dicomSeries->numInstances();
+    const auto dicom_series = m_dicomSeries.lock();
+    SIGHT_ASSERT("DicomSeries should not be null !", dicom_series);
+    m_numberOfSlices = dicom_series->numInstances();
 
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
@@ -117,7 +117,7 @@ void slice_index_dicom_editor::starting()
     ss << m_sliceIndexSlider->value() << " / " << (m_numberOfSlices - 1);
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     // Connect the signals
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
@@ -126,18 +126,18 @@ void slice_index_dicom_editor::starting()
     m_tmp_series_set = std::make_shared<data::series_set>();
 
     // Create reader
-    auto dicomReader = sight::service::add<sight::io::service::reader>(m_dicomReaderType);
+    auto dicom_reader = sight::service::add<sight::io::service::reader>(m_dicomReaderType);
     SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                                                                       "sight::module::ui::dicom::slice_index_dicom_editor.",
-        dicomReader
+        dicom_reader
     );
-    dicomReader->set_inout(m_tmp_series_set, sight::io::service::s_DATA_KEY);
-    dicomReader->set_config(m_readerConfig);
-    dicomReader->configure();
-    dicomReader->start();
+    dicom_reader->set_inout(m_tmp_series_set, sight::io::service::s_DATA_KEY);
+    dicom_reader->set_config(m_readerConfig);
+    dicom_reader->configure();
+    dicom_reader->start();
 
-    m_dicomReader = dicomReader;
+    m_dicomReader = dicom_reader;
 
     // image Indexes
     m_axialIndex    = std::make_shared<data::integer>(0);
@@ -205,40 +205,40 @@ void slice_index_dicom_editor::changeSliceIndex(int /*unused*/)
 void slice_index_dicom_editor::triggerNewSlice()
 {
     // DicomSeries
-    const auto dicomSeries = m_dicomSeries.lock();
-    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
+    const auto dicom_series = m_dicomSeries.lock();
+    SIGHT_ASSERT("DicomSeries should not be null !", dicom_series);
 
     // Compute slice index
-    std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value())
-                                     + dicomSeries->getFirstInstanceNumber();
+    std::size_t selected_slice_index = static_cast<std::size_t>(m_sliceIndexSlider->value())
+                                       + dicom_series->getFirstInstanceNumber();
 
     SIGHT_ERROR_IF(
         "There is no instance available for selected slice index.",
-        !dicomSeries->isInstanceAvailable(selectedSliceIndex)
+        !dicom_series->isInstanceAvailable(selected_slice_index)
     );
 
-    if(dicomSeries->isInstanceAvailable(selectedSliceIndex))
+    if(dicom_series->isInstanceAvailable(selected_slice_index))
     {
-        m_slotReadImage->async_run(selectedSliceIndex);
+        m_slotReadImage->async_run(selected_slice_index);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_editor::readImage(std::size_t selectedSliceIndex)
+void slice_index_dicom_editor::readImage(std::size_t _selected_slice_index)
 {
     // DicomSeries
-    const auto dicomSeries = m_dicomSeries.lock();
-    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
+    const auto dicom_series = m_dicomSeries.lock();
+    SIGHT_ASSERT("DicomSeries should not be null !", dicom_series);
 
-    auto isModalitySupported = [](const data::series& series)
-                               {
-                                   return series.getModality() == "CT"
-                                          || series.getModality() == "MR"
-                                          || series.getModality() == "XA";
-                               };
+    auto is_modality_supported = [](const data::series& _series)
+                                 {
+                                     return _series.getModality() == "CT"
+                                            || _series.getModality() == "MR"
+                                            || _series.getModality() == "XA";
+                                 };
 
-    if(!isModalitySupported(*dicomSeries))
+    if(!is_modality_supported(*dicom_series))
     {
         return;
     }
@@ -248,30 +248,30 @@ void slice_index_dicom_editor::readImage(std::size_t selectedSliceIndex)
     m_tmp_series_set->clear();
 
     // Creates unique temporary folder
-    core::os::temp_dir tmpDir;
-    std::filesystem::path tmpPath = tmpDir / "tmp";
+    core::os::temp_dir tmp_dir;
+    std::filesystem::path tmp_path = tmp_dir / "tmp";
 
-    SIGHT_INFO("Create " + tmpPath.string());
-    std::filesystem::create_directories(tmpPath);
+    SIGHT_INFO("Create " + tmp_path.string());
+    std::filesystem::create_directories(tmp_path);
 
-    const auto& binaries = dicomSeries->getDicomContainer();
-    auto iter            = binaries.find(selectedSliceIndex);
-    SIGHT_ASSERT("Index '" << selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
+    const auto& binaries = dicom_series->getDicomContainer();
+    auto iter            = binaries.find(_selected_slice_index);
+    SIGHT_ASSERT("Index '" << _selected_slice_index << "' is not found in DicomSeries", iter != binaries.end());
 
-    const core::memory::buffer_object::sptr bufferObj = iter->second;
-    const core::memory::buffer_object::lock_t lockerDest(bufferObj);
-    const char* buffer     = static_cast<char*>(lockerDest.buffer());
-    const std::size_t size = bufferObj->size();
+    const core::memory::buffer_object::sptr buffer_obj = iter->second;
+    const core::memory::buffer_object::lock_t locker_dest(buffer_obj);
+    const char* buffer     = static_cast<char*>(locker_dest.buffer());
+    const std::size_t size = buffer_obj->size();
 
-    const std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
+    const std::filesystem::path dest = tmp_path / std::to_string(_selected_slice_index);
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
-    SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
+    SIGHT_THROW_IF("Can't open '" << tmp_path << "' for write.", !fs.good());
 
     fs.write(buffer, static_cast<std::int64_t>(size));
     fs.close();
 
     // Read image
-    m_dicomReader.lock()->set_folder(tmpPath);
+    m_dicomReader.lock()->set_folder(tmp_path);
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->update();
@@ -287,55 +287,55 @@ void slice_index_dicom_editor::readImage(std::size_t selectedSliceIndex)
     }
 
     //Copy image
-    data::image_series::sptr imageSeries;
+    data::image_series::sptr image_series;
 
     if(!m_tmp_series_set->empty())
     {
         auto series = m_tmp_series_set->front();
-        if(isModalitySupported(*series))
+        if(is_modality_supported(*series))
         {
-            imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
+            image_series = std::dynamic_pointer_cast<data::image_series>(series);
         }
     }
 
-    if(imageSeries)
+    if(image_series)
     {
-        const data::image::Size newSize = imageSeries->size();
+        const data::image::Size new_size = image_series->size();
 
-        m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
-        m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
+        m_frontalIndex->setValue(static_cast<int>(new_size[0] / 2));
+        m_sagittalIndex->setValue(static_cast<int>(new_size[1] / 2));
 
-        data::helper::MedicalImage::setSliceIndex(
-            *imageSeries,
-            data::helper::MedicalImage::orientation_t::AXIAL,
+        data::helper::medical_image::set_slice_index(
+            *image_series,
+            data::helper::medical_image::orientation_t::AXIAL,
             m_axialIndex->value()
         );
-        data::helper::MedicalImage::setSliceIndex(
-            *imageSeries,
-            data::helper::MedicalImage::orientation_t::FRONTAL,
+        data::helper::medical_image::set_slice_index(
+            *image_series,
+            data::helper::medical_image::orientation_t::FRONTAL,
             m_frontalIndex->value()
         );
-        data::helper::MedicalImage::setSliceIndex(
-            *imageSeries,
-            data::helper::MedicalImage::orientation_t::SAGITTAL,
+        data::helper::medical_image::set_slice_index(
+            *image_series,
+            data::helper::medical_image::orientation_t::SAGITTAL,
             m_sagittalIndex->value()
         );
 
-        this->set_output(s_IMAGE, imageSeries);
+        this->set_output(s_IMAGE, image_series);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void slice_index_dicom_editor::displayErrorMessage(const std::string& message)
+void slice_index_dicom_editor::displayErrorMessage(const std::string& _message)
 {
-    SIGHT_WARN("Error: " + message);
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle("Error");
-    messageBox.setMessage(message);
-    messageBox.setIcon(sight::ui::dialog::message::CRITICAL);
-    messageBox.addButton(sight::ui::dialog::message::OK);
-    messageBox.show();
+    SIGHT_WARN("Error: " + _message);
+    sight::ui::dialog::message message_box;
+    message_box.setTitle("Error");
+    message_box.setMessage(_message);
+    message_box.setIcon(sight::ui::dialog::message::CRITICAL);
+    message_box.addButton(sight::ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

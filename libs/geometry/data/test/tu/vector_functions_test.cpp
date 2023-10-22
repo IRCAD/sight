@@ -58,16 +58,16 @@ void vector_functions_test::tearDown()
 void vector_functions_test::checkDot()
 {
     // Dot product
-    const double V1_X = 0.1;
-    const double V1_Y = safe_rand() % 30 + 0.1;
-    const double V1_Z = safe_rand() % 20 + 0.4;
+    const double v1_x = 0.1;
+    const double v1_y = safe_rand() % 30 + 0.1;
+    const double v1_z = safe_rand() % 20 + 0.4;
 
-    const double V2_X = safe_rand() % 50 + 0.4;
-    const double V2_Y = 0.5;
-    const double V2_Z = safe_rand() % 10 + 0.8;
+    const double v2_x = safe_rand() % 50 + 0.4;
+    const double v2_y = 0.5;
+    const double v2_z = safe_rand() % 10 + 0.8;
 
-    const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
-    const fwVec3d V2 = {V2_X, V2_Y, V2_Z};
+    const fwVec3d v1 = {v1_x, v1_y, v1_z};
+    const fwVec3d v2 = {v2_x, v2_y, v2_z};
     double result    = NAN;
 
 #ifndef FW_PROFILING_DISABLED
@@ -79,12 +79,12 @@ void vector_functions_test::checkDot()
         }
     }
 #else
-    result = geometry::data::dot(V1, V2);
+    result = geometry::data::dot(v1, v2);
 #endif
 
-    double dotResult = V1_X * V2_X + V1_Y * V2_Y + V1_Z * V2_Z;
+    double dot_result = v1_x * v2_x + v1_y * v2_y + v1_z * v2_z;
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dotResult, result, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(dot_result, result, 0.00001);
 }
 
 //------------------------------------------------------------------------------
@@ -92,11 +92,11 @@ void vector_functions_test::checkDot()
 void vector_functions_test::checkCross()
 {
     // New version
-    const double CROSS_X = -0.03;
-    const double CROSS_Y = 0.06;
-    const double CROSS_Z = -0.03;
-    const fwVec3d V1     = {0.1, 0.2, 0.3};
-    const fwVec3d V2     = {0.4, 0.5, 0.6};
+    const double cross_x = -0.03;
+    const double cross_y = 0.06;
+    const double cross_z = -0.03;
+    const fwVec3d v1     = {0.1, 0.2, 0.3};
+    const fwVec3d v2     = {0.4, 0.5, 0.6};
 
     fwVec3d result;
 #ifndef FW_PROFILING_DISABLED
@@ -108,20 +108,20 @@ void vector_functions_test::checkCross()
         }
     }
 #else
-    result = geometry::data::cross(V1, V2);
+    result = geometry::data::cross(v1, v2);
 #endif
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_X, result[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Y, result[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Z, result[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(cross_x, result[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(cross_y, result[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(cross_z, result[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
 
 void vector_functions_test::checkNormalize()
 {
-    const double NORM = 0.87749;
-    fwVec3d v         = {0.4, 0.5, 0.6};
+    static constexpr double NORM = 0.87749;
+    fwVec3d v                    = {0.4, 0.5, 0.6};
 
     double norm = NAN;
 #ifndef FW_PROFILING_DISABLED
@@ -173,7 +173,7 @@ void vector_functions_test::checkVecLength()
         }
     }
 #else
-    length = geometry::data::vecLength(v);
+    length = geometry::data::vec_length(v);
 #endif
 
     double expected = 3.741657387;
@@ -199,7 +199,7 @@ void vector_functions_test::checkOperators()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), vec2[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), vec2[2], 0.00001);
 
-    fwVec3d addVec = {2.0, 2.0, 2.0};
+    fwVec3d add_vec = {2.0, 2.0, 2.0};
     fwVec3d vec3;
 #ifndef FW_PROFILING_DISABLED
     {
@@ -212,16 +212,16 @@ void vector_functions_test::checkOperators()
     }
 #else
     vec3  = {1.0, 2.0, 3.0};
-    vec3 += addVec;
+    vec3 += add_vec;
 #endif
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(3.0), vec3[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), vec3[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), vec3[2], 0.00001);
 
-    fwVec3d vec4   = {1.0, 2.0, 3.0};
-    fwVec3d subVec = {2.0, 2.0, 2.0};
-    vec4 -= subVec;
+    fwVec3d vec4    = {1.0, 2.0, 3.0};
+    fwVec3d sub_vec = {2.0, 2.0, 2.0};
+    vec4 -= sub_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), vec4[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), vec4[1], 0.00001);
@@ -249,14 +249,14 @@ void vector_functions_test::checkOperators()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), res3[2], 0.00001);
 
     fwVec3d vec8 = {1.0, 2.0, 3.0};
-    fwVec3d res4 = vec8 + addVec;
+    fwVec3d res4 = vec8 + add_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(3.0), res4[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), res4[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), res4[2], 0.00001);
 
     fwVec3d vec9 = {1.0, 2.0, 3.0};
-    fwVec3d res5 = vec9 - subVec;
+    fwVec3d res5 = vec9 - sub_vec;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), res5[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), res5[1], 0.00001);
@@ -265,14 +265,14 @@ void vector_functions_test::checkOperators()
     fwVec3d vec10 = {1.0, 2.0, 3.0};
     fwVec3d res6  = {1.000000, 2.00000000, 3.00000000000};
 
-    bool testEven = vec10 == res6;
-    CPPUNIT_ASSERT_EQUAL(testEven, true);
+    bool test_even = vec10 == res6;
+    CPPUNIT_ASSERT_EQUAL(test_even, true);
 
     fwVec3d vec11 = {1.0, 2.0, 3.0};
     fwVec3d res7  = {1.0000001, 2.05, 3.000000000000009};
 
-    bool testUneven = vec11 != res7;
-    CPPUNIT_ASSERT_EQUAL(testUneven, true);
+    bool test_uneven = vec11 != res7;
+    CPPUNIT_ASSERT_EQUAL(test_uneven, true);
 }
 
 //------------------------------------------------------------------------------

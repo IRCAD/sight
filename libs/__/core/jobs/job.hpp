@@ -68,7 +68,7 @@ public:
      * @param task The task managed by the job
      * @param core::thread::worker An optional worker to run the task on
      */
-    CORE_API job(const std::string& name, task task, SPTR(core::thread::worker)worker = nullptr);
+    CORE_API job(const std::string& _name, task _task, SPTR(core::thread::worker)_worker = nullptr);
 
     /**
      * @brief Return a job callback with the done work number as parameter

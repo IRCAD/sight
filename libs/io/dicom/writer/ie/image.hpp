@@ -46,12 +46,12 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API image(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::csptr& image,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::csptr& _image,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
@@ -68,7 +68,7 @@ public:
      * @see PS 3.3 C.7.6.1
      * @param[in] instanceNumber Instance number
      */
-    IO_DICOM_API virtual void writeGeneralImageModuleSpecificTags(unsigned int instanceNumber);
+    IO_DICOM_API virtual void writeGeneralImageModuleSpecificTags(unsigned int _instance_number);
 
     /**
      * @brief Write image Plane Module tags
@@ -81,7 +81,7 @@ public:
      * @see PS 3.3 C.7.6.2
      * @param[in] instanceNumber Instance number
      */
-    IO_DICOM_API virtual void writeImagePlaneModuleSpecificTags(unsigned int instanceNumber);
+    IO_DICOM_API virtual void writeImagePlaneModuleSpecificTags(unsigned int _instance_number);
 
     /**
      * @brief Write image Pixel Module tags
@@ -94,7 +94,7 @@ public:
      * @see PS 3.3 C.7.6.3
      * @param[in] instanceNumber Instance number
      */
-    IO_DICOM_API virtual void writeImagePixelModuleSpecificTags(unsigned int instanceNumber);
+    IO_DICOM_API virtual void writeImagePixelModuleSpecificTags(unsigned int _instance_number);
 
     /**
      * @brief Write VOI LUT Module tags
@@ -113,7 +113,7 @@ public:
      * @see PS 3.3 C.12.1
      * @param[in] instanceNumber Instance number
      */
-    IO_DICOM_API virtual void writeSOPCommonModuleSpecificTags(unsigned int instanceNumber);
+    IO_DICOM_API virtual void writeSOPCommonModuleSpecificTags(unsigned int _instance_number);
 
     /**
      * @brief Write CT image Module tags

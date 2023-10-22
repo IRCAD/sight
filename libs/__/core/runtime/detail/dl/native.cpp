@@ -35,8 +35,8 @@ namespace sight::core::runtime::detail::dl
 
 //------------------------------------------------------------------------------
 
-native::native(std::string name) noexcept :
-    m_name(std::move(name))
+native::native(std::string _name) noexcept :
+    M_NAME(std::move(_name))
 {
 }
 
@@ -92,7 +92,7 @@ std::filesystem::path native::get_full_path() const
         }
     }
 
-    std::filesystem::path result = m_search_path / s_cache[m_search_path][m_name];
+    std::filesystem::path result = m_search_path / s_cache[m_search_path][M_NAME];
 #elif defined(WIN32)
     std::filesystem::path result = m_search_path / (this->name() + ".dll");
 #endif
@@ -120,14 +120,14 @@ std::filesystem::path native::get_full_path() const
 
 std::string native::name() const
 {
-    return m_name;
+    return M_NAME;
 }
 
 //------------------------------------------------------------------------------
 
-void native::set_search_path(const std::filesystem::path& path) noexcept
+void native::set_search_path(const std::filesystem::path& _path) noexcept
 {
-    m_search_path = path;
+    m_search_path = _path;
 }
 
 //------------------------------------------------------------------------------

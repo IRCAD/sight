@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@ namespace sight::ui::dicom::widget
 
 //-----------------------------------------------------------------------------
 
-QHexSpinBox::QHexSpinBox(QWidget* parent) :
-    QSpinBox(parent)
+QHexSpinBox::QHexSpinBox(QWidget* _parent) :
+    QSpinBox(_parent)
 {
     this->setRange(0, 0xFFFF);
     m_validator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{1,4}"), this);
@@ -36,24 +36,24 @@ QHexSpinBox::QHexSpinBox(QWidget* parent) :
 
 //-----------------------------------------------------------------------------
 
-QValidator::State QHexSpinBox::validate(QString& text, int& pos) const
+QValidator::State QHexSpinBox::validate(QString& _text, int& _pos) const
 {
-    return m_validator->validate(text, pos);
+    return m_validator->validate(_text, _pos);
 }
 
 //-----------------------------------------------------------------------------
 
-int QHexSpinBox::valueFromText(const QString& text) const
+int QHexSpinBox::valueFromText(const QString& _text) const
 {
     bool ok = false;
-    return text.toInt(&ok, 16);
+    return _text.toInt(&ok, 16);
 }
 
 //-----------------------------------------------------------------------------
 
-QString QHexSpinBox::textFromValue(int value) const
+QString QHexSpinBox::textFromValue(int _value) const
 {
-    QString res = QString::number(value, 16).toUpper();
+    QString res = QString::number(_value, 16).toUpper();
     for(int i = res.size() ; i < 4 ; ++i)
     {
         res = "0" + res;

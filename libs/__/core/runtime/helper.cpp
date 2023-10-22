@@ -34,12 +34,16 @@ namespace sight::core::runtime::property_tree
 
 //------------------------------------------------------------------------------
 
-std::string to_string(const boost::property_tree::ptree& pt)
+std::string to_string(const boost::property_tree::ptree& _pt)
 {
     std::stringstream ss;
 
     // We specify xml settings for pretty printing
-    boost::property_tree::write_xml(ss, pt, boost::property_tree::xml_parser::xml_writer_settings<std::string>(' ', 4));
+    boost::property_tree::write_xml(
+        ss,
+        _pt,
+        boost::property_tree::xml_parser::xml_writer_settings<std::string>(' ', 4)
+    );
 
     auto str = ss.str();
     str.erase(0, str.find('\n') + 1); // Remove the <xml?> tag which adds unnecessary noise

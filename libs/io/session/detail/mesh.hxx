@@ -43,63 +43,63 @@ constexpr static auto s_mesh {"/mesh.vtp"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& _password = ""
 )
 {
-    const auto mesh = helper::safe_cast<data::mesh>(object);
+    const auto mesh = helper::safe_cast<data::mesh>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::mesh>(tree, 1);
+    helper::write_version<data::mesh>(_tree, 1);
 
     // Convert the mesh to VTK
     const auto& vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
     io::vtk::helper::mesh::toVTKMesh(mesh, vtk_mesh);
 
     // Create the vtk writer
-    const auto& vtkWriter = vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-    vtkWriter->SetCompressorTypeToNone();
-    vtkWriter->SetDataModeToBinary();
-    vtkWriter->WriteToOutputStringOn();
-    vtkWriter->SetInputData(vtk_mesh);
+    const auto& vtk_writer = vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    vtk_writer->SetCompressorTypeToNone();
+    vtk_writer->SetDataModeToBinary();
+    vtk_writer->WriteToOutputStringOn();
+    vtk_writer->SetInputData(vtk_mesh);
 
     // Write to internal string...
-    vtkWriter->Update();
+    vtk_writer->Update();
 
     // Create the output file inside the archive
-    const auto& ostream = archive.openFile(
+    const auto& ostream = _archive.openFile(
         std::filesystem::path(mesh->get_uuid() + s_mesh),
-        password
+        _password
     );
 
     // Write back to the archive
-    (*ostream) << vtkWriter->GetOutputString();
+    (*ostream) << vtk_writer->GetOutputString();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::mesh::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto mesh = helper::cast_or_create<data::mesh>(object);
+    auto mesh = helper::cast_or_create<data::mesh>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::mesh>(tree, 0, 1);
+    helper::read_version<data::mesh>(_tree, 0, 1);
 
     // Create the istream from the input file inside the archive
-    const auto& uuid    = tree.get<std::string>(s_uuid);
-    const auto& istream = archive.openFile(
+    const auto& uuid    = _tree.get<std::string>(s_uuid);
+    const auto& istream = _archive.openFile(
         std::filesystem::path(uuid + s_mesh),
-        password
+        _password
     );
 
     // "Convert" it to a string

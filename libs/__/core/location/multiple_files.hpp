@@ -42,13 +42,13 @@ public:
     [[nodiscard]] inline std::string to_string() const override;
 
     /// Sets the file paths
-    inline void set_files(const std::vector<std::filesystem::path>& file_paths);
+    inline void set_files(const std::vector<std::filesystem::path>& _file_paths);
 
     /// Gets the file paths
     [[nodiscard]] inline std::vector<std::filesystem::path> get_files() const;
 
     /// Appends one file path
-    inline void add_file(const std::filesystem::path& file_paths);
+    inline void add_file(const std::filesystem::path& _file_paths);
 
 private:
 
@@ -80,9 +80,9 @@ inline std::string multiple_files::to_string() const
 
 //------------------------------------------------------------------------------
 
-inline void multiple_files::set_files(const std::vector<std::filesystem::path>& file_paths)
+inline void multiple_files::set_files(const std::vector<std::filesystem::path>& _file_paths)
 {
-    m_files = file_paths;
+    m_files = _file_paths;
 }
 
 //------------------------------------------------------------------------------
@@ -94,9 +94,9 @@ inline std::vector<std::filesystem::path> multiple_files::get_files() const
 
 //------------------------------------------------------------------------------
 
-inline void multiple_files::add_file(const std::filesystem::path& file_paths)
+inline void multiple_files::add_file(const std::filesystem::path& _file_paths)
 {
-    m_files.push_back(file_paths);
+    m_files.push_back(_file_paths);
 }
 
 } // namespace sight::core::location

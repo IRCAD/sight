@@ -43,23 +43,23 @@ public:
     has_signals()          = default;
     virtual ~has_signals() = default;
 
-    [[nodiscard]] SPTR(signal_base) signal(const signals::signal_key_type& key) const
+    [[nodiscard]] SPTR(signal_base) signal(const signals::signal_key_type& _key) const
     {
-        return m_signals[key];
+        return m_signals[_key];
     }
 
     template<typename signal_type>
-    [[nodiscard]] SPTR(signal_type) signal(const signals::signal_key_type& key) const
+    [[nodiscard]] SPTR(signal_type) signal(const signals::signal_key_type& _key) const
     {
-        SPTR(signal_type) signal = std::dynamic_pointer_cast<signal_type>(this->signal(key));
+        SPTR(signal_type) signal = std::dynamic_pointer_cast<signal_type>(this->signal(_key));
         return signal;
     }
 
     template<typename signal_type>
-    SPTR(signal_type) new_signal(const signals::signal_key_type& key)
+    SPTR(signal_type) new_signal(const signals::signal_key_type& _key)
     {
         SPTR(signal_type) sig = std::make_shared<signal_type>();
-        m_signals(key, sig);
+        m_signals(_key, sig);
         return sig;
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,11 +37,11 @@ namespace sight::io::igtl::detail::archiver
 {
 
 MemoryArchiveSink::MemoryArchiveSink(
-    struct archive* archive,
-    std::filesystem::path path
+    struct archive* _archive,
+    std::filesystem::path _path
 ) :
-    m_archive(archive),
-    m_path(std::move(path))
+    m_archive(_archive),
+    m_path(std::move(_path))
 {
 }
 
@@ -89,10 +89,10 @@ void MemoryArchiveSink::archive()
 
 //-----------------------------------------------------------------------------
 
-std::streamsize MemoryArchiveSink::write(const char* buf, std::streamsize n)
+std::streamsize MemoryArchiveSink::write(const char* _buf, std::streamsize _n)
 {
-    m_buffer.insert(m_buffer.end(), buf, buf + n);
-    return n;
+    m_buffer.insert(m_buffer.end(), _buf, _buf + _n);
+    return _n;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,13 +104,13 @@ int MemoryWriteArchive::open(struct archive* /*archive*/, void* /*client_data*/)
 
 //-----------------------------------------------------------------------------
 
-ssize_t MemoryWriteArchive::write(struct archive* /*a*/, void* client_data, const void* buff, std::size_t size)
+ssize_t MemoryWriteArchive::write(struct archive* /*a*/, void* _client_data, const void* _buff, std::size_t _size)
 {
-    auto* bytes              = reinterpret_cast<std::vector<char>*>(client_data);
-    const char* bytesToWrite = reinterpret_cast<const char*>(buff);
+    auto* bytes                = reinterpret_cast<std::vector<char>*>(_client_data);
+    const char* bytes_to_write = reinterpret_cast<const char*>(_buff);
 
-    bytes->insert(bytes->end(), bytesToWrite, bytesToWrite + size);
-    return ssize_t(size);
+    bytes->insert(bytes->end(), bytes_to_write, bytes_to_write + _size);
+    return ssize_t(_size);
 }
 
 //-----------------------------------------------------------------------------
@@ -122,20 +122,20 @@ int MemoryWriteArchive::close(struct archive* /*archive*/, void* /*client_data*/
 
 //-----------------------------------------------------------------------------
 
-MemoryWriteArchive::MemoryWriteArchive(std::vector<char>& buffer) :
+MemoryWriteArchive::MemoryWriteArchive(std::vector<char>& _buffer) :
     m_archive(archive_write_new()),
-    m_buffer(buffer)
+    m_buffer(_buffer)
 {
-    int ret        = 0;
-    void* userData = nullptr;
+    int ret         = 0;
+    void* user_data = nullptr;
 
     archive_write_add_filter_none(m_archive);
     archive_write_set_format_ustar(m_archive);
     archive_write_set_bytes_in_last_block(m_archive, 1);
-    userData = reinterpret_cast<void*>(&m_buffer);
-    ret      = archive_write_open(
+    user_data = reinterpret_cast<void*>(&m_buffer);
+    ret       = archive_write_open(
         m_archive,
-        userData,
+        user_data,
         &MemoryWriteArchive::open,
         &MemoryWriteArchive::write,
         &MemoryWriteArchive::close
@@ -176,11 +176,11 @@ bool MemoryWriteArchive::createDir(const std::filesystem::path& /*path*/)
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) MemoryWriteArchive::createFile(const std::filesystem::path& path)
+SPTR(std::ostream) MemoryWriteArchive::createFile(const std::filesystem::path& _path)
 {
     SPTR(boost::iostreams::stream<MemoryArchiveSink>) os;
 
-    os = std::make_shared<boost::iostreams::stream<MemoryArchiveSink> >(m_archive, path);
+    os = std::make_shared<boost::iostreams::stream<MemoryArchiveSink> >(m_archive, _path);
     m_sinks.push_back(os);
     return os;
 }
@@ -188,22 +188,22 @@ SPTR(std::ostream) MemoryWriteArchive::createFile(const std::filesystem::path& p
 //-----------------------------------------------------------------------------
 
 void MemoryWriteArchive::putFile(
-    const std::filesystem::path& sourceFile,
-    const std::filesystem::path& archiveFile
+    const std::filesystem::path& _source_file,
+    const std::filesystem::path& _archive_file
 )
 {
     SPTR(std::ostream)  os;
-    std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
+    std::ifstream is(_source_file.string().c_str(), std::ios::binary);
 
     if(is.is_open())
     {
-        os = this->createFile(archiveFile);
+        os = this->createFile(_archive_file);
         *os << is.rdbuf();
         is.close();
     }
     else
     {
-        throw io::zip::exception::Write("Cannot open file : " + sourceFile.string());
+        throw io::zip::exception::Write("Cannot open file : " + _source_file.string());
     }
 }
 

@@ -38,9 +38,9 @@ public:
 
     SIGHT_DECLARE_CLASS(widget, ui::object);
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     UI_API widget();
@@ -56,14 +56,14 @@ public:
     /**
      * @brief Configure the layout before creation. Does nothing.
      */
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre layout must be initialized before.
      * @pre parent container must be instanced.
      */
-    UI_API virtual void createContainer(ui::container::widget::sptr parent) = 0;
+    UI_API virtual void createContainer(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -72,7 +72,7 @@ public:
     UI_API virtual void destroyContainer() = 0;
 
     /// Replace parent container
-    UI_API virtual void setParent(ui::container::widget::sptr parent) = 0;
+    UI_API virtual void setParent(ui::container::widget::sptr _parent) = 0;
 
 protected:
 

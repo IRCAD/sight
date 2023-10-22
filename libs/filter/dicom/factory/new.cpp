@@ -29,9 +29,9 @@ namespace sight::filter::dicom::factory
 
 //------------------------------------------------------------------------------
 
-sight::filter::dicom::filter::sptr make(const sight::filter::dicom::registry::key_t& classname)
+sight::filter::dicom::filter::sptr make(const sight::filter::dicom::registry::key_t& _classname)
 {
-    return sight::filter::dicom::registry::get()->create(classname);
+    return sight::filter::dicom::registry::get()->create(_classname);
 }
 
 } // namespace sight::filter::dicom::factory

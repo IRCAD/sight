@@ -30,8 +30,8 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/helper/ManualObject.hpp>
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -100,40 +100,40 @@ void frustum::starting()
     this->setOgreCamFromData();
 
     // Add camera to ogre scene
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    transNode->attachObject(m_ogreCamera);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    trans_node->attachObject(m_ogreCamera);
 
     // Set position
-    transNode->setPosition(Ogre::Vector3(0, 0, 0));
-    transNode->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
+    trans_node->setPosition(Ogre::Vector3(0, 0, 0));
+    trans_node->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
 
     // Create material for the frustum
     m_material = std::make_shared<data::material>();
     m_material->diffuse()->setRGBA(m_color);
 
-    module::viz::scene3d::adaptor::material::sptr materialAdaptor =
+    module::viz::scene3d::adaptor::material::sptr material_adaptor =
         this->registerService<module::viz::scene3d::adaptor::material>(
             "sight::module::viz::scene3d::adaptor::material"
         );
-    materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    materialAdaptor->configure(
-        this->get_id() + materialAdaptor->get_id(),
-        this->get_id() + materialAdaptor->get_id(),
+    material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
+    material_adaptor->configure(
+        this->get_id() + material_adaptor->get_id(),
+        this->get_id() + material_adaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"
     );
-    materialAdaptor->start();
-    materialAdaptor->update();
+    material_adaptor->start();
+    material_adaptor->update();
 
     m_frustum = this->getSceneManager()->createManualObject(this->get_id() + "_frustum");
-    sight::viz::scene3d::helper::ManualObject::createFrustum(
+    sight::viz::scene3d::helper::manual_object::createFrustum(
         m_frustum,
-        materialAdaptor->getMaterialName(),
+        material_adaptor->getMaterialName(),
         *m_ogreCamera
     );
-    transNode->attachObject(m_frustum);
+    trans_node->attachObject(m_frustum);
 
     this->requestRender();
 }
@@ -197,9 +197,9 @@ void frustum::setOgreCamFromData()
 
 //-----------------------------------------------------------------------------
 
-void frustum::setVisible(bool _isVisible)
+void frustum::setVisible(bool _is_visible)
 {
-    m_frustum->setVisible(_isVisible);
+    m_frustum->setVisible(_is_visible);
     this->requestRender();
 }
 

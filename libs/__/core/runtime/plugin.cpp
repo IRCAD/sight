@@ -34,9 +34,9 @@ std::shared_ptr<module> plugin::get_module() const noexcept
 
 //------------------------------------------------------------------------------
 
-void plugin::set_module(std::shared_ptr<module> module) noexcept
+void plugin::set_module(std::shared_ptr<module> _module) noexcept
 {
-    m_module = module;
+    m_module = _module;
 }
 
 //------------------------------------------------------------------------------

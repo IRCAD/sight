@@ -105,17 +105,17 @@ struct log_producer_thread
 
     //------------------------------------------------------------------------------
 
-    static void run(log_container_type& logs, std::size_t nb_logs, std::size_t offset)
+    static void run(log_container_type& _logs, std::size_t _nb_logs, std::size_t _offset)
     {
-        for(std::size_t i = offset ; i < nb_logs + offset ; ++i)
+        for(std::size_t i = _offset ; i < _nb_logs + _offset ; ++i)
         {
             std::stringstream ss;
             ss << "msg n ";
             ss.width(10);
             ss.fill('0');
             ss << i;
-            logs[i] = ss.str();
-            core::log::spy_logger::fatal(logs[i], __FILE__, __LINE__);
+            _logs[i] = ss.str();
+            core::log::spy_logger::fatal(_logs[i], __FILE__, __LINE__);
         }
     }
 };
@@ -126,15 +126,15 @@ struct regex_log_compare
 {
     //------------------------------------------------------------------------------
 
-    bool operator()(std::string a, std::string b)
+    bool operator()(std::string _a, std::string _b)
     {
         std::regex re(".*(msg n [\\d]+)$");
         std::smatch match_a;
         std::smatch match_b;
-        bool do_match_a = std::regex_match(a, match_a, re);
-        bool do_match_b = std::regex_match(b, match_b, re);
-        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + a, do_match_a);
-        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + b, do_match_b);
+        bool do_match_a = std::regex_match(_a, match_a, re);
+        bool do_match_b = std::regex_match(_b, match_b, re);
+        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + _a, do_match_a);
+        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + _b, do_match_b);
 
         std::string str_a(match_a[1].first, match_a[1].second);
         std::string str_b(match_b[1].first, match_b[1].second);
@@ -147,15 +147,15 @@ struct regex_log_compare
 
 void spy_log_test::thread_safety_test()
 {
-    const std::size_t NB_THREAD(20);
-    const std::size_t NB_LOG(20);
-    log_producer_thread::log_container_type logs(NB_THREAD * NB_LOG, "test");
+    const std::size_t nb_thread(20);
+    const std::size_t nb_log(20);
+    log_producer_thread::log_container_type logs(nb_thread * nb_log, "test");
     std::vector<std::thread> tg;
-    for(std::size_t i = 0 ; i < NB_THREAD ; ++i)
+    for(std::size_t i = 0 ; i < nb_thread ; ++i)
     {
         log_producer_thread::sptr ct = std::make_shared<log_producer_thread>();
-        std::size_t offset           = i * NB_LOG;
-        tg.emplace_back([&, offset](auto&& ...){return log_producer_thread::run(logs, NB_LOG, offset);});
+        std::size_t offset           = i * nb_log;
+        tg.emplace_back([&, offset](auto&& ...){return log_producer_thread::run(logs, nb_log, offset);});
     }
 
     for(auto& t : tg)
@@ -171,12 +171,12 @@ void spy_log_test::thread_safety_test()
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> spy_log_test::log_to_vector(const std::stringstream& logs_stream)
+std::vector<std::string> spy_log_test::log_to_vector(const std::stringstream& _logs_stream)
 {
     std::vector<std::string> lines;
     std::string line;
     std::istringstream input;
-    input.str(logs_stream.str());
+    input.str(_logs_stream.str());
     while(std::getline(input, line))
     {
         lines.push_back(line);
@@ -188,11 +188,11 @@ std::vector<std::string> spy_log_test::log_to_vector(const std::stringstream& lo
 //-----------------------------------------------------------------------------
 
 void spy_log_test::check_log(
-    const std::vector<std::string>& log_messages_ref,
-    const std::vector<std::string>& log_messages
+    const std::vector<std::string>& _log_messages_ref,
+    const std::vector<std::string>& _log_messages
 )
 {
-    CPPUNIT_ASSERT_EQUAL(log_messages_ref.size(), log_messages.size());
+    CPPUNIT_ASSERT_EQUAL(_log_messages_ref.size(), _log_messages.size());
 
     const std::string line_pattern("(\\[[0-9]+\\])");
     const std::string time_pattern("(\\[.+\\])");
@@ -208,13 +208,13 @@ void spy_log_test::check_log(
     std::string regex_message;
     std::size_t i = 0;
 
-    for(const std::string& log : log_messages)
+    for(const std::string& log : _log_messages)
     {
         const bool do_match = std::regex_match(log, match, re);
         CPPUNIT_ASSERT_MESSAGE(log + " doesn't match regex.", do_match);
 
         regex_message.assign(match[6].first, match[6].second);
-        CPPUNIT_ASSERT_EQUAL(log_messages_ref[i], regex_message);
+        CPPUNIT_ASSERT_EQUAL(_log_messages_ref[i], regex_message);
         ++i;
     }
 }

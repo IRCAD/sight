@@ -33,43 +33,43 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-void cursor::setCursor(ui::cursor_base::state_t cursor, bool setOverridenAsDefault)
+void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
 {
-    QCursor qtCursor(Qt::ArrowCursor);
-    switch(cursor)
+    QCursor qt_cursor(Qt::ArrowCursor);
+    switch(_cursor)
     {
         case cursor_base::BUSY:
-            qtCursor.setShape(Qt::BusyCursor);
+            qt_cursor.setShape(Qt::BusyCursor);
             break;
 
         case cursor_base::WAIT:
-            qtCursor.setShape(Qt::WaitCursor);
+            qt_cursor.setShape(Qt::WaitCursor);
             break;
 
         case cursor_base::CROSS:
-            qtCursor.setShape(Qt::CrossCursor);
+            qt_cursor.setShape(Qt::CrossCursor);
             break;
 
         case cursor_base::OPEN_HAND:
-            qtCursor.setShape(Qt::OpenHandCursor);
+            qt_cursor.setShape(Qt::OpenHandCursor);
             break;
 
         case cursor_base::CLOSED_HAND:
-            qtCursor.setShape(Qt::ClosedHandCursor);
+            qt_cursor.setShape(Qt::ClosedHandCursor);
             break;
 
         case cursor_base::DEFAULT:
-            qtCursor.setShape(Qt::BusyCursor);
+            qt_cursor.setShape(Qt::BusyCursor);
             break;
     }
 
-    if(setOverridenAsDefault)
+    if(_set_overriden_as_default)
     {
-        qApp->setOverrideCursor(qtCursor);
+        qApp->setOverrideCursor(qt_cursor);
     }
     else
     {
-        qApp->changeOverrideCursor(qtCursor);
+        qApp->changeOverrideCursor(qt_cursor);
     }
 }
 

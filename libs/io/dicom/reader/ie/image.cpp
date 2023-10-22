@@ -28,7 +28,7 @@
 
 #include <data/dicom/image.hpp>
 #include <data/dicom_series.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <geometry/data/vector_functions.hpp>
@@ -54,16 +54,16 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 image::image(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::image::sptr& image,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::image::sptr& _image,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::image>(dicomSeries, reader, instance, image,
-                                                          logger, progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::image>(_dicom_series, _reader, _instance, _image,
+                                                          _logger, _progress, _cancel)
 {
 }
 
@@ -74,11 +74,11 @@ image::~image()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
+double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj)
 {
     gdcm::ImageReader reader;
-    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-    SPTR(std::istream) is = streamInfo.stream;
+    const core::memory::buffer_manager::stream_info stream_info = _buffer_obj->get_stream_info();
+    SPTR(std::istream) is = stream_info.stream;
     reader.SetStream(*is);
 
     if(!reader.Read())
@@ -97,28 +97,28 @@ double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
     }
 
     // Retrieve image position
-    const gdcm::Image& gdcmImage = reader.GetImage();
-    const double* gdcmOrigin     = gdcmImage.GetOrigin();
-    const fwVec3d imagePosition  = {gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]};
+    const gdcm::Image& gdcm_image = reader.GetImage();
+    const double* gdcm_origin     = gdcm_image.GetOrigin();
+    const fwVec3d image_position  = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
 
     // Retrieve image orientation
-    const double* directionCosines  = gdcmImage.GetDirectionCosines();
-    const fwVec3d imageOrientationU = {
-        std::round(directionCosines[0]),
-        std::round(directionCosines[1]),
-        std::round(directionCosines[2])
+    const double* direction_cosines   = gdcm_image.GetDirectionCosines();
+    const fwVec3d image_orientation_u = {
+        std::round(direction_cosines[0]),
+        std::round(direction_cosines[1]),
+        std::round(direction_cosines[2])
     };
-    const fwVec3d imageOrientationV = {
-        std::round(directionCosines[3]),
-        std::round(directionCosines[4]),
-        std::round(directionCosines[5])
+    const fwVec3d image_orientation_v = {
+        std::round(direction_cosines[3]),
+        std::round(direction_cosines[4]),
+        std::round(direction_cosines[5])
     };
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
-    const double index = geometry::data::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(image_position, z_vector);
 
     return index;
 }
@@ -128,70 +128,70 @@ double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
 void image::readImagePlaneModule()
 {
     // Retrieve GDCM image
-    SPTR(gdcm::ImageReader) imageReader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
-    const gdcm::Image& gdcmImage = imageReader->GetImage();
+    SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
+    const gdcm::Image& gdcm_image = image_reader->GetImage();
 
     // image Position (Patient) - Type 1
-    const double* gdcmOrigin   = gdcmImage.GetOrigin();
+    const double* gdcm_origin  = gdcm_image.GetOrigin();
     data::image::Origin origin = {0., 0., 0.
     };
-    if(gdcmOrigin != nullptr)
+    if(gdcm_origin != nullptr)
     {
-        std::copy(gdcmOrigin, gdcmOrigin + 3, origin.begin());
+        std::copy(gdcm_origin, gdcm_origin + 3, origin.begin());
     }
 
     m_object->setOrigin(origin);
 
     // Pixel Spacing - Type 1
     // image dimension
-    const unsigned int dimension = gdcmImage.GetNumberOfDimensions();
+    const unsigned int dimension = gdcm_image.GetNumberOfDimensions();
 
     // image's spacing
-    const double* gdcmSpacing    = gdcmImage.GetSpacing();
+    const double* gdcm_spacing   = gdcm_image.GetSpacing();
     data::image::Spacing spacing = {1., 1., 1.
     };
-    if(gdcmSpacing != nullptr)
+    if(gdcm_spacing != nullptr)
     {
-        std::copy(gdcmSpacing, gdcmSpacing + dimension, spacing.begin());
+        std::copy(gdcm_spacing, gdcm_spacing + dimension, spacing.begin());
     }
 
     // Computing Z image spacing from two adjacent slices is preferable than reading Slice Thickness tag
     // See http://gdcm.sourceforge.net/wiki/index.php/Imager_Pixel_Spacing, Spacing along Z (third dimension)
-    const data::dicom_series::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
-    if(dicomContainer.size() > 1)
+    const data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
+    if(dicom_container.size() > 1)
     {
-        auto firstItem       = dicomContainer.begin();
-        const auto& lastItem = dicomContainer.rbegin();
+        auto first_item       = dicom_container.begin();
+        const auto& last_item = dicom_container.rbegin();
 
         // Compute the spacing between slices of the 2 first slices.
-        const double firstIndex  = getInstanceZPosition(firstItem->second);
-        const double secondIndex = getInstanceZPosition((++firstItem)->second);
-        const double lastIndex   = getInstanceZPosition(lastItem->second);
-        spacing[2] = std::abs(secondIndex - firstIndex);
+        const double first_index  = get_instance_z_position(first_item->second);
+        const double second_index = get_instance_z_position((++first_item)->second);
+        const double last_index   = get_instance_z_position(last_item->second);
+        spacing[2] = std::abs(second_index - first_index);
 
         // Check that the same spacing is used for all the instances
-        const double epsilon       = 1e-2;
-        const double totalZSpacing = std::abs(lastIndex - firstIndex);
-        const double errorGap      = std::abs(spacing[2] * static_cast<double>(dicomContainer.size() - 1))
-                                     - totalZSpacing;
-        if(errorGap > epsilon)
+        const double epsilon         = 1e-2;
+        const double total_z_spacing = std::abs(last_index - first_index);
+        const double error_gap       = std::abs(spacing[2] * static_cast<double>(dicom_container.size() - 1))
+                                       - total_z_spacing;
+        if(error_gap > epsilon)
         {
             std::stringstream ss;
-            ss << "Computed spacing between slices may not be correct. (Error gap : " << errorGap << ")";
+            ss << "Computed spacing between slices may not be correct. (Error gap : " << error_gap << ")";
             m_logger->warning(ss.str());
         }
     }
     else
     {
         // Retrieve dataset
-        const gdcm::DataSet& dataset = imageReader->GetFile().GetDataSet();
+        const gdcm::DataSet& dataset = image_reader->GetFile().GetDataSet();
 
         // Check tags availability
         if(dataset.FindDataElement(gdcm::Tag(0x0018, 0x0050)))
         {
-            const std::string& sliceThickness =
+            const std::string& slice_thickness =
                 io::dicom::helper::DicomDataReader::getTagValue<0x0018, 0x0050>(dataset);
-            spacing[2] = std::stod(sliceThickness);
+            spacing[2] = std::stod(slice_thickness);
         }
     }
 
@@ -206,45 +206,45 @@ void image::readVOILUTModule()
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     //image's window center (double)
-    std::string windowCenter = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1050>(dataset);
-    std::vector<std::string> splitedWindowCenters;
-    if(!windowCenter.empty())
+    std::string window_center = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1050>(dataset);
+    std::vector<std::string> split_window_centers;
+    if(!window_center.empty())
     {
-        boost::split(splitedWindowCenters, windowCenter, boost::is_any_of("\\"));
-        std::vector<double> windowCenters;
+        boost::split(split_window_centers, window_center, boost::is_any_of("\\"));
+        std::vector<double> window_centers;
         std::ranges::transform(
-            splitedWindowCenters,
-            std::back_inserter(windowCenters),
-            [](const auto& e){return std::stod(e);});
+            split_window_centers,
+            std::back_inserter(window_centers),
+            [](const auto& _e){return std::stod(_e);});
 
-        m_object->setWindowCenter(windowCenters);
+        m_object->setWindowCenter(window_centers);
     }
 
     //image's window width (double)
-    std::string windowWidth = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
-    std::vector<std::string> splitedWindowWidths;
-    if(!windowWidth.empty())
+    std::string window_width = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
+    std::vector<std::string> split_window_widths;
+    if(!window_width.empty())
     {
-        boost::split(splitedWindowWidths, windowWidth, boost::is_any_of("\\"));
-        std::vector<double> windowWidths;
+        boost::split(split_window_widths, window_width, boost::is_any_of("\\"));
+        std::vector<double> window_widths;
         std::ranges::transform(
-            splitedWindowWidths,
-            std::back_inserter(windowWidths),
-            [](const auto& e){return std::stod(e);});
+            split_window_widths,
+            std::back_inserter(window_widths),
+            [](const auto& _e){return std::stod(_e);});
 
-        m_object->setWindowWidth(windowWidths);
+        m_object->setWindowWidth(window_widths);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> getRescaleInterceptSlopeValue(gdcm::ImageReader* imageReader)
+std::vector<double> get_rescale_intercept_slope_value(gdcm::ImageReader* _image_reader)
 {
     // Retrieve dataset
-    const gdcm::DataSet& dataset = imageReader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = _image_reader->GetFile().GetDataSet();
 
     // Retrieve rescale values
-    std::vector<double> rescale = gdcm::ImageHelper::GetRescaleInterceptSlopeValue(imageReader->GetFile());
+    std::vector<double> rescale = gdcm::ImageHelper::GetRescaleInterceptSlopeValue(_image_reader->GetFile());
 
     // Correct Rescale Intercept and Rescale Slope as GDCM may fail to retrieve them.
     if(dataset.FindDataElement(gdcm::Tag(0x0028, 0x1052)) && dataset.FindDataElement(gdcm::Tag(0x0028, 0x1053)))
@@ -261,94 +261,95 @@ std::vector<double> getRescaleInterceptSlopeValue(gdcm::ImageReader* imageReader
 void image::readImagePixelModule()
 {
     // Retrieve GDCM image
-    SPTR(gdcm::ImageReader) imageReader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
-    const gdcm::Image& gdcmImage = imageReader->GetImage();
+    SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
+    const gdcm::Image& gdcm_image = image_reader->GetImage();
 
     // Retrieve dataset
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Retrieve image information before processing the rescaling
-    gdcm::PixelFormat pixelFormat = gdcm::ImageHelper::GetPixelFormatValue(imageReader->GetFile());
+    gdcm::PixelFormat pixel_format = gdcm::ImageHelper::GetPixelFormatValue(image_reader->GetFile());
 
     // Retrieve rescale intercept/slope values
-    std::vector<double> rescale = getRescaleInterceptSlopeValue(imageReader.get());
-    double rescaleIntercept     = rescale[0];
-    double rescaleSlope         = rescale[1];
+    std::vector<double> rescale = get_rescale_intercept_slope_value(image_reader.get());
+    double rescale_intercept    = rescale[0];
+    double rescale_slope        = rescale[1];
 
-    const std::uint16_t samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
-    const std::uint16_t bitsAllocated       = pixelFormat.GetBitsAllocated();
-    const std::uint16_t bitsStored          = pixelFormat.GetBitsStored();
-    const std::uint16_t highBit             = pixelFormat.GetHighBit();
-    const std::uint16_t pixelRepresentation = pixelFormat.GetPixelRepresentation();
+    const std::uint16_t samples_per_pixel    = pixel_format.GetSamplesPerPixel();
+    const std::uint16_t bits_allocated       = pixel_format.GetBitsAllocated();
+    const std::uint16_t bits_stored          = pixel_format.GetBitsStored();
+    const std::uint16_t high_bit             = pixel_format.GetHighBit();
+    const std::uint16_t pixel_representation = pixel_format.GetPixelRepresentation();
 
     // Compute final image type
-    data::dicom::image imageHelper(
-        samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    core::type imageType                = imageHelper.findImageTypeFromMinMaxValues();
-    gdcm::PixelFormat targetPixelFormat = io::dicom::helper::DicomDataTools::getPixelType(imageType);
+    data::dicom::image image_helper(
+        samples_per_pixel, bits_allocated, bits_stored, high_bit, pixel_representation, rescale_slope,
+        rescale_intercept);
+    core::type image_type                 = image_helper.findImageTypeFromMinMaxValues();
+    gdcm::PixelFormat target_pixel_format = io::dicom::helper::DicomDataTools::get_pixel_type(image_type);
 
-    if(targetPixelFormat == gdcm::PixelFormat::UNKNOWN)
+    if(target_pixel_format == gdcm::PixelFormat::UNKNOWN)
     {
         throw io::dicom::exception::Failed("Unsupported image pixel format.");
     }
 
     // Compute number of components
-    const std::string photometricInterpretation =
+    const std::string photometric_interpretation =
         io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x0004>(dataset);
-    const std::string pixelPresentation =
+    const std::string pixel_presentation =
         io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x9205>(dataset);
 
     // Retrieve image dimensions
-    std::vector<unsigned int> dimensions = gdcm::ImageHelper::GetDimensionsValue(imageReader->GetFile());
+    std::vector<unsigned int> dimensions = gdcm::ImageHelper::GetDimensionsValue(image_reader->GetFile());
 
     // Compute real image size (we assume every instance has the same number of
     // slices (1 for CT and MR, may be more for enhanced CT and MR)
-    const std::uint64_t frameBufferSize = gdcmImage.GetBufferLength();
-    const std::uint64_t depth           = frameBufferSize
-                                          / (std::uint64_t(dimensions[0]) * dimensions[1] * (bitsAllocated / 8));
+    const std::uint64_t frame_buffer_size = gdcm_image.GetBufferLength();
+    const std::uint64_t depth             = frame_buffer_size
+                                            / (std::uint64_t(dimensions[0]) * dimensions[1] * (bits_allocated / 8));
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
 
-    const std::uint64_t imageBufferSize =
-        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (bitsAllocated / 8);
-    const std::uint64_t newImageBufferSize =
-        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (targetPixelFormat.GetBitsAllocated() / 8);
+    const std::uint64_t image_buffer_size =
+        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (bits_allocated / 8);
+    const std::uint64_t new_image_buffer_size =
+        std::uint64_t(dimensions[0]) * dimensions[1] * dimensions[2] * (target_pixel_format.GetBitsAllocated() / 8);
 
     // Let's read the image buffer
-    bool performRescale = (photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR");
-    char* imageBuffer   = this->readImageBuffer(
+    bool perform_rescale = (photometric_interpretation != "PALETTE COLOR" && pixel_presentation != "COLOR");
+    char* image_buffer   = this->readImageBuffer(
         dimensions,
-        imageType,
-        bitsAllocated,
-        targetPixelFormat.GetBitsAllocated(),
-        performRescale
+        image_type,
+        bits_allocated,
+        target_pixel_format.GetBitsAllocated(),
+        perform_rescale
     );
 
     // Correct image buffer according to the image orientation
     if(!(m_cancelRequestedCallback && m_cancelRequestedCallback()) && m_enableBufferRotation)
     {
-        imageBuffer = this->correctImageOrientation(
-            imageBuffer,
+        image_buffer = this->correctImageOrientation(
+            image_buffer,
             dimensions,
-            (performRescale) ? targetPixelFormat.GetBitsAllocated() : bitsAllocated
+            (perform_rescale) ? target_pixel_format.GetBitsAllocated() : bits_allocated
         );
     }
 
     // Apply lookup table if required
     if(!(m_cancelRequestedCallback && m_cancelRequestedCallback())
-       && (photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR"))
+       && (photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR"))
     {
         try
         {
             // Create new buffer
-            char* coloredBuffer = nullptr;
-            coloredBuffer = new char [newImageBufferSize * 3];
+            char* colored_buffer = nullptr;
+            colored_buffer = new char [new_image_buffer_size * 3];
 
             // Apply lookup
-            gdcmImage.GetLUT().Decode(coloredBuffer, newImageBufferSize * 3, imageBuffer, imageBufferSize);
+            gdcm_image.GetLUT().Decode(colored_buffer, new_image_buffer_size * 3, image_buffer, image_buffer_size);
 
             // Swap buffers
-            delete[] imageBuffer;
-            imageBuffer = coloredBuffer;
+            delete[] image_buffer;
+            image_buffer = colored_buffer;
         }
         catch(...)
         {
@@ -358,72 +359,72 @@ void image::readImagePixelModule()
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
     sight::data::image::PixelFormat format {sight::data::image::PixelFormat::UNDEFINED};
-    if(photometricInterpretation == "MONOCHROME2")
+    if(photometric_interpretation == "MONOCHROME2")
     {
         format = data::image::PixelFormat::GRAY_SCALE;
     }
-    else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR"
-            || photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
+    else if(photometric_interpretation == "RGB" || photometric_interpretation == "YBR"
+            || photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR")
     {
         format = data::image::PixelFormat::RGB;
     }
-    else if(photometricInterpretation == "ARGB" || photometricInterpretation == "CMYK")
+    else if(photometric_interpretation == "ARGB" || photometric_interpretation == "CMYK")
     {
         format = data::image::PixelFormat::RGBA;
     }
     else
     {
-        const std::string msg = "The photometric interpretation \"" + photometricInterpretation
+        const std::string msg = "The photometric interpretation \"" + photometric_interpretation
                                 + "\" is not supported.";
         throw io::dicom::exception::Failed(msg);
     }
 
     // Last, set image buffer
     m_object->setBuffer(
-        imageBuffer,
+        image_buffer,
         true,
-        imageType,
+        image_type,
         {dimensions[0], dimensions[1], dimensions[2]},
         format,
         std::make_shared<core::memory::buffer_new_policy>()
     );
 
-    if(sight::data::helper::MedicalImage::checkImageValidity(m_object))
+    if(sight::data::helper::medical_image::check_image_validity(m_object))
     {
-        sight::data::helper::MedicalImage::checkImageSliceIndex(m_object);
+        sight::data::helper::medical_image::check_image_slice_index(m_object);
     }
 }
 
 //------------------------------------------------------------------------------
 
 char* image::readImageBuffer(
-    const std::vector<unsigned int>& dimensions,
-    const core::type imageType,
-    const std::uint16_t bitsAllocated,
-    const std::uint16_t newBitsAllocated,
-    const bool performRescale
+    const std::vector<unsigned int>& _dimensions,
+    const core::type _image_type,
+    const std::uint16_t _bits_allocated,
+    const std::uint16_t _new_bits_allocated,
+    const bool _perform_rescale
 )
 {
     // Retrieve GDCM image
-    SPTR(gdcm::ImageReader) imageReader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
-    const gdcm::Image& gdcmFirstImage = imageReader->GetImage();
+    SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
+    const gdcm::Image& gdcm_first_image = image_reader->GetImage();
 
     // Path container
-    data::dicom_series::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
 
     // Raw buffer for all frames
-    char* frameBuffer                      = nullptr;
-    char* imageBuffer                      = nullptr;
-    const std::uint64_t frameBufferSize    = gdcmFirstImage.GetBufferLength();
-    const std::uint64_t newFrameBufferSize = frameBufferSize * (newBitsAllocated / bitsAllocated);
-    const std::uint64_t imageBufferSize    = std::uint64_t(dimensions.at(0)) * dimensions.at(1) * dimensions.at(2)
-                                             * ((performRescale ? newBitsAllocated : bitsAllocated) / 8);
+    char* frame_buffer                        = nullptr;
+    char* image_buffer                        = nullptr;
+    const std::uint64_t frame_buffer_size     = gdcm_first_image.GetBufferLength();
+    const std::uint64_t new_frame_buffer_size = frame_buffer_size * (_new_bits_allocated / _bits_allocated);
+    const std::uint64_t image_buffer_size     = std::uint64_t(_dimensions.at(0)) * _dimensions.at(1) * _dimensions.at(2)
+                                                * ((_perform_rescale ? _new_bits_allocated : _bits_allocated) / 8);
 
     // Allocate raw buffer
     try
     {
-        frameBuffer = new char [frameBufferSize];
-        imageBuffer = new char [imageBufferSize];
+        frame_buffer = new char [frame_buffer_size];
+        image_buffer = new char [image_buffer_size];
     }
     catch(...)
     {
@@ -431,29 +432,29 @@ char* image::readImageBuffer(
     }
 
     // Read every frames
-    unsigned int frameNumber = 0;
-    for(const auto& item : dicomContainer)
+    unsigned int frame_number = 0;
+    for(const auto& item : dicom_container)
     {
         // Read a frame
-        gdcm::ImageReader frameReader;
-        const core::memory::buffer_object::sptr bufferObj          = item.second;
-        const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-        const std::string dicomPath                                = bufferObj->get_stream_info().fs_file.string();
-        SPTR(std::istream) is = streamInfo.stream;
-        frameReader.SetStream(*is);
+        gdcm::ImageReader frame_reader;
+        const core::memory::buffer_object::sptr buffer_obj          = item.second;
+        const core::memory::buffer_manager::stream_info stream_info = buffer_obj->get_stream_info();
+        const std::string dicom_path                                = buffer_obj->get_stream_info().fs_file.string();
+        SPTR(std::istream) is = stream_info.stream;
+        frame_reader.SetStream(*is);
 
-        if(frameReader.Read())
+        if(frame_reader.Read())
         {
-            const gdcm::Image& gdcmImage = frameReader.GetImage();
+            const gdcm::Image& gdcm_image = frame_reader.GetImage();
 
             // Check frame buffer size
-            if(frameBufferSize != gdcmImage.GetBufferLength())
+            if(frame_buffer_size != gdcm_image.GetBufferLength())
             {
-                throw io::dicom::exception::Failed("The frame buffer does not have the expected size : " + dicomPath);
+                throw io::dicom::exception::Failed("The frame buffer does not have the expected size : " + dicom_path);
             }
 
             // Get raw buffer and set it in the image buffer
-            if(!gdcmImage.GetBuffer(frameBuffer))
+            if(!gdcm_image.GetBuffer(frame_buffer))
             {
                 throw io::dicom::exception::Failed("Failed to get a frame buffer");
             }
@@ -461,54 +462,53 @@ char* image::readImageBuffer(
         else
         {
             std::stringstream ss;
-            ss << "Reading error on frame : " << frameNumber;
+            ss << "Reading error on frame : " << frame_number;
             throw io::dicom::exception::Failed(ss.str());
         }
 
         // Rescale
-        if(performRescale)
+        if(_perform_rescale)
         {
             // Retrieve rescale intercept/slope values
-            std::vector<double> rescale = getRescaleInterceptSlopeValue(&frameReader);
-            double rescaleIntercept     = rescale[0];
-            double rescaleSlope         = rescale[1];
+            std::vector<double> rescale = get_rescale_intercept_slope_value(&frame_reader);
+            double rescale_intercept    = rescale[0];
+            double rescale_slope        = rescale[1];
 
             // Retrieve image information before processing the rescaling
-            gdcm::PixelFormat pixelFormat =
-                gdcm::ImageHelper::GetPixelFormatValue(frameReader.GetFile());
-            gdcm::PixelFormat::ScalarType scalarType = pixelFormat.GetScalarType();
-            gdcm::PixelFormat targetPixelFormat      = io::dicom::helper::DicomDataTools::getPixelType(imageType);
+            gdcm::PixelFormat pixel_format            = gdcm::ImageHelper::GetPixelFormatValue(frame_reader.GetFile());
+            gdcm::PixelFormat::ScalarType scalar_type = pixel_format.GetScalarType();
+            gdcm::PixelFormat target_pixel_format     = io::dicom::helper::DicomDataTools::get_pixel_type(_image_type);
 
-            if(targetPixelFormat == gdcm::PixelFormat::UNKNOWN)
+            if(target_pixel_format == gdcm::PixelFormat::UNKNOWN)
             {
                 throw io::dicom::exception::Failed("Unsupported image pixel format.");
             }
 
             // Create rescaler
             gdcm::Rescaler rescaler;
-            rescaler.SetIntercept(rescaleIntercept);
-            rescaler.SetSlope(rescaleSlope);
-            rescaler.SetPixelFormat(scalarType);
-            rescaler.SetTargetPixelType(targetPixelFormat.GetScalarType());
+            rescaler.SetIntercept(rescale_intercept);
+            rescaler.SetSlope(rescale_slope);
+            rescaler.SetPixelFormat(scalar_type);
+            rescaler.SetTargetPixelType(target_pixel_format.GetScalarType());
             rescaler.SetUseTargetPixelType(true);
 
             // Rescale the image
-            rescaler.Rescale(imageBuffer + (frameNumber * newFrameBufferSize), frameBuffer, frameBufferSize);
+            rescaler.Rescale(image_buffer + (frame_number * new_frame_buffer_size), frame_buffer, frame_buffer_size);
         }
         else
         {
             // Copy bytes
-            memcpy(imageBuffer + frameNumber * frameBufferSize, frameBuffer, frameBufferSize);
+            memcpy(image_buffer + frame_number * frame_buffer_size, frame_buffer, frame_buffer_size);
         }
 
         // Reference SOP Instance UID in dicomInstance for SR reading
-        const gdcm::DataSet& gdcmDatasetRoot = frameReader.GetFile().GetDataSet();
-        const std::string sopInstanceUID     = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(
-            gdcmDatasetRoot
+        const gdcm::DataSet& gdcm_dataset_root = frame_reader.GetFile().GetDataSet();
+        const std::string sop_instance_uid     = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(
+            gdcm_dataset_root
         );
-        if(!sopInstanceUID.empty())
+        if(!sop_instance_uid.empty())
         {
-            m_instance->getSOPInstanceUIDContainer().push_back(sopInstanceUID);
+            m_instance->getSOPInstanceUIDContainer().push_back(sop_instance_uid);
         }
         else
         {
@@ -516,10 +516,10 @@ char* image::readImageBuffer(
         }
 
         // Next frame
-        ++frameNumber;
+        ++frame_number;
 
         auto progress =
-            static_cast<unsigned int>(18 + (frameNumber * 100 / static_cast<double>(dicomContainer.size())) * 0.6);
+            static_cast<unsigned int>(18 + (frame_number * 100 / static_cast<double>(dicom_container.size())) * 0.6);
         m_progressCallback(progress);
 
         if(m_cancelRequestedCallback && m_cancelRequestedCallback())
@@ -529,54 +529,54 @@ char* image::readImageBuffer(
     }
 
     // Delete frame buffer
-    delete[] frameBuffer;
+    delete[] frame_buffer;
 
-    return imageBuffer;
+    return image_buffer;
 }
 
 //------------------------------------------------------------------------------
 
 char* image::correctImageOrientation(
-    char* buffer,
-    std::vector<unsigned int>& dimensions,
-    std::uint16_t bitsAllocated
+    char* _buffer,
+    std::vector<unsigned int>& _dimensions,
+    std::uint16_t _bits_allocated
 )
 {
-    char* result = buffer;
+    char* result = _buffer;
 
     // Retrieve GDCM image
-    SPTR(gdcm::ImageReader) imageReader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
-    const gdcm::Image& gdcmImage = imageReader->GetImage();
+    SPTR(gdcm::ImageReader) image_reader = std::static_pointer_cast<gdcm::ImageReader>(m_reader);
+    const gdcm::Image& gdcm_image = image_reader->GetImage();
 
     // Retrieve image orientation
-    const double* directionCosines = gdcmImage.GetDirectionCosines();
+    const double* direction_cosines = gdcm_image.GetDirectionCosines();
 
     // Compute U vector
-    glm::dvec3 imageOrientationU = {
-        std::round(directionCosines[0]),
-        std::round(directionCosines[1]),
-        std::round(directionCosines[2])
+    glm::dvec3 image_orientation_u = {
+        std::round(direction_cosines[0]),
+        std::round(direction_cosines[1]),
+        std::round(direction_cosines[2])
     };
 
     // Try to find the closest axe
-    if((std::fabs(imageOrientationU[0]) + std::fabs(imageOrientationU[1]) + std::fabs(imageOrientationU[2])) > 1)
+    if((std::fabs(image_orientation_u[0]) + std::fabs(image_orientation_u[1]) + std::fabs(image_orientation_u[2])) > 1)
     {
-        if(std::fabs(directionCosines[0]) < std::fabs(directionCosines[1])
-           || std::fabs(directionCosines[0]) < std::fabs(directionCosines[2]))
+        if(std::fabs(direction_cosines[0]) < std::fabs(direction_cosines[1])
+           || std::fabs(direction_cosines[0]) < std::fabs(direction_cosines[2]))
         {
-            imageOrientationU[0] = 0.;
+            image_orientation_u[0] = 0.;
         }
 
-        if(std::fabs(directionCosines[1]) < std::fabs(directionCosines[0])
-           || std::fabs(directionCosines[1]) < std::fabs(directionCosines[2]))
+        if(std::fabs(direction_cosines[1]) < std::fabs(direction_cosines[0])
+           || std::fabs(direction_cosines[1]) < std::fabs(direction_cosines[2]))
         {
-            imageOrientationU[1] = 0.;
+            image_orientation_u[1] = 0.;
         }
 
-        if(std::fabs(directionCosines[2]) < std::fabs(directionCosines[0])
-           || std::fabs(directionCosines[2]) < std::fabs(directionCosines[1]))
+        if(std::fabs(direction_cosines[2]) < std::fabs(direction_cosines[0])
+           || std::fabs(direction_cosines[2]) < std::fabs(direction_cosines[1]))
         {
-            imageOrientationU[2] = 0.;
+            image_orientation_u[2] = 0.;
         }
 
         m_logger->warning(
@@ -586,31 +586,31 @@ char* image::correctImageOrientation(
     }
 
     // Compute V vector
-    glm::dvec3 imageOrientationV = {
-        std::round(directionCosines[3]),
-        std::round(directionCosines[4]),
-        std::round(directionCosines[5])
+    glm::dvec3 image_orientation_v = {
+        std::round(direction_cosines[3]),
+        std::round(direction_cosines[4]),
+        std::round(direction_cosines[5])
     };
 
     // Try to find the closest axe
-    if((std::fabs(imageOrientationV[0]) + std::fabs(imageOrientationV[1]) + std::fabs(imageOrientationV[2])) > 1)
+    if((std::fabs(image_orientation_v[0]) + std::fabs(image_orientation_v[1]) + std::fabs(image_orientation_v[2])) > 1)
     {
-        if(std::fabs(directionCosines[3]) < std::fabs(directionCosines[4])
-           || std::fabs(directionCosines[3]) < std::fabs(directionCosines[5]))
+        if(std::fabs(direction_cosines[3]) < std::fabs(direction_cosines[4])
+           || std::fabs(direction_cosines[3]) < std::fabs(direction_cosines[5]))
         {
-            imageOrientationV[0] = 0.;
+            image_orientation_v[0] = 0.;
         }
 
-        if(std::fabs(directionCosines[4]) < std::fabs(directionCosines[3])
-           || std::fabs(directionCosines[4]) < std::fabs(directionCosines[5]))
+        if(std::fabs(direction_cosines[4]) < std::fabs(direction_cosines[3])
+           || std::fabs(direction_cosines[4]) < std::fabs(direction_cosines[5]))
         {
-            imageOrientationV[1] = 0.;
+            image_orientation_v[1] = 0.;
         }
 
-        if(std::fabs(directionCosines[5]) < std::fabs(directionCosines[3])
-           || std::fabs(directionCosines[5]) < std::fabs(directionCosines[4]))
+        if(std::fabs(direction_cosines[5]) < std::fabs(direction_cosines[3])
+           || std::fabs(direction_cosines[5]) < std::fabs(direction_cosines[4]))
         {
-            imageOrientationV[2] = 0.;
+            image_orientation_v[2] = 0.;
         }
 
         m_logger->warning(
@@ -620,21 +620,21 @@ char* image::correctImageOrientation(
     }
 
     // Compute W vector
-    const glm::dvec3 imageOrientationW = glm::cross(imageOrientationU, imageOrientationV);
+    const glm::dvec3 image_orientation_w = glm::cross(image_orientation_u, image_orientation_v);
 
     // Create orientation matrix
     glm::dmat4 matrix;
-    matrix[0][0] = imageOrientationU[0];
-    matrix[0][1] = imageOrientationU[1];
-    matrix[0][2] = imageOrientationU[2];
+    matrix[0][0] = image_orientation_u[0];
+    matrix[0][1] = image_orientation_u[1];
+    matrix[0][2] = image_orientation_u[2];
     matrix[0][3] = 0;
-    matrix[1][0] = imageOrientationV[0];
-    matrix[1][1] = imageOrientationV[1];
-    matrix[1][2] = imageOrientationV[2];
+    matrix[1][0] = image_orientation_v[0];
+    matrix[1][1] = image_orientation_v[1];
+    matrix[1][2] = image_orientation_v[2];
     matrix[1][3] = 0;
-    matrix[2][0] = imageOrientationW[0];
-    matrix[2][1] = imageOrientationW[1];
-    matrix[2][2] = imageOrientationW[2];
+    matrix[2][0] = image_orientation_w[0];
+    matrix[2][1] = image_orientation_w[1];
+    matrix[2][2] = image_orientation_w[2];
     matrix[2][3] = 0;
     matrix[3][0] = 0;
     matrix[3][1] = 0;
@@ -642,29 +642,29 @@ char* image::correctImageOrientation(
     matrix[3][3] = 1;
 
     // Compute inverse matrix in order to rotate the buffer
-    const glm::dmat4 inverseMatrix = glm::inverse(matrix);
-    const auto identityMatrix      = glm::identity<glm::dmat4>();
+    const glm::dmat4 inverse_matrix = glm::inverse(matrix);
+    const auto identity_matrix      = glm::identity<glm::dmat4>();
 
     // Check whether the image must be rotated or not
-    if(inverseMatrix != identityMatrix)
+    if(inverse_matrix != identity_matrix)
     {
         // Compute new image size
-        glm::dvec4 sizeVector {dimensions.at(0), dimensions.at(1), dimensions.at(2), 0.};
-        glm::dvec4 newSizeVector = sizeVector * inverseMatrix;
-        const auto newSizeX      = static_cast<std::uint16_t>(std::fabs(newSizeVector[0]));
-        const auto newSizeY      = static_cast<std::uint16_t>(std::fabs(newSizeVector[1]));
-        const auto newSizeZ      = static_cast<std::uint16_t>(std::fabs(newSizeVector[2]));
-        newSizeVector.x = newSizeX;
-        newSizeVector.y = newSizeY;
-        newSizeVector.z = newSizeZ;
+        glm::dvec4 size_vector {_dimensions.at(0), _dimensions.at(1), _dimensions.at(2), 0.};
+        glm::dvec4 new_size_vector = size_vector * inverse_matrix;
+        const auto new_size_x      = static_cast<std::uint16_t>(std::fabs(new_size_vector[0]));
+        const auto new_size_y      = static_cast<std::uint16_t>(std::fabs(new_size_vector[1]));
+        const auto new_size_z      = static_cast<std::uint16_t>(std::fabs(new_size_vector[2]));
+        new_size_vector.x = new_size_x;
+        new_size_vector.y = new_size_y;
+        new_size_vector.z = new_size_z;
 
         // Compute old size from the new absolute size in order to retrieve pixel flips
-        glm::dvec4 oldSizeVector = newSizeVector * matrix;
+        glm::dvec4 old_size_vector = new_size_vector * matrix;
 
         // Create new buffer to store rotated image
-        const std::uint64_t size = std::uint64_t(dimensions.at(0)) * dimensions.at(1) * dimensions.at(2)
-                                   * (bitsAllocated / 8);
-        char* newBuffer = new char [size];
+        const std::uint64_t size = std::uint64_t(_dimensions.at(0)) * _dimensions.at(1) * _dimensions.at(2)
+                                   * (_bits_allocated / 8);
+        char* new_buffer = new char [size];
 
         // Rotate image
         std::uint16_t x     = 0;
@@ -673,67 +673,67 @@ char* image::correctImageOrientation(
         std::uint16_t old_x = 0;
         std::uint16_t old_y = 0;
         std::uint16_t old_z = 0;
-        for(z = 0 ; z < newSizeZ && !(m_cancelRequestedCallback && m_cancelRequestedCallback()) ; ++z)
+        for(z = 0 ; z < new_size_z && !(m_cancelRequestedCallback && m_cancelRequestedCallback()) ; ++z)
         {
-            for(y = 0 ; y < newSizeY ; ++y)
+            for(y = 0 ; y < new_size_y ; ++y)
             {
-                for(x = 0 ; x < newSizeX ; ++x)
+                for(x = 0 ; x < new_size_x ; ++x)
                 {
                     // Create new position
-                    glm::dvec4 newPosition {x, y, z, 0.};
+                    glm::dvec4 new_position {x, y, z, 0.};
 
                     // Compute old position
-                    glm::dvec4 oldPosition = newPosition * matrix;
-                    old_x = (oldSizeVector[0] > 0) ? static_cast<std::uint16_t>(oldPosition[0])
-                                                   : static_cast<std::uint16_t>((dimensions.at(0) - 1)
-                                                                                + oldPosition[0]);
-                    old_y = (oldSizeVector[1] > 0) ? static_cast<std::uint16_t>(oldPosition[1])
-                                                   : static_cast<std::uint16_t>((dimensions.at(1) - 1)
-                                                                                + oldPosition[1]);
-                    old_z = (oldSizeVector[2] > 0) ? static_cast<std::uint16_t>(oldPosition[2])
-                                                   : static_cast<std::uint16_t>((dimensions.at(2) - 1)
-                                                                                + oldPosition[2]);
+                    glm::dvec4 old_position = new_position * matrix;
+                    old_x = (old_size_vector[0] > 0) ? static_cast<std::uint16_t>(old_position[0])
+                                                     : static_cast<std::uint16_t>((_dimensions.at(0) - 1)
+                                                                                  + old_position[0]);
+                    old_y = (old_size_vector[1] > 0) ? static_cast<std::uint16_t>(old_position[1])
+                                                     : static_cast<std::uint16_t>((_dimensions.at(1) - 1)
+                                                                                  + old_position[1]);
+                    old_z = (old_size_vector[2] > 0) ? static_cast<std::uint16_t>(old_position[2])
+                                                     : static_cast<std::uint16_t>((_dimensions.at(2) - 1)
+                                                                                  + old_position[2]);
 
                     // Compute indices
-                    unsigned int positionIndex = (x + (y * newSizeX) + z * (newSizeX * newSizeY))
-                                                 * (bitsAllocated / 8);
-                    unsigned int oldPositionIndex =
-                        (old_x + (old_y * dimensions.at(0)) + old_z * (dimensions.at(0) * dimensions.at(1)))
-                        * (bitsAllocated / 8);
+                    unsigned int position_index = (x + (y * new_size_x) + z * (new_size_x * new_size_y))
+                                                  * (_bits_allocated / 8);
+                    unsigned int old_position_index =
+                        (old_x + (old_y * _dimensions.at(0)) + old_z * (_dimensions.at(0) * _dimensions.at(1)))
+                        * (_bits_allocated / 8);
 
                     // Copy bytes
-                    memcpy(&newBuffer[positionIndex], &buffer[oldPositionIndex], (bitsAllocated / 8));
+                    memcpy(&new_buffer[position_index], &_buffer[old_position_index], (_bits_allocated / 8));
                 }
             }
 
-            auto progress = static_cast<unsigned int>(78 + (z * 100. / newSizeZ) * 0.2);
+            auto progress = static_cast<unsigned int>(78 + (z * 100. / new_size_z) * 0.2);
             m_progressCallback(progress);
         }
 
-        result = newBuffer;
-        delete[] buffer;
+        result = new_buffer;
+        delete[] _buffer;
 
-        dimensions = {newSizeX, newSizeY, newSizeZ};
+        _dimensions = {new_size_x, new_size_y, new_size_z};
 
         // Update image spacing
         const data::image::Spacing spacing = m_object->getSpacing();
-        glm::dvec4 spacingVector {spacing[0], spacing[1], spacing[2], 0.};
-        glm::dvec4 newSpacingVector = spacingVector * inverseMatrix;
-        data::image::Spacing newSpacing {std::fabs(newSpacingVector[0]), std::fabs(newSpacingVector[1]), std::fabs(
-                                             newSpacingVector[2]
+        glm::dvec4 spacing_vector {spacing[0], spacing[1], spacing[2], 0.};
+        glm::dvec4 new_spacing_vector = spacing_vector * inverse_matrix;
+        data::image::Spacing new_spacing {std::fabs(new_spacing_vector[0]), std::fabs(new_spacing_vector[1]), std::fabs(
+                                              new_spacing_vector[2]
         )
         };
-        m_object->setSpacing(newSpacing);
+        m_object->setSpacing(new_spacing);
 
         // Update image origin
         const data::image::Origin origin = m_object->getOrigin();
-        glm::dvec4 originVector {origin[0], origin[1], origin[2], 0.};
-        glm::dvec4 newOriginVector = originVector * inverseMatrix;
-        data::image::Origin newOrigin;
-        newOrigin[0] = newOriginVector[0];
-        newOrigin[1] = newOriginVector[1];
-        newOrigin[2] = newOriginVector[2];
-        m_object->setOrigin(newOrigin);
+        glm::dvec4 origin_vector {origin[0], origin[1], origin[2], 0.};
+        glm::dvec4 new_origin_vector = origin_vector * inverse_matrix;
+        data::image::Origin new_origin;
+        new_origin[0] = new_origin_vector[0];
+        new_origin[1] = new_origin_vector[1];
+        new_origin[2] = new_origin_vector[2];
+        m_object->setOrigin(new_origin);
 
         m_logger->warning(
             "image buffer has been rotated in order to match patient orientation: "

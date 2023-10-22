@@ -27,8 +27,8 @@ namespace sight::core::jobs
 
 //------------------------------------------------------------------------------
 
-observer::observer(const std::string& name, std::uint64_t work_units) :
-    base(name)
+observer::observer(const std::string& _name, std::uint64_t _work_units) :
+    base(_name)
 {
     m_finish_task = packaged_task(
         [this]()
@@ -36,7 +36,7 @@ observer::observer(const std::string& name, std::uint64_t work_units) :
             core::mt::write_lock lock(m_mutex);
             this->finish_no_lock();
         });
-    m_total_work_units = work_units;
+    m_total_work_units = _work_units;
 
     this->add_simple_cancel_hook(
         [this]()
@@ -50,9 +50,9 @@ observer::observer(const std::string& name, std::uint64_t work_units) :
 
 observer::progress_callback_t observer::progress_callback()
 {
-    return [this](std::uint64_t done_work)
+    return [this](std::uint64_t _done_work)
            {
-               this->done_work(done_work);
+               this->done_work(_done_work);
            };
 }
 

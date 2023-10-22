@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 namespace sight::io::http::exceptions
 {
 
-HostNotFound::HostNotFound(const std::string& message) :
-    io::http::exceptions::Base(message)
+HostNotFound::HostNotFound(const std::string& _message) :
+    io::http::exceptions::Base(_message)
 {
 }
 

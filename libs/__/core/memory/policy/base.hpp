@@ -43,36 +43,36 @@ public:
     typedef std::vector<std::string> param_names_type;
 
     virtual void allocation_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) = 0;
 
     virtual void set_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) = 0;
 
     virtual void reallocate_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t new_size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _new_size
     ) = 0;
 
-    virtual void destroy_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer) = 0;
+    virtual void destroy_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer) = 0;
 
-    virtual void lock_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)   = 0;
-    virtual void unlock_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer) = 0;
+    virtual void lock_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)   = 0;
+    virtual void unlock_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer) = 0;
 
-    virtual void dump_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)    = 0;
-    virtual void restore_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer) = 0;
+    virtual void dump_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)    = 0;
+    virtual void restore_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer) = 0;
 
     virtual void refresh() = 0;
 
-    virtual bool set_param(const std::string& name, const std::string& value) = 0;
-    virtual std::string get_param(const std::string& name, bool* ok           = nullptr) const = 0;
-    virtual const param_names_type& get_param_names() const                   = 0;
+    virtual bool set_param(const std::string& _name, const std::string& _value) = 0;
+    virtual std::string get_param(const std::string& _name, bool* _ok           = nullptr) const = 0;
+    virtual const param_names_type& get_param_names() const                     = 0;
 
     template<typename T>
     class registry

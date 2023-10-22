@@ -29,7 +29,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/boolean.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/point_list.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
@@ -40,13 +40,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 Measurement::Measurement(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::image::sptr& image,
-    const core::log::logger::sptr& logger
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::image::sptr& _image,
+    const core::log::logger::sptr& _logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(_dicom_series, _reader, _instance, _image, _logger)
 {
 }
 
@@ -57,46 +57,46 @@ Measurement::~Measurement()
 
 //------------------------------------------------------------------------------
 
-void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
+void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node)
 {
-    if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("121206", "DCM", "Distance")
-       && !node->getSubNodeContainer().empty())
+    if(_node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("121206", "DCM", "Distance")
+       && !_node->getSubNodeContainer().empty())
     {
-        for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
+        for(const SPTR(io::dicom::container::sr::DicomSRNode) & sub_node : _node->getSubNodeContainer())
         {
-            if(subNode->getType() == "SCOORD")
+            if(sub_node->getType() == "SCOORD")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoordNode =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(subNode);
-                if(scoordNode && scoordNode->getGraphicType() == "POLYLINE")
+                SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoord_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(sub_node);
+                if(scoord_node && scoord_node->get_graphic_type() == "POLYLINE")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                        scoordNode->getGraphicDataContainer();
+                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
+                        scoord_node->getGraphicDataContainer();
 
-                    if(!scoordNode->getSubNodeContainer().empty())
+                    if(!scoord_node->getSubNodeContainer().empty())
                     {
-                        SPTR(io::dicom::container::sr::DicomSRImageNode) imageNode =
+                        SPTR(io::dicom::container::sr::DicomSRImageNode) image_node =
                             std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRImageNode>(
-                                *scoordNode->getSubNodeContainer().begin()
+                                *scoord_node->getSubNodeContainer().begin()
                             );
-                        if(imageNode)
+                        if(image_node)
                         {
-                            const int frameNumber = imageNode->getFrameNumber();
-                            double zCoordinate    = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
+                            const int frame_number = image_node->getFrameNumber();
+                            double z_coordinate    = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                std::size_t(frameNumber)
+                                std::size_t(frame_number)
                             );
 
                             auto origin = std::make_shared<data::point>(
                                 static_cast<double>(coordinates[0]),
                                 static_cast<double>(coordinates[1]),
-                                zCoordinate
+                                z_coordinate
                             );
                             auto destination = std::make_shared<data::point>(
                                 static_cast<double>(coordinates[2]),
                                 static_cast<double>(coordinates[3]),
-                                zCoordinate
+                                z_coordinate
                             );
                             this->addDistance(origin, destination);
                         }
@@ -104,15 +104,15 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                 }
             }
             // 3D Coordinate
-            else if(subNode->getType() == "SCOORD3D")
+            else if(sub_node->getType() == "SCOORD3D")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(subNode);
-                if(scoord3DNode && scoord3DNode->getGraphicType() == "POLYLINE")
+                SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3_d_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(sub_node);
+                if(scoord3_d_node && scoord3_d_node->get_graphic_type() == "POLYLINE")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                        scoord3DNode->getGraphicDataContainer();
+                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
+                        scoord3_d_node->getGraphicDataContainer();
                     this->addDistance(
                         std::make_shared<data::point>(coordinates[0], coordinates[1], coordinates[2]),
                         std::make_shared<data::point>(coordinates[3], coordinates[4], coordinates[5])
@@ -126,24 +126,24 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
 //------------------------------------------------------------------------------
 
 void Measurement::addDistance(
-    const SPTR(data::point)& point1,
-    const SPTR(data::point)& point2
+    const SPTR(data::point)& _point1,
+    const SPTR(data::point)& _point2
 )
 {
-    auto distanceVector = data::helper::MedicalImage::getDistances(*m_object);
+    auto distance_vector = data::helper::medical_image::get_distances(*m_object);
 
-    if(!distanceVector)
+    if(!distance_vector)
     {
-        distanceVector = std::make_shared<data::vector>();
-        data::helper::MedicalImage::setDistances(*m_object, distanceVector);
+        distance_vector = std::make_shared<data::vector>();
+        data::helper::medical_image::set_distances(*m_object, distance_vector);
     }
 
-    data::point_list::sptr pointList = std::make_shared<data::point_list>();
-    pointList->getPoints().push_back(point1);
-    pointList->getPoints().push_back(point2);
+    data::point_list::sptr point_list = std::make_shared<data::point_list>();
+    point_list->getPoints().push_back(_point1);
+    point_list->getPoints().push_back(_point2);
 
-    distanceVector->push_back(pointList);
-    data::helper::MedicalImage::setDistanceVisibility(*m_object, true);
+    distance_vector->push_back(point_list);
+    data::helper::medical_image::set_distance_visibility(*m_object, true);
 }
 
 //------------------------------------------------------------------------------

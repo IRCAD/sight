@@ -60,32 +60,32 @@ sight::io::service::IOPathType mesh_reader::getIOPathType() const
 
 mesh_reader::mesh_reader() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
-    dialogFile.addFilter("OBJ File(.obj)", "*.obj");
-    dialogFile.addFilter("PLY File(.ply)", "*.ply");
-    dialogFile.addFilter("STL File(.stl)", "*.stl");
-    dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
-    dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
+    dialog_file.addFilter("OBJ File(.obj)", "*.obj");
+    dialog_file.addFilter("PLY File(.ply)", "*.ply");
+    dialog_file.addFilter("STL File(.stl)", "*.stl");
+    dialog_file.addFilter("VTK Legacy File(.vtk)", "*.vtk");
+    dialog_file.addFilter("VTK Polydata File(.vtp)", "*.vtp");
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         this->set_file(result->get_file());
     }
     else
@@ -123,7 +123,7 @@ void mesh_reader::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename READER>
-typename READER::sptr configureReader(const std::filesystem::path& _file)
+typename READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -132,7 +132,7 @@ typename READER::sptr configureReader(const std::filesystem::path& _file)
 
 //------------------------------------------------------------------------------
 
-bool mesh_reader::loadMesh(const std::filesystem::path& vtkFile)
+bool mesh_reader::loadMesh(const std::filesystem::path& _vtk_file)
 {
     bool ok = true;
 
@@ -150,45 +150,45 @@ bool mesh_reader::loadMesh(const std::filesystem::path& vtkFile)
     );
 
     // Test extension to provide the reader
-    sight::io::reader::object_reader::sptr meshReader;
+    sight::io::reader::object_reader::sptr mesh_reader;
 
-    if(vtkFile.extension() == ".vtk")
+    if(_vtk_file.extension() == ".vtk")
     {
-        meshReader = configureReader<sight::io::vtk::MeshReader>(vtkFile);
+        mesh_reader = configure_reader<sight::io::vtk::MeshReader>(_vtk_file);
     }
-    else if(vtkFile.extension() == ".vtp")
+    else if(_vtk_file.extension() == ".vtp")
     {
-        meshReader = configureReader<sight::io::vtk::VtpMeshReader>(vtkFile);
+        mesh_reader = configure_reader<sight::io::vtk::VtpMeshReader>(_vtk_file);
     }
-    else if(vtkFile.extension() == ".obj")
+    else if(_vtk_file.extension() == ".obj")
     {
-        meshReader = configureReader<sight::io::vtk::ObjMeshReader>(vtkFile);
+        mesh_reader = configure_reader<sight::io::vtk::ObjMeshReader>(_vtk_file);
     }
-    else if(vtkFile.extension() == ".stl")
+    else if(_vtk_file.extension() == ".stl")
     {
-        meshReader = configureReader<sight::io::vtk::StlMeshReader>(vtkFile);
+        mesh_reader = configure_reader<sight::io::vtk::StlMeshReader>(_vtk_file);
     }
-    else if(vtkFile.extension() == ".ply")
+    else if(_vtk_file.extension() == ".ply")
     {
-        meshReader = configureReader<sight::io::vtk::PlyMeshReader>(vtkFile);
+        mesh_reader = configure_reader<sight::io::vtk::PlyMeshReader>(_vtk_file);
     }
     else
     {
         SIGHT_THROW_EXCEPTION(
             core::tools::failed(
-                "Extension '" + vtkFile.extension().string()
+                "Extension '" + _vtk_file.extension().string()
                 + "' is not managed by module::io::vtk::mesh_reader."
             )
         );
     }
 
-    m_sigJobCreated->emit(meshReader->getJob());
+    m_sigJobCreated->emit(mesh_reader->getJob());
 
-    meshReader->set_object(mesh);
+    mesh_reader->set_object(mesh);
 
     try
     {
-        meshReader->read();
+        mesh_reader->read();
     }
     catch(core::tools::failed& e)
     {
@@ -255,8 +255,8 @@ void mesh_reader::notificationOfUpdate()
     const auto locked = m_data.lock();
     const auto mesh   = std::dynamic_pointer_cast<data::mesh>(locked.get_shared());
 
-    data::object::ModifiedSignalType::sptr sig;
-    sig = mesh->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    data::object::modified_signal_t::sptr sig;
+    sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();

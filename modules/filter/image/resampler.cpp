@@ -58,33 +58,33 @@ void resampler::starting()
 
 void resampler::updating()
 {
-    const auto inImg     = m_imageIn.lock();
-    auto outImg          = m_imageOut.lock();
+    const auto in_img    = m_imageIn.lock();
+    auto out_img         = m_imageOut.lock();
     const auto target    = m_targetIn.lock();
     const auto transform = m_transformIn.lock();
 
-    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", inImg);
-    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", outImg);
+    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", in_img);
+    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", out_img);
     SIGHT_ASSERT("No '" << s_TRANSFORM_IN << "' found !", transform);
 
     sight::filter::image::resampler::resample(
-        inImg.get_shared(),
-        outImg.get_shared(),
+        in_img.get_shared(),
+        out_img.get_shared(),
         transform.get_shared(),
         std::make_tuple(target->size(), target->getOrigin(), target->getSpacing())
     );
 
     m_sigComputed->async_emit();
 
-    auto imgBufModifiedSig = outImg->signal<data::image::BufferModifiedSignalType>
-                                 (data::image::BUFFER_MODIFIED_SIG);
+    auto img_buf_modified_sig = out_img->signal<data::image::buffer_modified_signal_t>
+                                    (data::image::BUFFER_MODIFIED_SIG);
 
-    imgBufModifiedSig->async_emit();
+    img_buf_modified_sig->async_emit();
 
-    auto imgModifiedSig = outImg->signal<data::image::ModifiedSignalType>
-                              (data::image::MODIFIED_SIG);
+    auto img_modified_sig = out_img->signal<data::image::modified_signal_t>
+                                (data::image::MODIFIED_SIG);
 
-    imgModifiedSig->async_emit();
+    img_modified_sig->async_emit();
 }
 
 //------------------------------------------------------------------------------

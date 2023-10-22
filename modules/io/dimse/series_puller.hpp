@@ -109,11 +109,11 @@ private:
      */
     MODULE_IO_DIMSE_API connections_t auto_connections() const override;
 
-    typedef data::series_set::container_type DicomSeriesContainerType;
-    typedef core::com::slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-    typedef core::com::signal<void (std::string)> ProgressStartedSignalType;
-    typedef core::com::signal<void (std::string, float, std::string)> ProgressedSignalType;
-    typedef core::com::signal<void (std::string)> ProgressStoppedSignalType;
+    typedef data::series_set::container_type dicom_series_container_t;
+    typedef core::com::slot<void (dicom_series_container_t)> read_dicom_slot_t;
+    typedef core::com::signal<void (std::string)> progress_started_signal_t;
+    typedef core::com::signal<void (std::string, float, std::string)> progressed_signal_t;
+    typedef core::com::signal<void (std::string)> progress_stopped_signal_t;
 
     /// Pulls series from the PACS.
     void pullSeries();
@@ -122,7 +122,7 @@ private:
      * @brief Reads local series.
      * @param _selectedSeries DICOM series that must be read.
      */
-    void readLocalSeries(DicomSeriesContainerType _selectedSeries);
+    void readLocalSeries(dicom_series_container_t _selected_series);
 
     /**
      * @brief Stores instance callback.
@@ -131,13 +131,13 @@ private:
      * @param _filePath file path.
      */
     void storeInstanceCallback(
-        const std::string& _seriesInstanceUID,
-        unsigned _instanceNumber,
-        const std::string& _filePath
+        const std::string& _series_instance_uid,
+        unsigned _instance_number,
+        const std::string& _file_path
     );
 
-    ///SLOT: removes series from m_localSeries, when deleted in a gui Selector for instance.
-    void removeSeries(data::series_set::container_type _removedSeries);
+    ///SLOT: removes series from m_localSeries, when deleted in a gui selector for instance.
+    void removeSeries(data::series_set::container_type _removed_series);
 
     /// Defines the worker of the series enquire thread.
     core::thread::worker::sptr m_requestWorker;
@@ -155,16 +155,16 @@ private:
     data::series_set::sptr m_series_set {nullptr};
 
     /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
-    sight::io::dimse::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstance {nullptr};
+    sight::io::dimse::SeriesRetriever::progress_callback_slot_t::sptr m_slotStoreInstance {nullptr};
 
     /// Contains the signal emitted when the progress bar is started.
-    ProgressStartedSignalType::sptr m_sigProgressStarted {nullptr};
+    progress_started_signal_t::sptr m_sigProgressStarted {nullptr};
 
     /// Contains the signal emitted when the progress bar is updated.
-    ProgressedSignalType::sptr m_sigProgressed {nullptr};
+    progressed_signal_t::sptr m_sigProgressed {nullptr};
 
     /// Contains the signal emitted when the progress bar is stopped.
-    ProgressStoppedSignalType::sptr m_sigProgressStopped {nullptr};
+    progress_stopped_signal_t::sptr m_sigProgressStopped {nullptr};
 
     /// Stores local series.
     std::set<std::string> m_localSeries;

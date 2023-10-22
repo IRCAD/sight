@@ -38,43 +38,43 @@ constexpr static auto s_Z {"Z"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto point = helper::safe_cast<data::point>(object);
+    const auto point = helper::safe_cast<data::point>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::point>(tree, 1);
+    helper::write_version<data::point>(_tree, 1);
 
     const auto& coordinate = point->getCoord();
-    tree.put(s_X, coordinate[0]);
-    tree.put(s_Y, coordinate[1]);
-    tree.put(s_Z, coordinate[2]);
+    _tree.put(s_X, coordinate[0]);
+    _tree.put(s_Y, coordinate[1]);
+    _tree.put(s_Z, coordinate[2]);
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::point::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto point = helper::cast_or_create<data::point>(object);
+    auto point = helper::cast_or_create<data::point>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::point>(tree, 0, 1);
+    helper::read_version<data::point>(_tree, 0, 1);
 
     const std::array<double, 3> coordinates = {
-        tree.get<double>(s_X),
-        tree.get<double>(s_Y),
-        tree.get<double>(s_Z)
+        _tree.get<double>(s_X),
+        _tree.get<double>(s_Y),
+        _tree.get<double>(s_Z)
     };
 
     point->setCoord(coordinates);

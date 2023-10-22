@@ -99,7 +99,7 @@ protected:
 private:
 
     /// Slot: get the picking information to display the pixel value
-    void getInteraction(data::tools::picking_info info);
+    void getInteraction(data::tools::picking_info _info);
 
     /// Label to display the pixel value
     QPointer<QLineEdit> m_valueText;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,13 +30,13 @@
 namespace sight::io::igtl::detail
 {
 
-RawMessage::RawMessage(std::string const& bodyType)
+RawMessage::RawMessage(std::string const& _body_type)
 {
 #if defined(OpenIGTLink_HEADER_VERSION)
-    m_SendMessageType    = bodyType;
-    m_ReceiveMessageType = bodyType;
+    m_SendMessageType    = _body_type;
+    m_ReceiveMessageType = _body_type;
 #else
-    m_DefaultBodyType = bodyType;
+    m_DefaultBodyType = _body_type;
 #endif
 }
 
@@ -47,35 +47,35 @@ RawMessage::~RawMessage()
 
 //-----------------------------------------------------------------------------
 
-void RawMessage::append(const RawDataType& msg)
+void RawMessage::append(const raw_data_t& _msg)
 {
-    m_msg.insert(m_msg.end(), msg.begin(), msg.end());
+    m_msg.insert(m_msg.end(), _msg.begin(), _msg.end());
 }
 
 //-----------------------------------------------------------------------------
 
-void RawMessage::append(const char* data, std::size_t size)
+void RawMessage::append(const char* _data, std::size_t _size)
 {
-    m_msg.insert(m_msg.end(), data, data + size);
+    m_msg.insert(m_msg.end(), _data, _data + _size);
 }
 
 //-----------------------------------------------------------------------------
 
-RawMessage::Pointer RawMessage::New(std::string const& bodyType)
+RawMessage::Pointer RawMessage::New(std::string const& _body_type)
 {
-    return {new RawMessage(bodyType)};
+    return {new RawMessage(_body_type)};
 }
 
 //-----------------------------------------------------------------------------
 
-RawMessage::RawDataType const& RawMessage::getMessage() const
+RawMessage::raw_data_t const& RawMessage::getMessage() const
 {
     return m_msg;
 }
 
 //-----------------------------------------------------------------------------
 
-RawMessage::RawDataType& RawMessage::getMessage()
+RawMessage::raw_data_t& RawMessage::getMessage()
 {
     return m_msg;
 }

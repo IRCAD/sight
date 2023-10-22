@@ -30,12 +30,12 @@ namespace sight::filter::image
 {
 
 // NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
-class PowellMetric : public powell_optimizer::powell_optimizerType::MetricType
+class PowellMetric : public powell_optimizer::powell_optimizer_t::MetricType
 {
 public:
 
     using Self         = PowellMetric;
-    using Superclass   = powell_optimizer::powell_optimizerType::MetricType;
+    using Superclass   = powell_optimizer::powell_optimizer_t::MetricType;
     using Pointer      = itk::SmartPointer<Self>;
     using ConstPointer = itk::SmartPointer<const Self>;
     itkNewMacro(Self);
@@ -48,16 +48,16 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    void setFunction(powell_optimizer::OptimizedFunctionType _f)
+    void setFunction(powell_optimizer::optimized_function_t _f)
     {
         m_function = _f;
     }
 
     //-----------------------------------------------------------------------------
 
-    void SetParameters(ParametersType& params) override
+    void SetParameters(ParametersType& _params) override
     {
-        m_parameters = params;
+        m_parameters = _params;
     }
 
     //-----------------------------------------------------------------------------
@@ -127,37 +127,37 @@ private:
 
     ParametersType m_parameters;
 
-    powell_optimizer::OptimizedFunctionType m_function;
+    powell_optimizer::optimized_function_t m_function;
 };
 
 //-----------------------------------------------------------------------------
 
 powell_optimizer::powell_optimizer(
-    const powell_optimizer::OptimizedFunctionType& _f,
-    double _stepTolerance,
-    double _valueTolerance,
-    double _stepLength,
-    std::uint32_t _maximumIterations
+    const powell_optimizer::optimized_function_t& _f,
+    double _step_tolerance,
+    double _value_tolerance,
+    double _step_length,
+    std::uint32_t _maximum_iterations
 ) :
     m_function(_f)
 {
-    m_powellOptimizer = powell_optimizerType::New();
-    m_powellOptimizer->SetStepTolerance(_stepTolerance);
-    m_powellOptimizer->SetValueTolerance(_valueTolerance);
-    m_powellOptimizer->SetStepLength(_stepLength);
-    m_powellOptimizer->SetMaximumIteration(_maximumIterations);
+    m_powellOptimizer = powell_optimizer_t::New();
+    m_powellOptimizer->SetStepTolerance(_step_tolerance);
+    m_powellOptimizer->SetValueTolerance(_value_tolerance);
+    m_powellOptimizer->SetStepLength(_step_length);
+    m_powellOptimizer->SetMaximumIteration(_maximum_iterations);
 }
 
 //-----------------------------------------------------------------------------
 
-powell_optimizer::FunctionParametersType powell_optimizer::optimize(
-    const powell_optimizer::FunctionParametersType& _initParameters
+powell_optimizer::function_parameters_t powell_optimizer::optimize(
+    const powell_optimizer::function_parameters_t& _init_parameters
 )
 {
     PowellMetric::Pointer metric = PowellMetric::New();
     metric->setFunction(m_function);
-    FunctionParametersType initParams(_initParameters);
-    metric->SetParameters(initParams);
+    function_parameters_t init_params(_init_parameters);
+    metric->SetParameters(init_params);
 
     m_powellOptimizer->SetMetric(metric);
 

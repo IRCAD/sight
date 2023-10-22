@@ -58,19 +58,19 @@ void push_selection_test::tearDown()
 
 void push_selection_test::basicTest()
 {
-    auto selectedSeries = std::make_shared<data::vector>();
-    auto series         = std::make_shared<data::series>();
-    selectedSeries->push_back(series);
-    m_pushSelection->set_input(selectedSeries, "selectedSeries");
-    auto seriesSet = std::make_shared<data::series_set>();
-    m_pushSelection->set_inout(seriesSet, "seriesSet");
-    CPPUNIT_ASSERT(seriesSet->empty());
+    auto selected_series = std::make_shared<data::vector>();
+    auto series          = std::make_shared<data::series>();
+    selected_series->push_back(series);
+    m_pushSelection->set_input(selected_series, "selectedSeries");
+    auto series_set = std::make_shared<data::series_set>();
+    m_pushSelection->set_inout(series_set, "seriesSet");
+    CPPUNIT_ASSERT(series_set->empty());
     CPPUNIT_ASSERT_NO_THROW(m_pushSelection->configure());
     CPPUNIT_ASSERT_NO_THROW(m_pushSelection->start().get());
     CPPUNIT_ASSERT_NO_THROW(m_pushSelection->update().get());
     CPPUNIT_ASSERT_NO_THROW(m_pushSelection->stop().get());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
-    CPPUNIT_ASSERT((*seriesSet)[0] == series);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
+    CPPUNIT_ASSERT((*series_set)[0] == series);
 }
 
 //------------------------------------------------------------------------------

@@ -81,10 +81,10 @@ private:
     inline static const core::com::slots::key_t CHECK_REMOVED_OBJECTS_SLOT = "checkRemovedObjects";
 
     /// Slot: check if specified object is added and set action not executable
-    constexpr void checkAddedObjects(typename C::container_type addedObjects);
+    constexpr void checkAddedObjects(typename C::container_type _added_objects);
 
     /// Slot: check if specified object is removed and set action executable
-    constexpr void checkRemovedObjects(typename C::container_type removedObjects);
+    constexpr void checkRemovedObjects(typename C::container_type _removed_objects);
     /// @}
 };
 

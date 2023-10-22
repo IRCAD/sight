@@ -51,11 +51,11 @@ void manage_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInCompositeTest(const std::string& slotName, bool alreadyPresent)
+void manage_test::genericAddInCompositeTest(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::composite>();
-    if(alreadyPresent)
+    if(_already_present)
     {
         (*container)["myKey"] = object;
     }
@@ -68,9 +68,9 @@ void manage_test::genericAddInCompositeTest(const std::string& slotName, bool al
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
-    if(slotName == "addCopy")
+    if(_slot_name == "addCopy")
     {
         CPPUNIT_ASSERT(object != container->get<sight::data::string>("myKey"));
         CPPUNIT_ASSERT_EQUAL(*object, *container->get<sight::data::string>("myKey"));
@@ -83,11 +83,11 @@ void manage_test::genericAddInCompositeTest(const std::string& slotName, bool al
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInVectorTest(const std::string& slotName, bool alreadyPresent)
+void manage_test::genericAddInVectorTest(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::vector>();
-    if(alreadyPresent)
+    if(_already_present)
     {
         container->push_back(object);
     }
@@ -97,10 +97,10 @@ void manage_test::genericAddInVectorTest(const std::string& slotName, bool alrea
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(slotName == "addCopy")
+    if(_slot_name == "addCopy")
     {
         CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
         CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
@@ -110,29 +110,29 @@ void manage_test::genericAddInVectorTest(const std::string& slotName, bool alrea
         CPPUNIT_ASSERT_EQUAL(object, std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
     }
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
-    std::size_t expectedSize = 2 - static_cast<std::size_t>(slotName == "addOrSwap");
-    CPPUNIT_ASSERT_EQUAL(expectedSize, container->size());
-    if(slotName == "addCopy")
+    std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "addOrSwap");
+    CPPUNIT_ASSERT_EQUAL(expected_size, container->size());
+    if(_slot_name == "addCopy")
     {
         CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
         CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
     }
     else
     {
-        CPPUNIT_ASSERT_EQUAL(object, std::dynamic_pointer_cast<sight::data::string>((*container)[expectedSize - 1]));
+        CPPUNIT_ASSERT_EQUAL(object, std::dynamic_pointer_cast<sight::data::string>((*container)[expected_size - 1]));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInSeriesSetTest(const std::string& slotName, bool alreadyPresent)
+void manage_test::genericAddInSeriesSetTest(const std::string& _slot_name, bool _already_present)
 {
     auto object = std::make_shared<sight::data::series>();
     object->setPatientName("You");
     auto container = std::make_shared<sight::data::series_set>();
-    if(alreadyPresent)
+    if(_already_present)
     {
         container->push_back(object);
     }
@@ -142,10 +142,10 @@ void manage_test::genericAddInSeriesSetTest(const std::string& slotName, bool al
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(slotName == "addCopy")
+    if(_slot_name == "addCopy")
     {
         CPPUNIT_ASSERT(object != (*container)[0]);
         CPPUNIT_ASSERT(*object == *(*container)[0]);
@@ -155,9 +155,9 @@ void manage_test::genericAddInSeriesSetTest(const std::string& slotName, bool al
         CPPUNIT_ASSERT_EQUAL(object, (*container)[0]);
     }
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
-    if(slotName == "addCopy")
+    if(_slot_name == "addCopy")
     {
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), container->size());
         CPPUNIT_ASSERT(object != (*container)[0]);
@@ -172,13 +172,13 @@ void manage_test::genericAddInSeriesSetTest(const std::string& slotName, bool al
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericAddInFieldTest(const std::string& slotName, bool alreadyPresent)
+void manage_test::genericAddInFieldTest(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::string>();
-    if(alreadyPresent)
+    if(_already_present)
     {
-        container->setField("myField", object);
+        container->set_field("myField", object);
     }
 
     m_manage->set_inout(object, "object");
@@ -189,16 +189,16 @@ void manage_test::genericAddInFieldTest(const std::string& slotName, bool alread
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
 
-    if(slotName == "addCopy")
+    if(_slot_name == "addCopy")
     {
-        CPPUNIT_ASSERT(object != container->getField<sight::data::string>("myField"));
-        CPPUNIT_ASSERT_EQUAL(*object, *container->getField<sight::data::string>("myField"));
+        CPPUNIT_ASSERT(object != container->get_field<sight::data::string>("myField"));
+        CPPUNIT_ASSERT_EQUAL(*object, *container->get_field<sight::data::string>("myField"));
     }
     else
     {
-        CPPUNIT_ASSERT_EQUAL(object, container->getField<sight::data::string>("myField"));
+        CPPUNIT_ASSERT_EQUAL(object, container->get_field<sight::data::string>("myField"));
     }
 }
 
@@ -337,7 +337,7 @@ void manage_test::swapObjAndPresentInFieldTest()
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInCompositeTest(const std::string& slotName)
+void manage_test::genericRemoveInCompositeTest(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::composite>();
@@ -352,13 +352,13 @@ void manage_test::genericRemoveInCompositeTest(const std::string& slotName)
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
     CPPUNIT_ASSERT(container->get<sight::data::string>("myKey") != nullptr);
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
     CPPUNIT_ASSERT(container->get<sight::data::string>("myKey") == nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInVectorTest(const std::string& slotName)
+void manage_test::genericRemoveInVectorTest(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::vector>();
@@ -370,13 +370,13 @@ void manage_test::genericRemoveInVectorTest(const std::string& slotName)
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
     CPPUNIT_ASSERT(!container->empty());
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
     CPPUNIT_ASSERT(container->empty());
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInSeriesSetTest(const std::string& slotName)
+void manage_test::genericRemoveInSeriesSetTest(const std::string& _slot_name)
 {
     auto object = std::make_shared<sight::data::series>();
     object->setPatientName("You");
@@ -389,17 +389,17 @@ void manage_test::genericRemoveInSeriesSetTest(const std::string& slotName)
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
     CPPUNIT_ASSERT(!container->empty());
-    m_manage->slot(slotName)->run();
+    m_manage->slot(_slot_name)->run();
     CPPUNIT_ASSERT(container->empty());
 }
 
 //------------------------------------------------------------------------------
 
-void manage_test::genericRemoveInFieldTest(const std::string& slotName)
+void manage_test::genericRemoveInFieldTest(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
     auto container = std::make_shared<sight::data::string>();
-    container->setField("myField", object);
+    container->set_field("myField", object);
 
     m_manage->set_inout(object, "object");
     m_manage->set_inout(container, "container");
@@ -409,9 +409,9 @@ void manage_test::genericRemoveInFieldTest(const std::string& slotName)
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
 
-    CPPUNIT_ASSERT_EQUAL(object, container->getField<sight::data::string>("myField"));
-    m_manage->slot(slotName)->run();
-    CPPUNIT_ASSERT(container->getField<sight::data::string>("myField") == nullptr);
+    CPPUNIT_ASSERT_EQUAL(object, container->get_field<sight::data::string>("myField"));
+    m_manage->slot(_slot_name)->run();
+    CPPUNIT_ASSERT(container->get_field<sight::data::string>("myField") == nullptr);
 }
 
 //------------------------------------------------------------------------------

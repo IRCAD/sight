@@ -33,8 +33,8 @@ namespace sight::io::igtl::detail::exception
 /// reasons)
 struct IO_IGTL_CLASS_API Conversion : core::exception
 {
-    IO_IGTL_API Conversion(const std::string& err) :
-        core::exception(err)
+    IO_IGTL_API Conversion(const std::string& _err) :
+        core::exception(_err)
     {
     }
 };

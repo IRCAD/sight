@@ -61,46 +61,46 @@ static const data::image::Origin bostonTeapotOrigin   = {{1.1, 2.2, 3.3}};
 
 //------------------------------------------------------------------------------
 
-template<typename ExpSizeType, typename ExpSpacingType, typename ExpOriginType, typename ExpDimType,
-         typename SizeType, typename SpacingType, typename OriginType, typename DimType>
-void compareImageAttributes(
-    const ExpSizeType& expSize,
-    const ExpSpacingType& expSpacing,
-    const ExpOriginType& expOrigin,
-    ExpDimType expDim,
-    const SizeType& size,
-    const SpacingType& spacing,
-    const OriginType& origin,
-    DimType dim
+template<typename exp_size_t, typename exp_spacing_t, typename exp_origin_t, typename exp_dim_t,
+         typename size_t, typename spacing_t, typename origin_t, typename dim_t>
+void compare_image_attributes(
+    const exp_size_t& _exp_size,
+    const exp_spacing_t& _exp_spacing,
+    const exp_origin_t& _exp_origin,
+    exp_dim_t _exp_dim,
+    const size_t& _size,
+    const spacing_t& _spacing,
+    const origin_t& _origin,
+    dim_t _dim
 )
 {
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<std::size_t>(expDim),
-        static_cast<std::size_t>(dim)
+        static_cast<std::size_t>(_exp_dim),
+        static_cast<std::size_t>(_dim)
     );
 
-    for(std::size_t i = 0 ; i < static_cast<std::size_t>(dim) ; ++i)
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>(_dim) ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::image::Spacing::value_type>(expSpacing[i]),
-            static_cast<data::image::Spacing::value_type>(spacing[i]),
+            static_cast<data::image::Spacing::value_type>(_exp_spacing[i]),
+            static_cast<data::image::Spacing::value_type>(_spacing[i]),
             epsilon
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::image::Origin::value_type>(expOrigin[i]),
-            static_cast<data::image::Origin::value_type>(origin[i]),
+            static_cast<data::image::Origin::value_type>(_exp_origin[i]),
+            static_cast<data::image::Origin::value_type>(_origin[i]),
             epsilon
         );
         CPPUNIT_ASSERT_EQUAL(
-            static_cast<data::image::Size::value_type>(expSize[i]),
-            static_cast<data::image::Size::value_type>(size[i])
+            static_cast<data::image::Size::value_type>(_exp_size[i]),
+            static_cast<data::image::Size::value_type>(_size[i])
         );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void imageToVTKTest(const core::type imgtype, const std::set<int>& vtk_types)
+void image_to_vtk_test(const core::type _imgtype, const std::set<int>& _vtk_types)
 {
     const data::image::Size size       = {10, 15, 23};
     const data::image::Spacing spacing = {0.85, 2.6, 1.87};
@@ -112,77 +112,77 @@ void imageToVTKTest(const core::type imgtype, const std::set<int>& vtk_types)
         size,
         spacing,
         origin,
-        imgtype,
+        _imgtype,
         data::image::PixelFormat::GRAY_SCALE
     );
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
-    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(image, vtkImage);
+    vtkSmartPointer<vtkImageData> vtk_image = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::to_vtk_image(image, vtk_image);
 
-    compareImageAttributes(
+    compare_image_attributes(
         size,
         spacing,
         origin,
         image->numDimensions(),
 
-        vtkImage->GetDimensions(),
-        vtkImage->GetSpacing(),
-        vtkImage->GetOrigin(),
-        vtkImage->GetDataDimension()
+        vtk_image->GetDimensions(),
+        vtk_image->GetSpacing(),
+        vtk_image->GetOrigin(),
+        vtk_image->GetDataDimension()
 
     );
 
-    std::set<int> types = vtk_types;
+    std::set<int> types = _vtk_types;
     CPPUNIT_ASSERT_MESSAGE(
-        "Test failed for type " + imgtype.name(),
-        types.find(vtkImage->GetScalarType()) != types.end()
+        "Test failed for type " + _imgtype.name(),
+        types.find(vtk_image->GetScalarType()) != types.end()
     );
 
-    char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(image->buffer());
+    char* vtk_ptr = static_cast<char*>(vtk_image->GetScalarPointer());
+    char* ptr     = static_cast<char*>(image->buffer());
 
     CPPUNIT_ASSERT_MESSAGE(
-        "Test failed for type " + imgtype.name(),
-        std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr)
+        "Test failed for type " + _imgtype.name(),
+        std::equal(ptr, ptr + image->getSizeInBytes(), vtk_ptr)
     );
 }
 
 //------------------------------------------------------------------------------
 
 template<typename W, typename R>
-void writerTest(const core::type imagetype, const std::string& filename)
+void writer_test(const core::type _imagetype, const std::string& _filename)
 {
-    core::os::temp_dir tmpDir;
-    const auto& testFile = tmpDir / filename;
+    core::os::temp_dir tmp_dir;
+    const auto& test_file = tmp_dir / _filename;
 
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generateRandomImage(image, imagetype);
+    utest_data::generator::image::generateRandomImage(image, _imagetype);
 
     typename W::sptr writer = std::make_shared<W>();
     writer->set_object(image);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     writer->write();
 
     CPPUNIT_ASSERT_MESSAGE(
-        "test on <" + filename + ">  of type <" + imagetype.name() + "> Failed ",
-        std::filesystem::exists(testFile)
+        "test on <" + _filename + ">  of type <" + _imagetype.name() + "> Failed ",
+        std::filesystem::exists(test_file)
     );
 
     data::image::sptr image2 = std::make_shared<data::image>();
     typename R::sptr reader  = std::make_shared<R>();
     reader->set_object(image2);
-    reader->set_file(testFile);
+    reader->set_file(test_file);
     reader->read();
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
-        "test on <" + filename + "> of type <" + imagetype.name() + "> Failed ",
+        "test on <" + _filename + "> of type <" + _imagetype.name() + "> Failed ",
         image->getType(),
         image2->getType()
     );
 
-    compareImageAttributes(
+    compare_image_attributes(
         image->size(),
         image->getSpacing(),
         image->getOrigin(),
@@ -197,33 +197,33 @@ void writerTest(const core::type imagetype, const std::string& filename)
 
 //------------------------------------------------------------------------------
 
-void imageFromVTKTest(const std::string& imagename, const core::type& type)
+void image_from_vtk_test(const std::string& _imagename, const core::type& _type)
 {
-    const std::filesystem::path imagePath(utest_data::Data::dir()
-                                          / std::filesystem::path(imagename));
+    const std::filesystem::path image_path(utest_data::Data::dir()
+                                           / std::filesystem::path(_imagename));
 
-    CPPUNIT_ASSERT(std::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT(std::filesystem::is_regular_file(imagePath));
+    CPPUNIT_ASSERT(std::filesystem::exists(image_path));
+    CPPUNIT_ASSERT(std::filesystem::is_regular_file(image_path));
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
-    reader->SetFileName(imagePath.string().c_str());
+    reader->SetFileName(image_path.string().c_str());
     reader->Update();
     reader->UpdateInformation();
     reader->PropagateUpdateExtent();
-    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(reader->GetOutput());
+    vtkSmartPointer<vtkImageData> vtk_image = vtkImageData::SafeDownCast(reader->GetOutput());
 
-    CPPUNIT_ASSERT(vtkImage);
+    CPPUNIT_ASSERT(vtk_image);
 
     data::image::sptr image = std::make_shared<data::image>();
-    io::vtk::fromVTKImage(vtkImage, image);
+    io::vtk::from_vtk_image(vtk_image, image);
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
-    compareImageAttributes(
-        vtkImage->GetDimensions(),
-        vtkImage->GetSpacing(),
-        vtkImage->GetOrigin(),
-        vtkImage->GetDataDimension(),
+    compare_image_attributes(
+        vtk_image->GetDimensions(),
+        vtk_image->GetSpacing(),
+        vtk_image->GetOrigin(),
+        vtk_image->GetDataDimension(),
 
         image->size(),
         image->getSpacing(),
@@ -231,53 +231,53 @@ void imageFromVTKTest(const std::string& imagename, const core::type& type)
         image->numDimensions()
     );
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + imagename + "> Failed ", type, image->getType());
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + _imagename + "> Failed ", _type, image->getType());
 
-    char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(image->buffer());
+    char* vtk_ptr = static_cast<char*>(vtk_image->GetScalarPointer());
+    char* ptr     = static_cast<char*>(image->buffer());
 
-    CPPUNIT_ASSERT(std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr));
+    CPPUNIT_ASSERT(std::equal(ptr, ptr + image->getSizeInBytes(), vtk_ptr));
 }
 
 //------------------------------------------------------------------------------
 
-void testVtkReader(core::type imagetype)
+void test_vtk_reader(core::type _imagetype)
 {
-    const std::filesystem::path testFile(utest_data::Data::dir()
-                                         / ("sight/image/vtk/img-" + imagetype.name() + ".vtk"));
+    const std::filesystem::path test_file(utest_data::Data::dir()
+                                          / ("sight/image/vtk/img-" + _imagetype.name() + ".vtk"));
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::image::sptr image = std::make_shared<data::image>();
 
     io::vtk::ImageReader::sptr reader = std::make_shared<io::vtk::ImageReader>();
     reader->set_object(image);
-    reader->set_file(testFile);
+    reader->set_file(test_file);
     reader->read();
 
     vtkSmartPointer<vtkGenericDataObjectReader> vtk_reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
-    vtk_reader->SetFileName(testFile.string().c_str());
+    vtk_reader->SetFileName(test_file.string().c_str());
     vtk_reader->Update();
-    vtkSmartPointer<vtkImageData> vtkImage = vtkImageData::SafeDownCast(vtk_reader->GetOutput());
+    vtkSmartPointer<vtkImageData> vtk_image = vtkImageData::SafeDownCast(vtk_reader->GetOutput());
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
-        "test on <" "sight/image/vtk/img-" + imagetype.name() + ".vtk" "> Failed ",
-        imagetype,
+        "test on <" "sight/image/vtk/img-" + _imagetype.name() + ".vtk" "> Failed ",
+        _imagetype,
         image->getType()
     );
 
-    compareImageAttributes(
+    compare_image_attributes(
         image->size(),
         image->getSpacing(),
         image->getOrigin(),
         image->numDimensions(),
 
-        vtkImage->GetDimensions(),
-        vtkImage->GetSpacing(),
-        vtkImage->GetOrigin(),
-        vtkImage->GetDataDimension()
+        vtk_image->GetDimensions(),
+        vtk_image->GetSpacing(),
+        vtk_image->GetOrigin(),
+        vtk_image->GetDataDimension()
     );
 }
 
@@ -298,67 +298,67 @@ void image_test::tearDown()
 
 void image_test::testImageToVtk()
 {
-    imageToVTKTest(core::type::INT8, {VTK_CHAR, VTK_SIGNED_CHAR});
-    imageToVTKTest(core::type::UINT8, {VTK_UNSIGNED_CHAR});
+    image_to_vtk_test(core::type::INT8, {VTK_CHAR, VTK_SIGNED_CHAR});
+    image_to_vtk_test(core::type::UINT8, {VTK_UNSIGNED_CHAR});
 
-    imageToVTKTest(core::type::INT16, {VTK_SHORT});
-    imageToVTKTest(core::type::UINT16, {VTK_UNSIGNED_SHORT});
+    image_to_vtk_test(core::type::INT16, {VTK_SHORT});
+    image_to_vtk_test(core::type::UINT16, {VTK_UNSIGNED_SHORT});
 
-    imageToVTKTest(core::type::INT32, {VTK_INT});
-    imageToVTKTest(core::type::UINT32, {VTK_UNSIGNED_INT});
+    image_to_vtk_test(core::type::INT32, {VTK_INT});
+    image_to_vtk_test(core::type::UINT32, {VTK_UNSIGNED_INT});
 
     // imageToVTKTest("int64" , { VTK_LONG));
     // imageToVTKTest("uint64", { VTK_UNSIGNED_LONG));
 
-    imageToVTKTest(core::type::FLOAT, {VTK_FLOAT});
-    imageToVTKTest(core::type::DOUBLE, {VTK_DOUBLE});
+    image_to_vtk_test(core::type::FLOAT, {VTK_FLOAT});
+    image_to_vtk_test(core::type::DOUBLE, {VTK_DOUBLE});
 }
 
 // ------------------------------------------------------------------------------
 
 void image_test::testFromVtk()
 {
-    imageFromVTKTest("sight/image/vtk/img.vtk", core::type::INT16);
+    image_from_vtk_test("sight/image/vtk/img.vtk", core::type::INT16);
 
-    imageFromVTKTest("sight/image/vtk/img-int8.vtk", core::type::INT8);
-    imageFromVTKTest("sight/image/vtk/img-uint8.vtk", core::type::UINT8);
+    image_from_vtk_test("sight/image/vtk/img-int8.vtk", core::type::INT8);
+    image_from_vtk_test("sight/image/vtk/img-uint8.vtk", core::type::UINT8);
 
-    imageFromVTKTest("sight/image/vtk/img-int16.vtk", core::type::INT16);
-    imageFromVTKTest("sight/image/vtk/img-uint16.vtk", core::type::UINT16);
+    image_from_vtk_test("sight/image/vtk/img-int16.vtk", core::type::INT16);
+    image_from_vtk_test("sight/image/vtk/img-uint16.vtk", core::type::UINT16);
 
-    imageFromVTKTest("sight/image/vtk/img-int32.vtk", core::type::INT32);
-    imageFromVTKTest("sight/image/vtk/img-uint32.vtk", core::type::UINT32);
+    image_from_vtk_test("sight/image/vtk/img-int32.vtk", core::type::INT32);
+    image_from_vtk_test("sight/image/vtk/img-uint32.vtk", core::type::UINT32);
 
     //imageFromVTKTest("sight/image/vtk/img-int64.vtk", "int64"  );
     //imageFromVTKTest("sight/image/vtk/img-uint64.vtk", "uint64"  );
 
-    imageFromVTKTest("sight/image/vtk/img-float.vtk", core::type::FLOAT);
-    imageFromVTKTest("sight/image/vtk/img-double.vtk", core::type::DOUBLE);
+    image_from_vtk_test("sight/image/vtk/img-float.vtk", core::type::FLOAT);
+    image_from_vtk_test("sight/image/vtk/img-double.vtk", core::type::DOUBLE);
 
-    int nbComponents = 4;
-    core::type type  = core::type::UINT8;
+    int nb_components = 4;
+    core::type type   = core::type::UINT8;
 
-    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
+    vtkSmartPointer<vtkImageData> vtk_image = vtkSmartPointer<vtkImageData>::New();
 
-    CPPUNIT_ASSERT(vtkImage);
-    vtkImage->SetDimensions(64, 64, 1);
-    vtkImage->SetSpacing(1.0, 1.0, 0.0);
-    int dataType = io::vtk::TypeTranslator::translate(type);
-    vtkImage->AllocateScalars(dataType, nbComponents);
+    CPPUNIT_ASSERT(vtk_image);
+    vtk_image->SetDimensions(64, 64, 1);
+    vtk_image->SetSpacing(1.0, 1.0, 0.0);
+    int data_type = io::vtk::TypeTranslator::translate(type);
+    vtk_image->AllocateScalars(data_type, nb_components);
 
     data::image::sptr image = std::make_shared<data::image>();
-    io::vtk::fromVTKImage(vtkImage, image);
+    io::vtk::from_vtk_image(vtk_image, image);
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<std::size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
+        static_cast<std::size_t>(vtk_image->GetPointData()->GetScalars()->GetNumberOfComponents()),
         static_cast<std::size_t>(image->numComponents())
     );
-    compareImageAttributes(
-        vtkImage->GetDimensions(),
-        vtkImage->GetSpacing(),
-        vtkImage->GetOrigin(),
-        vtkImage->GetDataDimension(),
+    compare_image_attributes(
+        vtk_image->GetDimensions(),
+        vtk_image->GetSpacing(),
+        vtk_image->GetOrigin(),
+        vtk_image->GetDataDimension(),
 
         image->size(),
         image->getSpacing(),
@@ -367,16 +367,16 @@ void image_test::testFromVtk()
     );
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + type.name() + "> Failed ", type, image->getType());
 
-    char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(image->buffer());
+    char* vtk_ptr = static_cast<char*>(vtk_image->GetScalarPointer());
+    char* ptr     = static_cast<char*>(image->buffer());
 
-    CPPUNIT_ASSERT(std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr));
+    CPPUNIT_ASSERT(std::equal(ptr, ptr + image->getSizeInBytes(), vtk_ptr));
 }
 
 // ------------------------------------------------------------------------------
 
 template<typename TYPE>
-void fromToTest(data::image::PixelFormat format)
+void from_to_test(data::image::PixelFormat _format)
 {
     const data::image::Size size       = {10, 20, 0};
     const data::image::Spacing spacing = {1., 1., 0};
@@ -384,13 +384,13 @@ void fromToTest(data::image::PixelFormat format)
     const core::type type              = core::type::get<TYPE>();
 
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generateImage(image, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generateImage(image, size, spacing, origin, type, _format, 0);
 
-    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(image, vtkImage);
+    vtkSmartPointer<vtkImageData> vtk_image = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::to_vtk_image(image, vtk_image);
 
     data::image::sptr image2 = std::make_shared<data::image>();
-    io::vtk::fromVTKImage(vtkImage, image2);
+    io::vtk::from_vtk_image(vtk_image, image2);
 
     CPPUNIT_ASSERT_EQUAL(image->size()[0], image2->size()[0]);
     CPPUNIT_ASSERT_EQUAL(image->size()[1], image2->size()[1]);
@@ -399,8 +399,8 @@ void fromToTest(data::image::PixelFormat format)
     CPPUNIT_ASSERT_EQUAL(image->numComponents(), image2->numComponents());
     CPPUNIT_ASSERT_EQUAL(image->getPixelFormat(), image2->getPixelFormat());
 
-    const auto imageDumpLock  = image->dump_lock();
-    const auto image2DumpLock = image2->dump_lock();
+    const auto image_dump_lock  = image->dump_lock();
+    const auto image2_dump_lock = image2->dump_lock();
 
     auto itr       = image->begin<TYPE>();
     auto itr2      = image2->begin<TYPE>();
@@ -421,29 +421,29 @@ void fromToTest(data::image::PixelFormat format)
 
 void image_test::fromToVtkTest()
 {
-    fromToTest<std::uint8_t>(data::image::GRAY_SCALE);
-    fromToTest<std::uint8_t>(data::image::RGB);
-    fromToTest<std::uint8_t>(data::image::RGBA);
+    from_to_test<std::uint8_t>(data::image::GRAY_SCALE);
+    from_to_test<std::uint8_t>(data::image::RGB);
+    from_to_test<std::uint8_t>(data::image::RGBA);
 
-    fromToTest<std::uint16_t>(data::image::GRAY_SCALE);
-    fromToTest<std::uint16_t>(data::image::RGB);
-    fromToTest<std::uint16_t>(data::image::RGBA);
+    from_to_test<std::uint16_t>(data::image::GRAY_SCALE);
+    from_to_test<std::uint16_t>(data::image::RGB);
+    from_to_test<std::uint16_t>(data::image::RGBA);
 
-    fromToTest<std::uint32_t>(data::image::GRAY_SCALE);
-    fromToTest<std::uint32_t>(data::image::RGB);
-    fromToTest<std::uint32_t>(data::image::RGBA);
+    from_to_test<std::uint32_t>(data::image::GRAY_SCALE);
+    from_to_test<std::uint32_t>(data::image::RGB);
+    from_to_test<std::uint32_t>(data::image::RGBA);
 
-    fromToTest<std::int8_t>(data::image::GRAY_SCALE);
-    fromToTest<std::int8_t>(data::image::RGB);
-    fromToTest<std::int8_t>(data::image::RGBA);
+    from_to_test<std::int8_t>(data::image::GRAY_SCALE);
+    from_to_test<std::int8_t>(data::image::RGB);
+    from_to_test<std::int8_t>(data::image::RGBA);
 
-    fromToTest<std::int16_t>(data::image::GRAY_SCALE);
-    fromToTest<std::int16_t>(data::image::RGB);
-    fromToTest<std::int16_t>(data::image::RGBA);
+    from_to_test<std::int16_t>(data::image::GRAY_SCALE);
+    from_to_test<std::int16_t>(data::image::RGB);
+    from_to_test<std::int16_t>(data::image::RGBA);
 
-    fromToTest<std::int32_t>(data::image::GRAY_SCALE);
-    fromToTest<std::int32_t>(data::image::RGB);
-    fromToTest<std::int32_t>(data::image::RGBA);
+    from_to_test<std::int32_t>(data::image::GRAY_SCALE);
+    from_to_test<std::int32_t>(data::image::RGB);
+    from_to_test<std::int32_t>(data::image::RGBA);
 
     // uint64 and int64 are not recognized on Windows for VTK conversion.
 }
@@ -452,20 +452,20 @@ void image_test::fromToVtkTest()
 
 void image_test::mhdReaderTest()
 {
-    const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot.mhd");
+    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot.mhd");
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imagePath.string() + "' does not exist",
-        std::filesystem::exists(imagePath)
+        "The file '" + image_path.string() + "' does not exist",
+        std::filesystem::exists(image_path)
     );
 
     data::image::sptr image               = std::make_shared<data::image>();
     io::vtk::MetaImageReader::sptr reader = std::make_shared<io::vtk::MetaImageReader>();
     reader->set_object(image);
-    reader->set_file(imagePath);
+    reader->set_file(image_path);
     reader->read();
 
-    compareImageAttributes(
+    compare_image_attributes(
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
@@ -485,50 +485,50 @@ void image_test::mhdWriterTest()
 #if VTK_MAJOR_VERSION >= 9
     // VTK9 doesn't produce the same output, floats are not rounded in the header and the compressed buffer is
     // surprisingly bigger
-    const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.mhd");
-    const std::filesystem::path zRawPath(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.zraw");
+    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.mhd");
+    const std::filesystem::path z_raw_path(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.zraw");
 #else
     const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot.mhd");
     const std::filesystem::path zRawPath(utest_data::Data::dir() / "sight/image/mhd/BostonTeapot.zraw");
 #endif
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imagePath.string() + "' does not exist",
-        std::filesystem::exists(imagePath)
+        "The file '" + image_path.string() + "' does not exist",
+        std::filesystem::exists(image_path)
     );
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + zRawPath.string() + "' does not exist",
-        std::filesystem::exists(zRawPath)
+        "The file '" + z_raw_path.string() + "' does not exist",
+        std::filesystem::exists(z_raw_path)
     );
 
-    core::os::temp_dir tmpDir;
-    const auto testFile     = tmpDir / "BostonTeapot.mhd";
-    const auto testZRawFile = tmpDir / "BostonTeapot.zraw";
+    core::os::temp_dir tmp_dir;
+    const auto test_file       = tmp_dir / "BostonTeapot.mhd";
+    const auto test_z_raw_file = tmp_dir / "BostonTeapot.zraw";
 
     auto image  = std::make_shared<data::image>();
     auto reader = std::make_shared<io::vtk::MetaImageReader>();
     reader->set_object(image);
-    reader->set_file(imagePath);
+    reader->set_file(image_path);
     reader->read();
 
     auto writer = std::make_shared<io::vtk::MetaImageWriter>();
     writer->set_object(image);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     writer->write();
 
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
-    CPPUNIT_ASSERT(std::filesystem::exists(testZRawFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_z_raw_file));
 
-    CPPUNIT_ASSERT(utest_data::File::contentEquals(imagePath, testFile));
-    CPPUNIT_ASSERT(utest_data::File::contentEquals(zRawPath, testZRawFile));
+    CPPUNIT_ASSERT(utest_data::File::contentEquals(image_path, test_file));
+    CPPUNIT_ASSERT(utest_data::File::contentEquals(z_raw_path, test_z_raw_file));
 
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT8, "imageTest.mhd");
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT8, "imageTest.mhd");
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT16, "imageTest.mhd");
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT16, "imageTest.mhd");
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT32, "imageTest.mhd");
-    writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT32, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT8, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT8, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT16, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT16, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::INT32, "imageTest.mhd");
+    writer_test<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::type::UINT32, "imageTest.mhd");
     // writerTest< io::vtk::MetaImageWriter,::io::vtk::MetaImageReader>("int64", "imageTest.mhd");
     // writerTest< io::vtk::MetaImageWriter,::io::vtk::MetaImageReader>("uint64", "imageTest.mhd");
 }
@@ -537,21 +537,21 @@ void image_test::mhdWriterTest()
 
 void image_test::vtiReaderTest()
 {
-    const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/vti/BostonTeapot.vti");
+    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/vti/BostonTeapot.vti");
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imagePath.string() + "' does not exist",
-        std::filesystem::exists(imagePath)
+        "The file '" + image_path.string() + "' does not exist",
+        std::filesystem::exists(image_path)
     );
 
     data::image::sptr image              = std::make_shared<data::image>();
     io::vtk::VtiImageReader::sptr reader = std::make_shared<io::vtk::VtiImageReader>();
 
     reader->set_object(image);
-    reader->set_file(imagePath);
+    reader->set_file(image_path);
     reader->read();
 
-    compareImageAttributes(
+    compare_image_attributes(
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
@@ -568,12 +568,12 @@ void image_test::vtiReaderTest()
 
 void image_test::vtiWriterTest()
 {
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT8, "imageTest.vti");
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT8, "imageTest.vti");
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT16, "imageTest.vti");
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT16, "imageTest.vti");
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT32, "imageTest.vti");
-    writerTest<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT32, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT8, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT8, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT16, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT16, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::INT32, "imageTest.vti");
+    writer_test<io::vtk::VtiImageWriter, io::vtk::VtiImageReader>(core::type::UINT32, "imageTest.vti");
     // writerTest< io::vtk::VtiImageWriter, io::vtk::VtiImageReader>("int64", "imageTest.vti");
     // writerTest< io::vtk::VtiImageWriter, io::vtk::VtiImageReader>("uint64", "imageTest.vti");
 }
@@ -582,28 +582,28 @@ void image_test::vtiWriterTest()
 
 void image_test::vtkReaderTest()
 {
-    const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/vtk/img.vtk");
+    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/vtk/img.vtk");
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imagePath.string() + "' does not exist",
-        std::filesystem::exists(imagePath)
+        "The file '" + image_path.string() + "' does not exist",
+        std::filesystem::exists(image_path)
     );
 
     data::image::sptr image           = std::make_shared<data::image>();
     io::vtk::ImageReader::sptr reader = std::make_shared<io::vtk::ImageReader>();
 
     reader->set_object(image);
-    reader->set_file(imagePath);
+    reader->set_file(image_path);
     reader->read();
 
-    data::image::Size vtkSize {{230, 170, 58}};
-    data::image::Spacing vtkSpacing {{1.732, 1.732, 3.2}};
-    data::image::Origin vtkOrigin {{34.64, 86.6, 56}};
+    data::image::Size vtk_size {{230, 170, 58}};
+    data::image::Spacing vtk_spacing {{1.732, 1.732, 3.2}};
+    data::image::Origin vtk_origin {{34.64, 86.6, 56}};
 
-    compareImageAttributes(
-        vtkSize,
-        vtkSpacing,
-        vtkOrigin,
+    compare_image_attributes(
+        vtk_size,
+        vtk_spacing,
+        vtk_origin,
         3,
 
         image->size(),
@@ -612,28 +612,28 @@ void image_test::vtkReaderTest()
         image->numDimensions()
     );
 
-    testVtkReader(core::type::INT8);
-    testVtkReader(core::type::UINT8);
-    testVtkReader(core::type::INT16);
-    testVtkReader(core::type::UINT16);
-    testVtkReader(core::type::INT32);
-    testVtkReader(core::type::UINT32);
+    test_vtk_reader(core::type::INT8);
+    test_vtk_reader(core::type::UINT8);
+    test_vtk_reader(core::type::INT16);
+    test_vtk_reader(core::type::UINT16);
+    test_vtk_reader(core::type::INT32);
+    test_vtk_reader(core::type::UINT32);
     // testVtkReader(std::string("int64"));
     // testVtkReader(std::string("uint64"));
-    testVtkReader(core::type::FLOAT);
-    testVtkReader(core::type::DOUBLE);
+    test_vtk_reader(core::type::FLOAT);
+    test_vtk_reader(core::type::DOUBLE);
 }
 
 // ------------------------------------------------------------------------------
 
 void image_test::vtkWriterTest()
 {
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT8, "imageTest.vtk");
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT8, "imageTest.vtk");
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT16, "imageTest.vtk");
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT16, "imageTest.vtk");
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT32, "imageTest.vtk");
-    writerTest<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT32, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT8, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT8, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT16, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT16, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::INT32, "imageTest.vtk");
+    writer_test<io::vtk::ImageWriter, io::vtk::ImageReader>(core::type::UINT32, "imageTest.vtk");
     // writerTest< io::vtk::ImageWriter, io::vtk::ImageReader>( "int64", "imageTest.vtk");
     // writerTest< io::vtk::ImageWriter, io::vtk::ImageReader>( "uint64", "imageTest.vtk");
 }

@@ -57,34 +57,34 @@ void matrix_regressor::starting()
 
 void matrix_regressor::updating()
 {
-    const auto matrixList = m_matrixList.lock();
-    const auto pointList  = m_pointList.lock();
+    const auto matrix_list = m_matrixList.lock();
+    const auto point_list  = m_pointList.lock();
 
-    SIGHT_ASSERT(s_MATRIX_LIST_IN << " does not exist", matrixList);
-    SIGHT_ASSERT(s_POINT_LIST_IN << " does not exist", pointList);
+    SIGHT_ASSERT(s_MATRIX_LIST_IN << " does not exist", matrix_list);
+    SIGHT_ASSERT(s_POINT_LIST_IN << " does not exist", point_list);
 
-    const auto optimalMatrix = m_optimalMatrix.lock();
+    const auto optimal_matrix = m_optimalMatrix.lock();
 
-    SIGHT_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
+    SIGHT_ASSERT("'optimalMatrix' does not exist", optimal_matrix);
 
-    std::vector<sight::filter::image::matrix_regressor::PointType> ptList;
+    std::vector<sight::filter::image::matrix_regressor::point_t> pt_list;
 
     // Convert the point list.
-    for(const auto& pt : pointList->getPoints())
+    for(const auto& pt : point_list->getPoints())
     {
-        const auto& ptCoords = pt->getCoord();
-        ptList.emplace_back(ptCoords[0], ptCoords[1], ptCoords[2], 1.);
+        const auto& pt_coords = pt->getCoord();
+        pt_list.emplace_back(pt_coords[0], pt_coords[1], pt_coords[2], 1.);
     }
 
-    if(!matrixList->empty() && !ptList.empty())
+    if(!matrix_list->empty() && !pt_list.empty())
     {
-        sight::filter::image::matrix_regressor regressor(matrixList.get_shared(), ptList);
+        sight::filter::image::matrix_regressor regressor(matrix_list.get_shared(), pt_list);
 
-        data::matrix4::csptr initVal =
-            std::dynamic_pointer_cast<data::matrix4>((*matrixList)[0]);
+        data::matrix4::csptr init_val =
+            std::dynamic_pointer_cast<data::matrix4>((*matrix_list)[0]);
 
-        data::matrix4::sptr res = regressor.minimize(*initVal, 1., 1e-4, 1e-4);
-        optimalMatrix->deep_copy(res);
+        data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
+        optimal_matrix->deep_copy(res);
 
         m_sigComputed->async_emit();
     }

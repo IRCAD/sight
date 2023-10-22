@@ -62,14 +62,14 @@ public:
     }
 
     /// Sets time duration.
-    CORE_API virtual void set_duration(time_duration_t duration) = 0;
+    CORE_API virtual void set_duration(time_duration_t _duration) = 0;
 
     /// Sets the function to be triggered when time duration expires.
     template<typename F>
-    void set_function(F f)
+    void set_function(F _f)
     {
         core::mt::scoped_lock lock(m_mutex);
-        m_function = f;
+        m_function = _f;
         updated_function();
     }
 
@@ -77,7 +77,7 @@ public:
     virtual bool is_one_shot() const = 0;
 
     /// Sets timer mode.
-    virtual void set_one_shot(bool one_shot) = 0;
+    virtual void set_one_shot(bool _one_shot) = 0;
 
     /// Returns true if the timer is currently running.
     virtual bool is_running() const = 0;

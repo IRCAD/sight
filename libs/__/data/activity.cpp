@@ -32,13 +32,13 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-void activity::shallow_copy(const object::csptr& source)
+void activity::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const activity>(source);
+    const auto& other = std::dynamic_pointer_cast<const activity>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -51,13 +51,13 @@ void activity::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void activity::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void activity::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const activity>(source);
+    const auto& other = std::dynamic_pointer_cast<const activity>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -65,27 +65,27 @@ void activity::deep_copy(const object::csptr& source, const std::unique_ptr<deep
 
     m_activityConfigId = other->m_activityConfigId;
 
-    data::composite::deep_copy(other, cache);
+    data::composite::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool activity::operator==(const activity& other) const noexcept
+bool activity::operator==(const activity& _other) const noexcept
 {
-    if(m_activityConfigId != other.m_activityConfigId)
+    if(m_activityConfigId != _other.m_activityConfigId)
     {
         return false;
     }
 
     // Super class last
-    return data::composite::operator==(other);
+    return data::composite::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool activity::operator!=(const activity& other) const noexcept
+bool activity::operator!=(const activity& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

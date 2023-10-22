@@ -62,7 +62,7 @@
      </extension>
 
      <extension implements="sight::service::extension::factory">
-          <type>sight::ui::view::IView</type>
+          <type>sight::ui::view</type>
           <service>sight::module::ui::view</service>
           <desc>Defines the generic layout for application.</desc>
      </extension>
@@ -70,7 +70,7 @@
      <extension implements="sight::service::extension::factory">
           <type>sight::ui::action</type>
           <service>sight::module::ui::com::signal</service>
-          <desc>Action that sends a signal when it is triggered</desc>
+          <desc>action that sends a signal when it is triggered</desc>
      </extension>
 
      <extension implements="sight::service::extension::factory">
@@ -166,6 +166,6 @@
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::action</type>
          <service>sight::module::ui::com::timestamp_signal</service>
-         <desc>Action that sends a signal with the current timestamp when it is triggered</desc>
+         <desc>action that sends a signal with the current timestamp when it is triggered</desc>
     </extension>
 </plugin>

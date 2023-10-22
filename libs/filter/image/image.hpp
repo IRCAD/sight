@@ -38,53 +38,53 @@ namespace sight::filter::image
  *
  * set input image voxel to zero where roi voxel value is zero
  */
-FILTER_IMAGE_API void applyRoi(data::image::sptr image, data::image::sptr roi);
+FILTER_IMAGE_API void apply_roi(data::image::sptr _image, data::image::sptr _roi);
 
 /**
  * @brief Check if 'imgRoiApplied' is the result of 'roi' Applied to 'image'
  *
  */
-FILTER_IMAGE_API bool isRoiApplied(
-    data::image::sptr image,
-    data::image::sptr roi,
-    data::image::sptr imgRoiApplied
+FILTER_IMAGE_API bool is_roi_applied(
+    data::image::sptr _image,
+    data::image::sptr _roi,
+    data::image::sptr _img_roi_applied
 );
 
 /**
  * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0
  */
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-void mergeMask(const data::image::sptr& imgDest, const data::image::csptr& mask, IMG_DEST_TYPE val)
+void merge_mask(const data::image::sptr& _img_dest, const data::image::csptr& _mask, IMG_DEST_TYPE _val)
 {
-    typedef IMG_DEST_TYPE ImgDestType;
-    typedef MASK_TYPE MaskType;
-    SIGHT_ASSERT("image dest has not correct type", imgDest->getType() == core::type::get<ImgDestType>());
-    SIGHT_ASSERT("image mask has not correct type", mask->getType() == core::type::get<MaskType>());
+    typedef IMG_DEST_TYPE img_dest_t;
+    typedef MASK_TYPE mask_t;
+    SIGHT_ASSERT("image dest has not correct type", _img_dest->getType() == core::type::get<img_dest_t>());
+    SIGHT_ASSERT("image mask has not correct type", _mask->getType() == core::type::get<mask_t>());
 
-    SIGHT_ASSERT("images have not the same size", imgDest->size() == mask->size());
+    SIGHT_ASSERT("images have not the same size", _img_dest->size() == _mask->size());
     SIGHT_ASSERT(
         "images have not the same spacing",
-        core::tools::is_equal(imgDest->getSpacing(), mask->getSpacing())
+        core::tools::is_equal(_img_dest->getSpacing(), _mask->getSpacing())
     );
     SIGHT_ASSERT(
         "images have not the same origin",
-        core::tools::is_equal(imgDest->getOrigin(), mask->getOrigin())
+        core::tools::is_equal(_img_dest->getOrigin(), _mask->getOrigin())
     );
 
-    const auto imgDumpLock  = imgDest->dump_lock();
-    const auto maskDumpLock = mask->dump_lock();
+    const auto img_dump_lock  = _img_dest->dump_lock();
+    const auto mask_dump_lock = _mask->dump_lock();
 
-    auto imgItr          = imgDest->begin<ImgDestType>();
-    const auto imgItrEnd = imgDest->end<ImgDestType>();
+    auto img_itr           = _img_dest->begin<img_dest_t>();
+    const auto img_itr_end = _img_dest->end<img_dest_t>();
 
-    auto maskItr          = mask->begin<MaskType>();
-    const auto maskItrEnd = mask->end<MaskType>();
+    auto mask_itr           = _mask->begin<mask_t>();
+    const auto mask_itr_end = _mask->end<mask_t>();
 
-    for( ; imgItr != imgItrEnd && maskItr != maskItrEnd ; ++imgItr, ++maskItr)
+    for( ; img_itr != img_itr_end && mask_itr != mask_itr_end ; ++img_itr, ++mask_itr)
     {
-        if(*maskItr != 0)
+        if(*mask_itr != 0)
         {
-            *imgItr = val;
+            *img_itr = _val;
         }
     }
 }

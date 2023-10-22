@@ -34,7 +34,7 @@ namespace sight::io::igtl::detail::converter
 const std::string StringConverter::s_IGTL_TYPE          = "STRING";
 const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::string::classname();
 
-converterRegisterMacro(io::igtl::detail::converter::StringConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::StringConverter);
 
 StringConverter::StringConverter()
 = default;
@@ -46,24 +46,24 @@ StringConverter::~StringConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::object::csptr _src) const
 {
-    data::string::csptr srcStr = std::dynamic_pointer_cast<const data::string>(src);
+    data::string::csptr src_str = std::dynamic_pointer_cast<const data::string>(_src);
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
-    dest->SetString(srcStr->getValue().c_str());
+    dest->SetString(src_str->getValue().c_str());
     return {dest.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
     data::string::sptr dest = std::make_shared<data::string>();
 
-    auto* msg                             = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
-    ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);
-    dest->setValue(std::string(srcStr->GetString()));
+    auto* msg                              = dynamic_cast< ::igtl::StringMessage*>(_src.GetPointer());
+    ::igtl::StringMessage::Pointer src_str = ::igtl::StringMessage::Pointer(msg);
+    dest->setValue(std::string(src_str->GetString()));
 
     return dest;
 }
@@ -77,7 +77,7 @@ base::sptr StringConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& StringConverter::getIgtlType() const
+std::string const& StringConverter::get_igtl_type() const
 {
     return StringConverter::s_IGTL_TYPE;
 }

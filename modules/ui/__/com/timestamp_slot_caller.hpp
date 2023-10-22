@@ -57,8 +57,8 @@ public:
 protected:
 
     using HasSlotIDType         = std::string;
-    using SlotInfoType          = std::pair<HasSlotIDType, core::com::slots::key_t>;
-    using SlotInfoContainerType = std::vector<SlotInfoType>;
+    using slot_info_t           = std::pair<HasSlotIDType, core::com::slots::key_t>;
+    using slot_info_container_t = std::vector<slot_info_t>;
 
     /// Does nothing
     MODULE_UI_API void starting() override;
@@ -73,7 +73,7 @@ protected:
     MODULE_UI_API void updating() override;
 
     /// vector representing slots
-    SlotInfoContainerType m_slotInfos;
+    slot_info_container_t m_slotInfos;
 };
 
 } // namespace sight::module::ui::com

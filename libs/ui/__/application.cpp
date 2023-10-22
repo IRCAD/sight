@@ -25,14 +25,14 @@
 namespace sight::ui
 {
 
-const application::FactoryRegistryKeyType application::REGISTRY_KEY = "sight::ui::application";
+const application::factory_registry_key_t application::REGISTRY_KEY = "sight::ui::application";
 
 //-----------------------------------------------------------------------------
 
 application::sptr application::get()
 {
-    ui::object::sptr guiObj      = ui::factory::make(application::REGISTRY_KEY);
-    static application::sptr app = std::dynamic_pointer_cast<ui::application>(guiObj);
+    ui::object::sptr gui_obj     = ui::factory::make(application::REGISTRY_KEY);
+    static application::sptr app = std::dynamic_pointer_cast<ui::application>(gui_obj);
     SIGHT_ASSERT("no implementation of " << ui::application::REGISTRY_KEY, app);
     return app;
 }

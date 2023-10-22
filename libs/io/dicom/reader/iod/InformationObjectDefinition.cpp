@@ -28,17 +28,17 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::InformationObjectDefinition(
-    data::dicom_series::csptr dicomSeries,
-    SPTR(io::dicom::container::DicomInstance)instance,
-    core::log::logger::sptr logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    data::dicom_series::csptr _dicom_series,
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    core::log::logger::sptr _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    m_instance(std::move(instance)),
-    m_dicomSeries(std::move(dicomSeries)),
-    m_logger(std::move(logger)),
-    m_progressCallback(std::move(progress)),
-    m_cancelRequestedCallback(std::move(cancel))
+    m_instance(std::move(_instance)),
+    m_dicomSeries(std::move(_dicom_series)),
+    m_logger(std::move(_logger)),
+    m_progressCallback(std::move(_progress)),
+    m_cancelRequestedCallback(std::move(_cancel))
 {
     SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
     SIGHT_ASSERT("Instance should not be null.", m_instance);

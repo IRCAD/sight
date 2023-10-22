@@ -55,10 +55,10 @@ public:
      * @param _tvec: translation vector
      */
     GEOMETRY_VISION_API ReprojectionError(
-        cv::Mat _cameraMat,
-        cv::Mat _distCoef,
-        cv::Point2f _imagePoints,
-        cv::Point3f _objectPoints,
+        cv::Mat _camera_mat,
+        cv::Mat _dist_coef,
+        cv::Point2f _image_points,
+        cv::Point3f _object_points,
         cv::Mat _extrinsic
     );
     /**
@@ -70,7 +70,7 @@ public:
      * @param residuals: differences in x and y between a 2d point and it's reprojection.
      */
     template<typename T>
-    bool operator()(const T* pose, T* residuals) const;
+    bool operator()(const T* _pose, T* _residuals) const;
 
     /**
      * @brief factory to hide the construction of the CostFunction object from the client code.
@@ -84,10 +84,10 @@ public:
      */
 
     GEOMETRY_VISION_API static ::ceres::CostFunction* Create(
-        const cv::Mat& _cameraMatrix,
-        const cv::Mat& _distCoef,
-        const cv::Point2f& _imagePoints,
-        const cv::Point3f& _objectPoints,
+        const cv::Mat& _camera_matrix,
+        const cv::Mat& _dist_coef,
+        const cv::Point2f& _image_points,
+        const cv::Point3f& _object_points,
         const cv::Mat& _extrinsic
     );
 
@@ -103,32 +103,32 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-bool ReprojectionError::operator()(const T* const pose, T* residuals) const
+bool ReprojectionError::operator()(const T* const _pose, T* _residuals) const
 {
     //Use OpenCV template structures since this operator is templated.
     // Conversion to OpenCv Mat
-    const cv::Mat rvecPose = (cv::Mat_<T>(3, 1) << pose[0], pose[1], pose[2]);
-    const cv::Mat tvecPose = (cv::Mat_<T>(3, 1) << pose[3], pose[4], pose[5]);
-    cv::Mat rotMatPose     = cv::Mat_<T>(3, 3);
+    const cv::Mat rvec_pose = (cv::Mat_<T>(3, 1) << _pose[0], _pose[1], _pose[2]);
+    const cv::Mat tvec_pose = (cv::Mat_<T>(3, 1) << _pose[3], _pose[4], _pose[5]);
+    cv::Mat rot_mat_pose    = cv::Mat_<T>(3, 3);
 
-    cv::Rodrigues(rvecPose, rotMatPose); // rotation vector to matrix.
+    cv::Rodrigues(rvec_pose, rot_mat_pose); // rotation vector to matrix.
 
-    cv::Mat transformPose = cv::Mat_<T>::eye(4, 4);
+    cv::Mat transform_pose = cv::Mat_<T>::eye(4, 4);
 
     // Copy in transform_pose
-    transformPose(cv::Range(0, 3), cv::Range(0, 3)) = rotMatPose * 1;
-    transformPose(cv::Range(0, 3), cv::Range(3, 4)) = tvecPose * 1;
+    transform_pose(cv::Range(0, 3), cv::Range(0, 3)) = rot_mat_pose * 1;
+    transform_pose(cv::Range(0, 3), cv::Range(3, 4)) = tvec_pose * 1;
 
     // compute real pose (extrinsic mat * pose)
     // Note: extrinsic can be identity if we use reference camera
-    const cv::Mat transformPoseExtrinsic = m_extrinsic * transformPose;
+    const cv::Mat transform_pose_extrinsic = m_extrinsic * transform_pose;
 
     //matrix to rotation vector.
-    cv::Mat rvecPoseExtrinsic;
-    cv::Rodrigues(transformPoseExtrinsic(cv::Range(0, 3), cv::Range(0, 3)), rvecPoseExtrinsic);
+    cv::Mat rvec_pose_extrinsic;
+    cv::Rodrigues(transform_pose_extrinsic(cv::Range(0, 3), cv::Range(0, 3)), rvec_pose_extrinsic);
 
-    std::vector<cv::Point_<T> > pointReprojected(1); // 2d point
-    const std::vector<cv::Point3_<T> > point3dVector = {{
+    std::vector<cv::Point_<T> > point_reprojected(1); // 2d point
+    const std::vector<cv::Point3_<T> > point3d_vector = {{
         {T(m_objectPoint.x),
          T(m_objectPoint.y),
          T(m_objectPoint.z)
@@ -138,17 +138,17 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
 
     // Reproject the point with new pose
     cv::projectPoints(
-        point3dVector,
-        rvecPoseExtrinsic,
-        transformPoseExtrinsic(cv::Range(0, 3), cv::Range(3, 4)),
+        point3d_vector,
+        rvec_pose_extrinsic,
+        transform_pose_extrinsic(cv::Range(0, 3), cv::Range(3, 4)),
         m_cameraMatrix,
         m_distCoef,
-        pointReprojected
+        point_reprojected
     );
 
     // The error is the difference between the predicted and observed position.
-    residuals[0] = T(m_imagePoint.x) - T(pointReprojected[0].x);
-    residuals[1] = T(m_imagePoint.y) - T(pointReprojected[0].y);
+    _residuals[0] = T(m_imagePoint.x) - T(point_reprojected[0].x);
+    _residuals[1] = T(m_imagePoint.y) - T(point_reprojected[0].y);
 
     return true;
 }

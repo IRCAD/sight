@@ -29,15 +29,15 @@ namespace sight::module::data
 void get_camera::configuring()
 {
     service::config_t config = this->get_config();
-    const auto configOut     = config.equal_range("out");
-    for(auto it = configOut.first ; it != configOut.second ; ++it)
+    const auto config_out    = config.equal_range("out");
+    for(auto it = config_out.first ; it != config_out.second ; ++it)
     {
         const service::config_t& attr = it->second.get_child("<xmlattr>.group");
 
         if(attr.get_value<std::string>() == "camera")
         {
-            const auto keyRange = it->second.equal_range("key");
-            for(auto it_key = keyRange.first ; it_key != keyRange.second ; ++it_key)
+            const auto key_range = it->second.equal_range("key");
+            for(auto it_key = key_range.first ; it_key != key_range.second ; ++it_key)
             {
                 auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
 
@@ -46,8 +46,8 @@ void get_camera::configuring()
         }
         else if(attr.get_value<std::string>() == "extrinsic")
         {
-            const auto keyRange = it->second.equal_range("key");
-            for(auto it_key = keyRange.first ; it_key != keyRange.second ; ++it_key)
+            const auto key_range = it->second.equal_range("key");
+            for(auto it_key = key_range.first ; it_key != key_range.second ; ++it_key)
             {
                 auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
                 m_extrinsicIndexNumbers.push_back(index);

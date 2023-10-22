@@ -64,10 +64,10 @@ public:
     {
     public:
 
-        Registry(std::string functorKey)
+        Registry(std::string _functor_key)
         {
             sight::activity::validator::registry::get()->add_factory(
-                functorKey,
+                _functor_key,
                 &sight::activity::validator::factory::make<T>
             );
         }
@@ -84,8 +84,8 @@ public:
      * @see validator::return_t
      */
     ACTIVITY_API virtual return_t validate(
-        const activity::extension::activity_info& activity_info,
-        const CSPTR(data::vector)& currentSelection
+        const activity::extension::activity_info& _activity_info,
+        const CSPTR(data::vector)& _current_selection
     ) const = 0;
 };
 

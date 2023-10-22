@@ -26,7 +26,7 @@
 #include "ui/__/builder/toolbar.hpp"
 #include "ui/__/builder/widget.hpp"
 #include "ui/__/container/widget.hpp"
-#include "ui/__/detail/registry/View.hpp"
+#include "ui/__/detail/registry/view.hpp"
 #include "ui/__/layout/view.hpp"
 
 #include <core/com/slot.hxx>
@@ -58,13 +58,13 @@ service::service()
 void service::initialize()
 {
     // Create view registry
-    m_viewRegistry = ui::detail::registry::View::make(this->get_id());
+    m_viewRegistry = ui::detail::registry::view::make(this->get_id());
 
     const auto& config = this->get_config();
 
-    if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())
+    if(const auto registry_config = config.get_child_optional("registry"); registry_config.has_value())
     {
-        m_viewRegistry->initialize(registryConfig.value());
+        m_viewRegistry->initialize(registry_config.value());
     }
 
     // Create initializeLayoutManager
@@ -85,18 +85,18 @@ void service::initialize()
         }
 
         // find toolBarBuilder configuration
-        if(const auto toolBar = gui->get_child_optional("toolBar"); toolBar.has_value())
+        if(const auto tool_bar = gui->get_child_optional("toolBar"); tool_bar.has_value())
         {
-            this->initializeToolBarBuilder(toolBar.value());
+            this->initializeToolBarBuilder(tool_bar.value());
 
             m_hasToolBar = true;
         }
 
         // find slideView configurations
-        const auto slideViewCfg = gui->equal_range("slideView");
-        for(const auto& slideCfg : boost::make_iterator_range(slideViewCfg))
+        const auto slide_view_cfg = gui->equal_range("slideView");
+        for(const auto& slide_cfg : boost::make_iterator_range(slide_view_cfg))
         {
-            this->initializeSlideViewBuilder(slideCfg.second);
+            this->initializeSlideViewBuilder(slide_cfg.second);
         }
     }
 }
@@ -106,7 +106,7 @@ void service::initialize()
 void service::create()
 {
     SIGHT_ASSERT(
-        "[" + this->get_id() + "'] View must be initialized, don't forget to call 'initialize()' in "
+        "[" + this->get_id() + "'] view must be initialized, don't forget to call 'initialize()' in "
                                "'configuring()' method.",
         m_viewRegistry
     );
@@ -116,11 +116,11 @@ void service::create()
     core::thread::get_default_worker()->post_task<void>(
         [this, &parent]
         {
-            SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
+            SIGHT_ASSERT("view must be initialized.", m_viewRegistry);
 
-            ui::object::sptr guiObj =
+            ui::object::sptr gui_obj =
                 ui::factory::make(ui::builder::widget::REGISTRY_KEY);
-            m_containerBuilder = std::dynamic_pointer_cast<ui::builder::widget>(guiObj);
+            m_containerBuilder = std::dynamic_pointer_cast<ui::builder::widget>(gui_obj);
 
             SIGHT_ASSERT(
                 "Cannot create main container: factory failed for '"
@@ -144,25 +144,25 @@ void service::create()
                     m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
-                const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
+                const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
                 core::thread::get_default_worker()->post_task<void>(
                     [&]
                 {
-                    m_viewLayoutManager->createLayout(container, serviceID);
+                    m_viewLayoutManager->createLayout(container, service_id);
                 }).wait();
 
                 std::vector<ui::container::widget::sptr> views = m_viewLayoutManager->getSubViews();
 
-                for(const auto& slideBuilder : m_slideViewBuilders)
+                for(const auto& slide_builder : m_slideViewBuilders)
                 {
-                    SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
+                    SIGHT_ASSERT("Slide builder is not instantiated", slide_builder);
                     core::thread::get_default_worker()->post_task<void>(
                         [&]
                     {
-                        slideBuilder->createContainer(container);
+                        slide_builder->createContainer(container);
                     }).wait();
-                    views.push_back(slideBuilder->getContainer());
+                    views.push_back(slide_builder->getContainer());
                 }
 
                 m_viewRegistry->manage(views);
@@ -174,17 +174,17 @@ void service::create()
 
 void service::destroy()
 {
-    SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
+    SIGHT_ASSERT("view must be initialized.", m_viewRegistry);
 
     m_viewRegistry->unmanage();
 
-    for(const auto& slideBuilder : m_slideViewBuilders)
+    for(const auto& slide_builder : m_slideViewBuilders)
     {
-        SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
+        SIGHT_ASSERT("Slide builder is not instantiated", slide_builder);
         core::thread::get_default_worker()->post_task<void>(
             [&]
             {
-                slideBuilder->destroyContainer();
+                slide_builder->destroyContainer();
             }).wait();
     }
 
@@ -216,50 +216,50 @@ void service::destroy()
 
 //-----------------------------------------------------------------------------
 
-void service::initializeLayoutManager(const ui::config_t& layoutConfig)
+void service::initializeLayoutManager(const ui::config_t& _layout_config)
 {
-    const auto layoutManagerClassName = layoutConfig.get<std::string>("<xmlattr>.type");
+    const auto layout_manager_class_name = _layout_config.get<std::string>("<xmlattr>.type");
 
-    ui::object::sptr guiObj = ui::factory::make(layoutManagerClassName);
-    m_viewLayoutManager = std::dynamic_pointer_cast<ui::layout::view>(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class " + layoutManagerClassName, m_viewLayoutManager);
+    ui::object::sptr gui_obj = ui::factory::make(layout_manager_class_name);
+    m_viewLayoutManager = std::dynamic_pointer_cast<ui::layout::view>(gui_obj);
+    SIGHT_ASSERT("ClassFactoryRegistry failed for class " + layout_manager_class_name, m_viewLayoutManager);
 
-    m_viewLayoutManager->initialize(layoutConfig);
+    m_viewLayoutManager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void service::initializeToolBarBuilder(const ui::config_t& toolBarConfig)
+void service::initializeToolBarBuilder(const ui::config_t& _tool_bar_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(ui::builder::toolbar::REGISTRY_KEY);
-    m_toolBarBuilder = std::dynamic_pointer_cast<ui::builder::toolbar>(guiObj);
+    ui::object::sptr gui_obj = ui::factory::make(ui::builder::toolbar::REGISTRY_KEY);
+    m_toolBarBuilder = std::dynamic_pointer_cast<ui::builder::toolbar>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " + ui::builder::toolbar::REGISTRY_KEY,
         m_toolBarBuilder
     );
 
-    m_toolBarBuilder->initialize(toolBarConfig);
+    m_toolBarBuilder->initialize(_tool_bar_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void service::initializeSlideViewBuilder(const ui::config_t& slideViewConfig)
+void service::initializeSlideViewBuilder(const ui::config_t& _slide_view_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(
+    ui::object::sptr gui_obj = ui::factory::make(
         ui::builder::slideview::REGISTRY_KEY
     );
-    ui::builder::slideview::sptr slideViewBuildfer =
+    ui::builder::slideview::sptr slide_view_buildfer =
         std::dynamic_pointer_cast<ui::builder::slideview>(
-            guiObj
+            gui_obj
         );
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " + ui::builder::slideview::REGISTRY_KEY,
-        slideViewBuildfer
+        slide_view_buildfer
     );
 
-    slideViewBuildfer->initialize(slideViewConfig);
+    slide_view_buildfer->initialize(_slide_view_config);
 
-    m_slideViewBuilders.push_back(slideViewBuildfer);
+    m_slideViewBuilders.push_back(slide_view_buildfer);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,13 +271,13 @@ ui::container::widget::sptr service::getContainer()
 
 //-----------------------------------------------------------------------------
 
-void service::setParent(std::string wid)
+void service::setParent(std::string _wid)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
-            [this, &wid]
+            [this, &_wid]
         {
-            m_viewRegistry->setParent(wid);
+            m_viewRegistry->setParent(_wid);
             ui::container::widget::sptr parent = m_viewRegistry->getParent();
             SIGHT_ASSERT("Parent container is unknown.", parent);
             m_containerBuilder->setParent(parent);
@@ -287,20 +287,20 @@ void service::setParent(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-void service::setEnabled(bool isEnabled)
+void service::setEnabled(bool _is_enabled)
 {
     ui::container::widget::sptr container = m_viewRegistry->getParent();
-    container->setEnabled(isEnabled);
+    container->setEnabled(_is_enabled);
 }
 
 //-----------------------------------------------------------------------------
 
-void service::setEnabledByParameter(ui::parameter_t isEnabled)
+void service::setEnabledByParameter(ui::parameter_t _is_enabled)
 {
     // Only consider boolean alternative, skip all other type of the variant.
-    if(std::holds_alternative<bool>(isEnabled))
+    if(std::holds_alternative<bool>(_is_enabled))
     {
-        this->setEnabled(std::get<bool>(isEnabled));
+        this->setEnabled(std::get<bool>(_is_enabled));
     }
 }
 
@@ -320,20 +320,20 @@ void service::disable()
 
 //-----------------------------------------------------------------------------
 
-void service::setVisible(bool isVisible)
+void service::setVisible(bool _is_visible)
 {
     ui::container::widget::sptr container = m_viewRegistry->getParent();
-    container->setVisible(isVisible);
+    container->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void service::setVisibleByParameter(ui::parameter_t isVisible)
+void service::setVisibleByParameter(ui::parameter_t _is_visible)
 {
     // Only consider boolean alternative, skip all other type of the variant.
-    if(std::holds_alternative<bool>(isVisible))
+    if(std::holds_alternative<bool>(_is_visible))
     {
-        this->setVisible(std::get<bool>(isVisible));
+        this->setVisible(std::get<bool>(_is_visible));
     }
 }
 
@@ -360,12 +360,12 @@ void service::toggleVisibility()
 
 //-----------------------------------------------------------------------------
 
-void service::modifyLayout(ui::parameter_t parameter, std::string key)
+void service::modifyLayout(ui::parameter_t _parameter, std::string _key)
 {
     if(m_viewLayoutManagerIsCreated)
     {
         SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
-        m_viewLayoutManager->modifyLayout(parameter, key);
+        m_viewLayoutManager->modifyLayout(_parameter, _key);
     }
 }
 

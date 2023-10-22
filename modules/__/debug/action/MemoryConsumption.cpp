@@ -36,28 +36,29 @@ namespace sight::module::debug::action
 {
 
 /// Static variable shared by both actions
-static std::vector<data::array::sptr> memoryConsumer;
+static std::vector<data::array::sptr> memory_consumer;
 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 
-void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
+void MemoryConsumption::pushNewArray(std::size_t _memory_size_in_bytes)
 {
     try
     {
         data::array::sptr buffer = std::make_shared<data::array>();
-        data::array::SizeType size(1, memorySizeInBytes);
+        data::array::size_t size(1, _memory_size_in_bytes);
         buffer->resize(size, core::type::UINT8, true);
 
-        SIGHT_INFO("Creating a data::array consuming " << memorySizeInBytes / (1024LL * 1024) << " Mo ");
+        SIGHT_INFO("Creating a data::array consuming " << _memory_size_in_bytes / (1024LL * 1024) << " Mo ");
 
-        memoryConsumer.push_back(buffer);
+        memory_consumer.push_back(buffer);
     }
     catch(std::exception& e)
     {
         std::stringstream msg;
-        msg << "Cannot allocate buffer (" << memorySizeInBytes / (1024LL * 1024) << " Mo) :\n" << e.what() << std::endl;
+        msg << "Cannot allocate buffer (" << _memory_size_in_bytes / (1024LL * 1024) << " Mo) :\n" << e.what()
+        << std::endl;
         sight::ui::dialog::message::show(
             "Action increase memory",
             msg.str(),
@@ -89,10 +90,10 @@ void MemoryConsumption::updating()
     }
     else
     {
-        if(!memoryConsumer.empty())
+        if(!memory_consumer.empty())
         {
             SIGHT_INFO("Removing one data::array");
-            memoryConsumer.pop_back();
+            memory_consumer.pop_back();
         }
     }
 }
@@ -112,8 +113,8 @@ void MemoryConsumption::configuring()
     if(const auto value = config.get_optional<std::string>("config.<xmlattr>.value");
        m_isIncreaseMode&& value.has_value())
     {
-        auto sizeInMo = boost::lexical_cast<std::size_t>(value.value());
-        m_memorySizeInBytes = sizeInMo * 1024 * 1024;
+        auto size_in_mo = boost::lexical_cast<std::size_t>(value.value());
+        m_memorySizeInBytes = size_in_mo * 1024 * 1024;
     }
 }
 

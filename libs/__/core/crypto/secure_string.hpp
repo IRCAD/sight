@@ -51,17 +51,17 @@ struct allocator
 
     //------------------------------------------------------------------------------
 
-    constexpr static T* allocate(std::size_t n)
+    constexpr static T* allocate(std::size_t _n)
     {
-        return std::allocator<T> {}.allocate(n);
+        return std::allocator<T> {}.allocate(_n);
     }
 
     //------------------------------------------------------------------------------
 
-    constexpr static void deallocate(T* p, std::size_t n) noexcept
+    constexpr static void deallocate(T* _p, std::size_t _n) noexcept
     {
-        std::fill_n(((volatile char*) p), sizeof(T) * n, static_cast<char>(0));
-        std::allocator<T> {}.deallocate(p, n);
+        std::fill_n(((volatile char*) _p), sizeof(T) * _n, static_cast<char>(0));
+        std::allocator<T> {}.deallocate(_p, _n);
     }
 };
 

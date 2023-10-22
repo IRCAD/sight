@@ -70,77 +70,77 @@ void representation_editor::updating()
         m_material = reconstruction->getMaterial();
     }
 
-    int representationMode = m_material->getRepresentationMode();
-    int shadingMode        = m_material->getShadingMode();
-    int normal             = m_material->getOptionsMode();
-    Q_EMIT materialChanged(representationMode, shadingMode, normal);
+    int representation_mode = m_material->getRepresentationMode();
+    int shading_mode        = m_material->getShadingMode();
+    int normal              = m_material->getOptionsMode();
+    Q_EMIT materialChanged(representation_mode, shading_mode, normal);
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onChangeRepresentation(int id)
+void representation_editor::onChangeRepresentation(int _id)
 {
-    data::material::RepresentationType selectedMode = data::material::SURFACE;
+    data::material::representation_t selected_mode = data::material::SURFACE;
 
-    switch(id)
+    switch(_id)
     {
         case 1:
-            selectedMode = data::material::SURFACE;
+            selected_mode = data::material::SURFACE;
             break;
 
         case 2:
-            selectedMode = data::material::POINT;
+            selected_mode = data::material::POINT;
             break;
 
         case 3:
-            selectedMode = data::material::WIREFRAME;
+            selected_mode = data::material::WIREFRAME;
             break;
 
         case 4:
-            selectedMode = data::material::EDGE;
+            selected_mode = data::material::EDGE;
             break;
 
         default:
-            selectedMode = data::material::SURFACE;
+            selected_mode = data::material::SURFACE;
     }
 
-    m_material->setRepresentationMode(selectedMode);
+    m_material->setRepresentationMode(selected_mode);
     this->notifyMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onChangeShading(int id)
+void representation_editor::onChangeShading(int _id)
 {
-    data::material::ShadingType selectedMode = data::material::PHONG;
+    data::material::shading_t selected_mode = data::material::PHONG;
 
-    switch(id)
+    switch(_id)
     {
         case 0:
-            selectedMode = data::material::AMBIENT;
+            selected_mode = data::material::AMBIENT;
             break;
 
         case 1:
-            selectedMode = data::material::FLAT;
+            selected_mode = data::material::FLAT;
             break;
 
         case 2:
-            selectedMode = data::material::PHONG;
+            selected_mode = data::material::PHONG;
             break;
 
         default:
-            selectedMode = data::material::PHONG;
+            selected_mode = data::material::PHONG;
     }
 
-    m_material->setShadingMode(selectedMode);
+    m_material->setShadingMode(selected_mode);
     this->notifyMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::onShowNormals(int state)
+void representation_editor::onShowNormals(int _state)
 {
-    switch(state)
+    switch(_state)
     {
         case 1:
             m_material->setOptionsMode(data::material::STANDARD);
@@ -168,8 +168,8 @@ void representation_editor::notifyMaterial()
     auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("No Reconstruction!", reconstruction);
 
-    data::object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::object::ModifiedSignalType>(
+    data::object::modified_signal_t::sptr sig;
+    sig = reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
         data::object::MODIFIED_SIG
     );
     sig->async_emit();

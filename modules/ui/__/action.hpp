@@ -89,8 +89,8 @@ protected:
 private:
 
     /// Signals
-    const action::void_signal_t::sptr m_clicked_sig {new_signal<action::void_signal_t>(signals::CLICKED)};
-    const signals::changed_t::sptr m_parameter_changed_sig {
+    const action::void_signal_t::sptr M_CLICKED_SIG {new_signal<action::void_signal_t>(signals::CLICKED)};
+    const signals::changed_t::sptr M_PARAMETER_CHANGED_SIG {
         new_signal<signals::changed_t>(signals::PARAMETER_CHANGED)
     };
 

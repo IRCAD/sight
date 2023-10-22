@@ -24,6 +24,8 @@
 
 #include "modules/ui/test/config.hpp"
 
+#include <ui/testCore/helper/Select.hpp>
+
 #include <QEvent>
 #include <QList>
 #include <qnamespace.h>
@@ -33,13 +35,11 @@
 #include <QVector>
 #include <QWidget>
 
-#include <ui/testCore/helper/Select.hpp>
-
 #include <cstdint>
 #include <optional>
 
 /// An enumeration which represents the type of a user interaction
-enum InteractionType
+enum interaction_t
 {
     MOUSE_CLICK,
     MOUSE_DOUBLE_CLICK,
@@ -53,7 +53,7 @@ enum InteractionType
 };
 
 /// An enumeration which represents how to find a widget, @see FindStrategy
-enum class FindStrategyType
+enum class find_strategy_t
 {
     ROOT,                // The object to be found is root
     ACTIVE_MODAL_WIDGET, // The object to be found is the active modal widget
@@ -65,7 +65,7 @@ enum class FindStrategyType
     CANT_BE_FOUND        // Error: the object can't be found
 };
 
-enum class ModificationType
+enum class modification_t
 {
     INCREMENT,
     DECREMENT,
@@ -75,7 +75,7 @@ enum class ModificationType
 /// A structure which represents a strategy to find a specific widget
 struct FindStrategy
 {
-    FindStrategyType type;
+    find_strategy_t type;
     QString className;
     QString string;
     int integer;
@@ -85,9 +85,9 @@ struct FindStrategy
 struct MacroInteraction
 {
     MacroInteraction(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers
     );
 
     intptr_t receiverId;
@@ -99,10 +99,10 @@ struct MacroInteraction
 struct PreInteraction : public MacroInteraction
 {
     PreInteraction(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type
     );
 
     QEvent::Type type;
@@ -112,19 +112,19 @@ struct PreInteraction : public MacroInteraction
 struct PostInteraction : public MacroInteraction
 {
     PostInteraction(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type
     );
 
-    InteractionType type;
+    interaction_t type;
 };
 
 /// A mouse interaction (mouse click, mouse drag...)
 struct InteractionMouse
 {
-    InteractionMouse(QPoint from, QPoint to, Qt::MouseButton button);
+    InteractionMouse(QPoint _from, QPoint _to, Qt::MouseButton _button);
 
     QPoint from;
     QPoint to;
@@ -134,7 +134,7 @@ struct InteractionMouse
 /// A mouse wheel interaction
 struct InteractionMouseWheel
 {
-    InteractionMouseWheel(QPoint angleDelta, QPoint pos);
+    InteractionMouseWheel(QPoint _angle_delta, QPoint _pos);
 
     QPoint angleDelta;
     QPoint pos;
@@ -143,7 +143,7 @@ struct InteractionMouseWheel
 /// A keyboard interaction (key press, key sequence...)
 struct InteractionKeyboard
 {
-    InteractionKeyboard(Qt::Key key, QString sequence);
+    InteractionKeyboard(Qt::Key _key, QString _sequence);
 
     [[nodiscard]] bool isPrintable() const;
 
@@ -154,16 +154,16 @@ struct InteractionKeyboard
 /// An interaction when selecting an item on a model-based widget
 struct InteractionModelViewSelect
 {
-    explicit InteractionModelViewSelect(QString name);
+    explicit InteractionModelViewSelect(QString _name);
 
     QString name;
 };
 
 struct NumberInputModification
 {
-    explicit NumberInputModification(ModificationType type, double number);
+    explicit NumberInputModification(modification_t _type, double _number);
 
-    ModificationType modifType;
+    modification_t modifType;
     double modifNumber;
 };
 
@@ -172,13 +172,13 @@ struct PreInteractionMouse : public PreInteraction,
                              public InteractionMouse
 {
     PreInteractionMouse(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type,
-        QPoint from,
-        QPoint to,
-        Qt::MouseButton button
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type,
+        QPoint _from,
+        QPoint _to,
+        Qt::MouseButton _button
     );
 };
 
@@ -187,12 +187,12 @@ struct PreInteractionMouseWheel : public PreInteraction,
                                   public InteractionMouseWheel
 {
     PreInteractionMouseWheel(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type,
-        QPoint angleDelta,
-        QPoint pos
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type,
+        QPoint _angle_delta,
+        QPoint _pos
     );
 };
 
@@ -201,12 +201,12 @@ struct PreInteractionKeyboard : public PreInteraction,
                                 public InteractionKeyboard
 {
     PreInteractionKeyboard(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type,
-        Qt::Key key,
-        const QString& sequence
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type,
+        Qt::Key _key,
+        const QString& _sequence
     );
 };
 
@@ -215,11 +215,11 @@ struct PreInteractionModelViewSelect : public PreInteraction,
                                        public InteractionModelViewSelect
 {
     PreInteractionModelViewSelect(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type,
-        const QString& name
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type,
+        const QString& _name
     );
 };
 
@@ -227,12 +227,12 @@ struct PreInteractionNumberInputModification : public PreInteraction,
                                                public NumberInputModification
 {
     PreInteractionNumberInputModification(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        QEvent::Type type,
-        ModificationType modifType,
-        double modifNumber
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        QEvent::Type _type,
+        modification_t _modif_type,
+        double _modif_number
     );
 };
 
@@ -241,13 +241,13 @@ struct PostInteractionMouse : public PostInteraction,
                               public InteractionMouse
 {
     PostInteractionMouse(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type,
-        QPoint from,
-        QPoint to,
-        Qt::MouseButton button
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type,
+        QPoint _from,
+        QPoint _to,
+        Qt::MouseButton _button
     );
 };
 
@@ -256,12 +256,12 @@ struct PostInteractionMouseWheel : public PostInteraction,
                                    public InteractionMouseWheel
 {
     PostInteractionMouseWheel(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type,
-        QPoint angleDelta,
-        QPoint pos
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type,
+        QPoint _angle_delta,
+        QPoint _pos
     );
 };
 
@@ -270,12 +270,12 @@ struct PostInteractionKeyboard : public PostInteraction,
                                  public InteractionKeyboard
 {
     PostInteractionKeyboard(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type,
-        Qt::Key key,
-        const QString& sequence
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type,
+        Qt::Key _key,
+        const QString& _sequence
     );
 };
 
@@ -284,11 +284,11 @@ struct PostInteractionModelViewSelect : public PostInteraction,
                                         public InteractionModelViewSelect
 {
     PostInteractionModelViewSelect(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type,
-        const QString& name
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type,
+        const QString& _name
     );
 };
 
@@ -296,26 +296,26 @@ struct PostInteractionNumberInputModification : public PostInteraction,
                                                 public NumberInputModification
 {
     PostInteractionNumberInputModification(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        Qt::KeyboardModifiers modifiers,
-        InteractionType type,
-        ModificationType modifType,
-        double modifNumber
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        Qt::KeyboardModifiers _modifiers,
+        interaction_t _type,
+        modification_t _modif_type,
+        double _modif_number
     );
 };
 
 struct InteractionHelperAPI : public PostInteraction
 {
     InteractionHelperAPI(
-        intptr_t receiverId,
-        const QVector<FindStrategy>& howToFindReceiver,
-        QString methodName,
-        std::optional<sight::ui::testCore::helper::Select> select,
-        QStringList args = {});
+        intptr_t _receiver_id,
+        const QVector<FindStrategy>& _how_to_find_receiver,
+        QString _method_name,
+        std::optional<sight::ui::test_core::helper::Select> _select,
+        QStringList _args = {});
 
     QString methodName;
-    std::optional<sight::ui::testCore::helper::Select> select;
+    std::optional<sight::ui::test_core::helper::Select> select;
     QStringList args;
 };
 
@@ -338,7 +338,7 @@ public:
      * @param e The event which was sent to the target
      * @returns Should the event handling stop?
      */
-    bool eventFilter(QObject* target, QEvent* e) override;
+    bool eventFilter(QObject* _target, QEvent* _e) override;
 
     /**
      * @brief Infects a widget and its children recursively, so that the events they will receive will be filtered with
@@ -346,27 +346,27 @@ public:
      *
      * @param o The widget to infect
      */
-    MODULE_UI_TEST_API void infect(QObject* o);
+    MODULE_UI_TEST_API void infect(QObject* _o);
 
     /// Saves the user interactions as GuiTester-compatible GUI test C++ source files named GuiTest.cpp and GuiTest.hpp
     MODULE_UI_TEST_API void save();
 
 private:
 
-    std::unique_ptr<PreInteraction> createInteraction(QObject* target, QEvent* e);
-    QVector<FindStrategy> find(QObject* o);
+    std::unique_ptr<PreInteraction> createInteraction(QObject* _target, QEvent* _e);
+    QVector<FindStrategy> find(QObject* _o);
 
     static QObject* findChild(
-        QObject* o,
-        const QString& type,
-        const QString& objectName    = "",
-        Qt::FindChildOptions options = Qt::FindChildrenRecursively
+        QObject* _o,
+        const QString& _type,
+        const QString& _object_name   = "",
+        Qt::FindChildOptions _options = Qt::FindChildrenRecursively
     );
     static QObjectList findChildren(
-        QObject* o,
-        const QString& type,
-        const QString& objectName    = "",
-        Qt::FindChildOptions options = Qt::FindChildrenRecursively
+        QObject* _o,
+        const QString& _type,
+        const QString& _object_name   = "",
+        Qt::FindChildOptions _options = Qt::FindChildrenRecursively
     );
 
     std::vector<std::unique_ptr<PreInteraction> > m_interactions;

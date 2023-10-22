@@ -32,7 +32,7 @@
 #include <data/object.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <functional>
 #include <string>
@@ -56,32 +56,32 @@ void client_listener::configuring()
 {
     service::config_t config = this->get_config();
 
-    const config_t configInOut = config.get_child("inout");
+    const config_t config_in_out = config.get_child("inout");
 
     SIGHT_ASSERT(
         "configured group must be 'objects'",
-        configInOut.get<std::string>("<xmlattr>.group", "") == "objects"
+        config_in_out.get<std::string>("<xmlattr>.group", "") == "objects"
     );
 
-    const auto keyCfg = configInOut.equal_range("key");
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
+    const auto key_cfg = config_in_out.equal_range("key");
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg)
     {
-        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName  = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(deviceName);
-        m_client.addAuthorizedDevice(deviceName);
+        const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
+        const std::string device_name = attr.get("deviceName", "Sight");
+        m_deviceNames.push_back(device_name);
+        m_client.addAuthorizedDevice(device_name);
     }
 
     m_client.setFilteringByDeviceName(true);
 
-    const std::string serverInfo = config.get("server", "");
-    if(!serverInfo.empty())
+    const std::string server_info = config.get("server", "");
+    if(!server_info.empty())
     {
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string::size_type split_position = server_info.find(':');
+        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_hostnameConfig = serverInfo.substr(0, splitPosition);
-        m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+        m_hostnameConfig = server_info.substr(0, split_position);
+        m_portConfig     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -96,7 +96,7 @@ void client_listener::runClient()
     // 1. Connection
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
         const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
@@ -127,28 +127,28 @@ void client_listener::runClient()
     {
         while(m_client.isConnected())
         {
-            std::string deviceName;
-            data::object::sptr receiveObject = m_client.receiveObject(deviceName);
-            if(receiveObject)
+            std::string device_name;
+            data::object::sptr receive_object = m_client.receiveObject(device_name);
+            if(receive_object)
             {
-                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
+                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), device_name);
 
                 if(iter != m_deviceNames.end())
                 {
-                    const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
+                    const auto index_receive_object = std::distance(m_deviceNames.begin(), iter);
+                    const auto obj                  = m_objects[static_cast<std::size_t>(index_receive_object)].lock();
 
-                    const bool isATimeline = obj->is_a("data::matrix_tl") || obj->is_a("data::frame_tl");
-                    if(isATimeline)
+                    const bool is_a_timeline = obj->is_a("data::matrix_tl") || obj->is_a("data::frame_tl");
+                    if(is_a_timeline)
                     {
-                        this->manageTimeline(receiveObject, static_cast<std::size_t>(indexReceiveObject));
+                        this->manageTimeline(receive_object, static_cast<std::size_t>(index_receive_object));
                     }
                     else
                     {
-                        obj->shallow_copy(receiveObject);
+                        obj->shallow_copy(receive_object);
 
-                        data::object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                        data::object::modified_signal_t::sptr sig;
+                        sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                         sig->async_emit();
                     }
                 }
@@ -204,47 +204,47 @@ void client_listener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void client_listener::manageTimeline(data::object::sptr obj, std::size_t index)
+void client_listener::manageTimeline(data::object::sptr _obj, std::size_t _index)
 {
     core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
 
-    const auto data    = m_objects[index].lock();
-    const auto matTL   = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
-    const auto frameTL = std::dynamic_pointer_cast<data::frame_tl>(data.get_shared());
+    const auto data     = m_objects[_index].lock();
+    const auto mat_tl   = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+    const auto frame_tl = std::dynamic_pointer_cast<data::frame_tl>(data.get_shared());
 
     //MatrixTL
-    if(matTL)
+    if(mat_tl)
     {
         if(!m_tlInitialized)
         {
-            matTL->setMaximumSize(10);
-            matTL->initPoolSize(1);
+            mat_tl->setMaximumSize(10);
+            mat_tl->initPoolSize(1);
             m_tlInitialized = true;
         }
 
-        SPTR(data::matrix_tl::BufferType) matrixBuf;
-        matrixBuf = matTL->createBuffer(timestamp);
+        SPTR(data::matrix_tl::buffer_t) matrix_buf;
+        matrix_buf = mat_tl->createBuffer(timestamp);
 
-        data::matrix4::sptr t = std::dynamic_pointer_cast<data::matrix4>(obj);
-        std::array<float, 16> floatValues {};
-        std::transform(t->begin(), t->end(), floatValues.begin(), boost::numeric_cast<float, double>);
+        data::matrix4::sptr t = std::dynamic_pointer_cast<data::matrix4>(_obj);
+        std::array<float, 16> float_values {};
+        std::transform(t->begin(), t->end(), float_values.begin(), boost::numeric_cast<float, double>);
 
-        matrixBuf->setElement(floatValues, 0);
-        matTL->pushObject(matrixBuf);
-        auto sig = matTL->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+        matrix_buf->setElement(float_values, 0);
+        mat_tl->pushObject(matrix_buf);
+        auto sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
         sig->async_emit(timestamp);
     }
     //FrameTL
-    else if(frameTL)
+    else if(frame_tl)
     {
-        data::image::sptr im = std::dynamic_pointer_cast<data::image>(obj);
+        data::image::sptr im = std::dynamic_pointer_cast<data::image>(_obj);
 
         if(!m_tlInitialized)
         {
             const auto frame_pixel_format =
-                [](data::image::PixelFormat image_pixel_format) -> data::frame_tl::PixelFormat
+                [](data::image::PixelFormat _image_pixel_format) -> data::frame_tl::PixelFormat
                 {
-                    switch(image_pixel_format)
+                    switch(_image_pixel_format)
                     {
                         case data::image::PixelFormat::BGR:
                             return data::frame_tl::PixelFormat::BGR;
@@ -266,25 +266,25 @@ void client_listener::manageTimeline(data::object::sptr obj, std::size_t index)
                     }
                 }(im->getPixelFormat());
 
-            frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->size()[0], im->size()[1], im->getType(), frame_pixel_format);
+            frame_tl->setMaximumSize(10);
+            frame_tl->initPoolSize(im->size()[0], im->size()[1], im->getType(), frame_pixel_format);
             m_tlInitialized = true;
         }
 
-        SPTR(data::frame_tl::BufferType) buffer = frameTL->createBuffer(timestamp);
+        SPTR(data::frame_tl::buffer_t) buffer = frame_tl->createBuffer(timestamp);
 
-        auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        const auto dumpLock = im->dump_lock();
-        auto itr            = im->begin<std::uint8_t>();
-        const auto end      = im->end<std::uint8_t>();
+        const auto dump_lock = im->dump_lock();
+        auto itr             = im->begin<std::uint8_t>();
+        const auto end       = im->end<std::uint8_t>();
 
-        std::copy(itr, end, destBuffer);
+        std::copy(itr, end, dest_buffer);
 
-        frameTL->pushObject(buffer);
+        frame_tl->pushObject(buffer);
 
         data::timeline::signals::pushed_t::sptr sig;
-        sig = frameTL->signal<data::timeline::signals::pushed_t>
+        sig = frame_tl->signal<data::timeline::signals::pushed_t>
                   (data::timeline::signals::PUSHED);
         sig->async_emit(timestamp);
     }

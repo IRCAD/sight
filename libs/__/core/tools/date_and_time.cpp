@@ -33,33 +33,33 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-boost::gregorian::date str_to_boost_date(const std::string& date_str)
+boost::gregorian::date str_to_boost_date(const std::string& _date_str)
 {
     boost::gregorian::date res_date(boost::gregorian::from_undelimited_string("19000101"));
-    if(date_str.size() < 8)
+    if(_date_str.size() < 8)
     {
         SIGHT_WARN(
-            "The string length is too short (<8) : " << date_str
+            "The string length is too short (<8) : " << _date_str
             << ". The string is initialized with \"19000101\"."
         );
     }
-    else if(date_str.size() > 8)
+    else if(_date_str.size() > 8)
     {
-        SIGHT_WARN("The string length is too long (>8) : " << date_str << ".. The string is trunked to 8 characters.");
-        res_date = str_to_boost_date(date_str.substr(0, 8));
+        SIGHT_WARN("The string length is too long (>8) : " << _date_str << ".. The string is trunked to 8 characters.");
+        res_date = str_to_boost_date(_date_str.substr(0, 8));
     }
     else
     {
         std::regex is_number("[0-9]+");
 
-        if(std::regex_match(date_str, is_number))
+        if(std::regex_match(_date_str, is_number))
         {
-            res_date = boost::gregorian::date(boost::gregorian::from_undelimited_string(date_str));
+            res_date = boost::gregorian::date(boost::gregorian::from_undelimited_string(_date_str));
         }
         else
         {
             SIGHT_WARN(
-                "The string not contains 8 numbers : " << date_str
+                "The string not contains 8 numbers : " << _date_str
                 << ". The string is initialized with \"19000101\"."
             );
         }
@@ -70,7 +70,7 @@ boost::gregorian::date str_to_boost_date(const std::string& date_str)
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::time_duration str_to_boost_time(const std::string& time_str)
+boost::posix_time::time_duration str_to_boost_time(const std::string& _time_str)
 {
     using boost::posix_time::time_duration;
     using boost::posix_time::hours;
@@ -78,33 +78,33 @@ boost::posix_time::time_duration str_to_boost_time(const std::string& time_str)
     using boost::posix_time::seconds;
 
     time_duration td;
-    if(time_str.size() < 6)
+    if(_time_str.size() < 6)
     {
         SIGHT_WARN(
-            "The string length is too short (<6) : " << time_str
+            "The string length is too short (<6) : " << _time_str
             << ".  The string is initialized with \"000000\"."
         );
         td = hours(0) + minutes(0) + seconds(0);
     }
-    else if(time_str.size() > 6)
+    else if(_time_str.size() > 6)
     {
-        SIGHT_WARN("The string length is too short (>6) : " << time_str << ". This string is trunked.");
-        td = str_to_boost_time(time_str.substr(0, 6));
+        SIGHT_WARN("The string length is too short (>6) : " << _time_str << ". This string is trunked.");
+        td = str_to_boost_time(_time_str.substr(0, 6));
     }
     else
     {
         std::regex is_number("[0-9]+");
-        if(std::regex_match(time_str, is_number))
+        if(std::regex_match(_time_str, is_number))
         {
-            auto h = boost::lexical_cast<std::uint16_t>(time_str.substr(0, 2));
-            auto m = boost::lexical_cast<std::uint16_t>(time_str.substr(2, 2));
-            auto s = boost::lexical_cast<std::uint16_t>(time_str.substr(4, 2));
+            auto h = boost::lexical_cast<std::uint16_t>(_time_str.substr(0, 2));
+            auto m = boost::lexical_cast<std::uint16_t>(_time_str.substr(2, 2));
+            auto s = boost::lexical_cast<std::uint16_t>(_time_str.substr(4, 2));
             td = hours(h) + minutes(m) + seconds(s);
         }
         else
         {
             SIGHT_WARN(
-                "The string not contains 6 numbers : " << time_str
+                "The string not contains 6 numbers : " << _time_str
                 << ". The string is initialized with \"000000\"."
             );
             td = hours(0) + minutes(0) + seconds(0);
@@ -116,24 +116,24 @@ boost::posix_time::time_duration str_to_boost_time(const std::string& time_str)
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::ptime str_to_boost_date_and_time(const std::string& date_str, const std::string& time_str)
+boost::posix_time::ptime str_to_boost_date_and_time(const std::string& _date_str, const std::string& _time_str)
 {
-    return {str_to_boost_date(date_str), str_to_boost_time(time_str)};
+    return {str_to_boost_date(_date_str), str_to_boost_time(_time_str)};
 }
 
 //------------------------------------------------------------------------------
 
-std::string get_date(const boost::posix_time::ptime& date_and_time)
+std::string get_date(const boost::posix_time::ptime& _date_and_time)
 {
-    std::string date_and_time_str = boost::posix_time::to_iso_string(date_and_time);
+    std::string date_and_time_str = boost::posix_time::to_iso_string(_date_and_time);
     return date_and_time_str.substr(0, 8);
 }
 
 //------------------------------------------------------------------------------
 
-std::string get_time(const boost::posix_time::ptime& date_and_time)
+std::string get_time(const boost::posix_time::ptime& _date_and_time)
 {
-    std::string date_and_time_str = boost::posix_time::to_iso_string(date_and_time);
+    std::string date_and_time_str = boost::posix_time::to_iso_string(_date_and_time);
     return date_and_time_str.substr(9, 6);
 }
 

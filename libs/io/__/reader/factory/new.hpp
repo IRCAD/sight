@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-IO_API SPTR(io::reader::object_reader) make(const io::reader::registry::key_t& classname);
+IO_API SPTR(io::reader::object_reader) make(const io::reader::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

@@ -33,8 +33,8 @@ namespace sight::io::reader
  *
  *
  * This class adds 2 methods to the API of object_reader.
- * 'set_object' Replaces m_object with the argument casted into DataType.
- * 'getConcretObject' Returns m_object casted into DataType.
+ * 'set_object' Replaces m_object with the argument casted into data_t.
+ * 'getConcretObject' Returns m_object casted into data_t.
  */
 template<class DATATYPE>
 class generic_object_reader : public io::reader::object_reader
@@ -42,7 +42,7 @@ class generic_object_reader : public io::reader::object_reader
 public:
 
     /// the object type related
-    typedef DATATYPE DataType;
+    typedef DATATYPE data_t;
 
     SIGHT_DECLARE_CLASS(generic_object_reader<DATATYPE>, io::reader::object_reader);
 
@@ -66,21 +66,21 @@ public:
      *
      * This method overloads set_object to ensure that given object corresponds to DATATYPE
      */
-    void set_object(core::tools::object::sptr obj) override
+    void set_object(core::tools::object::sptr _obj) override
     {
-        assert(std::dynamic_pointer_cast<DataType>(obj));
-        m_object = obj;
+        assert(std::dynamic_pointer_cast<data_t>(_obj));
+        m_object = _obj;
     }
 
     /**
      * @brief m_object getter.
      * @return m_object
      *
-     * This method automatically casts object in the correct DataType.
+     * This method automatically casts object in the correct data_t.
      */
-    [[nodiscard]] std::shared_ptr<DataType> getConcreteObject() const
+    [[nodiscard]] std::shared_ptr<data_t> getConcreteObject() const
     {
-        return std::dynamic_pointer_cast<DataType>(getObject());
+        return std::dynamic_pointer_cast<data_t>(getObject());
     }
 };
 

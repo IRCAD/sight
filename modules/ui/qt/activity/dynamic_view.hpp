@@ -31,7 +31,7 @@
 
 #include <data/activity.hpp>
 
-#include <ui/__/view/IActivityView.hpp>
+#include <ui/__/activity_view.hpp>
 #include <ui/qt/container/widget.hpp>
 
 #include <QObject>
@@ -92,13 +92,13 @@ namespace sight::module::ui::qt::activity
  *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
 class MODULE_UI_QT_CLASS_API dynamic_view : public QObject,
-                                            public sight::ui::view::IActivityView
+                                            public sight::ui::activity_view
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(dynamic_view, sight::ui::view::IActivityView);
+    SIGHT_DECLARE_SERVICE(dynamic_view, sight::ui::activity_view);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API dynamic_view() noexcept;
@@ -107,9 +107,9 @@ public:
 
     MODULE_UI_QT_API ~dynamic_view() noexcept override;
 
-    typedef core::com::signal<void (data::object::sptr)> ActivitySelectedSignalType;
+    typedef core::com::signal<void (data::object::sptr)> activity_selected_signal_t;
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
-    typedef core::com::signal<void ()> NothingSelectedSignalType;
+    typedef core::com::signal<void ()> nothing_selected_signal_t;
     MODULE_UI_QT_API static const core::com::signals::key_t NOTHING_SELECTED_SIG;
 
 protected:
@@ -140,7 +140,7 @@ protected:
 
 private:
 
-    typedef std::set<std::string> ActivityIdType;
+    typedef std::set<std::string> activity_id_t;
 
     struct dynamic_viewInfo
     {
@@ -162,44 +162,44 @@ private:
     /**
      * @brief Launch tab
      */
-    void launchTab(dynamic_viewInfo& info);
+    void launchTab(dynamic_viewInfo& _info);
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launched in two different tabs.
      */
-    void launchActivity(data::activity::sptr activity) override;
+    void launchActivity(data::activity::sptr _activity) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(sight::activity::message info);
+    void createTab(sight::activity::message _info);
 
     /// Create the main activity and launch the activity
     virtual void buildMainActivity();
 
     /// Create view info from activity
-    dynamic_viewInfo createViewInfo(data::activity::sptr activity);
+    dynamic_viewInfo createViewInfo(data::activity::sptr _activity);
 
     /**
      * @brief Close the tab at the given index.
      * @param index : index of the tab to close
      * @param forceClose : if true, close the tab even if the tab is not "closable"
      */
-    void closeTab(int index, bool forceClose);
+    void closeTab(int _index, bool _force_close);
 
 protected Q_SLOTS:
 
     /// Called when the tab close button is clicked: close the tab if it is "closable"
-    void closeTabSignal(int index);
+    void closeTabSignal(int _index);
 
     /// Called when the current tab selection changed
-    void changedTab(int index);
+    void changedTab(int _index);
 
 private:
 
     std::map<std::string, unsigned int> m_titleToCount;
     std::set<std::string> m_tabIDList;
 
-    ActivityIdType m_activityIds;
+    activity_id_t m_activityIds;
 
     dynamic_viewInfoMapType m_dynamicInfoMap;
     bool m_dynamicConfigStartStop {false};
@@ -207,8 +207,8 @@ private:
     QPointer<QTabWidget> m_tabWidget;
     QPointer<QWidget> m_currentWidget;
 
-    ActivitySelectedSignalType::sptr m_sigActivitySelected;
-    NothingSelectedSignalType::sptr m_sigNothingSelected;
+    activity_selected_signal_t::sptr m_sigActivitySelected;
+    nothing_selected_signal_t::sptr m_sigNothingSelected;
 
     bool m_mainActivityClosable {true};
 

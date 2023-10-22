@@ -31,9 +31,9 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-std::int32_t type::toCv(const core::type _type, const std::size_t _numComponents)
+std::int32_t type::toCv(const core::type _type, const std::size_t _num_components)
 {
-    SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _numComponents > 0 && _numComponents <= 4);
+    SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _num_components > 0 && _num_components <= 4);
 
     static const std::map<core::type, std::array<std::int32_t, 4> > s_IMAGE_FORMAT_TO_CV =
     {{
@@ -50,12 +50,12 @@ std::int32_t type::toCv(const core::type _type, const std::size_t _numComponents
     const auto it = s_IMAGE_FORMAT_TO_CV.find(_type);
     SIGHT_ASSERT("Format not handled by OpenCV: " + _type.name(), it != s_IMAGE_FORMAT_TO_CV.end());
 
-    return (it->second)[_numComponents - 1];
+    return (it->second)[_num_components - 1];
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<core::type, uint8_t> type::fromCv(int32_t _cvType)
+std::pair<core::type, uint8_t> type::fromCv(int32_t _cv_type)
 {
     static const std::map<std::int32_t, std::pair<core::type, std::size_t> > s_IMAGE_FORMAT_FROM_CV =
     {{
@@ -90,8 +90,8 @@ std::pair<core::type, uint8_t> type::fromCv(int32_t _cvType)
     }
     };
 
-    const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cvType);
-    SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cvType), it != s_IMAGE_FORMAT_FROM_CV.end());
+    const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cv_type);
+    SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cv_type), it != s_IMAGE_FORMAT_FROM_CV.end());
 
     return {it->second.first, uint8_t(it->second.second)};
 }

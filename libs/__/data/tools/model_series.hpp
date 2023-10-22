@@ -48,7 +48,7 @@ public:
      * @param _rec Reconstruction that must be added
      */
     DATA_API static void addReconstruction(
-        const data::model_series::sptr& _modelSeries,
+        const data::model_series::sptr& _model_series,
         const data::reconstruction::sptr& _rec
     );
 
@@ -64,11 +64,11 @@ public:
      */
     DATA_API static data::reconstruction::sptr createReconstructionFromMesh(
         const data::mesh::sptr& _mesh,
-        const std::string& _organName,
-        const std::string& _structureType,
-        const data::color::sptr& _color          = std::make_shared<data::color>(),
-        data::material::RepresentationType _mode = data::material::SURFACE,
-        bool _visible                            = true
+        const std::string& _organ_name,
+        const std::string& _structure_type,
+        const data::color::sptr& _color        = std::make_shared<data::color>(),
+        data::material::representation_t _mode = data::material::SURFACE,
+        bool _visible                          = true
     );
 
     /**
@@ -82,13 +82,13 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      */
     DATA_API static void addMesh(
-        const data::model_series::sptr& _modelSeries,
+        const data::model_series::sptr& _model_series,
         const data::mesh::sptr& _mesh,
-        const std::string& _organName,
-        const std::string& _structureType,
-        const data::color::sptr& _color          = std::make_shared<data::color>(),
-        data::material::RepresentationType _mode = data::material::SURFACE,
-        bool _visible                            = true
+        const std::string& _organ_name,
+        const std::string& _structure_type,
+        const data::color::sptr& _color        = std::make_shared<data::color>(),
+        data::material::representation_t _mode = data::material::SURFACE,
+        bool _visible                          = true
     );
 };
 

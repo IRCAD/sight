@@ -11,7 +11,7 @@
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_navigation_calibration ...)
+add_dependencies(my_target module_navigation_calibration ...)
 ```
 
 ### XML

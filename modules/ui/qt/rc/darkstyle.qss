@@ -1484,7 +1484,7 @@ QLabel#SActivityWizard_description
     border: solid 1px;
 }
 
-#SlideBar
+#slide_bar
 {
     background: #31363B;
 }

@@ -48,32 +48,33 @@ profile::~profile()
 
 //------------------------------------------------------------------------------
 
-void profile::add(SPTR(activater)activater)
+void profile::add(SPTR(activater)_activater)
 {
-    m_activaters.push_back(activater);
+    m_activaters.push_back(_activater);
 }
 
 //------------------------------------------------------------------------------
 
-void profile::add_starter(const std::string& identifier)
+void profile::add_starter(const std::string& _identifier)
 {
     const detail::runtime& runtime = detail::runtime::get();
-    auto module                    = std::dynamic_pointer_cast<detail::module>(runtime.find_module(identifier));
-    m_starters.insert({module->priority(), identifier});
+    auto module                    = std::dynamic_pointer_cast<detail::module>(runtime.find_module(_identifier));
+    SIGHT_ASSERT("Can't find module '" + _identifier + "'", module);
+    m_starters.insert({module->priority(), _identifier});
 }
 
 //------------------------------------------------------------------------------
 
-void profile::add_stopper(const std::string& identifier, int priority)
+void profile::add_stopper(const std::string& _identifier, int _priority)
 {
-    m_stoppers.insert({priority, identifier});
+    m_stoppers.insert({_priority, _identifier});
 }
 
 //------------------------------------------------------------------------------
 
 void profile::start()
 {
-    std::for_each(m_activaters.begin(), m_activaters.end(), [](auto& activater){activater->apply();});
+    std::for_each(m_activaters.begin(), m_activaters.end(), [](auto& _activater){_activater->apply();});
 
     // Check validity of extension
 
@@ -92,9 +93,9 @@ void profile::start()
 
     std::ranges::for_each(
         m_starters,
-        [](auto& s)
+        [](auto& _s)
         {
-            auto identifier = s.second;
+            auto identifier = _s.second;
             auto module     = detail::runtime::get().find_enabled_module(identifier);
             SIGHT_FATAL_IF("Unable to start module " + identifier + ": not found.", module == nullptr);
             try
@@ -127,9 +128,9 @@ int profile::default_run()
 
 //------------------------------------------------------------------------------
 
-void profile::set_run_callback(run_callback_type callback)
+void profile::set_run_callback(run_callback_type _callback)
 {
-    m_run = callback;
+    m_run = _callback;
 }
 
 //------------------------------------------------------------------------------
@@ -139,9 +140,9 @@ void profile::stop()
     std::for_each(
         m_stoppers.rbegin(),
         m_stoppers.rend(),
-        [](auto& s)
+        [](auto& _s)
         {
-            auto identifier = s.second;
+            auto identifier = _s.second;
             auto module     = detail::runtime::get().find_enabled_module(identifier);
             SIGHT_FATAL_IF(
                 "Unable to stop module " + identifier + ". Not found.",
@@ -165,9 +166,9 @@ static profile::sptr current_profile;
 
 //------------------------------------------------------------------------------
 
-void set_current_profile(profile::sptr prof)
+void set_current_profile(profile::sptr _prof)
 {
-    current_profile = prof;
+    current_profile = _prof;
 }
 
 //------------------------------------------------------------------------------

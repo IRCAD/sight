@@ -105,7 +105,7 @@ private:
      * @return The distance to removed only if a specific distance is chosen, if all distances need to be removed, a
      * nullptr is return.
      */
-    static data::point_list::sptr getDistanceToRemove(const data::image::csptr _image, bool& _removeAll);
+    static data::point_list::sptr getDistanceToRemove(const data::image::csptr _image, bool& _remove_all);
 
     /**
      * @brief Sends a signal when a distance is removed.

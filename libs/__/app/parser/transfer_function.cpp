@@ -42,50 +42,50 @@ void transfer_function::createConfig(core::tools::object::sptr _obj)
     data::transfer_function::sptr tf = std::dynamic_pointer_cast<data::transfer_function>(_obj);
     SIGHT_ASSERT("transfer_function not instanced", tf);
 
-    if(const auto colorCfg = m_cfg.get_child_optional("colors"); colorCfg.has_value())
+    if(const auto color_cfg = m_cfg.get_child_optional("colors"); color_cfg.has_value())
     {
-        const bool isDefault = colorCfg->get("<xmlattr>.default", false);
-        if(isDefault)
+        const bool is_default = color_cfg->get("<xmlattr>.default", false);
+        if(is_default)
         {
-            data::transfer_function::sptr defaultTf = data::transfer_function::createDefaultTF();
-            tf->deep_copy(defaultTf);
+            data::transfer_function::sptr default_tf = data::transfer_function::createDefaultTF();
+            tf->deep_copy(default_tf);
         }
         else
         {
-            const auto stepsConfig = colorCfg->equal_range("step");
+            const auto steps_config = color_cfg->equal_range("step");
 
-            auto tfData            = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
+            auto tf_data           = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
             const std::string name = m_cfg.get<std::string>("name", "");
             if(!name.empty())
             {
                 tf->setName(name);
             }
 
-            for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
+            for(auto it_step_cfg = steps_config.first ; it_step_cfg != steps_config.second ; ++it_step_cfg)
             {
-                const auto value    = itStepCfg->second.get<double>("<xmlattr>.value");
-                const auto strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
+                const auto value     = it_step_cfg->second.get<double>("<xmlattr>.value");
+                const auto str_color = it_step_cfg->second.get<std::string>("<xmlattr>.color");
 
-                data::color::sptr newColor = std::make_shared<data::color>();
-                newColor->setRGBA(strColor);
+                data::color::sptr new_color = std::make_shared<data::color>();
+                new_color->setRGBA(str_color);
 
-                const data::transfer_function::color_t color(newColor->red(), newColor->green(),
-                                                             newColor->blue(), newColor->alpha());
-                (*tfData)[value] = color;
+                const data::transfer_function::color_t color(new_color->red(), new_color->green(),
+                                                             new_color->blue(), new_color->alpha());
+                (*tf_data)[value] = color;
             }
 
-            tfData->setWindowMinMax(tfData->minMax());
+            tf_data->setWindowMinMax(tf_data->minMax());
 
-            const bool isClamped = colorCfg->get<bool>("<xmlattr>.isClamped", true);
-            tfData->setClamped(isClamped);
+            const bool is_clamped = color_cfg->get<bool>("<xmlattr>.isClamped", true);
+            tf_data->setClamped(is_clamped);
 
             tf->fitWindow();
         }
     }
     else
     {
-        data::transfer_function::sptr defaultTf = data::transfer_function::createDefaultTF();
-        tf->deep_copy(defaultTf);
+        data::transfer_function::sptr default_tf = data::transfer_function::createDefaultTF();
+        tf->deep_copy(default_tf);
     }
 }
 

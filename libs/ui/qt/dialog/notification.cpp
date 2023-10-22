@@ -23,7 +23,7 @@
 #include "ui/qt/dialog/notification.hpp"
 
 #include "ui/qt/container/widget.hpp"
-#include "ui/qt/widget/SlideBar.hpp"
+#include "ui/qt/widget/slide_bar.hpp"
 
 #include <ui/__/macros.hpp>
 
@@ -60,19 +60,19 @@ void notification::build()
     /// Retrieve the parent widget
     SIGHT_ASSERT("The dialog UI has been already built", m_parent.isNull());
 
-    if(const auto& parentContainer = std::dynamic_pointer_cast<const ui::qt::container::widget>(m_parentContainer);
-       parentContainer)
+    if(const auto& parent_container = std::dynamic_pointer_cast<const ui::qt::container::widget>(m_parentContainer);
+       parent_container)
     {
-        m_parent = parentContainer->getQtContainer();
+        m_parent = parent_container->getQtContainer();
     }
     else
     {
         // Checks if we have a Parent widget.
         m_parent = qApp->activeWindow();
 
-        if(const auto* slideBar = qobject_cast<widget::SlideBar*>(m_parent); slideBar != nullptr)
+        if(const auto* slide_bar = qobject_cast<widget::slide_bar*>(m_parent); slide_bar != nullptr)
         {
-            m_parent = slideBar->nativeParentWidget();
+            m_parent = slide_bar->nativeParentWidget();
         }
     }
 
@@ -100,10 +100,10 @@ void notification::build()
     m_container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     // Creates container layout.
-    auto* const containerLayout = new QBoxLayout(QBoxLayout::LeftToRight, m_container);
-    containerLayout->setSpacing(0);
-    containerLayout->setContentsMargins(0, 0, 0, 0);
-    m_container->setLayout(containerLayout);
+    auto* const container_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_container);
+    container_layout->setSpacing(0);
+    container_layout->setContentsMargins(0, 0, 0, 0);
+    m_container->setLayout(container_layout);
 
     // Moves the container when the main window is moved or is resized.
     // Find the real "root" mainwindow
@@ -119,21 +119,21 @@ void notification::build()
 
     // Creates an intermediate layer so we can add optional "show more" button
     m_subContainer = new QWidget(m_container);
-    containerLayout->addWidget(m_subContainer);
+    container_layout->addWidget(m_subContainer);
     m_subContainer->setAutoFillBackground(true);
     m_subContainer->setAttribute(Qt::WA_StyledBackground, true);
 
-    auto* const subcontainerLayout = new QBoxLayout(QBoxLayout::LeftToRight, m_subContainer);
-    subcontainerLayout->setSpacing(0);
-    subcontainerLayout->setContentsMargins(0, 0, 0, 0);
-    m_subContainer->setLayout(subcontainerLayout);
+    auto* const subcontainer_layout = new QBoxLayout(QBoxLayout::LeftToRight, m_subContainer);
+    subcontainer_layout->setSpacing(0);
+    subcontainer_layout->setContentsMargins(0, 0, 0, 0);
+    m_subContainer->setLayout(subcontainer_layout);
 
     // Creates the clickable label.
     m_msgBox = new ClickableQLabel(m_container, m_subContainer);
     m_msgBox->setWordWrap(true);
     m_msgBox->setScaledContents(true);
     m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    subcontainerLayout->addWidget(m_msgBox);
+    subcontainer_layout->addWidget(m_msgBox);
 
     // Execute the callback on close
     // Make an explicit copy so It will still be callable in the lambda when this has been destroyed.
@@ -157,7 +157,7 @@ void notification::build()
     m_showMoreButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     m_showMoreButton->setText(s_SHOW_MORE);
     m_showMoreButton->setStyleSheet("border-radius: 10px;border: 2px solid white;");
-    subcontainerLayout->addWidget(m_showMoreButton);
+    subcontainer_layout->addWidget(m_showMoreButton);
 
     // Build the show more dialog (icon, text, title will be set in update())
     m_showMoreBox = new QMessageBox(
@@ -180,20 +180,20 @@ void notification::build()
 
 //------------------------------------------------------------------------------
 
-inline static bool checkMessageLength(
-    const QFontMetrics& metrics,
-    const QRect& available,
-    const QString& message,
-    const bool is_truncated
+inline static bool check_message_length(
+    const QFontMetrics& _metrics,
+    const QRect& _available,
+    const QString& _message,
+    const bool _is_truncated
 )
 {
-    const auto& bounding = metrics.boundingRect(
-        available,
+    const auto& bounding = _metrics.boundingRect(
+        _available,
         int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
-        message + (is_truncated ? "..." : "")
+        _message + (_is_truncated ? "..." : "")
     );
 
-    return available.width() >= bounding.width() && available.height() >= bounding.height();
+    return _available.width() >= bounding.width() && _available.height() >= bounding.height();
 }
 
 //------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ void notification::update()
 
             // Initial message
             auto truncated    = QString::fromStdString(m_notification.message);
-            bool is_truncated = !checkMessageLength(metrics, available, truncated, false);
+            bool is_truncated = !check_message_length(metrics, available, truncated, false);
 
             if(is_truncated)
             {
@@ -308,13 +308,13 @@ void notification::update()
                 for(int step = truncated.length() / 2 ; step > 2 ; step = step / 2)
                 {
                     // Truncate roughly
-                    if(!checkMessageLength(metrics, new_available, truncated, true))
+                    if(!check_message_length(metrics, new_available, truncated, true))
                     {
                         truncated.truncate(truncated.length() - step);
                     }
 
                     // Refine
-                    if(checkMessageLength(metrics, new_available, truncated, true))
+                    if(check_message_length(metrics, new_available, truncated, true))
                     {
                         const int previous = truncated.length() + step;
                         truncated = QString::fromStdString(m_notification.message);
@@ -323,7 +323,7 @@ void notification::update()
                 }
 
                 // Last 1-2 steps
-                while(!checkMessageLength(metrics, new_available, truncated, true))
+                while(!check_message_length(metrics, new_available, truncated, true))
                 {
                     truncated.truncate(truncated.length() - 1);
                 }
@@ -361,9 +361,9 @@ void notification::update()
     m_showMoreButton->setVisible(is_truncated);
 
     // Reapply the position
-    auto positionFct = this->computePosition();
-    m_container->setPosition(positionFct, m_parent);
-    m_container->setPositionFct(positionFct);
+    auto position_fct = this->computePosition();
+    m_container->setPosition(position_fct, m_parent);
+    m_container->setPositionFct(position_fct);
 
     // (re)Start / stop the fadeout timer
     m_msgBox->timedFadeout(m_notification.duration);
@@ -452,93 +452,93 @@ std::function<QPoint(QWidget*)> notification::computePosition()
         case Position::CENTERED:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parentPosCenter = _parent->rect().center();
+                       const auto parent_pos_center = _parent->rect().center();
 
                        return {
-                           parentPosCenter.x() - static_cast<int>(m_notification.size[0] / 2),
-                           parentPosCenter.y() - static_cast<int>(m_notification.size[1] / 2)
+                           parent_pos_center.x() - static_cast<int>(m_notification.size[0] / 2),
+                           parent_pos_center.y() - static_cast<int>(m_notification.size[1] / 2)
                        };
                    };
 
         case Position::CENTERED_TOP:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->rect().center().x();
-                       const int parentY = _parent->rect().topLeft().y();
-                       const int height  = static_cast<int>(m_notification.size[1]) + margin;
+                       const int parent_x = _parent->rect().center().x();
+                       const int parent_y = _parent->rect().topLeft().y();
+                       const int height   = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - static_cast<int>(m_notification.size[0] / 2),
-                           parentY + margin + (height * static_cast<int>(m_index))
+                           parent_x - static_cast<int>(m_notification.size[0] / 2),
+                           parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
 
         case Position::CENTERED_BOTTOM:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->rect().center().x();
-                       const int parentY = _parent->rect().bottomLeft().y();
-                       const int height  = static_cast<int>(m_notification.size[1]) + margin;
+                       const int parent_x = _parent->rect().center().x();
+                       const int parent_y = _parent->rect().bottomLeft().y();
+                       const int height   = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - static_cast<int>(m_notification.size[0] / 2),
-                           parentY - margin - (height * (static_cast<int>(m_index) + 1))
+                           parent_x - static_cast<int>(m_notification.size[0] / 2),
+                           parent_y - margin - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
 
         case Position::TOP_LEFT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopLeft = _parent->rect().topLeft();
-                       const int parentX         = parrentTopLeft.x();
-                       const int parentY         = parrentTopLeft.y();
-                       const int height          = static_cast<int>(m_notification.size[1]) + margin;
+                       const auto parrent_top_left = _parent->rect().topLeft();
+                       const int parent_x          = parrent_top_left.x();
+                       const int parent_y          = parrent_top_left.y();
+                       const int height            = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX + margin,
-                           parentY + margin + (height * static_cast<int>(m_index))
+                           parent_x + margin,
+                           parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
 
         case Position::TOP_RIGHT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopRight = _parent->rect().topRight();
-                       const int parentX          = parrentTopRight.x();
-                       const int parentY          = parrentTopRight.y();
-                       const int height           = static_cast<int>(m_notification.size[1]) + margin;
+                       const auto parrent_top_right = _parent->rect().topRight();
+                       const int parent_x           = parrent_top_right.x();
+                       const int parent_y           = parrent_top_right.y();
+                       const int height             = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - margin - static_cast<int>(m_notification.size[0]),
-                           parentY + margin + (height * static_cast<int>(m_index))
+                           parent_x - margin - static_cast<int>(m_notification.size[0]),
+                           parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
 
         case Position::BOTTOM_LEFT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomLeft = _parent->rect().bottomLeft();
-                       const int parentX            = parrentBottomLeft.x();
-                       const int parentY            = parrentBottomLeft.y();
-                       const int height             = static_cast<int>(m_notification.size[1]) + margin;
+                       const auto parrent_bottom_left = _parent->rect().bottomLeft();
+                       const int parent_x             = parrent_bottom_left.x();
+                       const int parent_y             = parrent_bottom_left.y();
+                       const int height               = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX + margin,
-                           parentY - (height * (static_cast<int>(m_index) + 1))
+                           parent_x + margin,
+                           parent_y - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
 
         case Position::BOTTOM_RIGHT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomRight = _parent->rect().bottomRight();
-                       const int parentX             = parrentBottomRight.x();
-                       const int parentY             = parrentBottomRight.y();
-                       const int height              = static_cast<int>(m_notification.size[1]) + margin;
+                       const auto parrent_bottom_right = _parent->rect().bottomRight();
+                       const int parent_x              = parrent_bottom_right.x();
+                       const int parent_y              = parrent_bottom_right.y();
+                       const int height                = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - margin - static_cast<int>(m_notification.size[0]),
-                           parentY - (height * (static_cast<int>(m_index) + 1))
+                           parent_x - margin - static_cast<int>(m_notification.size[0]),
+                           parent_y - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
 

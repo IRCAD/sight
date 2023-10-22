@@ -12,7 +12,7 @@ Contains services for mesh filtering.
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(my_target 
                 ...
                  module_filter_mesh
 )

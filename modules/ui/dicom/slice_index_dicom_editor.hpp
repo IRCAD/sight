@@ -104,10 +104,10 @@ public:
     SIGHT_DECLARE_SERVICE(slice_index_dicom_editor, sight::ui::editor);
 
     MODULE_UI_DICOM_API static const core::com::slots::key_t READ_IMAGE_SLOT;
-    typedef core::com::slot<void (std::size_t)> ReadImageSlotType;
+    typedef core::com::slot<void (std::size_t)> read_image_slot_t;
 
     MODULE_UI_DICOM_API static const core::com::slots::key_t DISPLAY_MESSAGE_SLOT;
-    typedef core::com::slot<void (const std::string&)> DisplayMessageSlotType;
+    typedef core::com::slot<void (const std::string&)> display_message_slot_t;
 
     /**
      * @brief Constructor
@@ -143,13 +143,13 @@ protected:
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    MODULE_UI_DICOM_API void readImage(std::size_t selectedSliceIndex);
+    MODULE_UI_DICOM_API void readImage(std::size_t _selected_slice_index);
 
     /**
      * @brief Display error message
      * @param[in] message Message that must be displayed
      */
-    static MODULE_UI_DICOM_API void displayErrorMessage(const std::string& message);
+    static MODULE_UI_DICOM_API void displayErrorMessage(const std::string& _message);
 
 private Q_SLOTS:
 
@@ -157,12 +157,12 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
      */
-    MODULE_UI_DICOM_API void changeSliceIndex(int value);
+    MODULE_UI_DICOM_API void changeSliceIndex(int _value);
 
 private:
 
     /// Slot to call readLocalSeries method
-    ReadImageSlotType::sptr m_slotReadImage;
+    read_image_slot_t::sptr m_slotReadImage;
 
     /// Slice index slider
     QPointer<QSlider> m_sliceIndexSlider;

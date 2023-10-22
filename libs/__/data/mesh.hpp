@@ -148,7 +148,7 @@ namespace sight::data
  * Example to iterate over points:
  * @code{.cpp}
    mesh::sptr mesh = mesh::New();
-   mesh->resize(25, 33, mesh::CellType::TRIANGLE);
+   mesh->resize(25, 33, mesh::cell_type_t::TRIANGLE);
 
    float p[3] = {12.f, 16.f, 18.f};
 
@@ -164,7 +164,7 @@ namespace sight::data
  *
  * @code{.cpp}
     mesh::sptr mesh = mesh::New();
-    mesh->resize(25, 33, mesh::CellType::TRIANGLE);
+    mesh->resize(25, 33, mesh::cell_type_t::TRIANGLE);
 
     auto itrPt = mesh->begin<iterator::point::xyz>();
     float p[3];
@@ -189,8 +189,8 @@ namespace sight::data
  *
  * @code{.cpp}
     mesh::sptr mesh = mesh::New();
-    mesh->resize(25, 33, mesh::CellType::QUAD);
-    const auto cellType = mesh::CellType::QUAD;
+    mesh->resize(25, 33, mesh::cell_type_t::QUAD);
+    const auto cellType = mesh::cell_type_t::QUAD;
     const std::size_t nbPointPerCell = 4;
 
     std::size_t count = 0;
@@ -253,7 +253,7 @@ public:
     SIGHT_DECLARE_CLASS(mesh, object);
 
     /// Stores a cell type.
-    enum class CellType : std::uint8_t
+    enum class cell_type_t : std::uint8_t
     {
         POINT = 0,
         LINE,
@@ -326,10 +326,10 @@ public:
      * @throw Raise Exception if the memory can not be allocated.
      */
     DATA_API std::size_t reserve(
-        mesh::size_t nbPts,
-        mesh::size_t nbCells,
-        CellType cellType    = CellType::TRIANGLE,
-        Attributes arrayMask = Attributes::NONE
+        mesh::size_t _nb_pts,
+        mesh::size_t _nb_cells,
+        cell_type_t _cell_type = cell_type_t::TRIANGLE,
+        Attributes _array_mask = Attributes::NONE
     );
 
     /**
@@ -348,10 +348,10 @@ public:
      * @throw Raise Exception if the memory can not be allocated.
      */
     DATA_API std::size_t resize(
-        mesh::size_t nbPts,
-        mesh::size_t nbCells,
-        CellType cellType    = CellType::TRIANGLE,
-        Attributes arrayMask = Attributes::NONE
+        mesh::size_t _nb_pts,
+        mesh::size_t _nb_cells,
+        cell_type_t _cell_type = cell_type_t::TRIANGLE,
+        Attributes _array_mask = Attributes::NONE
     );
 
     /**
@@ -375,7 +375,7 @@ public:
      *
      * @throw Raise Exception if the number of elements if higher than the allocated size.
      */
-    DATA_API void truncate(mesh::size_t nbPts, mesh::size_t nbCells);
+    DATA_API void truncate(mesh::size_t _nb_pts, mesh::size_t _nb_cells);
 
     /**
      * @brief Remove all data contained in the mesh. Memory is freed.
@@ -397,7 +397,7 @@ public:
     mesh::size_t numCells() const;
 
     /// Get the cell type of this mesh.
-    CellType getCellType() const;
+    cell_type_t get_cell_type() const;
 
     /// Get the size of a cell given its type
     mesh::size_t getCellSize() const;
@@ -430,8 +430,8 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API point_t pushPoint(const std::array<position_t, 3>& p);
-    DATA_API point_t pushPoint(position_t x, position_t y, position_t z);
+    DATA_API point_t pushPoint(const std::array<position_t, 3>& _p);
+    DATA_API point_t pushPoint(position_t _x, position_t _y, position_t _z);
     /// @}
     /**
      * @{
@@ -443,12 +443,12 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API cell_t pushCell(point_t idPt);
-    DATA_API cell_t pushCell(point_t idP1, point_t idP2);
-    DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3);
-    DATA_API cell_t pushCell(point_t idP1, point_t idP2, point_t idP3, point_t idP4);
-    DATA_API cell_t pushCell(const std::vector<point_t> pointIds);
-    DATA_API cell_t pushCell(const point_t* pointIds, std::size_t nbPoints);
+    DATA_API cell_t pushCell(point_t _id_pt);
+    DATA_API cell_t pushCell(point_t _id_p1, point_t _id_p2);
+    DATA_API cell_t pushCell(point_t _id_p1, point_t _id_p2, point_t _id_p3);
+    DATA_API cell_t pushCell(point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
+    DATA_API cell_t pushCell(const std::vector<point_t> _point_ids);
+    DATA_API cell_t pushCell(const point_t* _point_ids, std::size_t _nb_points);
     /// @}
 
     /**
@@ -460,7 +460,7 @@ public:
      * @param p point coordinates
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(point_t id, const std::array<position_t, 3>& p);
+    DATA_API void setPoint(point_t _id, const std::array<position_t, 3>& _p);
 
     /**
      * @brief Set a point coordinates.
@@ -470,7 +470,7 @@ public:
      * @see setPoint
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(point_t id, position_t x, position_t y, position_t z);
+    DATA_API void setPoint(point_t _id, position_t _x, position_t _y, position_t _z);
 
     /**
      * @{
@@ -481,12 +481,12 @@ public:
      *
      * @throw Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
      */
-    DATA_API void setCell(cell_t id, point_t idPt);
-    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2);
-    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3);
-    DATA_API void setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3, point_t idP4);
-    DATA_API void setCell(cell_t id, const std::vector<point_t>& pointIds);
-    DATA_API void setCell(cell_t id, const point_t* pointIds, std::size_t nbPoints);
+    DATA_API void setCell(cell_t _id, point_t _id_pt);
+    DATA_API void setCell(cell_t _id, point_t _id_p1, point_t _id_p2);
+    DATA_API void setCell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3);
+    DATA_API void setCell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
+    DATA_API void setCell(cell_t _id, const std::vector<point_t>& _point_ids);
+    DATA_API void setCell(cell_t _id, const point_t* _point_ids, std::size_t _nb_points);
     /// @}
 
     /**
@@ -498,8 +498,8 @@ public:
      * @param id point index
      * @param c color
      */
-    DATA_API void setPointColor(point_t id, const std::array<color_t, 4>& c);
-    DATA_API void setPointColor(point_t id, color_t r, color_t g, color_t b, color_t a);
+    DATA_API void setPointColor(point_t _id, const std::array<color_t, 4>& _c);
+    DATA_API void setPointColor(point_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
     /// @}
     ///
     /**
@@ -511,8 +511,8 @@ public:
      * @param id cell index
      * @param c color
      */
-    DATA_API void setCellColor(cell_t id, const std::array<color_t, 4>& c);
-    DATA_API void setCellColor(cell_t id, color_t r, color_t g, color_t b, color_t a);
+    DATA_API void setCellColor(cell_t _id, const std::array<color_t, 4>& _c);
+    DATA_API void setCellColor(cell_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
     /// @}
 
     /**
@@ -524,8 +524,8 @@ public:
      * @param id point index
      * @param n normal
      */
-    DATA_API void setPointNormal(point_t id, const std::array<normal_t, 3>& n);
-    DATA_API void setPointNormal(point_t id, normal_t nx, normal_t ny, normal_t nz);
+    DATA_API void setPointNormal(point_t _id, const std::array<normal_t, 3>& _n);
+    DATA_API void setPointNormal(point_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
     ///@}
     /**
      * @{
@@ -536,8 +536,8 @@ public:
      * @param id cell index
      * @param n normal
      */
-    DATA_API void setCellNormal(cell_t id, const std::array<normal_t, 3>& n);
-    DATA_API void setCellNormal(cell_t id, normal_t nx, normal_t ny, normal_t nz);
+    DATA_API void setCellNormal(cell_t _id, const std::array<normal_t, 3>& _n);
+    DATA_API void setCellNormal(cell_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
     /// @}
     /**
      * @{
@@ -548,8 +548,8 @@ public:
      * @param id point index
      * @param t texCoord
      */
-    DATA_API void setPointTexCoord(point_t id, const std::array<texcoord_t, 2>& t);
-    DATA_API void setPointTexCoord(point_t id, texcoord_t u, texcoord_t v);
+    DATA_API void setPointTexCoord(point_t _id, const std::array<texcoord_t, 2>& _t);
+    DATA_API void setPointTexCoord(point_t _id, texcoord_t _u, texcoord_t _v);
     /// @}
 
     /**
@@ -561,8 +561,8 @@ public:
      * @param id cell index
      * @param t texCoord
      */
-    DATA_API void setCellTexCoord(cell_t id, const std::array<texcoord_t, 2>& t);
-    DATA_API void setCellTexCoord(cell_t id, texcoord_t u, texcoord_t v);
+    DATA_API void setCellTexCoord(cell_t _id, const std::array<texcoord_t, 2>& _t);
+    DATA_API void setCellTexCoord(cell_t _id, texcoord_t _u, texcoord_t _v);
     /// @}
 
     /**
@@ -599,29 +599,29 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const mesh& other) const noexcept;
-    DATA_API bool operator!=(const mesh& other) const noexcept;
+    DATA_API bool operator==(const mesh& _other) const noexcept;
+    DATA_API bool operator!=(const mesh& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
 
     /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const override;
+    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
 private:
 
@@ -662,7 +662,7 @@ private:
     mesh::size_t m_numCells {0};
 
     /// Type of primitive
-    CellType m_cellType {CellType::_SIZE};
+    cell_type_t m_cellType {cell_type_t::_SIZE};
 
     /**
      * @brief Points arrays
@@ -706,29 +706,29 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline mesh::Attributes operator|(const mesh::Attributes& lhs, const mesh::Attributes& rhs)
+inline mesh::Attributes operator|(const mesh::Attributes& _lhs, const mesh::Attributes& _rhs)
 {
     return static_cast<mesh::Attributes>(
-        static_cast<std::underlying_type<mesh::Attributes>::type>(lhs)
-        | static_cast<std::underlying_type<mesh::Attributes>::type>(rhs)
+        static_cast<std::underlying_type<mesh::Attributes>::type>(_lhs)
+        | static_cast<std::underlying_type<mesh::Attributes>::type>(_rhs)
     );
 }
 
 //------------------------------------------------------------------------------
 
-inline mesh::Attributes operator&(const mesh::Attributes& lhs, const mesh::Attributes& rhs)
+inline mesh::Attributes operator&(const mesh::Attributes& _lhs, const mesh::Attributes& _rhs)
 {
     return static_cast<mesh::Attributes>(
-        static_cast<std::underlying_type<mesh::Attributes>::type>(lhs)
-        & static_cast<std::underlying_type<mesh::Attributes>::type>(rhs)
+        static_cast<std::underlying_type<mesh::Attributes>::type>(_lhs)
+        & static_cast<std::underlying_type<mesh::Attributes>::type>(_rhs)
     );
 }
 
 //------------------------------------------------------------------------------
 
-inline mesh::Attributes operator~(const mesh::Attributes& lhs)
+inline mesh::Attributes operator~(const mesh::Attributes& _lhs)
 {
-    return static_cast<mesh::Attributes>(~static_cast<std::underlying_type<mesh::Attributes>::type>(lhs));
+    return static_cast<mesh::Attributes>(~static_cast<std::underlying_type<mesh::Attributes>::type>(_lhs));
 }
 
 //------------------------------------------------------------------------------
@@ -747,7 +747,7 @@ inline mesh::size_t mesh::numCells() const
 
 //------------------------------------------------------------------------------
 
-inline mesh::CellType mesh::getCellType() const
+inline mesh::cell_type_t mesh::get_cell_type() const
 {
     return m_cellType;
 }
@@ -756,7 +756,7 @@ inline mesh::CellType mesh::getCellType() const
 
 inline mesh::size_t mesh::getCellSize() const
 {
-    static const std::array<mesh::size_t, static_cast<std::size_t>(mesh::CellType::_SIZE)> s_cellTypeToSize =
+    static const std::array<mesh::size_t, static_cast<std::size_t>(mesh::cell_type_t::_SIZE)> s_cellTypeToSize =
     {1, 2, 3, 4, 4};
     return s_cellTypeToSize[static_cast<std::size_t>(m_cellType)];
 }

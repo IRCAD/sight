@@ -4,13 +4,13 @@ Contains all needed interfaces, helper classes and resources to build a Qt inter
 
 ## Files
 
-- **ActionCallback**: defines the menu item callback.
-- **App**: defines the Qt application.
-- **Application**: gives access to the qml application part.
+- **action_callback**: defines the menu item callback.
+- **app**: defines the Qt application.
+- **application**: gives access to the qml application part.
 - **cursor**: defines the generic cursor.
 - **QtMainFame**: defines the Qt main frame.
-- **SliceSelector**: defines a Qt panel used to control a VTK 2D Negatoscope view.
-- **WorkerQt**: provides an implementation of core::thread::Worker using boost::asio.
+- **slice_selector**: defines a Qt panel used to control a VTK 2D Negatoscope view.
+- **worker_qt**: provides an implementation of core::thread::Worker using boost::asio.
 
 ### _builder_
 
@@ -58,7 +58,7 @@ Contains all needed interfaces, helper classes and resources to build a Qt inter
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                        ui_qt
 )
 ```

@@ -9,9 +9,9 @@ Only targets compiled with the FAST_DEBUG option link with `pchCoreOg` instead, 
 
 ```cmake
 # Implicit usage since it is enabled by default for all targets
-sight_add_target(myTarget TYPE LIBRARY)
-sight_add_target(myTarget TYPE TEST)
+sight_add_target(my_target TYPE LIBRARY)
+sight_add_target(my_target TYPE TEST)
 
 # Explicit usage
-sight_add_target(myTarget TYPE LIBRARY PCH pchCore ...)
+sight_add_target(my_target TYPE LIBRARY PCH pchCore ...)
 ```

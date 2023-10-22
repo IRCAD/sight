@@ -65,7 +65,7 @@ public:
     CORE_API virtual void stop() = 0;
 
     /// Requests invocation of the given task handler and returns immediately.
-    virtual void post(task_t handler) = 0;
+    virtual void post(task_t _handler) = 0;
 
     /**
      * @brief Requests invocation of the given callable and returns a shared future.
@@ -79,7 +79,7 @@ public:
      * @returns a std::shared_future associated with the result of the given callable
      */
     template<typename R, typename CALLABLE>
-    std::shared_future<R> post_task(CALLABLE f);
+    std::shared_future<R> post_task(CALLABLE _f);
 
     /// Returns the worker's thread id
     CORE_API virtual thread_id_t get_thread_id() const = 0;
@@ -106,7 +106,7 @@ public:
      * @warning Qt implementation processes all Qt and Worker pending events, be careful.
      * @warning WxWidgets version is not yet implemented.
      */
-    CORE_API virtual void process_tasks(period_t maxtime) = 0;
+    CORE_API virtual void process_tasks(period_t _maxtime) = 0;
 
     /**
      * @brief Processes all worker pending tasks for the calling thread
@@ -139,7 +139,7 @@ typedef std::string worker_key_type;
  * @param key name of the worker thread
  * @note This method is thread safe.
  */
-CORE_API core::thread::worker::sptr get_worker(const worker_key_type& key);
+CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
 
 /**
  * @brief Registers a worker.
@@ -148,21 +148,21 @@ CORE_API core::thread::worker::sptr get_worker(const worker_key_type& key);
  * @param worker pointer to the worker thread
  * @note This method is thread safe.
  */
-CORE_API void add_worker(const worker_key_type& key, core::thread::worker::sptr worker);
+CORE_API void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker);
 
 /**
  * @brief Stops and unregisters a worker
  * @param key name of the worker thread
  * @note This method is thread safe.
  */
-CORE_API void remove_worker(const worker_key_type& key);
+CORE_API void remove_worker(const worker_key_type& _key);
 
 /**
  * @brief Stops and unregisters a worker
  * @param worker pointer to the worker thread
  * @note This method is thread safe.
  */
-CORE_API void remove_worker(core::thread::worker::sptr worker);
+CORE_API void remove_worker(core::thread::worker::sptr _worker);
 
 /**
  * @brief Get the default registered worker
@@ -181,7 +181,7 @@ CORE_API core::thread::worker::sptr get_default_worker();
  * @note This method is thread safe.
  * @throw sight::core::exception if the worker is null or if the previous default worker is already in use.
  */
-CORE_API void set_default_worker(core::thread::worker::sptr worker);
+CORE_API void set_default_worker(core::thread::worker::sptr _worker);
 
 /**
  * @brief Reset the default registered worker.

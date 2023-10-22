@@ -100,12 +100,14 @@ void manage_point_list::pick(data::tools::picking_info _info) const
 
         if(matrix)
         {
-            const std::array<double, 3>& pickedCoord = _info.m_worldPos;
-            const glm::dvec4 pickedPoint             = glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const glm::dmat4x4 mat                   = sight::geometry::data::getMatrixFromTF3D(*matrix);
+            const std::array<double, 3>& picked_coord = _info.m_worldPos;
+            const glm::dvec4 picked_point             =
+                glm::dvec4 {picked_coord[0], picked_coord[1], picked_coord[2], 1.0
+            };
+            const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
 
-            const glm::dvec4 modifiedPickedPoint = mat * pickedPoint;
-            point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
+            const glm::dvec4 modified_picked_point = mat * picked_point;
+            point->setCoord({modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]});
         }
         else
         {
@@ -127,28 +129,28 @@ void manage_point_list::pick(data::tools::picking_info _info) const
 
 void manage_point_list::addPoint(const data::point::sptr _point) const
 {
-    const auto pointList = m_pointList.lock();
+    const auto point_list = m_pointList.lock();
 
     if(m_label)
     {
-        const auto counter = pointList->getPoints().size();
+        const auto counter = point_list->getPoints().size();
         _point->setLabel(std::to_string(counter));
     }
 
-    pointList->pushBack(_point);
-    const auto& sigAdded = pointList->signal<data::point_list::PointAddedSignalType>(
+    point_list->pushBack(_point);
+    const auto& sig_added = point_list->signal<data::point_list::point_added_signal_t>(
         data::point_list::POINT_ADDED_SIG
     );
-    sigAdded->async_emit(_point);
+    sig_added->async_emit(_point);
 
-    if(m_max != 0 && pointList->getPoints().size() > m_max)
+    if(m_max != 0 && point_list->getPoints().size() > m_max)
     {
-        const data::point::sptr removedPoint = pointList->getPoints().front();
-        pointList->remove(0);
-        const auto& sigRemoved = pointList->signal<data::point_list::PointRemovedSignalType>(
+        const data::point::sptr removed_point = point_list->getPoints().front();
+        point_list->remove(0);
+        const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
             data::point_list::POINT_REMOVED_SIG
         );
-        sigRemoved->async_emit(removedPoint);
+        sig_removed->async_emit(removed_point);
     }
 }
 
@@ -158,16 +160,16 @@ void manage_point_list::removePoint(const data::point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList             = m_pointList.lock();
-        const data::point::sptr pointRes =
-            sight::geometry::data::point_list::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
+        const auto point_list             = m_pointList.lock();
+        const data::point::sptr point_res =
+            sight::geometry::data::point_list::removeClosestPoint(point_list.get_shared(), _point, m_tolerance);
 
-        if(pointRes != nullptr)
+        if(point_res != nullptr)
         {
-            const auto& sigRemoved = pointList->signal<data::point_list::PointRemovedSignalType>(
+            const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
                 data::point_list::POINT_REMOVED_SIG
             );
-            sigRemoved->async_emit(pointRes);
+            sig_removed->async_emit(point_res);
         }
     }
 }
@@ -176,18 +178,18 @@ void manage_point_list::removePoint(const data::point::csptr _point) const
 
 void manage_point_list::clearPoints() const
 {
-    const auto pointList = m_pointList.lock();
+    const auto point_list = m_pointList.lock();
 
     using PLContainer = data::point_list::PointListContainer;
-    const PLContainer container = pointList->getPoints();
-    pointList->clear();
+    const PLContainer container = point_list->getPoints();
+    point_list->clear();
 
     for(const auto& point : container)
     {
-        const auto& sigRemoved = pointList->signal<data::point_list::PointRemovedSignalType>(
+        const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
             data::point_list::POINT_REMOVED_SIG
         );
-        sigRemoved->async_emit(point);
+        sig_removed->async_emit(point);
     }
 }
 

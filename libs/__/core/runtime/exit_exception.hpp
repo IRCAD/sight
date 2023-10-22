@@ -32,9 +32,9 @@ class CORE_CLASS_API exit_exception : public core::exception
 {
 public:
 
-    inline explicit exit_exception(int exit_code) noexcept :
-        core::exception(std::to_string(exit_code)),
-        m_exit_code(exit_code)
+    inline explicit exit_exception(int _exit_code) noexcept :
+        core::exception(std::to_string(_exit_code)),
+        m_exit_code(_exit_code)
     {
     }
 

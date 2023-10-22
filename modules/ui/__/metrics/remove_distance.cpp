@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
@@ -67,36 +67,36 @@ void remove_distance::updating()
 {
     const auto image = m_image.lock();
 
-    auto vectDist = data::helper::MedicalImage::getDistances(*image);
+    auto vect_dist = data::helper::medical_image::get_distances(*image);
 
-    if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
-       && vectDist)
+    if(data::helper::medical_image::check_image_validity(image.get_shared())
+       && vect_dist)
     {
-        bool requestAll                     = false;
-        data::point_list::sptr distToRemove = getDistanceToRemove(image.get_shared(), requestAll);
+        bool request_all                      = false;
+        data::point_list::sptr dist_to_remove = getDistanceToRemove(image.get_shared(), request_all);
 
-        if(distToRemove)
+        if(dist_to_remove)
         {
-            SIGHT_ASSERT("No field image distances id", vectDist);
-            const auto newEnd = std::remove(
-                vectDist->begin(),
-                vectDist->end(),
-                distToRemove
+            SIGHT_ASSERT("No field image distances id", vect_dist);
+            const auto new_end = std::remove(
+                vect_dist->begin(),
+                vect_dist->end(),
+                dist_to_remove
             );
-            vectDist->erase(newEnd, vectDist->end());
+            vect_dist->erase(new_end, vect_dist->end());
 
-            sight::module::ui::metrics::remove_distance::notifyDeleteDistance(image.get_shared(), distToRemove);
+            sight::module::ui::metrics::remove_distance::notifyDeleteDistance(image.get_shared(), dist_to_remove);
         }
 
-        if(requestAll)
+        if(request_all)
         {
-            auto backupDistance = image->getField<data::point_list>("m_imageDistancesId");
+            auto backup_distance = image->get_field<data::point_list>("m_imageDistancesId");
 
-            image->removeField("m_imageDistancesId");
-            const auto sig = image->signal<data::image::DistanceRemovedSignalType>(
+            image->remove_field("m_imageDistancesId");
+            const auto sig = image->signal<data::image::distance_removed_signal_t>(
                 data::image::DISTANCE_REMOVED_SIG
             );
-            sig->async_emit(backupDistance);
+            sig->async_emit(backup_distance);
         }
     }
 }
@@ -120,19 +120,19 @@ std::string remove_distance::distanceToStr(double _dist)
 
 //------------------------------------------------------------------------------
 
-data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::csptr _image, bool& _removeAll)
+data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::csptr _image, bool& _remove_all)
 {
-    data::point_list::sptr distToRemove;
-    _removeAll = false;
-    data::vector::sptr vectDist = data::helper::MedicalImage::getDistances(*_image);
+    data::point_list::sptr dist_to_remove;
+    _remove_all = false;
+    data::vector::sptr vect_dist = data::helper::medical_image::get_distances(*_image);
 
-    if(vectDist)
+    if(vect_dist)
     {
         std::vector<std::string> selections;
         selections.emplace_back("ALL");
         std::map<std::string, data::point_list::sptr> correspondence;
 
-        for(const data::object::sptr& obj : *vectDist)
+        for(const data::object::sptr& obj : *vect_dist)
         {
             const data::point_list::sptr pl = std::dynamic_pointer_cast<data::point_list>(obj);
             SIGHT_ASSERT("The distance should be a point list", pl);
@@ -164,18 +164,18 @@ data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::c
                 const auto choice = choices.front();
                 if(choice == "ALL")
                 {
-                    _removeAll = true;
+                    _remove_all = true;
                 }
                 else
                 {
-                    _removeAll   = false;
-                    distToRemove = correspondence[choice];
+                    _remove_all    = false;
+                    dist_to_remove = correspondence[choice];
                 }
             }
         }
     }
 
-    return distToRemove;
+    return dist_to_remove;
 }
 
 //------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ void remove_distance::notifyDeleteDistance(
 )
 {
     const auto sig =
-        _image->signal<data::image::DistanceRemovedSignalType>(data::image::DISTANCE_REMOVED_SIG);
+        _image->signal<data::image::distance_removed_signal_t>(data::image::DISTANCE_REMOVED_SIG);
     sig->async_emit(_distance);
 }
 
@@ -196,18 +196,19 @@ void remove_distance::removeLastDistance()
 {
     const auto image = m_image.lock();
 
-    const data::vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
+    const data::vector::sptr vect_dist = data::helper::medical_image::get_distances(*image);
 
-    if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
-       && vectDist)
+    if(data::helper::medical_image::check_image_validity(image.get_shared())
+       && vect_dist)
     {
-        const data::point_list::sptr distToRemove = std::dynamic_pointer_cast<data::point_list>(*(*vectDist).rbegin());
+        const data::point_list::sptr dist_to_remove =
+            std::dynamic_pointer_cast<data::point_list>(*(*vect_dist).rbegin());
 
-        if(distToRemove)
+        if(dist_to_remove)
         {
-            auto newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
-            vectDist->erase(newEnd, vectDist->end());
-            this->notifyDeleteDistance(image.get_shared(), distToRemove);
+            auto new_end = std::remove(vect_dist->begin(), vect_dist->end(), dist_to_remove);
+            vect_dist->erase(new_end, vect_dist->end());
+            this->notifyDeleteDistance(image.get_shared(), dist_to_remove);
         }
     }
 }

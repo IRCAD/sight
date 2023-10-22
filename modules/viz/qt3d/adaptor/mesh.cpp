@@ -67,8 +67,8 @@ void mesh::configuring()
 {
     this->configureParams();
 
-    const config_t configTree = this->get_config();
-    const auto config         = configTree.get_child_optional("config.<xmlattr>");
+    const config_t config_tree = this->get_config();
+    const auto config          = config_tree.get_child_optional("config.<xmlattr>");
 
     if(config)
     {
@@ -125,24 +125,24 @@ void mesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = sight::service::getServices<module::viz::qt3d::adaptor::material>();
+        auto mtl_adaptors = sight::service::get_services<module::viz::qt3d::adaptor::material>();
 
         auto result =
             std::find_if(
-                mtlAdaptors.begin(),
-                mtlAdaptors.end(),
-                [this](const module::viz::qt3d::adaptor::material::sptr& srv)
+                mtl_adaptors.begin(),
+                mtl_adaptors.end(),
+                [this](const module::viz::qt3d::adaptor::material::sptr& _srv)
             {
-                return srv->getMaterialName() == m_materialName;
+                return _srv->getMaterialName() == m_materialName;
             });
 
-        const auto& materialAdaptor = *result;
+        const auto& material_adaptor = *result;
 
         SIGHT_ASSERT(
             "material adaptor managing material'" + m_materialName + "' is not found",
-            result != mtlAdaptors.end()
+            result != mtl_adaptors.end()
         );
-        m_mesh->setMaterial(materialAdaptor->getMaterial());
+        m_mesh->setMaterial(material_adaptor->getMaterial());
     }
 }
 

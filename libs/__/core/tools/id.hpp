@@ -65,7 +65,7 @@ public:
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
      * @note This method is thread-safe.
      */
-    CORE_API static SPTR(core::tools::object) get_object(type request_id);
+    CORE_API static SPTR(core::tools::object) get_object(type _request_id);
 
     CORE_API virtual ~id();
 
@@ -87,14 +87,14 @@ protected:
      * @note We consider an object be constant whatever if its id is generated.
      * @note This method is thread-safe.
      */
-    CORE_API type get_id(policy policy = GENERATE) const;
+    CORE_API type get_id(policy _policy = GENERATE) const;
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
      * @warning Cannot set a empty ID.
      * @note This method is thread-safe.
      */
-    CORE_API virtual void set_id(type new_id); // cannot set a empty one
+    CORE_API virtual void set_id(type _new_id); // cannot set a empty one
 
     /**
      * @brief Release the id for the object.
@@ -132,7 +132,7 @@ private:
      * @brief Add newID in the dictionary (newID must not exist in fwID).
      * @note This method is NOT thread-safe
      */
-    void add_id_in_dictionary(type new_id) const;
+    void add_id_in_dictionary(type _new_id) const;
 
     /// The ID associated with the object. It is mutable, as it may be modified with a call to get_id(GENERATE).
     mutable type m_id;

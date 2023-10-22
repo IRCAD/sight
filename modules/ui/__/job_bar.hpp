@@ -92,16 +92,16 @@ protected:
     /**
      * @brief showJob slot's method
      */
-    MODULE_UI_API virtual void showJob(core::jobs::base::sptr job);
+    MODULE_UI_API virtual void showJob(core::jobs::base::sptr _job);
 
     typedef std::set<SPTR(sight::ui::dialog::progress)> ProgressDialogs;
     ProgressDialogs m_progressDialogs;
 
-    typedef core::com::signal<void ()> StartedSignalType;
-    typedef core::com::signal<void ()> EndedSignalType;
+    typedef core::com::signal<void ()> started_signal_t;
+    typedef core::com::signal<void ()> ended_signal_t;
 
-    SPTR(StartedSignalType) m_sigStarted;
-    SPTR(EndedSignalType) m_sigEnded;
+    SPTR(started_signal_t) m_sigStarted;
+    SPTR(ended_signal_t) m_sigEnded;
 };
 
 } // namespace sight::module::ui

@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-ACTIVITY_API SPTR(sight::activity::builder::base) make(const activity::builder::registry::key_t& classname);
+ACTIVITY_API SPTR(sight::activity::builder::base) make(const activity::builder::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

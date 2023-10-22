@@ -54,13 +54,13 @@ struct SpheroidExtractor
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        using ImageType       = typename itk::Image<PIXELTYPE, 3>;
-        using BinaryImageType = typename itk::Image<std::uint16_t, 3>;
+        using image_t        = typename itk::Image<PIXELTYPE, 3>;
+        using binary_image_t = typename itk::Image<std::uint16_t, 3>;
 
-        typename ImageType::Pointer inputImage = io::itk::moveToItk<ImageType>(params.inputImage);
+        typename image_t::Pointer inputImage = io::itk::move_to_itk<image_t>(params.inputImage);
 
-        typename itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::Pointer thresholdFilter =
-            itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::New();
+        typename itk::BinaryThresholdImageFilter<image_t, binary_image_t>::Pointer thresholdFilter =
+            itk::BinaryThresholdImageFilter<image_t, binary_image_t>::New();
 
         auto threshold = PIXELTYPE(params.threshold);
         thresholdFilter->SetLowerThreshold(threshold);
@@ -71,30 +71,30 @@ struct SpheroidExtractor
 
         thresholdFilter->Update();
 
-        BinaryImageType::Pointer binaryImage =
+        binary_image_t::Pointer binaryImage =
             thresholdFilter->GetOutput();
-        itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::Pointer cc =
-            itk::ConnectedComponentImageFilter<BinaryImageType, BinaryImageType>::New();
+        itk::ConnectedComponentImageFilter<binary_image_t, binary_image_t>::Pointer cc =
+            itk::ConnectedComponentImageFilter<binary_image_t, binary_image_t>::New();
 
         cc->set_input(thresholdFilter->GetOutput());
         cc->FullyConnectedOn();
         cc->Update();
 
-        using LabelStatsFilterType = itk::LabelGeometryImageFilter<BinaryImageType, ImageType>;
-        typename LabelStatsFilterType::Pointer labelGeometryFilter = LabelStatsFilterType::New();
+        using label_stats_filter_t = itk::LabelGeometryImageFilter<binary_image_t, image_t>;
+        typename label_stats_filter_t::Pointer labelGeometryFilter = label_stats_filter_t::New();
 
         labelGeometryFilter->SetInput(cc->GetOutput());
         labelGeometryFilter->SetIntensityInput(inputImage);
         labelGeometryFilter->Update();
 
-        typename LabelStatsFilterType::LabelsType labels = labelGeometryFilter->GetLabels();
+        typename label_stats_filter_t::labels_t labels = labelGeometryFilter->GetLabels();
 
         SIGHT_DEBUG("Number of labels : " << labelGeometryFilter->GetNumberOfLabels());
 
-        typename LabelStatsFilterType::LabelsType::iterator labelsIt;
+        typename label_stats_filter_t::labels_t::iterator labelsIt;
         for(labelsIt = labels.begin() ; labelsIt != labels.end() ; ++labelsIt)
         {
-            typename LabelStatsFilterType::LabelPixelType labelValue = *labelsIt;
+            typename label_stats_filter_t::label_pixel_t labelValue = *labelsIt;
 
             const double radiusMean     = (params.radiusMax + params.radiusMin) / 2.;
             const double meanElongation = (params.elongationMax + params.elongationMin) / 2.;

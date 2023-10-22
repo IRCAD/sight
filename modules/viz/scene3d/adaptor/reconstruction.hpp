@@ -90,19 +90,19 @@ public:
      * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
-    MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);
+    MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _auto_reset_camera);
 
     /**
      * @brief Sets the material template Name.
      * @param _materialName material name.
      */
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName);
+    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _material_name);
 
     /**
      * @brief Sets the query flag.
      * @param _queryFlags value of the query flag.
      */
-    MODULE_VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _queryFlags);
+    MODULE_VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _query_flags);
 
     /**
      * @brief Gets the mesh adaptor.
@@ -174,23 +174,23 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setAutoResetCamera(bool _autoResetCamera)
+inline void reconstruction::setAutoResetCamera(bool _auto_reset_camera)
 {
-    m_autoResetCamera = _autoResetCamera;
+    m_autoResetCamera = _auto_reset_camera;
 }
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setMaterialTemplateName(const std::string& _materialName)
+inline void reconstruction::setMaterialTemplateName(const std::string& _material_name)
 {
-    m_materialTemplateName = _materialName;
+    m_materialTemplateName = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void reconstruction::setQueryFlags(uint32_t _queryFlags)
+inline void reconstruction::setQueryFlags(uint32_t _query_flags)
 {
-    m_queryFlags = _queryFlags;
+    m_queryFlags = _query_flags;
 }
 
 //------------------------------------------------------------------------------

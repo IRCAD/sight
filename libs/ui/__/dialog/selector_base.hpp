@@ -42,13 +42,13 @@ public:
 
     SIGHT_DECLARE_CLASS(selector_base, ui::object);
 
-    typedef std::string FactoryRegistryKeyType;
+    typedef std::string factory_registry_key_t;
     using choices_t        = std::vector<std::string>;
     using choices_preset_t = std::vector<std::pair<std::string, bool> >;
     using selections_t     = std::vector<std::string>;
 
-    /// this *unique* key should  be used *for all* factory for specific Selector(qt,wx,...)
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    /// this *unique* key should  be used *for all* factory for specific selector(qt,wx,...)
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Constructor builds a selector proposing a string list
     UI_API selector_base() = default;
@@ -72,10 +72,10 @@ public:
     UI_API virtual selections_t show() = 0;
 
     /// Set the message
-    UI_API virtual void setMessage(const std::string& msg) = 0;
+    UI_API virtual void setMessage(const std::string& _msg) = 0;
 
     /// Add a custom button to this dialog
-    UI_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) = 0;
+    UI_API virtual void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) = 0;
 };
 
 } // namespace sight::ui::dialog

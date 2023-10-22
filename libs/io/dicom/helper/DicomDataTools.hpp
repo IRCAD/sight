@@ -50,7 +50,7 @@ public:
      * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static gdcm::PixelFormat getPixelType(const core::type& type);
+    IO_DICOM_API static gdcm::PixelFormat get_pixel_type(const core::type& _type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
@@ -58,7 +58,7 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     IO_DICOM_API static gdcm::PhotometricInterpretation getPhotometricInterpretation(
-        const data::image::csptr& image
+        const data::image::csptr& _image
     );
 
     /**
@@ -68,7 +68,7 @@ public:
      * @return Corresponding recommended presentation type.
      */
     IO_DICOM_API static gdcm::Surface::VIEWType convertToPresentationType(
-        data::material::RepresentationType representationMode
+        data::material::representation_t _representation_mode
     );
 
     /**
@@ -76,8 +76,8 @@ public:
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */
-    IO_DICOM_API static data::material::RepresentationType convertToRepresentationMode(
-        gdcm::Surface::VIEWType presentationType
+    IO_DICOM_API static data::material::representation_t convertToRepresentationMode(
+        gdcm::Surface::VIEWType _presentation_type
     );
 
     /**
@@ -87,8 +87,8 @@ public:
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static std::size_t convertPointToFrameNumber(
-        const data::image::csptr& image,
-        const data::point::csptr& point
+        const data::image::csptr& _image,
+        const data::point::csptr& _point
     );
 
     /**
@@ -98,8 +98,8 @@ public:
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static double convertFrameNumberToZCoordinate(
-        const data::image::csptr& image,
-        std::size_t frameNumber
+        const data::image::csptr& _image,
+        std::size_t _frame_number
     );
 };
 

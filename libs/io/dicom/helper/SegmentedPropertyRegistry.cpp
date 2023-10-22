@@ -34,7 +34,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-const SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::s_DEFAULT_ENTRY_VALUE =
+const SegmentedPropertyRegistry::entry_t SegmentedPropertyRegistry::s_DEFAULT_ENTRY_VALUE =
 {{"(111176;DCM;Unspecified)", "(T-D000A;SRT;Anatomical Structure)", "", "", ""}};
 
 //------------------------------------------------------------------------------
@@ -44,73 +44,73 @@ SegmentedPropertyRegistry::SegmentedPropertyRegistry()
 
 //------------------------------------------------------------------------------
 
-bool checkAndFormatEntry(
-    const std::string& structureType,
-    SegmentedPropertyRegistry::EntryType& entry,
-    const core::log::logger::sptr& logger
+bool check_and_format_entry(
+    const std::string& _structure_type,
+    SegmentedPropertyRegistry::entry_t& _entry,
+    const core::log::logger::sptr& _logger
 )
 {
     bool result = true;
 
     // Check condition and add critical log on failure
-    auto checkCondition = [&](bool condition, const std::string& msg)
-                          {
-                              result &= condition;
+    auto check_condition = [&](bool _condition, const std::string& _msg)
+                           {
+                               result &= _condition;
 
-                              SIGHT_ERROR_IF(msg, !condition && !logger);
-                              if(!condition && logger)
-                              {
-                                  logger->critical(msg);
-                              }
-                          };
+                               SIGHT_ERROR_IF(_msg, !_condition && !_logger);
+                               if(!_condition && _logger)
+                               {
+                                   _logger->critical(_msg);
+                               }
+                           };
 
     // Structure type
-    checkCondition(!structureType.empty(), "Structure type of registry entries shall not be empty.");
+    check_condition(!_structure_type.empty(), "Structure type of registry entries shall not be empty.");
 
     // Property type
-    std::string& propertyType = entry[0];
-    checkCondition(!propertyType.empty(), "Property Type shall not be empty for '" + structureType + "'.");
-    checkCondition(
-        propertyType.empty()
-        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(propertyType),
-        "Coded entry is badly formatted : '" + propertyType + "'. Please check registry."
+    std::string& property_type = _entry[0];
+    check_condition(!property_type.empty(), "Property Type shall not be empty for '" + _structure_type + "'.");
+    check_condition(
+        property_type.empty()
+        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(property_type),
+        "Coded entry is badly formatted : '" + property_type + "'. Please check registry."
     );
 
     // Property category
-    std::string& propertyCategory = entry[1];
-    checkCondition(!propertyCategory.empty(), "Property Category shall not be empty for '" + structureType + "'.");
-    checkCondition(
-        propertyCategory.empty()
-        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(propertyCategory),
-        "Coded entry is badly formatted : '" + propertyCategory + "'. Please check registry."
+    std::string& property_category = _entry[1];
+    check_condition(!property_category.empty(), "Property Category shall not be empty for '" + _structure_type + "'.");
+    check_condition(
+        property_category.empty()
+        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(property_category),
+        "Coded entry is badly formatted : '" + property_category + "'. Please check registry."
     );
 
     // Property type modifiers (may be empty)
-    std::string& propertyTypeModifiers = entry[2];
-    checkCondition(
-        propertyTypeModifiers.empty()
-        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(propertyTypeModifiers, true),
-        "Coded entry is badly formatted : '" + propertyTypeModifiers + "'. Please check registry."
+    std::string& property_type_modifiers = _entry[2];
+    check_condition(
+        property_type_modifiers.empty()
+        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(property_type_modifiers, true),
+        "Coded entry is badly formatted : '" + property_type_modifiers + "'. Please check registry."
     );
 
     // Anatomic region
-    std::string& anatomicRegion = entry[3];
-    checkCondition(
-        propertyCategory != "(M-01000;SRT;Morphologically Altered Structure)" || !anatomicRegion.empty(),
-        "Anatomic Region shall not be empty for altered structures. See '" + structureType + "'."
+    std::string& anatomic_region = _entry[3];
+    check_condition(
+        property_category != "(M-01000;SRT;Morphologically Altered Structure)" || !anatomic_region.empty(),
+        "Anatomic Region shall not be empty for altered structures. See '" + _structure_type + "'."
     );
-    checkCondition(
-        anatomicRegion.empty()
-        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(anatomicRegion),
-        "Coded entry is badly formatted : '" + anatomicRegion + "'. Please check registry."
+    check_condition(
+        anatomic_region.empty()
+        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(anatomic_region),
+        "Coded entry is badly formatted : '" + anatomic_region + "'. Please check registry."
     );
 
     // Anatomic region modifiers (may be empty)
-    std::string& anatomicRegionModifiers = entry[4];
-    checkCondition(
-        anatomicRegionModifiers.empty()
-        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(anatomicRegionModifiers, true),
-        "Coded entry is badly formatted : '" + anatomicRegionModifiers + "'. Please check registry."
+    std::string& anatomic_region_modifiers = _entry[4];
+    check_condition(
+        anatomic_region_modifiers.empty()
+        || io::dicom::helper::DicomCodedAttribute::checkAndFormatEntry(anatomic_region_modifiers, true),
+        "Coded entry is badly formatted : '" + anatomic_region_modifiers + "'. Please check registry."
     );
 
     return result;
@@ -119,22 +119,22 @@ bool checkAndFormatEntry(
 //------------------------------------------------------------------------------
 
 bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
-    const std::filesystem::path& filepath,
-    bool omitFirstLine,
-    const core::log::logger::sptr& logger
+    const std::filesystem::path& _filepath,
+    bool _omit_first_line,
+    const core::log::logger::sptr& _logger
 )
 {
-    if(std::filesystem::exists(filepath))
+    if(std::filesystem::exists(_filepath))
     {
         bool result = true;
 
         // Read CSV
-        io::reader::csv_reader reader(filepath);
+        io::reader::csv_reader reader(_filepath);
 
         const std::string separator = "|";
         auto tokens                 = reader.getLine(separator);
 
-        if(omitFirstLine)
+        if(_omit_first_line)
         {
             // First line is omitted (titles)
             tokens = reader.getLine(separator);
@@ -142,28 +142,28 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
 
         while(!tokens.empty())
         {
-            const std::string& structureType = tokens[0];
+            const std::string& structure_type = tokens[0];
 
             // Each lines of valid csv file shall contain at least 6 elements.
             if(tokens.size() >= 6)
             {
-                EntryType entry;
+                entry_t entry;
 
                 // First element is skipped because it contains the title of csv file.
                 std::copy_n(tokens.begin() + 1, 5, entry.begin());
 
-                if(checkAndFormatEntry(structureType, entry, logger))
+                if(check_and_format_entry(structure_type, entry, _logger))
                 {
-                    m_registry[structureType] = entry;
+                    m_registry[structure_type] = entry;
                 }
                 else
                 {
                     result = false;
                 }
             }
-            else if(logger)
+            else if(_logger)
             {
-                logger->critical("Entry badly formatted for structure '" + structureType + "'.");
+                _logger->critical("Entry badly formatted for structure '" + structure_type + "'.");
                 result = false;
             }
 
@@ -171,10 +171,10 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
         }
 
         // Check uniqueness of entries
-        std::set<EntryType> uniquenessSet;
+        std::set<entry_t> uniqueness_set;
         for(const auto& entry : m_registry)
         {
-            if(uniquenessSet.find(entry.second) != uniquenessSet.end())
+            if(uniqueness_set.find(entry.second) != uniqueness_set.end())
             {
                 const std::string msg = "Several structure types have the same attribute combination : {"
                                         + entry.second[0] + ";"
@@ -183,16 +183,16 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
                                         + entry.second[3] + ";"
                                         + entry.second[4] + "}";
 
-                SIGHT_ERROR_IF(msg, !logger);
-                if(logger)
+                SIGHT_ERROR_IF(msg, !_logger);
+                if(_logger)
                 {
-                    logger->critical(msg);
+                    _logger->critical(msg);
                 }
 
                 result = false;
             }
 
-            uniquenessSet.insert(entry.second);
+            uniqueness_set.insert(entry.second);
         }
 
         return result;
@@ -224,16 +224,16 @@ void SegmentedPropertyRegistry::clear()
 
 //------------------------------------------------------------------------------
 
-bool SegmentedPropertyRegistry::hasEntry(const std::string& structureType) const
+bool SegmentedPropertyRegistry::hasEntry(const std::string& _structure_type) const
 {
-    return m_registry.find(structureType) != m_registry.end();
+    return m_registry.find(_structure_type) != m_registry.end();
 }
 
 //------------------------------------------------------------------------------
 
-SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::getEntry(const std::string& structureType) const
+SegmentedPropertyRegistry::entry_t SegmentedPropertyRegistry::getEntry(const std::string& _structure_type) const
 {
-    const auto it = m_registry.find(structureType);
+    const auto it = m_registry.find(_structure_type);
     if(it != m_registry.end())
     {
         return it->second;
@@ -244,75 +244,75 @@ SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::getEntry(const s
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getEntryValue(std::size_t index, const std::string& structureType) const
+std::string SegmentedPropertyRegistry::getEntryValue(std::size_t _index, const std::string& _structure_type) const
 {
-    const auto it = m_registry.find(structureType);
+    const auto it = m_registry.find(_structure_type);
     if(it != m_registry.end())
     {
-        return it->second[index];
+        return it->second[_index];
     }
 
-    return s_DEFAULT_ENTRY_VALUE[index];
+    return s_DEFAULT_ENTRY_VALUE[_index];
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getPropertyType(const std::string& structureType) const
+std::string SegmentedPropertyRegistry::get_property_type(const std::string& _structure_type) const
 {
-    return getEntryValue(0, structureType);
+    return getEntryValue(0, _structure_type);
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getPropertyCategory(const std::string& structureType) const
+std::string SegmentedPropertyRegistry::getPropertyCategory(const std::string& _structure_type) const
 {
-    return getEntryValue(1, structureType);
+    return getEntryValue(1, _structure_type);
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getPropertyTypeModifiers(const std::string& structureType) const
+std::string SegmentedPropertyRegistry::getPropertyTypeModifiers(const std::string& _structure_type) const
 {
-    return getEntryValue(2, structureType);
+    return getEntryValue(2, _structure_type);
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getAnatomicRegion(const std::string& structureType) const
+std::string SegmentedPropertyRegistry::getAnatomicRegion(const std::string& _structure_type) const
 {
-    return getEntryValue(3, structureType);
+    return getEntryValue(3, _structure_type);
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getAnatomicRegionModifiers(const std::string& structureType) const
+std::string SegmentedPropertyRegistry::getAnatomicRegionModifiers(const std::string& _structure_type) const
 {
-    return getEntryValue(4, structureType);
+    return getEntryValue(4, _structure_type);
 }
 
 //------------------------------------------------------------------------------
 
-std::string SegmentedPropertyRegistry::getStructureType(
-    const std::string& propertyType,
-    const std::string& propertyCategory,
-    const std::string& propertyTypeModifiers,
-    const std::string& anatomicRegion,
-    const std::string& anatomicRegionModifiers
+std::string SegmentedPropertyRegistry::get_structure_type(
+    const std::string& _property_type,
+    const std::string& _property_category,
+    const std::string& _property_type_modifiers,
+    const std::string& _anatomic_region,
+    const std::string& _anatomic_region_modifiers
 ) const
 {
     // Entry that we are looking for
-    const EntryType entry = {{propertyType,
-        propertyCategory,
-        propertyTypeModifiers,
-        anatomicRegion,
-        anatomicRegionModifiers
+    const entry_t entry = {{_property_type,
+        _property_category,
+        _property_type_modifiers,
+        _anatomic_region,
+        _anatomic_region_modifiers
     }
     };
 
     // Search predicate
-    const auto predicate = [&](const EntryRegistryType::value_type& value) -> bool
+    const auto predicate = [&](const entry_registry_t::value_type& _value) -> bool
                            {
-                               return value.second == entry;
+                               return _value.second == entry;
                            };
 
     // Search for entry

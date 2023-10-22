@@ -50,8 +50,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const camera_set& other) const noexcept;
-    DATA_API bool operator!=(const camera_set& other) const noexcept;
+    DATA_API bool operator==(const camera_set& _other) const noexcept;
+    DATA_API bool operator!=(const camera_set& _other) const noexcept;
     /// @}
 
     /// Signals
@@ -69,28 +69,28 @@ public:
     /// Adds a camera
     /// @throws core::exception if the camera is already present.
     /// @param[in] camera the camera to add
-    DATA_API void add_camera(camera::sptr camera);
+    DATA_API void add_camera(camera::sptr _camera);
 
     /// Returns the camera at the index.
     /// @throws std::out_of_range if the index is out of range
     /// @param[in] index the index of the camera to return
     /// @return the camera at the index
     /// @{
-    DATA_API camera::csptr get_camera(std::size_t index) const;
-    DATA_API camera::sptr get_camera(std::size_t index);
+    DATA_API camera::csptr get_camera(std::size_t _index) const;
+    DATA_API camera::sptr get_camera(std::size_t _index);
     /// @}
 
     /// Remove the given camera
     /// @throws core::exception if the camera is not found
     /// @param[in] camera the camera to remove
-    DATA_API void remove_camera(camera::sptr camera);
+    DATA_API void remove_camera(camera::sptr _camera);
 
     /// Sets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
     /// @param[in] index index of the camera associated to this extrinsic matrix. The matrix correspond to the
     ///                  transformation from camera[0] to camera[index].
     /// @param[in] matrix the extrinsic matrix
-    DATA_API void set_extrinsic_matrix(std::size_t index, matrix4::sptr matrix);
+    DATA_API void set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix);
 
     /// Gets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
@@ -100,22 +100,22 @@ public:
     ///
     /// @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
     /// @{
-    DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t index) const;
-    DATA_API matrix4::sptr get_extrinsic_matrix(std::size_t index);
+    DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t _index) const;
+    DATA_API matrix4::sptr get_extrinsic_matrix(std::size_t _index);
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 };
 

@@ -114,20 +114,20 @@ public:
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    IO_API void set_file(const std::filesystem::path& file);
+    IO_API void set_file(const std::filesystem::path& _file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FILES mode
      */
-    IO_API const io::service::LocationsType& get_files() const;
+    IO_API const io::service::locations_t& get_files() const;
 
     /**
      * @brief Sets file paths
      * @pre exception if service does not support FILES mode
      */
-    IO_API void set_files(const io::service::LocationsType& files);
+    IO_API void set_files(const io::service::locations_t& _files);
 
     /**
      * @brief Returns folder path set by the user or set during service configuration
@@ -145,13 +145,13 @@ public:
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const io::service::LocationsType& getLocations() const;
+    IO_API const io::service::locations_t& getLocations() const;
 
     /**
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API void set_folder(const std::filesystem::path& folder);
+    IO_API void set_folder(const std::filesystem::path& _folder);
 
     /**
      * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
@@ -159,7 +159,7 @@ public:
      *
      * @pre exception if service does not support FILE or FILES mode
      */
-    IO_API void setFileFolder(std::filesystem::path folder);
+    IO_API void setFileFolder(std::filesystem::path _folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_API bool hasLocationDefined() const;
@@ -170,9 +170,9 @@ public:
     //@}
 
     /// Convenience function to convert from DialogPolicy enum value to string
-    constexpr static std::string_view dialogPolicyToString(DialogPolicy policy) noexcept
+    constexpr static std::string_view dialogPolicyToString(DialogPolicy _policy) noexcept
     {
-        switch(policy)
+        switch(_policy)
         {
             case DialogPolicy::ONCE:
                 return "once";
@@ -186,20 +186,20 @@ public:
     }
 
     /// Convenience function to convert from string to DialogPolicy enum value
-    constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
+    constexpr static DialogPolicy stringToDialogPolicy(std::string_view _policy) noexcept
     {
-        if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER);
-           policy == NEVER || policy.empty() || policy == "default")
+        if(constexpr auto never = dialogPolicyToString(DialogPolicy::NEVER);
+           _policy == never || _policy.empty() || _policy == "default")
         {
             return DialogPolicy::NEVER;
         }
 
-        if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
+        if(constexpr auto once = dialogPolicyToString(DialogPolicy::ONCE); _policy == once)
         {
             return DialogPolicy::ONCE;
         }
 
-        if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
+        if(constexpr auto always = dialogPolicyToString(DialogPolicy::ALWAYS); _policy == always)
         {
             return DialogPolicy::ALWAYS;
         }
@@ -283,14 +283,14 @@ protected:
 private:
 
     /// Slot to read folder
-    void readFolder(std::filesystem::path folder);
+    void readFolder(std::filesystem::path _folder);
     /// Slot to read file
-    void readFile(std::filesystem::path file);
+    void readFile(std::filesystem::path _file);
     /// Slot to read files
-    void readFiles(io::service::LocationsType files);
+    void readFiles(io::service::locations_t _files);
 
     /// Value to stock file or folder paths
-    io::service::LocationsType m_locations;
+    io::service::locations_t m_locations;
 };
 
 } //namespace sight::io::service

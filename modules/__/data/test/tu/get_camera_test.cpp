@@ -64,7 +64,7 @@ void get_camera_test::extractsCameraFromCameraSet()
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
     // ------------------ create a matrix ----------------------
     sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
     // -- Camera 1 --
@@ -90,18 +90,18 @@ void get_camera_test::extractsCameraFromCameraSet()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("extrinsic", 0).lock()->get_id(), matrix->get_id());
+    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("extrinsic", 0).lock()->get_id(), matrix->get_id());
 
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void get_camera_test::extractsCameraFromCameraSet()
 void get_camera_test::extractsInvalidCameraSet()
 {
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
     service::config_t config;
     std::stringstream config_string;
     config_string
@@ -122,14 +122,14 @@ void get_camera_test::extractsInvalidCameraSet()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(nullptr, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(nullptr, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), sight::data::exception);
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), sight::data::exception);
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ void get_camera_test::extractsValidExtrinsic()
     // // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -157,16 +157,16 @@ void get_camera_test::extractsValidExtrinsic()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ void get_camera_test::extractsValidExtrinsic1()
     // // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -197,16 +197,16 @@ void get_camera_test::extractsValidExtrinsic1()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -216,7 +216,7 @@ void get_camera_test::extractsCameraOutOfBoundIndex()
     // Create a camera series.
     auto camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    auto getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    auto get_camera_srv = sight::service::add("sight::module::data::get_camera");
     // -- Camera 1 --
     auto camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -238,14 +238,14 @@ void get_camera_test::extractsCameraOutOfBoundIndex()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), std::out_of_range);
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), std::out_of_range);
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void get_camera_test::extractsExtrinsicOutOfBoundIndex()
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
 
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
@@ -277,14 +277,14 @@ void get_camera_test::extractsExtrinsicOutOfBoundIndex()
        "</out>";
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), std::out_of_range);
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), std::out_of_range);
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ void get_camera_test::extractsInvalidExtrinsic()
     // Create a camera series.
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
-    sight::service::base::sptr getCameraSrv = sight::service::add("sight::module::data::get_camera");
+    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -317,17 +317,17 @@ void get_camera_test::extractsInvalidExtrinsic()
     ;
     boost::property_tree::read_xml(config_string, config);
 
-    getCameraSrv->set_config(config);
-    getCameraSrv->set_inout(camera_set, "cameraSet");
-    getCameraSrv->configure();
-    getCameraSrv->start().wait();
+    get_camera_srv->set_config(config);
+    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->configure();
+    get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), core::exception);
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->output("camera", 1).lock()->get_id(), camera2->get_id());
+    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), core::exception);
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
 
-    getCameraSrv->stop().wait();
-    sight::service::remove(getCameraSrv);
+    get_camera_srv->stop().wait();
+    sight::service::remove(get_camera_srv);
 }
 
 //------------------------------------------------------------------------------

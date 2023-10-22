@@ -40,7 +40,7 @@ static const core::com::signals::key_t TRIGGERED_AS_STRING_SIG = "triggeredAsStr
 //-----------------------------------------------------------------------------
 
 timestamp_signal::timestamp_signal() noexcept :
-    m_sigTriggered(new_signal<TriggeredSignalType>(TRIGGERED_SIG)),
+    m_sigTriggered(new_signal<triggered_signal_t>(TRIGGERED_SIG)),
     m_sigTriggeredAsString(new_signal<TriggeredAsStringSignalType>(TRIGGERED_AS_STRING_SIG))
 {
 }
@@ -79,7 +79,7 @@ void timestamp_signal::stopping()
 
 void timestamp_signal::info(std::ostream& _sstream)
 {
-    _sstream << "Starter Action" << std::endl;
+    _sstream << "Starter action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,15 +103,15 @@ void timestamp_signal::updating()
     m_sigTriggered->async_emit(ts);
 
     // Should we return the timestamp as a string or format it ?
-    const auto tt                            = static_cast<std::int64_t>(ts);
-    const boost::posix_time::ptime localTime =
+    const auto tt                             = static_cast<std::int64_t>(ts);
+    const boost::posix_time::ptime local_time =
         boost::posix_time::from_time_t(tt);
 
     std::ostringstream oss("");
-    oss << boost::gregorian::to_iso_extended_string(localTime.date()) << "_";
-    oss << std::setw(2) << std::setfill('0') << localTime.time_of_day().hours();
-    oss << std::setw(2) << std::setfill('0') << localTime.time_of_day().minutes();
-    oss << std::setw(2) << std::setfill('0') << localTime.time_of_day().seconds();
+    oss << boost::gregorian::to_iso_extended_string(local_time.date()) << "_";
+    oss << std::setw(2) << std::setfill('0') << local_time.time_of_day().hours();
+    oss << std::setw(2) << std::setfill('0') << local_time.time_of_day().minutes();
+    oss << std::setw(2) << std::setfill('0') << local_time.time_of_day().seconds();
 
     m_sigTriggeredAsString->async_emit(oss.str());
 }

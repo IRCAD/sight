@@ -51,13 +51,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API Surface(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        SPTR(io::dicom::container::DicomInstance)imageInstance,
-        const data::model_series::csptr& series,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        SPTR(io::dicom::container::DicomInstance)_image_instance,
+        const data::model_series::csptr& _series,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
@@ -68,7 +68,7 @@ public:
      * @param[in] filepath Path to the registry CSV file
      * @return True on success
      */
-    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& filepath);
+    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& _filepath);
 
     /**
      * @brief Write SOP Common Module tags
@@ -93,10 +93,10 @@ protected:
      * @param[in] segmentNumber Segment number
      */
     IO_DICOM_API virtual void writeSegmentSequence(
-        const CSPTR(data::reconstruction)& reconstruction,
-        gdcm::Item& segmentItem,
-        const gdcm::SmartPointer<gdcm::Segment>& segment,
-        std::uint16_t segmentNumber
+        const CSPTR(data::reconstruction)& _reconstruction,
+        gdcm::Item& _segment_item,
+        const gdcm::SmartPointer<gdcm::Segment>& _segment,
+        std::uint16_t _segment_number
     );
     /**
      * @brief Write Surface Item into Surface Sequence
@@ -107,10 +107,10 @@ protected:
      * @param[in] segmentNumber Associated segment number
      */
     IO_DICOM_API virtual void writeSurfaceSequence(
-        const CSPTR(data::reconstruction)& reconstruction,
-        gdcm::Item& surfaceItem,
-        const gdcm::SmartPointer<gdcm::Surface>& surface,
-        std::uint16_t segmentNumber
+        const CSPTR(data::reconstruction)& _reconstruction,
+        gdcm::Item& _surface_item,
+        const gdcm::SmartPointer<gdcm::Surface>& _surface,
+        std::uint16_t _segment_number
     );
 
     /// Structure Dictionary

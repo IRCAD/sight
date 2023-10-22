@@ -36,11 +36,8 @@ class TUTO06GUIQML_CLASS_API plugin : public sight::core::runtime::plugin
 {
 public:
 
-    /// Constructor.
-    TUTO06GUIQML_API plugin() noexcept;
-
     /// Destructor. Do nothing.
-    TUTO06GUIQML_API ~plugin() noexcept override;
+    TUTO06GUIQML_API ~plugin() noexcept override = default;
 
     /// Overrides start method. .
     TUTO06GUIQML_API void start() override;

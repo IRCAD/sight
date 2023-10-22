@@ -27,9 +27,9 @@
 
 #include <utest_data/generator/image.hpp>
 
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 
@@ -74,27 +74,27 @@ void resource_test::textureTest()
     image->set_id("image1");
 
     {
-        auto texture1_instance1 = std::make_shared<sight::viz::scene3d::Texture>(image);
-        auto texture1_instance2 = std::make_shared<sight::viz::scene3d::Texture>(image);
+        auto texture1_instance1 = std::make_shared<sight::viz::scene3d::texture>(image);
+        auto texture1_instance2 = std::make_shared<sight::viz::scene3d::texture>(image);
         CPPUNIT_ASSERT_EQUAL(texture1_instance1->get(), texture1_instance2->get());
 
         texture1_instance1->update();
 
-        auto texture2_instance1 = std::make_shared<sight::viz::scene3d::Texture>(image, "2");
+        auto texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
         CPPUNIT_ASSERT(texture1_instance1->get() != texture2_instance1->get());
 
-        auto texture2_instance2 = std::make_shared<sight::viz::scene3d::Texture>(image, "2");
+        auto texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
         CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance2->get());
 
-        auto texture2_instance3 = std::make_shared<sight::viz::scene3d::Texture>(image, "2");
+        auto texture2_instance3 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
         CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance3->get());
 
         texture2_instance3.reset();
         texture2_instance2.reset();
         texture2_instance1.reset();
 
-        texture2_instance1 = std::make_shared<sight::viz::scene3d::Texture>(image, "2");
-        texture2_instance2 = std::make_shared<sight::viz::scene3d::Texture>(image, "2");
+        texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+        texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
         CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance2->get());
     }
 }

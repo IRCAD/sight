@@ -133,9 +133,9 @@ void square::processInteraction(sight::viz::scene2d::data::Event& _event)
         }
         else if(m_pointIsCaptured && _event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::vec2d_t newCoord = this->coordViewToCoordItem(_event.getCoord(), m_rec);
-            m_rec->moveBy(newCoord.x - m_oldCoord.x, newCoord.y - m_oldCoord.y);
-            m_oldCoord = newCoord;
+            sight::viz::scene2d::vec2d_t new_coord = this->coordViewToCoordItem(_event.getCoord(), m_rec);
+            m_rec->moveBy(new_coord.x - m_oldCoord.x, new_coord.y - m_oldCoord.y);
+            m_oldCoord = new_coord;
             _event.setAccepted(true);
         }
         else if(m_pointIsCaptured && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
@@ -149,27 +149,27 @@ void square::processInteraction(sight::viz::scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-bool square::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& coord, QGraphicsItem* item)
+bool square::coordViewIsInItem(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item)
 {
-    sight::viz::scene2d::vec2d_t scenePoint = this->getScene2DRender()->mapToScene(coord);
-    QPointF sp(scenePoint.x, scenePoint.y);
-    QPointF ip = item->mapFromScene(sp);
-    return item->contains(ip);
+    sight::viz::scene2d::vec2d_t scene_point = this->getScene2DRender()->mapToScene(_coord);
+    QPointF sp(scene_point.x, scene_point.y);
+    QPointF ip = _item->mapFromScene(sp);
+    return _item->contains(ip);
 }
 
 //-----------------------------------------------------------------------------
 
 sight::viz::scene2d::vec2d_t square::coordViewToCoordItem(
-    const sight::viz::scene2d::vec2d_t& coord,
+    const sight::viz::scene2d::vec2d_t& _coord,
     QGraphicsItem*
     /*unused*/
 )
 {
-    sight::viz::scene2d::vec2d_t scenePoint = this->getScene2DRender()->mapToScene(coord);
+    sight::viz::scene2d::vec2d_t scene_point = this->getScene2DRender()->mapToScene(_coord);
     //QPointF sp ( scenePoint.x, scenePoint.getY() );
     //QPointF ip = item->mapFromScene( sp );
     //return sight::viz::scene2d::vec2d_t( ip.x(), ip.y() );
-    return scenePoint;
+    return scene_point;
 }
 
 //-----------------------------------------------------------------------------

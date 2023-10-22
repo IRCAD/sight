@@ -25,7 +25,7 @@
 #include <core/tools/random/generator.hpp>
 #include <core/type.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <ctime>
 #include <random>
@@ -41,16 +41,16 @@ using core::tools::random::safe_rand;
 // unsigned int, unsigned long, or unsigned long long, we need T2 template argument. Sorry
 
 template<typename T, typename T2 = T, typename I>
-inline static void randomize(I& iterable, std::uint32_t seed = 0)
+inline static void randomize(I& _iterable, std::uint32_t _seed = 0)
 {
     using Distribution = std::conditional_t<std::is_floating_point_v<T>,
                                             std::uniform_real_distribution<T>,
                                             std::uniform_int_distribution<T2> >;
 
-    std::mt19937 random(seed);
+    std::mt19937 random(_seed);
     Distribution distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
-    for(auto it = iterable.template begin<T>(), end = iterable.template end<T>() ; it != end ; ++it)
+    for(auto it = _iterable.template begin<T>(), end = _iterable.template end<T>() ; it != end ; ++it)
     {
         *it = static_cast<T>(distribution(random));
     }
@@ -59,50 +59,50 @@ inline static void randomize(I& iterable, std::uint32_t seed = 0)
 //------------------------------------------------------------------------------
 
 template<typename I>
-inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
+inline static void randomize_iterable(I& _iterable, std::uint32_t _seed = 0)
 {
-    auto lock       = iterable.dump_lock();
-    const auto type = iterable.getType();
+    auto lock       = _iterable.dump_lock();
+    const auto type = _iterable.getType();
 
     if(type == core::type::NONE || type == core::type::UINT8)
     {
-        randomize<std::uint8_t, std::uint16_t>(iterable, seed);
+        randomize<std::uint8_t, std::uint16_t>(_iterable, _seed);
     }
     else if(type == core::type::UINT16)
     {
-        randomize<std::uint16_t>(iterable, seed);
+        randomize<std::uint16_t>(_iterable, _seed);
     }
     else if(type == core::type::UINT32)
     {
-        randomize<std::uint32_t>(iterable, seed);
+        randomize<std::uint32_t>(_iterable, _seed);
     }
     else if(type == core::type::UINT64)
     {
-        randomize<std::uint64_t>(iterable, seed);
+        randomize<std::uint64_t>(_iterable, _seed);
     }
     else if(type == core::type::INT8)
     {
-        randomize<std::int8_t, std::int16_t>(iterable, seed);
+        randomize<std::int8_t, std::int16_t>(_iterable, _seed);
     }
     else if(type == core::type::INT16)
     {
-        randomize<std::int16_t>(iterable, seed);
+        randomize<std::int16_t>(_iterable, _seed);
     }
     else if(type == core::type::INT32)
     {
-        randomize<std::int32_t>(iterable, seed);
+        randomize<std::int32_t>(_iterable, _seed);
     }
     else if(type == core::type::INT64)
     {
-        randomize<std::int64_t>(iterable, seed);
+        randomize<std::int64_t>(_iterable, _seed);
     }
     else if(type == core::type::FLOAT)
     {
-        randomize<float>(iterable, seed);
+        randomize<float>(_iterable, _seed);
     }
     else if(type == core::type::DOUBLE)
     {
-        randomize<double>(iterable, seed);
+        randomize<double>(_iterable, _seed);
     }
     else
     {
@@ -113,41 +113,41 @@ inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
 //------------------------------------------------------------------------------
 
 void image::generateImage(
-    data::image::sptr image,
-    const data::image::Size& sizes,
-    const data::image::Spacing& spacing,
-    const data::image::Origin& origin,
-    const core::type& type,
-    const data::image::PixelFormat& format,
-    const std::optional<std::uint32_t>& seed
+    data::image::sptr _image,
+    const data::image::Size& _sizes,
+    const data::image::Spacing& _spacing,
+    const data::image::Origin& _origin,
+    const core::type& _type,
+    const data::image::PixelFormat& _format,
+    const std::optional<std::uint32_t>& _seed
 )
 {
-    SIGHT_ASSERT("Image must not be null", image);
+    SIGHT_ASSERT("Image must not be null", _image);
 
-    const auto lock = image->dump_lock();
+    const auto lock = _image->dump_lock();
 
-    image->resize(sizes, type, format);
-    image->setSpacing(spacing);
-    image->setOrigin(origin);
+    _image->resize(_sizes, _type, _format);
+    _image->setSpacing(_spacing);
+    _image->setOrigin(_origin);
 
-    if(seed)
+    if(_seed)
     {
-        randomizeIterable(*image, *seed);
+        randomize_iterable(*_image, *_seed);
     }
     else
     {
-        std::memset(image->buffer(), 0, image->getSizeInBytes());
+        std::memset(_image->buffer(), 0, _image->getSizeInBytes());
     }
 
-    sight::data::helper::MedicalImage::checkImageSliceIndex(image);
+    sight::data::helper::medical_image::check_image_slice_index(_image);
 }
 
 //------------------------------------------------------------------------------
 
-void image::generateRandomImage(data::image::sptr image, core::type type, std::uint32_t seed)
+void image::generateRandomImage(data::image::sptr _image, core::type _type, std::uint32_t _seed)
 {
-    constexpr int SIZE        = 50;
-    constexpr int DOUBLE_SIZE = SIZE * 2;
+    static constexpr int SIZE        = 50;
+    static constexpr int DOUBLE_SIZE = SIZE * 2;
 
     data::image::Size size;
     size[0] = static_cast<data::image::Size::value_type>(safe_rand() % SIZE + 2);
@@ -158,36 +158,36 @@ void image::generateRandomImage(data::image::sptr image, core::type type, std::u
     spacing[0] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
     spacing[1] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
     spacing[2] = (safe_rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    image->setSpacing(spacing);
+    _image->setSpacing(spacing);
 
     data::image::Origin origin;
     origin[0] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[1] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[2] = (safe_rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    image->setOrigin(origin);
+    _image->setOrigin(origin);
 
-    image->resize(size, type, data::image::GRAY_SCALE);
+    _image->resize(size, _type, data::image::GRAY_SCALE);
 
-    randomizeImage(image, seed);
+    randomizeImage(_image, _seed);
 
-    image->setWindowWidth({(safe_rand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
-    image->setWindowCenter({(safe_rand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
+    _image->setWindowWidth({(safe_rand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
+    _image->setWindowCenter({(safe_rand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
 
-    sight::data::helper::MedicalImage::checkImageSliceIndex(image);
+    sight::data::helper::medical_image::check_image_slice_index(_image);
 }
 
 //------------------------------------------------------------------------------
 
-void image::randomizeImage(data::image::sptr image, std::uint32_t seed)
+void image::randomizeImage(data::image::sptr _image, std::uint32_t _seed)
 {
-    randomizeIterable(*image, seed);
+    randomize_iterable(*_image, _seed);
 }
 
 //------------------------------------------------------------------------------
 
-void image::randomizeArray(data::array::sptr array, std::uint32_t seed)
+void image::randomizeArray(data::array::sptr _array, std::uint32_t _seed)
 {
-    randomizeIterable(*array, seed);
+    randomize_iterable(*_array, _seed);
 }
 
 //------------------------------------------------------------------------------

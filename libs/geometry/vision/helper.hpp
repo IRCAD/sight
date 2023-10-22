@@ -36,7 +36,7 @@
 namespace sight::geometry::vision::helper
 {
 
-typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
+typedef std::pair<double, std::vector<cv::Point2f> > error_and_points_t;
 
 /**
  * @brief compute the mean error of reprojection
@@ -49,13 +49,13 @@ typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
  * @return std::pair< double, std::vector< cv::Point2f > >, first element is the arithmetical root-squared mean error
  * and the second element is a vector of reprojected 2d points (for display purpose)
  */
-GEOMETRY_VISION_API ErrorAndPointsType computeReprojectionError(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const std::vector<cv::Point2f>& _imagePoints,
+GEOMETRY_VISION_API error_and_points_t compute_reprojection_error(
+    const std::vector<cv::Point3f>& _object_points,
+    const std::vector<cv::Point2f>& _image_points,
     const cv::Mat& _rvecs,
     const cv::Mat& _tvecs,
-    const cv::Mat& _cameraMatrix,
-    const cv::Mat& _distCoeffs
+    const cv::Mat& _camera_matrix,
+    const cv::Mat& _dist_coeffs
 );
 
 /**
@@ -67,11 +67,11 @@ GEOMETRY_VISION_API ErrorAndPointsType computeReprojectionError(
  * @param _flag: cv::solvePnP method to use
  * @return cv::Mat (4x4 with float values) corresponding to the camera pose
  */
-GEOMETRY_VISION_API cv::Matx44f cameraPoseMonocular(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const std::vector<cv::Point2f>& _imagePoints,
-    const cv::Mat _cameraMatrix,
-    const cv::Mat& _distCoeffs,
+GEOMETRY_VISION_API cv::Matx44f camera_pose_monocular(
+    const std::vector<cv::Point3f>& _object_points,
+    const std::vector<cv::Point2f>& _image_points,
+    const cv::Mat _camera_matrix,
+    const cv::Mat& _dist_coeffs,
     int _flag = cv::SOLVEPNP_ITERATIVE
 );
 
@@ -88,16 +88,16 @@ GEOMETRY_VISION_API cv::Matx44f cameraPoseMonocular(
  * @param _T: translation vector from camera1 to camera2
  * @return
  */
-GEOMETRY_VISION_API cv::Matx44f cameraPoseStereo(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const cv::Mat& _cameraMatrix1,
-    const cv::Mat& _distCoeffs1,
-    const cv::Mat& _cameraMatrix2,
-    const cv::Mat& _distCoeffs2,
-    const std::vector<cv::Point2f>& _imgPoints1,
-    const std::vector<cv::Point2f>& _imgPoints2,
-    const cv::Mat& _R,
-    const cv::Mat& _T
+GEOMETRY_VISION_API cv::Matx44f camera_pose_stereo(
+    const std::vector<cv::Point3f>& _object_points,
+    const cv::Mat& _camera_matrix1,
+    const cv::Mat& _dist_coeffs1,
+    const cv::Mat& _camera_matrix2,
+    const cv::Mat& _dist_coeffs2,
+    const std::vector<cv::Point2f>& _img_points1,
+    const std::vector<cv::Point2f>& _img_points2,
+    const cv::Mat& _r,
+    const cv::Mat& _t
 );
 
 /**
@@ -108,10 +108,10 @@ GEOMETRY_VISION_API cv::Matx44f cameraPoseStereo(
  * tip of the attached passive pointing device
  * @param _centerMatrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
-GEOMETRY_VISION_API void calibratePointingTool(
-    const sight::data::vector::csptr _matricesVector,
-    sight::data::matrix4::sptr _calibrationMatrix,
-    sight::data::matrix4::sptr _centerMatrix
+GEOMETRY_VISION_API void calibrate_pointing_tool(
+    const sight::data::vector::csptr _matrices_vector,
+    sight::data::matrix4::sptr _calibration_matrix,
+    sight::data::matrix4::sptr _center_matrix
 );
 
 /**
@@ -126,10 +126,10 @@ GEOMETRY_VISION_API void calibratePointingTool(
  *
  * @return List of detected chessboard points. nullptr if detection failed.
  */
-GEOMETRY_VISION_API sight::data::point_list::sptr detectChessboard(
+GEOMETRY_VISION_API sight::data::point_list::sptr detect_chessboard(
     const cv::Mat& _img,
-    std::size_t _xDim,
-    std::size_t _yDim,
+    std::size_t _x_dim,
+    std::size_t _y_dim,
     float _scale
 );
 

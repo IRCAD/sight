@@ -15,7 +15,7 @@ Opens a modal window that allows to tweak a transfer function and display the hi
 ### CMake
 
 ```cmake
-add_dependencies(myTarget config_viz_scene2d ... )
+add_dependencies(my_target config_viz_scene2d ... )
 ```
 
 ### XML

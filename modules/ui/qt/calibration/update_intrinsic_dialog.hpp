@@ -55,11 +55,11 @@ public:
      * @brief setParameters
      * @param calibration parameters in a array< double , 12>
      */
-    void setParameters(std::array<double, 12>& parameters);
+    void setParameters(std::array<double, 12>& _parameters);
 
 Q_SIGNALS:
 
-    void newCalibration(std::array<double, 12>& newParameters);
+    void newCalibration(std::array<double, 12>& _new_parameters);
 
 private Q_SLOTS:
 
@@ -115,12 +115,12 @@ private:
     QLabel* m_cy;
 
     /**
-     * @brief Field of view x.
+     * @brief field of view x.
      */
     QLabel* m_fx;
 
     /**
-     * @brief Field of view y.
+     * @brief field of view y.
      */
     QLabel* m_fy;
 

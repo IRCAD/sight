@@ -82,7 +82,7 @@ public:
     SIGHT_DECLARE_SERVICE(reprojection_error, service::controller);
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> error_computed_signal_t;
 
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t COMPUTE_SLOT;
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
@@ -117,7 +117,7 @@ protected:
 
 private:
 
-    void compute(core::hires_clock::type timestamp);
+    void compute(core::hires_clock::type _timestamp);
 
     ///Slot called when a parameter is changed
     void setParameter(sight::ui::parameter_t _val, std::string _key);

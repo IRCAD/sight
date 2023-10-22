@@ -29,7 +29,7 @@
 
 #include <string>
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 /// Represents a user interaction on the interace, such as a mouse click, keyboard tap...
@@ -42,8 +42,8 @@ public:
 
     /// Use this interaction to interact with a graphic component.
     /// @{
-    virtual void interactWith(QWidget* widget) const = 0;
-    virtual void interactWith(QWindow* window) const = 0;
+    virtual void interactWith(QWidget* _widget) const = 0;
+    virtual void interactWith(QWindow* _window) const = 0;
     /// @}
 
     /// Returns a string representation of the interaction.
@@ -56,20 +56,20 @@ class GUITEST_CLASS_API MouseClick : public Interaction
 public:
 
     GUITEST_API MouseClick(
-        Qt::MouseButton button          = Qt::MouseButton::LeftButton,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier,
-        const QPoint& pos               = QPoint()
+        Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
+        const QPoint& _pos               = QPoint()
     );
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
 
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     Qt::MouseButton m_button;
     Qt::KeyboardModifiers m_modifiers;
@@ -82,20 +82,20 @@ class GUITEST_CLASS_API MouseDoubleClick : public Interaction
 public:
 
     GUITEST_API MouseDoubleClick(
-        Qt::MouseButton button          = Qt::MouseButton::LeftButton,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier,
-        const QPoint& pos               = QPoint()
+        Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
+        const QPoint& _pos               = QPoint()
     );
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
 
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     Qt::MouseButton m_button;
     Qt::KeyboardModifiers m_modifiers;
@@ -108,21 +108,21 @@ class GUITEST_CLASS_API MouseDrag : public Interaction
 public:
 
     GUITEST_API MouseDrag(
-        const QPoint& from,
-        const QPoint& to,
-        Qt::MouseButton button          = Qt::MouseButton::LeftButton,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier
+        const QPoint& _from,
+        const QPoint& _to,
+        Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier
     );
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
 
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     QPoint m_from;
     QPoint m_to;
@@ -148,20 +148,20 @@ public:
      * @param position the position of the widget where the mouse wheel is to be rotated
      */
     GUITEST_API MouseWheel(
-        const QPoint& angleDelta,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier,
-        const QPoint& position          = QPoint()
+        const QPoint& _angle_delta,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
+        const QPoint& _position          = QPoint()
     );
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
 
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     QPoint m_angleDelta;
     Qt::KeyboardModifiers m_modifiers;
@@ -173,16 +173,16 @@ class GUITEST_CLASS_API KeyboardSequence : public Interaction
 {
 public:
 
-    GUITEST_API KeyboardSequence(std::string text, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    GUITEST_API KeyboardSequence(std::string _text, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     std::string m_text;
     Qt::KeyboardModifiers m_modifiers;
@@ -193,16 +193,16 @@ class GUITEST_CLASS_API KeyboardClick : public Interaction
 {
 public:
 
-    GUITEST_API KeyboardClick(Qt::Key key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    GUITEST_API KeyboardClick(Qt::Key _key, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     Qt::Key m_key;
     Qt::KeyboardModifiers m_modifiers;
@@ -217,16 +217,16 @@ public:
      * @param firstFingerPos the starting position and ending position of the first finger
      * @param secondFingerPos the starting position and ending position of the second finger
      */
-    GUITEST_API PinchGesture(std::pair<QPoint, QPoint> firstFingerPos, std::pair<QPoint, QPoint> secondFingerPos);
+    GUITEST_API PinchGesture(std::pair<QPoint, QPoint> _first_finger_pos, std::pair<QPoint, QPoint> _second_finger_pos);
 
-    void interactWith(QWidget* widget) const override;
-    void interactWith(QWindow* window) const override;
+    void interactWith(QWidget* _widget) const override;
+    void interactWith(QWindow* _window) const override;
     [[nodiscard]] std::string toString() const override;
 
 private:
 
     template<typename T>
-    void interactWith(T thing) const;
+    void interactWith(T _thing) const;
 
     std::pair<QPoint, QPoint> m_firstFingerPos;
     std::pair<QPoint, QPoint> m_secondFingerPos;

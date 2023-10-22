@@ -49,15 +49,15 @@ void ClassFactoryRegistryInfo::updating()
     m_tree->clearSelection();
     m_tree->clear();
 
-    const auto& factoryKeys = service::extension::factory::get()->get_factory_keys();
+    const auto& factory_keys = service::extension::factory::get()->get_factory_keys();
 
-    for(const auto& key : factoryKeys)
+    for(const auto& key : factory_keys)
     {
-        const auto objImpl = service::extension::factory::get()->getServiceObjects(key);
-        auto* srvItem      = new QTreeWidgetItem();
-        srvItem->setText(0, QString::fromStdString(key));
-        srvItem->setText(1, QString::fromStdString(objImpl[0]));
-        m_tree->addTopLevelItem(srvItem);
+        const auto obj_impl = service::extension::factory::get()->getServiceObjects(key);
+        auto* srv_item      = new QTreeWidgetItem();
+        srv_item->setText(0, QString::fromStdString(key));
+        srv_item->setText(1, QString::fromStdString(obj_impl[0]));
+        m_tree->addTopLevelItem(srv_item);
     }
 
     m_dialog->show();
@@ -83,9 +83,9 @@ void ClassFactoryRegistryInfo::starting()
 
     auto* sizer = new QHBoxLayout();
     m_tree = new QTreeWidget(m_dialog);
-    QStringList headerList = (QStringList() << "Service" << "Object");
+    QStringList header_list = (QStringList() << "Service" << "Object");
     m_tree->setColumnCount(2);
-    m_tree->setHeaderLabels(headerList);
+    m_tree->setHeaderLabels(header_list);
     m_tree->setColumnWidth(0, 300);
     m_tree->setColumnWidth(1, 460);
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);

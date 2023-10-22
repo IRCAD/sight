@@ -52,8 +52,8 @@ command_history::command_history()
     new_slot(REDO_SLOT, &command_history::redo, this);
     new_slot(CLEAR_SLOT, &command_history::clear, this);
 
-    m_canUndoSig = new_signal<CanDoSignalType>(CANUNDO_SIGNAL);
-    m_canRedoSig = new_signal<CanDoSignalType>(CANREDO_SIGNAL);
+    m_canUndoSig = new_signal<can_do_signal_t>(CANUNDO_SIGNAL);
+    m_canRedoSig = new_signal<can_do_signal_t>(CANREDO_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,17 +67,17 @@ void command_history::configuring()
 {
     service::config_t config = this->get_config();
 
-    auto maxCommands = config.get_optional<std::size_t>("maxCommands");
-    auto maxMemory   = config.get_optional<std::size_t>("maxMemory");
+    auto max_commands = config.get_optional<std::size_t>("maxCommands");
+    auto max_memory   = config.get_optional<std::size_t>("maxMemory");
 
-    if(maxCommands.is_initialized())
+    if(max_commands.is_initialized())
     {
-        m_undoRedoManager.setCommandCount(maxCommands.value());
+        m_undoRedoManager.setCommandCount(max_commands.value());
     }
 
-    if(maxMemory.is_initialized())
+    if(max_memory.is_initialized())
     {
-        m_undoRedoManager.setHistorySize(maxMemory.value());
+        m_undoRedoManager.setHistorySize(max_memory.value());
     }
 }
 
@@ -104,9 +104,9 @@ void command_history::stopping()
 
 //-----------------------------------------------------------------------------
 
-void command_history::enqueue(sight::ui::history::command::sptr command)
+void command_history::enqueue(sight::ui::history::command::sptr _command)
 {
-    m_undoRedoManager.enqueue(command);
+    m_undoRedoManager.enqueue(_command);
     this->emitModifiedSig();
 }
 

@@ -78,7 +78,7 @@ public:
      * @param _sceneMgr The scene manager where launch the ray.
      * @param _queryMask Mask used to query entities with matching flags.
      */
-    collision_tools(Ogre::SceneManager& _sceneMgr, std::uint32_t _queryMask);
+    collision_tools(Ogre::SceneManager& _scene_mgr, std::uint32_t _query_mask);
 
     /// Delete resources.
     ~collision_tools();
@@ -93,11 +93,11 @@ public:
      * @return True if an entity collide the ray.
      */
     [[nodiscard]] bool collidesWithEntity(
-        const Ogre::Vector3& _fromPoint,
-        const Ogre::Vector3& _toPoint,
-        Ogre::uint32 _queryMask,
-        float _collisionRadius = 2.5F,
-        float _rayHeightLevel  = 0.0F
+        const Ogre::Vector3& _from_point,
+        const Ogre::Vector3& _to_point,
+        Ogre::uint32 _query_mask,
+        float _collision_radius = 2.5F,
+        float _ray_height_level = 0.0F
     ) const;
 
     /**
@@ -113,7 +113,7 @@ public:
         Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
-        Ogre::uint32 _queryMask
+        Ogre::uint32 _query_mask
     ) const;
 
     /**
@@ -127,7 +127,7 @@ public:
     [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
-        Ogre::uint32 _queryMask
+        Ogre::uint32 _query_mask
     ) const;
 
     /**
@@ -139,7 +139,7 @@ public:
      */
     [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
         const Ogre::Ray& _ray,
-        Ogre::uint32 _queryMask
+        Ogre::uint32 _query_mask
     ) const;
 
 private:
@@ -161,9 +161,9 @@ private:
         const Ogre::Vector3& _a,
         const Ogre::Vector3& _b,
         const Ogre::Vector3& _c,
-        float _closestDistance,
-        bool _positiveSide,
-        bool _negativeSide
+        float _closest_distance,
+        bool _positive_side,
+        bool _negative_side
     );
 };
 

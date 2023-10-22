@@ -41,13 +41,13 @@ namespace sight::module::data
  * - data::object: the object is added or removed from the field map at the given key
  *
  * @section Slots Slots
- * - \b add() : Adds the object into the target (Vector, series_set, Composite), if target is a Composite or a Field, it
+ * - \b add() : Adds the object into the target (Vector, series_set, Composite), if target is a Composite or a field, it
  *  is added at the key given by config.
  * - \b addCopy() : Adds a copy of the object into the target (Vector, series_set, Composite), if target is a Composite
- * or a Field, it is added at the key given by config.
- * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a composite or a Field, the
+ * or a field, it is added at the key given by config.
+ * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a composite or a field, the
  * object is swapped.
- * - \b swapObj() : Only if target is a Composite or a Field : swaps the object into the composite with the key given by
+ * - \b swapObj() : Only if target is a Composite or a field : swaps the object into the composite with the key given by
  * config.
  * - \b remove() : Removes the object.
  * - \b removeIfPresent() : Removes the object if it is present.

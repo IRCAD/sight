@@ -69,7 +69,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(mesh_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /// Constructor
     MODULE_IO_VTK_API mesh_reader() noexcept;
@@ -130,7 +130,7 @@ private:
      * @param[in] _vtkFile std::filesystem::path.
      * @return true, if mesh is read, false otherwise(error or exception).
      */
-    bool loadMesh(const std::filesystem::path& _vtkFile);
+    bool loadMesh(const std::filesystem::path& _vtk_file);
 
     /**
      * @brief Notification method.
@@ -146,7 +146,7 @@ private:
     std::filesystem::path m_fsMeshPath;
 
     /// Signal triggered when job created
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 };
 
 } // namespace sight::module::io::vtk

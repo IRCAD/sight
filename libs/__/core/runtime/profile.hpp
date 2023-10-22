@@ -57,7 +57,7 @@ public:
     CORE_API virtual int run() = 0;
 
     /// Define the callback to be called when running the profile
-    CORE_API virtual void set_run_callback(run_callback_type callback) = 0;
+    CORE_API virtual void set_run_callback(run_callback_type _callback) = 0;
 
     /// Get profile m_filePath
     std::filesystem::path get_file_path() const
@@ -112,8 +112,8 @@ public:
         return m_params;
     }
 
-    CORE_API void set_params(const params_container& params);
-    CORE_API void set_params(int argc, char** argv);
+    CORE_API void set_params(const params_container& _params);
+    CORE_API void set_params(int _argc, char** _argv);
 
     /**
      * @brief Returns internal arg count.

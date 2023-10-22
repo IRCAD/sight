@@ -45,7 +45,7 @@ namespace sight::io::http
  * - downloading fails (libcurl error code will be printed in the exception message)
  * - generic errors of libcurl (initialization or writing file).
  */
-IO_HTTP_API void downloadFile(
+IO_HTTP_API void download_file(
     const std::string& _url,
     const std::filesystem::path& _file_location,
     bool _verbose = false

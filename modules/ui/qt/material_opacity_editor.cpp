@@ -45,9 +45,9 @@ void material_opacity_editor::configuring()
 void material_opacity_editor::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
-    auto* const opacityLabel = new QLabel(tr(m_label.c_str()));
+    auto* const opacity_label = new QLabel(tr(m_label.c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
     m_opacitySlider->setToolTip(tr("Adjust opacity level"));
     m_opacitySlider->setRange(0, 100);
@@ -58,15 +58,15 @@ void material_opacity_editor::starting()
     m_opacityValue = new QLabel("");
     m_opacityValue->setMinimumSize(m_opacityValue->sizeHint());
 
-    auto* const mainLayout    = new QVBoxLayout();
-    auto* const opacityLayout = new QHBoxLayout();
+    auto* const main_layout    = new QVBoxLayout();
+    auto* const opacity_layout = new QHBoxLayout();
 
-    opacityLayout->addWidget(opacityLabel, 0);
-    opacityLayout->addWidget(m_opacitySlider, 1);
-    opacityLayout->addWidget(m_opacityValue, 0);
+    opacity_layout->addWidget(opacity_label, 0);
+    opacity_layout->addWidget(m_opacitySlider, 1);
+    opacity_layout->addWidget(m_opacityValue, 0);
 
-    mainLayout->addLayout(opacityLayout, 0);
-    qtContainer->setLayout(mainLayout);
+    main_layout->addLayout(opacity_layout, 0);
+    qt_container->setLayout(main_layout);
     this->updating();
     QObject::connect(m_opacitySlider, &QSlider::valueChanged, this, &material_opacity_editor::onOpacitySlider);
 }
@@ -89,7 +89,7 @@ void material_opacity_editor::onOpacitySlider(int _value)
     std::stringstream ss;
     ss << _value << "%";
     m_opacityValue->setText(QString::fromStdString(ss.str()));
-    auto sig = material->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = material->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
 }
 

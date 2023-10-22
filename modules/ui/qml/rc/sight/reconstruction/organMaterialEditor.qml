@@ -16,7 +16,7 @@ Item {
         serviceCreated(organMaterialService)
     }
 
-    organ_material_editor {
+    OrganMaterialEditor {
         id: organMaterialService
 
         // @disable-check M16

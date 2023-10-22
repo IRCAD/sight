@@ -55,7 +55,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object, typename CDATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::weak_ptr<CDATATYPE> input(std::string_view key, std::optional<std::size_t> index = {}) const;
+    inline data::mt::weak_ptr<CDATATYPE> input(std::string_view _key, std::optional<std::size_t> _index = {}) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
@@ -64,7 +64,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object>
-    inline data::mt::weak_ptr<DATATYPE> inout(std::string_view key, std::optional<std::size_t> index = {}) const;
+    inline data::mt::weak_ptr<DATATYPE> inout(std::string_view _key, std::optional<std::size_t> _index = {}) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
@@ -73,7 +73,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE = sight::data::object>
-    inline data::mt::weak_ptr<DATATYPE> output(std::string_view key, std::optional<std::size_t> index = {}) const;
+    inline data::mt::weak_ptr<DATATYPE> output(std::string_view _key, std::optional<std::size_t> _index = {}) const;
 
     /**
      * @brief Return the input, inout or output object at the given key.
@@ -85,7 +85,7 @@ public:
     DATA_API data::object::csptr object(
         std::string_view _key,
         data::Access _access,
-        std::optional<std::size_t> index = {}) const;
+        std::optional<std::size_t> _index = {}) const;
 
     /**
      * @brief Set an input object, and overrides the default auto_connect and optional settings.
@@ -99,7 +99,7 @@ public:
     DATA_API void set_input(
         data::object::csptr _obj,
         std::string_view _key,
-        std::optional<bool> _autoConnect  = {},
+        std::optional<bool> _auto_connect = {},
         std::optional<bool> _optional     = {},
         std::optional<std::size_t> _index = {});
 
@@ -115,7 +115,7 @@ public:
     DATA_API void set_inout(
         data::object::sptr _obj,
         std::string_view _key,
-        std::optional<bool> _autoConnect  = {},
+        std::optional<bool> _auto_connect = {},
         std::optional<bool> _optional     = {},
         std::optional<std::size_t> _index = {});
 
@@ -151,7 +151,7 @@ protected:
         std::string_view _key,
         std::optional<std::size_t> _index,
         data::Access _access,
-        bool _autoConnect,
+        bool _auto_connect,
         bool _optional
     );
 

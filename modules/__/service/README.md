@@ -19,7 +19,7 @@ Contains also `.xsd` files to perform checks of each of the previously named con
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_service ... )
+add_dependencies(my_target module_service ... )
 ```
 
 ### XML

@@ -35,47 +35,47 @@ namespace sight::core::runtime::detail::profile
 
 //------------------------------------------------------------------------------
 
-activater::activater(std::string identifier, const std::string& /*unused*/) :
-    m_identifier(std::move(identifier))
+activater::activater(std::string _identifier, const std::string& /*unused*/) :
+    M_IDENTIFIER(std::move(_identifier))
 {
 }
 
 //------------------------------------------------------------------------------
 
-void activater::add_parameter(const std::string& identifier, const std::string& value)
+void activater::add_parameter(const std::string& _identifier, const std::string& _value)
 {
-    m_parameters[identifier] = value;
+    m_parameters[_identifier] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-void activater::add_disable_extension_point(const std::string& identifier)
+void activater::add_disable_extension_point(const std::string& _identifier)
 {
-    m_disable_extension_points.push_back(identifier);
+    m_disable_extension_points.push_back(_identifier);
 }
 
 //------------------------------------------------------------------------------
 
-void activater::add_disable_extension(const std::string& identifier)
+void activater::add_disable_extension(const std::string& _identifier)
 {
-    m_disable_extensions.push_back(identifier);
+    m_disable_extensions.push_back(_identifier);
 }
 
 //------------------------------------------------------------------------------
 
 void activater::apply()
 {
-    auto module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(m_identifier));
+    auto module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(M_IDENTIFIER));
 
     // TEMP_FB: until I refactor the profile.xml
     if(module == nullptr)
     {
-        const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
+        const auto identifier = boost::algorithm::replace_first_copy(M_IDENTIFIER, "sight_", "");
         module = std::dynamic_pointer_cast<detail::module>(runtime::get().find_module(identifier));
         SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == nullptr);
     }
 
-    SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == nullptr);
+    SIGHT_FATAL_IF("Unable to activate Module " + M_IDENTIFIER + ". Not found.", module == nullptr);
     // TEMP_FB: useless now since all modules are now enabled by default
     module->set_enable(true);
 
@@ -95,7 +95,7 @@ void activater::apply()
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module " << m_identifier
+                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module " << M_IDENTIFIER
                 << ". Not found."
             );
         }
@@ -111,7 +111,7 @@ void activater::apply()
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension " << m_disable_extension << " defined in the Module " << m_identifier
+                "Unable to disable Extension " << m_disable_extension << " defined in the Module " << M_IDENTIFIER
                 << ". Not found."
             );
         }

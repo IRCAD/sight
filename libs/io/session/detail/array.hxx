@@ -40,36 +40,36 @@ constexpr static auto s_array {"/array.raw"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& _password = ""
 )
 {
-    const auto array = helper::safe_cast<data::array>(object);
+    const auto array = helper::safe_cast<data::array>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::array>(tree, 1);
+    helper::write_version<data::array>(_tree, 1);
 
     // Size
-    boost::property_tree::ptree sizesTree;
+    boost::property_tree::ptree sizes_tree;
 
     for(const auto& size : array->size())
     {
-        sizesTree.add(s_Size, size);
+        sizes_tree.add(s_Size, size);
     }
 
-    tree.add_child(s_Sizes, sizesTree);
+    _tree.add_child(s_Sizes, sizes_tree);
 
     // type, isBufferOwner
-    tree.put(s_Type, array->getType().name());
-    tree.put(s_IsBufferOwner, array->getIsBufferOwner());
+    _tree.put(s_Type, array->getType().name());
+    _tree.put(s_IsBufferOwner, array->getIsBufferOwner());
 
     // Create the output file inside the archive
-    const auto& ostream = archive.openFile(
+    const auto& ostream = _archive.openFile(
         std::filesystem::path(array->get_uuid() + s_array),
-        password
+        _password
     );
 
     // Write back to the archive
@@ -80,48 +80,48 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::array::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto array = helper::cast_or_create<data::array>(object);
+    auto array = helper::cast_or_create<data::array>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::array>(tree, 0, 1);
+    helper::read_version<data::array>(_tree, 0, 1);
 
     // IsBufferOwner
-    array->setIsBufferOwner(tree.get<bool>(s_IsBufferOwner, false));
+    array->setIsBufferOwner(_tree.get<bool>(s_IsBufferOwner, false));
 
     // Sizes
     std::vector<std::size_t> sizes;
 
-    for(const auto& sizeTree : tree.get_child(s_Sizes))
+    for(const auto& size_tree : _tree.get_child(s_Sizes))
     {
-        const auto& size = sizeTree.second.get_value<std::size_t>();
+        const auto& size = size_tree.second.get_value<std::size_t>();
         sizes.push_back(size);
     }
 
     if(!sizes.empty())
     {
-        array->resize(sizes, tree.get<std::string>(s_Type), true);
+        array->resize(sizes, _tree.get<std::string>(s_Type), true);
     }
 
     // Buffer
-    const auto& bufferObject = array->get_buffer_object();
-    core::memory::buffer_object::lock_t lockerSource(bufferObject);
+    const auto& buffer_object = array->get_buffer_object();
+    core::memory::buffer_object::lock_t locker_source(buffer_object);
 
     // Create the istream from the input file inside the archive
-    const auto& uuid    = tree.get<std::string>(s_uuid);
-    const auto& istream = archive.openFile(
+    const auto& uuid    = _tree.get<std::string>(s_uuid);
+    const auto& istream = _archive.openFile(
         std::filesystem::path(uuid + s_array),
-        password
+        _password
     );
 
-    istream->read(static_cast<char*>(bufferObject->buffer()), static_cast<std::streamsize>(bufferObject->size()));
+    istream->read(static_cast<char*>(buffer_object->buffer()), static_cast<std::streamsize>(buffer_object->size()));
 
     return array;
 }

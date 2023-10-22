@@ -91,9 +91,9 @@ void text::starting()
 {
     this->initialize();
 
-    auto renderSrv = this->getRenderService();
+    auto render_srv = this->getRenderService();
 
-    m_text = sight::viz::scene3d::IText::make(this->getLayer());
+    m_text = sight::viz::scene3d::text::make(this->getLayer());
 
     m_text->setFontSize(m_fontSize);
     m_text->setTextColor(m_textColor);
@@ -127,10 +127,10 @@ void text::stopping()
 
 //----------------------------------------------------------------------------
 
-void text::setText(std::string str)
+void text::setText(std::string _str)
 {
-    m_textString = str;
-    m_text->setText(str);
+    m_textString = _str;
+    m_text->setText(_str);
     m_text->setTextColor(m_textColor);
     m_text->setTextAlignment(m_horizontalAlignment, m_verticalAlignment);
 }
@@ -139,7 +139,7 @@ void text::setText(std::string str)
 
 void text::updateText()
 {
-    std::string textString = m_textString;
+    std::string text_string = m_textString;
 
     const auto obj = m_object.lock();
 
@@ -149,11 +149,11 @@ void text::updateText()
 
         if(field)
         {
-            textString = field->toString();
+            text_string = field->toString();
         }
     }
 
-    this->setText(textString);
+    this->setText(text_string);
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

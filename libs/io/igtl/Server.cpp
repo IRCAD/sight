@@ -72,33 +72,33 @@ std::uint16_t Server::getPort() const
 
 void Server::runServer()
 {
-    Client::sptr newClient;
+    Client::sptr new_client;
 
     while(this->started())
     {
-        newClient = this->waitForConnection();
-        if(newClient != nullptr)
+        new_client = this->waitForConnection();
+        if(new_client != nullptr)
         {
             core::mt::scoped_lock lock(m_mutex);
             if(m_receiveTimeout.has_value())
             {
-                newClient->getSocket()->SetReceiveTimeout(static_cast<int>(m_receiveTimeout.value()));
+                new_client->getSocket()->SetReceiveTimeout(static_cast<int>(m_receiveTimeout.value()));
             }
 
-            m_clients.push_back(newClient);
+            m_clients.push_back(new_client);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Server::broadcast(const data::object::csptr& obj)
+void Server::broadcast(const data::object::csptr& _obj)
 {
     std::vector<Client::sptr>::iterator it;
 
     for(it = m_clients.begin() ; it != m_clients.end() ; )
     {
-        if(!(*it)->sendObject(obj))
+        if(!(*it)->sendObject(_obj))
         {
             core::mt::scoped_lock lock(m_mutex);
             (*it)->disconnect();
@@ -113,13 +113,13 @@ void Server::broadcast(const data::object::csptr& obj)
 
 //------------------------------------------------------------------------------
 
-void Server::broadcast(::igtl::MessageBase::Pointer msg)
+void Server::broadcast(::igtl::MessageBase::Pointer _msg)
 {
     std::vector<Client::sptr>::iterator it;
 
     for(it = m_clients.begin() ; it != m_clients.end() ; )
     {
-        if(!(*it)->sendMsg(msg))
+        if(!(*it)->sendMsg(_msg))
         {
             core::mt::scoped_lock lock(m_mutex);
             (*it)->disconnect();
@@ -134,7 +134,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-void Server::start(std::uint16_t port)
+void Server::start(std::uint16_t _port)
 {
     core::mt::scoped_lock lock(m_mutex);
 
@@ -144,7 +144,7 @@ void Server::start(std::uint16_t port)
     }
 
     //NOTE: Use the patched version of createServer
-    const int result = this->createServer(port);
+    const int result = this->createServer(_port);
 
     // Uncomment this when patch version isn't needed anymore.
     // m_serverSocket->CreateServer(port);
@@ -154,7 +154,7 @@ void Server::start(std::uint16_t port)
 
     if(result != Server::s_SUCCESS)
     {
-        throw Exception("Cannot create server on port : " + std::to_string(port));
+        throw Exception("Cannot create server on port : " + std::to_string(_port));
     }
 
     m_isStarted = true;
@@ -162,15 +162,15 @@ void Server::start(std::uint16_t port)
 
 //------------------------------------------------------------------------------
 
-Client::sptr Server::waitForConnection(int msec)
+Client::sptr Server::waitForConnection(int _msec)
 {
-    ::igtl::ClientSocket::Pointer clientSocket;
+    ::igtl::ClientSocket::Pointer client_socket;
     Client::sptr client;
 
-    clientSocket = m_serverSocket->WaitForConnection(static_cast<std::uint64_t>(msec));
-    if(clientSocket.IsNotNull())
+    client_socket = m_serverSocket->WaitForConnection(static_cast<std::uint64_t>(_msec));
+    if(client_socket.IsNotNull())
     {
-        client = std::make_shared<Client>(clientSocket);
+        client = std::make_shared<Client>(client_socket);
     }
 
     return client;
@@ -225,7 +225,7 @@ std::size_t Server::numClients() const
 
 std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 {
-    std::vector< ::igtl::MessageHeader::Pointer> headerMsgs;
+    std::vector< ::igtl::MessageHeader::Pointer> header_msgs;
 
     core::mt::scoped_lock lock(m_mutex);
     for(size_t i = 0 ; i < m_clients.size() ; ++i)
@@ -238,21 +238,21 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
             continue;
         }
 
-        ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
-        headerMsg->InitPack();
+        ::igtl::MessageHeader::Pointer header_msg = ::igtl::MessageHeader::New();
+        header_msg->InitPack();
 
         ::igtl::Socket::Pointer socket = client->getSocket();
 
         if(socket->GetConnected() != 0)
         {
-            const int sizeReceive = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+            const int size_receive = socket->Receive(header_msg->GetPackPointer(), header_msg->GetPackSize());
 
-            if(sizeReceive == -1)
+            if(size_receive == -1)
             {
                 throw sight::io::igtl::Exception("Network timeout");
             }
 
-            if(sizeReceive == 0)
+            if(size_receive == 0)
             {
                 // Disconnect this client.
                 sight::io::igtl::Server::removeClient(client);
@@ -260,55 +260,55 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
                 throw sight::io::igtl::Exception("Network error");
             }
 
-            if(sizeReceive != headerMsg->GetPackSize())
+            if(size_receive != header_msg->GetPackSize())
             {
                 throw sight::io::igtl::Exception("Mismatch in received message size");
             }
 
-            if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
+            if(header_msg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
             {
-                const std::string deviceName = headerMsg->GetDeviceName();
+                const std::string device_name = header_msg->GetDeviceName();
 
                 if(m_filteringByDeviceName)
                 {
-                    if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
+                    if(m_deviceNamesIn.find(device_name) != m_deviceNamesIn.end())
                     {
-                        headerMsgs.push_back(headerMsg);
+                        header_msgs.push_back(header_msg);
                     }
                     else
                     {
-                        headerMsgs.emplace_back();
+                        header_msgs.emplace_back();
                     }
                 }
                 else
                 {
-                    headerMsgs.push_back(headerMsg);
+                    header_msgs.push_back(header_msg);
                 }
             }
         }
     }
 
-    return headerMsgs;
+    return header_msgs;
 }
 
 //------------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer Server::receiveBody(::igtl::MessageHeader::Pointer const headerMsg, unsigned int client)
+::igtl::MessageBase::Pointer Server::receiveBody(::igtl::MessageHeader::Pointer const _header_msg, unsigned int _client)
 {
     ::igtl::MessageBase::Pointer msg;
 
-    if(headerMsg == nullptr)
+    if(_header_msg == nullptr)
     {
         throw sight::io::igtl::Exception("Invalid header message");
     }
 
-    msg = io::igtl::detail::MessageFactory::create(headerMsg->GetDeviceType());
-    msg->SetMessageHeader(headerMsg);
+    msg = io::igtl::detail::MessageFactory::create(_header_msg->GetDeviceType());
+    msg->SetMessageHeader(_header_msg);
     msg->AllocatePack();
 
     core::mt::scoped_lock lock(m_mutex);
 
-    const int result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
+    const int result = (m_clients[_client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
     if(result == -1) // Timeout
     {
@@ -318,19 +318,19 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
     if(result == 0) // Error
     {
         // Disconnect this client.
-        sight::io::igtl::Server::removeClient(m_clients[client]);
-        m_clients.erase(m_clients.begin() + client);
+        sight::io::igtl::Server::removeClient(m_clients[_client]);
+        m_clients.erase(m_clients.begin() + _client);
         throw sight::io::igtl::Exception("Network error");
     }
 
-    const auto unpackResult = msg->Unpack();
+    const auto unpack_result = msg->Unpack();
 
-    if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
+    if(unpack_result == ::igtl::MessageHeader::UNPACK_UNDEF)
     {
         throw sight::io::igtl::Exception("Network error");
     }
 
-    if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
+    if(unpack_result == ::igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
     }
@@ -340,46 +340,46 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 
 //------------------------------------------------------------------------------
 
-std::vector<data::object::sptr> Server::receiveObjects(std::vector<std::string>& deviceNames)
+std::vector<data::object::sptr> Server::receiveObjects(std::vector<std::string>& _device_names)
 {
-    std::vector<data::object::sptr> objVect;
-    std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
-    unsigned int client                                        = 0;
-    for(const auto& headerMsg : headerMsgVect)
+    std::vector<data::object::sptr> obj_vect;
+    std::vector< ::igtl::MessageHeader::Pointer> header_msg_vect = this->receiveHeaders();
+    unsigned int client                                          = 0;
+    for(const auto& header_msg : header_msg_vect)
     {
-        if(headerMsg.IsNotNull())
+        if(header_msg.IsNotNull())
         {
-            ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg, std::uint32_t(client));
+            ::igtl::MessageBase::Pointer msg = this->receiveBody(header_msg, std::uint32_t(client));
             if(msg.IsNotNull())
             {
                 detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
-                objVect.push_back(converter->fromIgtlMessage(msg));
-                deviceNames.emplace_back(headerMsg->GetDeviceName());
+                obj_vect.push_back(converter->fromIgtlMessage(msg));
+                _device_names.emplace_back(header_msg->GetDeviceName());
             }
         }
 
         ++client;
     }
 
-    return objVect;
+    return obj_vect;
 }
 
 //------------------------------------------------------------------------------
 
-void Server::setMessageDeviceName(const std::string& deviceName)
+void Server::setMessageDeviceName(const std::string& _device_name)
 {
     for(const auto& client : m_clients)
     {
         if(client)
         {
-            client->setDeviceNameOut(deviceName);
+            client->setDeviceNameOut(_device_name);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-int Server::createServer(std::uint16_t port)
+int Server::createServer(std::uint16_t _port)
 {
     if(m_serverSocket->m_SocketDescriptor != -1)
     {
@@ -396,7 +396,7 @@ int Server::createServer(std::uint16_t port)
         return -1;
     }
 
-    if(sight::io::igtl::network::bindSocket(m_serverSocket->m_SocketDescriptor, port) != 0
+    if(sight::io::igtl::network::bindSocket(m_serverSocket->m_SocketDescriptor, _port) != 0
        || sight::io::igtl::network::listenSocket(m_serverSocket->m_SocketDescriptor) != 0)
     {
         // failed to bind or listen.

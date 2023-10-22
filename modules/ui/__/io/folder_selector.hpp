@@ -57,7 +57,7 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::signal<void (std::filesystem::path)> FolderSelectedSignalType;
+    typedef core::com::signal<void (std::filesystem::path)> folder_selected_signal_t;
     static const core::com::signals::key_t FOLDER_SELECTED_SIG;
     /// @}
 

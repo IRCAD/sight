@@ -48,7 +48,7 @@ static const core::com::slots::key_t FORWARD_JOB_SLOT     = "forwardJob";
 
 db_merger::db_merger() noexcept :
     m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader"),
-    m_sigJobCreated(new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL)),
+    m_sigJobCreated(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL)),
     m_slotForwardJob(new_slot(FORWARD_JOB_SLOT, &db_merger::forwardJob, this))
 {
 }
@@ -62,7 +62,7 @@ db_merger::~db_merger() noexcept =
 
 void db_merger::info(std::ostream& _sstream)
 {
-    _sstream << "Action for add series_set" << std::endl;
+    _sstream << "action for add series_set" << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void db_merger::updating()
     /// Create IOSelectorService on the new series_set and execute it.
 
     // Get the config
-    const auto ioCfg = service::extension::config::getDefault()->get_service_config(
+    const auto io_cfg = service::extension::config::getDefault()->get_service_config(
         m_ioSelectorSrvConfig,
         "sight::module::ui::io::selector"
     );
@@ -95,27 +95,27 @@ void db_merger::updating()
         "There is no service configuration "
         << m_ioSelectorSrvConfig
         << " for module::ui::editor::selector",
-        !ioCfg.empty()
+        !io_cfg.empty()
     );
 
     // Init and execute the service
-    service::base::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("sight::module::ui::io::selector");
-    ioSelectorSrv->set_inout(local_series_set, io::service::s_DATA_KEY);
-    ioSelectorSrv->set_worker(this->worker());
+    service::base::sptr io_selector_srv;
+    io_selector_srv = service::add("sight::module::ui::io::selector");
+    io_selector_srv->set_inout(local_series_set, io::service::s_DATA_KEY);
+    io_selector_srv->set_worker(this->worker());
 
-    auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
-    if(jobCreatedSignal)
+    auto job_created_signal = io_selector_srv->signal("jobCreated");
+    if(job_created_signal)
     {
-        jobCreatedSignal->connect(m_slotForwardJob);
+        job_created_signal->connect(m_slotForwardJob);
     }
 
-    ioSelectorSrv->set_config(ioCfg);
-    ioSelectorSrv->configure();
-    ioSelectorSrv->start();
-    ioSelectorSrv->update();
-    ioSelectorSrv->stop();
-    service::remove(ioSelectorSrv);
+    io_selector_srv->set_config(io_cfg);
+    io_selector_srv->configure();
+    io_selector_srv->start();
+    io_selector_srv->update();
+    io_selector_srv->stop();
+    service::remove(io_selector_srv);
 
     // Lock only when needed.
     auto series_set = m_series_set.lock();
@@ -141,9 +141,9 @@ void db_merger::stopping()
 
 //------------------------------------------------------------------------------
 
-void db_merger::forwardJob(core::jobs::base::sptr job)
+void db_merger::forwardJob(core::jobs::base::sptr _job)
 {
-    m_sigJobCreated->emit(job);
+    m_sigJobCreated->emit(_job);
 }
 
 //------------------------------------------------------------------------------

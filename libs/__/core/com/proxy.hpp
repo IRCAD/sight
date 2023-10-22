@@ -57,16 +57,16 @@ public:
     CORE_API static proxy::sptr get();
 
     /// Registers a signal in the channel. It will be connected to all slots in the channel.
-    CORE_API void connect(channel_key_type channel, core::com::signal_base::sptr signal);
+    CORE_API void connect(channel_key_type _channel, core::com::signal_base::sptr _signal);
 
     /// Registers a slot in the channel. It will be connected to all signals in the channel.
-    CORE_API void connect(channel_key_type channel, core::com::slot_base::sptr slot);
+    CORE_API void connect(channel_key_type _channel, core::com::slot_base::sptr _slot);
 
     /// Unregisters the signal. Disconnects it from the slots in channel
-    CORE_API void disconnect(channel_key_type channel, core::com::signal_base::sptr signal);
+    CORE_API void disconnect(channel_key_type _channel, core::com::signal_base::sptr _signal);
 
     /// Unregisters the slot. Disconnects it from the signals in channel
-    CORE_API void disconnect(channel_key_type channel, core::com::slot_base::sptr slot);
+    CORE_API void disconnect(channel_key_type _channel, core::com::slot_base::sptr _slot);
 
 private:
 

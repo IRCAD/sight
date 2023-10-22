@@ -91,7 +91,7 @@ public:
     typedef core::com::signal<void (std::string)> ActivityIDSelectedSignalType;
 
     MODULE_UI_QT_API static const core::com::signals::key_t LOAD_REQUESTED_SIG;
-    typedef core::com::signal<void ()> LoadRequestedSignalType;
+    typedef core::com::signal<void ()> load_requested_signal_t;
 
     /// @}
 
@@ -109,11 +109,11 @@ protected:
     /// Show activity selector.
     void updating() override;
 
-    typedef std::vector<std::string> KeysType;
+    typedef std::vector<std::string> keys_t;
 
 private Q_SLOTS:
 
-    void onClicked(int id);
+    void onClicked(int _id);
 
 private:
 
@@ -121,12 +121,12 @@ private:
      * @brief Slots to launch the given activity.
      * @param activity the activity to be launched.
      */
-    void launchActivity(data::activity::sptr activity);
+    void launchActivity(data::activity::sptr _activity);
 
     typedef sight::activity::extension::activity::infos_t activity_infos_t;
 
     /// Returns enabled activity infos according to activity filter.
-    activity_infos_t getEnabledActivities(const activity_infos_t& infos);
+    activity_infos_t getEnabledActivities(const activity_infos_t& _infos);
 
     /**
      * @brief Filter mode : include or exclude activity configurations.
@@ -135,7 +135,7 @@ private:
     std::string m_filterMode;
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
-    KeysType m_keys;
+    keys_t m_keys;
 
     /// Informations used to launch activities
     activity_infos_t m_activitiesInfo;

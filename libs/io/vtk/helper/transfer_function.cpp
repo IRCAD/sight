@@ -30,66 +30,72 @@ namespace sight::io::vtk::helper
 //------------------------------------------------------------------------------
 
 void transfer_function::toVtkLookupTable(
-    data::transfer_function::csptr tf,
-    vtkSmartPointer<vtkLookupTable> lt,
-    bool allowTransparency,
-    unsigned int size
+    data::transfer_function::csptr _tf,
+    vtkSmartPointer<vtkLookupTable> _lt,
+    bool _allow_transparency,
+    unsigned int _size
 )
 {
     // Configures basic parameters
-    lt->SetNumberOfTableValues(size);
-    lt->SetScaleToLinear();
+    _lt->SetNumberOfTableValues(_size);
+    _lt->SetScaleToLinear();
 
-    data::transfer_function::min_max_t minMax = tf->minMax();
+    data::transfer_function::min_max_t min_max = _tf->minMax();
 
-    lt->SetTableRange(minMax.first, minMax.second);
+    _lt->SetTableRange(min_max.first, min_max.second);
 
-    double delta = (minMax.second - minMax.first) / (double) (size - 1);
-    data::transfer_function::color_t interpolatedColor;
+    double delta = (min_max.second - min_max.first) / (double) (_size - 1);
+    data::transfer_function::color_t interpolated_color;
 
-    if(allowTransparency)
+    if(_allow_transparency)
     {
-        for(unsigned int k = 0 ; k < size ; ++k)
+        for(unsigned int k = 0 ; k < _size ; ++k)
         {
-            interpolatedColor = tf->sample(k * delta + minMax.first);
-            lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
+            interpolated_color = _tf->sample(k * delta + min_max.first);
+            _lt->SetTableValue(
+                k,
+                interpolated_color.r,
+                interpolated_color.g,
+                interpolated_color.b,
+                interpolated_color.a
+            );
         }
     }
     else
     {
-        for(unsigned int k = 0 ; k < size ; ++k)
+        for(unsigned int k = 0 ; k < _size ; ++k)
         {
-            interpolatedColor = tf->sample(k * delta + minMax.first);
-            lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);
+            interpolated_color = _tf->sample(k * delta + min_max.first);
+            _lt->SetTableValue(k, interpolated_color.r, interpolated_color.g, interpolated_color.b, 1.0);
         }
     }
 
-    lt->Modified();
+    _lt->Modified();
 }
 
 //------------------------------------------------------------------------------
 
 void transfer_function::toBWVtkLookupTable(
-    double rangeMin,
-    double rangeMax,
-    vtkSmartPointer<vtkLookupTable> lt,
-    unsigned int size
+    double _range_min,
+    double _range_max,
+    vtkSmartPointer<vtkLookupTable> _lt,
+    unsigned int _size
 )
 {
     // Configures basic parameters
-    lt->Allocate(static_cast<int>(size), static_cast<int>(size));
-    lt->SetScaleToLinear();
+    _lt->Allocate(static_cast<int>(_size), static_cast<int>(_size));
+    _lt->SetScaleToLinear();
 
-    lt->SetRampToLinear();
-    lt->SetTableRange(rangeMin, rangeMax);
-    lt->SetAlphaRange(1.0, 1.0);
-    lt->SetHueRange(0.0, 0.0);
-    lt->SetSaturationRange(0.0, 0.0);
-    lt->SetValueRange(0.0, 1.0);
+    _lt->SetRampToLinear();
+    _lt->SetTableRange(_range_min, _range_max);
+    _lt->SetAlphaRange(1.0, 1.0);
+    _lt->SetHueRange(0.0, 0.0);
+    _lt->SetSaturationRange(0.0, 0.0);
+    _lt->SetValueRange(0.0, 1.0);
 
-    lt->Build();
+    _lt->Build();
 
-    lt->Modified();
+    _lt->Modified();
 }
 
 //------------------------------------------------------------------------------

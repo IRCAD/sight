@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,16 +34,16 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRSCoord3DNode::DicomSRSCoord3DNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    std::string graphicType,
-    GraphicDataContainerType graphicDataContainer,
-    std::string frameOfReferenceUID
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    std::string _graphic_type,
+    graphic_data_container_t _graphic_data_container,
+    std::string _frame_of_reference_uid
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "SCOORD3D", relationship),
-    m_frameOfReferenceUID(std::move(frameOfReferenceUID)),
-    m_graphicType(std::move(graphicType)),
-    m_graphicDataContainer(std::move(graphicDataContainer))
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "SCOORD3D", _relationship),
+    m_frameOfReferenceUID(std::move(_frame_of_reference_uid)),
+    m_graphicType(std::move(_graphic_type)),
+    m_graphicDataContainer(std::move(_graphic_data_container))
 {
     SIGHT_ASSERT(
         "Only POINT and POLYLINE are supported by SCoord3D node for now.",
@@ -68,31 +68,31 @@ DicomSRSCoord3DNode::~DicomSRSCoord3DNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNode::write(gdcm::DataSet& dataset) const
+void DicomSRSCoord3DNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Referenced Frame of Reference UID - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x3006, 0x0024>(m_frameOfReferenceUID, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x3006, 0x0024>(m_frameOfReferenceUID, _dataset);
 
     // Graphic Data - Type 1
     io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
         (m_graphicDataContainer).data(),
         static_cast<unsigned int>(m_graphicDataContainer.size()),
-        dataset
+        _dataset
     );
 
     // Graphic Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0023>(m_graphicType, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0023>(m_graphicType, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoord3DNode::print(std::ostream& os) const
+void DicomSRSCoord3DNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nFrame of Reference UID : [" << m_frameOfReferenceUID << "]";
-    os << "\\nGraphic Type : [" << m_graphicType << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nFrame of Reference UID : [" << m_frameOfReferenceUID << "]";
+    _os << "\\nGraphic Type : [" << m_graphicType << "]";
 }
 
 //------------------------------------------------------------------------------

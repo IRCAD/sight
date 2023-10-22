@@ -51,7 +51,7 @@ public:
      *
      * @param[in]   type    a string containing a type identifier
      */
-    CORE_API executable_factory(const std::string& type);
+    CORE_API executable_factory(const std::string& _type);
 
     /**
      * @brief   Destructor : does nothing

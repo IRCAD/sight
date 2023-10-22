@@ -48,12 +48,12 @@
 namespace sight::filter::image
 {
 
-using TransformType = itk::Euler3DTransform<automatic_registration::RealType>;
+using transform_t = itk::Euler3DTransform<automatic_registration::real_t>;
 
-using RegistrationMethodType = itk::ImageRegistrationMethodv4<
-    automatic_registration::RegisteredImageType,
-    automatic_registration::RegisteredImageType,
-    TransformType
+using registration_method_t = itk::ImageRegistrationMethodv4<
+    automatic_registration::registered_image_t,
+    automatic_registration::registered_image_t,
+    transform_t
 >;
 
 class automatic_registration::automatic_registrationImpl final
@@ -68,8 +68,8 @@ public:
     automatic_registrationImpl& operator=(automatic_registrationImpl&&)      = delete;
 
     /// Constructor
-    inline explicit automatic_registrationImpl(automatic_registration* const automaticRegistration) :
-        m_automaticRegistration(automaticRegistration)
+    inline explicit automatic_registrationImpl(automatic_registration* const _automatic_registration) :
+        m_automaticRegistration(_automatic_registration)
     {
     }
 
@@ -78,32 +78,32 @@ public:
 
     automatic_registration* m_automaticRegistration {nullptr};
 
-    OptimizerType::Pointer m_optimizer {nullptr};
+    optimizer_t::Pointer m_optimizer {nullptr};
 
-    RegistrationMethodType::Pointer m_registrator {nullptr};
+    registration_method_t::Pointer m_registrator {nullptr};
 
     bool m_invert {false};
 
     //------------------------------------------------------------------------------
 
-    inline void convertToF4sMatrix(const TransformType* _itkMat, const data::matrix4::sptr& _f4sMat) const
+    inline void convertfrom_eigenMatrix(const transform_t* _itk_mat, const data::matrix4::sptr& _f4s_mat) const
     {
-        itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
-        itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
+        itk::Matrix<real_t, 3, 3> rigid_mat = _itk_mat->GetMatrix();
+        itk::Vector<real_t, 3> offset       = _itk_mat->GetOffset();
 
         if(m_invert)
         {
-            rigidMat = itk::Matrix<RealType, 3, 3>(_itkMat->GetMatrix().GetTranspose());
-            offset   = -(rigidMat * offset);
+            rigid_mat = itk::Matrix<real_t, 3, 3>(_itk_mat->GetMatrix().GetTranspose());
+            offset    = -(rigid_mat * offset);
         }
 
         // Convert itk::RigidTransform to f4s matrix.
         for(std::uint8_t i = 0 ; i < 3 ; ++i)
         {
-            (*_f4sMat)(i, 3) = offset[i];
+            (*_f4s_mat)(i, 3) = offset[i];
             for(std::uint8_t j = 0 ; j < 3 ; ++j)
             {
-                (*_f4sMat)(i, j) = rigidMat(i, j);
+                (*_f4s_mat)(i, j) = rigid_mat(i, j);
             }
         }
     }
@@ -120,15 +120,15 @@ public:
             spacing.size() == size.size()
         );
 
-        const double voxelVolume   = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<>());
-        const std::size_t nbVoxels = std::accumulate(
+        const double voxel_volume   = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<>());
+        const std::size_t nb_voxels = std::accumulate(
             size.begin(),
             size.end(),
             std::size_t(1),
             std::multiplies<>()
         );
 
-        return voxelVolume * static_cast<double>(nbVoxels);
+        return voxel_volume * static_cast<double>(nb_voxels);
     }
 };
 
@@ -144,17 +144,17 @@ public:
     itkNewMacro(Self)
 
     /// Command to be executed. Updates the progress bar.
-    void Execute(itk::Object* caller, const itk::EventObject& event) override
+    void Execute(itk::Object* _caller, const itk::EventObject& _event) override
     {
-        const itk::Object* constCaller = caller;
-        Execute(constCaller, event);
+        const itk::Object* const_caller = _caller;
+        Execute(const_caller, _event);
     }
 
     /// Const overload of the above method.
-    void Execute(const itk::Object* /*caller*/, const itk::EventObject& event) override
+    void Execute(const itk::Object* /*caller*/, const itk::EventObject& _event) override
     {
         {
-            if(itk::IterationEvent().CheckEvent(&event))
+            if(itk::IterationEvent().CheckEvent(&_event))
             {
                 m_iterationCallback();
             }
@@ -190,15 +190,15 @@ void automatic_registration::registerImage(
     const data::image::csptr& _reference,
     const data::matrix4::sptr& _trf,
     metric_t _metric,
-    const MultiResolutionParametersType& _multiResolutionParameters,
-    RealType _samplingPercentage,
-    double _minStep,
-    std::uint64_t _maxIterations,
-    IterationCallbackType _callback
+    const multi_resolution_parameters_t& _multi_resolution_parameters,
+    real_t _sampling_percentage,
+    double _min_step,
+    std::uint64_t _max_iterations,
+    iteration_callback_t _callback
 )
 {
-    typename itk::ImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                       RealType>::Pointer metric;
+    typename itk::ImageToImageMetricv4<registered_image_t, registered_image_t, registered_image_t,
+                                       real_t>::Pointer metric;
 
     data::image::csptr ref = _reference;
     data::image::csptr tgt = _target;
@@ -213,34 +213,34 @@ void automatic_registration::registerImage(
     }
 
     // Convert input images to float. Integer images aren't supported yet.
-    RegisteredImageType::Pointer target    = castTo<float>(tgt);
-    RegisteredImageType::Pointer reference = castTo<float>(ref);
+    registered_image_t::Pointer target    = cast_to<float>(tgt);
+    registered_image_t::Pointer reference = cast_to<float>(ref);
 
     // Choose a metric.
     switch(_metric)
     {
         case MEAN_SQUARES:
             metric =
-                itk::MeanSquaresImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                     RealType>::New();
+                itk::MeanSquaresImageToImageMetricv4<registered_image_t, registered_image_t, registered_image_t,
+                                                     real_t>::New();
             break;
 
         case NORMALIZED_CORRELATION:
             metric =
-                itk::CorrelationImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                     RealType>::New();
+                itk::CorrelationImageToImageMetricv4<registered_image_t, registered_image_t, registered_image_t,
+                                                     real_t>::New();
             break;
 
         case MUTUAL_INFORMATION:
         {
-            auto mutInfoMetric =
-                itk::MattesMutualInformationImageToImageMetricv4<RegisteredImageType, RegisteredImageType,
-                                                                 RegisteredImageType,
-                                                                 RealType>::New();
+            auto mut_info_metric =
+                itk::MattesMutualInformationImageToImageMetricv4<registered_image_t, registered_image_t,
+                                                                 registered_image_t,
+                                                                 real_t>::New();
             // TODO: find a strategy to compute the appropriate number of bins or let the user set it.
             // More bins means better precision but longer evaluation.
-            mutInfoMetric->SetNumberOfHistogramBins(20);
-            metric = mutInfoMetric;
+            mut_info_metric->SetNumberOfHistogramBins(20);
+            metric = mut_info_metric;
             break;
         }
 
@@ -248,10 +248,10 @@ void automatic_registration::registerImage(
             SIGHT_FATAL("Unknown metric");
     }
 
-    TransformType::Pointer itkTransform = TransformType::New();
+    transform_t::Pointer itk_transform = transform_t::New();
 
-    itk::Matrix<RealType, 3, 3> m;
-    itk::Vector<RealType, 3> t;
+    itk::Matrix<real_t, 3, 3> m;
+    itk::Vector<real_t, 3> t;
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
@@ -265,87 +265,87 @@ void automatic_registration::registerImage(
     if(m_pimpl->m_invert)
     {
         // Our algorithm assumes m to be orthogonal. If it isn't, an exception will be thrown later on.
-        m = itk::Matrix<RealType, 3, 3>(m.GetTranspose());
+        m = itk::Matrix<real_t, 3, 3>(m.GetTranspose());
         t = -(m * t);
     }
 
     // Initialize the transform.
-    itk::ImageMomentsCalculator<RegisteredImageType>::Pointer momentsCalculator =
-        itk::ImageMomentsCalculator<RegisteredImageType>::New();
+    itk::ImageMomentsCalculator<registered_image_t>::Pointer moments_calculator =
+        itk::ImageMomentsCalculator<registered_image_t>::New();
 
-    momentsCalculator->SetImage(target);
-    momentsCalculator->Compute();
+    moments_calculator->SetImage(target);
+    moments_calculator->Compute();
 
     // Set the rigid transform center to the center of mass of the target image.
     // This truly helps the registration algorithm.
-    itkTransform->SetCenter(momentsCalculator->GetCenterOfGravity());
+    itk_transform->SetCenter(moments_calculator->GetCenterOfGravity());
 
     // Setting the offset also recomputes the translation using the offset, rotation and center
     // so the matrix needs to be set first.
-    itkTransform->SetMatrix(m);
-    itkTransform->SetOffset(t);
+    itk_transform->SetMatrix(m);
+    itk_transform->SetOffset(t);
 
     // Registration.
-    m_pimpl->m_registrator = RegistrationMethodType::New();
-    m_pimpl->m_optimizer   = OptimizerType::New();
+    m_pimpl->m_registrator = registration_method_t::New();
+    m_pimpl->m_optimizer   = optimizer_t::New();
 
     m_pimpl->m_registrator->SetMetric(metric);
     m_pimpl->m_registrator->SetOptimizer(m_pimpl->m_optimizer);
 
-    OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
-    const double translationScale = 1.0 / 1000.0;
-    optimizerScales[0] = 1.0;
-    optimizerScales[1] = 1.0;
-    optimizerScales[2] = 1.0;
-    optimizerScales[3] = translationScale;
-    optimizerScales[4] = translationScale;
-    optimizerScales[5] = translationScale;
+    optimizer_t::ScalesType optimizer_scales(static_cast<unsigned int>(itk_transform->GetNumberOfParameters()));
+    const double translation_scale = 1.0 / 1000.0;
+    optimizer_scales[0] = 1.0;
+    optimizer_scales[1] = 1.0;
+    optimizer_scales[2] = 1.0;
+    optimizer_scales[3] = translation_scale;
+    optimizer_scales[4] = translation_scale;
+    optimizer_scales[5] = translation_scale;
 
-    m_pimpl->m_optimizer->SetScales(optimizerScales);
+    m_pimpl->m_optimizer->SetScales(optimizer_scales);
     m_pimpl->m_optimizer->SetDoEstimateLearningRateAtEachIteration(true);
-    m_pimpl->m_optimizer->SetMinimumStepLength(_minStep);
+    m_pimpl->m_optimizer->SetMinimumStepLength(_min_step);
 
     // The solution is the transform returned when optimization ends.
     m_pimpl->m_optimizer->SetReturnBestParametersAndValue(false);
-    m_pimpl->m_optimizer->SetNumberOfIterations(_maxIterations);
+    m_pimpl->m_optimizer->SetNumberOfIterations(_max_iterations);
 
     // The fixed image isn't transformed, nearest neighbor interpolation is enough.
-    auto fixedInterpolator  = itk::NearestNeighborInterpolateImageFunction<RegisteredImageType, RealType>::New();
-    auto movingInterpolator = itk::LinearInterpolateImageFunction<RegisteredImageType, RealType>::New();
+    auto fixed_interpolator  = itk::NearestNeighborInterpolateImageFunction<registered_image_t, real_t>::New();
+    auto moving_interpolator = itk::LinearInterpolateImageFunction<registered_image_t, real_t>::New();
 
-    metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
-    metric->SetMovingInterpolator(movingInterpolator.GetPointer());
+    metric->SetFixedInterpolator(fixed_interpolator.GetPointer());
+    metric->SetMovingInterpolator(moving_interpolator.GetPointer());
 
     // Number of registration stages
-    SIGHT_ASSERT("255 is the maximum number of steps.", _multiResolutionParameters.size() < 256);
-    const auto numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
+    SIGHT_ASSERT("255 is the maximum number of steps.", _multi_resolution_parameters.size() < 256);
+    const auto number_of_levels = std::uint8_t(_multi_resolution_parameters.size());
 
-    RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
-    shrinkFactorsPerLevel.SetSize(numberOfLevels);
-    RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
-    smoothingSigmasPerLevel.SetSize(numberOfLevels);
+    registration_method_t::ShrinkFactorsArrayType shrink_factors_per_level;
+    shrink_factors_per_level.SetSize(number_of_levels);
+    registration_method_t::SmoothingSigmasArrayType smoothing_sigmas_per_level;
+    smoothing_sigmas_per_level.SetSize(number_of_levels);
 
     // We set the shrink factor and smoothing Sigma for each stage.
-    for(std::uint8_t i = 0 ; i < numberOfLevels ; ++i)
+    for(std::uint8_t i = 0 ; i < number_of_levels ; ++i)
     {
-        const auto& stageParameters = _multiResolutionParameters[i];
-        shrinkFactorsPerLevel[i]   = stageParameters.first;
-        smoothingSigmasPerLevel[i] = stageParameters.second;
+        const auto& stage_parameters = _multi_resolution_parameters[i];
+        shrink_factors_per_level[i]   = stage_parameters.first;
+        smoothing_sigmas_per_level[i] = stage_parameters.second;
     }
 
-    m_pimpl->m_registrator->SetInitialTransform(itkTransform);
+    m_pimpl->m_registrator->SetInitialTransform(itk_transform);
     m_pimpl->m_registrator->SetFixedImage(target);
     m_pimpl->m_registrator->SetMovingImage(reference);
 
-    m_pimpl->m_registrator->SetMetricSamplingPercentage(_samplingPercentage);
+    m_pimpl->m_registrator->SetMetricSamplingPercentage(_sampling_percentage);
 
-    const auto samplingStrategy = _samplingPercentage < 1.0
-                                  ? RegistrationMethodType::REGULAR : RegistrationMethodType::NONE;
+    const auto sampling_strategy = _sampling_percentage < 1.0
+                                   ? registration_method_t::REGULAR : registration_method_t::NONE;
 
-    m_pimpl->m_registrator->SetMetricSamplingStrategy(samplingStrategy);
-    m_pimpl->m_registrator->SetNumberOfLevels(itk::SizeValueType(numberOfLevels));
-    m_pimpl->m_registrator->SetSmoothingSigmasPerLevel(smoothingSigmasPerLevel);
-    m_pimpl->m_registrator->SetShrinkFactorsPerLevel(shrinkFactorsPerLevel);
+    m_pimpl->m_registrator->SetMetricSamplingStrategy(sampling_strategy);
+    m_pimpl->m_registrator->SetNumberOfLevels(itk::SizeValueType(number_of_levels));
+    m_pimpl->m_registrator->SetSmoothingSigmasPerLevel(smoothing_sigmas_per_level);
+    m_pimpl->m_registrator->SetShrinkFactorsPerLevel(shrink_factors_per_level);
     m_pimpl->m_registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
     RegistrationObserver::Pointer observer = RegistrationObserver::New();
@@ -382,7 +382,7 @@ void automatic_registration::stopRegistration()
 
 //------------------------------------------------------------------------------
 
-automatic_registration::RealType automatic_registration::getCurrentMetricValue() const
+automatic_registration::real_t automatic_registration::getCurrentMetricValue() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetCurrentMetricValue();
@@ -390,7 +390,7 @@ automatic_registration::RealType automatic_registration::getCurrentMetricValue()
 
 //------------------------------------------------------------------------------
 
-const automatic_registration::OptimizerType::ParametersType& automatic_registration::getCurrentParameters() const
+const automatic_registration::optimizer_t::ParametersType& automatic_registration::getCurrentParameters() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetCurrentPosition();
@@ -398,7 +398,7 @@ const automatic_registration::OptimizerType::ParametersType& automatic_registrat
 
 //------------------------------------------------------------------------------
 
-automatic_registration::RealType automatic_registration::getRelaxationFactor() const
+automatic_registration::real_t automatic_registration::getRelaxationFactor() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetRelaxationFactor();
@@ -406,7 +406,7 @@ automatic_registration::RealType automatic_registration::getRelaxationFactor() c
 
 //------------------------------------------------------------------------------
 
-automatic_registration::RealType automatic_registration::getLearningRate() const
+automatic_registration::real_t automatic_registration::getLearningRate() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetLearningRate();
@@ -414,7 +414,7 @@ automatic_registration::RealType automatic_registration::getLearningRate() const
 
 //------------------------------------------------------------------------------
 
-automatic_registration::RealType automatic_registration::getGradientMagnitudeTolerance() const
+automatic_registration::real_t automatic_registration::getGradientMagnitudeTolerance() const
 {
     SIGHT_ASSERT("No optimization process running.", m_pimpl->m_optimizer);
     return m_pimpl->m_optimizer->GetGradientMagnitudeTolerance();
@@ -441,8 +441,8 @@ itk::SizeValueType filter::image::automatic_registration::getCurrentLevel() cons
 void automatic_registration::getCurrentMatrix(const data::matrix4::sptr& _trf) const
 {
     SIGHT_ASSERT("No registration process running.", m_pimpl->m_registrator);
-    const auto* itkMatrix = m_pimpl->m_registrator->GetTransform();
-    m_pimpl->convertToF4sMatrix(itkMatrix, _trf);
+    const auto* itk_matrix = m_pimpl->m_registrator->GetTransform();
+    m_pimpl->convertfrom_eigenMatrix(itk_matrix, _trf);
 }
 
 //------------------------------------------------------------------------------

@@ -33,52 +33,52 @@ namespace sight::core::com::util
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 0>::function_type> auto_bind<F, 0>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 0>::function_type> auto_bind<F, 0>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(f, a ...);
+    return std::bind(_f, _a ...);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 1>::function_type> auto_bind<F, 1>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 1>::function_type> auto_bind<F, 1>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(f, a ..., std::placeholders::_1);
+    return std::bind(_f, _a ..., std::placeholders::_1);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 2>::function_type> auto_bind<F, 2>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 2>::function_type> auto_bind<F, 2>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(f, a ..., std::placeholders::_1, std::placeholders::_2);
+    return std::bind(_f, _a ..., std::placeholders::_1, std::placeholders::_2);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 3>::function_type> auto_bind<F, 3>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 3>::function_type> auto_bind<F, 3>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(f, a ..., std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+    return std::bind(_f, _a ..., std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 4>::function_type> auto_bind<F, 4>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 4>::function_type> auto_bind<F, 4>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -90,12 +90,12 @@ std::function<typename auto_bind<F, 4>::function_type> auto_bind<F, 4>::wrap(W f
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 5>::function_type> auto_bind<F, 5>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 5>::function_type> auto_bind<F, 5>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -108,12 +108,12 @@ std::function<typename auto_bind<F, 5>::function_type> auto_bind<F, 5>::wrap(W f
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 6>::function_type> auto_bind<F, 6>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 6>::function_type> auto_bind<F, 6>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -127,12 +127,12 @@ std::function<typename auto_bind<F, 6>::function_type> auto_bind<F, 6>::wrap(W f
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 7>::function_type> auto_bind<F, 7>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 7>::function_type> auto_bind<F, 7>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -147,12 +147,12 @@ std::function<typename auto_bind<F, 7>::function_type> auto_bind<F, 7>::wrap(W f
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 8>::function_type> auto_bind<F, 8>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 8>::function_type> auto_bind<F, 8>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -168,12 +168,12 @@ std::function<typename auto_bind<F, 8>::function_type> auto_bind<F, 8>::wrap(W f
 
 template<typename F>
 template<typename W, typename ... A>
-std::function<typename auto_bind<F, 9>::function_type> auto_bind<F, 9>::wrap(W f, A ... a)
+std::function<typename auto_bind<F, 9>::function_type> auto_bind<F, 9>::wrap(W _f, A ... _a)
 {
     // NOLINTNEXTLINE(modernize-avoid-bind)
     return std::bind(
-        f,
-        a ...,
+        _f,
+        _a ...,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3,
@@ -189,11 +189,11 @@ std::function<typename auto_bind<F, 9>::function_type> auto_bind<F, 9>::wrap(W f
 //-----------------------------------------------------------------------------
 
 template<typename F, typename ... A>
-std::function<typename convert_function_type<F>::type> autobind(F f, A ... a)
+std::function<typename convert_function_type<F>::type> autobind(F _f, A ... _a)
 {
     typedef typename convert_function_type<F>::type function_type;
     const int arity = boost::function_types::function_arity<function_type>::value;
-    return auto_bind<F, arity>::wrap(f, a ...);
+    return auto_bind<F, arity>::wrap(_f, _a ...);
 }
 
 } // namespace sight::core::com::util

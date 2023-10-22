@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API Base(const std::string& message);
+    IO_DIMSE_API Base(const std::string& _message);
 
     /// Destructor
     IO_DIMSE_API ~Base() noexcept override;

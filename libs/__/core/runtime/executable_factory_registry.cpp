@@ -28,7 +28,7 @@
 namespace sight::core::runtime
 {
 
-executable_factory_registry::executable_factory_registry(std::shared_ptr<executable_factory> factory)
+executable_factory_registry::executable_factory_registry(std::shared_ptr<executable_factory> _factory)
 {
     // Pre-condition
     SIGHT_ASSERT("No module module currently loaded", detail::module::get_loading_module() != nullptr);
@@ -37,10 +37,10 @@ executable_factory_registry::executable_factory_registry(std::shared_ptr<executa
     std::shared_ptr<detail::module> loading_module(detail::module::get_loading_module());
 
     // Stores the factory into that module and the default runtime instance.
-    loading_module->add_executable_factory(factory);
+    loading_module->add_executable_factory(_factory);
 
     detail::runtime& runtime = detail::runtime::get();
-    runtime.add_executable_factory(factory);
+    runtime.add_executable_factory(_factory);
 }
 
 } // namespace sight::core::runtime

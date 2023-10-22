@@ -52,10 +52,10 @@ void task_handler_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-int copy(int val)
+int copy(int _val)
 {
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    return val;
+    return _val;
 }
 
 //-----------------------------------------------------------------------------

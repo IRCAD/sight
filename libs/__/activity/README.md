@@ -36,7 +36,7 @@ This is one of the most important library in _Sight_. It allows to build, to con
 ### CMake
 
 ```cmake
-target_link_libraries(myTarget <PUBLIC|PRIVATE> activity)
+target_link_libraries(my_target <PUBLIC|PRIVATE> activity)
 ```
 
 ### XML

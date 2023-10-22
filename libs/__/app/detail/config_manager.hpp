@@ -79,9 +79,9 @@ public:
      * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
     void setConfig(
-        const std::string& _configId,
-        const field_adaptor_t& _replaceFields = field_adaptor_t(),
-        bool autoPrefixId                     = true
+        const std::string& _config_id,
+        const field_adaptor_t& _replace_fields = field_adaptor_t(),
+        bool _auto_prefix_id                   = true
     ) override;
 
     /// Get the configuration root.
@@ -134,18 +134,18 @@ private:
      */
     virtual void start_module();
 
-    data::object::sptr findObject(const std::string& uid, std::string_view errMsgTail) const;
+    data::object::sptr findObject(const std::string& _uid, std::string_view _err_msg_tail) const;
 
-    data::object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
+    data::object::sptr getNewObject(ConfigAttribute _type, const std::string& _uid) const;
 
     static data::object::sptr getNewObject(
-        ConfigAttribute type,
-        ConfigAttribute uid = ConfigAttribute("", false)
+        ConfigAttribute _type,
+        ConfigAttribute _uid = ConfigAttribute("", false)
     );
 
-    data::object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
+    data::object::sptr getObject(ConfigAttribute _type, const std::string& _uid) const;
 
-    service::base::sptr getNewService(const std::string& uid, const std::string& implType) const;
+    service::base::sptr getNewService(const std::string& _uid, const std::string& _impl_type) const;
 
     /// Destroyes all created services
     void destroyCreatedServices();
@@ -161,7 +161,7 @@ private:
     void createServices(const core::runtime::config_t&);
 
     /// Creates a single service from its configuration.
-    service::base::sptr createService(const detail::service_config& srvConfig);
+    service::base::sptr createService(const detail::service_config& _srv_config);
 
     /// Parses connection sections and creates them.
     void createConnections();
@@ -183,26 +183,26 @@ private:
      */
     void removeObjects(data::object::sptr _obj, const std::string& _id);
 
-    void connectProxy(const std::string& _channel, const proxy_connections& _connectCfg);
+    void connectProxy(const std::string& _channel, const proxy_connections& _connect_cfg);
 
     void destroyProxy(
         const std::string& _channel,
-        const proxy_connections& _proxyCfg,
-        const std::string& _key      = "",
-        data::object::csptr _hintObj = nullptr
+        const proxy_connections& _proxy_cfg,
+        const std::string& _key       = "",
+        data::object::csptr _hint_obj = nullptr
     );
 
     void destroyProxies();
 
     /// Gets a list of UIDs or WIDs, get a friendly printable message.
-    static std::string getUIDListAsString(const std::vector<std::string>& uidList);
+    static std::string getUIDListAsString(const std::vector<std::string>& _uid_list);
 
-    typedef std::pair<data::object::sptr, service::object_parser::sptr> CreatedObjectType;
+    typedef std::pair<data::object::sptr, service::object_parser::sptr> created_object_t;
 
     /// Map containing the object and its XML parser.
-    std::unordered_map<std::string, CreatedObjectType> m_createdObjects;
+    std::unordered_map<std::string, created_object_t> m_createdObjects;
 
-    struct DeferredObjectType
+    struct deferred_object_t
     {
         std::vector<detail::service_config> m_servicesCfg;
         std::unordered_map<std::string, proxy_connections> m_proxyCnt;
@@ -212,7 +212,7 @@ private:
     };
 
     /// Map indexed by the object uid, containing all the service configurations that depend on this object.
-    std::unordered_map<std::string, DeferredObjectType> m_deferredObjects;
+    std::unordered_map<std::string, deferred_object_t> m_deferredObjects;
 
     /// All the identifiers of the deferred services.
     std::unordered_set<std::string> m_deferredServices;
@@ -220,11 +220,11 @@ private:
     /// All proxies of created objects, ordered by channel name.
     std::unordered_map<std::string, proxy_connections> m_createdObjectsProxies;
 
-    struct ServiceProxyType
+    struct service_proxy_t
     {
         std::unordered_map<std::string, proxy_connections> m_proxyCnt;
     };
-    std::unordered_map<std::string, ServiceProxyType> m_servicesProxies;
+    std::unordered_map<std::string, service_proxy_t> m_servicesProxies;
 
     /// Identifier of this configuration.
     std::string m_configId;

@@ -200,9 +200,9 @@
                 <state checked="true" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
-            <!-- Scene in which the video and the 3D will be rendered -->
+            <!-- scene in which the video and the 3D will be rendered -->
             <!-- In this tutorial, we move the camera and the marker mesh is fixed -->
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <!-- It is essential to use the 'sync' mode when doing AR -->

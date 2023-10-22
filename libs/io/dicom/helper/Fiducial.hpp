@@ -49,19 +49,19 @@ public:
      * @brief Return true if the series contains at least one image containing landmarks.
      * @param[in] seriesSet series_set where to look for landmarks
      */
-    IO_DICOM_API static bool containsLandmarks(const SPTR(data::series_set)& seriesSet);
+    IO_DICOM_API static bool containsLandmarks(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
      * @param[in] seriesSet series_set where to look for distances
      */
-    IO_DICOM_API static bool containsDistances(const SPTR(data::series_set)& seriesSet);
+    IO_DICOM_API static bool containsDistances(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
      * @param[in] seriesSet series_set where to look for 3D distances
      */
-    IO_DICOM_API static bool contains3DDistances(const SPTR(data::series_set)& seriesSet);
+    IO_DICOM_API static bool contains3DDistances(const SPTR(data::series_set)& _series_set);
 };
 
 } // namespace sight::io::dicom::helper

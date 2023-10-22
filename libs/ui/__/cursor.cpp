@@ -32,13 +32,13 @@ namespace sight::ui
 
 cursor::cursor()
 {
-    ui::object::sptr guiObj = ui::factory::make(cursor_base::REGISTRY_KEY);
-    m_implementation = std::dynamic_pointer_cast<ui::cursor_base>(guiObj);
+    ui::object::sptr gui_obj = ui::factory::make(cursor_base::REGISTRY_KEY);
+    m_implementation = std::dynamic_pointer_cast<ui::cursor_base>(gui_obj);
 }
 
 //-----------------------------------------------------------------------------
 
-void cursor::setCursor(ui::cursor_base::state_t cursor, bool setOverridenAsDefault)
+void cursor::setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
 {
     if(m_implementation)
     {
@@ -47,9 +47,9 @@ void cursor::setCursor(ui::cursor_base::state_t cursor, bool setOverridenAsDefau
 
         // Go to main thread....
         core::thread::get_default_worker()->post_task<void>(
-            [cursor_implementation, cursor, setOverridenAsDefault]()
+            [cursor_implementation, _cursor, _set_overriden_as_default]()
             {
-                cursor_implementation->setCursor(cursor, setOverridenAsDefault);
+                cursor_implementation->setCursor(_cursor, _set_overriden_as_default);
             });
     }
 }

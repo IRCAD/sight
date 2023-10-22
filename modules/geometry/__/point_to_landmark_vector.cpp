@@ -44,9 +44,9 @@ static const core::com::signals::key_t SAME_SLICE_SIG         = "sameSlice";
 
 point_to_landmark_vector::point_to_landmark_vector() noexcept
 {
-    new_signal<LengthChangedSignalType>(LENGTH_CHANGED_SIG);
+    new_signal<length_changed_signal_t>(LENGTH_CHANGED_SIG);
     new_signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG);
-    new_signal<SameSliceSignalType>(SAME_SLICE_SIG);
+    new_signal<same_slice_signal_t>(SAME_SLICE_SIG);
 }
 
 // -----------------------------------------------------------------------------
@@ -58,8 +58,8 @@ point_to_landmark_vector::~point_to_landmark_vector() noexcept =
 
 void point_to_landmark_vector::starting()
 {
-    auto computedLandmark = m_computedLandmark.lock();
-    computedLandmark->addGroup(m_groupLabel);
+    auto computed_landmark = m_computedLandmark.lock();
+    computed_landmark->addGroup(m_groupLabel);
 }
 
 // -----------------------------------------------------------------------------
@@ -84,73 +84,73 @@ void point_to_landmark_vector::configuring()
 
 void point_to_landmark_vector::updating()
 {
-    auto transform         = m_transform.lock();
-    auto translationMatrix = m_translationMatrix.lock();
-    const auto landmark    = m_landmark.lock();
-    std::array<double, 3> sourcePoint {};
-    std::array<double, 3> targetPoint {};
+    auto transform          = m_transform.lock();
+    auto translation_matrix = m_translationMatrix.lock();
+    const auto landmark     = m_landmark.lock();
+    std::array<double, 3> source_point {};
+    std::array<double, 3> target_point {};
     if(landmark->getGroup(m_originLabel).m_size >= 1)
     {
-        sourcePoint = landmark->getPoint(m_originLabel, 0);
+        source_point = landmark->getPoint(m_originLabel, 0);
     }
 
     if(landmark->getGroup(m_endLabel).m_size >= 1)
     {
-        targetPoint = landmark->getPoint(m_endLabel, 0);
+        target_point = landmark->getPoint(m_endLabel, 0);
     }
 
-    if(std::abs(sourcePoint[2] - targetPoint[2]) < m_tolerance)
+    if(std::abs(source_point[2] - target_point[2]) < m_tolerance)
     {
-        this->signal<SameSliceSignalType>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": Yes");
+        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": Yes");
     }
     else
     {
-        this->signal<SameSliceSignalType>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": No");
+        this->signal<same_slice_signal_t>(SAME_SLICE_SIG)->async_emit(m_sameSliceLabel + ": No");
     }
 
     // Compute the vector and put the result in the translation part of the matrix.
-    const glm::dvec3 sourcePt(sourcePoint[0], sourcePoint[1], sourcePoint[2]);
-    const glm::dvec3 targetPt(targetPoint[0], targetPoint[1], targetPoint[2]);
-    const glm::dvec3 pointToTarget = targetPt - sourcePt;
-    const auto length              = static_cast<float>(glm::length(pointToTarget));
-    this->signal<LengthChangedSignalType>(LENGTH_CHANGED_SIG)->async_emit(length);
-    const std::string lengthStr = std::to_string(length) + " mm";
-    this->signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG)->async_emit(lengthStr);
+    const glm::dvec3 source_pt(source_point[0], source_point[1], source_point[2]);
+    const glm::dvec3 target_pt(target_point[0], target_point[1], target_point[2]);
+    const glm::dvec3 point_to_target = target_pt - source_pt;
+    const auto length                = static_cast<float>(glm::length(point_to_target));
+    this->signal<length_changed_signal_t>(LENGTH_CHANGED_SIG)->async_emit(length);
+    const std::string length_str = std::to_string(length) + " mm";
+    this->signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG)->async_emit(length_str);
 
-    glm::dmat4x4 pointToTargetMat(1.0);
-    const glm::dvec3 front = glm::normalize(pointToTarget);
+    glm::dmat4x4 point_to_target_mat(1.0);
+    const glm::dvec3 front = glm::normalize(point_to_target);
     // compute an orthogonal vector to front ( vec(a,b,c) --> vecOrtho(-b,a,0))
     glm::dvec3 up          = glm::dvec3(-front[1], front[0], 0);
     const glm::dvec3 right = glm::normalize(cross(up, front));
     up = glm::cross(front, right);
 
-    pointToTargetMat[0] = glm::dvec4(right, 0.0);
-    pointToTargetMat[1] = glm::dvec4(up, 0.0);
-    pointToTargetMat[2] = glm::dvec4(front, 0.0);
-    pointToTargetMat[3] = glm::dvec4(sourcePt, 1.0);
+    point_to_target_mat[0] = glm::dvec4(right, 0.0);
+    point_to_target_mat[1] = glm::dvec4(up, 0.0);
+    point_to_target_mat[2] = glm::dvec4(front, 0.0);
+    point_to_target_mat[3] = glm::dvec4(source_pt, 1.0);
 
-    sight::geometry::data::setTF3DFromMatrix(*transform, pointToTargetMat);
-    auto sig = transform->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    sight::geometry::data::from_glm_mat(*transform, point_to_target_mat);
+    auto sig = transform->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
 
     // Create the computed landmark containing the position of the target point
 
-    auto computedLandmark = m_computedLandmark.lock();
-    if(computedLandmark->getGroup(m_groupLabel).m_size > 0)
+    auto computed_landmark = m_computedLandmark.lock();
+    if(computed_landmark->getGroup(m_groupLabel).m_size > 0)
     {
-        computedLandmark->clearPoints(m_groupLabel);
+        computed_landmark->clearPoints(m_groupLabel);
     }
 
-    computedLandmark->addPoint(m_groupLabel, targetPoint);
+    computed_landmark->addPoint(m_groupLabel, target_point);
 
-    auto sig1 = computedLandmark->signal<data::landmarks::PointAddedSignalType>(data::landmarks::POINT_ADDED_SIG);
+    auto sig1 = computed_landmark->signal<data::landmarks::point_added_signal_t>(data::landmarks::POINT_ADDED_SIG);
     sig1->async_emit(m_groupLabel);
 
-    (*translationMatrix)(0, 3) = pointToTarget[0];
-    (*translationMatrix)(1, 3) = pointToTarget[1];
-    (*translationMatrix)(2, 3) = pointToTarget[2];
+    (*translation_matrix)(0, 3) = point_to_target[0];
+    (*translation_matrix)(1, 3) = point_to_target[1];
+    (*translation_matrix)(2, 3) = point_to_target[2];
 
-    auto sig2 = translationMatrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig2 = translation_matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig2->async_emit();
 }
 

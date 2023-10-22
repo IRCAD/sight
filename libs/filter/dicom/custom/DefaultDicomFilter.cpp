@@ -58,41 +58,41 @@ std::string DefaultDicomFilter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+DefaultDicomFilter::dicom_series_container_t DefaultDicomFilter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 )
 const
 {
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
     //Split series depending on sop_classUIDs
-    auto sopFilter =
+    auto sop_filter =
         std::make_shared<sight::filter::dicom::splitter::sop_class_uid_splitter>();
-    DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
+    dicom_series_container_t series_container = sop_filter->apply(_series, _logger);
 
     // Apply default filters depending on sop_classUIDs
-    for(const data::dicom_series::sptr& s : seriesContainer)
+    for(const data::dicom_series::sptr& s : series_container)
     {
-        DicomSeriesContainerType tempo;
+        dicom_series_container_t tempo;
 
         // Create filter depending on sop_classUID
-        data::dicom_series::sop_classUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
-        std::string sopClassUID                                            = *sopClassUIDContainer.begin();
-        if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Remove hard coded string
+        data::dicom_series::sop_classUIDContainerType sop_class_uid_container = s->getSOPClassUIDs();
+        std::string sop_class_uid                                             = *sop_class_uid_container.begin();
+        if(sop_class_uid == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Remove hard coded string
         {
-            sopClassUID = "Comprehensive3DSR";
+            sop_class_uid = "Comprehensive3DSR";
         }
         else
         {
-            sopClassUID = dcmFindNameOfUID(sopClassUID.c_str());
+            sop_class_uid = dcmFindNameOfUID(sop_class_uid.c_str());
         }
 
         sight::filter::dicom::composite::base::sptr filter;
 
         // CT Image Storage
-        if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage"
-           || sopClassUID == "SecondaryCaptureImageStorage")
+        if(sop_class_uid == "CTImageStorage" || sop_class_uid == "MRImageStorage"
+           || sop_class_uid == "SecondaryCaptureImageStorage")
         {
             filter = std::make_shared<sight::filter::dicom::composite::CTImageStorageDefaultComposite>();
         }
@@ -100,17 +100,17 @@ const
         //Apply filter
         if(filter)
         {
-            tempo = filter->forcedApply(s, logger);
+            tempo = filter->forcedApply(s, _logger);
         }
         else
         {
-            logger->information("Can't apply any filter : \"" + sopClassUID + "\" sop_classUID is not supported.");
+            _logger->information("Can't apply any filter : \"" + sop_class_uid + "\" sop_classUID is not supported.");
             tempo.push_back(s);
         }
 
-        for(const data::dicom_series::sptr& filteredSeries : tempo)
+        for(const data::dicom_series::sptr& filtered_series : tempo)
         {
-            result.push_back(filteredSeries);
+            result.push_back(filtered_series);
         }
     }
 

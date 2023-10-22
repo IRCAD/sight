@@ -27,7 +27,7 @@
 
 #include <data/color.hpp>
 #include <data/dicom_series.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/material.hpp>
@@ -62,16 +62,16 @@ namespace sight::io::dicom::ut
 
 //------------------------------------------------------------------------------
 
-std::string getValue(
-    const boost::property_tree::ptree& node,
-    const std::string& name,
-    const std::filesystem::path& filePath
+std::string get_value(
+    const boost::property_tree::ptree& _node,
+    const std::string& _name,
+    const std::filesystem::path& _file_path
 )
 {
     std::string value;
     try
     {
-        value = node.get<std::string>(name);
+        value = _node.get<std::string>(_name);
 
         // Remove leading and trailing spaces
         std::size_t first = value.find_first_not_of(' ');
@@ -83,7 +83,7 @@ std::string getValue(
     }
     catch(boost::property_tree::ptree_bad_path&)
     {
-        SIGHT_WARN(name + " information are missing in '" + filePath.string() + "'.");
+        SIGHT_WARN(_name + " information are missing in '" + _file_path.string() + "'.");
         value = "";
     }
 
@@ -97,47 +97,47 @@ std::string getValue(
  * @param filename DICOM folder name
  * @param series_set series_set object containing DICOM series
  */
-void verifyTagValues(const std::string& filename, const data::series_set::sptr& series_set)
+void verify_tag_values(const std::string& _filename, const data::series_set::sptr& _series_set)
 {
-    const double delta                    = 0.001;
-    const std::filesystem::path dicomPath = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB";
-    const std::filesystem::path metaPath  = dicomPath / "META";
+    const double delta                     = 0.001;
+    const std::filesystem::path dicom_path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB";
+    const std::filesystem::path meta_path  = dicom_path / "META";
 
-    for(const auto& object : *series_set)
+    for(const auto& object : *_series_set)
     {
         auto series = std::dynamic_pointer_cast<data::image_series>(object);
 
         // Parse META File
-        const std::string metaName           = filename + "/" + series->getSeriesInstanceUID() + ".json";
-        const std::filesystem::path metaFile = metaPath / metaName;
-        const std::string mf                 = metaFile.string();
+        const std::string meta_name           = _filename + "/" + series->getSeriesInstanceUID() + ".json";
+        const std::filesystem::path meta_file = meta_path / meta_name;
+        const std::string mf                  = meta_file.string();
         boost::property_tree::ptree root;
         boost::property_tree::json_parser::read_json(mf, root);
 
         // Series
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesInstanceUID", mf), series->getSeriesInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "Modality", mf), series->getModality());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesDate", mf), series->getSeriesDate());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesTime", mf), series->getSeriesTime());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesDescription", mf), series->getSeriesDescription());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PerformingPhysicianName", mf), series->getPerformingPhysicianName());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesInstanceUID", mf), series->getSeriesInstanceUID());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "Modality", mf), series->getModality());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesDate", mf), series->getSeriesDate());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesTime", mf), series->getSeriesTime());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesDescription", mf), series->getSeriesDescription());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PerformingPhysicianName", mf), series->getPerformingPhysicianName());
 
         // Patient
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientID", mf), series->getPatientID());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientName", mf), series->getPatientName());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientBirthDate", mf), series->getPatientBirthDate());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientSex", mf), series->getPatientSex());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PatientID", mf), series->getPatientID());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PatientName", mf), series->getPatientName());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PatientBirthDate", mf), series->getPatientBirthDate());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PatientSex", mf), series->getPatientSex());
 
         // Study
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyInstanceUID", mf), series->getStudyInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyDate", mf), series->getStudyDate());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyTime", mf), series->getStudyTime());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "ReferringPhysicianName", mf), series->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyDescription", mf), series->getStudyDescription());
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientAge", mf), series->getPatientAge());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "StudyInstanceUID", mf), series->getStudyInstanceUID());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "StudyDate", mf), series->getStudyDate());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "StudyTime", mf), series->getStudyTime());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "ReferringPhysicianName", mf), series->getReferringPhysicianName());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "StudyDescription", mf), series->getStudyDescription());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "PatientAge", mf), series->getPatientAge());
 
         // Equipment
-        CPPUNIT_ASSERT_EQUAL(getValue(root, "InstitutionName", mf), series->getInstitutionName());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "InstitutionName", mf), series->getInstitutionName());
 
         // PixelSpacing - Not checked as the image could be rotated
 
@@ -150,13 +150,13 @@ void verifyTagValues(const std::string& filename, const data::series_set::sptr& 
         // Size - Not checked as the image could be rotated
 
         // Window Center
-        const std::string windowCenter = getValue(root, "WindowCenter", mf);
-        if(!windowCenter.empty())
+        const std::string window_center = get_value(root, "WindowCenter", mf);
+        if(!window_center.empty())
         {
-            std::vector<std::string> windowCenterValues;
-            boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
+            std::vector<std::string> window_center_values;
+            boost::split(window_center_values, window_center, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                boost::lexical_cast<double>(windowCenterValues[0]),
+                boost::lexical_cast<double>(window_center_values[0]),
                 series->getWindowCenter().front(),
                 delta
             );
@@ -167,13 +167,13 @@ void verifyTagValues(const std::string& filename, const data::series_set::sptr& 
         }
 
         // Window Width
-        const std::string windowWidth = getValue(root, "WindowWidth", mf);
-        if(!windowWidth.empty())
+        const std::string window_width = get_value(root, "WindowWidth", mf);
+        if(!window_width.empty())
         {
-            std::vector<std::string> windowWidthValues;
-            boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
+            std::vector<std::string> window_width_values;
+            boost::split(window_width_values, window_width, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
-                boost::lexical_cast<double>(windowWidthValues[0]),
+                boost::lexical_cast<double>(window_width_values[0]),
                 series->getWindowWidth().front(),
                 delta
             );
@@ -184,22 +184,22 @@ void verifyTagValues(const std::string& filename, const data::series_set::sptr& 
         }
 
         // Number of components
-        const std::string photometricInterpretation = getValue(root, "PhotometricInterpretation", mf);
-        std::size_t nbComponents                    = 0;
-        if(photometricInterpretation == "MONOCHROME2")
+        const std::string photometric_interpretation = get_value(root, "PhotometricInterpretation", mf);
+        std::size_t nb_components                    = 0;
+        if(photometric_interpretation == "MONOCHROME2")
         {
-            nbComponents = 1;
+            nb_components = 1;
         }
-        else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR")
+        else if(photometric_interpretation == "RGB" || photometric_interpretation == "YBR")
         {
-            nbComponents = 3;
+            nb_components = 3;
         }
-        else if(photometricInterpretation == "ARGB" || photometricInterpretation == "CMYK")
+        else if(photometric_interpretation == "ARGB" || photometric_interpretation == "CMYK")
         {
-            nbComponents = 4;
+            nb_components = 4;
         }
 
-        CPPUNIT_ASSERT_EQUAL(nbComponents, series->numComponents());
+        CPPUNIT_ASSERT_EQUAL(nb_components, series->numComponents());
     }
 }
 
@@ -423,7 +423,7 @@ void SeriesSetReaderTest::readJMSSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
@@ -434,7 +434,7 @@ void SeriesSetReaderTest::readJMSSeries()
     CPPUNIT_ASSERT(utest_data::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
 
     // Read image in lazy mode
-    const auto dumpLock = series->dump_lock();
+    const auto dump_lock = series->dump_lock();
 }
 
 //------------------------------------------------------------------------------
@@ -454,7 +454,7 @@ void SeriesSetReaderTest::readCTSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -465,8 +465,8 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
@@ -499,7 +499,7 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL(core::type::INT16, series->getType());
 
     // Verify tag values according to json file
-    verifyTagValues(filename, series_set);
+    verify_tag_values(filename, series_set);
 }
 
 //------------------------------------------------------------------------------
@@ -519,7 +519,7 @@ void SeriesSetReaderTest::readMRSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -530,8 +530,8 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
@@ -566,7 +566,7 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, series->getType());
 
     // Verify tag values according to json file
-    verifyTagValues(filename, series_set);
+    verify_tag_values(filename, series_set);
 }
 
 //------------------------------------------------------------------------------
@@ -586,7 +586,7 @@ void SeriesSetReaderTest::readOTSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -597,8 +597,8 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
@@ -632,7 +632,7 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(core::type::UINT8, series->getType());
 
     // Verify tag values according to json file
-    verifyTagValues(filename, series_set);
+    verify_tag_values(filename, series_set);
 }
 
 //------------------------------------------------------------------------------
@@ -652,7 +652,7 @@ void SeriesSetReaderTest::readSEGSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -665,11 +665,11 @@ void SeriesSetReaderTest::readSEGSeries()
     data::model_series::sptr series = std::dynamic_pointer_cast<data::model_series>((*series_set)[1]);
     CPPUNIT_ASSERT(series);
 
-    data::model_series::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), reconstructionDB.size());
+    data::model_series::reconstruction_vector_t reconstruction_db = series->getReconstructionDB();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), reconstruction_db.size());
 
     // Check reconstruction
-    data::reconstruction::sptr reconstruction = reconstructionDB[0];
+    data::reconstruction::sptr reconstruction = reconstruction_db[0];
     CPPUNIT_ASSERT_EQUAL(std::string("Liver"), reconstruction->getOrganName());
 
     // Check mesh
@@ -703,7 +703,7 @@ void SeriesSetReaderTest::readSFSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -713,27 +713,27 @@ void SeriesSetReaderTest::readSFSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Retrieve landmarks
-    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*series);
 
     // Verify first landmark
-    const data::point::sptr& pointA = pointList->getPoints()[0];
-    const std::string labelA        = pointA->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
+    const data::point::sptr& point_a = point_list->getPoints()[0];
+    const std::string label_a        = point_a->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::point::sptr& pointB = pointList->getPoints()[1];
-    const std::string labelB        = pointB->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
+    const data::point::sptr& point_b = point_list->getPoints()[1];
+    const std::string label_b        = point_b->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->getCoord()[2], delta);
 }
 
 //------------------------------------------------------------------------------
@@ -753,7 +753,7 @@ void SeriesSetReaderTest::readSRSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -765,40 +765,40 @@ void SeriesSetReaderTest::readSRSeries()
     // Retrieve ImageSeries
     auto series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     CPPUNIT_ASSERT(series);
-    const auto dumpLock = series->dump_lock();
+    const auto dump_lock = series->dump_lock();
 
     // Retrieve landmarks
-    data::point_list::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr landmark_point_list = data::helper::medical_image::get_landmarks(*series);
 
     // Verify first landmark
-    const data::point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        = pointA->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
+    const data::point::sptr& point_a = landmark_point_list->getPoints()[0];
+    const std::string label_a        = point_a->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        = pointB->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
+    const data::point::sptr& point_b = landmark_point_list->getPoints()[1];
+    const std::string label_b        = point_b->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->getCoord()[2], delta);
 
     // Retrieve distances
-    data::vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
+    data::vector::sptr distance_vector = data::helper::medical_image::get_distances(*series);
 
     // Verify first distance
-    auto distancePointList          = std::dynamic_pointer_cast<data::point_list>((*distanceVector)[0]);
-    const data::point::sptr& pointC = distancePointList->getPoints()[0];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), pointC->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), pointC->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointC->getCoord()[2], delta);
-    const data::point::sptr& pointD = distancePointList->getPoints()[1];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), pointD->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), pointD->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointD->getCoord()[2], delta);
+    auto distance_point_list         = std::dynamic_pointer_cast<data::point_list>((*distance_vector)[0]);
+    const data::point::sptr& point_c = distance_point_list->getPoints()[0];
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), point_c->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), point_c->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_c->getCoord()[2], delta);
+    const data::point::sptr& point_d = distance_point_list->getPoints()[1];
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), point_d->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), point_d->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_d->getCoord()[2], delta);
 }
 
 //------------------------------------------------------------------------------
@@ -818,7 +818,7 @@ void SeriesSetReaderTest::read3DSRSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -828,40 +828,40 @@ void SeriesSetReaderTest::read3DSRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Retrieve landmarks
-    data::point_list::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr landmark_point_list = data::helper::medical_image::get_landmarks(*series);
     // Verify first landmark
-    const data::point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        = pointA->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
+    const data::point::sptr& point_a = landmark_point_list->getPoints()[0];
+    const std::string label_a        = point_a->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        = pointB->getLabel();
-    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
+    const data::point::sptr& point_b = landmark_point_list->getPoints()[1];
+    const std::string label_b        = point_b->getLabel();
+    CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->getCoord()[2], delta);
 
     // Retrieve distances
-    data::vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
+    data::vector::sptr distance_vector = data::helper::medical_image::get_distances(*series);
 
     // Verify first distance
-    auto distancePointList          = std::dynamic_pointer_cast<data::point_list>((*distanceVector)[0]);
-    const data::point::sptr& pointC = distancePointList->getPoints()[0];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointC->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), pointC->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), pointC->getCoord()[2], delta);
-    const data::point::sptr& pointD = distancePointList->getPoints()[1];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), pointD->getCoord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), pointD->getCoord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointD->getCoord()[2], delta);
+    auto distance_point_list         = std::dynamic_pointer_cast<data::point_list>((*distance_vector)[0]);
+    const data::point::sptr& point_c = distance_point_list->getPoints()[0];
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_c->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), point_c->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), point_c->getCoord()[2], delta);
+    const data::point::sptr& point_d = distance_point_list->getPoints()[1];
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), point_d->getCoord()[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), point_d->getCoord()[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_d->getCoord()[2], delta);
 }
 
 //------------------------------------------------------------------------------
@@ -878,14 +878,14 @@ void SeriesSetReaderTest::readDisabledSeries()
         std::filesystem::exists(path)
     );
 
-    std::vector<std::string> supportedSOPClassContainer;
-    supportedSOPClassContainer.emplace_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
+    std::vector<std::string> supported_sop_class_container;
+    supported_sop_class_container.emplace_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
 
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
-    reader->setsupportedSOPClassContainer(supportedSOPClassContainer);
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setsupportedSOPClassContainer(supported_sop_class_container);
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -912,7 +912,7 @@ void SeriesSetReaderTest::readMRSeriesWithDicomDir()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setDicomdirActivated(true);
 
     // Read DICOM
@@ -940,15 +940,15 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Retrieve ImageSeries
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
-    const auto dumpLock = series->dump_lock();
+    auto series          = std::dynamic_pointer_cast<data::image_series>(series_set->front());
+    const auto dump_lock = series->dump_lock();
 
     // Get internal buffer
     auto* buffer = series->buffer();
@@ -985,7 +985,7 @@ void SeriesSetReaderTest::readCTWithSurviewSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -1012,7 +1012,7 @@ void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -1039,7 +1039,7 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01()
     io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(series_set);
     reader->set_folder(path);
-    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->set_dicom_filter_type("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());

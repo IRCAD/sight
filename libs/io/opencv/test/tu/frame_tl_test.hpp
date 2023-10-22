@@ -35,8 +35,8 @@ class frame_tl_test : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(frame_tl_test);
-    CPPUNIT_TEST(moveToCv);
-    CPPUNIT_TEST(copyFromCv);
+    CPPUNIT_TEST(move_to_cv);
+    CPPUNIT_TEST(copy_from_cv);
     CPPUNIT_TEST(copyToCv);
     CPPUNIT_TEST_SUITE_END();
 
@@ -46,8 +46,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void moveToCv();
-    static void copyFromCv();
+    static void move_to_cv();
+    static void copy_from_cv();
     static void copyToCv();
 };
 

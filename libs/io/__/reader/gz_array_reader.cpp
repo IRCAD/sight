@@ -41,24 +41,24 @@ void gz_array_reader::read()
 
     assert(file.empty() == false);
 
-    data::array::sptr array      = this->getConcreteObject();
-    std::size_t arraySizeInBytes = array->resize(array->size());
-    const auto dumpLock          = array->dump_lock();
+    data::array::sptr array         = this->getConcreteObject();
+    std::size_t array_size_in_bytes = array->resize(array->size());
+    const auto dump_lock            = array->dump_lock();
 
     void* buff = array->buffer();
 
-    gzFile rawFile = gzopen(file.string().c_str(), "rb");
-    if(rawFile == nullptr)
+    gzFile raw_file = gzopen(file.string().c_str(), "rb");
+    if(raw_file == nullptr)
     {
-        gzclose(rawFile);
+        gzclose(raw_file);
         std::string str = "Unable to open ";
         str += file.string();
         throw std::ios_base::failure(str);
     }
 
-    const int un_compressed_bytes_read = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
-    gzclose(rawFile);
-    if(un_compressed_bytes_read != static_cast<int>(arraySizeInBytes))
+    const int un_compressed_bytes_read = gzread(raw_file, buff, static_cast<unsigned int>(array_size_in_bytes));
+    gzclose(raw_file);
+    if(un_compressed_bytes_read != static_cast<int>(array_size_in_bytes))
     {
         std::string str = "Unable to read ";
         str += file.string();

@@ -31,7 +31,7 @@ namespace sight::ui::qt::container
 
 void menubar::clean()
 {
-    SIGHT_ASSERT("The Qt MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
+    SIGHT_ASSERT("The Qt menu_bar is not yet initialized, cleaning is thus impossible", m_menuBar);
 
     m_menuBar->clear();
 
@@ -47,10 +47,10 @@ void menubar::clean()
 
 void menubar::destroyContainer()
 {
-    SIGHT_ASSERT("The Qt MenuBar is not yet initialized", m_menuBar);
+    SIGHT_ASSERT("The Qt menu_bar is not yet initialized", m_menuBar);
 
-    QList<QMenu*> allMenu = m_menuBar->findChildren<QMenu*>();
-    SIGHT_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
+    QList<QMenu*> all_menu = m_menuBar->findChildren<QMenu*>();
+    SIGHT_ASSERT("menu_bar container must be empty ( " << all_menu.count() << " menus).", all_menu.empty());
 
     m_menuBar->hide();
     delete m_menuBar;
@@ -58,9 +58,9 @@ void menubar::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void menubar::setQtMenuBar(QMenuBar* menuBar)
+void menubar::setQtMenuBar(QMenuBar* _menu_bar)
 {
-    this->m_menuBar = menuBar;
+    this->m_menuBar = _menu_bar;
 }
 
 //-----------------------------------------------------------------------------

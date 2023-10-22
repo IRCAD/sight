@@ -49,12 +49,12 @@ public:
 
     UI_QT_API core::location::base::sptr show() override;
 
-    UI_QT_API void setType(location::Types type) override;
+    UI_QT_API void setType(location::Types _type) override;
 
-    UI_QT_API void setOption(location::Options option) override;
+    UI_QT_API void setOption(location::Options _option) override;
 
     // Example ( addFilter("images","*.png *.jpg");
-    UI_QT_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+    UI_QT_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected:
 

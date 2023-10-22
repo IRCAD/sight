@@ -34,8 +34,8 @@ namespace sight::core::memory::exception
  */
 struct CORE_CLASS_API memory : core::exception
 {
-    memory(const std::string& err) :
-        core::exception(err)
+    memory(const std::string& _err) :
+        core::exception(_err)
     {
     }
 };

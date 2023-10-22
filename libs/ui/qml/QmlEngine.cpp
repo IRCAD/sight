@@ -75,22 +75,22 @@ QmlEngine::~QmlEngine()
 
 SPTR(QmlEngine) QmlEngine::getDefault()
 {
-    auto engineInstance = core::lazy_instantiator<QmlEngine>::get_instance();
-    return engineInstance;
+    auto engine_instance = core::lazy_instantiator<QmlEngine>::get_instance();
+    return engine_instance;
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::loadMainComponent(const std::filesystem::path& file)
+void QmlEngine::loadMainComponent(const std::filesystem::path& _file)
 {
-    m_engine->load(QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    m_engine->load(QUrl::fromLocalFile(QString::fromStdString(_file.string())));
 }
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context)
+QObject* QmlEngine::createComponent(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context)
 {
-    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(_file.string())));
     if(component.status() == QQmlComponent::Status::Error)
     {
         const auto err = component.errors();
@@ -101,14 +101,14 @@ QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPo
     }
 
     SIGHT_ASSERT("Component is not ready", component.status() == QQmlComponent::Status::Ready);
-    return component.create(context.get());
+    return component.create(_context.get());
 }
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const std::filesystem::path& file)
+QObject* QmlEngine::createComponent(const std::filesystem::path& _file)
 {
-    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(_file.string())));
     if(component.status() == QQmlComponent::Status::Error)
     {
         const auto err = component.errors();
@@ -124,9 +124,9 @@ QObject* QmlEngine::createComponent(const std::filesystem::path& file)
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::importModulePath(const std::filesystem::path& path)
+void QmlEngine::importModulePath(const std::filesystem::path& _path)
 {
-    m_engine->addImportPath(QString::fromStdString(path.string()));
+    m_engine->addImportPath(QString::fromStdString(_path.string()));
 }
 
 //-----------------------------------------------------------------------------

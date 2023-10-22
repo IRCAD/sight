@@ -53,7 +53,7 @@ Here is a sample for `.vti` image:
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_vtk)
+target_link_library(my_target <PUBLIC|PRIVATE> io_vtk)
 ```
 
 

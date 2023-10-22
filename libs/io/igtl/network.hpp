@@ -63,7 +63,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::object::sptr receiveObject(std::string& deviceName);
+    IO_IGTL_API data::object::sptr receiveObject(std::string& _device_name);
 
     /**
      * @brief generic method to receive object
@@ -73,7 +73,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::object::sptr receiveObject(std::string& deviceName, double& timestamp);
+    IO_IGTL_API data::object::sptr receiveObject(std::string& _device_name, double& _timestamp);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -81,13 +81,13 @@ public:
      *        a sigpipe signal
      * @param[in] dest object to send
      */
-    IO_IGTL_API bool sendObject(const data::object::csptr& dest);
+    IO_IGTL_API bool sendObject(const data::object::csptr& _dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is useful for redirect message
      * @param[in] msg message to send
      */
-    IO_IGTL_API bool sendMsg(::igtl::MessageBase::Pointer msg);
+    IO_IGTL_API bool sendMsg(::igtl::MessageBase::Pointer _msg);
 
     /**
      * @brief receive header
@@ -103,7 +103,7 @@ public:
      *  @throw igtl::Exception on error (network error or timeout).
      *  @return Message
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header);
+    IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer _header);
 
     /**
      * @brief get socket
@@ -116,7 +116,7 @@ public:
      * @brief add a new authorized device name
      * @param[in] std::string device name
      */
-    IO_IGTL_API void addAuthorizedDevice(const std::string& deviceName);
+    IO_IGTL_API void addAuthorizedDevice(const std::string& _device_name);
 
     /**
      * @brief get filteringByDeviceName (true if activated, false otherwise)
@@ -131,12 +131,12 @@ public:
      *
      * @param[in] boolean
      */
-    IO_IGTL_API void setFilteringByDeviceName(bool filtering);
+    IO_IGTL_API void setFilteringByDeviceName(bool _filtering);
 
     /**
      * @brief set the device name when a message is sent
      */
-    IO_IGTL_API void setDeviceNameOut(const std::string& deviceName);
+    IO_IGTL_API void setDeviceNameOut(const std::string& _device_name);
 
     /**
      * @brief get the device name when a message is sent
@@ -151,16 +151,16 @@ protected:
 
     /// Closes the socket (from igtlSocket::CloseSocket()).
     /// Patched version: Added a close() after shutdown() on Linux.
-    static void closeSocket(int socket_descriptor);
+    static void closeSocket(int _socket_descriptor);
     /// Creates an endpoint for communication and returns the descriptor.
     /// -1 indicates error.
     static int createSocket();
     /// Listen for connections on a socket. Returns 0 on success. -1 on error.
-    static int listenSocket(int socket_descriptor);
+    static int listenSocket(int _socket_descriptor);
     /// Binds socket to a particular port.
     /// Returns 0 on success other -1 is returned.
     /// Patched version: Doesn't rely on VTK_HAVE_SO_REUSEADDR to add option SO_REUSEADDR.
-    static int bindSocket(int socket_descriptor, std::uint16_t port);
+    static int bindSocket(int _socket_descriptor, std::uint16_t _port);
 
     /// client socket
     ::igtl::Socket::Pointer m_socket;

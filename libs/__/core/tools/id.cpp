@@ -71,46 +71,46 @@ bool id::has_id() const
 
 //-----------------------------------------------------------------------------
 
-void id::set_id(type new_id)
+void id::set_id(type _new_id)
 {
     core::mt::write_lock lock(m_id_mutex);
-    this->add_id_in_dictionary(new_id);
+    this->add_id_in_dictionary(_new_id);
 }
 
 //-----------------------------------------------------------------------------
 
-void id::add_id_in_dictionary(type new_id) const
+void id::add_id_in_dictionary(type _new_id) const
 {
     core::mt::write_lock lock(s_dictionary_mutex);
 
-    SIGHT_FATAL_IF("Try to set an existing fwID = " << new_id, is_id_found(new_id));
+    SIGHT_FATAL_IF("Try to set an existing fwID = " << _new_id, is_id_found(_new_id));
 
     id::remove_id_from_dictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polymorphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->get_sptr();
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    m_dictionary[new_id] = ((object*) (this))->get_sptr();
-    m_id                 = new_id;
+    m_dictionary[_new_id] = ((object*) (this))->get_sptr();
+    m_id                  = _new_id;
 }
 
 //-----------------------------------------------------------------------------
 
-id::type id::get_id(policy policy) const
+id::type id::get_id(policy _policy) const
 {
     core::mt::read_to_write_lock lock(m_id_mutex);
     if(m_id.empty()) // no id set
     {
-        if(policy == GENERATE)
+        if(_policy == GENERATE)
         {
             type new_id = generate();
             core::mt::upgrade_to_write_lock write_lock(lock);
             this->add_id_in_dictionary(new_id);
         }
-        else if(policy == EMPTY)
+        else if(_policy == EMPTY)
         {
             /* nothing to do*/
         }
-        else if(policy == MUST_EXIST)
+        else if(_policy == MUST_EXIST)
         {
             throw core::tools::failed("fwID::get_id() no id set");
         }
@@ -137,13 +137,13 @@ id::type id::generate() const
 
 //-----------------------------------------------------------------------------
 
-core::tools::object::sptr id::get_object(id::type request_id)
+core::tools::object::sptr id::get_object(id::type _request_id)
 {
     core::mt::read_lock lock(s_dictionary_mutex);
-    auto it = m_dictionary.find(request_id);
+    auto it = m_dictionary.find(_request_id);
     if(it != m_dictionary.end())
     {
-        SIGHT_ASSERT("expired object in fwID::Dictionary for id=" + request_id, !it->second.expired());
+        SIGHT_ASSERT("expired object in fwID::Dictionary for id=" + _request_id, !it->second.expired());
         return it->second.lock();
     }
 

@@ -41,7 +41,7 @@ public:
 
     typedef enum
     {
-        NoType,
+        no_t,
         Resize,   // change within the size of the widget/view
         Viewport, // change within the size of the sene (contained into the widget/view)
         MouseButtonDoubleClick,
@@ -80,33 +80,33 @@ public:
     = default;
 
     [[nodiscard]] bool isAccepted() const;
-    void setAccepted(bool accepted);
+    void setAccepted(bool _accepted);
 
     [[nodiscard]] Button getButton() const;
-    void setButton(Button button);
+    void setButton(Button _button);
 
     [[nodiscard]] const vec2d_t& getCoord() const;
-    void setCoord(const vec2d_t& coord);
+    void setCoord(const vec2d_t& _coord);
 
     [[nodiscard]] int getKey() const;
-    void setKey(int key);
+    void setKey(int _key);
 
     [[nodiscard]] Modifier getModifier() const;
-    void setModifier(Modifier modifier);
+    void setModifier(Modifier _modifier);
 
     [[nodiscard]] const vec2d_t& getOldSize() const;
-    void setOldSize(const vec2d_t& oldSize);
+    void setOldSize(const vec2d_t& _old_size);
 
     [[nodiscard]] const vec2d_t& size() const;
-    void setSize(const vec2d_t& size);
+    void setSize(const vec2d_t& _size);
 
     [[nodiscard]] Type getType() const;
-    void setType(Type type);
+    void setType(Type _type);
 
 private:
 
     vec2d_t m_coord {};
-    Type m_type {NoType};
+    Type m_type {no_t};
     Button m_button {NoButton};
     Modifier m_modifier {NoModifier};
     vec2d_t m_size {};
@@ -124,9 +124,9 @@ inline bool Event::isAccepted() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setAccepted(bool accepted)
+inline void Event::setAccepted(bool _accepted)
 {
-    m_accepted = accepted;
+    m_accepted = _accepted;
 }
 
 //------------------------------------------------------------------------------
@@ -138,9 +138,9 @@ inline Event::Button Event::getButton() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setButton(Button button)
+inline void Event::setButton(Button _button)
 {
-    m_button = button;
+    m_button = _button;
 }
 
 //------------------------------------------------------------------------------
@@ -152,9 +152,9 @@ inline const vec2d_t& Event::getCoord() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setCoord(const vec2d_t& coord)
+inline void Event::setCoord(const vec2d_t& _coord)
 {
-    m_coord = coord;
+    m_coord = _coord;
 }
 
 //------------------------------------------------------------------------------
@@ -166,9 +166,9 @@ inline int Event::getKey() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setKey(int key)
+inline void Event::setKey(int _key)
 {
-    m_key = key;
+    m_key = _key;
 }
 
 //------------------------------------------------------------------------------
@@ -180,9 +180,9 @@ inline Event::Modifier Event::getModifier() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setModifier(Modifier modifier)
+inline void Event::setModifier(Modifier _modifier)
 {
-    m_modifier = modifier;
+    m_modifier = _modifier;
 }
 
 //------------------------------------------------------------------------------
@@ -194,9 +194,9 @@ inline const vec2d_t& Event::getOldSize() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setOldSize(const vec2d_t& oldSize)
+inline void Event::setOldSize(const vec2d_t& _old_size)
 {
-    m_oldSize = oldSize;
+    m_oldSize = _old_size;
 }
 
 //------------------------------------------------------------------------------
@@ -208,9 +208,9 @@ inline const vec2d_t& Event::size() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setSize(const vec2d_t& size)
+inline void Event::setSize(const vec2d_t& _size)
 {
-    m_size = size;
+    m_size = _size;
 }
 
 //------------------------------------------------------------------------------
@@ -222,9 +222,9 @@ inline Event::Type Event::getType() const
 
 //------------------------------------------------------------------------------
 
-inline void Event::setType(Type type)
+inline void Event::setType(Type _type)
 {
-    m_type = type;
+    m_type = _type;
 }
 
 } // namespace sight::viz::scene2d::data

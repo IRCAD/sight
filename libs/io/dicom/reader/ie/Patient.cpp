@@ -32,16 +32,16 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 Patient::Patient(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::series::sptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::series::sptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::series>(dicomSeries, reader, instance, series, logger,
-                                                           progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::series>(_dicom_series, _reader, _instance, _series, _logger,
+                                                           _progress, _cancel)
 {
 }
 
@@ -58,24 +58,24 @@ void Patient::readPatientModule()
     const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Patient's name - Type 2
-    const std::string& patientName =
+    const std::string& patient_name =
         io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x0010>(dataset);
-    m_object->setPatientName(patientName);
+    m_object->setPatientName(patient_name);
 
     // Patient's ID - Type 2
-    const std::string& patientId =
+    const std::string& patient_id =
         io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x0020>(dataset);
-    m_object->setPatientID(patientId);
+    m_object->setPatientID(patient_id);
 
     // Patient's birth date - Type 2
-    const std::string& patientBirthDate =
+    const std::string& patient_birth_date =
         io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x0030>(dataset);
-    m_object->setPatientBirthDate(patientBirthDate);
+    m_object->setPatientBirthDate(patient_birth_date);
 
     // Patient's sex - Type 2
-    const std::string& patientSex =
+    const std::string& patient_sex =
         io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x0040>(dataset);
-    m_object->setPatientSex(patientSex);
+    m_object->setPatientSex(patient_sex);
 }
 
 } // namespace sight::io::dicom::reader::ie

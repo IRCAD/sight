@@ -36,9 +36,9 @@ namespace sight::io::dicom::container::ut
 void DicomSurfaceTest::basicTest()
 {
     auto mesh = std::make_shared<data::mesh>();
-    mesh->reserve(4, 3, data::mesh::CellType::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
+    mesh->reserve(4, 3, data::mesh::cell_type_t::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
     {
-        auto meshLock = mesh->dump_lock();
+        auto mesh_lock = mesh->dump_lock();
         mesh->pushPoint(0, 1, 2);
         mesh->pushPoint(3, 4, 5);
         mesh->pushPoint(6, 7, 8);
@@ -53,35 +53,35 @@ void DicomSurfaceTest::basicTest()
     }
     auto reconstruction = std::make_shared<data::reconstruction>();
     reconstruction->setMesh(mesh);
-    auto meshLock = mesh->dump_lock(); // TODO: Fix failure because mesh isn't dump locked.
-    DicomSurface dicomSurface(reconstruction);
+    auto mesh_lock = mesh->dump_lock(); // TODO: Fix failure because mesh isn't dump locked.
+    DicomSurface dicom_surface(reconstruction);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicomSurface.getPointBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.getPointBufferSize());
     std::uint8_t i = 0;
-    for(float e : dicomSurface.getPointBuffer())
+    for(float e : dicom_surface.getPointBuffer())
     {
         CPPUNIT_ASSERT_EQUAL(float(i), e);
         i++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicomSurface.getNormalBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(4 * 3), dicom_surface.getNormalBufferSize());
     i = 0;
-    for(float e : dicomSurface.getNormalBuffer())
+    for(float e : dicom_surface.getNormalBuffer())
     {
         CPPUNIT_ASSERT_EQUAL(float(i), e);
         i++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3 * 3), dicomSurface.getCellBufferSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3 * 3), dicom_surface.getCellBufferSize());
     i = 0;
-    for(std::uint32_t e : dicomSurface.getCellBuffer())
+    for(std::uint32_t e : dicom_surface.getCellBuffer())
     {
         // Indices start a 1 in DICOM, hence the "+ 1".
         CPPUNIT_ASSERT_EQUAL_MESSAGE("i=" + std::to_string(i), i % 4U + 1, e);
         i++;
     }
 
-    CPPUNIT_ASSERT(*mesh == *dicomSurface.convertToData());
+    CPPUNIT_ASSERT(*mesh == *dicom_surface.convertToData());
 }
 
 //------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ public:
     typedef SPTR(MemoryReadArchive) sptr;
 
     /// constructor
-    IO_IGTL_API MemoryReadArchive(const char* buffer, std::size_t size);
+    IO_IGTL_API MemoryReadArchive(const char* _buffer, std::size_t _size);
 
     /// destructor
     IO_IGTL_API ~MemoryReadArchive() override;
@@ -66,7 +66,7 @@ public:
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      * @throw io::zip::exception::Read if cannot retrieve file in archive.
      */
-    IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& path) override;
+    IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
@@ -82,7 +82,7 @@ public:
      */
     [[nodiscard]] read_archive::sptr clone() const override
     {
-        return SPTR(MemoryReadArchive)(new MemoryReadArchive(m_BUFFER, m_SIZE));
+        return SPTR(MemoryReadArchive)(new MemoryReadArchive(m_BUFFER, M_SIZE));
     }
 
 private:
@@ -92,12 +92,12 @@ private:
      *
      * @param[in] buffer buffer data to fill
      */
-    void readEntry(BufferSPtr content);
+    void readEntry(BufferSPtr _content);
 
 private:
 
     /// size of archive
-    const std::size_t m_SIZE;
+    const std::size_t M_SIZE;
 
     /// buffer contain the archive data
     const char* m_BUFFER;

@@ -36,22 +36,22 @@ sight::data::object::sptr create(const std::string& _type, const activity::exten
     auto object = sight::data::factory::make(_type);
 
     // Get the object parser associated with the object type
-    const auto srvFactory = service::extension::factory::get();
+    const auto srv_factory = service::extension::factory::get();
 
-    const std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
+    const std::string srv_impl = srv_factory->getDefaultImplementationIdFromObjectAndType(
         object->get_classname(),
         "sight::service::object_parser"
     );
 
-    service::base::sptr srv = srvFactory->create(srvImpl);
-    auto objParser          = std::dynamic_pointer_cast<service::object_parser>(srv);
+    service::base::sptr srv = srv_factory->create(srv_impl);
+    auto obj_parser         = std::dynamic_pointer_cast<service::object_parser>(srv);
 
-    objParser->setObjectConfig(_config);
-    objParser->createConfig(object);
-    objParser->startConfig();
-    objParser->updateConfig();
-    objParser->stopConfig();
-    objParser->destroyConfig();
+    obj_parser->setObjectConfig(_config);
+    obj_parser->createConfig(object);
+    obj_parser->startConfig();
+    obj_parser->updateConfig();
+    obj_parser->stopConfig();
+    obj_parser->destroyConfig();
 
     return object;
 }

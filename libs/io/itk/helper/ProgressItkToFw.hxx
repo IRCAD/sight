@@ -50,9 +50,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void Execute(const ::itk::Object* caller, const ::itk::EventObject& /*event*/) override
+    void Execute(const ::itk::Object* _caller, const ::itk::EventObject& /*event*/) override
     {
-        const auto* po = dynamic_cast<const ::itk::LightProcessObject*>(caller);
+        const auto* po = dynamic_cast<const ::itk::LightProcessObject*>(_caller);
         if(po == nullptr)
         {
             return;
@@ -64,10 +64,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
+    void Execute(::itk::Object* _caller, const ::itk::EventObject& _event) override
     {
-        const ::itk::Object* constCaller = caller;
-        Execute(constCaller, event);
+        const ::itk::Object* const_caller = _caller;
+        Execute(const_caller, _event);
     }
 
     std::string m_msg;
@@ -85,12 +85,12 @@ ProgressItkToFw<OBSERVEE>::ProgressItkToFw(
     m_observee(observee),
     m_obsTag(std::numeric_limits<std::uint64_t>::max())
 {
-    typename LocalCommand::Pointer itkCallBack;
-    itkCallBack            = LocalCommand::New();
-    itkCallBack->m_msg     = msg;
-    itkCallBack->m_adviser = observer;
-    m_obsTag               = m_observee->AddObserver(::itk::ProgressEvent(), itkCallBack);
-    m_initialized          = true; // NOLINT(cppcoreguidelines-prefer-member-initializer)
+    typename LocalCommand::Pointer itk_call_back;
+    itk_call_back            = LocalCommand::New();
+    itk_call_back->m_msg     = msg;
+    itk_call_back->m_adviser = observer;
+    m_obsTag                 = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
+    m_initialized            = true; // NOLINT(cppcoreguidelines-prefer-member-initializer)
 }
 
 //------------------------------------------------------------------------------

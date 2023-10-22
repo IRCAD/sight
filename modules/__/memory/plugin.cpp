@@ -43,12 +43,12 @@ void plugin::start()
 {
     core::memory::buffer_manager::sptr manager = core::memory::buffer_manager::get();
 
-    const std::string modeKey = "loading_mode";
+    const std::string mode_key = "loading_mode";
 
-    if(this->get_module()->has_parameter(modeKey))
+    if(this->get_module()->has_parameter(mode_key))
     {
         core::mt::write_lock lock(manager->get_mutex());
-        std::string mode = this->get_module()->get_parameter_value(modeKey);
+        std::string mode = this->get_module()->get_parameter_value(mode_key);
         if(mode == "lazy")
         {
             manager->set_loading_mode(core::memory::buffer_manager::LAZY);

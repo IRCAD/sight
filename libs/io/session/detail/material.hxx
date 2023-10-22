@@ -45,65 +45,65 @@ constexpr static auto s_DiffuseTexture {"DiffuseTexture"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto material = helper::safe_cast<data::material>(object);
+    const auto material = helper::safe_cast<data::material>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::material>(tree, 1);
+    helper::write_version<data::material>(_tree, 1);
 
-    tree.put(s_ShadingMode, material->getShadingMode());
-    tree.put(s_RepresentationMode, material->getRepresentationMode());
-    tree.put(s_OptionsMode, material->getOptionsMode());
-    tree.put(s_DiffuseTextureFiltering, material->getDiffuseTextureFiltering());
-    tree.put(s_DiffuseTextureWrapping, material->getDiffuseTextureWrapping());
+    _tree.put(s_ShadingMode, material->getShadingMode());
+    _tree.put(s_RepresentationMode, material->getRepresentationMode());
+    _tree.put(s_OptionsMode, material->getOptionsMode());
+    _tree.put(s_DiffuseTextureFiltering, material->getDiffuseTextureFiltering());
+    _tree.put(s_DiffuseTextureWrapping, material->getDiffuseTextureWrapping());
 
-    children[s_Ambient]        = material->ambient();
-    children[s_Diffuse]        = material->diffuse();
-    children[s_DiffuseTexture] = material->getDiffuseTexture();
+    _children[s_Ambient]        = material->ambient();
+    _children[s_Diffuse]        = material->diffuse();
+    _children[s_DiffuseTexture] = material->getDiffuseTexture();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::material::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto material = helper::cast_or_create<data::material>(object);
+    auto material = helper::cast_or_create<data::material>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::material>(tree, 0, 1);
+    helper::read_version<data::material>(_tree, 0, 1);
 
-    material->setShadingMode(static_cast<data::material::ShadingType>(tree.get<int>(s_ShadingMode)));
+    material->setShadingMode(static_cast<data::material::shading_t>(_tree.get<int>(s_ShadingMode)));
     material->setRepresentationMode(
-        static_cast<data::material::RepresentationType>(
-            tree.get<int>(s_RepresentationMode)
+        static_cast<data::material::representation_t>(
+            _tree.get<int>(s_RepresentationMode)
         )
     );
-    material->setOptionsMode(static_cast<data::material::OptionsType>(tree.get<int>(s_OptionsMode)));
+    material->setOptionsMode(static_cast<data::material::options_t>(_tree.get<int>(s_OptionsMode)));
     material->setDiffuseTextureFiltering(
-        static_cast<data::material::FilteringType>(
-            tree.get<int>(s_DiffuseTextureFiltering)
+        static_cast<data::material::filtering_t>(
+            _tree.get<int>(s_DiffuseTextureFiltering)
         )
     );
     material->setDiffuseTextureWrapping(
-        static_cast<data::material::WrappingType>(
-            tree.get<int>(s_DiffuseTextureWrapping)
+        static_cast<data::material::wrapping_t>(
+            _tree.get<int>(s_DiffuseTextureWrapping)
         )
     );
 
-    material->setAmbient(std::dynamic_pointer_cast<data::color>(children.at(s_Ambient)));
-    material->setDiffuse(std::dynamic_pointer_cast<data::color>(children.at(s_Diffuse)));
-    material->setDiffuseTexture(std::dynamic_pointer_cast<data::image>(children.at(s_DiffuseTexture)));
+    material->setAmbient(std::dynamic_pointer_cast<data::color>(_children.at(s_Ambient)));
+    material->setDiffuse(std::dynamic_pointer_cast<data::color>(_children.at(s_Diffuse)));
+    material->setDiffuseTexture(std::dynamic_pointer_cast<data::image>(_children.at(s_DiffuseTexture)));
 
     return material;
 }

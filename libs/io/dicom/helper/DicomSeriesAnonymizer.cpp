@@ -46,31 +46,31 @@ DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const data::dicom_series::sptr& source)
+void DicomSeriesAnonymizer::anonymize(const data::dicom_series::sptr& _source)
 {
-    this->anonymize(source, source);
+    this->anonymize(_source, _source);
 }
 
 //------------------------------------------------------------------------------
 
 void DicomSeriesAnonymizer::anonymize(
-    const data::dicom_series::sptr& source,
-    const data::dicom_series::sptr& destination
+    const data::dicom_series::sptr& _source,
+    const data::dicom_series::sptr& _destination
 )
 {
-    auto writerObserver     = m_writer->getJob();
-    auto anonymizerObserver = m_anonymizer.getJob();
+    auto writer_observer     = m_writer->getJob();
+    auto anonymizer_observer = m_anonymizer.getJob();
 
     // Set up observer cancel callback
     m_job->add_simple_cancel_hook(
         [&]
         {
-            writerObserver->cancel();
-            anonymizerObserver->cancel();
+            writer_observer->cancel();
+            anonymizer_observer->cancel();
         });
 
-    m_job->add(writerObserver);
-    m_job->add(anonymizerObserver, 10);
+    m_job->add(writer_observer);
+    m_job->add(anonymizer_observer, 10);
 
     const auto future = m_job->run();
 
@@ -78,7 +78,7 @@ void DicomSeriesAnonymizer::anonymize(
     core::os::temp_dir dest;
 
     // Write DicomSeries (Copy files)
-    m_writer->set_object(source);
+    m_writer->set_object(_source);
     m_writer->set_folder(dest);
     m_writer->write();
 
@@ -108,8 +108,8 @@ void DicomSeriesAnonymizer::anonymize(
     m_reader->readDicomSeries();
 
     // Update DicomSeries
-    auto anonymizedSeries = std::dynamic_pointer_cast<data::dicom_series>(series_set->front());
-    destination->deep_copy(anonymizedSeries);
+    auto anonymized_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->front());
+    _destination->deep_copy(anonymized_series);
 }
 
 //------------------------------------------------------------------------------

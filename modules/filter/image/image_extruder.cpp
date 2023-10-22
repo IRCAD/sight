@@ -24,7 +24,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/reconstruction.hpp>
 
 #include <filter/image/image_extruder.hpp>
@@ -80,22 +80,22 @@ void image_extruder::updating()
 {
     const auto image = m_image.lock();
 
-    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+    if(data::helper::medical_image::check_image_validity(image.get_shared()))
     {
         // Initializes the mask
         {
-            const auto imageOut = m_extrudedImage.lock();
+            const auto image_out = m_extrudedImage.lock();
             SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
 
-            imageOut->resize(image->size(), core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
-            imageOut->setSpacing(image->getSpacing());
-            imageOut->setOrigin(image->getOrigin());
-            std::fill(imageOut->begin(), imageOut->end(), std::uint8_t(255));
+            image_out->resize(image->size(), core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
+            image_out->setSpacing(image->getSpacing());
+            image_out->setOrigin(image->getOrigin());
+            std::fill(image_out->begin(), image_out->end(), std::uint8_t(255));
         }
 
         const auto meshes = m_meshes.lock();
 
-        data::model_series::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
+        data::model_series::reconstruction_vector_t reconstructions = meshes->getReconstructionDB();
 
         this->addReconstructions(reconstructions);
     }
@@ -109,32 +109,32 @@ void image_extruder::stopping()
 
 //------------------------------------------------------------------------------
 
-void image_extruder::addReconstructions(data::model_series::ReconstructionVectorType _reconstructions) const
+void image_extruder::addReconstructions(data::model_series::reconstruction_vector_t _reconstructions) const
 {
-    const auto imageOut = m_extrudedImage.lock();
+    const auto image_out = m_extrudedImage.lock();
 
-    if(data::helper::MedicalImage::checkImageValidity(imageOut.get_shared()))
+    if(data::helper::medical_image::check_image_validity(image_out.get_shared()))
     {
         for(const data::reconstruction::csptr reconstruction : _reconstructions)
         {
-            data::mt::locked_ptr lockedReconstruction(reconstruction);
+            data::mt::locked_ptr locked_reconstruction(reconstruction);
 
-            const data::mesh::csptr mesh = lockedReconstruction->getMesh();
+            const data::mesh::csptr mesh = locked_reconstruction->getMesh();
 
-            data::mt::locked_ptr lockedMesh(mesh);
+            data::mt::locked_ptr locked_mesh(mesh);
 
             const auto transform = m_transform.lock();
 
             sight::filter::image::image_extruder::extrude(
-                imageOut.get_shared(),
-                lockedMesh.get_shared(),
+                image_out.get_shared(),
+                locked_mesh.get_shared(),
                 transform.get_shared()
             );
         }
     }
 
     // Send signals.
-    const auto sig = imageOut->signal<data::image::BufferModifiedSignalType>(data::image::MODIFIED_SIG);
+    const auto sig = image_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
     m_sigComputed->async_emit();

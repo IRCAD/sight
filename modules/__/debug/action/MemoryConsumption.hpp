@@ -73,7 +73,7 @@ protected:
 private:
 
     /// Intern method to create a new array
-    static void pushNewArray(std::size_t memorySizeInBytes);
+    static void pushNewArray(std::size_t _memory_size_in_bytes);
 
     /// To manage allocation or free memory ( data are saved in a static member )
     bool m_isIncreaseMode {true};

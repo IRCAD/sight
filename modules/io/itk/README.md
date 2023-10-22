@@ -22,7 +22,7 @@ This module contains services for reading and writing itk file formats.
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_io_itk
 )

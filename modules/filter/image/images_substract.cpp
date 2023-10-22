@@ -60,45 +60,45 @@ void images_substract::stopping()
 
 void images_substract::updating()
 {
-    core::type REQUESTED_TYPE = core::type::INT16;
+    core::type requested_type = core::type::INT16;
 
     const auto image1 = m_image1.lock();
     const auto image2 = m_image2.lock();
-    auto imageResult  = m_result.lock();
+    auto image_result = m_result.lock();
 
     // Test if the both images have the same type and it is signed short.
-    const bool isSameType = (image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
+    const bool is_same_type = (image1->getType() == image2->getType() && image1->getType() == requested_type);
 
-    if(isSameType)
+    if(is_same_type)
     {
         // test if the both images have the same size.
-        const bool isSameSize = (image1->size() == image2->size());
-        if(isSameSize)
+        const bool is_same_size = (image1->size() == image2->size());
+        if(is_same_size)
         {
-            using ImageType = itk::Image<std::int16_t, 3>;
+            using image_t = itk::Image<std::int16_t, 3>;
 
-            ImageType::Pointer itkImage1 = io::itk::moveToItk<ImageType>(image1.get_shared());
-            SIGHT_ASSERT("Unable to convert data::image to itkImage", itkImage1);
+            image_t::Pointer itk_image1 = io::itk::move_to_itk<image_t>(image1.get_shared());
+            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image1);
 
-            ImageType::Pointer itkImage2 = io::itk::moveToItk<ImageType>(image2.get_shared());
-            SIGHT_ASSERT("Unable to convert data::image to itkImage", itkImage2);
+            image_t::Pointer itk_image2 = io::itk::move_to_itk<image_t>(image2.get_shared());
+            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image2);
 
-            ImageType::Pointer output;
+            image_t::Pointer output;
 
             //Create filter
-            using SubtractImageFilterType = itk::SubtractImageFilter<ImageType, ImageType, ImageType>;
-            SubtractImageFilterType::Pointer filter;
-            filter = SubtractImageFilterType::New();
+            using subtract_image_filter_t = itk::SubtractImageFilter<image_t, image_t, image_t>;
+            subtract_image_filter_t::Pointer filter;
+            filter = subtract_image_filter_t::New();
             assert(filter);
 
-            filter->SetInput1(itkImage1);
-            filter->SetInput2(itkImage2);
+            filter->SetInput1(itk_image1);
+            filter->SetInput2(itk_image2);
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            io::itk::moveFromItk<ImageType>(output, imageResult.get_shared(), true);
+            io::itk::move_from_itk<image_t>(output, image_result.get_shared(), true);
 
-            auto sig = imageResult->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig = image_result->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
         }
         else

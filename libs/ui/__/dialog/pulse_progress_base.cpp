@@ -25,7 +25,7 @@
 namespace sight::ui::dialog
 {
 
-const pulse_progress_base::FactoryRegistryKeyType pulse_progress_base::REGISTRY_KEY =
+const pulse_progress_base::factory_registry_key_t pulse_progress_base::REGISTRY_KEY =
     "::ui::dialog::pulse_progress";
 
 pulse_progress_base::pulse_progress_base()
@@ -38,16 +38,16 @@ pulse_progress_base::~pulse_progress_base()
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::setStuff(Stuff stuff)
+void pulse_progress_base::setStuff(Stuff _stuff)
 {
-    m_stuff = stuff;
+    m_stuff = _stuff;
 }
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::setFrequence(MilliSecond frequence)
+void pulse_progress_base::setFrequence(MilliSecond _frequence)
 {
-    m_frequence = frequence;
+    m_frequence = _frequence;
 }
 
 //-----------------------------------------------------------------------------

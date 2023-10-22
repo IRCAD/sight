@@ -69,18 +69,18 @@
 # include <core/log/spy_logger.hpp>
 
 // -----------------------------------------------------------------------------
-constexpr static const char* strip_source_path(const char* const path)
+constexpr static const char* strip_source_path(const char* const _path)
 {
 #ifndef SIGHT_SOURCE_DIR
     return path;
 #else
-    if(path[0] == '.')
+    if(_path[0] == '.')
     {
         // If the path is relative, we return the path since it's a nightmare to deal with paths relative to the working
         // directory of the currently running compiler..
         // This is maybe doable by passing the working directory of the currently running compiler as a define and
         // resolve by hand the relative path ...in pure constexpr ! Good luck...
-        return path;
+        return _path;
     }
 
     // Otherwise, we assume the path is absolute
@@ -90,38 +90,38 @@ constexpr static const char* strip_source_path(const char* const path)
     // If the path does not start with the sight source directory, we return the path
     for(std::size_t i = 0 ; i < sight_source_length ; ++i)
     {
-        const auto path_c   = path[i];
+        const auto path_c   = _path[i];
         const auto source_c = SIGHT_SOURCE_DIR[i];
 
         if(path_c == '\0')
         {
             // If the path is shorter than the sight source directory, we return the path
-            return path;
+            return _path;
         }
 
         if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
         {
             // If current path character is a path deliminator and the current source character is not, we return path
-            return path;
+            return _path;
         }
 
         if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
         {
             // If path character is not a path deliminator and the current source character is one, we return path
-            return path;
+            return _path;
         }
 
         if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
         {
             // If path character is not a path deliminator and the current source character is also not, we return path
             // if they are different
-            return path;
+            return _path;
         }
     }
 
     // Otherwise, we strip the sight source directory from the path
     // /home/user/sight/libs/core/log/spy_log.hpp => libs/core/log/spy_log.hpp
-    return path + sight_source_length + 1;
+    return _path + sight_source_length + 1;
 #endif
 }
 
@@ -134,13 +134,13 @@ constexpr static const char* strip_source_path(const char* const path)
 
 // -----------------------------------------------------------------------------
 
-# ifndef __FWCORE_EXPR_BLOCK
-#  define __FWCORE_EXPR_BLOCK(expr) do{expr}while(0)
+# ifndef FWCORE_EXPR_BLOCK
+#  define FWCORE_EXPR_BLOCK(expr) do{expr}while(0)
 # endif
 
-# define __FWCORE_IF(cond, code) if(cond){code}
+# define FWCORE_IF(cond, code) if(cond){code}
 
-# define SL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK( \
+# define SL_LOG(log, loglevel, message) FWCORE_EXPR_BLOCK( \
         std::stringstream osl_str; \
         osl_str << message; \
         log.loglevel(osl_str.str(), SIGHT_SOURCE_FILE, __LINE__); \
@@ -149,29 +149,29 @@ constexpr static const char* strip_source_path(const char* const path)
 // -----------------------------------------------------------------------------
 
 #define SL_TRACE(log, message) SL_LOG(log, trace, message);
-#define SL_TRACE_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, trace, message); )
+#define SL_TRACE_IF(log, message, cond) FWCORE_IF(cond, SL_LOG(log, trace, message); )
 
 #define SL_DEBUG(log, message) SL_LOG(log, debug, message);
-#define SL_DEBUG_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, debug, message); )
+#define SL_DEBUG_IF(log, message, cond) FWCORE_IF(cond, SL_LOG(log, debug, message); )
 
 #define SL_INFO(log, message) SL_LOG(log, info, message);
-#define SL_INFO_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, info, message); )
+#define SL_INFO_IF(log, message, cond) FWCORE_IF(cond, SL_LOG(log, info, message); )
 
 #define SL_WARN(log, message) SL_LOG(log, warn, message);
-#define SL_WARN_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, warn, message); )
+#define SL_WARN_IF(log, message, cond) FWCORE_IF(cond, SL_LOG(log, warn, message); )
 
 #define SL_ERROR(log, message) SL_LOG(log, error, message);
-#define SL_ERROR_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, error, message); )
+#define SL_ERROR_IF(log, message, cond) FWCORE_IF(cond, SL_LOG(log, error, message); )
 
 #define SL_FATAL(log, message) SL_LOG(log, fatal, message); SPYLOG_ABORT();
-#define SL_FATAL_IF(log, message, cond) __FWCORE_IF(cond, SL_FATAL(log, message); )
+#define SL_FATAL_IF(log, message, cond) FWCORE_IF(cond, SL_FATAL(log, message); )
 
 // -----------------------------------------------------------------------------
 
 # ifdef _DEBUG
 #  ifdef WIN32
-#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
-        __FWCORE_IF( \
+#  define SL_ASSERT_IMPL(log, message, cond) FWCORE_EXPR_BLOCK( \
+        FWCORE_IF( \
             !(cond), \
             std::stringstream osl_str1; \
             osl_str1 << "Assertion '" \
@@ -182,8 +182,8 @@ constexpr static const char* strip_source_path(const char* const path)
         ) \
 )
 #  else
-#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
-        __FWCORE_IF( \
+#  define SL_ASSERT_IMPL(log, message, cond) FWCORE_EXPR_BLOCK( \
+        FWCORE_IF( \
             !(cond), \
             std::stringstream osl_str1; \
             osl_str1 << "Assertion '" \
@@ -194,12 +194,12 @@ constexpr static const char* strip_source_path(const char* const path)
 )
 #  endif
 
-#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
-        __FWCORE_IF( \
+#  define SL_ASSERT(log, message, cond) FWCORE_EXPR_BLOCK( \
+        FWCORE_IF( \
             !(cond), \
             std::stringstream osl_str; \
             osl_str << message; \
-            __SL_ASSERT(log, osl_str.str(), cond); \
+            SL_ASSERT_IMPL(log, osl_str.str(), cond); \
         ) \
 )
 # else
@@ -208,7 +208,7 @@ constexpr static const char* strip_source_path(const char* const path)
 
 // -----------------------------------------------------------------------------
 
-#  define _SPYLOG_SPYLOGGER_ \
+#  define SPYLOG_SPYLOGGER \
     sight::core::log::spy_logger::get()
 
 // -----------------------------------------------------------------------------
@@ -219,57 +219,57 @@ constexpr static const char* strip_source_path(const char* const path)
 
 /** @{ */
 /** Debug message macros.  */
-# define SIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
+# define SIGHT_DEBUG(message) SL_DEBUG(SPYLOG_SPYLOGGER, message)
 /** @deprecated @sight22, use SIGHT_DEBUG instead. */
-# define OSIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
+# define OSIGHT_DEBUG(message) SL_DEBUG(SPYLOG_SPYLOGGER, message); OSIGHT_DEPRECATED()
 /** Conditional debug message macros.  */
-# define SIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(SPYLOG_SPYLOGGER, message, cond)
 /** @deprecated @sight22, use SIGHT_DEBUG_IF instead. */
-# define OSIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
+# define OSIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(SPYLOG_SPYLOGGER, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Info message macros.  */
-# define SIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
+# define SIGHT_INFO(message) SL_INFO(SPYLOG_SPYLOGGER, message)
 /** @deprecated @sight22, use SIGHT_INFO instead. */
-# define OSIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
+# define OSIGHT_INFO(message) SL_INFO(SPYLOG_SPYLOGGER, message); OSIGHT_DEPRECATED()
 /** Conditional info message macros.  */
-# define SIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SIGHT_INFO_IF(message, cond) SL_INFO_IF(SPYLOG_SPYLOGGER, message, cond)
 /** @deprecated @sight22, use SIGHT_INFO_IF instead. */
-# define OSIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
+# define OSIGHT_INFO_IF(message, cond) SL_INFO_IF(SPYLOG_SPYLOGGER, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Warning message macros.  */
-# define SIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
+# define SIGHT_WARN(message) SL_WARN(SPYLOG_SPYLOGGER, message)
 /** @deprecated @sight22, use SIGHT_WARN instead.  */
-# define OSIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
+# define OSIGHT_WARN(message) SL_WARN(SPYLOG_SPYLOGGER, message); OSIGHT_DEPRECATED()
 /** Conditional warning message macros.  */
-# define SIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SIGHT_WARN_IF(message, cond) SL_WARN_IF(SPYLOG_SPYLOGGER, message, cond)
 /** @deprecated @sight22, use SIGHT_WARN_IF instead. */
-# define OSIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
+# define OSIGHT_WARN_IF(message, cond) SL_WARN_IF(SPYLOG_SPYLOGGER, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Error message macros.  */
-# define SIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
+# define SIGHT_ERROR(message) SL_ERROR(SPYLOG_SPYLOGGER, message)
 /** @deprecated @sight22, use SIGHT_ERROR instead.  */
-# define OSIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
+# define OSIGHT_ERROR(message) SL_ERROR(SPYLOG_SPYLOGGER, message); OSIGHT_DEPRECATED()
 /** Conditional error message macros.  */
-# define SIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SIGHT_ERROR_IF(message, cond) SL_ERROR_IF(SPYLOG_SPYLOGGER, message, cond)
 /** @deprecated @sight22, use SIGHT_ERROR_IF instead.  */
-# define OSIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
+# define OSIGHT_ERROR_IF(message, cond) SL_ERROR_IF(SPYLOG_SPYLOGGER, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Fatal message macros.  */
-# define SIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
+# define SIGHT_FATAL(message) SL_FATAL(SPYLOG_SPYLOGGER, message)
 /** @deprecated @sight22, use SIGHT_FATAL instead.  */
-# define OSIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
+# define OSIGHT_FATAL(message) SL_FATAL(SPYLOG_SPYLOGGER, message); OSIGHT_DEPRECATED()
 /** Conditional fatal message macros.  */
-# define SIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SIGHT_FATAL_IF(message, cond) SL_FATAL_IF(SPYLOG_SPYLOGGER, message, cond)
 /** @deprecated @sight22, use SIGHT_FATAL_IF instead.  */
-# define OSIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
+# define OSIGHT_FATAL_IF(message, cond) SL_FATAL_IF(SPYLOG_SPYLOGGER, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /**
@@ -279,9 +279,9 @@ constexpr static const char* strip_source_path(const char* const path)
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
 # define SIGHT_ASSERT(message, cond) \
-    SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
+    SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
 # define OSIGHT_ASSERT(message, cond) \
-    SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
+    SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
 
 // -----------------------------------------------------------------------------
 
@@ -332,14 +332,14 @@ constexpr static const char* strip_source_path(const char* const path)
 
 //------------------------------------------------------------------------------
 
-inline void OSIGHT_DEPRECATED()
+inline void osight_deprecated()
 {
     // Empty function to trigger deprecation warnings
 }
 
 //------------------------------------------------------------------------------
 
-inline void SIGHT_TRACE_DEPRECATED()
+inline void sight_trace_deprecated()
 {
     // Empty function to trigger deprecation warnings
 }

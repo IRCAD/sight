@@ -27,8 +27,8 @@ namespace sight::data::timeline
 
 //-----------------------------------------------------------------------------
 
-object::object(core::hires_clock::type timestamp) :
-    m_timestamp(timestamp)
+object::object(core::hires_clock::type _timestamp) :
+    m_timestamp(_timestamp)
 {
 }
 
@@ -46,16 +46,16 @@ void object::deep_copy(const object& _source)
 
 //-----------------------------------------------------------------------------
 
-bool object::operator==(const object& other) const noexcept
+bool object::operator==(const object& _other) const noexcept
 {
-    return m_timestamp == other.m_timestamp;
+    return m_timestamp == _other.m_timestamp;
 }
 
 //------------------------------------------------------------------------------
 
-bool object::operator!=(const object& other) const noexcept
+bool object::operator!=(const object& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data::timeline

@@ -36,7 +36,7 @@ public:
 
     SIGHT_DECLARE_CLASS(overlay, ui::layout::view);
 
-    struct View
+    struct view
     {
         struct Coord
         {
@@ -92,7 +92,7 @@ public:
      *   - \b visible : Whether the widget should be shown on application start (default: true)
      */
 
-    UI_API void initialize(const ui::config_t& configuration) override;
+    UI_API void initialize(const ui::config_t& _configuration) override;
 
     static inline std::string REGISTRY_KEY = "sight::ui::layout::overlay";
 
@@ -100,7 +100,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    const std::vector<View>& views() const
+    const std::vector<view>& views() const
     {
         return m_views;
     }
@@ -108,7 +108,7 @@ protected:
 private:
 
     /// Save layout configuration definition
-    std::vector<View> m_views;
+    std::vector<view> m_views;
 };
 
 } // namespace sight::ui::layout

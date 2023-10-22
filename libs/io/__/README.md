@@ -44,7 +44,7 @@ Contains the base interface for reader and writer services.
 ### CMake
 
 ```cmake
-target_link_libraries(myTarget <PUBLIC|PRIVATE> io)
+target_link_libraries(my_target <PUBLIC|PRIVATE> io)
 ```
 
 ### XML

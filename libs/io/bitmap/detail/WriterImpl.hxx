@@ -54,8 +54,8 @@ public:
     WriterImpl& operator=(WriterImpl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(Writer* const writer) :
-        m_writer(writer)
+    inline explicit WriterImpl(Writer* const _writer) :
+        M_WRITER(_writer)
     {
     }
 
@@ -64,10 +64,10 @@ public:
 
     /// Main write function
     template<typename O>
-    inline std::size_t write(O& output, Backend backend, Writer::Mode mode)
+    inline std::size_t write(O& _output, Backend _backend, Writer::Mode _mode)
     {
         // Get the image pointer
-        const auto& image = m_writer->getConcreteObject();
+        const auto& image = M_WRITER->getConcreteObject();
         SIGHT_THROW_IF("Source image is null", image == nullptr);
 
         /// @todo Should we split volume in 2D slices ?
@@ -78,11 +78,11 @@ public:
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nvJPEG2K() && backend == Backend::NVJPEG2K)
+        if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K)
         {
             try
             {
-                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, output, mode);
+                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, _output, _mode);
             }
             catch(const std::exception& e)
             {
@@ -115,59 +115,59 @@ public:
                 // This happens when trying to encode uniform random data which cannot be compressed
                 // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
                 // happen with real data in the real world. To be in the safe side, we fallback to another backend.
-                SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode);
+                SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
+                return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode);
             }
         }
-        else if(nvJPEG2K() && backend == Backend::NVJPEG2K_J2K)
+        else if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K_J2K)
         {
             try
             {
-                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, output, mode, Flag::J2K_STREAM);
+                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, _output, _mode, Flag::J2K_STREAM);
             }
             catch(const std::exception& e)
             {
                 // Same as above...
-                SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode, Flag::J2K_STREAM);
+                SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
+                return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode, Flag::J2K_STREAM);
             }
         }
         else
 #endif
-        if(backend == Backend::OPENJPEG)
+        if(_backend == Backend::OPENJPEG)
         {
-            return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode);
+            return write<OpenJPEGWriter>(m_openJPEG, *image, _output, _mode);
         }
-        else if(backend == Backend::OPENJPEG_J2K)
+        else if(_backend == Backend::OPENJPEG_J2K)
         {
             return write<OpenJPEGWriter>(
                 m_openJPEG,
                 *image,
-                output,
-                mode,
+                _output,
+                _mode,
                 Flag::J2K_STREAM
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(nvJPEG() && backend == Backend::NVJPEG)
+        if(nv_jpeg() && _backend == Backend::NVJPEG)
         {
-            return write<NvJPEGWriter>(m_nvJPEG, *image, output, mode);
+            return write<NvJPEGWriter>(m_nvJPEG, *image, _output, _mode);
         }
         else
 #endif
-        if(backend == Backend::LIBJPEG)
+        if(_backend == Backend::LIBJPEG)
         {
-            return write<LibJPEGWriter>(m_libJPEG, *image, output, mode);
+            return write<LibJPEGWriter>(m_libJPEG, *image, _output, _mode);
         }
-        else if(backend == Backend::LIBTIFF)
+        else if(_backend == Backend::LIBTIFF)
         {
-            return write<LibTIFFWriter>(m_libTIFF, *image, output, mode);
+            return write<LibTIFFWriter>(m_libTIFF, *image, _output, _mode);
         }
-        else if(backend == Backend::LIBPNG)
+        else if(_backend == Backend::LIBPNG)
         {
-            return write<LibPNGWriter>(m_libPNG, *image, output, mode);
+            return write<LibPNGWriter>(m_libPNG, *image, _output, _mode);
         }
         else
         {
@@ -181,24 +181,24 @@ private:
 
     template<typename W, typename O>
     inline static std::size_t write(
-        std::unique_ptr<W>& backend,
-        const data::image& image,
-        O& output,
-        Writer::Mode mode,
-        Flag flag = Flag::NONE
+        std::unique_ptr<W>& _backend,
+        const data::image& _image,
+        O& _output,
+        Writer::Mode _mode,
+        Flag _flag = Flag::NONE
 )
     {
-        if(backend == nullptr)
+        if(_backend == nullptr)
         {
-            backend = std::make_unique<W>();
-            SIGHT_THROW_IF("Failed to initialize" << backend->m_name << " backend.", !backend->m_valid);
+            _backend = std::make_unique<W>();
+            SIGHT_THROW_IF("Failed to initialize" << _backend->m_name << " backend.", !_backend->m_valid);
         }
 
-        return backend->write(image, output, mode, flag);
+        return _backend->write(_image, _output, _mode, _flag);
     }
 
     /// Pointer to the public interface
-    Writer* const m_writer;
+    Writer* const M_WRITER;
 
 #ifdef SIGHT_ENABLE_NVJPEG
     std::unique_ptr<NvJPEGWriter> m_nvJPEG;

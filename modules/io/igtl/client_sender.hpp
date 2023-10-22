@@ -87,7 +87,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::object::csptr& obj, std::size_t index) override;
+    void sendObject(const data::object::csptr& _obj, std::size_t _index) override;
 
     /// client socket
     sight::io::igtl::Client m_client;

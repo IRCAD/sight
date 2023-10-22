@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Label
@@ -38,7 +38,7 @@ public:
      * @param label How to get the label to check
      * @param expected The expected content of the tooltip
      */
-    GUITEST_API static void toolTipMatches(Tester& tester, const Select& label, const std::string& expected);
+    GUITEST_API static void toolTipMatches(Tester& _tester, const Select& _label, const std::string& _expected);
 
     /**
      * Check whether the label contains the expected substring.
@@ -46,7 +46,7 @@ public:
      * @param label How to get the label to check
      * @param expected The substring expected to be contained in the label
      */
-    GUITEST_API static void contain(Tester& tester, const Select& label, const std::string& expected);
+    GUITEST_API static void contain(Tester& _tester, const Select& _label, const std::string& _expected);
 
     /**
      * Check whether the label exactly matches the expected result.
@@ -54,7 +54,7 @@ public:
      * @param label How to get the label to check
      * @param expected The expected content of the label
      */
-    GUITEST_API static void exactlyMatch(Tester& tester, const Select& label, const std::string& expected);
+    GUITEST_API static void exactlyMatch(Tester& _tester, const Select& _label, const std::string& _expected);
 
     /**
      * Check whether the label is equal to the number with a tolerance.
@@ -66,11 +66,11 @@ public:
      *           group.
      */
     GUITEST_API static void equal(
-        Tester& tester,
-        const Select& label,
-        double expected,
-        double tolerance,
-        QRegExp re = QRegExp("(.*)")
+        Tester& _tester,
+        const Select& _label,
+        double _expected,
+        double _tolerance,
+        QRegExp _re = QRegExp("(.*)")
     );
 
     /**
@@ -78,7 +78,7 @@ public:
      * @param tester The current tester
      * @param label The objectName of the label
      */
-    GUITEST_API static std::string get(Tester& tester, const Select& labelName);
+    GUITEST_API static std::string get(Tester& _tester, const Select& _label_name);
 };
 
 } // namespace sight::ui::testCore::helper

@@ -83,7 +83,7 @@ public:
     /// @param object CPU representation of the object
     /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
     /// @return shared pointer on the resource
-    Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT), const std::string& suffixId = "");
+    Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT), const std::string& _suffix_id = "");
 
     /// Removes a reference to a GPU resource. If this was the last reference, it destroys it.
     void release(Ogre::SharedPtr<RESOURCE> /*_resource*/);
@@ -128,12 +128,12 @@ resource_manager<OBJECT, RESOURCE, LOADER>::~resource_manager()
 template<class OBJECT, class RESOURCE, class LOADER>
 Ogre::SharedPtr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiate(
     CSPTR(OBJECT)_object,
-    const std::string& _suffixId
+    const std::string& _suffix_id
 )
 {
     SIGHT_ASSERT("Data object is null", _object);
 
-    const std::string full_id = _object->get_id() + "_Resource" + _suffixId;
+    const std::string full_id = _object->get_id() + "_Resource" + _suffix_id;
     auto it                   = m_registry.find(full_id);
     if(it != m_registry.end())
     {

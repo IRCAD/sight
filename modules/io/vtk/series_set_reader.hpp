@@ -78,7 +78,7 @@ class MODULE_IO_VTK_CLASS_API series_set_reader : public sight::io::service::rea
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Constructor. Do nothing.
@@ -151,11 +151,11 @@ private:
      * This method is used to load a mesh using the file path.
      */
     void loadSeriesSet(
-        const std::vector<std::filesystem::path>& vtkFiles,
-        const SPTR(data::series_set)& series_set
+        const std::vector<std::filesystem::path>& _vtk_files,
+        const SPTR(data::series_set)& _series_set
     );
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 };
 
 } // namespace sight::module::io::vtk

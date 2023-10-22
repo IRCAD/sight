@@ -27,7 +27,7 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -59,22 +59,22 @@ void transform::configuring()
 void transform::starting()
 {
     this->initialize();
-    Ogre::SceneManager* const sceneManager = this->getSceneManager();
+    Ogre::SceneManager* const scene_manager = this->getSceneManager();
 
-    Ogre::SceneNode* const rootSceneNode = sceneManager->getRootSceneNode();
-    SIGHT_ASSERT("Root scene node not found", rootSceneNode);
+    Ogre::SceneNode* const root_scene_node = scene_manager->getRootSceneNode();
+    SIGHT_ASSERT("Root scene node not found", root_scene_node);
 
     if(!m_parentTransformId.empty())
     {
-        m_parentTransformNode = sight::viz::scene3d::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
+        m_parentTransformNode = sight::viz::scene3d::helper::scene::getNodeById(m_parentTransformId, root_scene_node);
         if(m_parentTransformNode == nullptr)
         {
-            m_parentTransformNode = rootSceneNode->createChildSceneNode(m_parentTransformId);
+            m_parentTransformNode = root_scene_node->createChildSceneNode(m_parentTransformId);
         }
     }
     else
     {
-        m_parentTransformNode = rootSceneNode;
+        m_parentTransformNode = root_scene_node;
     }
 
     m_transformNode = this->getOrCreateTransformNode(m_parentTransformNode);
@@ -88,7 +88,7 @@ void transform::updating()
 {
     {
         const auto transform = m_matrix.lock();
-        m_ogreTransform = Ogre::Affine3(sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared()));
+        m_ogreTransform = Ogre::Affine3(sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 
     if(m_ogreTransform == Ogre::Affine3::ZERO)

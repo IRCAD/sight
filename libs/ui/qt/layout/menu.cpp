@@ -23,7 +23,7 @@
 #include "ui/qt/container/menu.hpp"
 #include "ui/qt/layout/menu.hpp"
 
-#include "ui/qt/ActionCallback.hpp"
+#include "ui/qt/action_callback.hpp"
 #include "ui/qt/container/menu_item.hpp"
 
 #include <ui/__/macros.hpp>
@@ -41,38 +41,38 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void menu::createLayout(ui::container::menu::sptr parent, const std::string& id)
+void menu::createLayout(ui::container::menu::sptr _parent, const std::string& _id)
 {
-    m_parent = std::dynamic_pointer_cast<ui::qt::container::menu>(parent);
+    m_parent = std::dynamic_pointer_cast<ui::qt::container::menu>(_parent);
     SIGHT_ASSERT("dynamicCast menu to menu failed", m_parent);
 
-    const QString qId = QString::fromStdString(id);
+    const QString q_id = QString::fromStdString(_id);
 
     QMenu* menu = m_parent->getQtMenu();
-    menu->setObjectName(qId);
+    menu->setObjectName(q_id);
 
-    QActionGroup* actionGroup  = nullptr;
-    unsigned int menuItemIndex = 0;
-    for(const ui::layout::menu_manager::ActionInfo& actionInfo : m_actionInfo)
+    QActionGroup* action_group   = nullptr;
+    unsigned int menu_item_index = 0;
+    for(const ui::layout::menu_manager::ActionInfo& action_info : m_actionInfo)
     {
-        ui::qt::container::menu_item::sptr menuItem = ui::qt::container::menu_item::make();
+        ui::qt::container::menu_item::sptr menu_item = ui::qt::container::menu_item::make();
 
-        QAction* action = menu->addAction(QString::fromStdString(actionInfo.m_name));
-        action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
+        QAction* action = menu->addAction(QString::fromStdString(action_info.m_name));
+        action->setObjectName(q_id + '/' + action_info.m_name.c_str());
 
-        action->setSeparator(actionInfo.m_isSeparator);
+        action->setSeparator(action_info.m_isSeparator);
 
-        if(!actionInfo.m_icon.empty())
+        if(!action_info.m_icon.empty())
         {
-            QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
+            QIcon icon(QString::fromStdString(action_info.m_icon.string()));
             action->setIcon(icon);
         }
 
-        if(actionInfo.m_type == ui::layout::menu_manager::QUIT)
+        if(action_info.m_type == ui::layout::menu_manager::QUIT)
         {
             action->setMenuRole(QAction::QuitRole);
         }
-        else if(actionInfo.m_type == ui::layout::menu_manager::ABOUT)
+        else if(action_info.m_type == ui::layout::menu_manager::ABOUT)
         {
             action->setMenuRole(QAction::AboutRole);
         }
@@ -81,51 +81,51 @@ void menu::createLayout(ui::container::menu::sptr parent, const std::string& id)
             action->setMenuRole(QAction::NoRole);
         }
 
-        action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+        action->setCheckable(action_info.m_isCheckable || action_info.m_isRadio);
 
-        if(actionInfo.m_isRadio)
+        if(action_info.m_isRadio)
         {
-            if(actionGroup == nullptr)
+            if(action_group == nullptr)
             {
-                actionGroup = new QActionGroup(menu);
+                action_group = new QActionGroup(menu);
             }
 
-            actionGroup->addAction(action);
+            action_group->addAction(action);
         }
 
         // create shortcut
-        if(!actionInfo.m_shortcut.empty())
+        if(!action_info.m_shortcut.empty())
         {
-            action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+            action->setShortcut(QKeySequence(QString::fromStdString(action_info.m_shortcut)));
         }
 
-        if(actionInfo.m_isMenu)
+        if(action_info.m_isMenu)
         {
-            ui::qt::container::menu::sptr menuContainer = ui::qt::container::menu::make();
-            auto* qtMenu                                = new QMenu();
-            menuContainer->setQtMenu(qtMenu);
-            action->setMenu(qtMenu);
-            m_menus.push_back(menuContainer);
+            ui::qt::container::menu::sptr menu_container = ui::qt::container::menu::make();
+            auto* qt_menu                                = new QMenu();
+            menu_container->setQtMenu(qt_menu);
+            action->setMenu(qt_menu);
+            m_menus.push_back(menu_container);
         }
 
-        menuItem->setQtMenuItem(action);
+        menu_item->setQtMenuItem(action);
 
-        if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu)
+        if(!action_info.m_isSeparator && !action_info.m_isMenu)
         {
-            m_menuItems.push_back(menuItem);
-            SIGHT_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
-            ui::menu_item_callback::sptr callback = m_callbacks.at(menuItemIndex);
+            m_menuItems.push_back(menu_item);
+            SIGHT_ASSERT("No callback found for menu" << action_info.m_name, menu_item_index < m_callbacks.size());
+            ui::menu_item_callback::sptr callback = m_callbacks.at(menu_item_index);
 
-            ui::qt::ActionCallback::sptr qtCallback = std::dynamic_pointer_cast<ui::qt::ActionCallback>(callback);
-            SIGHT_ASSERT("dynamicCast menu_item_callback to ActionCallback failed", qtCallback);
+            ui::qt::action_callback::sptr qt_callback = std::dynamic_pointer_cast<ui::qt::action_callback>(callback);
+            SIGHT_ASSERT("dynamicCast menu_item_callback to action_callback failed", qt_callback);
 
-            QObject::connect(action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
-            QObject::connect(action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
-            menuItemIndex++;
+            QObject::connect(action, SIGNAL(triggered(bool)), qt_callback.get(), SLOT(executeQt(bool)));
+            QObject::connect(action, SIGNAL(toggled(bool)), qt_callback.get(), SLOT(checkQt(bool)));
+            menu_item_index++;
         }
         else
         {
-            actionGroup = nullptr;
+            action_group = nullptr;
         }
     }
 }
@@ -141,32 +141,32 @@ void menu::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-void menu::menuItemSetVisible(ui::container::menu_item::sptr menu_item, bool isVisible)
+void menu::menuItemSetVisible(ui::container::menu_item::sptr _menu_item, bool _is_visible)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setVisible(isVisible);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::menuItemSetEnabled(ui::container::menu_item::sptr menu_item, bool isEnabled)
+void menu::menuItemSetEnabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setEnabled(isEnabled);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setEnabled(_is_enabled);
 }
 
 //-----------------------------------------------------------------------------
 
-void menu::menuItemSetChecked(ui::container::menu_item::sptr menu_item, bool isChecked)
+void menu::menuItemSetChecked(ui::container::menu_item::sptr _menu_item, bool _is_checked)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setChecked(isChecked);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setChecked(_is_checked);
 }
 
 //-----------------------------------------------------------------------------

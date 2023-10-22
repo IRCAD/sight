@@ -38,7 +38,7 @@ In other words it contains services to operate on a `sight::data::image`.
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(my_target 
                 ...
                  module_filter_image
 )

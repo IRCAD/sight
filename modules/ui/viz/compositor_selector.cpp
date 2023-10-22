@@ -43,7 +43,7 @@
 namespace sight::module::ui::viz
 {
 
-using sight::viz::scene3d::Layer;
+using sight::viz::scene3d::layer;
 
 const core::com::slots::key_t compositor_selector::INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
@@ -67,7 +67,7 @@ void compositor_selector::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -78,7 +78,7 @@ void compositor_selector::starting()
     layout->addWidget(m_layersBox);
     layout->addWidget(m_compositorChain);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->refreshRenderers();
 
@@ -115,10 +115,10 @@ void compositor_selector::updating()
 
 //------------------------------------------------------------------------------
 
-void compositor_selector::onSelectedLayerItem(int index)
+void compositor_selector::onSelectedLayerItem(int _index)
 {
-    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
-    Layer::sptr layer = m_currentLayer.lock();
+    m_currentLayer = m_layers[static_cast<std::size_t>(_index)];
+    layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -145,26 +145,26 @@ void compositor_selector::onSelectedLayerItem(int index)
 
 //------------------------------------------------------------------------------
 
-void compositor_selector::onSelectedCompositorItem(QListWidgetItem* compositorItem)
+void compositor_selector::onSelectedCompositorItem(QListWidgetItem* _compositor_item)
 {
-    const std::string compositorName = compositorItem->text().toStdString();
-    const bool isChecked             = (compositorItem->checkState() == Qt::Checked);
-    Layer::sptr layer                = m_currentLayer.lock();
+    const std::string compositor_name = _compositor_item->text().toStdString();
+    const bool is_checked             = (_compositor_item->checkState() == Qt::Checked);
+    layer::sptr layer                 = m_currentLayer.lock();
 
     if(layer)
     {
         layer->getRenderService()->makeCurrent();
-        layer->updateCompositorState(compositorName, isChecked);
+        layer->updateCompositorState(compositor_name, is_checked);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void compositor_selector::initCompositorList(Layer::sptr layer)
+void compositor_selector::initCompositorList(layer::sptr _layer)
 {
     m_currentLayer = m_layers[0];
 
-    if(layer == m_currentLayer.lock())
+    if(_layer == m_currentLayer.lock())
     {
         onSelectedLayerItem(0);
     }
@@ -177,22 +177,22 @@ void compositor_selector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = sight::service::getServices("sight::viz::scene3d::render");
+    const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
     for(const auto& srv : renderers)
     {
         auto render = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
 
-        for(auto& layerMap : render->getLayers())
+        for(auto& layer_map : render->getLayers())
         {
-            const std::string id = layerMap.first;
-            std::string renderID = render->get_id();
-            m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
-            m_layers.push_back(layerMap.second);
+            const std::string id  = layer_map.first;
+            std::string render_id = render->get_id();
+            m_layersBox->addItem(QString::fromStdString(render_id + " : " + id));
+            m_layers.push_back(layer_map.second);
 
             m_connections.connect(
-                layerMap.second,
-                Layer::INIT_LAYER_SIG,
+                layer_map.second,
+                layer::INIT_LAYER_SIG,
                 this->get_sptr(),
                 INIT_COMPOSITOR_LIST_SLOT
             );
@@ -209,7 +209,7 @@ void compositor_selector::refreshRenderers()
 
 void compositor_selector::updateCompositorList()
 {
-    Layer::sptr layer = m_currentLayer.lock();
+    layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -223,12 +223,12 @@ void compositor_selector::updateCompositorList()
             Ogre::ResourcePtr compositor = iter.getNext();
             if(compositor->getGroup() == s_COMPOSITOR_RESOURCEGROUP_NAME)
             {
-                QString compositorName = compositor.get()->getName().c_str();
-                layer->addAvailableCompositor(compositorName.toStdString());
+                QString compositor_name = compositor.get()->getName().c_str();
+                layer->addAvailableCompositor(compositor_name.toStdString());
 
-                auto* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
-                newCompositor->setFlags(newCompositor->flags() | Qt::ItemIsUserCheckable);
-                newCompositor->setCheckState(Qt::Unchecked);
+                auto* new_compositor = new QListWidgetItem(compositor_name, m_compositorChain);
+                new_compositor->setFlags(new_compositor->flags() | Qt::ItemIsUserCheckable);
+                new_compositor->setCheckState(Qt::Unchecked);
             }
         }
     }
@@ -238,7 +238,7 @@ void compositor_selector::updateCompositorList()
 
 void compositor_selector::checkEnabledCompositors()
 {
-    Layer::sptr layer = m_currentLayer.lock();
+    layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -248,23 +248,23 @@ void compositor_selector::checkEnabledCompositors()
         {
             for(int i(0) ; i < m_compositorChain->count() ; ++i)
             {
-                QListWidgetItem* currentCompositor = m_compositorChain->item(i);
-                std::string currentCompositorName  = currentCompositor->text().toStdString();
+                QListWidgetItem* current_compositor = m_compositorChain->item(i);
+                std::string current_compositor_name = current_compositor->text().toStdString();
 
-                auto layerCompositor = std::find_if(
+                auto layer_compositor = std::find_if(
                     m_layerCompositorChain.begin(),
                     m_layerCompositorChain.end(),
-                    [&currentCompositorName](const auto& _compositor)
+                    [&current_compositor_name](const auto& _compositor)
                     {
-                        return _compositor.first == currentCompositorName;
+                        return _compositor.first == current_compositor_name;
                     });
 
-                if(layerCompositor != m_layerCompositorChain.end())
+                if(layer_compositor != m_layerCompositorChain.end())
                 {
-                    if(layerCompositor->second)
+                    if(layer_compositor->second)
                     {
-                        currentCompositor->setCheckState(Qt::Checked);
-                        layer->updateCompositorState(currentCompositor->text().toStdString(), true);
+                        current_compositor->setCheckState(Qt::Checked);
+                        layer->updateCompositorState(current_compositor->text().toStdString(), true);
                     }
                 }
             }
@@ -278,26 +278,26 @@ void compositor_selector::uncheckCompositors()
 {
     for(int i(0) ; i < m_compositorChain->count() ; ++i)
     {
-        QListWidgetItem* currentCompositor = m_compositorChain->item(i);
-        currentCompositor->setCheckState(Qt::Unchecked);
+        QListWidgetItem* current_compositor = m_compositorChain->item(i);
+        current_compositor->setCheckState(Qt::Unchecked);
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool compositor_selector::isEnabledCompositor(const std::string& compositorName)
+bool compositor_selector::isEnabledCompositor(const std::string& _compositor_name)
 {
-    auto layerCompositor = std::find_if(
+    auto layer_compositor = std::find_if(
         m_layerCompositorChain.begin(),
         m_layerCompositorChain.end(),
-        [&compositorName](const auto& _compositor)
+        [&_compositor_name](const auto& _compositor)
         {
-            return _compositor.first == compositorName;
+            return _compositor.first == _compositor_name;
         });
 
-    if(layerCompositor != m_layerCompositorChain.end())
+    if(layer_compositor != m_layerCompositorChain.end())
     {
-        return layerCompositor->second;
+        return layer_compositor->second;
     }
 
     return false;

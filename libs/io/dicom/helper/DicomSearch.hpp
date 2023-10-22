@@ -56,10 +56,10 @@ public:
      * @param[in] fileLookupObserver lookup observer
      */
     IO_DICOM_API static void searchRecursively(
-        const std::filesystem::path& dirPath,
-        std::vector<std::filesystem::path>& dicomFiles,
-        bool checkIsDicom,
-        const SPTR(core::jobs::observer)& fileLookupObserver = nullptr
+        const std::filesystem::path& _dir_path,
+        std::vector<std::filesystem::path>& _dicom_files,
+        bool _check_is_dicom,
+        const SPTR(core::jobs::observer)& _file_lookup_observer = nullptr
     );
 
 protected:
@@ -71,9 +71,9 @@ protected:
      * @param[in] fileLookupObserver lookup observer
      */
     static void checkFilenameExtension(
-        const std::filesystem::path& dirPath,
-        std::vector<std::filesystem::path>& dicomFiles,
-        const SPTR(core::jobs::observer)& fileLookupObserver = nullptr
+        const std::filesystem::path& _dir_path,
+        std::vector<std::filesystem::path>& _dicom_files,
+        const SPTR(core::jobs::observer)& _file_lookup_observer = nullptr
     );
 };
 

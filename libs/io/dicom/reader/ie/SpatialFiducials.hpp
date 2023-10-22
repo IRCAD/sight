@@ -47,13 +47,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducials(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::sptr& series,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::sptr& _series,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
@@ -62,12 +62,12 @@ public:
     /**
      * @brief Read image landmarks from dataset
      */
-    void readLandmark(const gdcm::DataSet& fiducialDataset);
+    void readLandmark(const gdcm::DataSet& _fiducial_dataset);
 
     /**
      * @brief Read image distances from dataset
      */
-    void readDistance(const gdcm::DataSet& fiducialDataset);
+    void readDistance(const gdcm::DataSet& _fiducial_dataset);
 };
 
 } // namespace sight::io::dicom::reader::ie

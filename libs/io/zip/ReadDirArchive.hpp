@@ -44,13 +44,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr make(const std::filesystem::path& archive)
+    static sptr make(const std::filesystem::path& _archive)
     {
-        return std::make_shared<ReadDirArchive>(archive);
+        return std::make_shared<ReadDirArchive>(_archive);
     }
 
     /// Constructors. Initializes archive path.
-    IO_ZIP_API ReadDirArchive(std::filesystem::path archive);
+    IO_ZIP_API ReadDirArchive(std::filesystem::path _archive);
 
     /// Destructor. Close automatically last input file stream.
     IO_ZIP_API ~ReadDirArchive() override;
@@ -62,7 +62,7 @@ public:
      *
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      */
-    IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& path) override;
+    IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.

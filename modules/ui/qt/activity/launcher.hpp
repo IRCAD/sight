@@ -140,7 +140,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::signal<void (sight::activity::message)> ActivityLaunchedSignalType;
+    typedef core::com::signal<void (sight::activity::message)> activity_launched_signal_t;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
@@ -175,11 +175,11 @@ protected:
      */
     void configuring() override;
 
-    typedef sight::activity::extension::activity_config_params_type ParametersType;
+    typedef sight::activity::extension::activity_config_params_type parameters_t;
 
-    typedef std::vector<std::string> KeysType;
+    typedef std::vector<std::string> keys_t;
 
-    typedef std::map<std::string, std::string> QuickLaunchType;
+    typedef std::map<std::string, std::string> quick_launch_t;
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
@@ -190,7 +190,7 @@ private:
      * @brief Launches activity if only Activity are selected.
      * @return Returns true if only Activity are selected.
      */
-    bool launchAS(const data::vector::csptr& selection);
+    bool launchAS(const data::vector::csptr& _selection);
 
     /**
      * @brief Slots to launch the given series.
@@ -199,13 +199,13 @@ private:
      * If series is an Activity, it is launched, otherwise it launches the first available activity for
      * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
-    void launchSeries(data::series::sptr series);
+    void launchSeries(data::series::sptr _series);
 
     /**
      * @brief Slots to launch the given activity.
      * @param series the activity to launch.
      */
-    void launchActivity(data::activity::sptr activity);
+    void launchActivity(data::activity::sptr _activity);
 
     /**
      * @brief Send message to launch new tab view
@@ -214,7 +214,7 @@ private:
      *
      * @param info activity information
      */
-    void sendConfig(const sight::activity::extension::activity_info& info);
+    void sendConfig(const sight::activity::extension::activity_info& _info);
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -222,17 +222,17 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const sight::activity::extension::activity_info& info, const data::vector::csptr& selection);
+    void buildActivity(const sight::activity::extension::activity_info& _info, const data::vector::csptr& _selection);
 
     typedef sight::activity::extension::activity::infos_t activity_infos_t;
 
     /// Show custom dialog box
-    static sight::activity::extension::activity_info show(const activity_infos_t& infos);
+    static sight::activity::extension::activity_info show(const activity_infos_t& _infos);
 
     /// Returns enabled activity infos according to activity filter.
-    activity_infos_t getEnabledActivities(const activity_infos_t& infos);
+    activity_infos_t getEnabledActivities(const activity_infos_t& _infos);
 
-    ParametersType m_parameters;
+    parameters_t m_parameters;
 
     /**
      * @brief Filter mode : include or exclude activity configurations.
@@ -241,16 +241,16 @@ private:
     std::string m_filterMode;
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
-    KeysType m_keys;
+    keys_t m_keys;
 
     /// Signal emitted when activity is launched. Send a message containing the activity information.
-    ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+    activity_launched_signal_t::sptr m_sigActivityLaunched;
 
     /// launcher's mode (message or immediate)
     std::string m_mode;
 
     /// Defines quick association between series type (a classname) and an activity id used by launchSeries method
-    QuickLaunchType m_quickLaunch;
+    quick_launch_t m_quickLaunch;
 
     static constexpr std::string_view s_SERIES = "series";
 

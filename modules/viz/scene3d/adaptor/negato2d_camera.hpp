@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 
@@ -100,7 +100,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
 
     /**
      * @brief Moves the camera along the projection plane.
@@ -202,7 +202,7 @@ protected:
 
 private:
 
-    using Orientation = data::helper::MedicalImage::orientation_t;
+    using Orientation = data::helper::medical_image::orientation_t;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();
@@ -224,7 +224,7 @@ private:
     bool m_isInteracting {false};
 
     /// Defines the image current orientation.
-    Orientation m_currentNegatoOrientation {data::helper::MedicalImage::orientation_t::Z_AXIS};
+    Orientation m_currentNegatoOrientation {data::helper::medical_image::orientation_t::Z_AXIS};
 
     /// Defines the interaction priority.
     int m_priority {0};

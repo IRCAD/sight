@@ -70,7 +70,7 @@ private Q_SLOTS:
 
 private:
 
-    void setState(FrameState state);
+    void setState(FrameState _state);
     FrameState getState();
 
     QPointer<QMainWindow> m_qtWindow;

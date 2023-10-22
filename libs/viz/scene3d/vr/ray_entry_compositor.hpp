@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/Layer.hpp"
+#include "viz/scene3d/layer.hpp"
 
 #include <OgreCompositor.h>
 
@@ -41,10 +41,10 @@ public:
 
     /// Construstor. Creates the ogre compositor.
     VIZ_SCENE3D_API ray_entry_compositor(
-        std::string _compositorName,
-        std::uint8_t _rqGroup,
-        compositor::core::StereoModeType _stereoMode,
-        bool _enableMixedRendering = false
+        std::string _compositor_name,
+        std::uint8_t _rq_group,
+        compositor::core::stereo_mode_t _stereo_mode,
+        bool _enable_mixed_rendering = false
     );
 
     /// Destructor. Deletes the created compositor.
@@ -59,7 +59,7 @@ private:
     Ogre::CompositorPtr m_compositor;
 
     /// Created compositor's name.
-    const std::string m_compositorName;
+    const std::string M_COMPOSITOR_NAME;
 };
 
 } // namespace sight::viz::scene3d::vr

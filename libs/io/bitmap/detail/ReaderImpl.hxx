@@ -24,7 +24,7 @@
 #include "common.hxx"
 #include "io/bitmap/Reader.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #ifdef SIGHT_ENABLE_NVJPEG
 #include "NvJPEGReader.hxx"
@@ -56,8 +56,8 @@ public:
     ReaderImpl& operator=(ReaderImpl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(Reader* const reader) :
-        m_reader(reader)
+    inline explicit ReaderImpl(Reader* const _reader) :
+        M_READER(_reader)
     {
     }
 
@@ -65,71 +65,71 @@ public:
     inline ~ReaderImpl() noexcept = default;
 
     /// Main read function
-    inline void read(std::istream& istream, Backend backend)
+    inline void read(std::istream& _istream, Backend _backend)
     {
         // Get the image pointer
-        auto image = m_reader->getConcreteObject();
+        auto image = M_READER->getConcreteObject();
         SIGHT_THROW_IF("Output image is null", image == nullptr);
 
         // Protect the image from dump
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nvJPEG2K() && backend == Backend::NVJPEG2K)
+        if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K)
         {
-            read<NvJPEG2KReader>(m_nvJPEG2K, *image, istream);
+            read<NvJPEG2KReader>(m_nvJPEG2K, *image, _istream);
         }
-        else if(nvJPEG2K() && backend == Backend::NVJPEG2K_J2K)
+        else if(nv_jpeg_2k() && _backend == Backend::NVJPEG2K_J2K)
         {
             read<NvJPEG2KReader>(
                 m_nvJPEG2K,
                 *image,
-                istream,
+                _istream,
                 Flag::J2K_STREAM
             );
         }
         else
 #endif
-        if(backend == Backend::OPENJPEG)
+        if(_backend == Backend::OPENJPEG)
         {
-            read<OpenJPEGReader>(m_openJPEG, *image, istream);
+            read<OpenJPEGReader>(m_openJPEG, *image, _istream);
         }
-        else if(backend == Backend::OPENJPEG_J2K)
+        else if(_backend == Backend::OPENJPEG_J2K)
         {
             read<OpenJPEGReader>(
                 m_openJPEG,
                 *image,
-                istream,
+                _istream,
                 Flag::J2K_STREAM
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(nvJPEG() && backend == Backend::NVJPEG)
+        if(nv_jpeg() && _backend == Backend::NVJPEG)
         {
-            read<NvJPEGReader>(m_nvJPEG, *image, istream);
+            read<NvJPEGReader>(m_nvJPEG, *image, _istream);
         }
         else
 #endif
-        if(backend == Backend::LIBJPEG)
+        if(_backend == Backend::LIBJPEG)
         {
-            read<LibJPEGReader>(m_libJPEG, *image, istream);
+            read<LibJPEGReader>(m_libJPEG, *image, _istream);
         }
-        else if(backend == Backend::LIBTIFF)
+        else if(_backend == Backend::LIBTIFF)
         {
-            read<LibTIFFReader>(m_libTIFF, *image, istream);
+            read<LibTIFFReader>(m_libTIFF, *image, _istream);
         }
-        else if(backend == Backend::LIBPNG)
+        else if(_backend == Backend::LIBPNG)
         {
-            read<LibPNGReader>(m_libPNG, *image, istream);
+            read<LibPNGReader>(m_libPNG, *image, _istream);
         }
         else
         {
             SIGHT_THROW("No suitable backend found.");
         }
 
-        sight::data::helper::MedicalImage::checkImageSliceIndex(image);
+        sight::data::helper::medical_image::check_image_slice_index(image);
     }
 
 private:
@@ -138,23 +138,23 @@ private:
 
     template<typename W>
     inline static void read(
-        std::unique_ptr<W>& backend,
-        data::image& image,
-        std::istream& istream,
-        Flag flag = Flag::NONE
+        std::unique_ptr<W>& _backend,
+        data::image& _image,
+        std::istream& _istream,
+        Flag _flag = Flag::NONE
 )
     {
-        if(backend == nullptr)
+        if(_backend == nullptr)
         {
-            backend = std::make_unique<W>();
-            SIGHT_THROW_IF("Failed to initialize" << backend->m_name << " backend.", !backend->m_valid);
+            _backend = std::make_unique<W>();
+            SIGHT_THROW_IF("Failed to initialize" << _backend->m_name << " backend.", !_backend->m_valid);
         }
 
-        backend->read(image, istream, flag);
+        _backend->read(_image, _istream, _flag);
     }
 
     /// Pointer to the public interface
-    Reader* const m_reader;
+    Reader* const M_READER;
 
 #ifdef SIGHT_ENABLE_NVJPEG
     std::unique_ptr<NvJPEGReader> m_nvJPEG;

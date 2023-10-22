@@ -65,7 +65,7 @@ public:
 
     MODULE_IO_ITK_API ~image_writer() noexcept override;
 
-    MODULE_IO_ITK_API static bool saveImage(const std::filesystem::path& imgFile, const CSPTR(data::image)& image);
+    MODULE_IO_ITK_API static bool saveImage(const std::filesystem::path& _img_file, const CSPTR(data::image)& _image);
 
 protected:
 

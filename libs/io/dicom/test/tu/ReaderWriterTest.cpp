@@ -48,32 +48,32 @@ namespace sight::io::dicom::ut
 
 //------------------------------------------------------------------------------
 
-inline static sight::data::series_set::sptr read(const std::filesystem::path path)
+inline static sight::data::series_set::sptr read(const std::filesystem::path _path)
 {
     CPPUNIT_ASSERT_MESSAGE(
-        "The dicom directory '" + path.string() + "' does not exist",
-        std::filesystem::exists(path)
+        "The dicom directory '" + _path.string() + "' does not exist",
+        std::filesystem::exists(_path)
     );
 
-    auto seriesSet = std::make_shared<data::series_set>();
+    auto series_set = std::make_shared<data::series_set>();
 
     auto reader = std::make_shared<io::dicom::Reader>();
-    reader->set_object(seriesSet);
-    reader->set_folder(path);
+    reader->set_object(series_set);
+    reader->set_folder(_path);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    for(const auto& series : *seriesSet)
+    for(const auto& series : *series_set)
     {
         series->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
     }
 
-    return seriesSet;
+    return series_set;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path createTempFolder()
+inline static std::filesystem::path create_temp_folder()
 {
     auto tmp_folder = core::tools::system::get_temporary_folder() / core::tools::UUID::generate();
     std::filesystem::remove_all(tmp_folder);
@@ -84,20 +84,20 @@ inline static std::filesystem::path createTempFolder()
 
 //------------------------------------------------------------------------------
 
-inline static void compareEnhancedUSVolume(
-    const data::image_series::sptr& expected,
-    const data::image_series::sptr& actual
+inline static void compare_enhanced_us_volume(
+    const data::image_series::sptr& _expected,
+    const data::image_series::sptr& _actual
 )
 {
-    CPPUNIT_ASSERT(expected);
-    CPPUNIT_ASSERT(actual);
+    CPPUNIT_ASSERT(_expected);
+    CPPUNIT_ASSERT(_actual);
 
     // SOP Class UID
-    CPPUNIT_ASSERT_EQUAL(expected->getSOPKeyword(), actual->getSOPKeyword());
+    CPPUNIT_ASSERT_EQUAL(_expected->getSOPKeyword(), _actual->getSOPKeyword());
 
     // Sizes
-    const auto& expected_sizes = expected->size();
-    const auto& actual_sizes   = actual->size();
+    const auto& expected_sizes = _expected->size();
+    const auto& actual_sizes   = _actual->size();
     CPPUNIT_ASSERT_EQUAL(expected_sizes.size(), actual_sizes.size());
 
     for(std::size_t i = 0 ; i < expected_sizes.size() ; ++i)
@@ -106,14 +106,14 @@ inline static void compareEnhancedUSVolume(
     }
 
     // Type
-    CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
+    CPPUNIT_ASSERT_EQUAL(_expected->getType(), _actual->getType());
 
     // Pixel format
-    CPPUNIT_ASSERT_EQUAL(expected->getPixelFormat(), actual->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(_expected->getPixelFormat(), _actual->getPixelFormat());
 
     // Spacings
-    const auto& expected_spacing = expected->getSpacing();
-    const auto& actual_spacing   = actual->getSpacing();
+    const auto& expected_spacing = _expected->getSpacing();
+    const auto& actual_spacing   = _actual->getSpacing();
     CPPUNIT_ASSERT_EQUAL(expected_spacing.size(), actual_spacing.size());
 
     for(std::size_t i = 0 ; i < expected_spacing.size() ; ++i)
@@ -122,8 +122,8 @@ inline static void compareEnhancedUSVolume(
     }
 
     // Origins
-    const auto& expected_origin = expected->getOrigin();
-    const auto& actual_origin   = actual->getOrigin();
+    const auto& expected_origin = _expected->getOrigin();
+    const auto& actual_origin   = _actual->getOrigin();
     CPPUNIT_ASSERT_EQUAL(expected_origin.size(), actual_origin.size());
 
     for(std::size_t i = 0 ; i < expected_origin.size() ; ++i)
@@ -135,8 +135,8 @@ inline static void compareEnhancedUSVolume(
     for(std::size_t frame_index = 0 ; frame_index < actual_sizes[2] ; ++frame_index)
     {
         // Image Position Patient
-        const auto& expected_position = expected->getImagePositionPatient(frame_index);
-        const auto& actual_position   = actual->getImagePositionPatient(frame_index);
+        const auto& expected_position = _expected->getImagePositionPatient(frame_index);
+        const auto& actual_position   = _actual->getImagePositionPatient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
 
         for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
@@ -145,8 +145,8 @@ inline static void compareEnhancedUSVolume(
         }
 
         // Image Orientation Patient
-        const auto& expected_orientation = expected->getImageOrientationPatient(frame_index);
-        const auto& actual_orientation   = actual->getImageOrientationPatient(frame_index);
+        const auto& expected_orientation = _expected->getImageOrientationPatient(frame_index);
+        const auto& actual_orientation   = _actual->getImageOrientationPatient(frame_index);
         CPPUNIT_ASSERT_EQUAL(expected_orientation.size(), actual_orientation.size());
 
         for(std::size_t i = 0 ; i < expected_orientation.size() ; ++i)
@@ -157,26 +157,29 @@ inline static void compareEnhancedUSVolume(
 
     // Ensure that getting value outside the frame range returns std::nullopts
     CPPUNIT_ASSERT(
-        !expected->getFrameAcquisitionDateTime(actual_sizes[2])
-        && !actual->getFrameAcquisitionDateTime(actual_sizes[2])
+        !_expected->getFrameAcquisitionDateTime(actual_sizes[2])
+        && !_actual->getFrameAcquisitionDateTime(actual_sizes[2])
     );
 
     // Compare buffer
-    const auto expected_locked = expected->dump_lock();
-    const auto actual_locked   = actual->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(expected->buffer(), actual->buffer(), expected->getSizeInBytes()));
+    const auto expected_locked = _expected->dump_lock();
+    const auto actual_locked   = _actual->dump_lock();
+    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(_expected->buffer(), _actual->buffer(), _expected->getSizeInBytes()));
 }
 
 //------------------------------------------------------------------------------
 
-inline static void compareEnhancedUSVolume(const data::series_set::sptr& expected, const data::series_set::sptr& actual)
+inline static void compare_enhanced_us_volume(
+    const data::series_set::sptr& _expected,
+    const data::series_set::sptr& _actual
+)
 {
-    CPPUNIT_ASSERT_EQUAL(expected->size(), actual->size());
-    for(std::size_t i = 0 ; i < expected->size() ; i++)
+    CPPUNIT_ASSERT_EQUAL(_expected->size(), _actual->size());
+    for(std::size_t i = 0 ; i < _expected->size() ; i++)
     {
-        const auto& expectedImageSeries = std::dynamic_pointer_cast<data::image_series>((*expected)[i]);
-        const auto& actualImageSeries   = std::dynamic_pointer_cast<data::image_series>((*actual)[i]);
-        compareEnhancedUSVolume(expectedImageSeries, actualImageSeries);
+        const auto& expected_image_series = std::dynamic_pointer_cast<data::image_series>((*_expected)[i]);
+        const auto& actual_image_series   = std::dynamic_pointer_cast<data::image_series>((*_actual)[i]);
+        compare_enhanced_us_volume(expected_image_series, actual_image_series);
     }
 }
 
@@ -190,10 +193,10 @@ void ReaderWriterTest::setUp()
 
 //------------------------------------------------------------------------------
 
-static void testImage(const std::string& name)
+static void test_image(const std::string& _name)
 {
-    const auto& folder   = createTempFolder();
-    const auto& expected = read(utest_data::Data::dir() / name);
+    const auto& folder   = create_temp_folder();
+    const auto& expected = read(utest_data::Data::dir() / _name);
 
     auto writer = std::make_shared<io::dicom::Writer>();
     writer->set_object(expected);
@@ -206,7 +209,7 @@ static void testImage(const std::string& name)
     reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    compareEnhancedUSVolume(expected, actual);
+    compare_enhanced_us_volume(expected, actual);
 }
 
 //------------------------------------------------------------------------------
@@ -218,11 +221,11 @@ void ReaderWriterTest::basicTest()
         return;
     }
 
-    testImage("us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
-    testImage("us/Ultrasound Image Storage/Philips, RLE, palette color");
-    testImage("us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG");
-    testImage("us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
-    testImage("us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG");
+    test_image("us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    test_image("us/Ultrasound Image Storage/Philips, RLE, palette color");
+    test_image("us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG");
+    test_image("us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
+    test_image("us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG");
 }
 
 } // namespace sight::io::dicom::ut

@@ -52,9 +52,9 @@ public:
      * @param[in] image Image data
      */
     IO_DICOM_API Measurement(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::csptr& image
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::csptr& _image
     );
 
     /// Destructor
@@ -66,8 +66,8 @@ public:
      * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
      */
     IO_DICOM_API virtual void createNodes(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
-        bool useSCoord3D = true
+        const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
+        bool _use_s_coord3_d = true
     );
 
 protected:
@@ -80,10 +80,10 @@ protected:
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createMeasurement(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
-        const CSPTR(data::point_list)& pointList,
-        unsigned int id,
-        bool useSCoord3D
+        const SPTR(io::dicom::container::sr::DicomSRNode)& _parent,
+        const CSPTR(data::point_list)& _point_list,
+        unsigned int _id,
+        bool _use_s_coord3_d
     );
 };
 

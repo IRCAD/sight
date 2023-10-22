@@ -57,7 +57,7 @@ struct NiftiLoaderFunctor
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameter& param)
+    void operator()(Parameter& _param)
     {
         SIGHT_INFO(
             "::io::itk::NiftiImageReader::NiftiLoaderFunctor with PIXELTYPE "
@@ -65,36 +65,36 @@ struct NiftiLoaderFunctor
         );
 
         // Reader IO (*1*)
-        typename ::itk::NiftiImageIO::Pointer imageIORead = ::itk::NiftiImageIO::New();
-        imageIORead->SetFileName(param.filename.c_str());
-        imageIORead->ReadImageInformation();
+        typename ::itk::NiftiImageIO::Pointer image_io_read = ::itk::NiftiImageIO::New();
+        image_io_read->SetFileName(_param.filename.c_str());
+        image_io_read->ReadImageInformation();
 
         // set observation (*2*)
-        Progressor progress(imageIORead, param.reader, param.filename);
+        Progressor progress(image_io_read, _param.reader, _param.filename);
 
         // the reader
-        using ImageType  = ::itk::Image<PIXELTYPE, 3>;
-        using ReaderType = ::itk::ImageFileReader<ImageType>;
-        typename ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName(param.filename);
+        using image_t  = ::itk::Image<PIXELTYPE, 3>;
+        using reader_t = ::itk::ImageFileReader<image_t>;
+        typename reader_t::Pointer reader = reader_t::New();
+        reader->SetFileName(_param.filename);
 
         // attach its IO (*3*)
-        reader->SetImageIO(imageIORead);
+        reader->SetImageIO(image_io_read);
 
         reader->Update();
-        typename ImageType::Pointer itkimage = reader->GetOutput();
+        typename image_t::Pointer itkimage = reader->GetOutput();
 
-        io::itk::moveFromItk<ImageType>(itkimage, param.dataImage);
+        io::itk::move_from_itk<image_t>(itkimage, _param.dataImage);
     }
 
     //// get pixel type from Header
-    static const core::type& getImageType(const std::string& imageFileName)
+    static const core::type& get_image_type(const std::string& _image_file_name)
     {
-        typename ::itk::NiftiImageIO::Pointer imageIO = ::itk::NiftiImageIO::New();
-        imageIO->SetFileName(imageFileName.c_str());
-        imageIO->ReadImageInformation();
-        auto itkType = imageIO->GetComponentType();
-        return sight::io::itk::ITK_TYPE_CONVERTER.at(itkType);
+        typename ::itk::NiftiImageIO::Pointer image_io = ::itk::NiftiImageIO::New();
+        image_io->SetFileName(_image_file_name.c_str());
+        image_io->ReadImageInformation();
+        auto itk_type = image_io->GetComponentType();
+        return sight::io::itk::ITK_TYPE_CONVERTER.at(itk_type);
     }
 };
 
@@ -107,7 +107,7 @@ void NiftiImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::type& type = NiftiLoaderFunctor::getImageType(file.string());
+    const core::type& type = NiftiLoaderFunctor::get_image_type(file.string());
 
     NiftiLoaderFunctor::Parameter param;
     param.filename  = file.string();

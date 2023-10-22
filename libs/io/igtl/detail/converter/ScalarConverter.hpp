@@ -43,7 +43,7 @@ namespace sight::io::igtl::detail::converter
  *
  * @brief class to manage conversion between data::integer of Float and igtl::RawMessage
  */
-template<typename ScalarType, typename FwDataObjectType>
+template<typename ScalarType, typename fw_data_object_t>
 class IO_IGTL_CLASS_API ScalarConverter : public base
 {
 public:
@@ -51,13 +51,13 @@ public:
     /// Constructor
     ScalarConverter()
     {
-        static_assert(std::is_base_of<data::object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::object, fw_data_object_t>::value);
     }
 
-    ScalarConverter(std::string a) :
-        m_igtlType(std::move(a))
+    ScalarConverter(std::string _a) :
+        M_IGTL_TYPE(std::move(_a))
     {
-        static_assert(std::is_base_of<data::object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::object, fw_data_object_t>::value);
     }
 
     /// Destructor
@@ -65,15 +65,15 @@ public:
     = default;
 
     /**
-     * @brief convert a igtl::RawMessage(which contain scalar) to a FwDataObjectType
+     * @brief convert a igtl::RawMessage(which contain scalar) to a fw_data_object_t
      *
      * @return an data::integer converted from an igtl::RawMessage
      */
-    [[nodiscard]] data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const override
+    [[nodiscard]] data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const override
     {
-        auto obj = std::make_shared<FwDataObjectType>();
+        auto obj = std::make_shared<fw_data_object_t>();
 
-        RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(src.GetPointer()));
+        RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(_src.GetPointer()));
         const ScalarType scalar = helper::ScalarToBytes<ScalarType>::fromBytes(msg->getMessage().data());
         obj->setValue(scalar);
 
@@ -85,13 +85,13 @@ public:
      *
      * @return an  igtl::RawMessage converted from an data::integer
      */
-    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override
+    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override
     {
         RawMessage::Pointer msg;
-        typename FwDataObjectType::csptr obj = std::dynamic_pointer_cast<const FwDataObjectType>(src);
+        typename fw_data_object_t::csptr obj = std::dynamic_pointer_cast<const fw_data_object_t>(_src);
 
-        msg = RawMessage::New(m_igtlType);
-        RawMessage::RawDataType content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
+        msg = RawMessage::New(M_IGTL_TYPE);
+        RawMessage::raw_data_t content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
         msg->append(content);
         return ::igtl::MessageBase::Pointer(msg); // NOLINT(modernize-return-braced-init-list)
     }
@@ -101,9 +101,9 @@ public:
      *
      * @return a smart pointer to an ScalarConverter
      */
-    static base::sptr New(std::string const& igtlScalarType)
+    static base::sptr New(std::string const& _igtl_scalar_type)
     {
-        return std::make_shared<ScalarConverter<ScalarType, FwDataObjectType> >(igtlScalarType);
+        return std::make_shared<ScalarConverter<ScalarType, fw_data_object_t> >(_igtl_scalar_type);
     }
 
     /**
@@ -111,9 +111,9 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    [[nodiscard]] const std::string& getIgtlType() const override
+    [[nodiscard]] const std::string& get_igtl_type() const override
     {
-        return m_igtlType;
+        return M_IGTL_TYPE;
     }
 
     /**
@@ -123,13 +123,13 @@ public:
      */
     [[nodiscard]] const std::string& getFwDataObjectType() const override
     {
-        return FwDataObjectType::classname();
+        return fw_data_object_t::classname();
     }
 
 protected:
 
     /// igtl type supported for conversion
-    const std::string m_igtlType;
+    const std::string M_IGTL_TYPE;
 };
 
 class IO_IGTL_CLASS_API IntConverter : public ScalarConverter<int,

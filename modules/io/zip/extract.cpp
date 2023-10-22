@@ -58,9 +58,9 @@ public:
     ExtractImpl& operator=(ExtractImpl&&)      = delete;
 
     /// Constructor
-    inline explicit ExtractImpl(extract* const reader) noexcept :
-        m_reader(reader),
-        m_job_created_signal(reader->new_signal<JobCreatedSignal>("jobCreated"))
+    inline explicit ExtractImpl(extract* const _reader) noexcept :
+        M_READER(_reader),
+        m_job_created_signal(_reader->new_signal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -68,7 +68,7 @@ public:
     inline ~ExtractImpl() noexcept = default;
 
     /// Pointer to the public interface
-    extract* const m_reader;
+    extract* const M_READER;
 
     /// Signal emitted when job created.
     JobCreatedSignal::sptr m_job_created_signal;
@@ -130,26 +130,26 @@ void extract::updating()
 
     if(m_pimpl->m_outputPath.empty())
     {
-        static auto defaultLocation = std::make_shared<core::location::single_folder>();
-        defaultLocation->set_folder("/");
+        static auto default_location = std::make_shared<core::location::single_folder>();
+        default_location->set_folder("/");
 
-        sight::ui::dialog::location locationDialog;
-        locationDialog.setTitle("Enter the folder where the files must be extracted");
+        sight::ui::dialog::location location_dialog;
+        location_dialog.setTitle("Enter the folder where the files must be extracted");
 
         if(!m_windowTitle.empty())
         {
-            locationDialog.setTitle(m_windowTitle);
+            location_dialog.setTitle(m_windowTitle);
         }
         else
         {
-            locationDialog.setTitle("Enter the output path");
+            location_dialog.setTitle("Enter the output path");
         }
 
-        locationDialog.setDefaultLocation(defaultLocation);
-        locationDialog.setOption(ui::dialog::location::WRITE);
-        locationDialog.setType(ui::dialog::location::FOLDER);
+        location_dialog.setDefaultLocation(default_location);
+        location_dialog.setOption(ui::dialog::location::WRITE);
+        location_dialog.setType(ui::dialog::location::FOLDER);
 
-        const auto result = std::dynamic_pointer_cast<core::location::single_folder>(locationDialog.show());
+        const auto result = std::dynamic_pointer_cast<core::location::single_folder>(location_dialog.show());
 
         if(result)
         {
@@ -184,8 +184,8 @@ void extract::updating()
             }
 
             m_pimpl->m_outputPath = result->get_folder();
-            defaultLocation->set_folder(result->get_folder().parent_path());
-            locationDialog.saveDefaultLocation(defaultLocation);
+            default_location->set_folder(result->get_folder().parent_path());
+            location_dialog.saveDefaultLocation(default_location);
         }
         else
         {
@@ -200,7 +200,7 @@ void extract::updating()
     const secure_string& password =
         [&]
         {
-            const secure_string& globalPassword = password_keeper::get_global_password();
+            const secure_string& global_password = password_keeper::get_global_password();
 
             if(m_pimpl->m_password_retry > 0)
             {
@@ -208,14 +208,14 @@ void extract::updating()
                     sight::ui::dialog::input::showInputDialog(
                         "Enter Password",
                         "Password:",
-                        globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
+                        global_password.c_str(), // NOLINT(readability-redundant-string-cstr)
                         sight::ui::dialog::input::EchoMode::PASSWORD
                     );
 
                 return secure_string(newPassword);
             }
 
-            if(globalPassword.empty())
+            if(global_password.empty())
             {
                 if constexpr(core::crypto::password_keeper::has_default_password())
                 {
@@ -223,26 +223,26 @@ void extract::updating()
                 }
             }
 
-            return globalPassword;
+            return global_password;
         }();
 
-    const auto readJob = std::make_shared<core::jobs::job>(
+    const auto read_job = std::make_shared<core::jobs::job>(
         "Reading " + filepath.string() + " file",
-        [&](core::jobs::job& runningJob)
+        [&](core::jobs::job& _running_job)
         {
-            const sight::ui::BusyCursor busyCursor;
-            runningJob.done_work(10);
+            const sight::ui::BusyCursor busy_cursor;
+            _running_job.done_work(10);
             sight::io::zip::ArchiveReader::get(
                 filepath,
                 Archive::ArchiveFormat::DEFAULT
             )->extractAllTo(m_pimpl->m_outputPath, password);
-            runningJob.done();
+            _running_job.done();
         },
         this->worker()
     );
 
     core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " reader");
-    jobs->add(readJob);
+    jobs->add(read_job);
     jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
@@ -267,16 +267,16 @@ void extract::updating()
         else
         {
             // Ask if the user want to retry.
-            sight::ui::dialog::message messageBox;
-            messageBox.setTitle("Wrong password");
-            messageBox.setMessage(
+            sight::ui::dialog::message message_box;
+            message_box.setTitle("Wrong password");
+            message_box.setMessage(
                 "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
             );
-            messageBox.setIcon(ui::dialog::message::QUESTION);
-            messageBox.addButton(ui::dialog::message::RETRY);
-            messageBox.addButton(ui::dialog::message::CANCEL);
+            message_box.setIcon(ui::dialog::message::QUESTION);
+            message_box.addButton(ui::dialog::message::RETRY);
+            message_box.addButton(ui::dialog::message::CANCEL);
 
-            if(messageBox.show() == sight::ui::dialog::message::RETRY)
+            if(message_box.show() == sight::ui::dialog::message::RETRY)
             {
                 m_pimpl->m_password_retry++;
                 updating();
@@ -314,26 +314,26 @@ void extract::updating()
 
 void extract::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::single_folder>();
-    defaultLocation->set_folder("/");
+    static auto default_location = std::make_shared<core::location::single_folder>();
+    default_location->set_folder("/");
 
-    sight::ui::dialog::location locationDialog;
+    sight::ui::dialog::location location_dialog;
 
     if(!m_windowTitle.empty())
     {
-        locationDialog.setTitle(m_windowTitle);
+        location_dialog.setTitle(m_windowTitle);
     }
     else
     {
-        locationDialog.setTitle("Enter archive file");
+        location_dialog.setTitle("Enter archive file");
     }
 
-    locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::dialog::location::READ);
-    locationDialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
-    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.setDefaultLocation(default_location);
+    location_dialog.setOption(ui::dialog::location::READ);
+    location_dialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
 
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
 
     if(result)
     {
@@ -341,8 +341,8 @@ void extract::openLocationDialog()
         set_file(filepath);
 
         // Save default location for later use
-        defaultLocation->set_folder(filepath.parent_path());
-        locationDialog.saveDefaultLocation(defaultLocation);
+        default_location->set_folder(filepath.parent_path());
+        location_dialog.saveDefaultLocation(default_location);
     }
     else
     {

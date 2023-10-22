@@ -77,10 +77,10 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Apply filter
     sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter::sptr filter =
@@ -90,12 +90,12 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     filter->setTag(DCM_AcquisitionNumber);
     filter->setTagValue("1");
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
-    dicomSeries = dicomSeriesContainer[0];
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicom_series_container.size());
+    dicom_series = dicom_series_container[0];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicomSeries->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicom_series->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

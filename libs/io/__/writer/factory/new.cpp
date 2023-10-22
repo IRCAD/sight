@@ -29,9 +29,9 @@ namespace sight::io::writer::factory
 
 //------------------------------------------------------------------------------
 
-io::writer::object_writer::sptr make(const io::writer::registry::key_t& classname)
+io::writer::object_writer::sptr make(const io::writer::registry::key_t& _classname)
 {
-    return io::writer::registry::get()->create(classname);
+    return io::writer::registry::get()->create(_classname);
 }
 
 } // namespace sight::io::writer::factory

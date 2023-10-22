@@ -36,29 +36,29 @@ namespace sight::io::session::detail::calibration_info
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto calibrationInfo = helper::safe_cast<data::calibration_info>(object);
+    const auto calibration_info = helper::safe_cast<data::calibration_info>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::calibration_info>(tree, 1);
+    helper::write_version<data::calibration_info>(_tree, 1);
 
     // Images
     std::size_t index = 0;
-    for(const auto& image : calibrationInfo->getImageContainer())
+    for(const auto& image : calibration_info->getImageContainer())
     {
-        children[image->get_classname() + std::to_string(index++)] = image;
+        _children[image->get_classname() + std::to_string(index++)] = image;
     }
 
     // PointLists
     index = 0;
-    for(const auto& pointList : calibrationInfo->getPointListContainer())
+    for(const auto& point_list : calibration_info->getPointListContainer())
     {
-        children[pointList->get_classname() + std::to_string(index++)] = pointList;
+        _children[point_list->get_classname() + std::to_string(index++)] = point_list;
     }
 }
 
@@ -66,42 +66,42 @@ inline static void write(
 
 inline static data::calibration_info::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto calibrationInfo = helper::cast_or_create<data::calibration_info>(object);
+    auto calibration_info = helper::cast_or_create<data::calibration_info>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::calibration_info>(tree, 0, 1);
+    helper::read_version<data::calibration_info>(_tree, 0, 1);
 
     // Deserialize children
     // Clearing is required in case the object is reused
-    calibrationInfo->resetRecords();
+    calibration_info->resetRecords();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
         // Find the image ad the associated pointList
-        const std::string& indexString = std::to_string(index);
-        const auto& imageIt            = children.find(data::image::classname() + indexString);
-        const auto& pointListIt        = children.find(data::point_list::classname() + indexString);
+        const std::string& index_string = std::to_string(index);
+        const auto& image_it            = _children.find(data::image::classname() + index_string);
+        const auto& point_list_it       = _children.find(data::point_list::classname() + index_string);
 
         // If we didn't found a matching image and pointList, exit the loop
-        if(imageIt == children.cend() || pointListIt == children.cend())
+        if(image_it == _children.cend() || point_list_it == _children.cend())
         {
             break;
         }
 
-        auto image     = std::dynamic_pointer_cast<data::image>(imageIt->second);
-        auto pointList = std::dynamic_pointer_cast<data::point_list>(pointListIt->second);
+        auto image      = std::dynamic_pointer_cast<data::image>(image_it->second);
+        auto point_list = std::dynamic_pointer_cast<data::point_list>(point_list_it->second);
 
-        calibrationInfo->addRecord(image, pointList);
+        calibration_info->addRecord(image, point_list);
     }
 
-    return calibrationInfo;
+    return calibration_info;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::calibration_info, write, read);

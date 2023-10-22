@@ -54,9 +54,9 @@ const core::com::slots::key_t aruco_tracker::SET_PARAMETER_SLOT = "setParameter"
 //-----------------------------------------------------------------------------
 
 aruco_tracker::aruco_tracker() noexcept :
-    m_sigDetectionDone(new_signal<DetectionDoneSignalType>(DETECTION_DONE_SIG))
+    m_sigDetectionDone(new_signal<detection_done_signal_t>(DETECTION_DONE_SIG))
 {
-    new_signal<MarkerDetectedSignalType>(MARKER_DETECTED_SIG);
+    new_signal<marker_detected_signal_t>(MARKER_DETECTED_SIG);
 
     new_slot(SET_PARAMETER_SLOT, &aruco_tracker::setParameter, this);
 
@@ -105,30 +105,30 @@ void aruco_tracker::configuring()
 
     const auto config = this->get_config();
 
-    const auto& trackCfg = config.get_child("track");
+    const auto& track_cfg = config.get_child("track");
 
     // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_FOREACH(const auto& elt, trackCfg.equal_range("marker"))
+    BOOST_FOREACH(const auto& elt, track_cfg.equal_range("marker"))
     {
-        const auto& cfg         = elt.second;
-        const auto markersIDStr = cfg.get<std::string>("<xmlattr>.id");
-        boost::tokenizer<> tok(markersIDStr);
-        MarkerIDType markersID;
+        const auto& cfg           = elt.second;
+        const auto markers_id_str = cfg.get<std::string>("<xmlattr>.id");
+        boost::tokenizer<> tok(markers_id_str);
+        marker_id_t markers_id;
         for(const auto& it : tok)
         {
             const int id = boost::lexical_cast<int>(it);
-            markersID.push_back(id);
+            markers_id.push_back(id);
         }
 
-        m_markers.push_back(markersID);
+        m_markers.push_back(markers_id);
     }
 
     // Get the debug markers flag
     m_debugMarkers = config.get<bool>("debugMarkers", false);
 
     // Do corner refinement ?
-    const bool doCornerRefinement = config.get<bool>("cornerRefinement", true);
-    m_detectorParams->cornerRefinementMethod = (doCornerRefinement
+    const bool do_corner_refinement = config.get<bool>("cornerRefinement", true);
+    m_detectorParams->cornerRefinementMethod = (do_corner_refinement
                                                 ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
                                                 : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
 }
@@ -161,79 +161,79 @@ void aruco_tracker::updating()
 
 //-----------------------------------------------------------------------------
 
-void aruco_tracker::tracking(core::hires_clock::type& timestamp)
+void aruco_tracker::tracking(core::hires_clock::type& _timestamp)
 {
     if(!m_isInitialized)
     {
-        const auto arCam = m_camera.lock();
+        const auto ar_cam = m_camera.lock();
 
         std::tie(m_cameraParams.intrinsic, m_cameraParams.size, m_cameraParams.distorsion) =
-            io::opencv::camera::copyToCv(arCam.get_shared());
+            io::opencv::camera::copyToCv(ar_cam.get_shared());
 
         m_isInitialized = true;
     }
 
-    cv::Mat inImage;
+    cv::Mat in_image;
     auto frame = m_frame.lock();
     if(frame)
     {
-        inImage = io::opencv::image::moveToCv(frame.get_shared());
+        in_image = io::opencv::image::move_to_cv(frame.get_shared());
     }
 
-    if(!inImage.empty())
+    if(!in_image.empty())
     {
         // Check number of components of image.
-        const auto nbOfComponents = inImage.channels();
+        const auto nb_of_components = in_image.channels();
 
         cv::Mat grey;
         cv::Mat bgr;
 
-        if(nbOfComponents == 4) // RGBA or BGRA.
+        if(nb_of_components == 4) // RGBA or BGRA.
         {
-            cv::cvtColor(inImage, grey, cv::COLOR_BGRA2GRAY);
+            cv::cvtColor(in_image, grey, cv::COLOR_BGRA2GRAY);
         }
-        else if(nbOfComponents == 3) // RGB or BGR.
+        else if(nb_of_components == 3) // RGB or BGR.
         {
-            cv::cvtColor(inImage, grey, cv::COLOR_BGR2GRAY);
+            cv::cvtColor(in_image, grey, cv::COLOR_BGR2GRAY);
         }
-        else if(nbOfComponents == 1) // Grey level.
+        else if(nb_of_components == 1) // Grey level.
         {
-            grey = inImage;
+            grey = in_image;
         }
         // Discard "exotic" values of components (0, 2, > 4).
         else
         {
             SIGHT_ERROR(
-                "Invalid number of components ( " + std::to_string(nbOfComponents) + " ) for : '"
+                "Invalid number of components ( " + std::to_string(nb_of_components) + " ) for : '"
                 << s_FRAME_INOUT << "' (accepted values are 1, 3 or 4). "
             );
 
             return;
         }
 
-        bool foundMarker = false;
-        std::vector<std::vector<cv::Point2f> > detectedMarkers;
-        std::vector<int> detectedMarkersIds;
+        bool found_marker = false;
+        std::vector<std::vector<cv::Point2f> > detected_markers;
+        std::vector<int> detected_markers_ids;
 
-        cv::Mat undistortGrey;
+        cv::Mat undistort_grey;
         {
-            const auto arCam = m_camera.lock();
-            if(arCam->getIsCalibrated())
+            const auto ar_cam = m_camera.lock();
+            if(ar_cam->getIsCalibrated())
             {
-                cv::undistort(grey, undistortGrey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+                cv::undistort(grey, undistort_grey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
             }
             else
             {
-                undistortGrey = grey;
+                undistort_grey = grey;
             }
         }
 
         // Ok, let's detect
         cv::aruco::detectMarkers(
-            undistortGrey,
+            undistort_grey,
             m_dictionary,
-            detectedMarkers,
-            detectedMarkersIds,
+            detected_markers,
+            detected_markers_ids,
             m_detectorParams,
             cv::noArray()
         );
@@ -241,62 +241,62 @@ void aruco_tracker::tracking(core::hires_clock::type& timestamp)
         //Note: This draws all detected markers
         if(m_debugMarkers)
         {
-            if(nbOfComponents == 4) // RGBA or BGRA.
+            if(nb_of_components == 4) // RGBA or BGRA.
             {
                 // since drawDetectedMarkers does not handle 4 channels cv::mat
-                cv::cvtColor(inImage, bgr, cv::COLOR_BGRA2BGR);
-                cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
-                cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
+                cv::cvtColor(in_image, bgr, cv::COLOR_BGRA2BGR);
+                cv::aruco::drawDetectedMarkers(bgr, detected_markers, detected_markers_ids);
+                cv::cvtColor(bgr, in_image, cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
             // It is useless to test other values since "wrong" number of components has previously been discarded.
             else
             {
-                cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);
+                cv::aruco::drawDetectedMarkers(in_image, detected_markers, detected_markers_ids);
             }
         }
 
-        std::size_t tagTLIndex = 0;
-        for(const auto& markersID : m_markers)
+        std::size_t tag_tl_index = 0;
+        for(const auto& markers_id : m_markers)
         {
-            for(const auto& markerID : markersID)
+            for(const auto& marker_id : markers_id)
             {
-                for(unsigned int i = 0 ; i < detectedMarkersIds.size() ; i++)
+                for(unsigned int i = 0 ; i < detected_markers_ids.size() ; i++)
                 {
-                    if(detectedMarkersIds[i] == markerID)
+                    if(detected_markers_ids[i] == marker_id)
                     {
-                        foundMarker = true;
+                        found_marker = true;
 
                         // Push matrix
-                        auto markerMap = m_markerMap[tagTLIndex].lock();
-                        SIGHT_ASSERT("Marker map not found", markerMap);
+                        auto marker_map = m_markerMap[tag_tl_index].lock();
+                        SIGHT_ASSERT("Marker map not found", marker_map);
 
-                        data::marker_map::MarkerType marker;
+                        data::marker_map::marker_t marker;
                         marker.resize(4);
                         for(std::size_t j = 0 ; j < 4 ; ++j)
                         {
-                            marker[j][0] = detectedMarkers[i][j].x;
-                            marker[j][1] = detectedMarkers[i][j].y;
+                            marker[j][0] = detected_markers[i][j].x;
+                            marker[j][1] = detected_markers[i][j].y;
                         }
 
-                        markerMap->setMarker(std::to_string(markerID), marker);
+                        marker_map->setMarker(std::to_string(marker_id), marker);
                     }
                 }
             }
 
-            auto markerMap = m_markerMap[tagTLIndex].lock();
+            auto marker_map = m_markerMap[tag_tl_index].lock();
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
-            auto sig = markerMap->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig = marker_map->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
 
-            this->signal<MarkerDetectedSignalType>(MARKER_DETECTED_SIG)->async_emit(foundMarker);
+            this->signal<marker_detected_signal_t>(MARKER_DETECTED_SIG)->async_emit(found_marker);
 
-            ++tagTLIndex;
+            ++tag_tl_index;
         }
 
         // Emit
-        m_sigDetectionDone->async_emit(timestamp);
+        m_sigDetectionDone->async_emit(_timestamp);
     }
 }
 

@@ -42,17 +42,17 @@ void matrix4_reader::read()
 
     assert(std::filesystem::exists(file));
 
-    std::ifstream inFile(file.string().c_str(), std::ifstream::in);
-    assert(inFile.good());
+    std::ifstream in_file(file.string().c_str(), std::ifstream::in);
+    assert(in_file.good());
 
-    char readValue = 0;
-    double value   = NAN;
+    char read_value = 0;
+    double value    = NAN;
 
-    while(!inFile.eof() && readValue < 16)
+    while(!in_file.eof() && read_value < 16)
     {
-        inFile >> value;
-        (*this->getConcreteObject())[static_cast<std::size_t>(readValue)] = value;
-        readValue++;
+        in_file >> value;
+        (*this->getConcreteObject())[static_cast<std::size_t>(read_value)] = value;
+        read_value++;
     }
 
     SIGHT_ASSERT("Wrong matrix size", this->getConcreteObject()->size() == 16);

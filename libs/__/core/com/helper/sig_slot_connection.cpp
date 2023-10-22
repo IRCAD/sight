@@ -50,35 +50,35 @@ sig_slot_connection::~sig_slot_connection()
 //-----------------------------------------------------------------------------
 
 void sig_slot_connection::connect(
-    const core::com::has_signals::csptr& has_signals,
-    core::com::signals::signal_key_type signal_key,
-    const core::com::has_slots::csptr& has_slots,
-    core::com::slots::key_t slot_key
+    const core::com::has_signals::csptr& _has_signals,
+    core::com::signals::signal_key_type _signal_key,
+    const core::com::has_slots::csptr& _has_slots,
+    core::com::slots::key_t _slot_key
 )
 {
     try
     {
-        core::com::connection connection = has_signals->signal(signal_key)->connect(has_slots->slot(slot_key));
+        core::com::connection connection = _has_signals->signal(_signal_key)->connect(_has_slots->slot(_slot_key));
         m_connections.push_back(connection);
     }
     catch(core::com::exception::bad_slot& e)
     {
         SIGHT_ERROR(
-            std::string("Can't connect signal '") + signal_key + "' with slot '" + slot_key
+            std::string("Can't connect signal '") + _signal_key + "' with slot '" + _slot_key
             + "' : " << e.what() << "."
         );
     }
     catch(core::com::exception::already_connected& e)
     {
-        const auto source = std::dynamic_pointer_cast<const core::tools::object>(has_signals);
+        const auto source = std::dynamic_pointer_cast<const core::tools::object>(_has_signals);
         auto source_id    = source ? source->get_id() : "";
 
-        const auto target = std::dynamic_pointer_cast<const core::tools::object>(has_slots);
+        const auto target = std::dynamic_pointer_cast<const core::tools::object>(_has_slots);
         auto target_id    = target ? target->get_id() : "";
 
         SIGHT_ERROR(
-            std::string("Can't connect signal '") + source_id + "/" + signal_key + "' with slot '"
-            + target_id + "/" + slot_key + "' : " << e.what() << "."
+            std::string("Can't connect signal '") + source_id + "/" + _signal_key + "' with slot '"
+            + target_id + "/" + _slot_key + "' : " << e.what() << "."
         );
     }
 }
@@ -86,19 +86,19 @@ void sig_slot_connection::connect(
 //-----------------------------------------------------------------------------
 
 void sig_slot_connection::connect(
-    const core::com::has_signals::csptr& has_signals,
-    const core::com::has_slots::csptr& has_slots,
-    const key_connections_t& key_connections
+    const core::com::has_signals::csptr& _has_signals,
+    const core::com::has_slots::csptr& _has_slots,
+    const key_connections_t& _key_connections
 )
 {
-    SIGHT_ASSERT("Signal source is NULL", has_signals);
-    SIGHT_ASSERT("Slot destination is NULL", has_slots);
+    SIGHT_ASSERT("Signal source is NULL", _has_signals);
+    SIGHT_ASSERT("Slot destination is NULL", _has_slots);
 
-    for(const key_connection_t& keys : key_connections)
+    for(const key_connection_t& keys : _key_connections)
     {
-        auto signal = has_signals->signal(keys.first);
+        auto signal = _has_signals->signal(keys.first);
         SIGHT_ASSERT("Signal '" + keys.first + "' not found.", signal);
-        auto slot = has_slots->slot(keys.second);
+        auto slot = _has_slots->slot(keys.second);
         SIGHT_ASSERT("Slot '" + keys.second + "' not found.", slot);
 
         try
@@ -115,10 +115,10 @@ void sig_slot_connection::connect(
         }
         catch(core::com::exception::already_connected& e)
         {
-            const auto source = std::dynamic_pointer_cast<const core::tools::object>(has_signals);
+            const auto source = std::dynamic_pointer_cast<const core::tools::object>(_has_signals);
             auto source_id    = source ? source->get_id() : "";
 
-            const auto target = std::dynamic_pointer_cast<const core::tools::object>(has_slots);
+            const auto target = std::dynamic_pointer_cast<const core::tools::object>(_has_slots);
             auto target_id    = target ? target->get_id() : "";
 
             SIGHT_ERROR(
@@ -133,9 +133,9 @@ void sig_slot_connection::connect(
 
 //-----------------------------------------------------------------------------
 
-void sig_slot_connection::add_connection(core::com::connection connection)
+void sig_slot_connection::add_connection(core::com::connection _connection)
 {
-    m_connections.push_back(connection);
+    m_connections.push_back(_connection);
 }
 
 //-----------------------------------------------------------------------------

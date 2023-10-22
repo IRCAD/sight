@@ -35,21 +35,21 @@ namespace sight::io::session::detail::structure_traits_dictionary
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto structureTraitsDictionary = helper::safe_cast<data::structure_traits_dictionary>(object);
+    const auto structure_traits_dictionary = helper::safe_cast<data::structure_traits_dictionary>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::structure_traits_dictionary>(tree, 1);
+    helper::write_version<data::structure_traits_dictionary>(_tree, 1);
 
     // Serialize attributes
-    for(const auto& name : structureTraitsDictionary->getStructureTypeNames())
+    for(const auto& name : structure_traits_dictionary->getStructureTypeNames())
     {
-        children[name] = structureTraitsDictionary->getStructure(name);
+        _children[name] = structure_traits_dictionary->getStructure(name);
     }
 }
 
@@ -57,22 +57,22 @@ inline static void write(
 
 inline static data::structure_traits_dictionary::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto structureTraitsDictionary = helper::cast_or_create<data::structure_traits_dictionary>(object);
+    auto structure_traits_dictionary = helper::cast_or_create<data::structure_traits_dictionary>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::structure_traits_dictionary>(tree, 0, 1);
+    helper::read_version<data::structure_traits_dictionary>(_tree, 0, 1);
 
     // Deserialize attributes
     std::map<std::string, data::structure_traits::sptr> structures;
 
-    for(const auto& child : children)
+    for(const auto& child : _children)
     {
         auto structure = std::dynamic_pointer_cast<data::structure_traits>(child.second);
         if(structure)
@@ -81,8 +81,8 @@ inline static data::structure_traits_dictionary::sptr read(
         }
     }
 
-    structureTraitsDictionary->setStructureTraitsMap(structures);
-    return structureTraitsDictionary;
+    structure_traits_dictionary->setStructureTraitsMap(structures);
+    return structure_traits_dictionary;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::structure_traits_dictionary, write, read);

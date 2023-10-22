@@ -90,7 +90,7 @@ protected:
 
 private:
 
-    enum class ModeType : std::int8_t
+    enum class mode_t : std::int8_t
     {
         START,
         UPDATE,
@@ -100,7 +100,7 @@ private:
     void make_copy();
 
     /// Determines when the data is copied (start or update)
-    ModeType m_mode {ModeType::UPDATE};
+    mode_t m_mode {mode_t::UPDATE};
 
     sight::data::ptr<sight::data::object, sight::data::Access::in> m_source {this, "source"};
     sight::data::ptr<sight::data::object, sight::data::Access::inout> m_target {this, "target", false, true};

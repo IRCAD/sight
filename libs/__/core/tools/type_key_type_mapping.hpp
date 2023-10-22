@@ -44,50 +44,50 @@ namespace sight::core::tools
  */
 template<>
 CORE_API
-bool is_mapping<std::uint8_t>(const type& type);
+bool is_mapping<std::uint8_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::uint16_t>(const type& type);
+bool is_mapping<std::uint16_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::uint32_t>(const type& type);
+bool is_mapping<std::uint32_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::uint64_t>(const type& type);
+bool is_mapping<std::uint64_t>(const type& _type);
 
 // FIXED PRECISION SIGNED
 template<>
 CORE_API
-bool is_mapping<std::int8_t>(const type& type);
+bool is_mapping<std::int8_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::int16_t>(const type& type);
+bool is_mapping<std::int16_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::int32_t>(const type& type);
+bool is_mapping<std::int32_t>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<std::int64_t>(const type& type);
+bool is_mapping<std::int64_t>(const type& _type);
 
 // FLOATING PRECISION
 template<>
 CORE_API
-bool is_mapping<float>(const type& type);
+bool is_mapping<float>(const type& _type);
 
 template<>
 CORE_API
-bool is_mapping<double>(const type& type);
+bool is_mapping<double>(const type& _type);
 
 // MISC
 template<>
 CORE_API
-bool is_mapping<std::string>(const type& type);
+bool is_mapping<std::string>(const type& _type);
 
 ///@}
 ///

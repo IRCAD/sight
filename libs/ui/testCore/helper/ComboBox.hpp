@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class ComboBox
@@ -38,7 +38,7 @@ public:
      * @param comboBox How to get the combo box to modify
      * @param text The text of the entry to be selected
      */
-    GUITEST_API static void select(Tester& tester, const Select& comboBox, const std::string& text);
+    GUITEST_API static void select(Tester& _tester, const Select& _combo_box, const std::string& _text);
 
     /**
      * Check whether a combo box has the good value
@@ -46,7 +46,7 @@ public:
      * @param comboBox How to get the combo box to check
      * @param expected The text the combo box must have
      */
-    GUITEST_API static void valueEquals(Tester& tester, const Select& comboBox, const std::string& expected);
+    GUITEST_API static void valueEquals(Tester& _tester, const Select& _combo_box, const std::string& _expected);
 };
 
 } // namespace sight::ui::testCore::helper

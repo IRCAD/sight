@@ -38,13 +38,13 @@ class CORE_CLASS_API raw : public factory
 {
 public:
 
-    raw(const std::filesystem::path& path) :
-        m_path(path)
+    raw(const std::filesystem::path& _path) :
+        m_path(_path)
     {
     }
 
-    raw(core::memory::file_holder path) :
-        m_path(std::move(path))
+    raw(core::memory::file_holder _path) :
+        m_path(std::move(_path))
     {
     }
 

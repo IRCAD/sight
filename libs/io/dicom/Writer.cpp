@@ -46,21 +46,21 @@ namespace sight::io::dicom
 
 //------------------------------------------------------------------------------
 
-inline static void writeEnhancedUSVolume(
-    const data::image_series& image_series,
-    const std::string& filepath,
-    Writer::TransferSyntax transfer_syntax,
-    [[maybe_unused]] bool force_cpu
+inline static void write_enhanced_us_volume(
+    const data::image_series& _image_series,
+    const std::string& _filepath,
+    Writer::TransferSyntax _transfer_syntax,
+    [[maybe_unused]] bool _force_cpu
 )
 {
     // Create the writer
     gdcm::ImageWriter writer;
-    writer.SetFileName(filepath.c_str());
-    writer.GetFile().SetDataSet(image_series.getDataSet());
+    writer.SetFileName(_filepath.c_str());
+    writer.GetFile().SetDataSet(_image_series.getDataSet());
 
     auto& gdcm_image = writer.GetImage();
 
-    const auto& image_sizes = image_series.size();
+    const auto& image_sizes = _image_series.size();
 
     // Set the dimension to 3. This magically allows to write multi-frame images. Or at least, they are saved and we can
     // read them back.
@@ -76,28 +76,28 @@ inline static void writeEnhancedUSVolume(
     gdcm_image.SetDimensions(dimensions.data());
 
     // Orientation
-    if(const auto& orientation_volume = image_series.getImageOrientationVolume(); orientation_volume.size() == 6)
+    if(const auto& orientation_volume = _image_series.getImageOrientationVolume(); orientation_volume.size() == 6)
     {
         gdcm_image.SetDirectionCosines(orientation_volume.data());
     }
-    else if(const auto& orientation_patient = image_series.getImageOrientationPatient();
+    else if(const auto& orientation_patient = _image_series.getImageOrientationPatient();
             orientation_patient.size() == 6)
     {
         gdcm_image.SetDirectionCosines(orientation_patient.data());
     }
 
     // Position
-    if(const auto& position_volume = image_series.getImagePositionVolume(); position_volume.size() == 3)
+    if(const auto& position_volume = _image_series.getImagePositionVolume(); position_volume.size() == 3)
     {
         gdcm_image.SetOrigin(position_volume.data());
     }
-    else if(const auto& position_patient = image_series.getImagePositionPatient(); position_patient.size() == 6)
+    else if(const auto& position_patient = _image_series.getImagePositionPatient(); position_patient.size() == 6)
     {
         gdcm_image.SetOrigin(position_patient.data());
     }
 
     // Pixel Format
-    switch(image_series.getType())
+    switch(_image_series.getType())
     {
         case core::type::INT8:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::INT8);
@@ -140,11 +140,11 @@ inline static void writeEnhancedUSVolume(
             break;
 
         default:
-            SIGHT_THROW("Unsupported type: '" << image_series.getType().name() << "'");
+            SIGHT_THROW("Unsupported type: '" << _image_series.getType().name() << "'");
     }
 
     // Photometric Interpretation
-    switch(image_series.getPixelFormat())
+    switch(_image_series.getPixelFormat())
     {
         case data::image::PixelFormat::GRAY_SCALE:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
@@ -162,100 +162,100 @@ inline static void writeEnhancedUSVolume(
             break;
 
         default:
-            SIGHT_THROW("Unsupported pixel format: '" << image_series.getPixelFormat() << "'");
+            SIGHT_THROW("Unsupported pixel format: '" << _image_series.getPixelFormat() << "'");
     }
 
     // Planar Configuration is always 0 (R1G1B1 R2G2B2 ...)
     gdcm_image.SetPlanarConfiguration(0);
 
     // Spacing
-    gdcm_image.SetSpacing(image_series.getSpacing().data());
+    gdcm_image.SetSpacing(_image_series.getSpacing().data());
 
     // Dump the image data to GDCM
     /// @note This seems to be sub-optimal as we are going to recompress the data in JPEG2000
     /// @todo Find a way to avoid this double copying of possibly huge image data
-    const auto image_locked  = image_series.dump_lock();
-    const auto size_in_bytes = image_series.getSizeInBytes();
+    const auto image_locked  = _image_series.dump_lock();
+    const auto size_in_bytes = _image_series.getSizeInBytes();
 
-    SIGHT_THROW_IF("Size in Bytes is greater than 4GB", image_series.getSizeInBytes() > 0xFFFFFFFF);
+    SIGHT_THROW_IF("Size in Bytes is greater than 4GB", _image_series.getSizeInBytes() > 0xFFFFFFFF);
 
     using PIXEL_DATA = data::dicom::attribute::Attribute<data::dicom::attribute::Keyword::PixelData>;
     gdcm::DataElement pixeldata(gdcm::Tag(PIXEL_DATA::s_group, PIXEL_DATA::s_element));
 
     pixeldata.SetByteValue(
-        reinterpret_cast<const char*>(image_series.buffer()),
+        reinterpret_cast<const char*>(_image_series.buffer()),
         std::uint32_t(size_in_bytes)
     );
 
     gdcm_image.SetDataElement(pixeldata);
 
     std::unique_ptr<codec::NvJpeg2K> nvjpeg2k_codec;
-    gdcm::ImageChangeTransferSyntax transferSyntaxChanger;
+    gdcm::ImageChangeTransferSyntax transfer_syntax_changer;
 
-    switch(transfer_syntax)
+    switch(_transfer_syntax)
     {
         case Writer::TransferSyntax::RAW:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
             break;
 
         case Writer::TransferSyntax::RLE:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::RLELossless);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::RLELossless);
             break;
 
         case Writer::TransferSyntax::JPEG:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGBaselineProcess1);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEGBaselineProcess1);
             break;
 
         case Writer::TransferSyntax::JPEG_LOSSLESS:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLosslessProcess14_1);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEGLosslessProcess14_1);
             break;
 
         case Writer::TransferSyntax::JPEG_LS_NEARLOSSLESS:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSNearLossless);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSNearLossless);
             break;
 
         case Writer::TransferSyntax::JPEG_LS_LOSSLESS:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSLossless);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSLossless);
             break;
 
         case Writer::TransferSyntax::JPEG2000:
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000);
             break;
 
         default:
         {
             // Default is JPEG2000 lossless
-            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-            if(!force_cpu)
+            if(!_force_cpu)
             {
                 SIGHT_THROW_IF(
                     "nvJPEG2000 is not available, but the support has been compiled in. "
                     "Check your nvJPEG2000 library installation",
-                    !io::bitmap::nvJPEG2K()
+                    !io::bitmap::nv_jpeg_2k()
                 );
 
                 nvjpeg2k_codec = std::make_unique<codec::NvJpeg2K>();
-                transferSyntaxChanger.SetUserCodec(nvjpeg2k_codec.get());
+                transfer_syntax_changer.SetUserCodec(nvjpeg2k_codec.get());
             }
 #endif
             break;
         }
     }
 
-    transferSyntaxChanger.SetInput(gdcm_image);
-    transferSyntaxChanger.Change();
+    transfer_syntax_changer.SetInput(gdcm_image);
+    transfer_syntax_changer.Change();
 
     // This is hackish, but the only way to get the correct Photometric Interpretation without having to deep copying
     // the whole image. Anyway, this should have been done in gdcm::ImageChangeTransferSyntax.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    auto& changed_gdcm_image = const_cast<gdcm::Image&>(transferSyntaxChanger.GetOutput());
+    auto& changed_gdcm_image = const_cast<gdcm::Image&>(transfer_syntax_changer.GetOutput());
 
     // Correct the Photometric Interpretation (This avoid a warning when GDCM decodes back the image)
-    if(image_series.getPixelFormat() != data::image::PixelFormat::GRAY_SCALE)
+    if(_image_series.getPixelFormat() != data::image::PixelFormat::GRAY_SCALE)
     {
-        switch(transfer_syntax)
+        switch(_transfer_syntax)
         {
             case Writer::TransferSyntax::JPEG:
             case Writer::TransferSyntax::JPEG_LS_NEARLOSSLESS:
@@ -285,14 +285,17 @@ inline static void writeEnhancedUSVolume(
 
 //------------------------------------------------------------------------------
 
-static void writeSpatialFiducials(const data::fiducials_series& fiducialsSeries, const std::filesystem::path& imagePath)
+static void write_spatial_fiducials(
+    const data::fiducials_series& _fiducials_series,
+    const std::filesystem::path& _image_path
+)
 {
     gdcm::Writer writer;
-    std::filesystem::path folder = imagePath.parent_path();
-    std::string filename         = imagePath.stem().string() + "_fiducials.dcm";
+    std::filesystem::path folder = _image_path.parent_path();
+    std::string filename         = _image_path.stem().string() + "_fiducials.dcm";
 
     writer.SetFileName((folder / filename).string().c_str());
-    writer.GetFile().SetDataSet(fiducialsSeries.getDataSet());
+    writer.GetFile().SetDataSet(_fiducials_series.getDataSet());
     // Dummy value else GDCM complains. TransferSyntax shouldn't be required since Fiducials aren't an image.
     writer.GetFile().GetHeader().SetDataSetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
     writer.Write();
@@ -310,8 +313,8 @@ public:
     WriterImpl& operator=(WriterImpl&&)      = delete;
 
     /// Constructor
-    inline explicit WriterImpl(Writer* const writer) noexcept :
-        m_writer(writer)
+    inline explicit WriterImpl(Writer* const _writer) noexcept :
+        M_WRITER(_writer)
     {
     }
 
@@ -319,7 +322,7 @@ public:
     inline ~WriterImpl() noexcept = default;
 
     /// Pointer to the public interface
-    Writer* const m_writer;
+    Writer* const M_WRITER;
 
     //------------------------------------------------------------------------------
 
@@ -330,11 +333,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void progress(std::uint64_t units) const
+    inline void progress(std::uint64_t _units) const
     {
         if(m_job)
         {
-            m_job->done_work(units);
+            m_job->done_work(_units);
         }
     }
 
@@ -434,7 +437,12 @@ void Writer::write()
                 !image_series
             );
 
-            writeEnhancedUSVolume(*image_series, filepath.string(), m_pimpl->m_transfer_syntax, m_pimpl->m_force_cpu);
+            write_enhanced_us_volume(
+                *image_series,
+                filepath.string(),
+                m_pimpl->m_transfer_syntax,
+                m_pimpl->m_force_cpu
+            );
         }
         else
         {
@@ -450,18 +458,18 @@ void Writer::write()
             }
         }
 
-        if(const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series))
+        if(const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series))
         {
-            if(imageSeries->hasFiducials())
+            if(image_series->hasFiducials())
             {
-                writeSpatialFiducials(*imageSeries->getFiducials(), filepath);
+                write_spatial_fiducials(*image_series->getFiducials(), filepath);
             }
         }
-        else if(const auto& modelSeries = std::dynamic_pointer_cast<data::model_series>(series))
+        else if(const auto& model_series = std::dynamic_pointer_cast<data::model_series>(series))
         {
-            if(modelSeries->hasFiducials())
+            if(model_series->hasFiducials())
             {
-                writeSpatialFiducials(*modelSeries->getFiducials(), filepath);
+                write_spatial_fiducials(*model_series->getFiducials(), filepath);
             }
         }
 
@@ -479,26 +487,26 @@ core::jobs::base::sptr Writer::getJob() const
 
 //------------------------------------------------------------------------------
 
-void Writer::setJob(core::jobs::job::sptr job)
+void Writer::setJob(core::jobs::job::sptr _job)
 {
-    SIGHT_ASSERT("Some work have already be reported.", job->get_done_work_units() == 0);
-    m_pimpl->m_job = job;
+    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
+    m_pimpl->m_job = _job;
     m_pimpl->m_job->set_total_work_units(100);
     m_pimpl->m_job->done_work(10);
 }
 
 //------------------------------------------------------------------------------
 
-void Writer::forceCPU(bool force)
+void Writer::forceCPU(bool _force)
 {
-    m_pimpl->m_force_cpu = force;
+    m_pimpl->m_force_cpu = _force;
 }
 
 //------------------------------------------------------------------------------
 
-void Writer::setTransferSyntax(Writer::TransferSyntax transferSyntax)
+void Writer::setTransferSyntax(Writer::TransferSyntax _transfer_syntax)
 {
-    m_pimpl->m_transfer_syntax = transferSyntax;
+    m_pimpl->m_transfer_syntax = _transfer_syntax;
 }
 
 } // namespace sight::io::dicom

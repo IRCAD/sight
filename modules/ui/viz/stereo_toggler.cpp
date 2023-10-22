@@ -33,7 +33,7 @@ static const core::com::signals::key_t STEREO_ACTIVE_SIG = "stereoActive";
 //------------------------------------------------------------------------------
 
 stereo_toggler::stereo_toggler() :
-    m_stereoActiveSig(new_signal<StereoActiveSigType>(STEREO_ACTIVE_SIG))
+    m_stereoActiveSig(new_signal<stereo_active_sig_t>(STEREO_ACTIVE_SIG))
 {
 }
 
@@ -53,23 +53,23 @@ void stereo_toggler::configuring()
     m_layerId = config.get<std::string>("layer");
     SIGHT_ASSERT("Empty layer ID.", !m_layerId.empty());
 
-    const std::string stereoMode = config.get<std::string>("stereoMode", "");
+    const std::string stereo_mode = config.get<std::string>("stereoMode", "");
 
-    if(stereoMode == "interlaced")
+    if(stereo_mode == "interlaced")
     {
-        m_stereoMode = StereoModeType::STEREO;
+        m_stereoMode = stereo_mode_t::STEREO;
     }
-    else if(stereoMode == "AutoStereo5")
+    else if(stereo_mode == "AutoStereo5")
     {
-        m_stereoMode = StereoModeType::AUTOSTEREO_5;
+        m_stereoMode = stereo_mode_t::AUTOSTEREO_5;
     }
-    else if(stereoMode == "AutoStereo8")
+    else if(stereo_mode == "AutoStereo8")
     {
-        m_stereoMode = StereoModeType::AUTOSTEREO_8;
+        m_stereoMode = stereo_mode_t::AUTOSTEREO_8;
     }
     else
     {
-        SIGHT_ERROR("Unknown stereo mode: '" + stereoMode + "'. stereo_toggler will do nothing.");
+        SIGHT_ERROR("Unknown stereo mode: '" + stereo_mode + "'. stereo_toggler will do nothing.");
     }
 }
 
@@ -86,31 +86,31 @@ void stereo_toggler::updating()
 {
     if(this->confirmAction())
     {
-        const auto renderers = sight::service::getServices("sight::viz::scene3d::render");
+        const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
-        const bool enableStereo = this->checked() && this->enabled();
-        const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
+        const bool enable_stereo = this->checked() && this->enabled();
+        const auto stereo_mode   = enable_stereo ? m_stereoMode : stereo_mode_t::NONE;
 
         for(const auto& srv : renderers)
         {
-            auto renderSrv = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
-            auto layerMap  = renderSrv->getLayers();
+            auto render_srv = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
+            auto layer_map  = render_srv->getLayers();
 
-            auto layerIt = layerMap.find(m_layerId);
+            auto layer_it = layer_map.find(m_layerId);
 
-            if(layerIt != layerMap.end())
+            if(layer_it != layer_map.end())
             {
-                auto& layer = layerIt->second;
-                layer->setStereoMode(stereoMode);
+                auto& layer = layer_it->second;
+                layer->setStereoMode(stereo_mode);
                 layer->requestRender();
             }
             else
             {
-                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->get_id() + "'.");
+                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + render_srv->get_id() + "'.");
             }
         }
 
-        m_stereoActiveSig->async_emit(enableStereo);
+        m_stereoActiveSig->async_emit(enable_stereo);
     }
 }
 

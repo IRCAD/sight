@@ -33,15 +33,15 @@ namespace sight::io::dicom::writer::ie
 //------------------------------------------------------------------------------
 
 Study::Study(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::series::csptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(gdcm::Writer)& _writer,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const data::series::csptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(writer, instance, series,
-                                                           logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
+                                                           _logger, _progress, _cancel)
 {
 }
 
@@ -76,14 +76,14 @@ void Study::writePatientStudyModule()
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x1010>(m_object->getPatientAge(), dataset);
 
-    if(const auto& patientSize = m_object->getPatientSize(); patientSize)
+    if(const auto& patient_size = m_object->getPatientSize(); patient_size)
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1020>(*patientSize, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1020>(*patient_size, dataset);
     }
 
-    if(const auto& patientWeight = m_object->getPatientWeight(); patientWeight)
+    if(const auto& patient_weight = m_object->getPatientWeight(); patient_weight)
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1030>(*patientWeight, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1030>(*patient_weight, dataset);
     }
 }
 

@@ -40,7 +40,7 @@ namespace sight::core::tools
  * @param[in]   dateStr date in the string format YYYYMMDD (ie : 20090722)
  * @return      Date in the boost format
  */
-CORE_API boost::gregorian::date str_to_boost_date(const std::string& date_str);
+CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
 
 //------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ CORE_API boost::gregorian::date str_to_boost_date(const std::string& date_str);
  * @param[in]   timeStr time in the string format HHMMSS
  * @return      Time in the boost format
  */
-CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& time_str);
+CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _time_str);
 
 //------------------------------------------------------------------------------
 
@@ -60,8 +60,8 @@ CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& t
  * @return      Time in the boost format
  */
 CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
-    const std::string& date_str,
-    const std::string& time_str = "000000"
+    const std::string& _date_str,
+    const std::string& _time_str = "000000"
 );
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
  * @param[in]   date_and_time time in the boost format
  * @return      Date in the string format YYYYMMDD
  */
-CORE_API std::string get_date(const boost::posix_time::ptime& date_and_time);
+CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ CORE_API std::string get_date(const boost::posix_time::ptime& date_and_time);
  * @param[in]   date_and_time time in the boost format
  * @return      Time in the string format HHMMSS
  */
-CORE_API std::string get_time(const boost::posix_time::ptime& date_and_time);
+CORE_API std::string get_time(const boost::posix_time::ptime& _date_and_time);
 
 //------------------------------------------------------------------------------
 

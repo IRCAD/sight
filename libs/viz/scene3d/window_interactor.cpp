@@ -27,10 +27,10 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-const window_interactor::FactoryRegistryKeyType window_interactor::REGISTRY_KEY =
+const window_interactor::factory_registry_key_t window_interactor::REGISTRY_KEY =
     "::viz::scene3d::window_interactor::REGISTRY_KEY";
 
-const window_interactor::FactoryRegistryKeyType window_interactor::OFFSCREEN_REGISTRY_KEY =
+const window_interactor::factory_registry_key_t window_interactor::OFFSCREEN_REGISTRY_KEY =
     "::viz::scene3d::window_interactor::OFFSCREEN_REGISTRY_KEY";
 
 //-----------------------------------------------------------------------------
@@ -54,7 +54,7 @@ window_interactor::sptr window_interactor::createOffscreenManager(
     unsigned int _h
 )
 {
-    window_interactor::sptr manager = viz::scene3d::offscreenInteractorMgrFactory::make(
+    window_interactor::sptr manager = viz::scene3d::offscreen_interactor_mgr_factory::make(
         viz::scene3d::window_interactor::OFFSCREEN_REGISTRY_KEY,
         std::make_pair(_w, _h)
     );

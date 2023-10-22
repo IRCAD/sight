@@ -66,14 +66,14 @@ void query_editor::configuring()
 {
     sight::ui::service::initialize();
 
-    const auto configTree = this->get_config();
-    const auto config     = configTree.get_child_optional("config.<xmlattr>");
+    const auto config_tree = this->get_config();
+    const auto config      = config_tree.get_child_optional("config.<xmlattr>");
     if(config)
     {
-        const auto iconPath = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
-        if(iconPath)
+        const auto icon_path = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
+        if(icon_path)
         {
-            m_iconPath = core::runtime::get_module_resource_file_path(iconPath.value());
+            m_iconPath = core::runtime::get_module_resource_file_path(icon_path.value());
         }
 
         m_advanced   = config->get<bool>(s_ADVANCED_CONFIG, m_advanced);
@@ -91,9 +91,9 @@ void query_editor::starting()
 
     // Create the GUI.
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
-    auto* const mainLayout = new QVBoxLayout();
+    auto* const main_layout = new QVBoxLayout();
 
     m_searchEdit = new QLineEdit();
     m_searchEdit->setPlaceholderText("Find by name, birth date, ID, date, description or modality");
@@ -114,56 +114,56 @@ void query_editor::starting()
 
     search_layout->addWidget(m_searchEdit);
     search_layout->addWidget(m_searchButton);
-    mainLayout->addLayout(search_layout);
+    main_layout->addLayout(search_layout);
 
     QObject::connect(m_searchEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
     QObject::connect(m_searchButton, &QPushButton::clicked, this, &query_editor::executeQueryAsync);
 
     if(m_advanced)
     {
-        auto* const advancedLayout = new QHBoxLayout();
-        advancedLayout->setObjectName("query_editor_advanced");
+        auto* const advanced_layout = new QHBoxLayout();
+        advanced_layout->setObjectName("query_editor_advanced");
 
-        auto* const labelLayout = new QVBoxLayout();
-        labelLayout->setObjectName("query_editor_labels");
+        auto* const label_layout = new QVBoxLayout();
+        label_layout->setObjectName("query_editor_labels");
 
-        auto* const dateLabel = new QLabel("Date of the study");
-        dateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const nameLabel = new QLabel("Patient's name");
-        nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const birthDateLabel = new QLabel("Patient's birth date");
-        birthDateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const idLabel = new QLabel("Patient's ID");
-        idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const seriesUIDLabel = new QLabel("Series' ID");
-        seriesUIDLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const descriptionLabel = new QLabel("Series' description");
-        descriptionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const modalityLabel = new QLabel("Modality");
-        modalityLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const date_label = new QLabel("Date of the study");
+        date_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const name_label = new QLabel("Patient's name");
+        name_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const birth_date_label = new QLabel("Patient's birth date");
+        birth_date_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const id_label = new QLabel("Patient's ID");
+        id_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const series_uid_label = new QLabel("Series' ID");
+        series_uid_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const description_label = new QLabel("Series' description");
+        description_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const modality_label = new QLabel("Modality");
+        modality_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-        labelLayout->addWidget(dateLabel);
-        labelLayout->addWidget(new QLabel());
-        labelLayout->addWidget(nameLabel);
-        labelLayout->addWidget(birthDateLabel);
-        labelLayout->addWidget(idLabel);
-        labelLayout->addWidget(seriesUIDLabel);
-        labelLayout->addWidget(descriptionLabel);
-        labelLayout->addWidget(modalityLabel);
+        label_layout->addWidget(date_label);
+        label_layout->addWidget(new QLabel());
+        label_layout->addWidget(name_label);
+        label_layout->addWidget(birth_date_label);
+        label_layout->addWidget(id_label);
+        label_layout->addWidget(series_uid_label);
+        label_layout->addWidget(description_label);
+        label_layout->addWidget(modality_label);
 
-        auto* const dateLayout = new QHBoxLayout();
+        auto* const date_layout = new QHBoxLayout();
 
-        auto* const dateLabelLayout = new QVBoxLayout();
+        auto* const date_label_layout = new QVBoxLayout();
 
-        auto* const fromLabel = new QLabel("from");
-        fromLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const toLabel = new QLabel("to");
-        toLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const from_label = new QLabel("from");
+        from_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto* const to_label = new QLabel("to");
+        to_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-        dateLabelLayout->addWidget(fromLabel);
-        dateLabelLayout->addWidget(toLabel);
+        date_label_layout->addWidget(from_label);
+        date_label_layout->addWidget(to_label);
 
-        auto* const dateEditLayout = new QVBoxLayout();
+        auto* const date_edit_layout = new QVBoxLayout();
 
         m_beginStudyDateEdit = new QDateEdit();
         m_beginStudyDateEdit->setDate(QDate());
@@ -171,57 +171,57 @@ void query_editor::starting()
         m_endStudyDateEdit = new QDateEdit();
         m_endStudyDateEdit->setDate(QDate::currentDate());
         m_endStudyDateEdit->setDisplayFormat("MM.dd.yyyy");
-        dateEditLayout->addWidget(m_beginStudyDateEdit);
-        dateEditLayout->addWidget(m_endStudyDateEdit);
+        date_edit_layout->addWidget(m_beginStudyDateEdit);
+        date_edit_layout->addWidget(m_endStudyDateEdit);
 
-        dateLayout->addLayout(dateLabelLayout, 0);
-        dateLayout->addLayout(dateEditLayout, 1);
+        date_layout->addLayout(date_label_layout, 0);
+        date_layout->addLayout(date_edit_layout, 1);
 
-        auto* const editLayout = new QVBoxLayout();
-        editLayout->setObjectName("query_editor_editors");
+        auto* const edit_layout = new QVBoxLayout();
+        edit_layout->setObjectName("query_editor_editors");
 
         m_patientNameEdit = new QLineEdit();
 
-        auto* const birthDateEditLayout = new QHBoxLayout();
+        auto* const birth_date_edit_layout = new QHBoxLayout();
 
         m_birthDateEdit = new QDateEdit();
         m_birthDateEdit->setDate(QDate());
         m_birthDateEdit->setDisplayFormat("MM.dd.yyyy");
         m_birthDateEdit->setEnabled(false);
 
-        auto* const birthDateEnabler = new QCheckBox();
+        auto* const birth_date_enabler = new QCheckBox();
 
-        birthDateEditLayout->addWidget(birthDateEnabler, 0);
-        birthDateEditLayout->addWidget(m_birthDateEdit, 1);
+        birth_date_edit_layout->addWidget(birth_date_enabler, 0);
+        birth_date_edit_layout->addWidget(m_birthDateEdit, 1);
 
         m_patientUIDEdit        = new QLineEdit();
         m_seriesUIDEdit         = new QLineEdit();
         m_seriesDescriptionEdit = new QLineEdit();
         m_seriesModalityEdit    = new QLineEdit();
 
-        editLayout->addLayout(dateLayout);
-        editLayout->addWidget(m_patientNameEdit);
-        editLayout->addLayout(birthDateEditLayout);
-        editLayout->addWidget(m_patientUIDEdit);
-        editLayout->addWidget(m_seriesUIDEdit);
-        editLayout->addWidget(m_seriesDescriptionEdit);
-        editLayout->addWidget(m_seriesModalityEdit);
+        edit_layout->addLayout(date_layout);
+        edit_layout->addWidget(m_patientNameEdit);
+        edit_layout->addLayout(birth_date_edit_layout);
+        edit_layout->addWidget(m_patientUIDEdit);
+        edit_layout->addWidget(m_seriesUIDEdit);
+        edit_layout->addWidget(m_seriesDescriptionEdit);
+        edit_layout->addWidget(m_seriesModalityEdit);
 
-        advancedLayout->addLayout(labelLayout);
-        advancedLayout->addLayout(editLayout);
+        advanced_layout->addLayout(label_layout);
+        advanced_layout->addLayout(edit_layout);
 
-        mainLayout->addLayout(advancedLayout);
+        main_layout->addLayout(advanced_layout);
 
         // Connect signals.
         QObject::connect(m_patientNameEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
-        QObject::connect(birthDateEnabler, &QCheckBox::stateChanged, this, &query_editor::enableBirthDateEdit);
+        QObject::connect(birth_date_enabler, &QCheckBox::stateChanged, this, &query_editor::enableBirthDateEdit);
         QObject::connect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
         QObject::connect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
         QObject::connect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
         QObject::connect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &query_editor::executeQueryAsync);
     }
 
-    qtContainer->setLayout(mainLayout);
+    qt_container->setLayout(main_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -271,24 +271,24 @@ void query_editor::executeQuery()
 {
     m_isQuerying = true;
 
-    auto seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
+    auto series_enquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
     // Initialize connection.
     try
     {
-        const auto pacsConfiguration = m_config.lock();
+        const auto pacs_configuration = m_config.lock();
 
-        seriesEnquirer->initialize(
-            pacsConfiguration->getLocalApplicationTitle(),
-            pacsConfiguration->getPacsHostName(),
-            pacsConfiguration->getPacsApplicationPort(),
-            pacsConfiguration->getPacsApplicationTitle()
+        series_enquirer->initialize(
+            pacs_configuration->getLocalApplicationTitle(),
+            pacs_configuration->getPacsHostName(),
+            pacs_configuration->getPacsApplicationPort(),
+            pacs_configuration->getPacsApplicationTitle()
         );
-        seriesEnquirer->connect();
+        series_enquirer->connect();
     }
-    catch(const sight::io::dimse::exceptions::Base& _e)
+    catch(const sight::io::dimse::exceptions::Base& e)
     {
-        SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(e.what()));
         this->notifier::failure("Can't connect to the PACS");
         m_isQuerying = false;
         return;
@@ -312,189 +312,189 @@ void query_editor::executeQuery()
     try
     {
         // Execute find requests.
-        const std::string searchValue = standardise(m_searchEdit->text().toStdString());
-        std::string beginDataSearchValue;
-        std::string endDateSearchValue;
-        std::string nameSearchValue;
-        std::string birthDateSearchValue;
-        std::string patientUIDSearchValue;
-        std::string seriesUIDSearchValue;
-        std::string descriptionSearchValue;
-        std::string modalitySearchValue;
+        const std::string search_value = standardise(m_searchEdit->text().toStdString());
+        std::string begin_data_search_value;
+        std::string end_date_search_value;
+        std::string name_search_value;
+        std::string birth_date_search_value;
+        std::string patient_uid_search_value;
+        std::string series_uid_search_value;
+        std::string description_search_value;
+        std::string modality_search_value;
 
         if(m_advanced)
         {
-            beginDataSearchValue = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            endDateSearchValue   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            nameSearchValue      = standardise(m_patientNameEdit->text().toStdString());
+            begin_data_search_value = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            end_date_search_value   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            name_search_value       = standardise(m_patientNameEdit->text().toStdString());
             if(m_birthDateEdit->isEnabled())
             {
-                birthDateSearchValue = m_birthDateEdit->date().toString("yyyyMMdd").toStdString();
+                birth_date_search_value = m_birthDateEdit->date().toString("yyyyMMdd").toStdString();
             }
 
-            patientUIDSearchValue  = standardise(m_patientUIDEdit->text().toStdString());
-            seriesUIDSearchValue   = standardise(m_seriesUIDEdit->text().toStdString());
-            descriptionSearchValue = standardise(m_seriesDescriptionEdit->text().toStdString());
-            modalitySearchValue    = standardise(m_seriesModalityEdit->text().toStdString());
+            patient_uid_search_value = standardise(m_patientUIDEdit->text().toStdString());
+            series_uid_search_value  = standardise(m_seriesUIDEdit->text().toStdString());
+            description_search_value = standardise(m_seriesDescriptionEdit->text().toStdString());
+            modality_search_value    = standardise(m_seriesModalityEdit->text().toStdString());
         }
 
         OFList<QRResponse*> responses;
 
         // If one of the advanced editor is filled, with find series with it's field to improve the research.
-        if(!nameSearchValue.empty())
+        if(!name_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByPatientName(nameSearchValue);
+            responses = series_enquirer->findSeriesByPatientName(name_search_value);
         }
-        else if(!birthDateSearchValue.empty())
+        else if(!birth_date_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByPatientBirthDate(birthDateSearchValue);
+            responses = series_enquirer->findSeriesByPatientBirthDate(birth_date_search_value);
         }
-        else if(!patientUIDSearchValue.empty())
+        else if(!patient_uid_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByPatientUID(patientUIDSearchValue);
+            responses = series_enquirer->findSeriesByPatientUID(patient_uid_search_value);
         }
-        else if(!seriesUIDSearchValue.empty())
+        else if(!series_uid_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByUID(seriesUIDSearchValue);
+            responses = series_enquirer->findSeriesByUID(series_uid_search_value);
         }
-        else if(!descriptionSearchValue.empty())
+        else if(!description_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByDescription(descriptionSearchValue);
+            responses = series_enquirer->findSeriesByDescription(description_search_value);
         }
-        else if(!modalitySearchValue.empty())
+        else if(!modality_search_value.empty())
         {
-            responses = seriesEnquirer->findSeriesByModality(modalitySearchValue);
+            responses = series_enquirer->findSeriesByModality(modality_search_value);
         }
         // By default, check by date if the advanced mode is enable.
         else if(m_advanced)
         {
-            responses = seriesEnquirer->findSeriesByDate(beginDataSearchValue, endDateSearchValue);
+            responses = series_enquirer->findSeriesByDate(begin_data_search_value, end_date_search_value);
         }
         // Else, retrieve all patient.
         else
         {
-            responses = seriesEnquirer->findSeriesByPatientName("");
+            responses = series_enquirer->findSeriesByPatientName("");
         }
 
         // Filter all results.
-        std::vector<QRResponse*> seriesResponse;
+        std::vector<QRResponse*> series_response;
         for(QRResponse* response : responses)
         {
             // Be sure we are not in the last response which does not have a dataset.
             if(response->m_dataset != nullptr)
             {
-                OFString seriesUID;
-                response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesUID);
+                OFString series_uid;
+                response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_uid);
 
-                const auto findedIt = std::find_if(
-                    seriesResponse.begin(),
-                    seriesResponse.end(),
+                const auto finded_it = std::find_if(
+                    series_response.begin(),
+                    series_response.end(),
                     [&](const QRResponse* _res) -> bool
                     {
                         OFString data;
                         _res->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
-                        return data == seriesUID;
+                        return data == series_uid;
                     });
                 // If it's not already added, we check if the series match advanced request.
-                if(findedIt == seriesResponse.end())
+                if(finded_it == series_response.end())
                 {
                     // Check if each tag match the request one.
-                    OFString ofValue;
+                    OFString of_value;
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, ofValue);
-                    QDate studyDate = QDate::fromString(ofValue.c_str(), "yyyyMMdd");
+                    response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, of_value);
+                    QDate study_date = QDate::fromString(of_value.c_str(), "yyyyMMdd");
                     // Check date if the advanced mode is enabled.
                     if(m_advanced)
                     {
-                        if(studyDate <= m_beginStudyDateEdit->date() || studyDate >= m_endStudyDateEdit->date())
+                        if(study_date <= m_beginStudyDateEdit->date() || study_date >= m_endStudyDateEdit->date())
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, ofValue);
-                    const std::string patientBirthDate = ofValue.c_str();
-                    if(!birthDateSearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, of_value);
+                    const std::string patient_birth_date = of_value.c_str();
+                    if(!birth_date_search_value.empty())
                     {
-                        if(patientBirthDate.find(birthDateSearchValue) == std::string::npos)
+                        if(patient_birth_date.find(birth_date_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_PatientName, ofValue);
-                    const std::string patientName = standardise(ofValue.c_str());
-                    if(!nameSearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_PatientName, of_value);
+                    const std::string patient_name = standardise(of_value.c_str());
+                    if(!name_search_value.empty())
                     {
-                        if(patientName.find(nameSearchValue) == std::string::npos)
+                        if(patient_name.find(name_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_PatientID, ofValue);
-                    const std::string patientID = standardise(ofValue.c_str());
-                    if(!patientUIDSearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_PatientID, of_value);
+                    const std::string patient_id = standardise(of_value.c_str());
+                    if(!patient_uid_search_value.empty())
                     {
-                        if(patientID.find(patientUIDSearchValue) == std::string::npos)
+                        if(patient_id.find(patient_uid_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, ofValue);
-                    const std::string seriesInstanceUID = standardise(ofValue.c_str());
-                    if(!seriesUIDSearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, of_value);
+                    const std::string series_instance_uid = standardise(of_value.c_str());
+                    if(!series_uid_search_value.empty())
                     {
-                        if(seriesInstanceUID.find(seriesUIDSearchValue) == std::string::npos)
+                        if(series_instance_uid.find(series_uid_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, ofValue);
-                    const std::string seriesDescription = standardise(ofValue.c_str());
-                    if(!descriptionSearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, of_value);
+                    const std::string series_description = standardise(of_value.c_str());
+                    if(!description_search_value.empty())
                     {
-                        if(seriesDescription.find(descriptionSearchValue) == std::string::npos)
+                        if(series_description.find(description_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_Modality, ofValue);
-                    const std::string modality = standardise(ofValue.c_str());
-                    if(!modalitySearchValue.empty())
+                    response->m_dataset->findAndGetOFStringArray(DCM_Modality, of_value);
+                    const std::string modality = standardise(of_value.c_str());
+                    if(!modality_search_value.empty())
                     {
-                        if(modality.find(modalitySearchValue) == std::string::npos)
+                        if(modality.find(modality_search_value) == std::string::npos)
                         {
                             continue;
                         }
                     }
 
                     // Check if each tag match at least the main research value.
-                    if(studyDate.toString("MM/dd/yyyy").toStdString().find(searchValue) != std::string::npos
-                       || patientName.find(searchValue) != std::string::npos
-                       || patientBirthDate.find(searchValue) != std::string::npos
-                       || patientID.find(searchValue) != std::string::npos
-                       || seriesInstanceUID.find(searchValue) != std::string::npos
-                       || seriesDescription.find(searchValue) != std::string::npos
-                       || modality.find(searchValue) != std::string::npos)
+                    if(study_date.toString("MM/dd/yyyy").toStdString().find(search_value) != std::string::npos
+                       || patient_name.find(search_value) != std::string::npos
+                       || patient_birth_date.find(search_value) != std::string::npos
+                       || patient_id.find(search_value) != std::string::npos
+                       || series_instance_uid.find(search_value) != std::string::npos
+                       || series_description.find(search_value) != std::string::npos
+                       || modality.find(search_value) != std::string::npos)
                     {
-                        seriesResponse.push_back(response);
+                        series_response.push_back(response);
                     }
                 }
             }
         }
 
         // Convert response to DicomSeries.
-        OFList<QRResponse*> ofSeriesResponse;
-        for(QRResponse* res : seriesResponse)
+        OFList<QRResponse*> of_series_response;
+        for(QRResponse* res : series_response)
         {
-            ofSeriesResponse.push_back(res);
+            of_series_response.push_back(res);
         }
 
-        data::series_set::container_type series = sight::io::dimse::helper::series::toFwMedData(ofSeriesResponse);
+        data::series_set::container_type series = sight::io::dimse::helper::series::toFwMedData(of_series_response);
 
         // Clean memory.
         sight::io::dimse::helper::series::releaseResponses(responses);
@@ -502,23 +502,24 @@ void query_editor::executeQuery()
         // Check whether the instance number start at 1 or 0.
         for(const data::series::sptr& s : series)
         {
-            data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(s);
-            SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
-            const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getSeriesInstanceUID(), 0);
-            dicomSeries->setFirstInstanceNumber((instanceUID.empty() ? 1 : 0));
+            data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(s);
+            SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicom_series);
+            const std::string instance_uid =
+                series_enquirer->findSOPInstanceUID(dicom_series->getSeriesInstanceUID(), 0);
+            dicom_series->setFirstInstanceNumber((instance_uid.empty() ? 1 : 0));
         }
 
         this->updateSeriesSet(series);
     }
-    catch(const sight::io::dimse::exceptions::Base& _e)
+    catch(const sight::io::dimse::exceptions::Base& e)
     {
-        SIGHT_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Can't execute query to the PACS: " + std::string(e.what()));
         this->notifier::failure("Can't execute query");
     }
 
-    if(seriesEnquirer->isConnectedToPacs())
+    if(series_enquirer->isConnectedToPacs())
     {
-        seriesEnquirer->disconnect();
+        series_enquirer->disconnect();
     }
 
     m_isQuerying = false;

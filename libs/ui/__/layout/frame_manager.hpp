@@ -50,7 +50,7 @@ public:
         MODAL
     } Style;
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
     static const std::string SOFTWARE_UI;
     static const std::string FRAME_STATE_UI;
@@ -121,9 +121,9 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
-    UI_API static const RegistryKeyType REGISTRY_KEY;
+    UI_API static const registry_key_t REGISTRY_KEY;
 
     /**
      * @brief Instantiate frame.
@@ -148,7 +148,7 @@ public:
     }
 
     typedef std::function<void ()> CloseCallback;
-    UI_API virtual void setCloseCallback(CloseCallback fct);
+    UI_API virtual void setCloseCallback(CloseCallback _fct);
 
 protected:
 
@@ -169,9 +169,9 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void setFrameInfo(const FrameInfo& frameInfo)
+    void setFrameInfo(const FrameInfo& _frame_info)
     {
-        m_frameInfo = frameInfo;
+        m_frameInfo = _frame_info;
     }
 
     /**  @} */

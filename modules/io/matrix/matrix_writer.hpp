@@ -98,10 +98,10 @@ protected:
 private:
 
     /// SLOT: Save current matrices.
-    void saveMatrix(core::hires_clock::type timestamp);
+    void saveMatrix(core::hires_clock::type _timestamp);
 
     /// SLOT: Write matrices in csv file
-    void write(core::hires_clock::type timestamp);
+    void write(core::hires_clock::type _timestamp);
 
     /// SLOT: Start recording
     void startRecord();

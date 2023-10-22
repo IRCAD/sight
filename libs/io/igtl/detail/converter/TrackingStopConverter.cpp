@@ -36,7 +36,7 @@ const std::string TrackingStopConverter::s_IGTL_TYPE          = "STP_TDATA";
 const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
 const std::string s_statusKey                                 = "Status";
 
-converterRegisterMacro(io::igtl::detail::converter::TrackingStopConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::TrackingStopConverter);
 
 TrackingStopConverter::TrackingStopConverter()
 = default;
@@ -50,8 +50,8 @@ TrackingStopConverter::~TrackingStopConverter()
 
 ::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::object::csptr /*src*/) const
 {
-    ::igtl::StopTrackingDataMessage::Pointer trackingMsg = ::igtl::StopTrackingDataMessage::New();
-    return {trackingMsg.GetPointer()};
+    ::igtl::StopTrackingDataMessage::Pointer tracking_msg = ::igtl::StopTrackingDataMessage::New();
+    return {tracking_msg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ base::sptr TrackingStopConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStopConverter::getIgtlType() const
+std::string const& TrackingStopConverter::get_igtl_type() const
 {
     return TrackingStopConverter::s_IGTL_TYPE;
 }

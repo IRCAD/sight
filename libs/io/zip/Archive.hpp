@@ -59,9 +59,9 @@ public:
     };
 
     /// Convenience function to convert from ArchiveFormat enum value to string
-    constexpr static std::string_view archiveFormatToString(ArchiveFormat archiveFormat) noexcept
+    constexpr static std::string_view archiveFormatToString(ArchiveFormat _archive_format) noexcept
     {
-        switch(archiveFormat)
+        switch(_archive_format)
         {
             case ArchiveFormat::FILESYSTEM:
                 return "filesystem";
@@ -78,24 +78,24 @@ public:
     }
 
     /// Convenience function to convert from string to ArchiveFormat enum value
-    constexpr static ArchiveFormat stringToArchiveFormat(std::string_view archiveFormat) noexcept
+    constexpr static ArchiveFormat stringToArchiveFormat(std::string_view _archive_format) noexcept
     {
-        if(archiveFormat == archiveFormatToString(ArchiveFormat::FILESYSTEM))
+        if(_archive_format == archiveFormatToString(ArchiveFormat::FILESYSTEM))
         {
             return ArchiveFormat::FILESYSTEM;
         }
 
-        if(archiveFormat == archiveFormatToString(ArchiveFormat::COMPATIBLE))
+        if(_archive_format == archiveFormatToString(ArchiveFormat::COMPATIBLE))
         {
             return ArchiveFormat::COMPATIBLE;
         }
 
-        if(archiveFormat == archiveFormatToString(ArchiveFormat::OPTIMIZED))
+        if(_archive_format == archiveFormatToString(ArchiveFormat::OPTIMIZED))
         {
             return ArchiveFormat::OPTIMIZED;
         }
 
-        if(archiveFormat.empty() || archiveFormat == "default")
+        if(_archive_format.empty() || _archive_format == "default")
         {
             return ArchiveFormat::DEFAULT;
         }
@@ -110,18 +110,18 @@ public:
 protected:
 
     /// Constructor
-    IO_ZIP_API Archive(const std::filesystem::path& archive_path);
+    IO_ZIP_API Archive(const std::filesystem::path& _archive_path);
 
 private:
 
-    const std::filesystem::path m_archive_path;
+    const std::filesystem::path M_ARCHIVE_PATH;
 };
 
 //------------------------------------------------------------------------------
 
 inline const std::filesystem::path& Archive::getArchivePath() const
 {
-    return m_archive_path;
+    return M_ARCHIVE_PATH;
 }
 
 } // namespace sight::io::zip

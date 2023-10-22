@@ -57,15 +57,15 @@ public:
 
 private:
 
-    static void inrStressTestWithType(core::type type, int nbTest);
-    static void inrReadWriteCheck(data::image::sptr image);
+    static void inrStressTestWithType(core::type _type, int _nb_test);
+    static void inrReadWriteCheck(data::image::sptr _image);
     static void niftiReadCheck(
-        const data::image::sptr& imageToTest,
-        const core::type& expectedType,
-        std::size_t expectedDim,
-        const data::image::Spacing& expectedSpacing,
-        const data::image::Origin& expectedOrigin,
-        const data::image::Size& expectedSize
+        const data::image::sptr& _image_to_test,
+        const core::type& _expected_type,
+        std::size_t _expected_dim,
+        const data::image::Spacing& _expected_spacing,
+        const data::image::Origin& _expected_origin,
+        const data::image::Size& _expected_size
     );
 };
 

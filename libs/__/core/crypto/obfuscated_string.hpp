@@ -94,9 +94,9 @@ using count_t = typename count<s>::type;
 
 // Get a scrambled character of a string
 template<std::uint32_t seed, std::size_t index, std::size_t N>
-constexpr std::uint8_t get_scrambled_char(const std::array<char, N>& a)
+constexpr std::uint8_t get_scrambled_char(const std::array<char, N>& _a)
 {
-    return static_cast<std::uint8_t>(a[index]) + generate<seed, index>::value;
+    return static_cast<std::uint8_t>(_a[index]) + generate<seed, index>::value;
 }
 
 // Get a ciphertext from a plaintext string
@@ -108,18 +108,18 @@ struct cipher_helper<seed, st_list<SL ...> >
 {
     //------------------------------------------------------------------------------
 
-    static constexpr std::array<std::uint8_t, sizeof...(SL)> get_array(const std::array<char, sizeof...(SL)>& a)
+    static constexpr std::array<std::uint8_t, sizeof...(SL)> get_array(const std::array<char, sizeof...(SL)>& _a)
     {
-        return {{get_scrambled_char<seed, SL>(a) ...}};
+        return {{get_scrambled_char<seed, SL>(_a) ...}};
     }
 };
 
 //------------------------------------------------------------------------------
 
 template<std::uint32_t seed, std::size_t N>
-constexpr std::array<std::uint8_t, N> get_cipher_text(const std::array<char, N>& a)
+constexpr std::array<std::uint8_t, N> get_cipher_text(const std::array<char, N>& _a)
 {
-    return cipher_helper<seed, count_t<N> >::get_array(a);
+    return cipher_helper<seed, count_t<N> >::get_array(_a);
 }
 
 // Get a noise sequence from a seed and string length
@@ -147,12 +147,12 @@ constexpr std::array<std::uint8_t, N> get_key()
 
 template<typename T, std::size_t N>
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
-constexpr std::array<T, N> to_array(const char (& a)[N])
+constexpr std::array<T, N> to_array(const char (& _a)[N])
 {
     std::array<T, N> res {};
     for(std::size_t i = 0 ; i < N ; i++)
     {
-        res[i] = a[i];
+        res[i] = _a[i];
     }
 
     return res;
@@ -164,14 +164,14 @@ class obfuscated_string
 {
 private:
 
-    std::array<std::uint8_t, N> cipher_text_;
-    std::array<std::uint8_t, N> key_;
+    std::array<std::uint8_t, N> cipher_text;
+    std::array<std::uint8_t, N> key;
 
 public:
 
-    explicit constexpr obfuscated_string( /*const char (& a)[N]*/ const std::array<char, N>& a) :
-        cipher_text_(get_cipher_text<seed, N>(a)),
-        key_(get_key<seed, N>())
+    explicit constexpr obfuscated_string( /*const char (& a)[N]*/ const std::array<char, N>& _a) :
+        cipher_text(get_cipher_text<seed, N>(_a)),
+        key(get_key<seed, N>())
     {
     }
 
@@ -180,7 +180,7 @@ public:
         std::array<char, N> plain_text;
         for(std::size_t i = 0 ; i < N ; ++i)
         {
-            const char temp = static_cast<char>(cipher_text_[i] - key_[i]);
+            const char temp = static_cast<char>(cipher_text[i] - key[i]);
             plain_text[i] = temp;
         }
 
@@ -191,10 +191,10 @@ public:
 //------------------------------------------------------------------------------
 
 template<std::uint32_t seed, std::size_t N>
-std::ostream& operator<<(std::ostream& s, const sight::core::crypto::obfuscated_string<seed, N>& str)
+std::ostream& operator<<(std::ostream& _s, const sight::core::crypto::obfuscated_string<seed, N>& _str)
 {
-    s << static_cast<sight::core::crypto::secure_string>(str);
-    return s;
+    _s << static_cast<sight::core::crypto::secure_string>(_str);
+    return _s;
 }
 
 #define RNG_SEED ((__TIME__[7] - '0') * 1 + (__TIME__[6] - '0') * 10 \

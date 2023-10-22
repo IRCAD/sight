@@ -31,37 +31,37 @@
 namespace sight::ui::layout
 {
 
-const toolbar_manager::RegistryKeyType toolbar_manager::REGISTRY_KEY = "sight::ui::layout::toolbar";
+const toolbar_manager::registry_key_t toolbar_manager::REGISTRY_KEY = "sight::ui::layout::toolbar";
 
 //-----------------------------------------------------------------------------
 
 std::vector<toolbar_manager::ActionInfo> configure(
     const std::pair<std::string,
-                    boost::property_tree::ptree>& toolBarItem
+                    boost::property_tree::ptree>& _tool_bar_item
 )
 {
     std::vector<toolbar_manager::ActionInfo> infos;
-    if(toolBarItem.first == "menuItem")
+    if(_tool_bar_item.first == "menuItem")
     {
         toolbar_manager::ActionInfo info;
 
-        info.m_name     = toolBarItem.second.get<std::string>("<xmlattr>.name");
-        info.m_shortcut = toolBarItem.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
+        info.m_name     = _tool_bar_item.second.get<std::string>("<xmlattr>.name");
+        info.m_shortcut = _tool_bar_item.second.get<std::string>("<xmlattr>.shortcut", info.m_shortcut);
 
-        const auto icon = toolBarItem.second.get<std::string>("<xmlattr>.icon", "");
+        const auto icon = _tool_bar_item.second.get<std::string>("<xmlattr>.icon", "");
         if(!icon.empty())
         {
             info.m_icon = core::runtime::get_module_resource_file_path(icon);
         }
 
-        const auto icon2 = toolBarItem.second.get<std::string>("<xmlattr>.icon2", "");
+        const auto icon2 = _tool_bar_item.second.get<std::string>("<xmlattr>.icon2", "");
         if(!icon2.empty())
         {
             SIGHT_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
             info.m_icon2 = core::runtime::get_module_resource_file_path(icon2);
         }
 
-        if(const auto style = toolBarItem.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
+        if(const auto style = _tool_bar_item.second.get_optional<std::string>("<xmlattr>.style"); style.has_value())
         {
             info.m_isCheckable = (*style == "check");
             info.m_isRadio     = (*style == "radio");
@@ -69,26 +69,26 @@ std::vector<toolbar_manager::ActionInfo> configure(
 
         infos.push_back(info);
     }
-    else if(toolBarItem.first == "separator")
+    else if(_tool_bar_item.first == "separator")
     {
         toolbar_manager::ActionInfo info;
         info.m_isSeparator = true;
-        info.m_size        = toolBarItem.second.get<int>("<xmlattr>.size", info.m_size);
+        info.m_size        = _tool_bar_item.second.get<int>("<xmlattr>.size", info.m_size);
         infos.push_back(info);
     }
-    else if(toolBarItem.first == "spacer")
+    else if(_tool_bar_item.first == "spacer")
     {
         toolbar_manager::ActionInfo info;
         info.m_isSpacer = true;
         infos.push_back(info);
     }
-    else if(toolBarItem.first == "menu")
+    else if(_tool_bar_item.first == "menu")
     {
         toolbar_manager::ActionInfo info;
         info.m_isMenu = true;
-        info.m_name   = toolBarItem.second.get<std::string>("<xmlattr>.name", "");
+        info.m_name   = _tool_bar_item.second.get<std::string>("<xmlattr>.name", "");
 
-        const auto icon = toolBarItem.second.get<std::string>("<xmlattr>.icon", "");
+        const auto icon = _tool_bar_item.second.get<std::string>("<xmlattr>.icon", "");
         if(!icon.empty())
         {
             info.m_icon = core::runtime::get_module_resource_file_path(icon);
@@ -96,15 +96,15 @@ std::vector<toolbar_manager::ActionInfo> configure(
 
         infos.push_back(info);
     }
-    else if(toolBarItem.first == "editor")
+    else if(_tool_bar_item.first == "editor")
     {
         toolbar_manager::ActionInfo info;
         info.m_isEditor = true;
         infos.push_back(info);
     }
-    else if(toolBarItem.first == "accordion")
+    else if(_tool_bar_item.first == "accordion")
     {
-        for(bool first = true ; const auto& [tag, subtree] : toolBarItem.second)
+        for(bool first = true ; const auto& [tag, subtree] : _tool_bar_item.second)
         {
             SIGHT_ASSERT("accordions of accordions aren't supported", tag != "accordion");
             SIGHT_ASSERT("separators in accordions aren't supported", tag != "separator");
@@ -128,9 +128,9 @@ std::vector<toolbar_manager::ActionInfo> configure(
 
 //------------------------------------------------------------------------------
 
-void toolbar_manager::initialize(const ui::config_t& configuration)
+void toolbar_manager::initialize(const ui::config_t& _configuration)
 {
-    if(const auto style = configuration.get_optional<std::string>("<xmlattr>.style"); style.has_value())
+    if(const auto style = _configuration.get_optional<std::string>("<xmlattr>.style"); style.has_value())
     {
         if(*style == "ToolButtonIconOnly" || *style == "ToolButtonTextOnly" || *style == "ToolButtonTextBesideIcon"
            || *style == "ToolButtonTextUnderIcon" || *style == "ToolButtonFollowStyle")
@@ -147,12 +147,12 @@ void toolbar_manager::initialize(const ui::config_t& configuration)
         }
     }
 
-    m_unifyButtonSize = configuration.get<bool>("<xmlattr>.uniformSize", m_unifyButtonSize);
+    m_unifyButtonSize = _configuration.get<bool>("<xmlattr>.uniformSize", m_unifyButtonSize);
 
-    for(const auto& toolBarItem : configuration)
+    for(const auto& tool_bar_item : _configuration)
     {
-        std::vector<ActionInfo> newActionInfos = configure(toolBarItem);
-        std::ranges::move(newActionInfos, std::back_inserter(m_actionInfo));
+        std::vector<ActionInfo> new_action_infos = configure(tool_bar_item);
+        std::ranges::move(new_action_infos, std::back_inserter(m_actionInfo));
     }
 }
 
@@ -160,9 +160,9 @@ void toolbar_manager::initialize(const ui::config_t& configuration)
 
 void toolbar_manager::destroyActions()
 {
-    for(const ui::container::menu_item::sptr& menuItem : m_menuItems)
+    for(const ui::container::menu_item::sptr& menu_item : m_menuItems)
     {
-        menuItem->destroyContainer();
+        menu_item->destroyContainer();
     }
 
     m_menuItems.clear();

@@ -60,10 +60,10 @@ struct RandFloat
 
 //------------------------------------------------------------------------------
 
-Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3)
+Vector<float> compute_triangle_normal(const Point& _p1, const Point& _p2, const Point& _p3)
 {
-    Vector<float> n(p1, p2);
-    Vector<float> v(p1, p3);
+    Vector<float> n(_p1, _p2);
+    Vector<float> v(_p1, _p3);
     n.crossWith(v);
     n.normalize();
     return n;
@@ -71,45 +71,45 @@ Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Poin
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormals(
-    const sight::data::mesh::sptr& mesh,
-    const std::size_t regionMin,
-    const std::size_t regionMax
+void generate_region_cell_normals(
+    const sight::data::mesh::sptr& _mesh,
+    const std::size_t _region_min,
+    const std::size_t _region_max
 )
 {
-    switch(mesh->getCellType())
+    switch(_mesh->get_cell_type())
     {
-        case sight::data::mesh::CellType::POINT:
-        case sight::data::mesh::CellType::LINE:
+        case sight::data::mesh::cell_type_t::POINT:
+        case sight::data::mesh::cell_type_t::LINE:
         {
-            auto cellRange = mesh->range<cell::nxyz>();
-            std::fill(cellRange.begin(), cellRange.end(), cell::nxyz({0.F, 0.F, 0.F}));
+            auto cell_range = _mesh->range<cell::nxyz>();
+            std::fill(cell_range.begin(), cell_range.end(), cell::nxyz({0.F, 0.F, 0.F}));
             break;
         }
 
-        case sight::data::mesh::CellType::TRIANGLE:
+        case sight::data::mesh::cell_type_t::TRIANGLE:
         {
-            const auto pointBegin = mesh->cbegin<point::xyz>();
+            const auto point_begin = _mesh->cbegin<point::xyz>();
 
-            auto cellRange     = mesh->zip_range<cell::triangle, cell::nxyz>();
-            auto cellBegin     = cellRange.begin() + std::int64_t(regionMin);
-            const auto cellEnd = cellRange.begin() + std::int64_t(regionMax);
+            auto cell_range     = _mesh->zip_range<cell::triangle, cell::nxyz>();
+            auto cell_begin     = cell_range.begin() + std::int64_t(_region_min);
+            const auto cell_end = cell_range.begin() + std::int64_t(_region_max);
 
             int i = 0;
             std::for_each(
-                cellBegin,
-                cellEnd,
-                [&](auto&& it)
+                cell_begin,
+                cell_end,
+                [&](auto&& _it)
                 {
                     i++;
-                    auto&& [cell, normal] = it;
-                    auto pItr             = pointBegin + cell.pt[0];
-                    const Point p1(pItr->x, pItr->y, pItr->z);
-                    pItr = pointBegin + cell.pt[1];
-                    const Point p2(pItr->x, pItr->y, pItr->z);
-                    pItr = pointBegin + cell.pt[2];
-                    const Point p3(pItr->x, pItr->y, pItr->z);
-                    auto n = computeTriangleNormal(p1, p2, p3);
+                    auto&& [cell, normal] = _it;
+                    auto p_itr            = point_begin + cell.pt[0];
+                    const Point p1(p_itr->x, p_itr->y, p_itr->z);
+                    p_itr = point_begin + cell.pt[1];
+                    const Point p2(p_itr->x, p_itr->y, p_itr->z);
+                    p_itr = point_begin + cell.pt[2];
+                    const Point p3(p_itr->x, p_itr->y, p_itr->z);
+                    auto n = compute_triangle_normal(p1, p2, p3);
 
                     normal.nx = n.x;
                     normal.ny = n.y;
@@ -118,34 +118,34 @@ void generateRegionCellNormals(
             break;
         }
 
-        case sight::data::mesh::CellType::QUAD:
-        case sight::data::mesh::CellType::TETRA:
+        case sight::data::mesh::cell_type_t::QUAD:
+        case sight::data::mesh::cell_type_t::TETRA:
         {
-            const auto pointBegin = mesh->cbegin<point::xyz>();
+            const auto point_begin = _mesh->cbegin<point::xyz>();
 
-            auto cellRange     = mesh->zip_range<cell::quad, cell::nxyz>();
-            auto cellBegin     = cellRange.begin() + std::int64_t(regionMin);
-            const auto cellEnd = cellRange.begin() + std::int64_t(regionMax);
+            auto cell_range     = _mesh->zip_range<cell::quad, cell::nxyz>();
+            auto cell_begin     = cell_range.begin() + std::int64_t(_region_min);
+            const auto cell_end = cell_range.begin() + std::int64_t(_region_max);
 
             std::for_each(
-                cellBegin,
-                cellEnd,
-                [&](auto&& it)
+                cell_begin,
+                cell_end,
+                [&](auto&& _it)
                 {
                     Vector<float> n;
-                    auto&& [cell, normal] = it;
+                    auto&& [cell, normal] = _it;
 
                     for(std::size_t i = 0 ; i < 4 ; ++i)
                     {
                         Vector<float> v;
-                        auto pItr = pointBegin + cell.pt[i];
-                        const Point p1(pItr->x, pItr->y, pItr->z);
-                        pItr = pointBegin + cell.pt[(i + 1) % 4];
-                        const Point p2(pItr->x, pItr->y, pItr->z);
-                        pItr = pointBegin + cell.pt[(i + 2) % 4];
-                        const Point p3(pItr->x, pItr->y, pItr->z);
+                        auto p_itr = point_begin + cell.pt[i];
+                        const Point p1(p_itr->x, p_itr->y, p_itr->z);
+                        p_itr = point_begin + cell.pt[(i + 1) % 4];
+                        const Point p2(p_itr->x, p_itr->y, p_itr->z);
+                        p_itr = point_begin + cell.pt[(i + 2) % 4];
+                        const Point p3(p_itr->x, p_itr->y, p_itr->z);
 
-                        v = computeTriangleNormal(p1, p2, p3);
+                        v = compute_triangle_normal(p1, p2, p3);
 
                         n += v;
                     }
@@ -167,52 +167,52 @@ void generateRegionCellNormals(
 //------------------------------------------------------------------------------
 
 template<typename T>
-void vectorSum(std::vector<std::vector<T> >& vectors, std::size_t regionMin, std::size_t regionMax)
+void vector_sum(std::vector<std::vector<T> >& _vectors, std::size_t _region_min, std::size_t _region_max)
 {
-    if(vectors.empty())
+    if(_vectors.empty())
     {
         return;
     }
 
-    auto vIter = vectors.begin();
+    auto v_iter = _vectors.begin();
 
-    std::vector<T>& res = vectors[0];
+    std::vector<T>& res = _vectors[0];
 
-    for(++vIter ; vIter != vectors.end() ; ++vIter)
+    for(++v_iter ; v_iter != _vectors.end() ; ++v_iter)
     {
-        for(std::size_t i = regionMin ; i < regionMax ; ++i)
+        for(std::size_t i = _region_min ; i < _region_max ; ++i)
         {
-            res[i] += (*vIter)[i];
+            res[i] += (*v_iter)[i];
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::generateCellNormals(sight::data::mesh::sptr mesh)
+void mesh::generateCellNormals(sight::data::mesh::sptr _mesh)
 {
-    const sight::data::mesh::size_t numberOfCells = mesh->numCells();
-    if(numberOfCells > 0)
+    const sight::data::mesh::size_t number_of_cells = _mesh->numCells();
+    if(number_of_cells > 0)
     {
-        if(!mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
+        if(!_mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
         {
-            mesh->resize(
-                mesh->numPoints(),
-                mesh->numCells(),
-                mesh->getCellType(),
+            _mesh->resize(
+                _mesh->numPoints(),
+                _mesh->numCells(),
+                _mesh->get_cell_type(),
                 sight::data::mesh::Attributes::CELL_NORMALS
             );
         }
 
-        const auto dumpLock = mesh->dump_lock();
+        const auto dump_lock = _mesh->dump_lock();
 
-        sight::data::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
+        sight::data::thread::RegionThreader rt((number_of_cells >= 200000) ? 4 : 1);
         rt(
-            [mesh](std::size_t PH1, std::ptrdiff_t PH2, auto&& ...)
+            [_mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return generateRegionCellNormals(mesh, PH1, std::size_t(PH2));
+                return generate_region_cell_normals(_mesh, _p_h1, std::size_t(_p_h2));
             },
-            numberOfCells
+            number_of_cells
         );
     }
 }
@@ -223,82 +223,82 @@ using FloatVectors = std::vector<std::vector<float> >;
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormalsByPoints(
-    FloatVectors& normalsData,
-    std::size_t dataId,
-    const sight::data::mesh::sptr& mesh,
-    const std::size_t regionMin,
-    const std::size_t regionMax
+void generate_region_cell_normals_by_points(
+    FloatVectors& _normals_data,
+    std::size_t _data_id,
+    const sight::data::mesh::sptr& _mesh,
+    const std::size_t _region_min,
+    const std::size_t _region_max
 )
 {
-    FloatVectors::value_type& normalsResults = normalsData[dataId];
+    FloatVectors::value_type& normals_results = _normals_data[_data_id];
 
-    const sight::data::mesh::size_t nbOfPoints = mesh->numPoints();
-    normalsResults.resize(std::size_t(3) * nbOfPoints, 0.F);
+    const sight::data::mesh::size_t nb_of_points = _mesh->numPoints();
+    normals_results.resize(std::size_t(3) * nb_of_points, 0.F);
 
-    auto accumNormal = [&](const auto& cell, const auto& normal)
-                       {
-                           normalsData[dataId][std::size_t(3) * cell]     += normal.nx;
-                           normalsData[dataId][std::size_t(3) * cell + 1] += normal.ny;
-                           normalsData[dataId][std::size_t(3) * cell + 2] += normal.nz;
-                       };
+    auto accum_normal = [&](const auto& _cell, const auto& _normal)
+                        {
+                            _normals_data[_data_id][std::size_t(3) * _cell]     += _normal.nx;
+                            _normals_data[_data_id][std::size_t(3) * _cell + 1] += _normal.ny;
+                            _normals_data[_data_id][std::size_t(3) * _cell + 2] += _normal.nz;
+                        };
 
-    switch(mesh->getCellType())
+    switch(_mesh->get_cell_type())
     {
-        case sight::data::mesh::CellType::POINT:
+        case sight::data::mesh::cell_type_t::POINT:
             break;
 
-        case sight::data::mesh::CellType::LINE:
+        case sight::data::mesh::cell_type_t::LINE:
         {
-            const auto range = mesh->czip_range<cell::line, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(regionMin);
-            const auto end   = range.begin() + std::int64_t(regionMax);
+            const auto range = _mesh->czip_range<cell::line, cell::nxyz>();
+            auto begin       = range.begin() + std::int64_t(_region_min);
+            const auto end   = range.begin() + std::int64_t(_region_max);
             std::for_each(
                 begin,
                 end,
-                [&](const auto& it)
+                [&](const auto& _it)
                 {
-                    const auto& [line, n] = it;
-                    accumNormal(line.pt[0], n);
-                    accumNormal(line.pt[1], n);
+                    const auto& [line, n] = _it;
+                    accum_normal(line.pt[0], n);
+                    accum_normal(line.pt[1], n);
                 });
             break;
         }
 
-        case sight::data::mesh::CellType::TRIANGLE:
+        case sight::data::mesh::cell_type_t::TRIANGLE:
         {
-            const auto range = mesh->czip_range<cell::triangle, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(regionMin);
-            const auto end   = range.begin() + std::int64_t(regionMax);
+            const auto range = _mesh->czip_range<cell::triangle, cell::nxyz>();
+            auto begin       = range.begin() + std::int64_t(_region_min);
+            const auto end   = range.begin() + std::int64_t(_region_max);
             std::for_each(
                 begin,
                 end,
-                [&](const auto& it)
+                [&](const auto& _it)
                 {
-                    const auto& [cell, n] = it;
-                    accumNormal(cell.pt[0], n);
-                    accumNormal(cell.pt[1], n);
-                    accumNormal(cell.pt[2], n);
+                    const auto& [cell, n] = _it;
+                    accum_normal(cell.pt[0], n);
+                    accum_normal(cell.pt[1], n);
+                    accum_normal(cell.pt[2], n);
                 });
             break;
         }
 
-        case sight::data::mesh::CellType::QUAD:
-        case sight::data::mesh::CellType::TETRA:
+        case sight::data::mesh::cell_type_t::QUAD:
+        case sight::data::mesh::cell_type_t::TETRA:
         {
-            const auto range = mesh->czip_range<cell::quad, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(regionMin);
-            const auto end   = range.begin() + std::int64_t(regionMax);
+            const auto range = _mesh->czip_range<cell::quad, cell::nxyz>();
+            auto begin       = range.begin() + std::int64_t(_region_min);
+            const auto end   = range.begin() + std::int64_t(_region_max);
             std::for_each(
                 begin,
                 end,
-                [&](const auto& it)
+                [&](const auto& _it)
                 {
-                    const auto& [cell, n] = it;
-                    accumNormal(cell.pt[0], n);
-                    accumNormal(cell.pt[1], n);
-                    accumNormal(cell.pt[2], n);
-                    accumNormal(cell.pt[3], n);
+                    const auto& [cell, n] = _it;
+                    accum_normal(cell.pt[0], n);
+                    accum_normal(cell.pt[1], n);
+                    accum_normal(cell.pt[2], n);
+                    accum_normal(cell.pt[3], n);
                 });
             break;
         }
@@ -310,97 +310,97 @@ void generateRegionCellNormalsByPoints(
 
 //------------------------------------------------------------------------------
 
-void normalizeRegionCellNormalsByPoints(
-    FloatVectors::value_type& normalsData,
-    sight::data::mesh::sptr mesh,
-    const std::size_t regionMin,
-    const std::size_t regionMax
+void normalize_region_cell_normals_by_points(
+    FloatVectors::value_type& _normals_data,
+    sight::data::mesh::sptr _mesh,
+    const std::size_t _region_min,
+    const std::size_t _region_max
 )
 {
-    Vector<sight::data::mesh::normal_t>* normalSum =
-        reinterpret_cast<Vector<sight::data::mesh::normal_t>*>(&(*normalsData.begin()));
+    Vector<sight::data::mesh::normal_t>* normal_sum =
+        reinterpret_cast<Vector<sight::data::mesh::normal_t>*>(&(*_normals_data.begin()));
 
-    auto pointItr = mesh->begin<point::nxyz>() + std::int64_t(regionMin);
+    auto point_itr = _mesh->begin<point::nxyz>() + std::int64_t(_region_min);
 
-    for(size_t i = regionMin ; i < regionMax ; ++i, ++pointItr)
+    for(size_t i = _region_min ; i < _region_max ; ++i, ++point_itr)
     {
-        Vector<sight::data::mesh::normal_t> normal = normalSum[i];
+        Vector<sight::data::mesh::normal_t> normal = normal_sum[i];
 
         normal.normalize();
-        pointItr->nx = normal.x;
-        pointItr->ny = normal.y;
-        pointItr->nz = normal.z;
+        point_itr->nx = normal.x;
+        point_itr->ny = normal.y;
+        point_itr->nz = normal.z;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::generatePointNormals(sight::data::mesh::sptr mesh)
+void mesh::generatePointNormals(sight::data::mesh::sptr _mesh)
 {
-    const sight::data::mesh::size_t nbOfPoints = mesh->numPoints();
-    if(nbOfPoints > 0)
+    const sight::data::mesh::size_t nb_of_points = _mesh->numPoints();
+    if(nb_of_points > 0)
     {
-        const sight::data::mesh::size_t numberOfCells = mesh->numCells();
+        const sight::data::mesh::size_t number_of_cells = _mesh->numCells();
 
         // To generate point normals, we need to use the cell normals
-        if(!mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
+        if(!_mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
         {
-            generateCellNormals(mesh);
+            generateCellNormals(_mesh);
         }
 
-        if(!mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
+        if(!_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
         {
-            mesh->resize(
-                mesh->numPoints(),
-                mesh->numCells(),
-                mesh->getCellType(),
+            _mesh->resize(
+                _mesh->numPoints(),
+                _mesh->numCells(),
+                _mesh->get_cell_type(),
                 sight::data::mesh::Attributes::POINT_NORMALS
             );
         }
 
-        const auto dumpLock = mesh->dump_lock();
+        const auto dump_lock = _mesh->dump_lock();
 
-        sight::data::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
+        sight::data::thread::RegionThreader rt((nb_of_points >= 100000) ? 4 : 1);
 
-        FloatVectors normalsData(rt.numberOfThread());
+        FloatVectors normals_data(rt.numberOfThread());
 
         rt(
-            [&normalsData, mesh](std::size_t PH1, std::ptrdiff_t PH2, std::size_t PH3, auto&& ...)
+            [&normals_data, _mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, std::size_t _p_h3, auto&& ...)
             {
-                return generateRegionCellNormalsByPoints(
-                    normalsData,
-                    PH3,
-                    mesh,
-                    PH1,
-                    std::size_t(PH2)
+                return generate_region_cell_normals_by_points(
+                    normals_data,
+                    _p_h3,
+                    _mesh,
+                    _p_h1,
+                    std::size_t(_p_h2)
                 );
             },
-            numberOfCells
+            number_of_cells
         );
 
         rt(
-            [&normalsData](std::size_t PH1, std::ptrdiff_t PH2, auto&& ...)
+            [&normals_data](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return vectorSum<FloatVectors::value_type::value_type>(
-                    normalsData,
-                    PH1,
-                    std::size_t(PH2)
+                return vector_sum<FloatVectors::value_type::value_type>(
+                    normals_data,
+                    _p_h1,
+                    std::size_t(_p_h2)
                 );
             },
-            nbOfPoints * std::ptrdiff_t(3)
+            nb_of_points * std::ptrdiff_t(3)
         );
 
         rt(
-            [&capture0 = normalsData[0], mesh](std::size_t PH1, std::ptrdiff_t PH2, auto&& ...)
+            [&capture0 = normals_data[0], _mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return normalizeRegionCellNormalsByPoints(
+                return normalize_region_cell_normals_by_points(
                     capture0,
-                    mesh,
-                    PH1,
-                    std::size_t(PH2)
+                    _mesh,
+                    _p_h1,
+                    std::size_t(_p_h2)
                 );
             },
-            nbOfPoints
+            nb_of_points
         );
     }
 }
@@ -408,28 +408,28 @@ void mesh::generatePointNormals(sight::data::mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 template<typename T>
-void regionShakeNormals(T normals, const std::size_t regionMin, const std::size_t regionMax)
+void region_shake_normals(T _normals, const std::size_t _region_min, const std::size_t _region_max)
 {
-    RandFloat randFloat;
-    for(std::size_t i = regionMin ; i < regionMax ; ++i)
+    RandFloat rand_float;
+    for(std::size_t i = _region_min ; i < _region_max ; ++i)
     {
-        Vector<float> v(randFloat(), randFloat(), randFloat());
-        normals[std::int64_t(i)] += v;
-        normals[std::int64_t(i)].normalize();
+        Vector<float> v(rand_float(), rand_float(), rand_float());
+        _normals[std::int64_t(i)] += v;
+        _normals[std::int64_t(i)].normalize();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::shakePointNormals(sight::data::mesh::sptr mesh)
+void mesh::shakePointNormals(sight::data::mesh::sptr _mesh)
 {
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    RandFloat randFloat;
+    RandFloat rand_float;
 
-    for(auto& n : mesh->range<point::nxyz>())
+    for(auto& n : _mesh->range<point::nxyz>())
     {
-        Vector<float> v(randFloat(), randFloat(), randFloat());
+        Vector<float> v(rand_float(), rand_float(), rand_float());
         Vector<float> normal(n.nx, n.ny, n.nz);
         normal += v;
         normal.normalize();
@@ -441,15 +441,15 @@ void mesh::shakePointNormals(sight::data::mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void mesh::shakeCellNormals(sight::data::mesh::sptr mesh)
+void mesh::shakeCellNormals(sight::data::mesh::sptr _mesh)
 {
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    RandFloat randFloat;
+    RandFloat rand_float;
 
-    for(auto& n : mesh->range<cell::nxyz>())
+    for(auto& n : _mesh->range<cell::nxyz>())
     {
-        Vector<float> v(randFloat(), randFloat(), randFloat());
+        Vector<float> v(rand_float(), rand_float(), rand_float());
         Vector<float> normal(n.nx, n.ny, n.nz);
         normal += v;
         normal.normalize();
@@ -461,21 +461,21 @@ void mesh::shakeCellNormals(sight::data::mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void mesh::colorizeMeshPoints(sight::data::mesh::sptr mesh)
+void mesh::colorizeMeshPoints(sight::data::mesh::sptr _mesh)
 {
-    if(!mesh->has<sight::data::mesh::Attributes::POINT_COLORS>())
+    if(!_mesh->has<sight::data::mesh::Attributes::POINT_COLORS>())
     {
-        mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->getCellType(),
+        _mesh->resize(
+            _mesh->numPoints(),
+            _mesh->numCells(),
+            _mesh->get_cell_type(),
             sight::data::mesh::Attributes::POINT_COLORS
         );
     }
 
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    for(auto& c : mesh->range<point::rgba>())
+    for(auto& c : _mesh->range<point::rgba>())
     {
         c.r = static_cast<std::uint8_t>(safe_rand() % 256);
         c.g = static_cast<std::uint8_t>(safe_rand() % 256);
@@ -486,21 +486,21 @@ void mesh::colorizeMeshPoints(sight::data::mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void mesh::colorizeMeshCells(sight::data::mesh::sptr mesh)
+void mesh::colorizeMeshCells(sight::data::mesh::sptr _mesh)
 {
-    if(!mesh->has<sight::data::mesh::Attributes::CELL_COLORS>())
+    if(!_mesh->has<sight::data::mesh::Attributes::CELL_COLORS>())
     {
-        mesh->resize(
-            mesh->numPoints(),
-            mesh->numCells(),
-            mesh->getCellType(),
+        _mesh->resize(
+            _mesh->numPoints(),
+            _mesh->numCells(),
+            _mesh->get_cell_type(),
             sight::data::mesh::Attributes::CELL_COLORS
         );
     }
 
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    for(auto& c : mesh->range<cell::rgba>())
+    for(auto& c : _mesh->range<cell::rgba>())
     {
         c.r = static_cast<std::uint8_t>(safe_rand() % 256);
         c.g = static_cast<std::uint8_t>(safe_rand() % 256);
@@ -511,112 +511,112 @@ void mesh::colorizeMeshCells(sight::data::mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void mesh::shakePoint(sight::data::mesh::sptr mesh)
+void mesh::shakePoint(sight::data::mesh::sptr _mesh)
 {
-    RandFloat randFloat;
+    RandFloat rand_float;
 
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    for(auto& p : mesh->range<point::xyz>())
+    for(auto& p : _mesh->range<point::xyz>())
     {
-        p.x += randFloat() * 5;
-        p.y += randFloat() * 5;
-        p.z += randFloat() * 5;
+        p.x += rand_float() * 5;
+        p.y += rand_float() * 5;
+        p.z += rand_float() * 5;
     }
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::transform(
-    sight::data::mesh::csptr inMesh,
-    sight::data::mesh::sptr outMesh,
-    const sight::data::matrix4& t
+    sight::data::mesh::csptr _in_mesh,
+    sight::data::mesh::sptr _out_mesh,
+    const sight::data::matrix4& _t
 )
 {
-    const auto inDumpLock  = inMesh->dump_lock();
-    const auto outDumpLock = outMesh->dump_lock();
+    const auto in_dump_lock  = _in_mesh->dump_lock();
+    const auto out_dump_lock = _out_mesh->dump_lock();
 
-    const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
+    const glm::dmat4x4 matrix = sight::geometry::data::to_glm_mat(_t);
 
-    [[maybe_unused]] const std::size_t numPts = inMesh->numPoints();
-    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->numPoints());
+    [[maybe_unused]] const std::size_t num_pts = _in_mesh->numPoints();
+    SIGHT_ASSERT("In and out meshes should have the same number of points", num_pts == _out_mesh->numPoints());
 
     SIGHT_ASSERT(
         "in and out meshes must have the same point normals attribute",
-        (inMesh->has<sight::data::mesh::Attributes::POINT_NORMALS>()
-         && outMesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
-        || (!inMesh->has<sight::data::mesh::Attributes::POINT_NORMALS>()
-            && !outMesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
+        (_in_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>()
+         && _out_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
+        || (!_in_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>()
+            && !_out_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
     );
 
-    for(auto&& [in, out] : boost::combine(inMesh->crange<point::xyz>(), outMesh->range<point::xyz>()))
+    for(auto&& [in, out] : boost::combine(_in_mesh->crange<point::xyz>(), _out_mesh->range<point::xyz>()))
     {
         const glm::vec4 pt(in.x, in.y, in.z, 1.);
-        const glm::vec4 transformedPt = matrix * pt;
+        const glm::vec4 transformed_pt = matrix * pt;
 
-        out.x = transformedPt.x;
-        out.y = transformedPt.y;
-        out.z = transformedPt.z;
+        out.x = transformed_pt.x;
+        out.y = transformed_pt.y;
+        out.z = transformed_pt.z;
     }
 
-    if(inMesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
+    if(_in_mesh->has<sight::data::mesh::Attributes::POINT_NORMALS>())
     {
-        for(auto&& [in, out] : boost::combine(inMesh->crange<point::nxyz>(), outMesh->range<point::nxyz>()))
+        for(auto&& [in, out] : boost::combine(_in_mesh->crange<point::nxyz>(), _out_mesh->range<point::nxyz>()))
         {
             const glm::vec4 normal(in.nx, in.ny, in.nz, 0.);
-            const glm::vec4 transformedNormal = glm::normalize(matrix * normal);
+            const glm::vec4 transformed_normal = glm::normalize(matrix * normal);
 
-            out.nx = transformedNormal.x;
-            out.ny = transformedNormal.y;
-            out.nz = transformedNormal.z;
+            out.nx = transformed_normal.x;
+            out.ny = transformed_normal.y;
+            out.nz = transformed_normal.z;
         }
     }
 
-    if(inMesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
+    if(_in_mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>())
     {
-        SIGHT_ASSERT("out mesh must have normals", outMesh->has<sight::data::mesh::Attributes::CELL_NORMALS>());
-        for(auto&& [in, out] : boost::combine(inMesh->crange<cell::nxyz>(), outMesh->range<cell::nxyz>()))
+        SIGHT_ASSERT("out mesh must have normals", _out_mesh->has<sight::data::mesh::Attributes::CELL_NORMALS>());
+        for(auto&& [in, out] : boost::combine(_in_mesh->crange<cell::nxyz>(), _out_mesh->range<cell::nxyz>()))
         {
             const glm::vec4 normal(in.nx, in.ny, in.nz, 0.);
-            const glm::vec4 transformedNormal = glm::normalize(matrix * normal);
+            const glm::vec4 transformed_normal = glm::normalize(matrix * normal);
 
-            out.nx = transformedNormal.x;
-            out.ny = transformedNormal.y;
-            out.nz = transformedNormal.z;
+            out.nx = transformed_normal.x;
+            out.ny = transformed_normal.y;
+            out.nz = transformed_normal.z;
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::transform(sight::data::mesh::sptr mesh, const sight::data::matrix4& t)
+void mesh::transform(sight::data::mesh::sptr _mesh, const sight::data::matrix4& _t)
 {
-    mesh::transform(mesh, mesh, t);
+    mesh::transform(_mesh, _mesh, _t);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::colorizeMeshPoints(
-    const sight::data::mesh::sptr& mesh,
-    const std::uint8_t colorR,
-    const std::uint8_t colorG,
-    const std::uint8_t colorB,
-    const std::uint8_t colorA
+    const sight::data::mesh::sptr& _mesh,
+    const std::uint8_t _color_r,
+    const std::uint8_t _color_g,
+    const std::uint8_t _color_b,
+    const std::uint8_t _color_a
 )
 {
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::mesh::Attributes::POINT_COLORS>());
+    SIGHT_ASSERT("color array must be allocated", _mesh->has<sight::data::mesh::Attributes::POINT_COLORS>());
 
-    for(auto& c : mesh->range<point::rgba>())
+    for(auto& c : _mesh->range<point::rgba>())
     {
-        c.r = colorR;
-        c.g = colorG;
-        c.b = colorB;
-        c.a = colorA;
+        c.r = _color_r;
+        c.g = _color_g;
+        c.b = _color_b;
+        c.a = _color_a;
     }
 
-    auto sig = mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::POINT_COLORS_MODIFIED_SIG);
+    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::POINT_COLORS_MODIFIED_SIG);
     sig->async_emit();
 }
 
@@ -624,44 +624,44 @@ void mesh::colorizeMeshPoints(
 
 void mesh::colorizeMeshPoints(
     const sight::data::mesh::sptr& _mesh,
-    const std::vector<std::size_t>& _vectorNumTriangle,
-    const std::uint8_t _colorR,
-    const std::uint8_t _colorG,
-    const std::uint8_t _colorB,
-    const std::uint8_t _colorA
+    const std::vector<std::size_t>& _vector_num_triangle,
+    const std::uint8_t _color_r,
+    const std::uint8_t _color_g,
+    const std::uint8_t _color_b,
+    const std::uint8_t _color_a
 )
 {
-    const auto dumpLock = _mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    auto itrCell = _mesh->begin<cell::triangle>();
+    auto itr_cell = _mesh->begin<cell::triangle>();
 
-    auto itrPoint = _mesh->begin<point::rgba>();
+    auto itr_point = _mesh->begin<point::rgba>();
 
-    for(std::size_t index : _vectorNumTriangle)
+    for(std::size_t index : _vector_num_triangle)
     {
-        auto cell              = itrCell + static_cast<std::ptrdiff_t>(index);
-        const auto indexPoint0 = static_cast<std::ptrdiff_t>(cell->pt[0]);
-        const auto indexPoint1 = static_cast<std::ptrdiff_t>(cell->pt[1]);
-        const auto indexPoint2 = static_cast<std::ptrdiff_t>(cell->pt[2]);
+        auto cell               = itr_cell + static_cast<std::ptrdiff_t>(index);
+        const auto index_point0 = static_cast<std::ptrdiff_t>(cell->pt[0]);
+        const auto index_point1 = static_cast<std::ptrdiff_t>(cell->pt[1]);
+        const auto index_point2 = static_cast<std::ptrdiff_t>(cell->pt[2]);
 
-        auto point1 = itrPoint + indexPoint0;
-        auto point2 = itrPoint + indexPoint1;
-        auto point3 = itrPoint + indexPoint2;
+        auto point1 = itr_point + index_point0;
+        auto point2 = itr_point + index_point1;
+        auto point3 = itr_point + index_point2;
 
-        point1->r = _colorR;
-        point1->g = _colorG;
-        point1->b = _colorB;
-        point1->a = _colorA;
+        point1->r = _color_r;
+        point1->g = _color_g;
+        point1->b = _color_b;
+        point1->a = _color_a;
 
-        point2->r = _colorR;
-        point2->g = _colorG;
-        point2->b = _colorB;
-        point2->a = _colorA;
+        point2->r = _color_r;
+        point2->g = _color_g;
+        point2->b = _color_b;
+        point2->a = _color_a;
 
-        point3->r = _colorR;
-        point3->g = _colorG;
-        point3->b = _colorB;
-        point3->a = _colorA;
+        point3->r = _color_r;
+        point3->g = _color_g;
+        point3->b = _color_b;
+        point3->a = _color_a;
     }
 
     auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::POINT_COLORS_MODIFIED_SIG);
@@ -671,120 +671,120 @@ void mesh::colorizeMeshPoints(
 //-----------------------------------------------------------------------------
 
 void mesh::colorizeMeshCells(
-    const sight::data::mesh::sptr& mesh,
-    const std::uint8_t colorR,
-    const std::uint8_t colorG,
-    const std::uint8_t colorB,
-    const std::uint8_t colorA
+    const sight::data::mesh::sptr& _mesh,
+    const std::uint8_t _color_r,
+    const std::uint8_t _color_g,
+    const std::uint8_t _color_b,
+    const std::uint8_t _color_a
 )
 {
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    SIGHT_ASSERT("color array must be allocated", mesh->has<sight::data::mesh::Attributes::CELL_COLORS>());
+    SIGHT_ASSERT("color array must be allocated", _mesh->has<sight::data::mesh::Attributes::CELL_COLORS>());
 
-    for(auto& c : mesh->range<cell::rgba>())
+    for(auto& c : _mesh->range<cell::rgba>())
     {
-        c.r = colorR;
-        c.g = colorG;
-        c.b = colorB;
-        c.a = colorA;
+        c.r = _color_r;
+        c.g = _color_g;
+        c.b = _color_b;
+        c.a = _color_a;
     }
 
-    auto sig = mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
+    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::colorizeMeshCells(
-    const sight::data::mesh::sptr& mesh,
-    const std::vector<std::size_t>& triangleIndexVector,
-    const std::uint8_t colorR,
-    const std::uint8_t colorG,
-    const std::uint8_t colorB,
-    const std::uint8_t colorA
+    const sight::data::mesh::sptr& _mesh,
+    const std::vector<std::size_t>& _triangle_index_vector,
+    const std::uint8_t _color_r,
+    const std::uint8_t _color_g,
+    const std::uint8_t _color_b,
+    const std::uint8_t _color_a
 )
 {
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    auto itrCell = mesh->begin<cell::rgba>();
+    auto itr_cell = _mesh->begin<cell::rgba>();
 
-    for(std::size_t index : triangleIndexVector)
+    for(std::size_t index : _triangle_index_vector)
     {
-        auto cell = itrCell + static_cast<std::ptrdiff_t>(index);
+        auto cell = itr_cell + static_cast<std::ptrdiff_t>(index);
 
-        cell->r = colorR;
-        cell->g = colorG;
-        cell->b = colorB;
-        cell->a = colorA;
+        cell->r = _color_r;
+        cell->g = _color_g;
+        cell->b = _color_b;
+        cell->a = _color_a;
     }
 
-    auto sig = mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
+    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-bool mesh::isClosed(const sight::data::mesh::csptr& mesh)
+bool mesh::isClosed(const sight::data::mesh::csptr& _mesh)
 {
-    bool isClosed = true;
+    bool is_closed = true;
 
     using Edge          = std::pair<sight::data::mesh::cell_t, sight::data::mesh::cell_t>;
     using EdgeHistogram = std::map<Edge, int>;
-    EdgeHistogram edgesHistogram;
+    EdgeHistogram edges_histogram;
 
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = _mesh->dump_lock();
 
-    auto addEdge = [&edgesHistogram](const sight::data::mesh::point_t& p1, const sight::data::mesh::point_t& p2)
-                   {
-                       const auto edge = geometry::data::makeOrderedPair(p1, p2);
+    auto add_edge = [&edges_histogram](const sight::data::mesh::point_t& _p1, const sight::data::mesh::point_t& _p2)
+                    {
+                        const auto edge = geometry::data::make_ordered_pair(_p1, _p2);
 
-                       if(edgesHistogram.find(edge) == edgesHistogram.end())
-                       {
-                           edgesHistogram[edge] = 1;
-                       }
-                       else
-                       {
-                           ++edgesHistogram[edge];
-                       }
-                   };
+                        if(edges_histogram.find(edge) == edges_histogram.end())
+                        {
+                            edges_histogram[edge] = 1;
+                        }
+                        else
+                        {
+                            ++edges_histogram[edge];
+                        }
+                    };
 
-    switch(mesh->getCellType())
+    switch(_mesh->get_cell_type())
     {
-        case sight::data::mesh::CellType::POINT:
+        case sight::data::mesh::cell_type_t::POINT:
             break;
 
-        case sight::data::mesh::CellType::LINE:
+        case sight::data::mesh::cell_type_t::LINE:
         {
-            for(const auto& line : mesh->crange<cell::line>())
+            for(const auto& line : _mesh->crange<cell::line>())
             {
-                addEdge(line.pt[0], line.pt[1]);
+                add_edge(line.pt[0], line.pt[1]);
             }
 
             break;
         }
 
-        case sight::data::mesh::CellType::TRIANGLE:
+        case sight::data::mesh::cell_type_t::TRIANGLE:
         {
-            for(const auto& cell : mesh->crange<cell::triangle>())
+            for(const auto& cell : _mesh->crange<cell::triangle>())
             {
-                addEdge(cell.pt[0], cell.pt[1]);
-                addEdge(cell.pt[1], cell.pt[2]);
-                addEdge(cell.pt[2], cell.pt[0]);
+                add_edge(cell.pt[0], cell.pt[1]);
+                add_edge(cell.pt[1], cell.pt[2]);
+                add_edge(cell.pt[2], cell.pt[0]);
             }
 
             break;
         }
 
-        case sight::data::mesh::CellType::QUAD:
-        case sight::data::mesh::CellType::TETRA:
+        case sight::data::mesh::cell_type_t::QUAD:
+        case sight::data::mesh::cell_type_t::TETRA:
         {
-            for(const auto& cell : mesh->crange<cell::quad>())
+            for(const auto& cell : _mesh->crange<cell::quad>())
             {
-                addEdge(cell.pt[0], cell.pt[1]);
-                addEdge(cell.pt[1], cell.pt[2]);
-                addEdge(cell.pt[2], cell.pt[3]);
-                addEdge(cell.pt[3], cell.pt[0]);
+                add_edge(cell.pt[0], cell.pt[1]);
+                add_edge(cell.pt[1], cell.pt[2]);
+                add_edge(cell.pt[2], cell.pt[3]);
+                add_edge(cell.pt[3], cell.pt[0]);
             }
 
             break;
@@ -794,16 +794,16 @@ bool mesh::isClosed(const sight::data::mesh::csptr& mesh)
             SIGHT_ASSERT("_SIZE is an invalid cell type", false);
     }
 
-    for(const EdgeHistogram::value_type& h : edgesHistogram)
+    for(const EdgeHistogram::value_type& h : edges_histogram)
     {
         if(h.second != 2)
         {
-            isClosed = false;
+            is_closed = false;
             break;
         }
     }
 
-    return isClosed;
+    return is_closed;
 }
 
 //------------------------------------------------------------------------------

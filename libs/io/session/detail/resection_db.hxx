@@ -41,24 +41,24 @@ constexpr static auto s_IsVisible {"IsVisible"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto resectionDB = helper::safe_cast<data::resection_db>(object);
+    const auto resection_db = helper::safe_cast<data::resection_db>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::resection_db>(tree, 1);
+    helper::write_version<data::resection_db>(_tree, 1);
 
     // Serialize attributes
-    children[s_SafeResection] = resectionDB->getSafeResection();
+    _children[s_SafeResection] = resection_db->getSafeResection();
 
     std::size_t index = 0;
-    for(const auto& resection : resectionDB->getResections())
+    for(const auto& resection : resection_db->getResections())
     {
-        children[data::resection::classname() + std::to_string(index++)] = resection;
+        _children[data::resection::classname() + std::to_string(index++)] = resection;
     }
 }
 
@@ -66,36 +66,36 @@ inline static void write(
 
 inline static data::resection_db::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto resectionDB = helper::cast_or_create<data::resection_db>(object);
+    auto resection_db = helper::cast_or_create<data::resection_db>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::resection_db>(tree, 0, 1);
+    helper::read_version<data::resection_db>(_tree, 0, 1);
 
-    resectionDB->setSafeResection(std::dynamic_pointer_cast<data::resection>(children.at(s_SafeResection)));
+    resection_db->setSafeResection(std::dynamic_pointer_cast<data::resection>(_children.at(s_SafeResection)));
 
     // Clearing is required in case the object is reused
-    resectionDB->setResections(data::resection_db::ResectionContainerType());
+    resection_db->setResections(data::resection_db::resection_container_t());
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::resection::classname() + std::to_string(index));
+        const auto& it = _children.find(data::resection::classname() + std::to_string(index));
 
-        if(it == children.cend())
+        if(it == _children.cend())
         {
             break;
         }
 
-        resectionDB->addResection(std::dynamic_pointer_cast<data::resection>(it->second));
+        resection_db->addResection(std::dynamic_pointer_cast<data::resection>(it->second));
     }
 
-    return resectionDB;
+    return resection_db;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::resection_db, write, read);

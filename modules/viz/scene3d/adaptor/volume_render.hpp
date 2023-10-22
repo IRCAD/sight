@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IGraphicsWorker.hpp>
+#include <viz/scene3d/graphics_worker.hpp>
 #include <viz/scene3d/interactor/clipping_box_interactor.hpp>
 #include <viz/scene3d/transformable.hpp>
 #include <viz/scene3d/vr/illum_ambient_occlusion_sat.hpp>
@@ -273,55 +273,55 @@ private:
      *
      * @pre _nbSamples must fit in a 16 bit unsigned int.
      */
-    void updateSampling(unsigned _nbSamples);
+    void updateSampling(unsigned _nb_samples);
 
     /**
      * @brief Sets the opacity correction.
      * @param _opacityCorrection value of the opacity correction.
      */
-    void updateOpacityCorrection(unsigned _opacityCorrection);
+    void updateOpacityCorrection(unsigned _opacity_correction);
 
     /**
      * @brief Sets the ambient occlusion factor.
      * @param _aoFactor value of the ambient occlusion factor.
      */
-    void updateAOFactor(float _aoFactor);
+    void updateAOFactor(float _ao_factor);
 
     /**
      * @brief Sets the color bleeding factor.
      * @param _colorBleedingFactor value of the color bleeding factor.
      */
-    void updateColorBleedingFactor(float _colorBleedingFactor);
+    void updateColorBleedingFactor(float _color_bleeding_factor);
 
     /**
      * @brief Sets the SAT size ratio.
      * @param _sizeRatio value of the SAT size ratio.
      */
-    void updateSatSizeRatio(unsigned _sizeRatio);
+    void updateSatSizeRatio(unsigned _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.
      * @param _shellsNumber the number of shells used by the SAT.
      */
-    void updateSatShellsNumber(unsigned _shellsNumber);
+    void updateSatShellsNumber(unsigned _shells_number);
 
     /**
      * @brief Sets the SAT shells radius.
      * @param _shellRadius the shells radius used by the SAT.
      */
-    void updateSatShellRadius(unsigned _shellRadius);
+    void updateSatShellRadius(unsigned _shell_radius);
 
     /**
      * @brief Sets the SAT cone angle.
      * @param _coneAngle the cone angle size of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeAngle(float _coneAngle);
+    void updateSatConeAngle(float _cone_angle);
 
     /**
      * @brief Sets the SAT cone samples.
      * @param _nbConeSamples the cone sample number of the SAT. Cones ares used to compute soft shadows.
      */
-    void updateSatConeSamples(unsigned _nbConeSamples);
+    void updateSatConeSamples(unsigned _nb_cone_samples);
 
     /**
      * @brief Enables/disables the pre integration table.
@@ -333,13 +333,13 @@ private:
      * @brief Enables/disables the ambient occlusion.
      * @param _ambientOcclusion state of the ambient occlusion.
      */
-    void toggleAmbientOcclusion(bool _ambientOcclusion);
+    void toggleAmbientOcclusion(bool _ambient_occlusion);
 
     /**
      * @brief Enables/disables the color bleeding.
      * @param _colorBleeding state of the color bleeding.
      */
-    void toggleColorBleeding(bool _colorBleeding);
+    void toggleColorBleeding(bool _color_bleeding);
 
     /**
      * @brief Enables/disables the volume self-shadowing.
@@ -357,7 +357,7 @@ private:
      * @brief Sets the focal distance.
      * @param _focalDistance value of the focal distance.
      */
-    void setFocalDistance(int _focalDistance);
+    void setFocalDistance(int _focal_distance);
 
     /**
      * @brief Updates a bool parameter.
@@ -423,7 +423,7 @@ private:
      * @param _vrEffect volume rendering effects.
      * @param _enable enable that effect or not.
      */
-    void toggleVREffect(VREffectType _vrEffect, bool _enable);
+    void toggleVREffect(VREffectType _vr_effect, bool _enable);
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
@@ -438,7 +438,7 @@ private:
     std::unique_ptr<sight::viz::scene3d::vr::ray_tracing_volume_renderer> m_volumeRenderer {nullptr};
 
     /// Fills the incoming image texture in a parallel thread.
-    std::unique_ptr<sight::viz::scene3d::IGraphicsWorker> m_bufferingWorker;
+    std::unique_ptr<sight::viz::scene3d::graphics_worker> m_bufferingWorker;
 
     /// Stores the scene manager.
     Ogre::SceneManager* m_sceneManager {nullptr};

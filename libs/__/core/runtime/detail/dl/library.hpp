@@ -45,7 +45,7 @@ public:
      *
      * @param[in]   modulePath      a path pointing the module to load without any extension information
      */
-    library(const std::filesystem::path& module_path) noexcept;
+    library(const std::filesystem::path& _module_path) noexcept;
 
     /**
      * @brief   Assignment operator.
@@ -103,9 +103,9 @@ public:
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    [[nodiscard]] void* get_symbol(const std::string& name) const
+    [[nodiscard]] void* get_symbol(const std::string& _name) const
     {
-        return m_implementor->get_symbol(name);
+        return m_implementor->get_symbol(_name);
     }
 
     /**
@@ -121,9 +121,9 @@ public:
      *
      * @param[in]   path  search path
      */
-    void set_search_path(const std::filesystem::path& path) noexcept
+    void set_search_path(const std::filesystem::path& _path) noexcept
     {
-        m_implementor->set_search_path(path);
+        m_implementor->set_search_path(_path);
     }
 
     /**

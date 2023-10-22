@@ -59,7 +59,7 @@ public:
 
 private:
 
-    // Application thread
+    // application thread
     core::thread::worker::sptr m_worker;
     // HTTP client
     sight::io::http::ClientQt m_client;

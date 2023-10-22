@@ -58,9 +58,9 @@ public:
     ReaderImpl& operator=(ReaderImpl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(reader* const reader) noexcept :
-        m_reader(reader),
-        m_job_created_signal(reader->new_signal<signals::JobCreatedSignal>("jobCreated"))
+    inline explicit ReaderImpl(reader* const _reader) noexcept :
+        M_READER(_reader),
+        m_job_created_signal(_reader->new_signal<signals::JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -68,7 +68,7 @@ public:
     inline ~ReaderImpl() noexcept = default;
 
     /// Pointer to the public interface
-    reader* const m_reader;
+    reader* const M_READER;
 
     /// Extension name to use for session file
     std::string m_extension_name {".zip"};
@@ -224,32 +224,32 @@ void reader::updating()
                 return secure_string();
             }
 
-            const secure_string& globalPassword = password_keeper::get_global_password();
+            const secure_string& global_password = password_keeper::get_global_password();
 
             if(m_pimpl->m_password_retry > 0
                || (m_pimpl->m_password_policy == password_keeper::password_policy::ALWAYS)
                || (m_pimpl->m_password_policy == password_keeper::password_policy::GLOBAL
-                   && globalPassword.empty()))
+                   && global_password.empty()))
             {
                 const auto& [newPassword, ok] =
                     sight::ui::dialog::input::showInputDialog(
                         "Enter Password",
                         "Password:",
-                        globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
+                        global_password.c_str(), // NOLINT(readability-redundant-string-cstr)
                         sight::ui::dialog::input::EchoMode::PASSWORD
                     );
 
                 return secure_string(newPassword);
             }
 
-            return globalPassword;
+            return global_password;
         }();
 
-    const auto readJob = std::make_shared<core::jobs::job>(
+    const auto read_job = std::make_shared<core::jobs::job>(
         "Reading " + filepath.string() + " file",
-        [&](core::jobs::job& runningJob)
+        [&](core::jobs::job& _running_job)
         {
-            runningJob.done_work(10);
+            _running_job.done_work(10);
 
             // Create the session reader
             auto reader = std::make_shared<sight::io::session::SessionReader>();
@@ -259,31 +259,31 @@ void reader::updating()
             reader->setArchiveFormat(m_pimpl->m_archive_format);
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::BusyCursor busyCursor;
+            const sight::ui::BusyCursor busy_cursor;
 
             // Read the file
             reader->read();
 
             // Set output
-            auto newData = std::dynamic_pointer_cast<data::object>(reader->getObject());
-            SIGHT_THROW_IF("Invalid session", !newData);
+            auto new_data = std::dynamic_pointer_cast<data::object>(reader->getObject());
+            SIGHT_THROW_IF("Invalid session", !new_data);
 
             auto data = m_data.lock();
-            data->shallow_copy(newData);
+            data->shallow_copy(new_data);
 
-            auto sig = data->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig = data->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             {
                 core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
                 sig->async_emit();
             }
 
-            runningJob.done();
+            _running_job.done();
         },
         this->worker()
     );
 
     core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " reader");
-    jobs->add(readJob);
+    jobs->add(read_job);
     jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
@@ -300,16 +300,16 @@ void reader::updating()
     catch(sight::io::zip::exception::BadPassword&)
     {
         // Ask if the user want to retry.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Wrong password");
-        messageBox.setMessage(
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Wrong password");
+        message_box.setMessage(
             "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
         );
-        messageBox.setIcon(ui::dialog::message::QUESTION);
-        messageBox.addButton(ui::dialog::message::RETRY);
-        messageBox.addButton(ui::dialog::message::CANCEL);
+        message_box.setIcon(ui::dialog::message::QUESTION);
+        message_box.addButton(ui::dialog::message::RETRY);
+        message_box.addButton(ui::dialog::message::CANCEL);
 
-        if(messageBox.show() == sight::ui::dialog::message::RETRY)
+        if(message_box.show() == sight::ui::dialog::message::RETRY)
         {
             m_pimpl->m_password_retry++;
             updating();
@@ -353,38 +353,38 @@ void reader::updating()
 
 void reader::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::single_folder>();
+    static auto default_location = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location locationDialog;
+    sight::ui::dialog::location location_dialog;
 
     // Set window title
     if(!m_windowTitle.empty())
     {
-        locationDialog.setTitle(m_windowTitle);
+        location_dialog.setTitle(m_windowTitle);
     }
     else
     {
-        locationDialog.setTitle("Enter file name");
+        location_dialog.setTitle("Enter file name");
     }
 
-    locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::dialog::location::READ);
-    locationDialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
-    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
-    locationDialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
+    location_dialog.setDefaultLocation(default_location);
+    location_dialog.setOption(ui::dialog::location::READ);
+    location_dialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
 
     // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
 
     if(result)
     {
         const auto& filepath = result->get_file();
         set_file(filepath);
-        m_pimpl->m_extension_name = locationDialog.getSelectedExtensions().front();
+        m_pimpl->m_extension_name = location_dialog.getSelectedExtensions().front();
 
         // Save default location for later use
-        defaultLocation->set_folder(filepath.parent_path());
-        locationDialog.saveDefaultLocation(defaultLocation);
+        default_location->set_folder(filepath.parent_path());
+        location_dialog.saveDefaultLocation(default_location);
     }
     else
     {

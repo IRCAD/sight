@@ -47,7 +47,7 @@ public:
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
-    UI_API void setCursor(ui::cursor_base::state_t cursor, bool setOverridenAsDefault = true) override;
+    UI_API void setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
 
     /// Set the default cursor
     UI_API void setDefaultCursor() override;

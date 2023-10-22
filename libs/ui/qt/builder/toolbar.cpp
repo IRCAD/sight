@@ -23,7 +23,7 @@
 #include "ui/qt/builder/toolbar.hpp"
 #include "ui/qt/container/toolbar.hpp"
 
-#include "ui/qt/App.hpp"
+#include "ui/qt/app.hpp"
 #include "ui/qt/container/widget.hpp"
 
 #include <data/tools/color.hpp>
@@ -41,19 +41,19 @@ namespace sight::ui::qt::builder
 
 //-----------------------------------------------------------------------------
 
-void toolbar::createToolBar(ui::container::widget::sptr parent)
+void toolbar::createToolBar(ui::container::widget::sptr _parent)
 {
-    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(parent);
+    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
     auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
 
-    auto* toolBar = new QToolBar(QObject::tr("ToolBar"));
+    auto* tool_bar = new QToolBar(QObject::tr("tool_bar"));
     if(m_toolBitmapSize.first != -1)
     {
-        toolBar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
+        tool_bar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
     }
 
-    toolBar->setFloatable(false);
+    tool_bar->setFloatable(false);
 
     QString style;
     if(!m_backgroundColor.empty())
@@ -84,9 +84,9 @@ void toolbar::createToolBar(ui::container::widget::sptr parent)
         }
     }
 
-    toolBar->setStyleSheet(qApp->styleSheet() + style);
+    tool_bar->setStyleSheet(qApp->styleSheet() + style);
 
-    ui::qt::container::toolbar::sptr toolBarContainer = ui::qt::container::toolbar::make();
+    ui::qt::container::toolbar::sptr tool_bar_container = ui::qt::container::toolbar::make();
     if(window != nullptr)
     {
         bool visible = window->isVisible();
@@ -111,7 +111,7 @@ void toolbar::createToolBar(ui::container::widget::sptr parent)
                 break;
         }
 
-        window->addToolBar(area, toolBar);
+        window->addToolBar(area, tool_bar);
 
         //on Os X, the window is hidden (???)
         window->setVisible(visible);
@@ -126,47 +126,47 @@ void toolbar::createToolBar(ui::container::widget::sptr parent)
         {
             case TOP:
                 layout->setDirection(QBoxLayout::TopToBottom);
-                toolBar->setOrientation(Qt::Horizontal);
+                tool_bar->setOrientation(Qt::Horizontal);
                 break;
 
             case BOTTOM:
                 layout->setDirection(QBoxLayout::BottomToTop);
-                toolBar->setOrientation(Qt::Horizontal);
+                tool_bar->setOrientation(Qt::Horizontal);
                 break;
 
             case RIGHT:
                 layout->setDirection(QBoxLayout::RightToLeft);
-                toolBar->setOrientation(Qt::Vertical);
+                tool_bar->setOrientation(Qt::Vertical);
                 break;
 
             case LEFT:
                 layout->setDirection(QBoxLayout::LeftToRight);
-                toolBar->setOrientation(Qt::Vertical);
+                tool_bar->setOrientation(Qt::Vertical);
                 break;
         }
 
         SIGHT_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
         layout->setSpacing(0);
-        layout->insertWidget(0, toolBar, 0);
+        layout->insertWidget(0, tool_bar, 0);
     }
 
-    toolBarContainer->setQtToolBar(toolBar);
-    m_toolBar = toolBarContainer;
+    tool_bar_container->setQtToolBar(tool_bar);
+    m_toolBar = tool_bar_container;
 }
 
 //-----------------------------------------------------------------------------
 
 void toolbar::destroyToolBar()
 {
-    SIGHT_ASSERT("The ToolBar is not initialized", m_toolBar);
+    SIGHT_ASSERT("The tool_bar is not initialized", m_toolBar);
     SIGHT_ASSERT("The parent's container is not a widget", m_parent);
     auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
 
     if(window != nullptr)
     {
-        ui::qt::container::toolbar::sptr qtToolBar =
+        ui::qt::container::toolbar::sptr qt_tool_bar =
             std::dynamic_pointer_cast<ui::qt::container::toolbar>(m_toolBar);
-        QToolBar* toolbar = qtToolBar->getQtToolBar();
+        QToolBar* toolbar = qt_tool_bar->getQtToolBar();
         window->removeToolBar(toolbar);
     }
 

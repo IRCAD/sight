@@ -36,50 +36,50 @@ void service_connection::connect(const sight::service::base& _service)
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
-    for(const auto& proxyCfg : m_proxies)
+    for(const auto& proxy_cfg : m_proxies)
     {
-        for(const auto& signalCfg : proxyCfg.second.m_signals)
+        for(const auto& signal_cfg : proxy_cfg.second.m_signals)
         {
-            SIGHT_ASSERT("Invalid signal source", signalCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid signal source", signal_cfg.first == _service.get_id());
 
-            core::com::signal_base::sptr sig = _service.signal(signalCfg.second);
-            SIGHT_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
+            core::com::signal_base::sptr sig = _service.signal(signal_cfg.second);
+            SIGHT_ASSERT("Signal '" + signal_cfg.second + "' not found in source '" + signal_cfg.first + "'.", sig);
             try
             {
-                proxy->connect(proxyCfg.second.m_channel, sig);
+                proxy->connect(proxy_cfg.second.m_channel, sig);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signalCfg.second + "' from '" + signalCfg.first
-                    + "' can not be connected to the channel '" + proxyCfg.second.m_channel
+                    "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first
+                    + "' can not be connected to the channel '" + proxy_cfg.second.m_channel
                     + "': " + std::string(e.what())
                 );
             }
         }
 
-        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        for(const auto& slot_cfg : proxy_cfg.second.m_slots)
         {
             // The start slot is connected before the start stage in connectStartSlot(), skip it
-            if(slotCfg.second == sight::service::slots::START)
+            if(slot_cfg.second == sight::service::slots::START)
             {
                 continue;
             }
 
-            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid slot destination", slot_cfg.first == _service.get_id());
 
-            core::com::slot_base::sptr slot = _service.slot(slotCfg.second);
-            SIGHT_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
+            core::com::slot_base::sptr slot = _service.slot(slot_cfg.second);
+            SIGHT_ASSERT("Slot '" + slot_cfg.second + "' not found in source '" + slot_cfg.first + "'.", slot);
 
             try
             {
-                proxy->connect(proxyCfg.second.m_channel, slot);
+                proxy->connect(proxy_cfg.second.m_channel, slot);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first
-                    + "' can not be connected to the channel '" + proxyCfg.second.m_channel
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                    + "' can not be connected to the channel '" + proxy_cfg.second.m_channel
                     + "': " + std::string(e.what())
                 );
             }
@@ -93,31 +93,31 @@ void service_connection::connectStartSlot(const sight::service::base& _service)
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
-    for(const auto& proxyCfg : m_proxies)
+    for(const auto& proxy_cfg : m_proxies)
     {
-        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        for(const auto& slot_cfg : proxy_cfg.second.m_slots)
         {
-            if(slotCfg.second != sight::service::slots::START)
+            if(slot_cfg.second != sight::service::slots::START)
             {
                 continue;
             }
 
-            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid slot destination", slot_cfg.first == _service.get_id());
 
-            core::com::slot_base::sptr slot = _service.slot(slotCfg.second);
-            SIGHT_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
+            core::com::slot_base::sptr slot = _service.slot(slot_cfg.second);
+            SIGHT_ASSERT("Slot '" + slot_cfg.second + "' not found in source '" + slot_cfg.first + "'.", slot);
 
             try
             {
-                proxy->connect(proxyCfg.second.m_channel, slot);
+                proxy->connect(proxy_cfg.second.m_channel, slot);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
-                                                                             "channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be connected to the "
+                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
                         e.what()
-                                                                             )
+                                                                               )
                 );
             }
         }
@@ -130,51 +130,51 @@ void service_connection::disconnect(const sight::service::base& _service)
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
-    for(const auto& proxyCfg : m_proxies)
+    for(const auto& proxy_cfg : m_proxies)
     {
-        for(const auto& signalCfg : proxyCfg.second.m_signals)
+        for(const auto& signal_cfg : proxy_cfg.second.m_signals)
         {
-            SIGHT_ASSERT("Invalid signal source", signalCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid signal source", signal_cfg.first == _service.get_id());
 
-            core::com::signal_base::sptr sig = _service.signal(signalCfg.second);
+            core::com::signal_base::sptr sig = _service.signal(signal_cfg.second);
 
             try
             {
-                proxy->disconnect(proxyCfg.second.m_channel, sig);
+                proxy->disconnect(proxy_cfg.second.m_channel, sig);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be disconnected "
-                                                                                   "from the channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                    "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first + "' can not be disconnected "
+                                                                                     "from the channel '" + proxy_cfg.second.m_channel + "': " + std::string(
                         e.what()
-                                                                                   )
+                                                                                     )
                 );
             }
         }
 
-        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        for(const auto& slot_cfg : proxy_cfg.second.m_slots)
         {
-            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid slot destination", slot_cfg.first == _service.get_id());
 
             // The start slot is disconnected after the stop stage in disconnectStartSlot(), skip it
-            if(slotCfg.second == sight::service::slots::START)
+            if(slot_cfg.second == sight::service::slots::START)
             {
                 continue;
             }
 
-            core::com::slot_base::sptr slot = _service.slot(slotCfg.second);
+            core::com::slot_base::sptr slot = _service.slot(slot_cfg.second);
             try
             {
-                proxy->disconnect(proxyCfg.second.m_channel, slot);
+                proxy->disconnect(proxy_cfg.second.m_channel, slot);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
-                                                                             "channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be disconnected from the "
+                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
                         e.what()
-                                                                             )
+                                                                               )
                 );
             }
         }
@@ -187,29 +187,29 @@ void service_connection::disconnectStartSlot(const sight::service::base& _servic
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
-    for(const auto& proxyCfg : m_proxies)
+    for(const auto& proxy_cfg : m_proxies)
     {
-        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        for(const auto& slot_cfg : proxy_cfg.second.m_slots)
         {
-            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.get_id());
+            SIGHT_ASSERT("Invalid slot destination", slot_cfg.first == _service.get_id());
 
-            if(slotCfg.second != sight::service::slots::START)
+            if(slot_cfg.second != sight::service::slots::START)
             {
                 continue;
             }
 
-            core::com::slot_base::sptr slot = _service.slot(slotCfg.second);
+            core::com::slot_base::sptr slot = _service.slot(slot_cfg.second);
             try
             {
-                proxy->disconnect(proxyCfg.second.m_channel, slot);
+                proxy->disconnect(proxy_cfg.second.m_channel, slot);
             }
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
-                                                                             "channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be disconnected from the "
+                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
                         e.what()
-                                                                             )
+                                                                               )
                 );
             }
         }

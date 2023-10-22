@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,12 +32,12 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRUIDRefNode::DicomSRUIDRefNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    std::string uidValue
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    std::string _uid_value
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship),
-    m_uidValue(std::move(uidValue))
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "UIDREF", _relationship),
+    m_uidValue(std::move(_uid_value))
 {
 }
 
@@ -48,20 +48,20 @@ DicomSRUIDRefNode::~DicomSRUIDRefNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRUIDRefNode::write(gdcm::DataSet& dataset) const
+void DicomSRUIDRefNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // UID Value - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa124>(m_uidValue, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa124>(m_uidValue, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRUIDRefNode::print(std::ostream& os) const
+void DicomSRUIDRefNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nUID value : [" << m_uidValue << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nUID value : [" << m_uidValue << "]";
 }
 
 //------------------------------------------------------------------------------

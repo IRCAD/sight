@@ -61,7 +61,7 @@ public:
 
     SIGHT_DECLARE_CLASS(filter, core::tools::object);
 
-    typedef std::vector<data::dicom_series::sptr> DicomSeriesContainerType;
+    typedef std::vector<data::dicom_series::sptr> dicom_series_container_t;
 
     /**
      * @brief Filter types
@@ -73,7 +73,7 @@ public:
         SPLITTER  = 2, /*! Splitter */
         COMPOSITE = 3, /*! Composite */
         CUSTOM    = 4  /*! Custom */
-    } FilterType;
+    } filter_t;
 
     /// Destructor
     FILTER_DICOM_API ~filter() override;
@@ -82,9 +82,9 @@ public:
      * @brief Apply the filter
      * @return Returns one or more Dicom Instance Group
      */
-    FILTER_DICOM_API virtual DicomSeriesContainerType apply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API virtual dicom_series_container_t apply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const = 0;
 
     /// Return the name of the filter
@@ -94,7 +94,7 @@ public:
     FILTER_DICOM_API virtual std::string getDescription() const = 0;
 
     /// Return filter type
-    FILTER_DICOM_API virtual FilterType getFilterType() const = 0;
+    FILTER_DICOM_API virtual filter_t get_filter_type() const = 0;
 
     /// Return true if a configuration is required
     FILTER_DICOM_API virtual bool isConfigurationRequired() const;

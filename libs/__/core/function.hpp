@@ -49,9 +49,9 @@ using lambda_to_function_t = typename detail::deduce_type<decltype(&CLOSURE::ope
 
 /// Converts a lambda to a std::function, used to convert template arguments
 template<typename CLOSURE>
-auto lambda_to_function(const CLOSURE& fn)
+auto lambda_to_function(const CLOSURE& _fn)
 {
-    return lambda_to_function_t<CLOSURE>(fn);
+    return lambda_to_function_t<CLOSURE>(_fn);
 }
 
 //------------------------------------------------------------------------------

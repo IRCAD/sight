@@ -11,7 +11,7 @@ This module contains actions, editors and dialogs to manage DICOM images.
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                  ...
                  module_ui_dicom
 )

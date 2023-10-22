@@ -43,9 +43,9 @@
 namespace sight::core::memory
 {
 
-SPTR(void) get_lock(const buffer_manager::sptr& manager, buffer_manager::const_buffer_ptr_t buffer_ptr)
+SPTR(void) get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return manager->lock_buffer(buffer_ptr).get();
+    return _manager->lock_buffer(_buffer_ptr).get();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,76 +74,76 @@ buffer_manager::~buffer_manager()
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<void> buffer_manager::register_buffer(buffer_manager::buffer_ptr_t buffer_ptr)
+std::shared_future<void> buffer_manager::register_buffer(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<void>([this, buffer_ptr](auto&& ...){register_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<void>([this, _buffer_ptr](auto&& ...){register_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::register_buffer_impl(buffer_manager::buffer_ptr_t buffer_ptr)
+void buffer_manager::register_buffer_impl(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    m_buffer_infos.insert(buffer_info_map_t::value_type(buffer_ptr, buffer_info()));
+    m_buffer_infos.insert(buffer_info_map_t::value_type(_buffer_ptr, buffer_info()));
     m_updated_sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<void> buffer_manager::unregister_buffer(buffer_manager::buffer_ptr_t buffer_ptr)
+std::shared_future<void> buffer_manager::unregister_buffer(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<void>([this, buffer_ptr](auto&& ...){unregister_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<void>([this, _buffer_ptr](auto&& ...){unregister_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::unregister_buffer_impl(buffer_manager::buffer_ptr_t buffer_ptr)
+void buffer_manager::unregister_buffer_impl(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
     SIGHT_ASSERT(
-        "There are still " << m_buffer_infos[buffer_ptr].lock_count() << " locks on this BufferObject ("
+        "There are still " << m_buffer_infos[_buffer_ptr].lock_count() << " locks on this BufferObject ("
         << this << ")",
-        m_buffer_infos[buffer_ptr].lock_counter.expired()
+        m_buffer_infos[_buffer_ptr].lock_counter.expired()
     );
 
-    m_buffer_infos.erase(buffer_ptr);
+    m_buffer_infos.erase(_buffer_ptr);
     m_updated_sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
 std::shared_future<void> buffer_manager::allocate_buffer(
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    size_t size,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    size_t _size,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
     return m_worker->post_task<void>(
-        [this, buffer_ptr, size, policy](auto&& ...)
+        [this, _buffer_ptr, _size, _policy](auto&& ...)
         {
-            allocate_buffer_impl(buffer_ptr, size, policy);
+            allocate_buffer_impl(_buffer_ptr, _size, _policy);
         });
 }
 
 //------------------------------------------------------------------------------
 
 void buffer_manager::allocate_buffer_impl(
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    size_t size,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    size_t _size,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
-    SIGHT_ASSERT("Buffer has already been allocated", info.loaded && (*buffer_ptr == nullptr));
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
+    SIGHT_ASSERT("Buffer has already been allocated", info.loaded && (*_buffer_ptr == nullptr));
 
     if(!info.loaded)
     {
         info.clear();
     }
 
-    m_dump_policy->allocation_request(info, buffer_ptr, size);
+    m_dump_policy->allocation_request(info, _buffer_ptr, _size);
 
     try
     {
-        policy->allocate(*buffer_ptr, size);
+        _policy->allocate(*_buffer_ptr, _size);
     }
     catch(...)
     {
@@ -153,61 +153,64 @@ void buffer_manager::allocate_buffer_impl(
 
     info.istream_factory =
         std::make_shared<core::memory::stream::in::buffer>(
-            *buffer_ptr,
-            size,
-            [capture0 = this->get_sptr(), buffer_ptr](auto&& ...){return get_lock(capture0, buffer_ptr);});
+            *_buffer_ptr,
+            _size,
+            [capture0 = this->get_sptr(), _buffer_ptr](auto&& ...){return get_lock(capture0, _buffer_ptr);});
 
     info.last_access.modified();
-    info.size          = size;
-    info.buffer_policy = policy;
+    info.size          = _size;
+    info.buffer_policy = _policy;
     m_updated_sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
 std::shared_future<void> buffer_manager::set_buffer(
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    core::memory::buffer_manager::buffer_t buffer,
-    size_t size,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    core::memory::buffer_manager::buffer_t _buffer,
+    size_t _size,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
     return m_worker->post_task<void>(
-        [this, buffer_ptr, buffer, size, policy](auto&& ...){set_buffer_impl(buffer_ptr, buffer, size, policy);});
+        [this, _buffer_ptr, _buffer, _size, _policy](auto&& ...)
+        {
+            set_buffer_impl(_buffer_ptr, _buffer, _size, _policy);
+        });
 }
 
 //------------------------------------------------------------------------------
 
 void buffer_manager::set_buffer_impl(
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    core::memory::buffer_manager::buffer_t buffer,
-    size_t size,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    core::memory::buffer_manager::buffer_t _buffer,
+    size_t _size,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
 
-    SIGHT_ASSERT("Buffer is already set", *buffer_ptr == nullptr && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *_buffer_ptr == nullptr && info.loaded);
 
-    m_dump_policy->set_request(info, buffer_ptr, size);
+    m_dump_policy->set_request(info, _buffer_ptr, _size);
 
     if(!info.loaded)
     {
         info.clear();
     }
 
-    *buffer_ptr = buffer;
+    *_buffer_ptr = _buffer;
 
     info.last_access.modified();
-    info.size          = size;
-    info.buffer_policy = policy;
+    info.size          = _size;
+    info.buffer_policy = _policy;
     info.file_format   = core::memory::OTHER;
     info.fs_file.clear();
     info.istream_factory =
         std::make_shared<core::memory::stream::in::buffer>(
-            *buffer_ptr,
-            size,
-            [capture0 = this->get_sptr(), buffer_ptr](auto&& ...){return get_lock(capture0, buffer_ptr);});
+            *_buffer_ptr,
+            _size,
+            [capture0 = this->get_sptr(), _buffer_ptr](auto&& ...){return get_lock(capture0, _buffer_ptr);});
     info.user_stream_factory = false;
     m_updated_sig->async_emit();
 }
@@ -215,35 +218,35 @@ void buffer_manager::set_buffer_impl(
 //-----------------------------------------------------------------------------
 
 std::shared_future<void> buffer_manager::reallocate_buffer(
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    size_t new_size
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    size_t _new_size
 )
 {
     return m_worker->post_task<void>(
-        [this, buffer_ptr, new_size](auto&& ...)
+        [this, _buffer_ptr, _new_size](auto&& ...)
         {
-            reallocate_buffer_impl(buffer_ptr, new_size);
+            reallocate_buffer_impl(_buffer_ptr, _new_size);
         });
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::reallocate_buffer_impl(buffer_manager::buffer_ptr_t buffer_ptr, size_t new_size)
+void buffer_manager::reallocate_buffer_impl(buffer_manager::buffer_ptr_t _buffer_ptr, size_t _new_size)
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
-    SIGHT_ASSERT("Buffer must be allocated or dumped", (*buffer_ptr != nullptr) || !info.loaded);
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*_buffer_ptr != nullptr) || !info.loaded);
 
-    m_dump_policy->reallocate_request(info, buffer_ptr, new_size);
+    m_dump_policy->reallocate_request(info, _buffer_ptr, _new_size);
 
     try
     {
         if(info.loaded)
         {
-            info.buffer_policy->reallocate(*buffer_ptr, new_size);
+            info.buffer_policy->reallocate(*_buffer_ptr, _new_size);
         }
         else
         {
-            this->restore_buffer(info, buffer_ptr, new_size);
+            this->restore_buffer(info, _buffer_ptr, _new_size);
         }
     }
     catch(core::memory::exception::memory&)
@@ -254,32 +257,32 @@ void buffer_manager::reallocate_buffer_impl(buffer_manager::buffer_ptr_t buffer_
 
     info.istream_factory =
         std::make_shared<core::memory::stream::in::buffer>(
-            *buffer_ptr,
-            new_size,
-            [capture0 = this->get_sptr(), buffer_ptr](auto&& ...){return get_lock(capture0, buffer_ptr);});
+            *_buffer_ptr,
+            _new_size,
+            [capture0 = this->get_sptr(), _buffer_ptr](auto&& ...){return get_lock(capture0, _buffer_ptr);});
 
     info.last_access.modified();
-    info.size = new_size;
+    info.size = _new_size;
 
     m_updated_sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<void> buffer_manager::destroy_buffer(buffer_manager::buffer_ptr_t buffer_ptr)
+std::shared_future<void> buffer_manager::destroy_buffer(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<void>([this, buffer_ptr](auto&& ...){destroy_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<void>([this, _buffer_ptr](auto&& ...){destroy_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::destroy_buffer_impl(buffer_manager::buffer_ptr_t buffer_ptr)
+void buffer_manager::destroy_buffer_impl(buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
-    SIGHT_ASSERT("Buffer must be allocated or dumped", (*buffer_ptr != nullptr) || !info.loaded);
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*_buffer_ptr != nullptr) || !info.loaded);
 
-    m_dump_policy->destroy_request(info, buffer_ptr);
-    info.buffer_policy->destroy(*buffer_ptr);
+    m_dump_policy->destroy_request(info, _buffer_ptr);
+    info.buffer_policy->destroy(*_buffer_ptr);
 
     info.clear();
     info.last_access.modified();
@@ -289,21 +292,21 @@ void buffer_manager::destroy_buffer_impl(buffer_manager::buffer_ptr_t buffer_ptr
 //-----------------------------------------------------------------------------
 
 std::shared_future<void> buffer_manager::swap_buffer(
-    buffer_manager::buffer_ptr_t buf_a,
-    buffer_manager::buffer_ptr_t buf_b
+    buffer_manager::buffer_ptr_t _buf_a,
+    buffer_manager::buffer_ptr_t _buf_b
 )
 {
-    return m_worker->post_task<void>([this, buf_a, buf_b](auto&& ...){swap_buffer_impl(buf_a, buf_b);});
+    return m_worker->post_task<void>([this, _buf_a, _buf_b](auto&& ...){swap_buffer_impl(_buf_a, _buf_b);});
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::swap_buffer_impl(buffer_manager::buffer_ptr_t buf_a, buffer_manager::buffer_ptr_t buf_b)
+void buffer_manager::swap_buffer_impl(buffer_manager::buffer_ptr_t _buf_a, buffer_manager::buffer_ptr_t _buf_b)
 {
-    buffer_info& info_a = m_buffer_infos[buf_a];
-    buffer_info& info_b = m_buffer_infos[buf_b];
+    buffer_info& info_a = m_buffer_infos[_buf_a];
+    buffer_info& info_b = m_buffer_infos[_buf_b];
 
-    std::swap(*buf_a, *buf_b);
+    std::swap(*_buf_a, *_buf_b);
     std::swap(info_a.size, info_b.size);
     std::swap(info_a.loaded, info_b.loaded);
     std::swap(info_a.fs_file, info_b.fs_file);
@@ -319,19 +322,19 @@ void buffer_manager::swap_buffer_impl(buffer_manager::buffer_ptr_t buf_a, buffer
 struct auto_unlock
 {
     auto_unlock(
-        const buffer_manager::sptr& manager,
-        buffer_manager::const_buffer_ptr_t buffer_ptr,
-        const buffer_info& info
+        const buffer_manager::sptr& _manager,
+        buffer_manager::const_buffer_ptr_t _buffer_ptr,
+        const buffer_info& _info
     ) :
-        m_manager(manager),
-        m_buffer_ptr(buffer_ptr)
+        m_manager(_manager),
+        m_buffer_ptr(_buffer_ptr)
     {
-        if(!info.loaded)
+        if(!_info.loaded)
         {
-            bool restored = manager->restore_buffer(buffer_ptr).get();
+            bool restored = _manager->restore_buffer(_buffer_ptr).get();
             SIGHT_ASSERT(
-                "restore not OK ( " << restored << " && " << *buffer_ptr << " != 0 ).",
-                restored && *buffer_ptr != nullptr
+                "restore not OK ( " << restored << " && " << *_buffer_ptr << " != 0 ).",
+                restored && *_buffer_ptr != nullptr
             );
             SIGHT_NOT_USED(restored);
         }
@@ -359,21 +362,21 @@ struct auto_unlock
 
 //------------------------------------------------------------------------------
 
-std::shared_future<SPTR(void)> buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t buffer_ptr)
+std::shared_future<SPTR(void)> buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<SPTR(void)>([this, buffer_ptr](auto&& ...){return lock_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<SPTR(void)>([this, _buffer_ptr](auto&& ...){return lock_buffer_impl(_buffer_ptr);});
 }
 
-SPTR(void) buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t buffer_ptr)
+SPTR(void) buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
 
-    m_dump_policy->lock_request(info, buffer_ptr);
+    m_dump_policy->lock_request(info, _buffer_ptr);
 
     SPTR(void) counter = info.lock_counter.lock();
     if(!counter)
     {
-        counter           = std::make_shared<auto_unlock>(this->get_sptr(), buffer_ptr, info);
+        counter           = std::make_shared<auto_unlock>(this->get_sptr(), _buffer_ptr, info);
         info.lock_counter = counter;
     }
 
@@ -386,17 +389,17 @@ SPTR(void) buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t b
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<bool> buffer_manager::unlock_buffer(buffer_manager::const_buffer_ptr_t buffer_ptr)
+std::shared_future<bool> buffer_manager::unlock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<bool>([this, buffer_ptr](auto&& ...){return unlock_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<bool>([this, _buffer_ptr](auto&& ...){return unlock_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer_manager::unlock_buffer_impl(buffer_manager::const_buffer_ptr_t buffer_ptr)
+bool buffer_manager::unlock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    buffer_info& info = m_buffer_infos[buffer_ptr];
-    m_dump_policy->unlock_request(info, buffer_ptr);
+    buffer_info& info = m_buffer_infos[_buffer_ptr];
+    m_dump_policy->unlock_request(info, _buffer_ptr);
 
     m_updated_sig->async_emit();
     return true;
@@ -404,65 +407,65 @@ bool buffer_manager::unlock_buffer_impl(buffer_manager::const_buffer_ptr_t buffe
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<bool> buffer_manager::dump_buffer(buffer_manager::const_buffer_ptr_t buffer_ptr)
+std::shared_future<bool> buffer_manager::dump_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<bool>([this, buffer_ptr](auto&& ...){return dump_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<bool>([this, _buffer_ptr](auto&& ...){return dump_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer_manager::dump_buffer_impl(buffer_manager::const_buffer_ptr_t buffer_ptr)
+bool buffer_manager::dump_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    auto* casted_buffer = const_cast<buffer_manager::buffer_ptr_t>(buffer_ptr);
+    auto* casted_buffer = const_cast<buffer_manager::buffer_ptr_t>(_buffer_ptr);
     buffer_info& info   = m_buffer_infos[casted_buffer];
     return this->dump_buffer(info, casted_buffer);
 }
 
 //-----------------------------------------------------------------------------
 
-bool buffer_manager::dump_buffer(buffer_info& info, buffer_manager::buffer_ptr_t buffer_ptr)
+bool buffer_manager::dump_buffer(buffer_info& _info, buffer_manager::buffer_ptr_t _buffer_ptr)
 {
-    if(!info.loaded || info.lock_count() > 0 || info.size == 0)
+    if(!_info.loaded || _info.lock_count() > 0 || _info.size == 0)
     {
         return false;
     }
 
     const std::filesystem::path& dumped_file = core::os::temp_file::unique_path();
 
-    info.lock_counter.reset();
+    _info.lock_counter.reset();
 
-    if(sight::core::memory::buffer_manager::write_buffer_impl(*buffer_ptr, info.size, dumped_file))
+    if(sight::core::memory::buffer_manager::write_buffer_impl(*_buffer_ptr, _info.size, dumped_file))
     {
-        info.fs_file             = core::memory::file_holder(dumped_file, true);
-        info.file_format         = core::memory::RAW;
-        info.istream_factory     = std::make_shared<core::memory::stream::in::raw>(info.fs_file);
-        info.user_stream_factory = false;
-        info.buffer_policy->destroy(*buffer_ptr);
-        *buffer_ptr = nullptr;
-        info.loaded = false;
+        _info.fs_file             = core::memory::file_holder(dumped_file, true);
+        _info.file_format         = core::memory::RAW;
+        _info.istream_factory     = std::make_shared<core::memory::stream::in::raw>(_info.fs_file);
+        _info.user_stream_factory = false;
+        _info.buffer_policy->destroy(*_buffer_ptr);
+        *_buffer_ptr = nullptr;
+        _info.loaded = false;
 
-        m_dump_policy->dump_success(info, buffer_ptr);
+        m_dump_policy->dump_success(_info, _buffer_ptr);
 
         m_updated_sig->async_emit();
     }
 
-    return !info.loaded;
+    return !_info.loaded;
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_future<bool> buffer_manager::restore_buffer(buffer_manager::const_buffer_ptr_t buffer_ptr)
+std::shared_future<bool> buffer_manager::restore_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<bool>([this, buffer_ptr](auto&& ...){return restore_buffer_impl(buffer_ptr);});
+    return m_worker->post_task<bool>([this, _buffer_ptr](auto&& ...){return restore_buffer_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer_manager::restore_buffer_impl(buffer_manager::const_buffer_ptr_t buffer_ptr)
+bool buffer_manager::restore_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    auto* casted_buffer = const_cast<buffer_manager::buffer_ptr_t>(buffer_ptr);
+    auto* casted_buffer = const_cast<buffer_manager::buffer_ptr_t>(_buffer_ptr);
     buffer_info& info   = m_buffer_infos[casted_buffer];
     return this->restore_buffer(info, casted_buffer);
 }
@@ -470,28 +473,28 @@ bool buffer_manager::restore_buffer_impl(buffer_manager::const_buffer_ptr_t buff
 //-----------------------------------------------------------------------------
 
 bool buffer_manager::restore_buffer(
-    buffer_info& info,
-    buffer_manager::buffer_ptr_t buffer_ptr,
-    buffer_manager::size_t alloc_size
+    buffer_info& _info,
+    buffer_manager::buffer_ptr_t _buffer_ptr,
+    buffer_manager::size_t _alloc_size
 )
 {
-    alloc_size = ((alloc_size) != 0U ? alloc_size : info.size);
-    if(!info.loaded)
+    _alloc_size = ((_alloc_size) != 0U ? _alloc_size : _info.size);
+    if(!_info.loaded)
     {
-        if(*buffer_ptr == nullptr)
+        if(*_buffer_ptr == nullptr)
         {
-            info.buffer_policy->allocate(*buffer_ptr, alloc_size);
+            _info.buffer_policy->allocate(*_buffer_ptr, _alloc_size);
         }
         else
         {
-            info.buffer_policy->reallocate(*buffer_ptr, alloc_size);
+            _info.buffer_policy->reallocate(*_buffer_ptr, _alloc_size);
         }
 
-        char* char_buf  = static_cast<char*>(*buffer_ptr);
-        size_t size     = std::min(alloc_size, info.size);
+        char* char_buf  = static_cast<char*>(*_buffer_ptr);
+        size_t size     = std::min(_alloc_size, _info.size);
         bool not_failed = false;
         {
-            SPTR(std::istream) stream = (*info.istream_factory)();
+            SPTR(std::istream) stream = (*_info.istream_factory)();
             std::istream& is = *stream;
             const auto read  = static_cast<size_t>(is.read(char_buf, static_cast<std::streamsize>(size)).gcount());
 
@@ -501,19 +504,19 @@ bool buffer_manager::restore_buffer(
 
         if(not_failed)
         {
-            info.loaded = true;
-            info.fs_file.clear();
-            info.last_access.modified();
+            _info.loaded = true;
+            _info.fs_file.clear();
+            _info.last_access.modified();
 
-            m_dump_policy->restore_success(info, buffer_ptr);
+            m_dump_policy->restore_success(_info, _buffer_ptr);
 
-            info.file_format     = core::memory::OTHER;
-            info.istream_factory =
+            _info.file_format     = core::memory::OTHER;
+            _info.istream_factory =
                 std::make_shared<core::memory::stream::in::buffer>(
-                    *buffer_ptr,
-                    alloc_size,
-                    [capture0 = this->get_sptr(), buffer_ptr](auto&& ...){return get_lock(capture0, buffer_ptr);});
-            info.user_stream_factory = false;
+                    *_buffer_ptr,
+                    _alloc_size,
+                    [capture0 = this->get_sptr(), _buffer_ptr](auto&& ...){return get_lock(capture0, _buffer_ptr);});
+            _info.user_stream_factory = false;
             m_updated_sig->async_emit();
             return true;
         }
@@ -525,30 +528,30 @@ bool buffer_manager::restore_buffer(
 //-----------------------------------------------------------------------------
 
 std::shared_future<bool> buffer_manager::write_buffer(
-    buffer_manager::const_buffer_t buffer,
-    size_t size,
-    std::filesystem::path& path
+    buffer_manager::const_buffer_t _buffer,
+    size_t _size,
+    std::filesystem::path& _path
 )
 {
     return m_worker->post_task<bool>(
-        [buffer, size, path](auto&& ...)
+        [_buffer, _size, _path](auto&& ...)
         {
-            return buffer_manager::write_buffer_impl(buffer, size, path);
+            return buffer_manager::write_buffer_impl(_buffer, _size, _path);
         });
 }
 
 //------------------------------------------------------------------------------
 
 bool buffer_manager::write_buffer_impl(
-    buffer_manager::const_buffer_t buffer,
-    size_t size,
-    const std::filesystem::path& path
+    buffer_manager::const_buffer_t _buffer,
+    size_t _size,
+    const std::filesystem::path& _path
 )
 {
-    std::ofstream fs(path, std::ios::binary | std::ios::trunc);
-    SIGHT_THROW_IF("Memory management : Unable to open " << path, !fs.good());
-    const char* char_buf = static_cast<const char*>(buffer);
-    fs.write(char_buf, static_cast<std::streamsize>(size));
+    std::ofstream fs(_path, std::ios::binary | std::ios::trunc);
+    SIGHT_THROW_IF("Memory management : Unable to open " << _path, !fs.good());
+    const char* char_buf = static_cast<const char*>(_buffer);
+    fs.write(char_buf, static_cast<std::streamsize>(_size));
     fs.close();
     return !fs.bad();
 }
@@ -556,39 +559,39 @@ bool buffer_manager::write_buffer_impl(
 //-----------------------------------------------------------------------------
 
 std::shared_future<bool> buffer_manager::read_buffer(
-    buffer_manager::buffer_t buffer,
-    size_t size,
-    std::filesystem::path& path
+    buffer_manager::buffer_t _buffer,
+    size_t _size,
+    std::filesystem::path& _path
 )
 {
     return m_worker->post_task<bool>(
-        [buffer, size, path](auto&& ...)
+        [_buffer, _size, _path](auto&& ...)
         {
-            return buffer_manager::read_buffer_impl(buffer, size, path);
+            return buffer_manager::read_buffer_impl(_buffer, _size, _path);
         });
 }
 
 //------------------------------------------------------------------------------
 
 bool buffer_manager::read_buffer_impl(
-    buffer_manager::buffer_t buffer,
-    size_t size,
-    const std::filesystem::path& path
+    buffer_manager::buffer_t _buffer,
+    size_t _size,
+    const std::filesystem::path& _path
 )
 {
-    std::ifstream fs(path, std::ios::in | std::ios::binary | std::ios::ate);
-    SIGHT_THROW_IF("Unable to read " << path, !fs.good());
+    std::ifstream fs(_path, std::ios::in | std::ios::binary | std::ios::ate);
+    SIGHT_THROW_IF("Unable to read " << _path, !fs.good());
 
     std::streampos file_size = fs.tellg();
     fs.seekg(0, std::ios::beg);
 
     SIGHT_THROW_IF(
-        path << ": Bad file size, expected: " << size << ", was: " << file_size,
-        size - static_cast<size_t>(file_size) != 0
+        _path << ": Bad file size, expected: " << _size << ", was: " << file_size,
+        _size - static_cast<size_t>(file_size) != 0
     );
 
-    char* char_buf = static_cast<char*>(buffer);
-    fs.read(char_buf, static_cast<std::streamsize>(size));
+    char* char_buf = static_cast<char*>(_buffer);
+    fs.read(char_buf, static_cast<std::streamsize>(_size));
 
     fs.close();
     return !fs.bad();
@@ -633,10 +636,10 @@ std::string buffer_manager::to_string_impl() const
 
 //-----------------------------------------------------------------------------
 
-void buffer_manager::set_dump_policy(const core::memory::policy::base::sptr& policy)
+void buffer_manager::set_dump_policy(const core::memory::policy::base::sptr& _policy)
 {
-    m_dump_policy = policy;
-    policy->refresh();
+    m_dump_policy = _policy;
+    _policy->refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -670,10 +673,10 @@ std::shared_future<buffer_manager::buffer_stats> buffer_manager::get_buffer_stat
 
 //------------------------------------------------------------------------------
 
-buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_info_map_t& buffer_info)
+buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_info_map_t& _buffer_info)
 {
     buffer_stats stats = {0, 0};
-    for(const buffer_info_map_t::value_type& item : buffer_info)
+    for(const buffer_info_map_t::value_type& item : _buffer_info)
     {
         const auto& info = item.second;
         if(!info.loaded)
@@ -690,54 +693,54 @@ buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_i
 //-----------------------------------------------------------------------------
 
 std::shared_future<void> buffer_manager::set_istream_factory(
-    buffer_ptr_t buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& factory,
-    size_t size,
-    core::memory::file_holder fs_file,
-    core::memory::file_format_type format,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_ptr_t _buffer_ptr,
+    const SPTR(core::memory::stream::in::factory)& _factory,
+    size_t _size,
+    core::memory::file_holder _fs_file,
+    core::memory::file_format_type _format,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
     return m_worker->post_task<void>(
-        [this, buffer_ptr, factory, size, fs_file, format, policy](auto&& ...)
+        [this, _buffer_ptr, _factory, _size, _fs_file, _format, _policy](auto&& ...)
         {
-            set_istream_factory_impl(buffer_ptr, factory, size, fs_file, format, policy);
+            set_istream_factory_impl(_buffer_ptr, _factory, _size, _fs_file, _format, _policy);
         });
 }
 
 //------------------------------------------------------------------------------
 
 void buffer_manager::set_istream_factory_impl(
-    buffer_ptr_t buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& factory,
-    size_t size,
-    core::memory::file_holder fs_file,
-    core::memory::file_format_type format,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    buffer_ptr_t _buffer_ptr,
+    const SPTR(core::memory::stream::in::factory)& _factory,
+    size_t _size,
+    core::memory::file_holder _fs_file,
+    core::memory::file_format_type _format,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
-    auto iter_info = m_buffer_infos.find(buffer_ptr);
+    auto iter_info = m_buffer_infos.find(_buffer_ptr);
     SIGHT_THROW_IF("Buffer is not managed by core::memory::buffer_manager.", iter_info == m_buffer_infos.end());
     buffer_info& info = iter_info->second;
 
-    SIGHT_ASSERT("Buffer is already set", *buffer_ptr == nullptr && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *_buffer_ptr == nullptr && info.loaded);
 
-    m_dump_policy->set_request(info, buffer_ptr, size);
+    m_dump_policy->set_request(info, _buffer_ptr, _size);
 
-    info.istream_factory     = factory;
+    info.istream_factory     = _factory;
     info.user_stream_factory = true;
-    info.size                = size;
-    info.fs_file             = fs_file;
-    info.file_format         = format;
-    info.buffer_policy       = policy;
+    info.size                = _size;
+    info.fs_file             = _fs_file;
+    info.file_format         = _format;
+    info.buffer_policy       = _policy;
     info.loaded              = false;
 
-    m_dump_policy->dump_success(info, buffer_ptr);
+    m_dump_policy->dump_success(info, _buffer_ptr);
 
     switch(m_loading_mode)
     {
         case buffer_manager::DIRECT:
-            this->restore_buffer(buffer_ptr);
+            this->restore_buffer(_buffer_ptr);
             break;
 
         case buffer_manager::LAZY:
@@ -752,20 +755,20 @@ void buffer_manager::set_istream_factory_impl(
 //-----------------------------------------------------------------------------
 
 std::shared_future<buffer_manager::stream_info> buffer_manager::get_stream_info(
-    const buffer_manager::const_buffer_ptr_t buffer_ptr
+    const buffer_manager::const_buffer_ptr_t _buffer_ptr
 ) const
 {
     return m_worker->post_task<buffer_manager::stream_info>(
-        [this, buffer_ptr](auto&& ...){return get_stream_info_impl(buffer_ptr);});
+        [this, _buffer_ptr](auto&& ...){return get_stream_info_impl(_buffer_ptr);});
 }
 
 //------------------------------------------------------------------------------
 
-buffer_manager::stream_info buffer_manager::get_stream_info_impl(const buffer_manager::const_buffer_ptr_t buffer_ptr)
+buffer_manager::stream_info buffer_manager::get_stream_info_impl(const buffer_manager::const_buffer_ptr_t _buffer_ptr)
 const
 {
     stream_info stream_info;
-    auto iter_info = m_buffer_infos.find(buffer_ptr);
+    auto iter_info = m_buffer_infos.find(_buffer_ptr);
     SIGHT_THROW_IF("Buffer is not managed by core::memory::buffer_manager.", iter_info == m_buffer_infos.end());
     const buffer_info& info = iter_info->second;
     stream_info.size        = info.size;
@@ -790,9 +793,9 @@ buffer_manager::loading_mode_type buffer_manager::get_loading_mode() const
 
 //------------------------------------------------------------------------------
 
-void buffer_manager::set_loading_mode(loading_mode_type mode)
+void buffer_manager::set_loading_mode(loading_mode_type _mode)
 {
-    m_loading_mode = mode;
+    m_loading_mode = _mode;
 }
 
 } //namespace sight::core::memory

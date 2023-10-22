@@ -51,10 +51,10 @@ void parameters_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("parameters_test");
 
-    app::extension::parameters::sptr appConfigParam;
-    appConfigParam = app::extension::parameters::getDefault();
-    appConfigParam->clear_registry();
-    appConfigParam->parse_plugin_infos();
+    app::extension::parameters::sptr app_config_param;
+    app_config_param = app::extension::parameters::getDefault();
+    app_config_param->clear_registry();
+    app_config_param->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -67,14 +67,14 @@ void parameters_test::tearDown()
 
 void parameters_test::appConfigParametersTest()
 {
-    app::extension::parameters::sptr appConfigParam;
-    appConfigParam = app::extension::parameters::getDefault();
+    app::extension::parameters::sptr app_config_param;
+    app_config_param = app::extension::parameters::getDefault();
 
-    app::field_adaptor_t parameters = appConfigParam->getParameters("id1");
+    app::field_adaptor_t parameters = app_config_param->getParameters("id1");
     CPPUNIT_ASSERT(!parameters.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
 
-    app::field_adaptor_t parameters2 = appConfigParam->getParameters("id2");
+    app::field_adaptor_t parameters2 = app_config_param->getParameters("id2");
     CPPUNIT_ASSERT(!parameters2.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
 }

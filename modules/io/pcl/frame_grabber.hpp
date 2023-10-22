@@ -119,7 +119,7 @@ protected:
 
 private:
 
-    typedef std::vector<std::filesystem::path> ImageFilesType;
+    typedef std::vector<std::filesystem::path> image_files_t;
 
     /// Initializes the image reader, start the timer
     void readImages(const std::filesystem::path& folder, const std::string& extension);
@@ -145,7 +145,7 @@ private:
     core::thread::worker::sptr m_worker;
 
     /// list of image paths to read
-    ImageFilesType m_imageToRead;
+    image_files_t m_imageToRead;
 
     /// Mutex to protect concurrent access for m_imageToRead
     mutable core::mt::mutex m_mutex;

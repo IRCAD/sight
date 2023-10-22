@@ -41,26 +41,26 @@ namespace sight::module::io::bitmap
 using sight::io::bitmap::Writer;
 
 // Retrieve the backend from the extension
-sight::io::bitmap::Backend writer::findBackend(const std::string& extension) const
+sight::io::bitmap::Backend writer::findBackend(const std::string& _extension) const
 {
     const auto& it = std::find_if(
         m_mode_by_backend.cbegin(),
         m_mode_by_backend.cend(),
-        [&](const auto& mode_by_backend)
+        [&](const auto& _mode_by_backend)
         {
-            const auto& backend_extensions = sight::io::bitmap::extensions(mode_by_backend.first);
+            const auto& backend_extensions = sight::io::bitmap::extensions(_mode_by_backend.first);
 
             return std::any_of(
                 backend_extensions.cbegin(),
                 backend_extensions.cend(),
-                [&](const auto& backend_extension)
+                [&](const auto& _backend_extension)
             {
-                return extension.ends_with(backend_extension);
+                return _extension.ends_with(_backend_extension);
             });
         });
 
     SIGHT_THROW_IF(
-        "No backend found for file extension '" << extension << "'.",
+        "No backend found for file extension '" << _extension << "'.",
         it == m_mode_by_backend.cend()
     );
 
@@ -79,23 +79,23 @@ sight::io::service::IOPathType writer::getIOPathType() const
 
 void writer::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::single_folder>();
+    static auto default_location = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location locationDialog;
+    sight::ui::dialog::location location_dialog;
 
     // Set window title
     if(!m_windowTitle.empty())
     {
-        locationDialog.setTitle(m_windowTitle);
+        location_dialog.setTitle(m_windowTitle);
     }
     else
     {
-        locationDialog.setTitle("Enter file name");
+        location_dialog.setTitle("Enter file name");
     }
 
-    locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::dialog::location::WRITE);
-    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
+    location_dialog.setDefaultLocation(default_location);
+    location_dialog.setOption(ui::dialog::location::WRITE);
+    location_dialog.setType(ui::dialog::location::SINGLE_FILE);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
@@ -105,7 +105,7 @@ void writer::openLocationDialog()
     {
         for(const auto& [backend, mode] : m_mode_by_backend)
         {
-            all_wildcards.append(sight::io::bitmap::wildcardFilter(backend).second);
+            all_wildcards.append(sight::io::bitmap::wildcard_filter(backend).second);
             all_wildcards.append(" ");
         }
 
@@ -113,19 +113,19 @@ void writer::openLocationDialog()
 
         if(!all_wildcards.empty())
         {
-            locationDialog.addFilter("All supported images", all_wildcards);
+            location_dialog.addFilter("All supported images", all_wildcards);
         }
     }
 
     // Add other filters
     for(const auto& [backend, mode] : m_mode_by_backend)
     {
-        const auto& [label, wildcard] = sight::io::bitmap::wildcardFilter(backend);
-        locationDialog.addFilter(label, wildcard);
+        const auto& [label, wildcard] = sight::io::bitmap::wildcard_filter(backend);
+        location_dialog.addFilter(label, wildcard);
     }
 
     // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
 
     if(result)
     {
@@ -133,7 +133,7 @@ void writer::openLocationDialog()
         set_file(file_path);
 
         // Get the selected filter
-        const auto& current_selection = boost::trim_copy(locationDialog.getCurrentSelection());
+        const auto& current_selection = boost::trim_copy(location_dialog.getCurrentSelection());
 
         // If "All supported images" is selected, try to guess the backend from the file extension
         if(!all_wildcards.empty() && all_wildcards == current_selection)
@@ -146,7 +146,7 @@ void writer::openLocationDialog()
             try
             {
                 // Find backend from selected filter
-                m_selected_backend = findBackend(locationDialog.getSelectedExtensions().front());
+                m_selected_backend = findBackend(location_dialog.getSelectedExtensions().front());
             }
             catch(...)
             {
@@ -156,8 +156,8 @@ void writer::openLocationDialog()
         }
 
         // Save default location for later use
-        defaultLocation->set_folder(file_path.parent_path());
-        locationDialog.saveDefaultLocation(defaultLocation);
+        default_location->set_folder(file_path.parent_path());
+        location_dialog.saveDefaultLocation(default_location);
 
         m_dialog_shown = true;
     }
@@ -211,19 +211,19 @@ void writer::configuring()
 
         // Lambda to parse "mode" string
         const auto& string_to_mode =
-            [](const std::string& mode_string)
+            [](const std::string& _mode_string)
             {
-                if(mode_string == "default" || mode_string == "fast")
+                if(_mode_string == "default" || _mode_string == "fast")
                 {
                     return Writer::Mode::FAST;
                 }
 
-                if(mode_string == "best")
+                if(_mode_string == "best")
                 {
                     return Writer::Mode::BEST;
                 }
 
-                SIGHT_THROW("Unknown mode: '" << mode_string << "'.");
+                SIGHT_THROW("Unknown mode: '" << _mode_string << "'.");
             };
 
         const auto& backends_mode_string = backends_tree->get<std::string>("<xmlattr>.mode", "default");
@@ -237,7 +237,7 @@ void writer::configuring()
             m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBTIFF, backends_mode);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nvJPEG())
+            if(sight::io::bitmap::nv_jpeg())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, backends_mode);
             }
@@ -248,7 +248,7 @@ void writer::configuring()
             }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nvJPEG2K())
+            if(sight::io::bitmap::nv_jpeg_2k())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, backends_mode);
             }
@@ -270,20 +270,23 @@ void writer::configuring()
         {
             // We add only gpu backends, if possible
 #if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nvJPEG())
+            if(sight::io::bitmap::nv_jpeg())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, backends_mode);
             }
 #endif
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nvJPEG2K())
+            if(sight::io::bitmap::nv_jpeg_2k())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, backends_mode);
             }
 #endif
 
-            SIGHT_THROW_IF("No GPU backend available.", !sight::io::bitmap::nvJPEG() && !sight::io::bitmap::nvJPEG2K());
+            SIGHT_THROW_IF(
+                "No GPU backend available.",
+                !sight::io::bitmap::nv_jpeg() && !sight::io::bitmap::nv_jpeg_2k()
+            );
         }
 
         // Add hand selected backends
@@ -332,7 +335,7 @@ void writer::configuring()
             const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
 
 #if defined(SIGHT_ENABLE_NVJPEG)
-            if(sight::io::bitmap::nvJPEG())
+            if(sight::io::bitmap::nv_jpeg())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, mode);
 
@@ -356,7 +359,7 @@ void writer::configuring()
             const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-            if(sight::io::bitmap::nvJPEG2K())
+            if(sight::io::bitmap::nv_jpeg_2k())
             {
                 m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, mode);
 
@@ -440,7 +443,7 @@ void writer::updating()
                 : "The selected filename extension '" + current_extension + "' is not valid"
             )
             + " for the selected format '"
-            + sight::io::bitmap::wildcardFilter(m_selected_backend).first
+            + sight::io::bitmap::wildcard_filter(m_selected_backend).first
             + "' and will be adjusted to '"
             + sight::io::bitmap::extensions(m_selected_backend).front()
             + "'.";
@@ -473,9 +476,9 @@ void writer::updating()
 
     const auto write_job = std::make_shared<core::jobs::job>(
         "Writing '" + file_path.string() + "' file",
-        [&](core::jobs::job& running_job)
+        [&](core::jobs::job& _running_job)
         {
-            running_job.done_work(10);
+            _running_job.done_work(10);
 
             // Create the session writer
             auto writer = std::make_shared<Writer>();
@@ -487,12 +490,12 @@ void writer::updating()
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::BusyCursor busyCursor;
+            const sight::ui::BusyCursor busy_cursor;
 
             // Write the file
             writer->write(m_selected_backend, m_mode_by_backend.at(m_selected_backend));
 
-            running_job.done();
+            _running_job.done();
         },
         this->worker()
     );
@@ -508,13 +511,13 @@ void writer::updating()
         jobs->run().get();
         m_writeFailed = false;
     }
-    catch(std::exception& _e)
+    catch(std::exception& e)
     {
         // Handle the error.
-        SIGHT_ERROR(_e.what());
+        SIGHT_ERROR(e.what());
         sight::ui::dialog::message::show(
             "Bitmap writer failed",
-            _e.what(),
+            e.what(),
             sight::ui::dialog::message::CRITICAL
         );
     }

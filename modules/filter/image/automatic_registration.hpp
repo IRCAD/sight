@@ -116,20 +116,20 @@ protected:
 private:
 
     /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    void setEnumParameter(std::string val, std::string key) override;
+    void setEnumParameter(std::string _val, std::string _key) override;
 
     /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
-    void setDoubleParameter(double val, std::string key) override;
+    void setDoubleParameter(double _val, std::string _key) override;
 
     /// Set the maximum number of iterations, key must be "maxIterations".
-    void setIntParameter(int val, std::string key) override;
+    void setIntParameter(int _val, std::string _key) override;
 
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
-    void setMetric(const std::string& metricName);
+    void setMetric(const std::string& _metric_name);
 
     /// Extract the level at the end of the parameter name.
     /// Create the level if it doesn't exist
-    std::uint64_t extractLevelFromParameterName(const std::string& name);
+    std::uint64_t extractLevelFromParameterName(const std::string& _name);
 
     /// Smallest step that can be taken by the optimizer.
     double m_minStep {};
@@ -144,10 +144,10 @@ private:
     sight::filter::image::metric_t m_metric {sight::filter::image::metric_t::MEAN_SQUARES};
 
     /// Shrink factors per level and smoothing sigmas per level.
-    sight::filter::image::automatic_registration::MultiResolutionParametersType m_multiResolutionParameters;
+    sight::filter::image::automatic_registration::multi_resolution_parameters_t m_multiResolutionParameters;
 
     /// Percentage of samples used for registration.
-    sight::filter::image::automatic_registration::RealType m_samplingPercentage {};
+    sight::filter::image::automatic_registration::real_t m_samplingPercentage {};
 
     static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
     static constexpr std::string_view s_TARGET_IN       = "target";

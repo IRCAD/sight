@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene2d/adaptor.hpp>
 
@@ -112,16 +112,16 @@ private:
      */
 
     /// Slot: update image slice index
-    void updateSliceIndex(int axial, int frontal, int sagittal);
+    void updateSliceIndex(int _axial, int _frontal, int _sagittal);
 
     /// Slot: update image slice type
-    void updateSliceType(int from, int to);
+    void updateSliceType(int _from, int _to);
 
     /// Slot: update image buffer
     void updateBuffer();
 
     /// Slot: update image visibility
-    void updateVisibility(bool isVisible);
+    void updateVisibility(bool _is_visible);
     /**
      * @}
      */
@@ -131,11 +131,11 @@ private:
     void updateBufferFromImage(QImage* _img);
 
     void changeImageMinMaxFromCoord(
-        sight::viz::scene2d::vec2d_t& oldCoord,
-        sight::viz::scene2d::vec2d_t& newCoord
+        sight::viz::scene2d::vec2d_t& _old_coord,
+        sight::viz::scene2d::vec2d_t& _new_coord
     );
 
-    static QRgb getQImageVal(std::int16_t value, const data::transfer_function& tf);
+    static QRgb getQImageVal(std::int16_t _value, const data::transfer_function& _tf);
 
     QImage* m_qImg {nullptr};
 
@@ -143,7 +143,7 @@ private:
 
     QGraphicsItemGroup* m_layer {nullptr};
 
-    using orientation_t = data::helper::MedicalImage::orientation_t;
+    using orientation_t = data::helper::medical_image::orientation_t;
 
     /// The current orientation of the negato
     orientation_t m_orientation {orientation_t::Z_AXIS};

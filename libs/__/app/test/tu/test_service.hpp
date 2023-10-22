@@ -122,9 +122,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setRaiseException(bool raiseException)
+    void setRaiseException(bool _raise_exception)
     {
-        m_raiseException = raiseException;
+        m_raiseException = _raise_exception;
     }
 
     //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ public:
     };
 
     /// Type of signal
-    typedef core::com::signal<void (int)> IntSentSignalType;
+    typedef core::com::signal<void (int)> int_sent_signal_t;
 
     //-------------------------------------------------------------------------
 
@@ -226,10 +226,10 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void swapping(std::string_view key) final
+    void swapping(std::string_view _key) final
     {
-        m_swappedObjectKey = key;
-        m_swappedObject    = this->input(key).lock().get_shared();
+        m_swappedObjectKey = _key;
+        m_swappedObject    = this->input(_key).lock().get_shared();
     }
 
     //-------------------------------------------------------------------------

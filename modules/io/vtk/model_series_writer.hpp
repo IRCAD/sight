@@ -89,7 +89,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_writer, sight::io::service::writer);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Configure the mesh path.
@@ -149,7 +149,7 @@ private:
     void writeMesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
 
     /// Job Created signal
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 
     ///  Stores the selectedExtension from dialog.
     std::string m_selectedExtension;

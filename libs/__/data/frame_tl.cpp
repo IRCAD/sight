@@ -49,13 +49,13 @@ void frame_tl::shallow_copy(const object::csptr& /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void frame_tl::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void frame_tl::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const frame_tl>(source);
+    const auto& other = std::dynamic_pointer_cast<const frame_tl>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -65,31 +65,31 @@ void frame_tl::deep_copy(const object::csptr& source, const std::unique_ptr<deep
 
     this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
-    for(const TimelineType::value_type& elt : other->m_timeline)
+    for(const timeline_t::value_type& elt : other->m_timeline)
     {
-        SPTR(data::timeline::buffer) tlObj = this->createBuffer(elt.first);
-        tlObj->deep_copy(*elt.second);
-        m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
+        SPTR(data::timeline::buffer) tl_obj = this->createBuffer(elt.first);
+        tl_obj->deep_copy(*elt.second);
+        m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 void frame_tl::initPoolSize(
-    std::size_t width,
-    std::size_t height,
-    const core::type& type,
-    const PixelFormat format,
-    unsigned int maxElementNum
+    std::size_t _width,
+    std::size_t _height,
+    const core::type& _type,
+    const PixelFormat _format,
+    unsigned int _max_element_num
 )
 {
-    m_width       = width;
-    m_height      = height;
-    m_type        = type;
-    m_pixelFormat = format;
-    switch(format)
+    m_width       = _width;
+    m_height      = _height;
+    m_type        = _type;
+    m_pixelFormat = _format;
+    switch(_format)
     {
         case data::frame_tl::PixelFormat::GRAY_SCALE:
             m_numberOfComponents = 1;
@@ -109,11 +109,11 @@ void frame_tl::initPoolSize(
             m_numberOfComponents = 1;
     }
 
-    std::size_t size = width * height * m_numberOfComponents * type.size();
+    std::size_t size = _width * _height * m_numberOfComponents * _type.size();
 
     SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
-    m_maxElementNum = maxElementNum;
+    m_maxElementNum = _max_element_num;
     this->allocPoolSize(size * m_maxElementNum);
 }
 
@@ -126,26 +126,26 @@ void frame_tl::initPoolSize(unsigned int /*maxElementNum*/)
 
 //------------------------------------------------------------------------------
 
-bool frame_tl::operator==(const frame_tl& other) const noexcept
+bool frame_tl::operator==(const frame_tl& _other) const noexcept
 {
-    if(m_width != other.m_width
-       || m_height != other.m_height
-       || m_numberOfComponents != other.m_numberOfComponents
-       || m_type != other.m_type
-       || m_pixelFormat != other.m_pixelFormat)
+    if(m_width != _other.m_width
+       || m_height != _other.m_height
+       || m_numberOfComponents != _other.m_numberOfComponents
+       || m_type != _other.m_type
+       || m_pixelFormat != _other.m_pixelFormat)
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool frame_tl::operator!=(const frame_tl& other) const noexcept
+bool frame_tl::operator!=(const frame_tl& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

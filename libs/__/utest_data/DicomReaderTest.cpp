@@ -36,34 +36,34 @@ namespace sight::utest_data
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline void checkValue(bool& check, const std::string& message, T val1, T val2)
+static inline void check_value(bool& _check, const std::string& _message, T _val1, T _val2)
 {
-    bool ok = (val1 == val2);
-    check &= ok;
-    SIGHT_ERROR_IF(message << " <" << val1 << "> != <" << val2 << ">", !ok);
+    bool ok = (_val1 == _val2);
+    _check &= ok;
+    SIGHT_ERROR_IF(_message << " <" << _val1 << "> != <" << _val2 << ">", !ok);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline void checkValueWithTolerance(bool& check, const std::string& message, T val1, T val2, T tol)
+static inline void check_value_with_tolerance(bool& _check, const std::string& _message, T _val1, T _val2, T _tol)
 {
-    bool ok = (val1 - tol <= val2 && val2 <= val1 + tol);
-    check &= ok;
-    SIGHT_ERROR_IF(message << val1 << " != " << val2, !ok);
+    bool ok = (_val1 - _tol <= _val2 && _val2 <= _val1 + _tol);
+    _check &= ok;
+    SIGHT_ERROR_IF(_message << _val1 << " != " << _val2, !ok);
 }
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series)
+bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& _series)
 {
     using namespace std::literals::string_literals;
 
-    bool ok               = true;
-    bool notReallyChecked = true;
+    bool ok                 = true;
+    bool not_really_checked = true;
 
     // Ignore unused-but-set-variable
-    std::ignore = notReallyChecked;
+    std::ignore = not_really_checked;
 
     //# Dicom-File-Format
     //
@@ -77,7 +77,7 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
     //(0002,0010) UI [1.2.840.10008.1.2.1]                              # 20,1 Transfer Syntax UID
     //(0002,0012) UI [1.2.250.1.119.1.1.1.1.1.1.33.3.8.13.7]            # 38,1 Implementation Class UID
     //(0002,0013) SH [scanplus_33 ]                                     # 12,1 Implementation Version Name
-    //(0002,0016) AE [scanplus]                                         # 8,1 Source Application Entity Title
+    //(0002,0016) AE [scanplus]                                         # 8,1 Source application Entity Title
     //
     //# Dicom-Data-Set
     //# Used TransferSyntax: 1.2.840.10008.1.2.1
@@ -86,59 +86,59 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
     //(0008,0020) DA [20171028]                                         # 8,1 Study Date
-    checkValue(ok, "Study Date doesn't match : ", "20171028"s, series->getStudyDate());
+    check_value(ok, "Study Date doesn't match : ", "20171028"s, _series->getStudyDate());
     //(0008,0021) DA [20171028]                                         # 8,1 Series Date
-    checkValue(ok, "Series Date doesn't match : ", "20171028"s, series->getSeriesDate());
+    check_value(ok, "Series Date doesn't match : ", "20171028"s, _series->getSeriesDate());
     //(0008,0022) DA [20171028]                                         # 8,1 Acquisition Date
     //(0008,0023) DA [20171028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
-    checkValue(ok, "Study Time doesn't match : ", "174327.000"s, series->getStudyTime());
+    check_value(ok, "Study Time doesn't match : ", "174327.000"s, _series->getStudyTime());
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
-    checkValue(ok, "Series Time doesn't match : ", "180156.734"s, series->getSeriesTime());
+    check_value(ok, "Series Time doesn't match : ", "180156.734"s, _series->getSeriesTime());
     //(0008,0032) TM [174446.850]                                       # 10,1 Acquisition Time
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    checkValue(ok, "Series Modality doesn't match : ", "CT"s, series->getModality());
+    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->getModality());
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
-    checkValue(
+    check_value(
         ok,
         "Equipment's Institution Name doesn't match : ",
         "SCANNER DU MORDOR "s,
-        series->getInstitutionName()
+        _series->getInstitutionName()
     );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
-    checkValue(
+    check_value(
         ok,
         "Study Referring Physician's Name doesn't match : ",
         "DR MOREL"s,
-        series->getReferringPhysicianName()
+        _series->getReferringPhysicianName()
     );
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
-    checkValue(ok, "Study Description doesn't match : ", " OS 0.5 "s, series->getSeriesDescription());
-    checkValue(ok, "Study Description doesn't match : ", ""s, series->getStudyDescription()); // 0008,1030
+    check_value(ok, "Study Description doesn't match : ", " OS 0.5 "s, _series->getSeriesDescription());
+    check_value(ok, "Study Description doesn't match : ", ""s, _series->getStudyDescription()); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     // 0008,1050
-    checkValue(
+    check_value(
         ok,
         "Name of the physician(s) administering the Series doesn't match : ",
         ""s,
-        series->getPerformingPhysicianName()
+        _series->getPerformingPhysicianName()
     );
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
     //(0010,0010) PN [SAVA JEAN-MICHEL]                                   # 14,1 Patient's Name
-    checkValue(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL"s, series->getPatientName());
+    check_value(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL"s, _series->getPatientName());
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    checkValue(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G "s, series->getPatientID());
+    check_value(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G "s, _series->getPatientID());
     //(0010,0030) DA [19970926]                                         # 8,1 Patient's Birth Date
-    checkValue(ok, "Patient's Birth Date doesn't match : ", "19970926"s, series->getPatientBirthDate());
+    check_value(ok, "Patient's Birth Date doesn't match : ", "19970926"s, _series->getPatientBirthDate());
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
-    checkValue(ok, "Patient's Sex doesn't match :", "M "s, series->getPatientSex());
+    check_value(ok, "Patient's Sex doesn't match :", "M "s, _series->getPatientSex());
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
-    checkValue(ok, "Study Patient's Age doesn't match :", "029Y"s, series->getPatientAge());
+    check_value(ok, "Study Patient's Age doesn't match :", "029Y"s, _series->getPatientAge());
     //(0010,4000) LT [ARTHRO]                                           # 6,1 Patient Comments
     //(0018,0000) UL 284                                                # 4,1 Generic Group Length
     //(0018,0015) CS [DR MOREL]                                         # 8,1 Body Part Examined
@@ -163,18 +163,18 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
     //(0018,9345) UN (FD) 23.1                                          # 8,1 CTDIvol
     //(0020,0000) UL 370                                                # 4,1 Generic Group Length
     //(0020,000d) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775]         # 58,1 Study Instance UID
-    checkValue(
+    check_value(
         ok,
         "Study Instance UID doesn't match :",
         "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"s,
-        series->getStudyInstanceUID()
+        _series->getStudyInstanceUID()
     );
     //(0020,000e) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855]         # 58,1 Series Instance UID
-    checkValue(
+    check_value(
         ok,
         "Series Instance UID doesn't match :",
         "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"s,
-        series->getSeriesInstanceUID()
+        _series->getSeriesInstanceUID()
     );
     //(0020,0010) SH [12514 ]                                           # 6,1 Study ID
     //(0020,0011) IS [3 ]                                               # 2,1 Series Number
@@ -183,15 +183,15 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
     //(0020,0020) CS [L\P ]                                             # 4,2 Patient Orientation
     //(0020,0032) DS [-36.71875\-88.28125\1350.300]                     # 28,3 Image Position (Patient)
 
-    if(series->getSizeInBytes() <= 0)
+    if(_series->getSizeInBytes() <= 0)
     {
         SIGHT_ERROR("Missing image.");
         return false;
     }
 
-    checkValueWithTolerance(ok, "Image x origin doesn't match  :", -36.71875, series->getOrigin()[0], 0.01);
-    checkValueWithTolerance(ok, "Image y origin doesn't match  :", -88.28125, series->getOrigin()[1], 0.01);
-    checkValueWithTolerance(ok, "Image z origin doesn't match  :", 1350.300, series->getOrigin()[2], 0.01);
+    check_value_with_tolerance(ok, "Image x origin doesn't match  :", -36.71875, _series->getOrigin()[0], 0.01);
+    check_value_with_tolerance(ok, "Image y origin doesn't match  :", -88.28125, _series->getOrigin()[1], 0.01);
+    check_value_with_tolerance(ok, "Image z origin doesn't match  :", 1350.300, _series->getOrigin()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -201,23 +201,28 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    checkValue(ok, "Image x size doesn't match  :", std::size_t(512), series->size()[0]);
-    checkValue(ok, "Image y size doesn't match  :", std::size_t(512), series->size()[1]);
-    checkValue(ok, "Image z size doesn't match  :", std::size_t(404), series->size()[2]);
+    check_value(ok, "Image x size doesn't match  :", std::size_t(512), _series->size()[0]);
+    check_value(ok, "Image y size doesn't match  :", std::size_t(512), _series->size()[1]);
+    check_value(ok, "Image z size doesn't match  :", std::size_t(404), _series->size()[2]);
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    checkValueWithTolerance(ok, "Image x spacing doesn't match  :", 0.384, series->getSpacing()[0], 0.001);
-    checkValueWithTolerance(ok, "Image y spacing doesn't match  :", 0.384, series->getSpacing()[1], 0.001);
-    checkValueWithTolerance(ok, "Image z spacing doesn't match  :", 0.399, series->getSpacing()[2], 0.001);
+    check_value_with_tolerance(ok, "Image x spacing doesn't match  :", 0.384, _series->getSpacing()[0], 0.001);
+    check_value_with_tolerance(ok, "Image y spacing doesn't match  :", 0.384, _series->getSpacing()[1], 0.001);
+    check_value_with_tolerance(ok, "Image z spacing doesn't match  :", 0.399, _series->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    checkValue(notReallyChecked, "Image Bits Allocated correspond  :", std::size_t(16), series->getType().size() * 8);
+    check_value(
+        not_really_checked,
+        "Image Bits Allocated correspond  :",
+        std::size_t(16),
+        _series->getType().size() * 8
+    );
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
-    checkValue(notReallyChecked, "Image Bits Allocated correspond  :", false, series->getType().is_signed());
+    check_value(not_really_checked, "Image Bits Allocated correspond  :", false, _series->getType().is_signed());
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter().front());
+    check_value(ok, "Image Window Center correspond  :", 500.0, _series->getWindowCenter().front());
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth().front());
+    check_value(ok, "Image Window Width correspond  :", 2500.0, _series->getWindowWidth().front());
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
@@ -263,15 +268,15 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::image_series::sptr& series
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr& series)
+bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr& _series)
 {
     using namespace std::literals::string_literals;
 
-    bool ok               = true;
-    bool notReallyChecked = true;
+    bool ok                 = true;
+    bool not_really_checked = true;
 
     // Ignore unused-but-set-variable
-    std::ignore = notReallyChecked;
+    std::ignore = not_really_checked;
 
     // Study, Acquisition
     //# Dicom-File-Format
@@ -286,7 +291,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr&
     //(0002,0010) UI [1.2.840.10008.1.2.1]                              # 20,1 Transfer Syntax UID
     //(0002,0012) UI [1.2.250.1.119.1.1.1.1.1.1.33.3.8.13.7]            # 38,1 Implementation Class UID
     //(0002,0013) SH [scanplus_33 ]                                     # 12,1 Implementation Version Name
-    //(0002,0016) AE [scanplus]                                         # 8,1 Source Application Entity Title
+    //(0002,0016) AE [scanplus]                                         # 8,1 Source application Entity Title
     //
     //# Dicom-Data-Set
     //# Used TransferSyntax: 1.2.840.10008.1.2.1
@@ -295,59 +300,59 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr&
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
     //(0008,0020) DA [20171028]                                         # 8,1 Study Date
-    checkValue(ok, "Study Date doesn't match : ", "20171028"s, series->getStudyDate());
+    check_value(ok, "Study Date doesn't match : ", "20171028"s, _series->getStudyDate());
     //(0008,0021) DA [20171028]                                         # 8,1 Series Date
-    checkValue(ok, "Series Date doesn't match : ", "20171028"s, series->getSeriesDate());
+    check_value(ok, "Series Date doesn't match : ", "20171028"s, _series->getSeriesDate());
     //(0008,0022) DA [20171028]                                         # 8,1 Acquisition Date
     //(0008,0023) DA [20171028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
-    checkValue(ok, "Study Time doesn't match : ", "174327.000"s, series->getStudyTime());
+    check_value(ok, "Study Time doesn't match : ", "174327.000"s, _series->getStudyTime());
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
-    checkValue(ok, "Series Time doesn't match : ", "180156.734"s, series->getSeriesTime());
+    check_value(ok, "Series Time doesn't match : ", "180156.734"s, _series->getSeriesTime());
     //(0008,0032) TM [174446.850]                                       # 10,1 Acquisition Time
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    checkValue(ok, "Series Modality doesn't match : ", "CT"s, series->getModality());
+    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->getModality());
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
-    checkValue(
+    check_value(
         ok,
         "Equipment's Institution Name doesn't match : ",
         "SCANNER DU MORDOR"s,
-        series->getInstitutionName()
+        _series->getInstitutionName()
     );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
-    checkValue(
+    check_value(
         ok,
         "Study Referring Physician's Name doesn't match : ",
         "DR MOREL"s,
-        series->getReferringPhysicianName()
+        _series->getReferringPhysicianName()
     );
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
-    checkValue(ok, "Study Description doesn't match : ", "OS 0.5"s, series->getSeriesDescription());
-    checkValue(ok, "Study Description doesn't match : ", ""s, series->getStudyDescription()); // 0008,1030
+    check_value(ok, "Study Description doesn't match : ", "OS 0.5"s, _series->getSeriesDescription());
+    check_value(ok, "Study Description doesn't match : ", ""s, _series->getStudyDescription()); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     // 0008,1050
-    checkValue(
+    check_value(
         ok,
         "Name of the physician(s) administering the Series doesn't match : ",
         ""s,
-        series->getPerformingPhysicianName()
+        _series->getPerformingPhysicianName()
     );
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
     //(0010,0010) PN [SAVA JEAN-MICHEL]                                   # 14,1 Patient's Name
-    checkValue(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL"s, series->getPatientName());
+    check_value(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL"s, _series->getPatientName());
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    checkValue(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G"s, series->getPatientID());
+    check_value(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G"s, _series->getPatientID());
     //(0010,0030) DA [19970926]                                         # 8,1 Patient's Birth Date
-    checkValue(ok, "Patient's Birth Date doesn't match : ", "19970926"s, series->getPatientBirthDate());
+    check_value(ok, "Patient's Birth Date doesn't match : ", "19970926"s, _series->getPatientBirthDate());
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
-    checkValue(ok, "Patient's Sex doesn't match :", "M"s, series->getPatientSex());
+    check_value(ok, "Patient's Sex doesn't match :", "M"s, _series->getPatientSex());
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
-    checkValue(ok, "Study Patient's Age doesn't match :", "029Y"s, series->getPatientAge());
+    check_value(ok, "Study Patient's Age doesn't match :", "029Y"s, _series->getPatientAge());
     //(0010,4000) LT [ARTHRO]                                           # 6,1 Patient Comments
     //(0018,0000) UL 284                                                # 4,1 Generic Group Length
     //(0018,0015) CS [DR MOREL]                                         # 8,1 Body Part Examined
@@ -372,18 +377,18 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr&
     //(0018,9345) UN (FD) 23.1                                          # 8,1 CTDIvol
     //(0020,0000) UL 370                                                # 4,1 Generic Group Length
     //(0020,000d) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775]         # 58,1 Study Instance UID
-    checkValue(
+    check_value(
         ok,
         "Study Instance UID doesn't match :",
         "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"s,
-        series->getStudyInstanceUID()
+        _series->getStudyInstanceUID()
     );
     //(0020,000e) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855]         # 58,1 Series Instance UID
-    checkValue(
+    check_value(
         ok,
         "Series Instance UID doesn't match :",
         "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"s,
-        series->getSeriesInstanceUID()
+        _series->getSeriesInstanceUID()
     );
     //(0020,0010) SH [12514 ]                                           # 6,1 Study ID
     //(0020,0011) IS [3 ]                                               # 2,1 Series Number
@@ -392,15 +397,15 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr&
     //(0020,0020) CS [L\P ]                                             # 4,2 Patient Orientation
     //(0020,0032) DS [-36.71875\-88.28125\1350.300]                     # 28,3 Image Position (Patient)
 
-    if(series->getSizeInBytes() <= 0)
+    if(_series->getSizeInBytes() <= 0)
     {
         SIGHT_ERROR("Missing image.");
         return false;
     }
 
-    checkValueWithTolerance(ok, "Image x origin doesn't match  :", -36.71875, series->getOrigin()[0], 0.01);
-    checkValueWithTolerance(ok, "Image y origin doesn't match  :", -88.28125, series->getOrigin()[1], 0.01);
-    checkValueWithTolerance(ok, "Image z origin doesn't match  :", 1350.300, series->getOrigin()[2], 0.01);
+    check_value_with_tolerance(ok, "Image x origin doesn't match  :", -36.71875, _series->getOrigin()[0], 0.01);
+    check_value_with_tolerance(ok, "Image y origin doesn't match  :", -88.28125, _series->getOrigin()[1], 0.01);
+    check_value_with_tolerance(ok, "Image z origin doesn't match  :", 1350.300, _series->getOrigin()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -410,23 +415,28 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::image_series::sptr&
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    checkValue(ok, "Image x size doesn't match  :", std::size_t(512), series->size()[0]);
-    checkValue(ok, "Image y size doesn't match  :", std::size_t(512), series->size()[1]);
-    checkValue(ok, "Image z size doesn't match  :", std::size_t(404), series->size()[2]);
+    check_value(ok, "Image x size doesn't match  :", std::size_t(512), _series->size()[0]);
+    check_value(ok, "Image y size doesn't match  :", std::size_t(512), _series->size()[1]);
+    check_value(ok, "Image z size doesn't match  :", std::size_t(404), _series->size()[2]);
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    checkValueWithTolerance(ok, "Image x spacing doesn't match  :", 0.384, series->getSpacing()[0], 0.001);
-    checkValueWithTolerance(ok, "Image y spacing doesn't match  :", 0.384, series->getSpacing()[1], 0.001);
-    checkValueWithTolerance(ok, "Image z spacing doesn't match  :", 0.399, series->getSpacing()[2], 0.001);
+    check_value_with_tolerance(ok, "Image x spacing doesn't match  :", 0.384, _series->getSpacing()[0], 0.001);
+    check_value_with_tolerance(ok, "Image y spacing doesn't match  :", 0.384, _series->getSpacing()[1], 0.001);
+    check_value_with_tolerance(ok, "Image z spacing doesn't match  :", 0.399, _series->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    checkValue(notReallyChecked, "Image Bits Allocated correspond  :", std::size_t(16), series->getType().size() * 8);
+    check_value(
+        not_really_checked,
+        "Image Bits Allocated correspond  :",
+        std::size_t(16),
+        _series->getType().size() * 8
+    );
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
-    checkValue(notReallyChecked, "Image Bits Allocated correspond  :", false, series->getType().is_signed());
+    check_value(not_really_checked, "Image Bits Allocated correspond  :", false, _series->getType().is_signed());
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter().front());
+    check_value(ok, "Image Window Center correspond  :", 500.0, _series->getWindowCenter().front());
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth().front());
+    check_value(ok, "Image Window Width correspond  :", 2500.0, _series->getWindowWidth().front());
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length

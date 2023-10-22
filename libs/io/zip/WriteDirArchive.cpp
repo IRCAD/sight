@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,8 +37,8 @@ namespace sight::io::zip
 
 //-----------------------------------------------------------------------------
 
-WriteDirArchive::WriteDirArchive(std::filesystem::path archive) :
-    m_archive(std::move(archive))
+WriteDirArchive::WriteDirArchive(std::filesystem::path _archive) :
+    m_archive(std::move(_archive))
 {
     if(!std::filesystem::exists(m_archive))
     {
@@ -53,13 +53,13 @@ WriteDirArchive::~WriteDirArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) WriteDirArchive::createFile(const std::filesystem::path& path)
+SPTR(std::ostream) WriteDirArchive::createFile(const std::filesystem::path& _path)
 {
-    const std::filesystem::path file       = m_archive / path;
-    const std::filesystem::path parentFile = file.parent_path();
-    if(!std::filesystem::exists(parentFile))
+    const std::filesystem::path file        = m_archive / _path;
+    const std::filesystem::path parent_file = file.parent_path();
+    if(!std::filesystem::exists(parent_file))
     {
-        std::filesystem::create_directories(parentFile);
+        std::filesystem::create_directories(parent_file);
     }
 
     SPTR(std::ofstream) os = std::make_shared<std::ofstream>();
@@ -70,30 +70,30 @@ SPTR(std::ostream) WriteDirArchive::createFile(const std::filesystem::path& path
 //-----------------------------------------------------------------------------
 
 void WriteDirArchive::putFile(
-    const std::filesystem::path& sourceFile,
-    const std::filesystem::path& destinationFile
+    const std::filesystem::path& _source_file,
+    const std::filesystem::path& _destination_file
 )
 {
-    const std::filesystem::path fileDest = m_archive / destinationFile;
-    if(!std::filesystem::exists(fileDest))
+    const std::filesystem::path file_dest = m_archive / _destination_file;
+    if(!std::filesystem::exists(file_dest))
     {
-        const std::filesystem::path parentFile = fileDest.parent_path();
-        if(!std::filesystem::exists(parentFile))
+        const std::filesystem::path parent_file = file_dest.parent_path();
+        if(!std::filesystem::exists(parent_file))
         {
-            std::filesystem::create_directories(parentFile);
+            std::filesystem::create_directories(parent_file);
         }
 
         std::error_code err;
-        std::filesystem::create_hard_link(sourceFile, fileDest, err);
+        std::filesystem::create_hard_link(_source_file, file_dest, err);
         if(err.value() != 0)
         {
             // Use std stream instead of boost:::filesystem::copy_file
             // because fwZip is build using std=c++11 and using copy_file also requires boost built
             // with std=c++11 (for now in c++0x).
-            std::string strSource = sourceFile.string();
-            std::string strDest   = fileDest.string();
-            std::ifstream src(strSource.c_str(), std::ios::binary);
-            std::ofstream dst(strDest.c_str(), std::ios::binary);
+            std::string str_source = _source_file.string();
+            std::string str_dest   = file_dest.string();
+            std::ifstream src(str_source.c_str(), std::ios::binary);
+            std::ofstream dst(str_dest.c_str(), std::ios::binary);
 
             dst << src.rdbuf();
         }
@@ -102,9 +102,9 @@ void WriteDirArchive::putFile(
 
 //-----------------------------------------------------------------------------
 
-bool WriteDirArchive::createDir(const std::filesystem::path& path)
+bool WriteDirArchive::createDir(const std::filesystem::path& _path)
 {
-    return std::filesystem::create_directories(m_archive / path);
+    return std::filesystem::create_directories(m_archive / _path);
 }
 
 //-----------------------------------------------------------------------------

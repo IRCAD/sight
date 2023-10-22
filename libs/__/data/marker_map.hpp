@@ -33,7 +33,7 @@ namespace sight::data
 /**
  * @brief   Stores a map of optical 2D markers.
  *
- * The number of points for each marker is free, so the MarkerType is just a vector of 2D points and there is no
+ * The number of points for each marker is free, so the marker_t is just a vector of 2D points and there is no
  * coherency checks between the markers, so you could have one marker with one point, another one with four points,
  * etc...
  */
@@ -43,9 +43,9 @@ public:
 
     SIGHT_DECLARE_CLASS(marker_map, object);
 
-    using key_t      = std::string;
-    using PointType  = std::array<float, 2>;
-    using MarkerType = std::vector<PointType>;
+    using key_t    = std::string;
+    using point_t  = std::array<float, 2>;
+    using marker_t = std::vector<point_t>;
 
     /**
      * @brief Destructor
@@ -53,49 +53,49 @@ public:
     DATA_API ~marker_map() noexcept override = default;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API const MarkerType* getMarker(const key_t& _id) const;
+    DATA_API const marker_t* getMarker(const key_t& _id) const;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API MarkerType* getMarker(const key_t& _id);
+    DATA_API marker_t* getMarker(const key_t& _id);
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API const MarkerType& getMarker(std::size_t index) const;
+    DATA_API const marker_t& getMarker(std::size_t _index) const;
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API MarkerType& getMarker(std::size_t index);
+    DATA_API marker_t& getMarker(std::size_t _index);
 
     /// Returns the number of markers in the container
     DATA_API std::size_t count() const;
 
     /// Adds a new marker in the container
-    DATA_API void setMarker(const key_t& _id, const MarkerType& _marker);
+    DATA_API void setMarker(const key_t& _id, const marker_t& _marker);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const marker_map& other) const noexcept;
-    DATA_API bool operator!=(const marker_map& other) const noexcept;
+    DATA_API bool operator==(const marker_map& _other) const noexcept;
+    DATA_API bool operator!=(const marker_map& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 private:
 
-    typedef std::map<key_t, MarkerType> ContainerType;
+    typedef std::map<key_t, marker_t> container_t;
 
     /// Map containing the markers, sorted by their identifier
-    ContainerType m_markers;
+    container_t m_markers;
 };
 
 } // namespace sight::data

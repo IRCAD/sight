@@ -53,9 +53,9 @@ public:
     {
     public:
 
-        Registry(std::string functorKey)
+        Registry(std::string _functor_key)
         {
-            ui::registry::get()->add_factory(functorKey, &ui::factory::make<T>);
+            ui::registry::get()->add_factory(_functor_key, &ui::factory::make<T>);
         }
     };
 

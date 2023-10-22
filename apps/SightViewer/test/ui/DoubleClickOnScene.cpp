@@ -34,121 +34,121 @@ void DoubleClickOnScene::test()
 {
     start(
         "DoubleClickOnScene",
-        [](sight::ui::testCore::Tester& tester)
+        [](sight::ui::test_core::Tester& _tester)
         {
             // Initial situation: The negato view button is visible and the volume view button isn't
-            tester.take(
+            _tester.take(
                 "Negato view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Negato view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* obj){return obj->isVisible();});
-            tester.take(
+            _tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* _obj){return _obj->isVisible();});
+            _tester.take(
                 "Volume view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Volume view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* obj){return !obj->isVisible();});
+            _tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* _obj){return !_obj->isVisible();});
 
             // Double click on the main scene
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>());
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseDoubleClick>());
 
             // Now, the negato view button should be visible and the volume view button shouldn't
-            tester.take(
+            _tester.take(
                 "Negato view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Negato view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* obj){return !obj->isVisible();});
-            tester.take(
+            _tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* _obj){return !_obj->isVisible();});
+            _tester.take(
                 "Volume view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Volume view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* obj){return obj->isVisible();});
+            _tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* _obj){return _obj->isVisible();});
 
             // Double click again on the main scene
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>());
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseDoubleClick>());
 
             // We should return to the initial situation
-            tester.take(
+            _tester.take(
                 "Negato view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Negato view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* obj){return obj->isVisible();});
-            tester.take(
+            _tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* _obj){return _obj->isVisible();});
+            _tester.take(
                 "Volume view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Volume view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* obj){return !obj->isVisible();});
+            _tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* _obj){return !_obj->isVisible();});
 
             // Simple click on the main scene
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseClick>());
 
             // It's a no-op; we should stay in the same situation
-            tester.take(
+            _tester.take(
                 "Negato view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Negato view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* obj){return obj->isVisible();});
-            tester.take(
+            _tester.doubt<QWidget*>("Negato view button is visible", [](QWidget* _obj){return _obj->isVisible();});
+            _tester.take(
                 "Volume view button",
-                [&tester]
+                [&_tester]
             {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
+                return sight::ui::test_core::Tester::getWidgetFromAction(
+                    _tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Volume view"
                     )
                 );
             });
-            tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* obj){return !obj->isVisible();});
+            _tester.doubt<QWidget*>("Volume view button is invisible", [](QWidget* _obj){return !_obj->isVisible();});
         },
         true
     );

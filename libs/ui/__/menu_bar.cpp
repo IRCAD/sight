@@ -20,9 +20,8 @@
  *
  ***********************************************************************/
 
+#include "ui/__/detail/registry/menu_bar.hpp"
 #include "ui/__/menu_bar.hpp"
-
-#include "ui/__/detail/registry/MenuBar.hpp"
 
 #include <core/thread/worker.hpp>
 #include <core/thread/worker.hxx>
@@ -34,7 +33,7 @@ namespace sight::ui
 
 void menu_bar::initialize()
 {
-    m_registry = ui::detail::registry::MenuBar::make(this->get_id());
+    m_registry = ui::detail::registry::menu_bar::make(this->get_id());
 
     const auto config = this->get_config();
 
@@ -45,9 +44,9 @@ void menu_bar::initialize()
     }
 
     // find layout configuration
-    if(const auto layoutConfig = config.get_child_optional("gui.layout"); layoutConfig.has_value())
+    if(const auto layout_config = config.get_child_optional("gui.layout"); layout_config.has_value())
     {
-        this->initializeLayoutManager(layoutConfig.value());
+        this->initializeLayoutManager(layout_config.value());
     }
 }
 
@@ -55,16 +54,16 @@ void menu_bar::initialize()
 
 void menu_bar::create()
 {
-    ui::container::menubar::sptr menuBar = m_registry->getParent();
-    SIGHT_ASSERT("Parent menuBar is unknown.", menuBar);
+    ui::container::menubar::sptr menu_bar = m_registry->getParent();
+    SIGHT_ASSERT("Parent menuBar is unknown.", menu_bar);
 
-    const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(menuBar, serviceID);
+            m_layoutManager->createLayout(menu_bar, service_id);
         })
     ).wait();
 
@@ -88,9 +87,9 @@ void menu_bar::destroy()
 
 //-----------------------------------------------------------------------------
 
-void menu_bar::menuServiceStopping(std::string menuSrvSID)
+void menu_bar::menuServiceStopping(std::string _menu_srv_sid)
 {
-    ui::container::menu::sptr menu = m_registry->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ui::container::menu::sptr menu = m_registry->getFwMenu(_menu_srv_sid, m_layoutManager->getMenus());
 
     if(m_hideMenus)
     {
@@ -116,9 +115,9 @@ void menu_bar::menuServiceStopping(std::string menuSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void menu_bar::menuServiceStarting(std::string menuSrvSID)
+void menu_bar::menuServiceStarting(std::string _menu_srv_sid)
 {
-    ui::container::menu::sptr menu = m_registry->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ui::container::menu::sptr menu = m_registry->getFwMenu(_menu_srv_sid, m_layoutManager->getMenus());
 
     if(m_hideMenus)
     {
@@ -144,18 +143,18 @@ void menu_bar::menuServiceStarting(std::string menuSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void menu_bar::initializeLayoutManager(const ui::config_t& layoutConfig)
+void menu_bar::initializeLayoutManager(const ui::config_t& _layout_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(
+    ui::object::sptr gui_obj = ui::factory::make(
         ui::layout::menubar_manager::REGISTRY_KEY
     );
-    m_layoutManager = std::dynamic_pointer_cast<ui::layout::menubar_manager>(guiObj);
+    m_layoutManager = std::dynamic_pointer_cast<ui::layout::menubar_manager>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::layout::menubar_manager::REGISTRY_KEY,
         m_layoutManager
     );
 
-    m_layoutManager->initialize(layoutConfig);
+    m_layoutManager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------

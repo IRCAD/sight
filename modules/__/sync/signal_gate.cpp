@@ -40,7 +40,7 @@ const core::com::signals::key_t signal_gate::ALL_RECEIVED_SIG = "allReceived";
 
 signal_gate::signal_gate()
 {
-    new_signal<AllReceivedSignalType>(ALL_RECEIVED_SIG);
+    new_signal<all_received_signal_t>(ALL_RECEIVED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,24 +63,24 @@ void signal_gate::starting()
     const std::regex re("(.*)/(.*)");
     std::smatch match;
 
-    auto signalsCfg = config.equal_range("signal");
-    for(auto itCfg = signalsCfg.first ; itCfg != signalsCfg.second ; ++itCfg)
+    auto signals_cfg = config.equal_range("signal");
+    for(auto it_cfg = signals_cfg.first ; it_cfg != signals_cfg.second ; ++it_cfg)
     {
-        const std::string& signal = itCfg->second.get_value<std::string>();
+        const std::string& signal = it_cfg->second.get_value<std::string>();
         if(std::regex_match(signal, match, re))
         {
             SIGHT_ASSERT("Wrong value for attribute src: " + signal, match.size() >= 3);
 
             std::string uid;
-            std::string signalKey;
+            std::string signal_key;
             uid.assign(match[1].first, match[1].second);
-            signalKey.assign(match[2].first, match[2].second);
+            signal_key.assign(match[2].first, match[2].second);
 
             if(core::tools::id::exist(uid))
             {
-                core::tools::object::sptr obj              = core::tools::id::get_object(uid);
-                core::com::has_signals::sptr signalsHolder = std::dynamic_pointer_cast<core::com::has_signals>(obj);
-                SIGHT_ASSERT("Object with id " << uid << " is not a has_slots", signalsHolder);
+                core::tools::object::sptr obj               = core::tools::id::get_object(uid);
+                core::com::has_signals::sptr signals_holder = std::dynamic_pointer_cast<core::com::has_signals>(obj);
+                SIGHT_ASSERT("Object with id " << uid << " is not a has_slots", signals_holder);
 
                 const std::size_t index = m_flags.size();
                 m_flags.push_back(false);
@@ -91,8 +91,8 @@ void signal_gate::starting()
                 slot->set_worker(this->worker());
 
                 // Connect the configured signal to this slot
-                auto sig = signalsHolder->signal(signalKey);
-                SIGHT_ASSERT("Object with id " + uid + " does not have a signalKey '" + signalKey + "'", sig);
+                auto sig = signals_holder->signal(signal_key);
+                SIGHT_ASSERT("Object with id " + uid + " does not have a signalKey '" + signal_key + "'", sig);
 
                 sig->connect(slot);
 
@@ -125,19 +125,19 @@ void signal_gate::received(std::size_t _index)
 
     m_flags[_index] = true;
 
-    bool allReceived = true;
+    bool all_received = true;
     for(bool received : m_flags)
     {
-        allReceived &= received;
+        all_received &= received;
     }
 
-    if(allReceived)
+    if(all_received)
     {
         // Reset all flags before sending the signal
         std::fill(m_flags.begin(), m_flags.end(), false);
 
         SIGHT_DEBUG("'" << this->get_id() << "' received all signals, sending 'allReceived' now.");
-        auto sig = this->signal<AllReceivedSignalType>(ALL_RECEIVED_SIG);
+        auto sig = this->signal<all_received_signal_t>(ALL_RECEIVED_SIG);
         sig->async_emit();
     }
 }

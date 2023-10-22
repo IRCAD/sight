@@ -56,20 +56,20 @@ series_set_writer::series_set_writer() noexcept :
 
 void series_set_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result && this->selectFiducialsExportMode())
     {
-        defaultDirectory->set_folder(result->get_folder());
+        default_directory->set_folder(result->get_folder());
         this->set_folder(result->get_folder());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -145,19 +145,19 @@ void series_set_writer::updating()
 
 //------------------------------------------------------------------------------
 
-void series_set_writer::saveSeriesSet(const std::filesystem::path folder, data::series_set::sptr series_set)
+void series_set_writer::saveSeriesSet(const std::filesystem::path _folder, data::series_set::sptr _series_set)
 {
     m_writeFailed = true;
 
     auto writer = std::make_shared<sight::io::dicom::writer::series_set>();
-    writer->set_object(series_set);
+    writer->set_object(_series_set);
     writer->setFiducialsExportMode(m_fiducialsExportMode);
-    writer->set_folder(folder);
+    writer->set_folder(_folder);
 
     try
     {
-        sight::ui::dialog::progress progressMeterGUI("Saving series ");
-        writer->add_handler(progressMeterGUI);
+        sight::ui::dialog::progress progress_meter_gui("Saving series ");
+        writer->add_handler(progress_meter_gui);
         writer->write();
 
         m_writeFailed = false;
@@ -207,38 +207,38 @@ bool series_set_writer::selectFiducialsExportMode()
         series_set->push_back(series);
     }
 
-    const bool containsLandmarks   = sight::io::dicom::helper::Fiducial::containsLandmarks(series_set);
-    const bool containsDistances   = sight::io::dicom::helper::Fiducial::containsDistances(series_set);
-    const bool contains3DDistances = sight::io::dicom::helper::Fiducial::contains3DDistances(series_set);
+    const bool contains_landmarks    = sight::io::dicom::helper::Fiducial::containsLandmarks(series_set);
+    const bool contains_distances    = sight::io::dicom::helper::Fiducial::containsDistances(series_set);
+    const bool contains3_d_distances = sight::io::dicom::helper::Fiducial::contains3DDistances(series_set);
 
-    if(containsLandmarks || containsDistances)
+    if(contains_landmarks || contains_distances)
     {
         static const std::string fiducialIOD          = "Spatial Fiducials";
         static const std::string comprehensiveSRIOD   = "Comprehensive SR";
         static const std::string comprehensive3DSRIOD = "Comprehensive 3D SR";
 
-        std::vector<std::string> exportModes;
-        if(!containsDistances)
+        std::vector<std::string> export_modes;
+        if(!contains_distances)
         {
-            exportModes.push_back(fiducialIOD);
+            export_modes.push_back(fiducialIOD);
         }
 
-        if(!contains3DDistances)
+        if(!contains3_d_distances)
         {
-            exportModes.push_back(comprehensiveSRIOD);
+            export_modes.push_back(comprehensiveSRIOD);
         }
 
-        exportModes.push_back(comprehensive3DSRIOD);
+        export_modes.push_back(comprehensive3DSRIOD);
 
         // Create selector
         sight::ui::dialog::selector selector;
 
         selector.setTitle("Fiducials export mode");
-        selector.set_choices(exportModes);
-        const auto& modes                  = selector.show();
-        const bool modeSelectionIsCanceled = modes.empty();
+        selector.set_choices(export_modes);
+        const auto& modes                     = selector.show();
+        const bool mode_selection_is_canceled = modes.empty();
 
-        if(modeSelectionIsCanceled)
+        if(mode_selection_is_canceled)
         {
             m_writeFailed = true;
             return false;

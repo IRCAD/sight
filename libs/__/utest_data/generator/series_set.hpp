@@ -63,12 +63,12 @@ public:
      * @return The created series_set
      */
     UTEST_DATA_API static SPTR(data::series_set) createSeriesSet(
-        const unsigned char nbImgSeries,
-        const unsigned char nbModelSeries
+        const unsigned char _nb_img_series,
+        const unsigned char _nb_model_series
     );
 
     /// Generates dummy informations for the series
-    UTEST_DATA_API static void generateSeriesInformation(SPTR(data::series) series);
+    UTEST_DATA_API static void generateSeriesInformation(SPTR(data::series) _series);
 
     /// Returns an ImageSeries with a randomized image
     UTEST_DATA_API static SPTR(data::image_series) createImageSeries();
@@ -77,7 +77,7 @@ public:
      * @brief Returns a ModelSeries containing random Reconstructions
      * @param nbReconstruction number of Reconstrutions to add in the ModelSeries
      */
-    UTEST_DATA_API static SPTR(data::model_series) createModelSeries(unsigned char nbReconstruction);
+    UTEST_DATA_API static SPTR(data::model_series) createModelSeries(unsigned char _nb_reconstruction);
 
     /// Returns an Activity with dummy data
     UTEST_DATA_API static SPTR(data::activity) createActivity();
@@ -90,7 +90,7 @@ public:
      * this can be helpful in tests to ensure that readers will load reconstruction in the same order than the
      * reconstructionDB.
      */
-    UTEST_DATA_API static void generateReconstruction(SPTR(data::reconstruction) rec, int index = -1);
+    UTEST_DATA_API static void generateReconstruction(SPTR(data::reconstruction) _rec, int _index = -1);
 };
 
 } // namespace generator

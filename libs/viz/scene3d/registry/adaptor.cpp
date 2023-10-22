@@ -30,13 +30,13 @@ class adaptor;
 namespace registry
 {
 
-static adaptor_registry_t s_REGISTRY;
+static adaptor_registry_t s_registry;
 
 //------------------------------------------------------------------------------
 
 adaptor_registry_t& get_adaptor_registry()
 {
-    return s_REGISTRY;
+    return s_registry;
 }
 
 } // namespace registry

@@ -44,9 +44,9 @@ public:
      * @param _flipAxis axes on which to flip the image.
      */
     static FILTER_IMAGE_API void flip(
-        const data::image::csptr& _inImage,
-        const data::image::sptr& _outImage,
-        const std::array<bool, 3>& _inFlipAxes
+        const data::image::csptr& _in_image,
+        const data::image::sptr& _out_image,
+        const std::array<bool, 3>& _in_flip_axes
     );
 };
 

@@ -46,11 +46,11 @@ namespace sight::geometry::vision::ut
 
 using core::tools::random::safe_rand;
 
-using ExpectedChessboardType = std::vector<sight::data::point::PointCoordArrayType>;
+using expected_chessboard_t = std::vector<sight::data::point::point_coord_array_t>;
 
 //------------------------------------------------------------------------------
 
-static inline cv::Mat readRGBImage(const std::string _fname)
+static inline cv::Mat read_rgb_image(const std::string _fname)
 {
     cv::Mat img = cv::imread(_fname, cv::IMREAD_COLOR);
     cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
@@ -60,8 +60,8 @@ static inline cv::Mat readRGBImage(const std::string _fname)
 
 //------------------------------------------------------------------------------
 
-static inline void compareChessboards(
-    const ExpectedChessboardType& _expected,
+static inline void compare_chessboards(
+    const expected_chessboard_t& _expected,
     const sight::data::point_list::csptr& _detected
 )
 {
@@ -69,12 +69,12 @@ static inline void compareChessboards(
 
     for(std::uint32_t i = 0 ; i < _expected.size() ; ++i)
     {
-        const auto& expectedCoords = _expected[i];
-        const auto& detectedCoords = _detected->getPoints()[i]->getCoord();
+        const auto& expected_coords = _expected[i];
+        const auto& detected_coords = _detected->getPoints()[i]->getCoord();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[0], detectedCoords[0], 0.01);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[1], detectedCoords[1], 0.01);
-        CPPUNIT_ASSERT_EQUAL(0.0, detectedCoords[2]);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.01);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.01);
+        CPPUNIT_ASSERT_EQUAL(0.0, detected_coords[2]);
     }
 }
 
@@ -94,36 +94,36 @@ void helperTest::tearDown()
 
 void helperTest::reprojectionIdentity()
 {
-    std::vector<cv::Point3f> objectPoints;
-    objectPoints.emplace_back(-30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, -30.F, 0.F);
-    objectPoints.emplace_back(-30.F, -30.F, 0.F);
+    std::vector<cv::Point3f> object_points;
+    object_points.emplace_back(-30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, -30.F, 0.F);
+    object_points.emplace_back(-30.F, -30.F, 0.F);
 
-    std::vector<cv::Point2f> imagePoints;
-    imagePoints.emplace_back(-30.F, 30.F);
-    imagePoints.emplace_back(30.F, 30.F);
-    imagePoints.emplace_back(30.F, -30.F);
-    imagePoints.emplace_back(-30.F, -30.F);
+    std::vector<cv::Point2f> image_points;
+    image_points.emplace_back(-30.F, 30.F);
+    image_points.emplace_back(30.F, 30.F);
+    image_points.emplace_back(30.F, -30.F);
+    image_points.emplace_back(-30.F, -30.F);
 
     cv::Mat rvec;
     cv::Mat tvec;
-    cv::Mat cameraMatrix;
+    cv::Mat camera_matrix;
     cv::Mat distorsion;
 
     rvec = cv::Mat::zeros(3, 1, CV_64F);
     tvec = cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
-    distorsion   = cv::Mat::zeros(5, 1, CV_64F);
+    camera_matrix = cv::Mat::eye(3, 3, CV_64F);
+    distorsion    = cv::Mat::zeros(5, 1, CV_64F);
 
-    geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(
-            objectPoints,
-            imagePoints,
+    geometry::vision::helper::error_and_points_t result =
+        geometry::vision::helper::compute_reprojection_error(
+            object_points,
+            image_points,
             rvec,
             tvec,
-            cameraMatrix,
+            camera_matrix,
             distorsion
         );
 
@@ -131,7 +131,7 @@ void helperTest::reprojectionIdentity()
 
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        cv::Point2f expected = imagePoints[i];
+        cv::Point2f expected = image_points[i];
         cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
@@ -151,30 +151,30 @@ void helperTest::reprojectionIdentity()
 
 void helperTest::reprojectionRealDatasetTest1()
 {
-    std::vector<cv::Point3f> objectPoints;
-    objectPoints.emplace_back(-30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, -30.F, 0.F);
-    objectPoints.emplace_back(-30.F, -30.F, 0.F);
+    std::vector<cv::Point3f> object_points;
+    object_points.emplace_back(-30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, -30.F, 0.F);
+    object_points.emplace_back(-30.F, -30.F, 0.F);
 
-    std::vector<cv::Point2f> imagePoints;
+    std::vector<cv::Point2f> image_points;
 
     cv::Mat rvec;
     cv::Mat tvec;
-    cv::Mat cameraMatrix;
+    cv::Mat camera_matrix;
     cv::Mat distorsion;
 
     rvec = cv::Mat::zeros(3, 1, CV_64F);
     tvec = cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
-    distorsion   = cv::Mat::zeros(5, 1, CV_64F);
+    camera_matrix = cv::Mat::eye(3, 3, CV_64F);
+    distorsion    = cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
-    imagePoints.emplace_back(220.92876F, 224.95102F);
-    imagePoints.emplace_back(393.3707F, 216.15828F);
-    imagePoints.emplace_back(416.92828F, 365.78033F);
-    imagePoints.emplace_back(207.39848F, 375.8844F);
+    image_points.emplace_back(220.92876F, 224.95102F);
+    image_points.emplace_back(393.3707F, 216.15828F);
+    image_points.emplace_back(416.92828F, 365.78033F);
+    image_points.emplace_back(207.39848F, 375.8844F);
 
     rvec.at<double>(0) = 2.428872194668891;
     rvec.at<double>(1) = -0.04640821030480094;
@@ -184,11 +184,11 @@ void helperTest::reprojectionRealDatasetTest1()
     tvec.at<double>(1) = 2.249284982681274;
     tvec.at<double>(2) = 197.2704315185547;
 
-    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0, 2) = 302.178791918929;  //cx
+    camera_matrix.at<double>(0, 0) = 621.8917806423808; //fx
+    camera_matrix.at<double>(0, 2) = 302.178791918929;  //cx
 
-    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
+    camera_matrix.at<double>(1, 1) = 640.3221665123945; //fy
+    camera_matrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514;   //k1
     distorsion.at<double>(1) = -0.07869192957878113;  //k2
@@ -196,29 +196,29 @@ void helperTest::reprojectionRealDatasetTest1()
     distorsion.at<double>(3) = -0.007336273789405823; //p2
     distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
-    std::vector<cv::Point2f> reprojectedPoints_expected;
-    reprojectedPoints_expected.emplace_back(220.89903F, 224.99107F);
-    reprojectedPoints_expected.emplace_back(393.38748F, 216.12437F);
-    reprojectedPoints_expected.emplace_back(416.922F, 365.82419F);
-    reprojectedPoints_expected.emplace_back(207.41541F, 375.83548F);
+    std::vector<cv::Point2f> reprojected_points_expected;
+    reprojected_points_expected.emplace_back(220.89903F, 224.99107F);
+    reprojected_points_expected.emplace_back(393.38748F, 216.12437F);
+    reprojected_points_expected.emplace_back(416.922F, 365.82419F);
+    reprojected_points_expected.emplace_back(207.41541F, 375.83548F);
 
-    const double expectedErr = 0.0462637;
+    const double expected_err = 0.0462637;
 
-    geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(
-            objectPoints,
-            imagePoints,
+    geometry::vision::helper::error_and_points_t result =
+        geometry::vision::helper::compute_reprojection_error(
+            object_points,
+            image_points,
             rvec,
             tvec,
-            cameraMatrix,
+            camera_matrix,
             distorsion
         );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_err, result.first, 10e-6);
 
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        cv::Point2f expected = reprojectedPoints_expected[i];
+        cv::Point2f expected = reprojected_points_expected[i];
         cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
@@ -238,30 +238,30 @@ void helperTest::reprojectionRealDatasetTest1()
 
 void helperTest::reprojectionRealDatasetTest2()
 {
-    std::vector<cv::Point3f> objectPoints;
-    objectPoints.emplace_back(-30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, 30.F, 0.F);
-    objectPoints.emplace_back(30.F, -30.F, 0.F);
-    objectPoints.emplace_back(-30.F, -30.F, 0.F);
+    std::vector<cv::Point3f> object_points;
+    object_points.emplace_back(-30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, 30.F, 0.F);
+    object_points.emplace_back(30.F, -30.F, 0.F);
+    object_points.emplace_back(-30.F, -30.F, 0.F);
 
-    std::vector<cv::Point2f> imagePoints;
+    std::vector<cv::Point2f> image_points;
 
     cv::Mat rvec;
     cv::Mat tvec;
-    cv::Mat cameraMatrix;
+    cv::Mat camera_matrix;
     cv::Mat distorsion;
 
     rvec = cv::Mat::zeros(3, 1, CV_64F);
     tvec = cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
-    distorsion   = cv::Mat::zeros(5, 1, CV_64F);
+    camera_matrix = cv::Mat::eye(3, 3, CV_64F);
+    distorsion    = cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
-    imagePoints.emplace_back(232.76308F, 227.31705F);
-    imagePoints.emplace_back(410.1149F, 220.90685F);
-    imagePoints.emplace_back(434.63507F, 372.6174F);
-    imagePoints.emplace_back(216.75545F, 379.34464F);
+    image_points.emplace_back(232.76308F, 227.31705F);
+    image_points.emplace_back(410.1149F, 220.90685F);
+    image_points.emplace_back(434.63507F, 372.6174F);
+    image_points.emplace_back(216.75545F, 379.34464F);
 
     rvec.at<double>(0) = 2.397315382812963;
     rvec.at<double>(1) = -0.02181686018178059;
@@ -271,11 +271,11 @@ void helperTest::reprojectionRealDatasetTest2()
     tvec.at<double>(1) = 3.302493572235107;
     tvec.at<double>(2) = 191.1024627685547;
 
-    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0, 2) = 302.178791918929;  //cx
+    camera_matrix.at<double>(0, 0) = 621.8917806423808; //fx
+    camera_matrix.at<double>(0, 2) = 302.178791918929;  //cx
 
-    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
+    camera_matrix.at<double>(1, 1) = 640.3221665123945; //fy
+    camera_matrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514;   //k1
     distorsion.at<double>(1) = -0.07869192957878113;  //k2
@@ -283,29 +283,29 @@ void helperTest::reprojectionRealDatasetTest2()
     distorsion.at<double>(3) = -0.007336273789405823; //p2
     distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
-    std::vector<cv::Point2f> reprojectedPoints_expected;
-    reprojectedPoints_expected.emplace_back(232.92502F, 227.35114F);
-    reprojectedPoints_expected.emplace_back(409.92566F, 220.82785F);
-    reprojectedPoints_expected.emplace_back(434.73633F, 372.69672F);
-    reprojectedPoints_expected.emplace_back(216.67587F, 379.3006F);
+    std::vector<cv::Point2f> reprojected_points_expected;
+    reprojected_points_expected.emplace_back(232.92502F, 227.35114F);
+    reprojected_points_expected.emplace_back(409.92566F, 220.82785F);
+    reprojected_points_expected.emplace_back(434.73633F, 372.69672F);
+    reprojected_points_expected.emplace_back(216.67587F, 379.3006F);
 
-    const double expectedErr = 0.153504;
+    const double expected_err = 0.153504;
 
-    geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(
-            objectPoints,
-            imagePoints,
+    geometry::vision::helper::error_and_points_t result =
+        geometry::vision::helper::compute_reprojection_error(
+            object_points,
+            image_points,
             rvec,
             tvec,
-            cameraMatrix,
+            camera_matrix,
             distorsion
         );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_err, result.first, 10e-6);
 
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        cv::Point2f expected = reprojectedPoints_expected[i];
+        cv::Point2f expected = reprojected_points_expected[i];
         cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
@@ -325,21 +325,21 @@ void helperTest::reprojectionRealDatasetTest2()
 
 void helperTest::toolCalibrationBasic()
 {
-    const std::uint8_t nbMatrices = 34;
-    auto matricesVector           = std::make_shared<sight::data::vector>();
+    const std::uint8_t nb_matrices = 34;
+    auto matrices_vector           = std::make_shared<sight::data::vector>();
 
-    auto resCenterMatrix    = std::make_shared<sight::data::matrix4>();
-    auto resTransformMatrix = std::make_shared<sight::data::matrix4>();
+    auto res_center_matrix    = std::make_shared<sight::data::matrix4>();
+    auto res_transform_matrix = std::make_shared<sight::data::matrix4>();
 
     const glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
     const glm::dvec3 translation(radius, 0, 0);
 
     // generates matrices
-    for(std::size_t i = 0 ; i < nbMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nb_matrices ; ++i)
     {
-        const double angleInDegrees = safe_rand() % 180;
-        const double angle          = glm::radians(angleInDegrees);
+        const double angle_in_degrees = safe_rand() % 180;
+        const double angle            = glm::radians(angle_in_degrees);
 
         const double x = safe_rand() % 100 / 100.;
         const double y = safe_rand() % 100 / 100.;
@@ -355,12 +355,12 @@ void helperTest::toolCalibrationBasic()
         matrix = glm::translate(matrix, translation);
 
         auto mat = std::make_shared<sight::data::matrix4>();
-        geometry::data::setTF3DFromMatrix(*mat, matrix);
+        geometry::data::from_glm_mat(*mat, matrix);
 
-        matricesVector->push_back(mat);
+        matrices_vector->push_back(mat);
     }
 
-    geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+    geometry::vision::helper::calibrate_pointing_tool(matrices_vector, res_transform_matrix, res_center_matrix);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
@@ -370,13 +370,13 @@ void helperTest::toolCalibrationBasic()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                (*resTransformMatrix)(i, j),
+                (*res_transform_matrix)(i, j),
                 0.00001
             );
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                (*resCenterMatrix)(i, j),
+                (*res_center_matrix)(i, j),
                 0.00001
             );
         }
@@ -384,13 +384,13 @@ void helperTest::toolCalibrationBasic()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "transform[" + std::to_string(i) + "][3]",
             -translation[i],
-            (*resTransformMatrix)(i, 3),
+            (*res_transform_matrix)(i, 3),
             0.00001
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "center[" + std::to_string(i) + "][3]",
             center[i],
-            (*resCenterMatrix)(i, 3),
+            (*res_center_matrix)(i, 3),
             0.00001
         );
     }
@@ -400,20 +400,20 @@ void helperTest::toolCalibrationBasic()
 
 void helperTest::toolCalibration()
 {
-    const std::uint8_t nbMatrices = 46;
-    auto matricesVector           = std::make_shared<sight::data::vector>();
+    const std::uint8_t nb_matrices = 46;
+    auto matrices_vector           = std::make_shared<sight::data::vector>();
 
-    auto resCenterMatrix    = std::make_shared<sight::data::matrix4>();
-    auto resTransformMatrix = std::make_shared<sight::data::matrix4>();
+    auto res_center_matrix    = std::make_shared<sight::data::matrix4>();
+    auto res_transform_matrix = std::make_shared<sight::data::matrix4>();
 
     const glm::dvec3 center(36., 52., -530.);
     const glm::dvec3 translation(-459.45, 46.6, -88.54);
 
     // generates matrices
-    for(std::size_t i = 0 ; i < nbMatrices ; ++i)
+    for(std::size_t i = 0 ; i < nb_matrices ; ++i)
     {
-        const double angleInDegrees = safe_rand() % 360;
-        const double angle          = glm::radians(angleInDegrees);
+        const double angle_in_degrees = safe_rand() % 360;
+        const double angle            = glm::radians(angle_in_degrees);
 
         const double x = safe_rand() % 100 / 100.;
         const double y = safe_rand() % 100 / 100.;
@@ -427,12 +427,12 @@ void helperTest::toolCalibration()
         matrix = glm::translate(matrix, translation);
 
         sight::data::matrix4::sptr mat = std::make_shared<sight::data::matrix4>();
-        geometry::data::setTF3DFromMatrix(*mat, matrix);
+        geometry::data::from_glm_mat(*mat, matrix);
 
-        matricesVector->push_back(mat);
+        matrices_vector->push_back(mat);
     }
 
-    geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+    geometry::vision::helper::calibrate_pointing_tool(matrices_vector, res_transform_matrix, res_center_matrix);
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
@@ -442,13 +442,13 @@ void helperTest::toolCalibration()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                (*resTransformMatrix)(i, j),
+                (*res_transform_matrix)(i, j),
                 0.00001
             );
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                (*resCenterMatrix)(i, j),
+                (*res_center_matrix)(i, j),
                 0.00001
             );
         }
@@ -456,13 +456,13 @@ void helperTest::toolCalibration()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "transform[" + std::to_string(i) + "][3]",
             -translation[i],
-            (*resTransformMatrix)(i, 3),
+            (*res_transform_matrix)(i, 3),
             0.00001
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "center[" + std::to_string(i) + "][3]",
             center[i],
-            (*resCenterMatrix)(i, 3),
+            (*res_center_matrix)(i, 3),
             0.00001
         );
     }
@@ -472,22 +472,22 @@ void helperTest::toolCalibration()
 
 void helperTest::chessboardDetectionTest()
 {
-    const auto calibDataDir = utest_data::Data::dir() / "sight" / "calibration";
+    const auto calib_data_dir = utest_data::Data::dir() / "sight" / "calibration";
     {
-        const cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
+        const cv::Mat chess_rgb0 = read_rgb_image((calib_data_dir / "chessboardRGB0.tiff").string());
 
-        CPPUNIT_ASSERT_EQUAL(false, chessRgb0.empty());
-        CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb0.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(false, chess_rgb0.empty());
+        CPPUNIT_ASSERT_EQUAL(3, chess_rgb0.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chess_rgb0.elemSize1());
 
-        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
-            chessRgb0,
+        const sight::data::point_list::csptr detected_chess = geometry::vision::helper::detect_chessboard(
+            chess_rgb0,
             9,
             6,
             0.25F
         );
 
-        const ExpectedChessboardType expectedChessboard {
+        const expected_chessboard_t expected_chessboard {
             {743.776, 429.954, 0.0},
             {822.537, 406.108, 0.0},
             {903.759, 383.811, 0.0},
@@ -530,24 +530,24 @@ void helperTest::chessboardDetectionTest()
             {1411.5, 581.015, 0.0}
         };
 
-        compareChessboards(expectedChessboard, detectedChess);
+        compare_chessboards(expected_chessboard, detected_chess);
     }
 
     {
-        const cv::Mat chessRgb1 = readRGBImage((calibDataDir / "chessboardRGB1.tiff").string());
+        const cv::Mat chess_rgb1 = read_rgb_image((calib_data_dir / "chessboardRGB1.tiff").string());
 
-        CPPUNIT_ASSERT_EQUAL(false, chessRgb1.empty());
-        CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb1.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(false, chess_rgb1.empty());
+        CPPUNIT_ASSERT_EQUAL(3, chess_rgb1.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chess_rgb1.elemSize1());
 
-        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
-            chessRgb1,
+        const sight::data::point_list::csptr detected_chess = geometry::vision::helper::detect_chessboard(
+            chess_rgb1,
             9,
             6,
             0.25F
         );
 
-        const ExpectedChessboardType expectedChessboard {
+        const expected_chessboard_t expected_chessboard {
             {739.341, 394.44, 0.0},
             {822.388, 400.651, 0.0},
             {907.42, 406.712, 0.0},
@@ -590,27 +590,27 @@ void helperTest::chessboardDetectionTest()
             {1361.35, 691.41, 0.0}
         };
 
-        compareChessboards(expectedChessboard, detectedChess);
+        compare_chessboards(expected_chessboard, detected_chess);
     }
 
     {
-        const cv::Mat chessGray = cv::imread(
-            (calibDataDir / "chessboardGray.tiff").string(),
+        const cv::Mat chess_gray = cv::imread(
+            (calib_data_dir / "chessboardGray.tiff").string(),
             cv::IMREAD_GRAYSCALE
         );
 
-        CPPUNIT_ASSERT_EQUAL(false, chessGray.empty());
-        CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessGray.elemSize1());
+        CPPUNIT_ASSERT_EQUAL(false, chess_gray.empty());
+        CPPUNIT_ASSERT_EQUAL(1, chess_gray.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chess_gray.elemSize1());
 
-        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
-            chessGray,
+        const sight::data::point_list::csptr detected_chess = geometry::vision::helper::detect_chessboard(
+            chess_gray,
             9,
             6,
             0.25F
         );
 
-        const ExpectedChessboardType expectedChessboard {
+        const expected_chessboard_t expected_chessboard {
             {933.376, 504.662, 0.0},
             {980.189, 463.743, 0.0},
             {1033.96, 427.51, 0.0},
@@ -653,15 +653,15 @@ void helperTest::chessboardDetectionTest()
             {1426.73, 442.136, 0.0}
         };
 
-        compareChessboards(expectedChessboard, detectedChess);
+        compare_chessboards(expected_chessboard, detected_chess);
 
-        const sight::data::point_list::csptr detectedChess2 = geometry::vision::helper::detectChessboard(
-            chessGray,
+        const sight::data::point_list::csptr detected_chess2 = geometry::vision::helper::detect_chessboard(
+            chess_gray,
             8,
             5,
             0.25F
         );
-        CPPUNIT_ASSERT(!detectedChess2);
+        CPPUNIT_ASSERT(!detected_chess2);
     }
 }
 
@@ -669,26 +669,29 @@ void helperTest::chessboardDetectionTest()
 
 void helperTest::chessboardDetectionScaleTest()
 {
-    const auto calibDataDir = utest_data::Data::dir() / "sight" / "calibration";
+    const auto calib_data_dir = utest_data::Data::dir() / "sight" / "calibration";
 
-    const cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
+    const cv::Mat chess_rgb0 = read_rgb_image((calib_data_dir / "chessboardRGB0.tiff").string());
 
-    const sight::data::point_list::csptr detectedChessFullScale =
-        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 1.F);
+    const sight::data::point_list::csptr detected_chess_full_scale =
+        geometry::vision::helper::detect_chessboard(chess_rgb0, 9, 6, 1.F);
 
-    const sight::data::point_list::csptr detectedChessQuarterScale =
-        geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 0.25F);
+    const sight::data::point_list::csptr detected_chess_quarter_scale =
+        geometry::vision::helper::detect_chessboard(chess_rgb0, 9, 6, 0.25F);
 
-    CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());
+    CPPUNIT_ASSERT_EQUAL(
+        detected_chess_full_scale->getPoints().size(),
+        detected_chess_quarter_scale->getPoints().size()
+    );
 
-    for(std::uint32_t i = 0 ; i < detectedChessFullScale->getPoints().size() ; ++i)
+    for(std::uint32_t i = 0 ; i < detected_chess_full_scale->getPoints().size() ; ++i)
     {
-        const auto& fullScaleCoords    = detectedChessFullScale->getPoints()[i]->getCoord();
-        const auto& quarterScaleCoords = detectedChessQuarterScale->getPoints()[i]->getCoord();
+        const auto& full_scale_coords    = detected_chess_full_scale->getPoints()[i]->getCoord();
+        const auto& quarter_scale_coords = detected_chess_quarter_scale->getPoints()[i]->getCoord();
 
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fullScaleCoords[j], quarterScaleCoords[j], 0.5);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(full_scale_coords[j], quarter_scale_coords[j], 0.5);
         }
     }
 }

@@ -65,7 +65,7 @@ void quit::stopping()
 
 void quit::info(std::ostream& _sstream)
 {
-    _sstream << "Quit Action" << std::endl;
+    _sstream << "Quit action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------

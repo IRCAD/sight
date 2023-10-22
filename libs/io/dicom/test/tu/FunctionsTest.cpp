@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ void FunctionsTest::tearDown()
 
 void FunctionsTest::generatePatientIdTest()
 {
-    const std::string id = io::dicom::helper::generatePatientId();
+    const std::string id = io::dicom::helper::generate_patient_id();
     CPPUNIT_ASSERT(64 >= id.length());
     CPPUNIT_ASSERT(0 < id.length());
 }
@@ -57,7 +57,7 @@ void FunctionsTest::generatePatientIdTest()
 
 void FunctionsTest::generateStudyInstanceUidTest()
 {
-    const std::string id = io::dicom::helper::generateStudyInstanceUid();
+    const std::string id = io::dicom::helper::generate_study_instance_uid();
     CPPUNIT_ASSERT(16 == id.length());
 }
 

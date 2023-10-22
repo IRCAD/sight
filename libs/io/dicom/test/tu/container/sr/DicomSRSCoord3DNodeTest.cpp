@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,23 +42,23 @@ namespace sight::io::dicom::container::sr::ut
 
 //------------------------------------------------------------------------------
 
-static void genericTest(const std::string& graphicType, std::size_t graphicSize)
+static void generic_test(const std::string& _graphic_type, std::size_t _graphic_size)
 {
     using namespace std::literals::string_literals;
 
     gdcm::DataSet dataset;
-    std::vector<float> graphicBuffer(graphicSize);
-    std::iota(graphicBuffer.begin(), graphicBuffer.end(), 0.F);
-    DicomSRSCoord3DNode({}, "friend", graphicType, graphicBuffer, "reference").write(dataset);
+    std::vector<float> graphic_buffer(_graphic_size);
+    std::iota(graphic_buffer.begin(), graphic_buffer.end(), 0.F);
+    DicomSRSCoord3DNode({}, "friend", _graphic_type, graphic_buffer, "reference").write(dataset);
     CPPUNIT_ASSERT_EQUAL("SCOORD3D"s, (io::dicom::helper::DicomDataReader::getTagValue<TYPE>(dataset)));
     CPPUNIT_ASSERT_EQUAL("friend"s, (io::dicom::helper::DicomDataReader::getTagValue<RELATIONSHIP>(dataset)));
     CPPUNIT_ASSERT_EQUAL("reference"s, (io::dicom::helper::DicomDataReader::getTagValue<REFERENCE>(dataset)));
-    CPPUNIT_ASSERT_EQUAL(graphicType, (io::dicom::helper::DicomDataReader::getTagValue<GRAPHIC_TYPE>(dataset)));
-    gdcm::Attribute<GRAPHIC_DATA> graphicData;
-    graphicData.SetFromDataSet(dataset);
-    for(std::size_t i = 0 ; i < graphicSize ; i++)
+    CPPUNIT_ASSERT_EQUAL(_graphic_type, (io::dicom::helper::DicomDataReader::getTagValue<GRAPHIC_TYPE>(dataset)));
+    gdcm::Attribute<GRAPHIC_DATA> graphic_data;
+    graphic_data.SetFromDataSet(dataset);
+    for(std::size_t i = 0 ; i < _graphic_size ; i++)
     {
-        CPPUNIT_ASSERT_EQUAL(float(i), graphicData[unsigned(i)]);
+        CPPUNIT_ASSERT_EQUAL(float(i), graphic_data[unsigned(i)]);
     }
 }
 
@@ -66,14 +66,14 @@ static void genericTest(const std::string& graphicType, std::size_t graphicSize)
 
 void DicomSRSCoord3DNodeTest::pointTest()
 {
-    genericTest("POINT", 3);
+    generic_test("POINT", 3);
 }
 
 //------------------------------------------------------------------------------
 
 void DicomSRSCoord3DNodeTest::polylineTest()
 {
-    genericTest("POLYLINE", 6);
+    generic_test("POLYLINE", 6);
 }
 
 } // namespace sight::io::dicom::container::sr::ut

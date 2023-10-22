@@ -39,18 +39,18 @@ public:
 
     SIGHT_DECLARE_CLASS(base, sight::filter::dicom::filter);
 
-    typedef std::vector<sight::filter::dicom::filter::sptr> FilterContainerType;
+    typedef std::vector<sight::filter::dicom::filter::sptr> filter_container_t;
 
     /// Destructor
     FILTER_DICOM_API ~base() override;
 
     /// Return filter type
-    FILTER_DICOM_API FilterType getFilterType() const override;
+    FILTER_DICOM_API filter_t get_filter_type() const override;
 
     /// Override
-    FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API dicom_series_container_t apply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const override;
 
     /**
@@ -58,23 +58,23 @@ public:
      * If an exception is thrown, it is ignored and the next filter is applied.
      * @return Returns one or more Dicom Instance Group
      */
-    FILTER_DICOM_API DicomSeriesContainerType forcedApply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API dicom_series_container_t forcedApply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const;
 
     /// Add a filter to the composite
     FILTER_DICOM_API void addChild(
-        const sight::filter::dicom::filter::sptr& filter
+        const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Remove a filter from the composite
     FILTER_DICOM_API void removeChild(
-        const sight::filter::dicom::filter::sptr& filter
+        const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Return composite container
-    FILTER_DICOM_API FilterContainerType& getChildren();
+    FILTER_DICOM_API filter_container_t& getChildren();
 
 protected:
 
@@ -82,7 +82,7 @@ protected:
     FILTER_DICOM_API base();
 
     /// Filter container
-    FilterContainerType m_filterContainer;
+    filter_container_t m_filterContainer;
 };
 
 } // namespace sight::filter::dicom::composite

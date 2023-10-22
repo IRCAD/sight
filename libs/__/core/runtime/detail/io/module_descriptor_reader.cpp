@@ -61,10 +61,10 @@ static const std::string POINT("point");
 //------------------------------------------------------------------------------
 
 module_descriptor_reader::module_container module_descriptor_reader::create_modules(
-    const std::filesystem::path& location
+    const std::filesystem::path& _location
 )
 {
-    std::filesystem::path normalized_path(location);
+    std::filesystem::path normalized_path(_location);
 
     if(normalized_path.is_relative())
     {
@@ -86,11 +86,11 @@ module_descriptor_reader::module_container module_descriptor_reader::create_modu
 
     module_container modules;
     const auto load_module_fn =
-        [&](const std::filesystem::path& path)
+        [&](const std::filesystem::path& _path)
         {
             try
             {
-                SPTR(module) module = module_descriptor_reader::create_module(path);
+                SPTR(module) module = module_descriptor_reader::create_module(_path);
                 if(module)
                 {
                     modules.push_back(module);
@@ -98,11 +98,11 @@ module_descriptor_reader::module_container module_descriptor_reader::create_modu
             }
             catch(const runtime_exception& runtime_exception)
             {
-                SIGHT_DEBUG("'" << path.string() << "': skipped. " << runtime_exception.what());
+                SIGHT_DEBUG("'" << _path.string() << "': skipped. " << runtime_exception.what());
             }
             catch(const core::exception& exception)
             {
-                SIGHT_DEBUG("'" << path.string() << "': skipped. " << exception.what());
+                SIGHT_DEBUG("'" << _path.string() << "': skipped. " << exception.what());
             }
         };
 
@@ -131,14 +131,14 @@ module_descriptor_reader::module_container module_descriptor_reader::create_modu
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<module> module_descriptor_reader::create_module(const std::filesystem::path& location)
+std::shared_ptr<module> module_descriptor_reader::create_module(const std::filesystem::path& _location)
 {
     std::shared_ptr<detail::module> module;
 
-    std::filesystem::path descriptor_location(location / "plugin.xml");
+    std::filesystem::path descriptor_location(_location / "plugin.xml");
     if(!std::filesystem::exists(descriptor_location))
     {
-        throw core::exception(std::string("'plugin.xml': file not found in ") + location.string());
+        throw core::exception(std::string("'plugin.xml': file not found in ") + _location.string());
     }
 
     // Validation
@@ -174,11 +174,11 @@ std::shared_ptr<module> module_descriptor_reader::create_module(const std::files
 
         // Creates and process the plugin element.
         // Get the descriptor location.
-        std::filesystem::path complete_location(location);
+        std::filesystem::path complete_location(_location);
 
         if(!complete_location.is_absolute())
         {
-            complete_location = core::runtime::working_path() / location;
+            complete_location = core::runtime::working_path() / _location;
         }
 
         module = process_plugin(root_node, complete_location);
@@ -196,15 +196,15 @@ std::shared_ptr<module> module_descriptor_reader::create_module(const std::files
 
 //-----------------------------------------------------------------------------
 
-void module_descriptor_reader::process_configuration(xmlNodePtr node, core::runtime::config_t& parent_config)
+void module_descriptor_reader::process_configuration(xmlNodePtr _node, core::runtime::config_t& _parent_config)
 {
     // Creates the configuration element.
-    const std::string node_name(reinterpret_cast<const char*>(node->name));
+    const std::string node_name(reinterpret_cast<const char*>(_node->name));
     core::runtime::config_t config;
 
     // Processes all attributes.
     xmlAttrPtr cur_attr = nullptr;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         const std::string attr_name(reinterpret_cast<const char*>(cur_attr->name));
         const std::string value(reinterpret_cast<const char*>(cur_attr->children->content));
@@ -219,7 +219,7 @@ void module_descriptor_reader::process_configuration(xmlNodePtr node, core::runt
     // Process child nodes.
     std::string value;
     core::runtime::config_t children;
-    for(xmlNodePtr cur_child = node->children ; cur_child != nullptr ; cur_child = cur_child->next)
+    for(xmlNodePtr cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
         if(cur_child->type == XML_TEXT_NODE && (xmlIsBlankNode(cur_child) == 0))
         {
@@ -258,21 +258,21 @@ void module_descriptor_reader::process_configuration(xmlNodePtr node, core::runt
         config.put_value<std::string>(value);
     }
 
-    parent_config.add_child(node_name, config);
+    _parent_config.add_child(node_name, config);
 }
 
 //------------------------------------------------------------------------------
 
 std::shared_ptr<extension> module_descriptor_reader::process_extension(
-    xmlNodePtr node,
-    const std::shared_ptr<module> module
+    xmlNodePtr _node,
+    const std::shared_ptr<module> _module
 )
 {
     // Processes all extension attributes.
     xmlAttrPtr cur_attr = nullptr;
     std::string point;
     std::string identifier;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
@@ -293,12 +293,12 @@ std::shared_ptr<extension> module_descriptor_reader::process_extension(
     }
 
     // Creates the extension instance.
-    std::shared_ptr<extension> ext = std::make_shared<extension>(module, identifier, point, node);
+    std::shared_ptr<extension> ext = std::make_shared<extension>(_module, identifier, point, _node);
 
     // Processes child nodes which are configuration elements.
     xmlNodePtr cur_child = nullptr;
     core::runtime::config_t config;
-    for(cur_child = node->children ; cur_child != nullptr ; cur_child = cur_child->next)
+    for(cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
         if(cur_child->type == XML_ELEMENT_NODE)
         {
@@ -314,15 +314,15 @@ std::shared_ptr<extension> module_descriptor_reader::process_extension(
 //------------------------------------------------------------------------------
 
 module_descriptor_reader::point_extensions_pair_type module_descriptor_reader::process_point(
-    xmlNodePtr node,
-    const std::shared_ptr<module> module
+    xmlNodePtr _node,
+    const std::shared_ptr<module> _module
 )
 {
     // Creates the extension instance.
     xmlAttrPtr cur_attr = nullptr;
     std::string schema;
     std::string identifier;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
@@ -337,19 +337,19 @@ module_descriptor_reader::point_extensions_pair_type module_descriptor_reader::p
         }
     }
 
-    auto extension_pt = std::make_shared<extension_point>(module, identifier, schema);
+    auto extension_pt = std::make_shared<extension_point>(_module, identifier, schema);
 
     // Processes child nodes which declare identifier as extensions.
     std::vector<std::shared_ptr<extension> > extension_container;
     xmlNodePtr cur_child = nullptr;
-    for(cur_child = node->children ; cur_child != nullptr ; cur_child = cur_child->next)
+    for(cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
         if(cur_child->type == XML_ELEMENT_NODE)
         {
             if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(IMPLEMENTS.c_str())) == 0)
             {
                 std::string extension_id = reinterpret_cast<const char*>(cur_child->children->content);
-                auto ext                 = std::make_shared<extension>(module, identifier, extension_id, cur_child);
+                auto ext                 = std::make_shared<extension>(_module, identifier, extension_id, cur_child);
                 extension_container.push_back(ext);
             }
         }
@@ -361,15 +361,15 @@ module_descriptor_reader::point_extensions_pair_type module_descriptor_reader::p
 //------------------------------------------------------------------------------
 
 std::shared_ptr<extension_point> module_descriptor_reader::process_extension_point(
-    xmlNodePtr node,
-    const std::shared_ptr<module> module
+    xmlNodePtr _node,
+    const std::shared_ptr<module> _module
 )
 {
     // Processes all extension attributes.
     xmlAttrPtr cur_attr = nullptr;
     std::string identifier;
     std::string schema;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
@@ -385,7 +385,7 @@ std::shared_ptr<extension_point> module_descriptor_reader::process_extension_poi
     }
 
     // Creates the extension instance.
-    std::shared_ptr<extension_point> point = std::make_shared<extension_point>(module, identifier, schema);
+    std::shared_ptr<extension_point> point = std::make_shared<extension_point>(_module, identifier, schema);
 
     // Job's done.
     return point;
@@ -394,8 +394,8 @@ std::shared_ptr<extension_point> module_descriptor_reader::process_extension_poi
 //------------------------------------------------------------------------------
 
 std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
-    xmlNodePtr node,
-    const std::filesystem::path& location
+    xmlNodePtr _node,
+    const std::filesystem::path& _location
 )
 {
     // Creates the module.
@@ -403,7 +403,7 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
     // Processes all plugin attributes.
     xmlAttrPtr cur_attr = nullptr;
     std::string module_identifier;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
@@ -422,7 +422,7 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
 
     bool create_library = false;
     int priority        = 0;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(LIBRARY.c_str())) == 0)
         {
@@ -439,7 +439,7 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
     {
         // Deduce the library name from the plugin name
         std::string libname = boost::algorithm::replace_all_copy(module_identifier, "::", "_");
-        boost::algorithm::trim_left_if(libname, [](auto x){return x == '_';});
+        boost::algorithm::trim_left_if(libname, [](auto _x){return _x == '_';});
 
         SIGHT_INFO(std::string("plugin ") + module_identifier + " holds library " + libname);
 
@@ -447,19 +447,19 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
         // If we have a library, deduce the plugin name
         const std::string plugin_class = module_identifier + "::plugin";
 
-        module = std::make_shared<detail::module>(location, module_identifier, plugin_class, priority);
+        module = std::make_shared<detail::module>(_location, module_identifier, plugin_class, priority);
 
         auto library = std::make_shared<dl::library>(libname);
         module->set_library(library);
     }
     else
     {
-        module = std::make_shared<detail::module>(location, module_identifier);
+        module = std::make_shared<detail::module>(_location, module_identifier);
     }
 
     // Processes all child nodes.
     xmlNodePtr cur_child = nullptr;
-    for(cur_child = node->children ; cur_child != nullptr ; cur_child = cur_child->next)
+    for(cur_child = _node->children ; cur_child != nullptr ; cur_child = cur_child->next)
     {
         // Skip non element nodes.
         if(cur_child->type != XML_ELEMENT_NODE)
@@ -493,7 +493,7 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
         // Point declaration.
         if(xmlStrcmp(cur_child->name, reinterpret_cast<const xmlChar*>(POINT.c_str())) == 0)
         {
-            SIGHT_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + location.string() + ")");
+            SIGHT_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + _location.string() + ")");
         }
     }
 
@@ -503,12 +503,12 @@ std::shared_ptr<detail::module> module_descriptor_reader::process_plugin(
 
 //------------------------------------------------------------------------------
 
-std::string module_descriptor_reader::process_requirement(xmlNodePtr node)
+std::string module_descriptor_reader::process_requirement(xmlNodePtr _node)
 {
     // Processes all requirement attributes.
     xmlAttrPtr cur_attr = nullptr;
     std::string identifier;
-    for(cur_attr = node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
+    for(cur_attr = _node->properties ; cur_attr != nullptr ; cur_attr = cur_attr->next)
     {
         if(xmlStrcmp(cur_attr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {

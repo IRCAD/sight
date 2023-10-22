@@ -44,15 +44,15 @@ ClientQt::~ClientQt()
 
 //-----------------------------------------------------------------------------
 
-QByteArray ClientQt::get(Request::sptr request)
+QByteArray ClientQt::get(Request::sptr _request)
 {
-    QNetworkAccessManager networkManager;
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
+    QNetworkAccessManager network_manager;
+    const QUrl qt_url(QString::fromStdString(_request->getUrl()));
+    QNetworkRequest qt_request(qt_url);
 
-    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qt_request, _request->getHeaders());
 
-    QNetworkReply* reply = networkManager.get(qtRequest);
+    QNetworkReply* reply = network_manager.get(qt_request);
     QEventLoop loop;
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QObject::connect(
@@ -72,15 +72,15 @@ QByteArray ClientQt::get(Request::sptr request)
 
 //-----------------------------------------------------------------------------
 
-std::string ClientQt::get_file(Request::sptr request)
+std::string ClientQt::get_file(Request::sptr _request)
 {
-    QNetworkAccessManager networkManager;
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
+    QNetworkAccessManager network_manager;
+    const QUrl qt_url(QString::fromStdString(_request->getUrl()));
+    QNetworkRequest qt_request(qt_url);
 
-    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qt_request, _request->getHeaders());
 
-    QNetworkReply* reply = networkManager.get(qtRequest);
+    QNetworkReply* reply = network_manager.get(qt_request);
     QEventLoop loop;
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QObject::connect(
@@ -92,8 +92,8 @@ std::string ClientQt::get_file(Request::sptr request)
         &ClientQt::processError
     );
 
-    std::filesystem::path filePath = core::os::temp_file::unique_path();
-    QFile file(filePath.string().c_str());
+    std::filesystem::path file_path = core::os::temp_file::unique_path();
+    QFile file(file_path.string().c_str());
 
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -106,18 +106,18 @@ std::string ClientQt::get_file(Request::sptr request)
     file.write(reply->readAll());
     reply->deleteLater();
 
-    return filePath.string();
+    return file_path.string();
 }
 
 //-----------------------------------------------------------------------------
 
-void ClientQt::processError(QNetworkReply::NetworkError errorCode)
+void ClientQt::processError(QNetworkReply::NetworkError _error_code)
 {
-    QMetaObject metaObject = QNetworkReply::staticMetaObject;
-    QMetaEnum metaEnum     = metaObject.enumerator(metaObject.indexOfEnumerator("NetworkError"));
-    const char* desc       = metaEnum.valueToKey(errorCode);
+    QMetaObject meta_object = QNetworkReply::staticMetaObject;
+    QMetaEnum meta_enum     = meta_object.enumerator(meta_object.indexOfEnumerator("NetworkError"));
+    const char* desc        = meta_enum.valueToKey(_error_code);
 
-    switch(errorCode)
+    switch(_error_code)
     {
         case QNetworkReply::ConnectionRefusedError:
             throw io::http::exceptions::ConnectionRefused(desc);
@@ -139,17 +139,17 @@ void ClientQt::processError(QNetworkReply::NetworkError errorCode)
 
 //-----------------------------------------------------------------------------
 
-QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
+QByteArray ClientQt::post(Request::sptr _request, const QByteArray& _body)
 {
-    QNetworkAccessManager networkManager;
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
+    QNetworkAccessManager network_manager;
+    const QUrl qt_url(QString::fromStdString(_request->getUrl()));
+    QNetworkRequest qt_request(qt_url);
 
-    qtRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    qt_request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qt_request, _request->getHeaders());
 
-    QNetworkReply* reply = networkManager.post(qtRequest, body);
+    QNetworkReply* reply = network_manager.post(qt_request, _body);
     QEventLoop loop;
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     QObject::connect(
@@ -168,39 +168,39 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 
 //-----------------------------------------------------------------------------
 
-void ClientQt::computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers)
+void ClientQt::computeHeaders(QNetworkRequest& _request, const Request::headers_t& _headers)
 {
-    auto cIt = headers.begin();
-    for( ; cIt != headers.end() ; ++cIt)
+    auto c_it = _headers.begin();
+    for( ; c_it != _headers.end() ; ++c_it)
     {
-        request.setRawHeader(cIt->first.c_str(), cIt->second.c_str());
+        _request.setRawHeader(c_it->first.c_str(), c_it->second.c_str());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-Request::HeadersType ClientQt::head(Request::sptr request)
+Request::headers_t ClientQt::head(Request::sptr _request)
 {
-    QNetworkAccessManager networkManager;
-    Request::HeadersType headers;
+    QNetworkAccessManager network_manager;
+    Request::headers_t headers;
 
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
+    const QUrl qt_url(QString::fromStdString(_request->getUrl()));
+    QNetworkRequest qt_request(qt_url);
 
-    this->computeHeaders(qtRequest, request->getHeaders());
+    this->computeHeaders(qt_request, _request->getHeaders());
 
-    QNetworkReply* reply = networkManager.head(qtRequest);
+    QNetworkReply* reply = network_manager.head(qt_request);
     QEventLoop loop;
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
 
-    const QList<QNetworkReply::RawHeaderPair>& rawHeaders = reply->rawHeaderPairs();
+    const QList<QNetworkReply::RawHeaderPair>& raw_headers = reply->rawHeaderPairs();
 
-    QList<QNetworkReply::RawHeaderPair>::const_iterator cIt = rawHeaders.begin();
+    QList<QNetworkReply::RawHeaderPair>::const_iterator c_it = raw_headers.begin();
 
-    for( ; cIt != rawHeaders.end() ; ++cIt)
+    for( ; c_it != raw_headers.end() ; ++c_it)
     {
-        headers[cIt->first.data()] = cIt->second.data();
+        headers[c_it->first.data()] = c_it->second.data();
     }
 
     reply->deleteLater();

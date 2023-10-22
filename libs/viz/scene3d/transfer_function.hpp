@@ -48,7 +48,7 @@ public:
     /// new one, otherwise it wraps the existing one.
     /// @param object input transfer function
     /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
-    VIZ_SCENE3D_API transfer_function(const data::transfer_function::csptr& _tf, const std::string& suffixId = "");
+    VIZ_SCENE3D_API transfer_function(const data::transfer_function::csptr& _tf, const std::string& _suffix_id = "");
     VIZ_SCENE3D_API ~transfer_function();
 
     /// Update the TF texture according to the transfer function data.
@@ -58,7 +58,7 @@ public:
     template<class GPU_PARAMETERS>
     void bind(
         const Ogre::Pass* _pass,
-        const std::string& _texUnitName,
+        const std::string& _tex_unit_name,
         Ogre::SharedPtr<GPU_PARAMETERS> _params,
         const std::string& _uniform = "u_f3TFWindow"
     ) const;
@@ -74,7 +74,7 @@ private:
 template<class GPU_PARAMETERS>
 inline void transfer_function::bind(
     const Ogre::Pass* const _pass,
-    const std::string& _texUnitName,
+    const std::string& _tex_unit_name,
     Ogre::SharedPtr<GPU_PARAMETERS> _params,
     const std::string& _uniform
 ) const
@@ -82,16 +82,16 @@ inline void transfer_function::bind(
     SIGHT_ASSERT("Pass is null", _pass);
     SIGHT_ASSERT("Parameters pointer is null", _params);
 
-    auto* texUnitState = _pass->getTextureUnitState(_texUnitName);
-    SIGHT_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);
+    auto* tex_unit_state = _pass->getTextureUnitState(_tex_unit_name);
+    SIGHT_ASSERT("'" + _tex_unit_name + "' texture unit is not found", tex_unit_state);
 
-    if(m_resource && texUnitState->getTextureName() != m_resource->getName())
+    if(m_resource && tex_unit_state->getTextureName() != m_resource->getName())
     {
-        texUnitState->setTexture(m_resource);
+        tex_unit_state->setTexture(m_resource);
     }
 
-    texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
-    texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+    tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
+    tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
     _params->setNamedConstant(_uniform, m_tfWindow);
 }

@@ -48,10 +48,10 @@ struct CellDataOffsetGenerator
 };
 
 //------------------------------------------------------------------------------
-DicomSurface::DicomSurface(const data::reconstruction::csptr& reconstruction)
+DicomSurface::DicomSurface(const data::reconstruction::csptr& _reconstruction)
 {
     // Get mesh
-    data::mesh::csptr mesh = reconstruction->getMesh();
+    data::mesh::csptr mesh = _reconstruction->getMesh();
 
     // Coordinates
     {
@@ -72,9 +72,9 @@ DicomSurface::DicomSurface(const data::reconstruction::csptr& reconstruction)
         for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
         {
             // Index shall start at 1 in DICOM
-            m_cellBuffer[index++] = static_cast<DicomCellValueType>(cell.pt[0]) + 1;
-            m_cellBuffer[index++] = static_cast<DicomCellValueType>(cell.pt[1]) + 1;
-            m_cellBuffer[index++] = static_cast<DicomCellValueType>(cell.pt[2]) + 1;
+            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[0]) + 1;
+            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[1]) + 1;
+            m_cellBuffer[index++] = static_cast<dicom_cell_value_t>(cell.pt[2]) + 1;
         }
     }
 
@@ -93,26 +93,26 @@ DicomSurface::DicomSurface(const data::reconstruction::csptr& reconstruction)
 //------------------------------------------------------------------------------
 
 DicomSurface::DicomSurface(
-    const data::mesh::position_t* pointBuffer,
-    const data::mesh::size_t pointBufferSize,
-    const DicomCellValueType* cellBuffer,
-    const data::mesh::size_t cellBufferSize,
-    const data::mesh::normal_t* normalBuffer
+    const data::mesh::position_t* _point_buffer,
+    const data::mesh::size_t _point_buffer_size,
+    const dicom_cell_value_t* _cell_buffer,
+    const data::mesh::size_t _cell_buffer_size,
+    const data::mesh::normal_t* _normal_buffer
 )
 {
     // Coordinates
-    m_pointBuffer.reserve(pointBufferSize);
-    m_pointBuffer.assign(pointBuffer, pointBuffer + pointBufferSize);
+    m_pointBuffer.reserve(_point_buffer_size);
+    m_pointBuffer.assign(_point_buffer, _point_buffer + _point_buffer_size);
 
     // Cells
-    m_cellBuffer.reserve(cellBufferSize);
-    m_cellBuffer.assign(cellBuffer, cellBuffer + cellBufferSize);
+    m_cellBuffer.reserve(_cell_buffer_size);
+    m_cellBuffer.assign(_cell_buffer, _cell_buffer + _cell_buffer_size);
 
     // Normals
-    if(normalBuffer != nullptr)
+    if(_normal_buffer != nullptr)
     {
-        m_normalBuffer.reserve(pointBufferSize);
-        m_normalBuffer.assign(normalBuffer, normalBuffer + pointBufferSize);
+        m_normalBuffer.reserve(_point_buffer_size);
+        m_normalBuffer.assign(_normal_buffer, _normal_buffer + _point_buffer_size);
     }
 }
 
@@ -138,7 +138,7 @@ data::mesh::sptr DicomSurface::convertToData()
     mesh->resize(
         data::mesh::size_t(m_pointBuffer.size() / 3),
         data::mesh::size_t(m_cellBuffer.size() / 3),
-        data::mesh::CellType::TRIANGLE,
+        data::mesh::cell_type_t::TRIANGLE,
         attribute
     );
 
@@ -175,21 +175,21 @@ data::mesh::sptr DicomSurface::convertToData()
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomPointBufferType& DicomSurface::getPointBuffer() const
+const DicomSurface::dicom_point_buffer_t& DicomSurface::getPointBuffer() const
 {
     return m_pointBuffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomCellBufferType& DicomSurface::getCellBuffer() const
+const DicomSurface::dicom_cell_buffer_t& DicomSurface::getCellBuffer() const
 {
     return m_cellBuffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomNormalBufferType& DicomSurface::getNormalBuffer() const
+const DicomSurface::dicom_normal_buffer_t& DicomSurface::getNormalBuffer() const
 {
     return m_normalBuffer;
 }

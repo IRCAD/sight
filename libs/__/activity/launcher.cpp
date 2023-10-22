@@ -39,28 +39,28 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-void launcher::parseConfiguration(const ConfigurationType& config, const InOutMapType& inouts)
+void launcher::parseConfiguration(const configuration_t& _config, const in_out_map_t& _inouts)
 {
-    m_mainActivityId = config.get<std::string>("mainActivity.<xmlattr>.id", "");
+    m_mainActivityId = _config.get<std::string>("mainActivity.<xmlattr>.id", "");
     SIGHT_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
 
-    if(const auto inoutsCfg = config.get_child_optional("inout"); inoutsCfg.has_value())
+    if(const auto inouts_cfg = _config.get_child_optional("inout"); inouts_cfg.has_value())
     {
-        const auto group = inoutsCfg->get<std::string>("<xmlattr>.group");
+        const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
         if(group == "data")
         {
             std::size_t i = 0;
-            for(const auto& itCfg : boost::make_iterator_range(inoutsCfg->equal_range("key")))
+            for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
             {
-                const auto key = itCfg.second.get<std::string>("<xmlattr>.name");
+                const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
                 SIGHT_ASSERT("Missing 'name' tag.", !key.empty());
 
-                const auto uid = itCfg.second.get<std::string>("<xmlattr>.uid");
+                const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
                 SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
-                const bool optional = itCfg.second.get<bool>("<xmlattr>.optional", false);
-                const auto& objId   = inouts[i++];
-                ParameterType param;
+                const bool optional = it_cfg.second.get<bool>("<xmlattr>.optional", false);
+                const auto& obj_id  = _inouts[i++];
+                parameter_t param;
                 param.replace = key;
                 if(optional)
                 {
@@ -68,7 +68,7 @@ void launcher::parseConfiguration(const ConfigurationType& config, const InOutMa
                 }
                 else
                 {
-                    param.by = objId;
+                    param.by = obj_id;
                 }
 
                 m_parameters.push_back(param);
@@ -76,23 +76,23 @@ void launcher::parseConfiguration(const ConfigurationType& config, const InOutMa
         }
     }
 
-    ConfigurationType configParams = config.get_child("parameters");
+    configuration_t config_params = _config.get_child("parameters");
 
-    const auto paramsCfg = configParams.equal_range("parameter");
-    for(auto itParams = paramsCfg.first ; itParams != paramsCfg.second ; ++itParams)
+    const auto params_cfg = config_params.equal_range("parameter");
+    for(auto it_params = params_cfg.first ; it_params != params_cfg.second ; ++it_params)
     {
-        const auto replace = itParams->second.get<std::string>("<xmlattr>.replace");
-        std::string by     = itParams->second.get<std::string>("<xmlattr>.by", "");
+        const auto replace = it_params->second.get<std::string>("<xmlattr>.replace");
+        std::string by     = it_params->second.get<std::string>("<xmlattr>.by", "");
         if(by.empty())
         {
-            by = itParams->second.get<std::string>("<xmlattr>.uid");
+            by = it_params->second.get<std::string>("<xmlattr>.uid");
         }
 
         SIGHT_ASSERT(
             "'parameter' tag must contain valid 'replace' and 'by' attributes.",
             !replace.empty() && !by.empty()
         );
-        ParameterType param;
+        parameter_t param;
         param.replace = replace;
         param.by      = by;
         SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isObjectPath());
@@ -103,39 +103,39 @@ void launcher::parseConfiguration(const ConfigurationType& config, const InOutMa
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> launcher::validateActivity(
-    const data::activity::csptr& activity
+    const data::activity::csptr& _activity
 )
 {
-    bool isValid = true;
+    bool is_valid = true;
     std::string message;
     // Applies validator on activity to check the data
     activity::extension::activity_info info;
-    info = activity::extension::activity::getDefault()->getInfo(activity->getActivityConfigId());
+    info = activity::extension::activity::getDefault()->getInfo(_activity->getActivityConfigId());
 
     // load activity module
     core::runtime::start_module(info.bundleId);
 
-    for(const std::string& validatorImpl : info.validatorsImpl)
+    for(const std::string& validator_impl : info.validatorsImpl)
     {
         /// Process activity validator
-        auto validator         = activity::validator::factory::make(validatorImpl);
-        auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
-        SIGHT_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
+        auto validator          = activity::validator::factory::make(validator_impl);
+        auto activity_validator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
+        SIGHT_ASSERT("Validator '" + validator_impl + "' instantiation failed", activity_validator);
 
-        auto validation = activityValidator->validate(activity);
+        auto validation = activity_validator->validate(_activity);
         if(!validation.first)
         {
             message += "\n" + validation.second;
-            isValid  = false;
+            is_valid = false;
         }
     }
 
-    if(!isValid)
+    if(!is_valid)
     {
         message = std::string("The activity '") + info.title + "' can not be launched:\n" + message;
     }
 
-    return std::make_pair(isValid, message);
+    return std::make_pair(is_valid, message);
 }
 
 //------------------------------------------------------------------------------

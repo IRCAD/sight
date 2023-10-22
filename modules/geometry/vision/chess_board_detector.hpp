@@ -82,10 +82,10 @@ public:
     SIGHT_DECLARE_SERVICE(chess_board_detector, sight::service::controller);
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was successful.
-    typedef core::com::signal<void (bool)> ChessboardDetectedSignalType;
+    typedef core::com::signal<void (bool)> chessboard_detected_signal_t;
 
     /// Signal type sent after a successful detection.
-    typedef core::com::signal<void ()> ChessboardFoundSignalType;
+    typedef core::com::signal<void ()> chessboard_found_signal_t;
 
     /// Constructor
     MODULE_GEOMETRY_VISION_API chess_board_detector() noexcept;
@@ -119,13 +119,13 @@ private:
     void updateChessboardSize();
 
     /// Runs the detection for the given input index.
-    void doDetection(std::size_t _imageIndex);
+    void doDetection(std::size_t _image_index);
 
     /// Signal emitted after detection.
-    ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
+    chessboard_detected_signal_t::sptr m_sigChessboardDetected;
 
     /// Signal emitted if a chessboard can be seen in the image.
-    ChessboardFoundSignalType::sptr m_sigChessboardFound;
+    chessboard_found_signal_t::sptr m_sigChessboardFound;
 
     /// Preference key to retrieve the chessboard width.
     std::string m_widthKey;

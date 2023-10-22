@@ -70,43 +70,43 @@ void DictionaryReaderTest::tearDown()
 void DictionaryReaderTest::test_1()
 {
     // Expected data
-    data::structure_traits::sptr expectedSkin = std::make_shared<data::structure_traits>();
-    expectedSkin->setType("Skin");
-    expectedSkin->setClass(data::structure_traits::ENVIRONMENT);
-    expectedSkin->setColor(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer skinCat(1);
-    skinCat[0] = data::structure_traits::BODY;
-    expectedSkin->setCategories(skinCat);
-    expectedSkin->setAnatomicRegion("Entire_Body");
-    expectedSkin->setPropertyCategory("Anat_Struct");
-    expectedSkin->setPropertyType("Entire_Body");
+    data::structure_traits::sptr expected_skin = std::make_shared<data::structure_traits>();
+    expected_skin->setType("Skin");
+    expected_skin->setClass(data::structure_traits::ENVIRONMENT);
+    expected_skin->setColor(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
+    data::structure_traits::CategoryContainer skin_cat(1);
+    skin_cat[0] = data::structure_traits::BODY;
+    expected_skin->setCategories(skin_cat);
+    expected_skin->setAnatomicRegion("Entire_Body");
+    expected_skin->setPropertyCategory("Anat_Struct");
+    expected_skin->set_property_type("Entire_Body");
 
-    auto structDico = std::make_shared<data::structure_traits_dictionary>();
+    auto struct_dico = std::make_shared<data::structure_traits_dictionary>();
     // get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
-    dictionaryReader->set_object(structDico);
-    dictionaryReader->set_file(m_tmpDictionaryFilePath);
-    dictionaryReader->read();
+    auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
+    dictionary_reader->set_object(struct_dico);
+    dictionary_reader->set_file(m_tmpDictionaryFilePath);
+    dictionary_reader->read();
 
-    data::structure_traits::sptr struct1 = structDico->getStructure("Skin");
+    data::structure_traits::sptr struct1 = struct_dico->getStructure("Skin");
     CPPUNIT_ASSERT(struct1);
-    CPPUNIT_ASSERT_EQUAL(struct1->getType(), expectedSkin->getType());
-    CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expectedSkin->getClass());
+    CPPUNIT_ASSERT_EQUAL(struct1->getType(), expected_skin->getType());
+    CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expected_skin->getClass());
 
     data::color::sptr color1 = struct1->getColor();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expectedSkin->getColor()->red(), 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(), 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expectedSkin->getColor()->blue(), 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->alpha(), expectedSkin->getColor()->alpha(), 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expected_skin->getColor()->red(), 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expected_skin->getColor()->green(), 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expected_skin->getColor()->blue(), 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->alpha(), expected_skin->getColor()->alpha(), 0.001);
 
-    CPPUNIT_ASSERT_EQUAL(struct1->getCategories().size(), expectedSkin->getCategories().size());
-    CPPUNIT_ASSERT_EQUAL(struct1->getNativeExp(), expectedSkin->getNativeExp());
-    CPPUNIT_ASSERT_EQUAL(struct1->getNativeGeometricExp(), expectedSkin->getNativeGeometricExp());
-    CPPUNIT_ASSERT_EQUAL(struct1->getAttachmentType(), expectedSkin->getAttachmentType());
+    CPPUNIT_ASSERT_EQUAL(struct1->getCategories().size(), expected_skin->getCategories().size());
+    CPPUNIT_ASSERT_EQUAL(struct1->getNativeExp(), expected_skin->getNativeExp());
+    CPPUNIT_ASSERT_EQUAL(struct1->getNativeGeometricExp(), expected_skin->getNativeGeometricExp());
+    CPPUNIT_ASSERT_EQUAL(struct1->get_attachment_type(), expected_skin->get_attachment_type());
 
-    CPPUNIT_ASSERT_EQUAL(struct1->getAnatomicRegion(), expectedSkin->getAnatomicRegion());
-    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyCategory(), expectedSkin->getPropertyCategory());
-    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyType(), expectedSkin->getPropertyType());
+    CPPUNIT_ASSERT_EQUAL(struct1->getAnatomicRegion(), expected_skin->getAnatomicRegion());
+    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyCategory(), expected_skin->getPropertyCategory());
+    CPPUNIT_ASSERT_EQUAL(struct1->get_property_type(), expected_skin->get_property_type());
 }
 
 //------------------------------------------------------------------------------
@@ -117,13 +117,13 @@ void DictionaryReaderTest::test_2()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::structure_traits_dictionary>();
+    auto struct_dico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
-    dictionaryReader->set_object(structDico);
-    dictionaryReader->set_file(m_tmpDictionaryFilePath);
+    auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
+    dictionary_reader->set_object(struct_dico);
+    dictionary_reader->set_file(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -131,13 +131,13 @@ void DictionaryReaderTest::test_2()
 void DictionaryReaderTest::test_3()
 {
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "NoDictionary.dic";
-    auto structDico = std::make_shared<data::structure_traits_dictionary>();
+    auto struct_dico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
-    dictionaryReader->set_object(structDico);
-    dictionaryReader->set_file(m_tmpDictionaryFilePath);
+    auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
+    dictionary_reader->set_object(struct_dico);
+    dictionary_reader->set_file(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -148,13 +148,13 @@ void DictionaryReaderTest::test_4()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::structure_traits_dictionary>();
+    auto struct_dico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
-    dictionaryReader->set_object(structDico);
-    dictionaryReader->set_file(m_tmpDictionaryFilePath);
+    auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
+    dictionary_reader->set_object(struct_dico);
+    dictionary_reader->set_file(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -165,20 +165,20 @@ void DictionaryReaderTest::test_5()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::structure_traits_dictionary>();
+    auto struct_dico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
-    dictionaryReader->set_object(structDico);
-    dictionaryReader->set_file(m_tmpDictionaryFilePath);
+    auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
+    dictionary_reader->set_object(struct_dico);
+    dictionary_reader->set_file(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
 }
 
 //------------------------------------------------------------------------------
-void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
-    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    file.open(_dictionary_file.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
 
     file << "Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
@@ -188,10 +188,10 @@ void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictiona
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
-    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    file.open(_dictionary_file.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
     file << "Skin(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
@@ -200,10 +200,10 @@ void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(std::files
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
-    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    file.open(_dictionary_file.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     file << "Skin;(255,179,140,100);Boy;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
@@ -211,11 +211,11 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesyst
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem::path _dictionary_file)
 {
     //cspell: ignore Enironment Anat
     std::fstream file;
-    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    file.open(_dictionary_file.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     file << "Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();

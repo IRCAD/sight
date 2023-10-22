@@ -55,13 +55,13 @@ public:
      * @brief Convert a dicom_series to an image_series
      * @param[in] series dicom_series that must be converted
      */
-    DATA_API static SPTR(data::image_series) convert_to_image_series(const CSPTR(data::dicom_series) & series);
+    DATA_API static SPTR(data::image_series) convert_to_image_series(const CSPTR(data::dicom_series) & _series);
 
     /**
      * @brief Convert a dicom_series to a model_series
      * @param[in] series dicom_series that must be converted
      */
-    DATA_API static SPTR(data::model_series) convert_to_model_series(const CSPTR(data::dicom_series) & series);
+    DATA_API static SPTR(data::model_series) convert_to_model_series(const CSPTR(data::dicom_series) & _series);
 };
 
 } // namespace sight::data::dicom

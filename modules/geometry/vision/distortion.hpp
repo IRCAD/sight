@@ -86,7 +86,7 @@ public:
      * @{
      */
     MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CHANGE_STATE_SLOT;
-    typedef core::com::slot<void ()> ChangeStateSlotType;
+    typedef core::com::slot<void ()> change_state_slot_t;
     ///@}
 
     /// Constructor.

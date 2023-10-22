@@ -27,7 +27,7 @@
 
 #include <core/tools/date_and_time.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
@@ -42,15 +42,15 @@ namespace sight::io::dicom::writer::ie
 //------------------------------------------------------------------------------
 
 SpatialFiducials::SpatialFiducials(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::image::csptr& image,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(gdcm::Writer)& _writer,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const data::image::csptr& _image,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::image>(writer, instance, image,
-                                                          logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::image>(_writer, _instance, _image,
+                                                          _logger, _progress, _cancel)
 {
 }
 
@@ -89,131 +89,131 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0084>("Unknown^Unknown", dataset);
 
     // Fiducial Set Sequence - Type 1
-    gdcm::SmartPointer<gdcm::SequenceOfItems> fiducialSetSequence = new gdcm::SequenceOfItems();
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0070, 0x031C>(fiducialSetSequence, dataset);
+    gdcm::SmartPointer<gdcm::SequenceOfItems> fiducial_set_sequence = new gdcm::SequenceOfItems();
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0070, 0x031C>(fiducial_set_sequence, dataset);
 
     // Create Fiducial Sequence Item
-    gdcm::Item fiducialSetItem;
-    fiducialSetItem.SetVLToUndefined();
-    gdcm::DataSet& fiducialSetItemDataset = fiducialSetItem.GetNestedDataSet();
+    gdcm::Item fiducial_set_item;
+    fiducial_set_item.SetVLToUndefined();
+    gdcm::DataSet& fiducial_set_item_dataset = fiducial_set_item.GetNestedDataSet();
 
     // Referenced Image Sequence - Type 1C
-    gdcm::SmartPointer<gdcm::SequenceOfItems> referencedImageSequence = new gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> referenced_image_sequence = new gdcm::SequenceOfItems();
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1140>(
-        referencedImageSequence,
-        fiducialSetItemDataset
+        referenced_image_sequence,
+        fiducial_set_item_dataset
     );
 
     // Add all referenced image
     for(unsigned int index = 0 ; index < m_instance->getSOPInstanceUIDContainer().size() ; ++index)
     {
-        gdcm::Item referencedImageItem;
-        referencedImageItem.SetVLToUndefined();
-        gdcm::DataSet& referencedImageItemDataset = referencedImageItem.GetNestedDataSet();
+        gdcm::Item referenced_image_item;
+        referenced_image_item.SetVLToUndefined();
+        gdcm::DataSet& referenced_image_item_dataset = referenced_image_item.GetNestedDataSet();
 
         // Referenced Frame Number - Type 1C
-        int frameNumber = int(index) + 1;
+        int frame_number = int(index) + 1;
         io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(
-            &frameNumber,
+            &frame_number,
             1,
-            referencedImageItemDataset
+            referenced_image_item_dataset
         );
 
         // Referenced SOP Class UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
             m_instance->getSOPClassUID(),
-            referencedImageItemDataset
+            referenced_image_item_dataset
         );
 
         // Referenced SOP Instance UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
             m_instance->getSOPInstanceUIDContainer()[index],
-            referencedImageItemDataset
+            referenced_image_item_dataset
         );
 
         // Add referenced image to sequence
-        referencedImageSequence->AddItem(referencedImageItem);
+        referenced_image_sequence->AddItem(referenced_image_item);
     }
 
     // Fiducial Sequence - Type 1
-    gdcm::SmartPointer<gdcm::SequenceOfItems> fiducialSequence = new gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> fiducial_sequence = new gdcm::SequenceOfItems();
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0070, 0x031E>(
-        fiducialSequence,
-        fiducialSetItemDataset
+        fiducial_sequence,
+        fiducial_set_item_dataset
     );
 
     // Write landmarks
-    this->writeLandmarks(fiducialSequence);
+    this->writeLandmarks(fiducial_sequence);
 
     // Add Fiducial Set to sequence
-    fiducialSetSequence->AddItem(fiducialSetItem);
+    fiducial_set_sequence->AddItem(fiducial_set_item);
 }
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducials::writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence)
+void SpatialFiducials::writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence)
 {
-    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
-    if(pointList)
+    data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*m_object);
+    if(point_list)
     {
         unsigned int index = 0;
-        for(const data::point::sptr& point : pointList->getPoints())
+        for(const data::point::sptr& point : point_list->getPoints())
         {
-            gdcm::Item fiducialItem;
-            fiducialItem.SetVLToUndefined();
-            gdcm::DataSet& fiducialItemDataset = fiducialItem.GetNestedDataSet();
+            gdcm::Item fiducial_item;
+            fiducial_item.SetVLToUndefined();
+            gdcm::DataSet& fiducial_item_dataset = fiducial_item.GetNestedDataSet();
 
             // Fiducial Identifier - Type 1
-            std::stringstream ssIdentifier;
-            ssIdentifier << "landmark-" << index;
-            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0310>(ssIdentifier.str(), fiducialItemDataset);
+            std::stringstream ss_identifier;
+            ss_identifier << "landmark-" << index;
+            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0310>(ss_identifier.str(), fiducial_item_dataset);
 
             // Fiducial Description - Type 3
             std::string label = point->getLabel();
-            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x030F>(label, fiducialItemDataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x030F>(label, fiducial_item_dataset);
 
             // Shape Type - Type 1
-            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0306>("POINT", fiducialItemDataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0306>("POINT", fiducial_item_dataset);
 
             // Graphic Coordinates Data Sequence - Type 1C
-            gdcm::SmartPointer<gdcm::SequenceOfItems> graphicCoodinatesDataSequence =
+            gdcm::SmartPointer<gdcm::SequenceOfItems> graphic_coodinates_data_sequence =
                 new gdcm::SequenceOfItems();
             io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0070, 0x0318>(
-                graphicCoodinatesDataSequence,
-                fiducialItemDataset
+                graphic_coodinates_data_sequence,
+                fiducial_item_dataset
             );
 
-            gdcm::Item graphicDataItem;
-            graphicDataItem.SetVLToUndefined();
-            gdcm::DataSet& graphicDataItemDataset = graphicDataItem.GetNestedDataSet();
+            gdcm::Item graphic_data_item;
+            graphic_data_item.SetVLToUndefined();
+            gdcm::DataSet& graphic_data_item_dataset = graphic_data_item.GetNestedDataSet();
 
             // Graphic Data - Type 1
             std::array coordinates {static_cast<float>(point->getCoord()[0]), static_cast<float>(point->getCoord()[1])};
             io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
                 coordinates.data(),
                 2,
-                graphicDataItemDataset
+                graphic_data_item_dataset
             );
 
             // Referenced Image Sequence - Type 1
-            gdcm::SmartPointer<gdcm::SequenceOfItems> referencedImageSequence = new gdcm::SequenceOfItems();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> referenced_image_sequence = new gdcm::SequenceOfItems();
             io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1140>(
-                referencedImageSequence,
-                graphicDataItemDataset
+                referenced_image_sequence,
+                graphic_data_item_dataset
             );
 
-            int frameNumber =
+            int frame_number =
                 static_cast<int>(io::dicom::helper::DicomDataTools::convertPointToFrameNumber(
                                      m_object,
                                      point
                 ));
-            this->addReferencedImage(frameNumber, referencedImageSequence);
+            this->addReferencedImage(frame_number, referenced_image_sequence);
 
             // Add graphic data to sequence
-            graphicCoodinatesDataSequence->AddItem(graphicDataItem);
+            graphic_coodinates_data_sequence->AddItem(graphic_data_item);
 
             // Add Fiducial to sequence
-            sequence->AddItem(fiducialItem);
+            _sequence->AddItem(fiducial_item);
 
             // Increase index
             ++index;
@@ -229,73 +229,73 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Referenced Series Sequence - Type 1C
-    gdcm::SmartPointer<gdcm::SequenceOfItems> referencedSeriesSequence = new gdcm::SequenceOfItems();
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1115>(referencedSeriesSequence, dataset);
+    gdcm::SmartPointer<gdcm::SequenceOfItems> referenced_series_sequence = new gdcm::SequenceOfItems();
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1115>(referenced_series_sequence, dataset);
 
     // Create Referenced Series
-    gdcm::Item referencedSeriesItem;
-    referencedSeriesItem.SetVLToUndefined();
-    gdcm::DataSet& referencedSeriesItemDataset = referencedSeriesItem.GetNestedDataSet();
+    gdcm::Item referenced_series_item;
+    referenced_series_item.SetVLToUndefined();
+    gdcm::DataSet& referenced_series_item_dataset = referenced_series_item.GetNestedDataSet();
 
     // Series Instance UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000E>(
         m_instance->getSeriesInstanceUID(),
-        referencedSeriesItemDataset
+        referenced_series_item_dataset
     );
 
     // Referenced Instance Sequence - Type 1
-    gdcm::SmartPointer<gdcm::SequenceOfItems> referencedInstanceSequence = new gdcm::SequenceOfItems();
+    gdcm::SmartPointer<gdcm::SequenceOfItems> referenced_instance_sequence = new gdcm::SequenceOfItems();
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x114A>(
-        referencedInstanceSequence,
-        referencedSeriesItemDataset
+        referenced_instance_sequence,
+        referenced_series_item_dataset
     );
 
     // Add all referenced image
     for(auto& index : m_instance->getSOPInstanceUIDContainer())
     {
-        gdcm::Item referencedInstanceItem;
-        referencedInstanceItem.SetVLToUndefined();
-        gdcm::DataSet& referencedInstanceItemDataset = referencedInstanceItem.GetNestedDataSet();
+        gdcm::Item referenced_instance_item;
+        referenced_instance_item.SetVLToUndefined();
+        gdcm::DataSet& referenced_instance_item_dataset = referenced_instance_item.GetNestedDataSet();
 
         // Referenced SOP Class UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
             m_instance->getSOPClassUID(),
-            referencedInstanceItemDataset
+            referenced_instance_item_dataset
         );
 
         // Referenced SOP Instance UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
             index,
-            referencedInstanceItemDataset
+            referenced_instance_item_dataset
         );
 
         // Add referenced image to sequence
-        referencedInstanceSequence->AddItem(referencedInstanceItem);
+        referenced_instance_sequence->AddItem(referenced_instance_item);
     }
 
-    referencedSeriesSequence->AddItem(referencedSeriesItem);
+    referenced_series_sequence->AddItem(referenced_series_item);
 
     // Studies Containing Other Referenced Instances Sequence - Type 1C
-    gdcm::SmartPointer<gdcm::SequenceOfItems> studiesSequence = new gdcm::SequenceOfItems();
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1200>(studiesSequence, dataset);
+    gdcm::SmartPointer<gdcm::SequenceOfItems> studies_sequence = new gdcm::SequenceOfItems();
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1200>(studies_sequence, dataset);
 
-    gdcm::Item studiesItem;
-    studiesItem.SetVLToUndefined();
-    gdcm::DataSet& studiesItemDataset = studiesItem.GetNestedDataSet();
+    gdcm::Item studies_item;
+    studies_item.SetVLToUndefined();
+    gdcm::DataSet& studies_item_dataset = studies_item.GetNestedDataSet();
 
     // Study Instance UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000D>(
         m_instance->getStudyInstanceUID(),
-        studiesItemDataset
+        studies_item_dataset
     );
 
     // Referenced Series Sequence - Type 1
     io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1115>(
-        referencedSeriesSequence,
-        studiesItemDataset
+        referenced_series_sequence,
+        studies_item_dataset
     );
 
-    studiesSequence->AddItem(studiesItem);
+    studies_sequence->AddItem(studies_item);
 }
 
 //------------------------------------------------------------------------------
@@ -306,47 +306,47 @@ void SpatialFiducials::writeSOPCommonModule()
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Class UID
-    std::string sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SpacialFiducialsStorage);
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0016>(sopClassUID, dataset);
+    std::string sop_class_uid = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SpacialFiducialsStorage);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0016>(sop_class_uid, dataset);
 
     // SOP Instance UID
-    gdcm::UIDGenerator uidGenerator;
-    std::string sopInstanceUID = uidGenerator.Generate();
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0018>(sopInstanceUID, dataset);
+    gdcm::UIDGenerator uid_generator;
+    std::string sop_instance_uid = uid_generator.Generate();
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0018>(sop_instance_uid, dataset);
 }
 
 //------------------------------------------------------------------------------
 
 void SpatialFiducials::addReferencedImage(
-    int frameNumber,
-    gdcm::SmartPointer<gdcm::SequenceOfItems> referencedImageSequence
+    int _frame_number,
+    gdcm::SmartPointer<gdcm::SequenceOfItems> _referenced_image_sequence
 )
 {
-    gdcm::Item referencedImageItem;
-    referencedImageItem.SetVLToUndefined();
-    gdcm::DataSet& referencedImageItemDataset = referencedImageItem.GetNestedDataSet();
+    gdcm::Item referenced_image_item;
+    referenced_image_item.SetVLToUndefined();
+    gdcm::DataSet& referenced_image_item_dataset = referenced_image_item.GetNestedDataSet();
 
     // Referenced Frame Number - Type 1C
     io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(
-        &frameNumber,
+        &_frame_number,
         1,
-        referencedImageItemDataset
+        referenced_image_item_dataset
     );
 
     // Referenced SOP Class UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
         m_instance->getSOPClassUID(),
-        referencedImageItemDataset
+        referenced_image_item_dataset
     );
 
     // Referenced SOP Instance UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
-        m_instance->getSOPInstanceUIDContainer()[std::size_t(frameNumber - 1)],
-        referencedImageItemDataset
+        m_instance->getSOPInstanceUIDContainer()[std::size_t(_frame_number - 1)],
+        referenced_image_item_dataset
     );
 
     // Add referenced image to sequence
-    referencedImageSequence->AddItem(referencedImageItem);
+    _referenced_image_sequence->AddItem(referenced_image_item);
 }
 
 //------------------------------------------------------------------------------

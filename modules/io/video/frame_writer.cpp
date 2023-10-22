@@ -105,19 +105,19 @@ void frame_writer::starting()
 
 void frame_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    static auto default_directory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -151,52 +151,52 @@ void frame_writer::saveFrame(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void frame_writer::write(core::hires_clock::type timestamp)
+void frame_writer::write(core::hires_clock::type _timestamp)
 {
     if(m_isRecording)
     {
         // Retrieve dataStruct associated with this service
-        const auto locked  = m_data.lock();
-        const auto frameTL = std::dynamic_pointer_cast<const data::frame_tl>(locked.get_shared());
+        const auto locked   = m_data.lock();
+        const auto frame_tl = std::dynamic_pointer_cast<const data::frame_tl>(locked.get_shared());
 
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
-        const auto sig = frameTL->signal<data::timeline::signals::pushed_t>(
+        const auto sig = frame_tl->signal<data::timeline::signals::pushed_t>(
             data::timeline::signals::PUSHED
         );
-        core::com::connection::blocker writeBlocker(sig->get_connection(m_slots[WRITE]));
+        core::com::connection::blocker write_blocker(sig->get_connection(m_slots[WRITE]));
 
         // Get the buffer of the copied timeline
-        const auto buffer = frameTL->getClosestBuffer(timestamp);
+        const auto buffer = frame_tl->getClosestBuffer(_timestamp);
 
         if(buffer)
         {
-            timestamp = buffer->getTimestamp();
-            const int width  = static_cast<int>(frameTL->getWidth());
-            const int height = static_cast<int>(frameTL->getHeight());
+            _timestamp = buffer->getTimestamp();
+            const int width  = static_cast<int>(frame_tl->getWidth());
+            const int height = static_cast<int>(frame_tl->getHeight());
 
-            const std::uint8_t* imageBuffer = &buffer->getElement(0);
+            const std::uint8_t* image_buffer = &buffer->getElement(0);
 
-            cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
+            cv::Mat image(cv::Size(width, height), m_imageType, (void*) image_buffer, cv::Mat::AUTO_STEP);
 
-            const auto time = static_cast<std::size_t>(timestamp);
+            const auto time = static_cast<std::size_t>(_timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
             const std::filesystem::path path = this->get_folder() / filename;
 
             if(image.type() == CV_8UC3)
             {
                 // convert the read image from BGR to RGB
-                cv::Mat imageRgb;
-                cv::cvtColor(image, imageRgb, cv::COLOR_BGR2RGB);
-                cv::imwrite(path.string(), imageRgb);
+                cv::Mat image_rgb;
+                cv::cvtColor(image, image_rgb, cv::COLOR_BGR2RGB);
+                cv::imwrite(path.string(), image_rgb);
             }
             else if(image.type() == CV_8UC4)
             {
                 // convert the read image from BGRA to RGBA
-                cv::Mat imageRgb;
-                cv::cvtColor(image, imageRgb, cv::COLOR_BGRA2RGBA);
-                cv::imwrite(path.string(), imageRgb);
+                cv::Mat image_rgb;
+                cv::cvtColor(image, image_rgb, cv::COLOR_BGRA2RGBA);
+                cv::imwrite(path.string(), image_rgb);
             }
             else
             {
@@ -218,8 +218,8 @@ void frame_writer::startRecord()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked  = m_data.lock();
-        const auto frameTL = std::dynamic_pointer_cast<const data::frame_tl>(locked.get_shared());
+        const auto locked   = m_data.lock();
+        const auto frame_tl = std::dynamic_pointer_cast<const data::frame_tl>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -227,30 +227,30 @@ void frame_writer::startRecord()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            frameTL
+            frame_tl
         );
 
-        if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 3)
+        if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 4)
+        else if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 1)
+        else if(frame_tl->getType() == core::type::UINT8 && frame_tl->numComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if(frameTL->getType() == core::type::UINT16 && frameTL->numComponents() == 1)
+        else if(frame_tl->getType() == core::type::UINT16 && frame_tl->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
         else
         {
             SIGHT_ERROR(
-                "This type of frame : " + frameTL->getType().name() + " with "
-                + std::to_string(frameTL->numComponents()) + " is not supported"
+                "This type of frame : " + frame_tl->getType().name() + " with "
+                + std::to_string(frame_tl->numComponents()) + " is not supported"
             );
             return;
         }
@@ -289,9 +289,9 @@ void frame_writer::toggleRecording()
 
 //------------------------------------------------------------------------------
 
-void frame_writer::record(bool state)
+void frame_writer::record(bool _state)
 {
-    if(state)
+    if(_state)
     {
         this->startRecord();
     }
@@ -303,26 +303,26 @@ void frame_writer::record(bool state)
 
 //------------------------------------------------------------------------------
 
-void frame_writer::setFormatParameter(std::string val, std::string key)
+void frame_writer::setFormatParameter(std::string _val, std::string _key)
 {
-    if(key == "format")
+    if(_key == "format")
     {
-        if(val == ".tiff"
-           || val == ".jpeg"
-           || val == ".bmp"
-           || val == ".png"
-           || val == ".jp2")
+        if(_val == ".tiff"
+           || _val == ".jpeg"
+           || _val == ".bmp"
+           || _val == ".png"
+           || _val == ".jp2")
         {
-            m_format = val;
+            m_format = _val;
         }
         else
         {
-            SIGHT_ERROR("Value : '" + val + "' is not supported");
+            SIGHT_ERROR("Value : '" + _val + "' is not supported");
         }
     }
     else
     {
-        SIGHT_ERROR("The slot key : '" + key + "' is not handled");
+        SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,15 +58,15 @@ public:
     /** Register one factory of this type  */
     static void RegisterOneFactory()
     {
-        InrImageIOFactory::Pointer metaFactory = InrImageIOFactory::New();
-        ObjectFactoryBase::RegisterFactory(metaFactory);
+        InrImageIOFactory::Pointer meta_factory = InrImageIOFactory::New();
+        ObjectFactoryBase::RegisterFactory(meta_factory);
     }
 
 protected:
 
     InrImageIOFactory();
     ~InrImageIOFactory() override;
-    void PrintSelf(std::ostream& os, Indent indent) const override;
+    void PrintSelf(std::ostream& _os, Indent _indent) const override;
 };
 
 } // end namespace itk

@@ -72,7 +72,7 @@ Q_PROPERTY(
 public:
 
     /// Constructs a scene.
-    VIZ_QT3D_API_QT GenericScene(bool _isQml = true, Qt3DCore::QNode* _parent = nullptr);
+    VIZ_QT3D_API_QT GenericScene(bool _is_qml = true, Qt3DCore::QNode* _parent = nullptr);
 
     /// Destructs a scene.
     VIZ_QT3D_API_QT ~GenericScene() override;
@@ -96,16 +96,16 @@ public:
     VIZ_QT3D_API_QT void setCamera(Qt3DRender::QCamera* _camera);
 
     /// Updates the scene's camera controller.
-    VIZ_QT3D_API_QT void setCameraController(Qt3DExtras::QAbstractCameraController* _cameraController);
+    VIZ_QT3D_API_QT void setCameraController(Qt3DExtras::QAbstractCameraController* _camera_controller);
 
     /// Updates the scene's QInputSettings object (only used in QML applications).
-    VIZ_QT3D_API_QT void SetInputSettings(Qt3DInput::QInputSettings* _inputSettings);
+    VIZ_QT3D_API_QT void SetInputSettings(Qt3DInput::QInputSettings* _input_settings);
 
     /// Updates the scene's render settings object (only used in QML applications).
-    VIZ_QT3D_API_QT void setRenderSettings(Qt3DRender::QRenderSettings* _renderSettings);
+    VIZ_QT3D_API_QT void setRenderSettings(Qt3DRender::QRenderSettings* _render_settings);
 
     /// Updates the scene's framegraph.
-    VIZ_QT3D_API_QT void setFrameGraph(FrameGraph* _frameGraph);
+    VIZ_QT3D_API_QT void setFrameGraph(FrameGraph* _frame_graph);
 
 Q_SIGNALS:
 

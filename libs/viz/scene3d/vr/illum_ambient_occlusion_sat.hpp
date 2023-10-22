@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/Texture.hpp"
+#include "viz/scene3d/texture.hpp"
 #include "viz/scene3d/vr/summed_area_table.hpp"
 
 #include <optional>
@@ -61,26 +61,26 @@ public:
 
     /// Initializes the illumination volume with the give dimensions.
     VIZ_SCENE3D_API illum_ambient_occlusion_sat(
-        std::string parentId,
-        Ogre::SceneManager* sceneManager,
-        bool ao                                    = false,
-        bool shadows                               = false,
-        std::optional<sat_parameters_t> parameters = {});
+        std::string _parent_id,
+        Ogre::SceneManager* _scene_manager,
+        bool _ao                                    = false,
+        bool _shadows                               = false,
+        std::optional<sat_parameters_t> _parameters = {});
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API ~illum_ambient_occlusion_sat();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
-    VIZ_SCENE3D_API void updateSatFromRatio(float _satSizeRatio);
+    VIZ_SCENE3D_API void updateSatFromRatio(float _sat_size_ratio);
 
     /// Recomputes the illumination volume using the current SAT.
     VIZ_SCENE3D_API void updateVolumeIllumination();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
     VIZ_SCENE3D_API void SATUpdate(
-        const Texture::sptr& _img,
+        const texture::sptr& _img,
         const viz::scene3d::transfer_function::sptr& _tf,
-        float _sampleDistance
+        float _sample_distance
     );
 
     /// Ambient occlusion / color bleeding usage setter
@@ -90,16 +90,16 @@ public:
     VIZ_SCENE3D_API void setShadows(bool _shadows);
 
     /// Shells number setter.
-    VIZ_SCENE3D_API void setNbShells(unsigned _nbShells);
+    VIZ_SCENE3D_API void setNbShells(unsigned _nb_shells);
 
     /// Shell radius setter.
-    VIZ_SCENE3D_API void setShellRadius(unsigned _shellRadius);
+    VIZ_SCENE3D_API void setShellRadius(unsigned _shell_radius);
 
     /// Cone angle setter.
-    VIZ_SCENE3D_API void setConeAngle(float _coneAngle);
+    VIZ_SCENE3D_API void setConeAngle(float _cone_angle);
 
     /// Cone samples number setter.
-    VIZ_SCENE3D_API void setSamplesAlongCone(unsigned _samplesAlongCone);
+    VIZ_SCENE3D_API void setSamplesAlongCone(unsigned _samples_along_cone);
 
     ///@brief Parameters
     [[nodiscard]] VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
@@ -112,7 +112,7 @@ private:
     /// Allocates or resize the texture used to store the illumination volume.
     void updateTexture();
 
-    /// Texture holding the illumination volume.
+    /// texture holding the illumination volume.
     Ogre::TexturePtr m_illuminationVolume;
 
     /// Sets ambient occlusion / color bleeding usage.
@@ -136,7 +136,7 @@ private:
     /// Camera used
     std::unique_ptr<Ogre::Camera> m_dummyCamera {nullptr};
 
-    /// Scene manager.
+    /// scene manager.
     Ogre::SceneManager* m_sceneManager;
 
     /// SAT used to compute the illumination volume.
@@ -167,30 +167,30 @@ inline void illum_ambient_occlusion_sat::setShadows(bool _shadows)
 
 //-----------------------------------------------------------------------------
 
-inline void illum_ambient_occlusion_sat::setNbShells(unsigned _nbShells)
+inline void illum_ambient_occlusion_sat::setNbShells(unsigned _nb_shells)
 {
-    m_parameters.shells = _nbShells;
+    m_parameters.shells = _nb_shells;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void illum_ambient_occlusion_sat::setShellRadius(unsigned _shellRadius)
+inline void illum_ambient_occlusion_sat::setShellRadius(unsigned _shell_radius)
 {
-    m_parameters.radius = _shellRadius;
+    m_parameters.radius = _shell_radius;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void illum_ambient_occlusion_sat::setConeAngle(float _coneAngle)
+inline void illum_ambient_occlusion_sat::setConeAngle(float _cone_angle)
 {
-    m_parameters.angle = _coneAngle;
+    m_parameters.angle = _cone_angle;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void illum_ambient_occlusion_sat::setSamplesAlongCone(unsigned _samplesAlongCone)
+inline void illum_ambient_occlusion_sat::setSamplesAlongCone(unsigned _samples_along_cone)
 {
-    m_parameters.samples = _samplesAlongCone;
+    m_parameters.samples = _samples_along_cone;
 }
 
 //------------------------------------------------------------------------------

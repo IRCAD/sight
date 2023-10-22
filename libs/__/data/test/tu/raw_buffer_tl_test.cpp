@@ -69,31 +69,31 @@ void raw_buffer_tl_test::pushTest()
     timeline->pushObject(data1);
     timeline->pushObject(data2);
 
-    CSPTR(data::timeline::object) dataPushed1 = timeline->getObject(time1);
-    CPPUNIT_ASSERT(data1 == dataPushed1);
+    CSPTR(data::timeline::object) data_pushed1 = timeline->getObject(time1);
+    CPPUNIT_ASSERT(data1 == data_pushed1);
 
-    CSPTR(data::timeline::object) dataPushed2 = timeline->getObject(time2);
-    CPPUNIT_ASSERT(data2 == dataPushed2);
+    CSPTR(data::timeline::object) data_pushed2 = timeline->getObject(time2);
+    CPPUNIT_ASSERT(data2 == data_pushed2);
 
-    CSPTR(data::timeline::object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
-    CSPTR(data::timeline::raw_buffer) buff       =
-        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(dataPushed1Bis);
+    CSPTR(data::timeline::object) data_pushed1_bis = timeline->getClosestObject(time1 + 1.5);
+    CSPTR(data::timeline::raw_buffer) buff         =
+        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(data_pushed1_bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
-    auto* buffData = buff->buffer<float>();
-    CPPUNIT_ASSERT_EQUAL(1.0F, buffData[0]);
-    CPPUNIT_ASSERT_EQUAL(5.2F, buffData[1]);
-    CPPUNIT_ASSERT_EQUAL(7.5F, buffData[2]);
+    auto* buff_data = buff->buffer<float>();
+    CPPUNIT_ASSERT_EQUAL(1.0F, buff_data[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2F, buff_data[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5F, buff_data[2]);
 
-    CSPTR(data::timeline::object) dataPushed2Bis = timeline->getNewerObject();
-    CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+    CSPTR(data::timeline::object) data_pushed2_bis = timeline->getNewerObject();
+    CPPUNIT_ASSERT(data2 == data_pushed2_bis);
 
-    core::hires_clock::type time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
+    core::hires_clock::type time2_pushed = timeline->getNewerTimestamp();
+    CPPUNIT_ASSERT_EQUAL(time2, time2_pushed);
 
     timeline->clearTimeline();
-    CSPTR(data::timeline::object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == nullptr);
+    CSPTR(data::timeline::object) null_obj = timeline->getNewerObject();
+    CPPUNIT_ASSERT(null_obj == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -319,34 +319,34 @@ void raw_buffer_tl_test::copyTest()
     timeline->pushObject(data2);
 
     // deep_copy test
-    auto deepTimeline = std::make_shared<data::raw_buffer_tl>();
-    CPPUNIT_ASSERT(*timeline != *deepTimeline);
+    auto deep_timeline = std::make_shared<data::raw_buffer_tl>();
+    CPPUNIT_ASSERT(*timeline != *deep_timeline);
 
-    deepTimeline->deep_copy(timeline);
-    CPPUNIT_ASSERT(*timeline == *deepTimeline);
+    deep_timeline->deep_copy(timeline);
+    CPPUNIT_ASSERT(*timeline == *deep_timeline);
 
-    CSPTR(data::timeline::object) deepDataPushed1 = deepTimeline->getObject(time1);
-    CPPUNIT_ASSERT(deepDataPushed1);
-    CPPUNIT_ASSERT(data1 != deepDataPushed1);
+    CSPTR(data::timeline::object) deep_data_pushed1 = deep_timeline->getObject(time1);
+    CPPUNIT_ASSERT(deep_data_pushed1);
+    CPPUNIT_ASSERT(data1 != deep_data_pushed1);
     CSPTR(data::timeline::raw_buffer) buff1 =
-        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(deepDataPushed1);
+        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(deep_data_pushed1);
     CPPUNIT_ASSERT(buff1);
-    CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->get_buffer(time1));
-    auto* buffData1 = buff1->buffer<float>();
-    CPPUNIT_ASSERT_EQUAL(1.0F, buffData1[0]);
-    CPPUNIT_ASSERT_EQUAL(5.2F, buffData1[1]);
-    CPPUNIT_ASSERT_EQUAL(7.5F, buffData1[2]);
+    CPPUNIT_ASSERT_EQUAL(buff1, deep_timeline->get_buffer(time1));
+    auto* buff_data1 = buff1->buffer<float>();
+    CPPUNIT_ASSERT_EQUAL(1.0F, buff_data1[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2F, buff_data1[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5F, buff_data1[2]);
 
-    CSPTR(data::timeline::object) deepDataPushed2 = deepTimeline->getObject(time2);
-    CPPUNIT_ASSERT(deepDataPushed2);
-    CPPUNIT_ASSERT(data2 != deepDataPushed2);
+    CSPTR(data::timeline::object) deep_data_pushed2 = deep_timeline->getObject(time2);
+    CPPUNIT_ASSERT(deep_data_pushed2);
+    CPPUNIT_ASSERT(data2 != deep_data_pushed2);
     CSPTR(data::timeline::raw_buffer) buff2 =
-        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(deepDataPushed2);
+        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(deep_data_pushed2);
     CPPUNIT_ASSERT(buff2);
-    auto* buffData2 = buff2->buffer<float>();
-    CPPUNIT_ASSERT_EQUAL(8.0F, buffData2[0]);
-    CPPUNIT_ASSERT_EQUAL(9.0F, buffData2[1]);
-    CPPUNIT_ASSERT_EQUAL(66.F, buffData2[2]);
+    auto* buff_data2 = buff2->buffer<float>();
+    CPPUNIT_ASSERT_EQUAL(8.0F, buff_data2[0]);
+    CPPUNIT_ASSERT_EQUAL(9.0F, buff_data2[1]);
+    CPPUNIT_ASSERT_EQUAL(66.F, buff_data2[2]);
 }
 
 } // namespace sight::data::ut

@@ -34,7 +34,7 @@ namespace sight::io::igtl::detail::converter
 const std::string MatrixConverter::s_IGTL_TYPE          = "TRANSFORM";
 const std::string MatrixConverter::s_FWDATA_OBJECT_TYPE = data::matrix4::classname();
 
-converterRegisterMacro(io::igtl::detail::converter::MatrixConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::MatrixConverter);
 
 MatrixConverter::MatrixConverter()
 = default;
@@ -46,9 +46,9 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(data::object::csptr _src) const
 {
-    data::matrix4::csptr srcMatrix = std::dynamic_pointer_cast<const data::matrix4>(src);
+    data::matrix4::csptr src_matrix = std::dynamic_pointer_cast<const data::matrix4>(_src);
     ::igtl::TransformMessage::Pointer msg;
     ::igtl::Matrix4x4 dest;
 
@@ -58,7 +58,7 @@ MatrixConverter::~MatrixConverter()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            dest[i][j] = float((*srcMatrix)(i, j));
+            dest[i][j] = float((*src_matrix)(i, j));
         }
     }
 
@@ -68,13 +68,13 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
     ::igtl::Matrix4x4 matrix;
-    auto* msg                                      = dynamic_cast< ::igtl::TransformMessage*>(src.GetPointer());
-    ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
-    data::matrix4::sptr dest                       = std::make_shared<data::matrix4>();
-    srcTransform->GetMatrix(matrix);
+    auto* msg                                       = dynamic_cast< ::igtl::TransformMessage*>(_src.GetPointer());
+    ::igtl::TransformMessage::Pointer src_transform = ::igtl::TransformMessage::Pointer(msg);
+    data::matrix4::sptr dest                        = std::make_shared<data::matrix4>();
+    src_transform->GetMatrix(matrix);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
@@ -95,7 +95,7 @@ base::sptr MatrixConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& MatrixConverter::getIgtlType() const
+std::string const& MatrixConverter::get_igtl_type() const
 {
     return MatrixConverter::s_IGTL_TYPE;
 }

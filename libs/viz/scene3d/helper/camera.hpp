@@ -60,8 +60,8 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::Vector2 convertFromWindowToViewportSpace(
         const Ogre::Camera& _camera,
-        int _renderWindowX,
-        int _renderWindowY
+        int _render_window_x,
+        int _render_window_y
     );
 
     /**
@@ -72,7 +72,7 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::Vector3 convertScreenSpaceToViewSpace(
         const Ogre::Camera& _camera,
-        const Ogre::Vector3& _screenPos
+        const Ogre::Vector3& _screen_pos
     );
 
     /**
@@ -83,7 +83,7 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::Vector3 convertNDCToViewSpace(
         const Ogre::Camera& _camera,
-        const Ogre::Vector3& _ndcPos
+        const Ogre::Vector3& _ndc_pos
     );
 
     /**
@@ -94,7 +94,7 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::Vector2 convertWorldSpaceToScreenSpace(
         const Ogre::Camera& _camera,
-        const Ogre::Vector3& _worldPos
+        const Ogre::Vector3& _world_pos
     );
 };
 

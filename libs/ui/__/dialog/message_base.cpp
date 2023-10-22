@@ -25,7 +25,7 @@
 namespace sight::ui::dialog
 {
 
-const message_base::FactoryRegistryKeyType message_base::REGISTRY_KEY = "::ui::dialog::message";
+const message_base::factory_registry_key_t message_base::REGISTRY_KEY = "::ui::dialog::message";
 
 message_base::message_base()
 = default;

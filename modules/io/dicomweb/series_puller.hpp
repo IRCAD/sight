@@ -77,10 +77,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_puller, sight::service::controller);
 
-    typedef data::series_set::container_type DicomSeriesContainerType;
+    typedef data::series_set::container_type dicom_series_container_t;
     typedef std::vector<std::string> InstanceUIDContainerType;
-    typedef std::map<std::string, unsigned int> InstanceCountMapType;
-    typedef std::map<std::string, WPTR(data::dicom_series)> DicomSeriesMapType;
+    typedef std::map<std::string, unsigned int> instance_count_map_t;
+    typedef std::map<std::string, WPTR(data::dicom_series)> dicom_series_map_t;
 
     /**
      * @brief Constructor
@@ -115,13 +115,13 @@ private:
      * @brief Read local series.
      * @param[in] selectedSeries Series to read
      */
-    void readLocalSeries(DicomSeriesContainerType selectedSeries);
+    void readLocalSeries(dicom_series_container_t _selected_series);
 
     /**
      * @brief Display an error message.
      * @param[in] message Error message to display
      */
-    static void displayErrorMessage(const std::string& message);
+    static void displayErrorMessage(const std::string& _message);
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;
@@ -151,7 +151,7 @@ private:
     std::size_t m_instanceCount {};
 
     /// Map of Dicom series being pulled
-    DicomSeriesMapType m_pullingDicomSeriesMap;
+    dicom_series_map_t m_pullingDicomSeriesMap;
 
     /// Server hostname preference key
     std::string m_serverHostnameKey;

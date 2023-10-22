@@ -40,7 +40,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void test(bool useSystemClock);
+    void test(bool _use_system_clock);
 
     void systemClockTest();
     void highResClockTest();

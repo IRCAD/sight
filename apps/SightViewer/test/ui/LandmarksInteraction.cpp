@@ -43,315 +43,315 @@ namespace sight::sightviewer::test::ui
 
 void LandmarksInteraction::test()
 {
-    namespace helper = sight::ui::testCore::helper;
+    namespace helper = sight::ui::test_core::helper;
     using Select     = helper::Select;
 
-    const std::string testName  = "sightViewerLandmarksInteractionTest";
-    const std::string imageName = testName + ".png";
-    const std::filesystem::path firstSnapshotPath(sight::ui::testCore::Tester::getImageOutputPath()
-                                                  / (testName + "_1.png"));
-    std::filesystem::remove(firstSnapshotPath);
-    const std::filesystem::path secondSnapshotPath(sight::ui::testCore::Tester::getImageOutputPath()
-                                                   / (testName + "_2.png"));
-    std::filesystem::remove(secondSnapshotPath);
-    const std::filesystem::path firstReferencePath(utest_data::Data::dir() / "sight/ui/SightViewer"
-                                                   / (testName + "_1.png"));
-    const std::filesystem::path secondReferencePath(utest_data::Data::dir() / "sight/ui/SightViewer"
-                                                    / (testName + "_2.png"));
+    const std::string test_name  = "sightViewerLandmarksInteractionTest";
+    const std::string image_name = test_name + ".png";
+    const std::filesystem::path first_snapshot_path(sight::ui::test_core::Tester::getImageOutputPath()
+                                                    / (test_name + "_1.png"));
+    std::filesystem::remove(first_snapshot_path);
+    const std::filesystem::path second_snapshot_path(sight::ui::test_core::Tester::getImageOutputPath()
+                                                     / (test_name + "_2.png"));
+    std::filesystem::remove(second_snapshot_path);
+    const std::filesystem::path first_reference_path(utest_data::Data::dir() / "sight/ui/SightViewer"
+                                                     / (test_name + "_1.png"));
+    const std::filesystem::path second_reference_path(utest_data::Data::dir() / "sight/ui/SightViewer"
+                                                      / (test_name + "_2.png"));
 
     start(
-        testName,
-        [&](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "Nifti or Inr images",
                 utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
             {
-                auto bt = tester.addInBacktrace("Create three landmarks groups");
-                helper::Button::push(tester, "toolBarView/Show/hide volume");
-                helper::Button::push(tester, "parameterToolBarView/Show landmarks manager");
+                auto bt = _tester.addInBacktrace("Create three landmarks groups");
+                helper::Button::push(_tester, "toolBarView/Show/hide volume");
+                helper::Button::push(_tester, "parameterToolBarView/Show landmarks manager");
 
-                helper::Button::push(tester, "landmarksParameterSrv/New Group");
-                helper::Button::push(tester, "landmarksParameterSrv/New Group");
-                helper::Button::push(tester, "landmarksParameterSrv/New Group");
+                helper::Button::push(_tester, "landmarksParameterSrv/New Group");
+                helper::Button::push(_tester, "landmarksParameterSrv/New Group");
+                helper::Button::push(_tester, "landmarksParameterSrv/New Group");
 
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be 3 groups in the landmarks widget",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItemCount() == 3;
+                    return _obj->topLevelItemCount() == 3;
                 });
-                tester.yields(
+                _tester.yields(
                     "First group color button",
-                    [](QObject* old)
+                    [](QObject* _old)
                 {
-                    auto& tree = dynamic_cast<QTreeWidget&>(*old);
+                    auto& tree = dynamic_cast<QTreeWidget&>(*_old);
                     return tree.itemWidget(tree.topLevelItem(0), 1);
                 });
-                helper::ColorParameter::select(tester, Select::current(), {255, 0, 0});
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.yields(
+                helper::ColorParameter::select(_tester, Select::current(), {255, 0, 0});
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.yields(
                     "Second group color button",
-                    [](QObject* old)
+                    [](QObject* _old)
                 {
-                    auto& tree = dynamic_cast<QTreeWidget&>(*old);
+                    auto& tree = dynamic_cast<QTreeWidget&>(*_old);
                     return tree.itemWidget(tree.topLevelItem(1), 1);
                 });
-                helper::ColorParameter::select(tester, Select::current(), {0, 255, 0});
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.yields(
+                helper::ColorParameter::select(_tester, Select::current(), {0, 255, 0});
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.yields(
                     "Third group color button",
-                    [](QObject* old)
+                    [](QObject* _old)
                 {
-                    auto& tree = dynamic_cast<QTreeWidget&>(*old);
+                    auto& tree = dynamic_cast<QTreeWidget&>(*_old);
                     return tree.itemWidget(tree.topLevelItem(2), 1);
                 });
-                helper::ColorParameter::select(tester, Select::current(), {0, 0, 255});
+                helper::ColorParameter::select(_tester, Select::current(), {0, 0, 255});
             }
 
             {
-                auto bt = tester.addInBacktrace("Place three landmarks from the first group");
-                helper::Button::push(tester, "toolBarView/Enable landmarks edit mode");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doSomethingAsynchronously<QTreeWidget*>(
-                    [](QTreeWidget* obj)
+                auto bt = _tester.addInBacktrace("Place three landmarks from the first group");
+                helper::Button::push(_tester, "toolBarView/Enable landmarks edit mode");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doSomethingAsynchronously<QTreeWidget*>(
+                    [](QTreeWidget* _obj)
                 {
-                    obj->setCurrentItem(obj->topLevelItem(0));
+                    _obj->setCurrentItem(_obj->topLevelItem(0));
                 });
-                helper::Slider::set(tester, "landmarksParameterSrv/Size", 100);
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>())
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>())
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>()) + QPoint(-150, -150)
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>()) + QPoint(-150, -150)
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>()) + QPoint(0, -150)
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>()) + QPoint(0, -150)
                     )
                 );
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be three landmarks in the first group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(0)->childCount() == 3;
+                    return _obj->topLevelItem(0)->childCount() == 3;
                 });
             }
 
             {
-                auto bt = tester.addInBacktrace("Place three landmarks from the second group");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doSomethingAsynchronously<QTreeWidget*>(
-                    [](QTreeWidget* obj)
+                auto bt = _tester.addInBacktrace("Place three landmarks from the second group");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doSomethingAsynchronously<QTreeWidget*>(
+                    [](QTreeWidget* _obj)
                 {
-                    obj->setCurrentItem(obj->topLevelItem(1));
+                    _obj->setCurrentItem(_obj->topLevelItem(1));
                 });
-                helper::Slider::set(tester, "landmarksParameterSrv/Size", 100);
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>()) + QPoint(150, -150)
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>()) + QPoint(150, -150)
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>()) + QPoint(-150, 0)
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>()) + QPoint(-150, 0)
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(tester.get<QWidget*>()) + QPoint(150, 0)
+                        sight::ui::test_core::Tester::centerOf(_tester.get<QWidget*>()) + QPoint(150, 0)
                     )
                 );
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be three landmarks in the second group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(1)->childCount() == 3;
+                    return _obj->topLevelItem(1)->childCount() == 3;
                 });
             }
 
             {
-                auto bt = tester.addInBacktrace("Place three landmarks from the third group");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doSomethingAsynchronously<QTreeWidget*>(
-                    [](QTreeWidget* obj)
+                auto bt = _tester.addInBacktrace("Place three landmarks from the third group");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doSomethingAsynchronously<QTreeWidget*>(
+                    [](QTreeWidget* _obj)
                 {
-                    obj->setCurrentItem(obj->topLevelItem(2));
+                    _obj->setCurrentItem(_obj->topLevelItem(2));
                 });
-                helper::Slider::set(tester, "landmarksParameterSrv/Size", 100);
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(-150, 150)
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(0, 150)
                     )
                 );
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(150, 150)
                     )
                 );
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be three landmarks in the third group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(2)->childCount() == 3;
+                    return _obj->topLevelItem(2)->childCount() == 3;
                 });
             }
 
-            saveSnapshot(tester, firstSnapshotPath);
-            compareImages(firstSnapshotPath, firstReferencePath);
+            saveSnapshot(_tester, first_snapshot_path);
+            compareImages(first_snapshot_path, first_reference_path);
 
             {
-                auto bt = tester.addInBacktrace("Remove three landmarks from the first group");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                auto bt = _tester.addInBacktrace("Remove three landmarks from the first group");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(-150, -150)
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(0, -150)
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be no landmarks in the first group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(0)->childCount() == 0;
+                    return _obj->topLevelItem(0)->childCount() == 0;
                 });
             }
 
             {
-                auto bt = tester.addInBacktrace("Remove two landmarks from the second group");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                auto bt = _tester.addInBacktrace("Remove two landmarks from the second group");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(150, 0)
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(-150, 0)
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be one landmark in the second group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(1)->childCount() == 1;
+                    return _obj->topLevelItem(1)->childCount() == 1;
                 });
             }
 
             {
-                auto bt = tester.addInBacktrace("Remove one landmark from the third group");
-                tester.take("3D scene", "sceneSrv");
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
+                auto bt = _tester.addInBacktrace("Remove one landmark from the third group");
+                _tester.take("3D scene", "sceneSrv");
+                _tester.interact(
+                    std::make_unique<sight::ui::test_core::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::testCore::Tester::centerOf(
-                            tester.get<QWidget*>()
+                        sight::ui::test_core::Tester::centerOf(
+                            _tester.get<QWidget*>()
                         )
                         + QPoint(150, 150)
                     )
                 );
-                helper::Button::push(tester, "landmarksAdp/binButton");
-                tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
-                tester.doubt<QTreeWidget*>(
+                helper::Button::push(_tester, "landmarksAdp/binButton");
+                _tester.take("Landmarks tree widget", "landmarksParameterSrv/treeWidget");
+                _tester.doubt<QTreeWidget*>(
                     "There must be two landmarks in the third group",
-                    [](QTreeWidget* obj)
+                    [](QTreeWidget* _obj)
                 {
-                    return obj->topLevelItem(2)->childCount() == 2;
+                    return _obj->topLevelItem(2)->childCount() == 2;
                 });
             }
 
-            saveSnapshot(tester, secondSnapshotPath);
-            compareImages(secondSnapshotPath, secondReferencePath);
+            saveSnapshot(_tester, second_snapshot_path);
+            compareImages(second_snapshot_path, second_reference_path);
         },
         true
     );

@@ -61,20 +61,20 @@ void texture_selector::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    qt_container->getQtContainer()->setObjectName(service_id);
 
     m_loadButton = new QPushButton(QString("Load texture"));
-    m_loadButton->setObjectName(serviceID + "/" + m_loadButton->text());
+    m_loadButton->setObjectName(service_id + "/" + m_loadButton->text());
     m_loadButton->setToolTip(QString("Selected organ's texture"));
     m_loadButton->setMinimumSize(m_loadButton->sizeHint());
 
     m_deleteButton = new QPushButton(QString("Remove texture"));
-    m_deleteButton->setObjectName(serviceID + "/" + m_deleteButton->text());
+    m_deleteButton->setObjectName(service_id + "/" + m_deleteButton->text());
     m_deleteButton->setToolTip(QString("Remove organ's texture"));
     m_deleteButton->setMinimumSize(m_deleteButton->sizeHint());
 
@@ -82,8 +82,8 @@ void texture_selector::starting()
     layout->addWidget(m_loadButton, 0);
     layout->addWidget(m_deleteButton, 0);
 
-    qtContainer->setLayout(layout);
-    qtContainer->setEnabled(true);
+    qt_container->setLayout(layout);
+    qt_container->setEnabled(true);
 
     QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton()));
     QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButton()));
@@ -121,10 +121,10 @@ void texture_selector::onLoadButton()
     data::material::sptr material = reconstruction->getMaterial();
     data::image::sptr image       = material->getDiffuseTexture();
 
-    bool existingTexture = (image != nullptr);
+    bool existing_texture = (image != nullptr);
 
     // We have to instantiate a new image if necessary
-    if(!existingTexture)
+    if(!existing_texture)
     {
         image = std::make_shared<data::image>();
         material->setDiffuseTexture(image);
@@ -140,14 +140,14 @@ void texture_selector::onLoadButton()
     sight::service::remove(srv);
 
     // If we didn't have to create a new texture, we can notify the associated image
-    if(existingTexture)
+    if(existing_texture)
     {
-        auto sig = image->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig->emit();
     }
     else
     {
-        auto sig = material->signal<data::material::AddedTextureSignalType>(
+        auto sig = material->signal<data::material::added_texture_signal_t>(
             data::material::ADDED_TEXTURE_SIG
         );
         sig->emit(image);
@@ -167,7 +167,7 @@ void texture_selector::onDeleteButton()
     if(image)
     {
         material->setDiffuseTexture(nullptr);
-        auto sig = material->signal<data::material::RemovedTextureSignalType>(
+        auto sig = material->signal<data::material::removed_texture_signal_t>(
             data::material::REMOVED_TEXTURE_SIG
         );
         sig->emit(image);

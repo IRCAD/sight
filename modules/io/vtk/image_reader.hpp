@@ -79,7 +79,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Configure the image path with a dialogBox.
@@ -100,9 +100,9 @@ public:
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
     MODULE_IO_VTK_API static bool loadImage(
-        const std::filesystem::path& vtkFile,
-        std::shared_ptr<data::image> img,
-        const SPTR(JobCreatedSignalType)& sigJobCreated
+        const std::filesystem::path& _vtk_file,
+        std::shared_ptr<data::image> _img,
+        const SPTR(job_created_signal_t)& _sig_job_created
     );
 
 protected:
@@ -134,7 +134,7 @@ private:
     /// Image path, location of image on filesystem.
     std::filesystem::path m_fsImgPath;
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 };
 
 } // namespace sight::module::io::vtk

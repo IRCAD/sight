@@ -29,8 +29,8 @@
 namespace sight::core::com::exception
 {
 
-no_worker::no_worker(const std::string& err) :
-    core::exception(err)
+no_worker::no_worker(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

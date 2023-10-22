@@ -34,14 +34,14 @@ void color::createConfig(core::tools::object::sptr _obj)
     const data::color::sptr color = std::dynamic_pointer_cast<data::color>(_obj);
     SIGHT_ASSERT("color does not exist.", color);
 
-    const auto hexaColor = m_cfg.get<std::string>("value");
+    const auto hexa_color = m_cfg.get<std::string>("value");
     SIGHT_ASSERT(
         "color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " << hexaColor,
-        hexaColor[0] == '#'
-        && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        "hexadecimal digits. Given color: " << hexa_color,
+        hexa_color[0] == '#'
+        && (hexa_color.length() == 7 || hexa_color.length() == 9)
     );
-    color->setRGBA(hexaColor);
+    color->setRGBA(hexa_color);
 }
 
 //------------------------------------------------------------------------------

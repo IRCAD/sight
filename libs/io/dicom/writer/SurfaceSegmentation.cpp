@@ -60,12 +60,12 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 void SurfaceSegmentation::write()
 {
-    const data::model_series::csptr srcModelSeries        = this->getConcreteObject();
-    const data::dicom_series::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
+    const data::model_series::csptr src_model_series        = this->getConcreteObject();
+    const data::dicom_series::csptr associated_dicom_series = src_model_series->getDicomReference();
 
-    SIGHT_ASSERT("sight::data::model_series not instanced", srcModelSeries);
+    SIGHT_ASSERT("sight::data::model_series not instanced", src_model_series);
 
-    if(!associatedDicomSeries)
+    if(!associated_dicom_series)
     {
         m_logger->critical("Unable to retrieve information from the associated image series.");
         m_writerJob->done();
@@ -74,67 +74,67 @@ void SurfaceSegmentation::write()
     }
 
     // Verify matching Patient's names
-    const std::string& modelPatientName = srcModelSeries->getPatientName();
-    const std::string& imagePatientName = associatedDicomSeries->getPatientName();
-    if(modelPatientName != imagePatientName)
+    const std::string& model_patient_name = src_model_series->getPatientName();
+    const std::string& image_patient_name = associated_dicom_series->getPatientName();
+    if(model_patient_name != image_patient_name)
     {
         m_logger->warning(
-            "The patient's name of the model (\"" + modelPatientName
-            + "\"  does not match the patient's name of the image (\"" + imagePatientName + "\" ."
+            "The patient's name of the model (\"" + model_patient_name
+            + "\"  does not match the patient's name of the image (\"" + image_patient_name + "\" ."
         );
     }
 
     // Verify matching Patient ID
-    const std::string& modelPatientID = srcModelSeries->getPatientID();
-    const std::string& imagePatientID = associatedDicomSeries->getPatientID();
-    if(modelPatientID != imagePatientID)
+    const std::string& model_patient_id = src_model_series->getPatientID();
+    const std::string& image_patient_id = associated_dicom_series->getPatientID();
+    if(model_patient_id != image_patient_id)
     {
         m_logger->warning(
-            "The patient ID of the model (\"" + modelPatientID
-            + "\"  does not match the patient ID of the image (\"" + imagePatientID + "\" ."
+            "The patient ID of the model (\"" + model_patient_id
+            + "\"  does not match the patient ID of the image (\"" + image_patient_id + "\" ."
         );
     }
 
     // Verify matching Study Instance UID
-    const std::string& modelStudyInstanceUID = srcModelSeries->getStudyInstanceUID();
-    const std::string& imageStudyInstanceUID = associatedDicomSeries->getStudyInstanceUID();
-    if(modelStudyInstanceUID != imageStudyInstanceUID)
+    const std::string& model_study_instance_uid = src_model_series->getStudyInstanceUID();
+    const std::string& image_study_instance_uid = associated_dicom_series->getStudyInstanceUID();
+    if(model_study_instance_uid != image_study_instance_uid)
     {
         m_logger->warning(
-            "The study instance UID of the model (\"" + modelStudyInstanceUID
-            + "\"  does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\" ."
+            "The study instance UID of the model (\"" + model_study_instance_uid
+            + "\"  does not match the study instance UID of the image (\"" + image_study_instance_uid + "\" ."
         );
     }
 
     // Complete Model Series with information from associated image Series
-    const data::model_series::sptr modelSeries = std::make_shared<data::model_series>();
-    modelSeries->shallow_copy(srcModelSeries);
+    const data::model_series::sptr model_series = std::make_shared<data::model_series>();
+    model_series->shallow_copy(src_model_series);
 
     // Copy Study and Patient
     /// @todo verify this is required since we already have the same patient ID and same study uid, which means we
     /// certainly already have the same data...
-    modelSeries->copyPatientModule(associatedDicomSeries);
-    modelSeries->copyGeneralStudyModule(associatedDicomSeries);
-    modelSeries->copyPatientStudyModule(associatedDicomSeries);
+    model_series->copyPatientModule(associated_dicom_series);
+    model_series->copyGeneralStudyModule(associated_dicom_series);
+    model_series->copyPatientStudyModule(associated_dicom_series);
 
-    SPTR(io::dicom::container::DicomInstance) associatedDicomInstance =
-        std::make_shared<io::dicom::container::DicomInstance>(associatedDicomSeries, m_logger);
+    SPTR(io::dicom::container::DicomInstance) associated_dicom_instance =
+        std::make_shared<io::dicom::container::DicomInstance>(associated_dicom_series, m_logger);
 
-    SPTR(io::dicom::container::DicomInstance) modelInstance =
-        std::make_shared<io::dicom::container::DicomInstance>(modelSeries, m_logger, false);
+    SPTR(io::dicom::container::DicomInstance) model_instance =
+        std::make_shared<io::dicom::container::DicomInstance>(model_series, m_logger, false);
 
     m_writerJob->done_work(0);
-    m_writerJob->set_total_work_units(modelSeries->getReconstructionDB().size());
+    m_writerJob->set_total_work_units(model_series->getReconstructionDB().size());
 
-    io::dicom::writer::iod::SurfaceSegmentationIOD iod(modelInstance,
-                                                       associatedDicomInstance,
+    io::dicom::writer::iod::SurfaceSegmentationIOD iod(model_instance,
+                                                       associated_dicom_instance,
                                                        this->get_file(),
                                                        m_logger,
                                                        m_writerJob->progress_callback(),
                                                        m_writerJob->cancel_requested_callback());
     try
     {
-        iod.write(modelSeries);
+        iod.write(model_series);
     }
     catch(const io::dicom::exception::Failed& e)
     {

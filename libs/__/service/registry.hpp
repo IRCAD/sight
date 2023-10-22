@@ -33,41 +33,41 @@ namespace sight::service
 using service_vector_t = std::set<SPTR(service::base)>;
 
 /// Returns a list of all registered services
-SERVICE_API std::string getRegistryInformation();
+SERVICE_API std::string get_registry_information();
 
 /// Returns a container with all registered services of a given type
-SERVICE_API const service::service_vector_t& getServices();
+SERVICE_API const service::service_vector_t& get_services();
 
 /// Returns a container with all registered services of a given type
-SERVICE_API service_vector_t getServices(const std::string& serviceType);
+SERVICE_API service_vector_t get_services(const std::string& _service_type);
 
 /// Returns a container with all registered services of a given template type
 template<class SERVICE>
-std::set<SPTR(SERVICE)> getServices();
+std::set<SPTR(SERVICE)> get_services();
 
 /**
  * @brief Register the service alone
  *
  * @param service Service to add to the OSR
  */
-SERVICE_API void registerService(SPTR(service::base) service);
+SERVICE_API void register_service(SPTR(service::base) _service);
 
 /**
  * @brief Remove the service (service) from the m_container
  *
  * @param service Service whose key should be removed
  */
-SERVICE_API void unregisterService(SPTR(service::base) service);
+SERVICE_API void unregister_service(SPTR(service::base) _service);
 
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::set<SPTR(SERVICE)> getServices()
+std::set<SPTR(SERVICE)> get_services()
 {
-    const auto allServices = getServices();
+    const auto all_services = get_services();
     std::set<SPTR(SERVICE)> services;
 
-    for(const auto& srv : allServices)
+    for(const auto& srv : all_services)
     {
         SPTR(SERVICE) service = std::dynamic_pointer_cast<SERVICE>(srv);
         if(service)

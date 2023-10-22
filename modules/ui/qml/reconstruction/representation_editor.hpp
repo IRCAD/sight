@@ -104,7 +104,7 @@ public:
 
 Q_SIGNALS:
 
-    void materialChanged(int representationMode, int shadingMode, int optionMode);
+    void materialChanged(int _representation_mode, int _shading_mode, int _option_mode);
 
 protected:
 
@@ -134,11 +134,11 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the organ representation changed, it will update the reconstruction Material
-    void onChangeRepresentation(int id);
+    void onChangeRepresentation(int _id);
     /// Called when the organ shading changed, it will update the reconstruction Material
-    void onChangeShading(int id);
+    void onChangeShading(int _id);
     /// Called when the organ normal option changed, it will update the reconstruction Material
-    void onShowNormals(int state);
+    void onShowNormals(int _state);
 
 private:
 

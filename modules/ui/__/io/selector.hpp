@@ -87,11 +87,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(selector, sight::ui::dialog_editor);
 
-    typedef core::com::signal<void (core::jobs::base::sptr)> JobCreatedSignalType;
-    typedef core::com::signal<void ()> JobFailedSignalType;
-    typedef core::com::signal<void ()> JobSucceededSignalType;
+    typedef core::com::signal<void (core::jobs::base::sptr)> job_created_signal_t;
+    typedef core::com::signal<void ()> job_failed_signal_t;
+    typedef core::com::signal<void ()> job_succeeded_signal_t;
 
-    typedef core::com::slot<void (core::jobs::base::sptr)> ForwardJobSlotType;
+    typedef core::com::slot<void (core::jobs::base::sptr)> forward_job_slot_t;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -135,7 +135,7 @@ protected:
 
 private:
 
-    void forwardJob(core::jobs::base::sptr job);
+    void forwardJob(core::jobs::base::sptr _job);
 
     /// Configure the service as writer or reader.
     IOMode m_mode {READER_MODE};
@@ -156,11 +156,11 @@ private:
     /// classname of the read object (used if the data is set as output instead of inout)
     std::string m_dataClassname;
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
-    SPTR(JobFailedSignalType) m_sigJobFailed;
-    SPTR(JobSucceededSignalType) m_sigJobSucceeded;
+    SPTR(job_created_signal_t) m_sigJobCreated;
+    SPTR(job_failed_signal_t) m_sigJobFailed;
+    SPTR(job_succeeded_signal_t) m_sigJobSucceeded;
 
-    SPTR(ForwardJobSlotType) m_slotForwardJob;
+    SPTR(forward_job_slot_t) m_slotForwardJob;
 
     data::ptr<data::object, data::Access::inout> m_data {this, sight::io::service::s_DATA_KEY};
 };

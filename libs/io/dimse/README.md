@@ -32,7 +32,7 @@ the retriever will receive the Series.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_dimse)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_dimse)
 
 ```
 

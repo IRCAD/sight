@@ -220,7 +220,7 @@
             <sync>true</sync>
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::render" >
             <scene renderMode="sync">

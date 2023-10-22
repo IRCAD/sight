@@ -36,18 +36,18 @@ std::tuple<cv::Mat, cv::Size, cv::Mat> camera::copyToCv(const data::camera::cspt
     intrinsic.at<double>(0, 2) = _src->getCx();
     intrinsic.at<double>(1, 2) = _src->getCy();
 
-    cv::Size imgSize;
-    imgSize.width  = static_cast<int>(_src->getWidth());
-    imgSize.height = static_cast<int>(_src->getHeight());
+    cv::Size img_size;
+    img_size.width  = static_cast<int>(_src->getWidth());
+    img_size.height = static_cast<int>(_src->getHeight());
 
-    cv::Mat distortionCoeffs = cv::Mat::zeros(5, 1, CV_64F);
+    cv::Mat distortion_coeffs = cv::Mat::zeros(5, 1, CV_64F);
 
     for(std::size_t i = 0 ; i < 5 ; ++i)
     {
-        distortionCoeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
+        distortion_coeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
     }
 
-    return std::make_tuple(intrinsic, imgSize, distortionCoeffs);
+    return std::make_tuple(intrinsic, img_size, distortion_coeffs);
 }
 
 } //namespace sight::io::opencv

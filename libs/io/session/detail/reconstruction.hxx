@@ -35,7 +35,7 @@ namespace sight::io::session::detail::reconstruction
 
 constexpr static auto s_IsVisible {"IsVisible"};
 constexpr static auto s_OrganName {"OrganName"};
-constexpr static auto s_StructureType {"StructureType"};
+constexpr static auto s_StructureType {"structure_t"};
 constexpr static auto s_Material {"Material"};
 constexpr static auto s_Image {"image"};
 constexpr static auto s_Mesh {"Mesh"};
@@ -45,55 +45,55 @@ constexpr static auto s_ComputedMaskVolume {"ComputedMaskVolume"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto reconstruction = helper::safe_cast<data::reconstruction>(object);
+    const auto reconstruction = helper::safe_cast<data::reconstruction>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::reconstruction>(tree, 1);
+    helper::write_version<data::reconstruction>(_tree, 1);
 
     // Serialize attributes
-    tree.put(s_IsVisible, reconstruction->getIsVisible());
-    helper::write_string(tree, s_OrganName, reconstruction->getOrganName());
-    helper::write_string(tree, s_StructureType, reconstruction->getStructureType());
+    _tree.put(s_IsVisible, reconstruction->getIsVisible());
+    helper::write_string(_tree, s_OrganName, reconstruction->getOrganName());
+    helper::write_string(_tree, s_StructureType, reconstruction->get_structure_type());
 
-    children[s_Material] = reconstruction->getMaterial();
-    children[s_Image]    = reconstruction->getImage();
-    children[s_Mesh]     = reconstruction->getMesh();
+    _children[s_Material] = reconstruction->getMaterial();
+    _children[s_Image]    = reconstruction->getImage();
+    _children[s_Mesh]     = reconstruction->getMesh();
 
-    tree.put(s_ComputedMaskVolume, reconstruction->getComputedMaskVolume());
+    _tree.put(s_ComputedMaskVolume, reconstruction->getComputedMaskVolume());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::reconstruction::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto reconstruction = helper::cast_or_create<data::reconstruction>(object);
+    auto reconstruction = helper::cast_or_create<data::reconstruction>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::reconstruction>(tree, 0, 1);
+    helper::read_version<data::reconstruction>(_tree, 0, 1);
 
     // Deserialize attributes
-    reconstruction->setIsVisible(tree.get<bool>(s_IsVisible));
-    reconstruction->setOrganName(helper::read_string(tree, s_OrganName));
-    reconstruction->setStructureType(helper::read_string(tree, s_StructureType));
+    reconstruction->setIsVisible(_tree.get<bool>(s_IsVisible));
+    reconstruction->setOrganName(helper::read_string(_tree, s_OrganName));
+    reconstruction->set_structure_type(helper::read_string(_tree, s_StructureType));
 
-    reconstruction->setMaterial(std::dynamic_pointer_cast<data::material>(children.at(s_Material)));
-    reconstruction->setImage(std::dynamic_pointer_cast<data::image>(children.at(s_Image)));
-    reconstruction->setMesh(std::dynamic_pointer_cast<data::mesh>(children.at(s_Mesh)));
+    reconstruction->setMaterial(std::dynamic_pointer_cast<data::material>(_children.at(s_Material)));
+    reconstruction->setImage(std::dynamic_pointer_cast<data::image>(_children.at(s_Image)));
+    reconstruction->setMesh(std::dynamic_pointer_cast<data::mesh>(_children.at(s_Mesh)));
 
-    reconstruction->setComputedMaskVolume(tree.get<double>(s_ComputedMaskVolume));
+    reconstruction->setComputedMaskVolume(_tree.get<double>(s_ComputedMaskVolume));
 
     return reconstruction;
 }

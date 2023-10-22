@@ -66,24 +66,24 @@ void SeriesSetReaderTest::tearDown()
 
 void SeriesSetReaderTest::testSeriesSetReader()
 {
-    const std::filesystem::path imageFile = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
-    const std::filesystem::path meshFile  = utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk";
+    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path mesh_file  = utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imageFile.string() + "' does not exist",
-        std::filesystem::exists(imageFile)
+        "The file '" + image_file.string() + "' does not exist",
+        std::filesystem::exists(image_file)
     );
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + meshFile.string() + "' does not exist",
-        std::filesystem::exists(meshFile)
+        "The file '" + mesh_file.string() + "' does not exist",
+        std::filesystem::exists(mesh_file)
     );
 
-    service::config_t readerSrvCfg;
-    readerSrvCfg.add("file", imageFile.string());
-    service::config_t file2Cfg;
-    readerSrvCfg.add("file", meshFile.string());
-    readerSrvCfg.add("file", meshFile.string());
+    service::config_t reader_srv_cfg;
+    reader_srv_cfg.add("file", image_file.string());
+    service::config_t file2_cfg;
+    reader_srv_cfg.add("file", mesh_file.string());
+    reader_srv_cfg.add("file", mesh_file.string());
 
     auto series_set = std::make_shared<data::series_set>();
 
@@ -92,7 +92,7 @@ void SeriesSetReaderTest::testSeriesSetReader()
     CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
 
     srv->set_inout(series_set, "data");
-    srv->set_config(readerSrvCfg);
+    srv->set_config(reader_srv_cfg);
     srv->configure();
     srv->start().wait();
     srv->update().wait();
@@ -100,42 +100,42 @@ void SeriesSetReaderTest::testSeriesSetReader()
     service::remove(srv);
 
     // Data expected
-    const data::image::Spacing spacingExpected = {1.732, 1.732, 3.2};
-    const data::image::Origin originExpected   = {34.64, 86.6, 56};
-    const data::image::Size sizeExpected       = {230, 170, 58};
+    const data::image::Spacing spacing_expected = {1.732, 1.732, 3.2};
+    const data::image::Origin origin_expected   = {34.64, 86.6, 56};
+    const data::image::Size size_expected       = {230, 170, 58};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
-    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
-    data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
-    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imageSeries);
-    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
+    data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
+    data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
+    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", image_series);
+    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
 
     // Data read.
-    const data::image::Spacing spacingRead = imageSeries->getSpacing();
-    const data::image::Spacing originRead  = imageSeries->getOrigin();
-    const data::image::Size sizeRead       = imageSeries->size();
+    const data::image::Spacing spacing_read = image_series->getSpacing();
+    const data::image::Spacing origin_read  = image_series->getOrigin();
+    const data::image::Size size_read       = image_series->size();
 
-    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
-    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
-    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size());
+    CPPUNIT_ASSERT_EQUAL(spacing_expected.size(), spacing_read.size());
+    CPPUNIT_ASSERT_EQUAL(origin_expected.size(), origin_read.size());
+    CPPUNIT_ASSERT_EQUAL(size_expected.size(), size_read.size());
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on z", spacingExpected[2], spacingRead[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacing_expected[0], spacing_read[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacing_expected[1], spacing_read[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on z", spacing_expected[2], spacing_read[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", originExpected[0], originRead[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", originExpected[1], originRead[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", originExpected[2], originRead[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", origin_expected[0], origin_read[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", origin_expected[1], origin_read[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", origin_expected[2], origin_read[2], epsilon);
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", size_expected[0], size_read[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", size_expected[1], size_read[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", size_expected[2], size_read[2]);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), modelSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), model_series->getReconstructionDB().size());
 
-    data::reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
-    data::reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
+    data::reconstruction::sptr rec1 = model_series->getReconstructionDB()[0];
+    data::reconstruction::sptr rec2 = model_series->getReconstructionDB()[1];
     data::mesh::sptr mesh1          = rec1->getMesh();
     data::mesh::sptr mesh2          = rec2->getMesh();
 
@@ -149,26 +149,26 @@ void SeriesSetReaderTest::testSeriesSetReader()
 
 void SeriesSetReaderTest::testMergeSeriesSetReader()
 {
-    const std::filesystem::path imageFile = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imageFile.string() + "' does not exist",
-        std::filesystem::exists(imageFile)
+        "The file '" + image_file.string() + "' does not exist",
+        std::filesystem::exists(image_file)
     );
 
-    service::config_t readerSrvCfg;
-    readerSrvCfg.add("file", imageFile.string());
+    service::config_t reader_srv_cfg;
+    reader_srv_cfg.add("file", image_file.string());
 
-    auto imageSeries = std::make_shared<data::image_series>();
-    auto series_set  = std::make_shared<data::series_set>();
-    series_set->push_back(imageSeries);
+    auto image_series = std::make_shared<data::image_series>();
+    auto series_set   = std::make_shared<data::series_set>();
+    series_set->push_back(image_series);
 
     service::base::sptr srv = service::add("sight::module::io::vtk::series_set_reader");
 
     CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
 
     srv->set_inout(series_set, "data");
-    srv->set_config(readerSrvCfg);
+    srv->set_config(reader_srv_cfg);
     srv->configure();
     srv->start().wait();
     srv->update().wait();

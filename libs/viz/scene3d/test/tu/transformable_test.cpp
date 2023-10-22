@@ -21,7 +21,7 @@
 
 #include "transformable_test.hpp"
 
-#include "viz/scene3d/helper/Scene.hpp"
+#include "viz/scene3d/helper/scene.hpp"
 #include "viz/scene3d/transformable.hpp"
 
 #include <OGRE/OgreSceneNode.h>
@@ -63,37 +63,37 @@ void transformableTest::tearDown()
 
 void transformableTest::transformNodeTest()
 {
-    auto* ogreRoot                   = Utils::getOgreRoot();
-    Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    auto* ogre_root                   = utils::getOgreRoot();
+    Ogre::SceneManager* scene_manager = ogre_root->createSceneManager("DefaultSceneManager", "test");
 
-    Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
-    ASSERT_NOT_NULL(rootNode);
+    Ogre::SceneNode* root_node = scene_manager->getRootSceneNode();
+    ASSERT_NOT_NULL(root_node);
 
-    auto* myFakeTransformable = new Testtransformable();
+    auto* my_fake_transformable = new Testtransformable();
 
-    myFakeTransformable->setTransformId("TransformTestId");
+    my_fake_transformable->setTransformId("TransformTestId");
 
-    const auto id = myFakeTransformable->getTransformId();
+    const auto id = my_fake_transformable->getTransformId();
 
     CPPUNIT_ASSERT_EQUAL(std::string("TransformTestId"), id);
 
-    auto* const nullTransformNode = myFakeTransformable->getTransformNode();
-    CPPUNIT_ASSERT(nullptr == nullTransformNode);
+    auto* const null_transform_node = my_fake_transformable->getTransformNode();
+    CPPUNIT_ASSERT(nullptr == null_transform_node);
 
-    auto* const transformNode = myFakeTransformable->getOrCreateTransformNode(rootNode);
-    ASSERT_NOT_NULL(transformNode);
+    auto* const transform_node = my_fake_transformable->getOrCreateTransformNode(root_node);
+    ASSERT_NOT_NULL(transform_node);
 
-    auto* const transformNode2 = myFakeTransformable->getTransformNode();
+    auto* const transform_node2 = my_fake_transformable->getTransformNode();
 
-    ASSERT_NOT_NULL(transformNode2);
+    ASSERT_NOT_NULL(transform_node2);
 
-    auto* const childNode = transformNode2->createChildSceneNode("_childNode");
+    auto* const child_node = transform_node2->createChildSceneNode("_childNode");
 
-    ASSERT_NOT_NULL(childNode);
+    ASSERT_NOT_NULL(child_node);
 
-    CPPUNIT_ASSERT_NO_THROW(transformNode2->removeAndDestroyChild("_childNode"));
+    CPPUNIT_ASSERT_NO_THROW(transform_node2->removeAndDestroyChild("_childNode"));
 
-    ogreRoot->destroySceneManager(sceneManager);
+    ogre_root->destroySceneManager(scene_manager);
 }
 
 //------------------------------------------------------------------------------

@@ -25,8 +25,8 @@
 namespace sight::filter::dicom::exceptions
 {
 
-FilterFailure::FilterFailure(const std::string& message) :
-    core::exception(message)
+FilterFailure::FilterFailure(const std::string& _message) :
+    core::exception(_message)
 {
 }
 

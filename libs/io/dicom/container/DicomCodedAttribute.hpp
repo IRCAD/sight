@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,10 @@ public:
      * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
      */
     IO_DICOM_API DicomCodedAttribute(
-        std::string codeValue              = "",
-        std::string codingSchemeDesignator = "",
-        std::string codeMeaning            = "",
-        std::string codingSchemeVersion    = ""
+        std::string _code_value               = "",
+        std::string _coding_scheme_designator = "",
+        std::string _code_meaning             = "",
+        std::string _coding_scheme_version    = ""
     );
 
     /// Returns true if the attribute is empty
@@ -62,17 +62,17 @@ public:
     /**
      * @brief Comparison operators overloading
      * @{ */
-    IO_DICOM_API bool operator==(const DicomCodedAttribute& other) const;
+    IO_DICOM_API bool operator==(const DicomCodedAttribute& _other) const;
     /**  @} */
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<<(std::ostream& os, const DicomCodedAttribute& attribute)
+    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const DicomCodedAttribute& _attribute)
     {
-        os << "\\\"" << attribute.m_codeValue << "\\\" ";
-        os << "\\\"" << attribute.m_codingSchemeDesignator << "\\\" ";
-        os << "\\\"" << attribute.m_codeMeaning << "\\\" ";
-        os << "\\\"" << attribute.m_codingSchemeVersion << "\\\" ";
-        return os;
+        _os << "\\\"" << _attribute.m_codeValue << "\\\" ";
+        _os << "\\\"" << _attribute.m_codingSchemeDesignator << "\\\" ";
+        _os << "\\\"" << _attribute.m_codeMeaning << "\\\" ";
+        _os << "\\\"" << _attribute.m_codingSchemeVersion << "\\\" ";
+        return _os;
     }
 
     /// Get code value
@@ -82,9 +82,9 @@ public:
     }
 
     /// Set code value
-    void setCodeValue(const std::string& codeValue)
+    void setCodeValue(const std::string& _code_value)
     {
-        m_codeValue = codeValue;
+        m_codeValue = _code_value;
     }
 
     /// Get coding scheme designator
@@ -94,9 +94,9 @@ public:
     }
 
     /// Set coding scheme designator
-    void setCodingSchemeDesignator(const std::string& codingSchemeDesignator)
+    void setCodingSchemeDesignator(const std::string& _coding_scheme_designator)
     {
-        m_codingSchemeDesignator = codingSchemeDesignator;
+        m_codingSchemeDesignator = _coding_scheme_designator;
     }
 
     /// Get code meaning
@@ -106,9 +106,9 @@ public:
     }
 
     /// Set code meaning
-    void setCodeMeaning(const std::string& codeMeaning)
+    void setCodeMeaning(const std::string& _code_meaning)
     {
-        m_codeMeaning = codeMeaning;
+        m_codeMeaning = _code_meaning;
     }
 
     /// Get coding scheme version
@@ -118,9 +118,9 @@ public:
     }
 
     /// Set coding scheme version
-    void setCodingSchemeVersion(const std::string& codingSchemeVersion)
+    void setCodingSchemeVersion(const std::string& _coding_scheme_version)
     {
-        m_codingSchemeVersion = codingSchemeVersion;
+        m_codingSchemeVersion = _coding_scheme_version;
     }
 
     /// Convert entry to GDCM format

@@ -84,7 +84,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(pose_from2d, service::registerer);
 
-    typedef std::vector<std::string> VectKeyType;
+    typedef std::vector<std::string> vect_key_t;
 
     MODULE_GEOMETRY_VISION_API pose_from2d() noexcept;
     MODULE_GEOMETRY_VISION_API ~pose_from2d() noexcept override = default;
@@ -115,7 +115,7 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(core::hires_clock::type timestamp) override;
+    void computeRegistration(core::hires_clock::type _timestamp) override;
 
 private:
 
@@ -156,12 +156,12 @@ private:
      * @param : Marker points in each view
      *
      **/
-    cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
+    cv::Matx44f cameraPoseFromStereo(const Marker& _marker_cam1, const Marker& _marker_cam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
+    cv::Matx44f cameraPoseFromMono(const Marker& _marker_cam1) const;
 
     /// Last timestamp
     core::hires_clock::type m_lastTimestamp {0};

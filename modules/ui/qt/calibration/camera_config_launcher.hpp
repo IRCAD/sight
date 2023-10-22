@@ -113,16 +113,16 @@ private Q_SLOTS:
     void onAddClicked();
     void onImportClicked();
     void onRemoveClicked();
-    void onExtrinsicToggled(bool checked);
-    void onCameraChanged(int index);
+    void onExtrinsicToggled(bool _checked);
+    void onCameraChanged(int _index);
 
 private:
 
     /// Start the configuration for the intrinsic calibration
-    void startIntrinsicConfig(std::size_t index);
+    void startIntrinsicConfig(std::size_t _index);
 
     /// Start the configuration for the extrinsic calibration
-    void startExtrinsicConfig(std::size_t index);
+    void startExtrinsicConfig(std::size_t _index);
 
     /// Adds a Camera in cameraSet and the CalibrationInfo in the activity
     void addCamera();

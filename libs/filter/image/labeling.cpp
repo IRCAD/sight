@@ -31,7 +31,7 @@
 #include <core/tools/dispatcher.hpp>
 
 #include <data/boolean.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/string.hpp>
 
@@ -54,40 +54,40 @@ struct labelingFilter
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& params)
+    void operator()(Parameters& _params)
     {
-        using ImageType       = itk::Image<PIXELTYPE, 3>;
-        using BinaryImageType = itk::Image<std::uint8_t, 3>;
-        typename ImageType::Pointer itkImage;
-        itkImage = io::itk::moveToItk<ImageType>(params.m_inputImage);
+        using image_t        = itk::Image<PIXELTYPE, 3>;
+        using binary_image_t = itk::Image<std::uint8_t, 3>;
+        typename image_t::Pointer itk_image;
+        itk_image = io::itk::move_to_itk<image_t>(_params.m_inputImage);
 
-        BinaryImageType::Pointer out;
-        out = filter::image::labeling<PIXELTYPE, 3>(itkImage, params.m_numLabels);
+        binary_image_t::Pointer out;
+        out = filter::image::labeling<PIXELTYPE, 3>(itk_image, _params.m_numLabels);
 
-        io::itk::moveFromItk<BinaryImageType>(out, params.m_outputImage);
+        io::itk::move_from_itk<binary_image_t>(out, _params.m_outputImage);
     }
 };
 
 //------------------------------------------------------------------------------
 
-data::image::sptr labeling(data::image::sptr image, unsigned int numLabels)
+data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels)
 {
-    data::image::sptr outputImage = std::make_shared<data::image>();
+    data::image::sptr output_image = std::make_shared<data::image>();
 
     labelingFilter::Parameters params;
-    params.m_inputImage  = image;
-    params.m_outputImage = outputImage;
-    params.m_numLabels   = numLabels;
+    params.m_inputImage  = _image;
+    params.m_outputImage = output_image;
+    params.m_numLabels   = _num_labels;
 
-    const core::type type = image->getType();
+    const core::type type = _image->getType();
     core::tools::dispatcher<core::tools::supported_dispatcher_types, labelingFilter>::invoke(type, params);
 
     // Notify image
-    data::object::ModifiedSignalType::sptr sig;
-    sig = outputImage->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    data::object::modified_signal_t::sptr sig;
+    sig = output_image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
 
-    return outputImage;
+    return output_image;
 }
 
 //------------------------------------------------------------------------------
@@ -104,73 +104,73 @@ struct LabelImageFilter
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& params)
+    void operator()(Parameters& _params)
     {
-        data::image::sptr image      = params.i_image;
+        data::image::sptr image      = _params.i_image;
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
-        using InputImageType = typename itk::Image<PIXELTYPE, dimension>;
-        typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
+        using input_image_t = typename itk::Image<PIXELTYPE, dimension>;
+        typename input_image_t::Pointer itk_input_image = io::itk::move_to_itk<input_image_t>(image);
 
-        using LabelType            = PIXELTYPE;
-        using OutputImageType      = itk::Image<LabelType, dimension>;
-        using ShapeLabelObjectType = itk::ShapeLabelObject<LabelType, dimension>;
-        using LabelMapType         = itk::LabelMap<ShapeLabelObjectType>;
+        using label_t              = PIXELTYPE;
+        using output_image_t       = itk::Image<label_t, dimension>;
+        using shape_label_object_t = itk::ShapeLabelObject<label_t, dimension>;
+        using label_map_t          = itk::LabelMap<shape_label_object_t>;
 
         // Extract shapes
-        using I2LType = typename itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType>;
+        using I2LType = typename itk::LabelImageToShapeLabelMapFilter<output_image_t, label_map_t>;
 
         typename I2LType::Pointer i2l = I2LType::New();
-        i2l->SetInput(itkInputImage);
+        i2l->SetInput(itk_input_image);
         i2l->SetComputePerimeter(true);
         i2l->SetBackgroundValue(0);
         i2l->Update();
 
         // If we have clusters in XML file
-        if(!params.i_lPointListCentroids.empty() && !params.i_lPointListLabels.empty())
+        if(!_params.i_lPointListCentroids.empty() && !_params.i_lPointListLabels.empty())
         {
-            LabelMapType* labelMap = i2l->GetOutput();
-            data::point::sptr newPoint;
+            label_map_t* label_map = i2l->GetOutput();
+            data::point::sptr new_point;
 
-            for(unsigned int n = 1 ; n <= labelMap->GetNumberOfLabelObjects() ; ++n)
+            for(unsigned int n = 1 ; n <= label_map->GetNumberOfLabelObjects() ; ++n)
             {
-                std::vector<std::size_t> findPlanes;
+                std::vector<std::size_t> find_planes;
                 std::size_t plane = 0;
-                for(plane = 0 ; plane < params.i_lPointListLabels.size() ; ++plane)
+                for(plane = 0 ; plane < _params.i_lPointListLabels.size() ; ++plane)
                 {
-                    std::vector<std::size_t> currentPlane = params.i_lPointListLabels.at(plane);
+                    std::vector<std::size_t> current_plane = _params.i_lPointListLabels.at(plane);
 
-                    for(std::size_t labelInPlane : currentPlane)
+                    for(std::size_t label_in_plane : current_plane)
                     {
-                        if(labelInPlane == n)
+                        if(label_in_plane == n)
                         {
-                            findPlanes.push_back(plane);
+                            find_planes.push_back(plane);
                         }
                     }
                 }
 
-                if(!findPlanes.empty())
+                if(!find_planes.empty())
                 {
                     // We need to get the 'n-1'th object because of the '0' background value (1st object = '1' label
                     // value)
-                    ShapeLabelObjectType* labelObject = labelMap->GetNthLabelObject(n - 1);
+                    shape_label_object_t* label_object = label_map->GetNthLabelObject(n - 1);
 
                     // append to landmark
-                    const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
+                    const typename shape_label_object_t::CentroidType centroid = label_object->GetCentroid();
 
-                    newPoint = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
+                    new_point = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
 
-                    for(std::size_t findPlane : findPlanes)
+                    for(std::size_t find_plane : find_planes)
                     {
-                        data::point_list::sptr planePointList =
-                            params.i_lPointListCentroids.at(findPlane);
+                        data::point_list::sptr plane_point_list =
+                            _params.i_lPointListCentroids.at(find_plane);
 
                         // append to point the label
-                        std::stringstream labelName;
-                        labelName << n;
-                        data::string::sptr label = std::make_shared<data::string>(labelName.str());
+                        std::stringstream label_name;
+                        label_name << n;
+                        data::string::sptr label = std::make_shared<data::string>(label_name.str());
 
-                        planePointList->getPoints().push_back(newPoint);
+                        plane_point_list->getPoints().push_back(new_point);
                     }
                 }
             }
@@ -179,54 +179,54 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::point_list::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
+            data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
 
-            LabelMapType* labelMap = i2l->GetOutput();
-            data::point::sptr newPoint;
-            for(unsigned int n = 0 ; n < labelMap->GetNumberOfLabelObjects() ; ++n)
+            label_map_t* label_map = i2l->GetOutput();
+            data::point::sptr new_point;
+            for(unsigned int n = 0 ; n < label_map->GetNumberOfLabelObjects() ; ++n)
             {
-                ShapeLabelObjectType* labelObject = labelMap->GetNthLabelObject(n);
+                shape_label_object_t* label_object = label_map->GetNthLabelObject(n);
 
                 // append to landmark
-                const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
+                const typename shape_label_object_t::CentroidType centroid = label_object->GetCentroid();
 
-                newPoint = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
-                landmarks->getPoints().push_back(newPoint);
+                new_point = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
+                landmarks->getPoints().push_back(new_point);
 
                 // append to point the label
-                std::stringstream labelName;
-                labelName << n;
-                newPoint->setLabel(labelName.str());
+                std::stringstream label_name;
+                label_name << n;
+                new_point->setLabel(label_name.str());
             }
 
-            data::helper::MedicalImage::setLandmarksVisibility(*image, true);
+            data::helper::medical_image::set_landmarks_visibility(*image, true);
         }
     }
 };
 
 //------------------------------------------------------------------------------
 
-void computeCentroids(
-    data::image::sptr image,
-    std::vector<data::point_list::sptr> pointListCentroids,
-    std::vector<std::vector<std::size_t> > pointListLabels
+void compute_centroids(
+    data::image::sptr _image,
+    std::vector<data::point_list::sptr> _point_list_centroids,
+    std::vector<std::vector<std::size_t> > _point_list_labels
 )
 {
     // Preparing the parameters for ITK
     LabelImageFilter::Parameters params;
-    params.i_image = image;
+    params.i_image = _image;
 
-    if(!pointListCentroids.empty())
+    if(!_point_list_centroids.empty())
     {
-        params.i_lPointListCentroids = pointListCentroids;
-        params.i_lPointListLabels    = pointListLabels;
+        params.i_lPointListCentroids = _point_list_centroids;
+        params.i_lPointListLabels    = _point_list_labels;
     }
 
     // Call the ITK operator
-    const core::type type = image->getType();
+    const core::type type = _image->getType();
     core::tools::dispatcher<core::tools::supported_dispatcher_types, LabelImageFilter>::invoke(type, params);
 }
 

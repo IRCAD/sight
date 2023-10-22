@@ -45,7 +45,7 @@ namespace sight::data::tools::ut
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline static void containerNotifierTest()
+inline static void container_notifier_test_fn()
 {
     auto container = std::make_shared<T>();
 
@@ -92,11 +92,11 @@ inline static void containerNotifierTest()
         typename T::container_type added_from_slot;
 
         std::function<void(typename T::container_type)> add =
-            [&](typename T::container_type added_from_signal)
+            [&](typename T::container_type _added_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
-                    added_from_slot = added_from_signal;
+                    added_from_slot = _added_from_signal;
                     ++add_call_count;
                 }
                 condition_variable.notify_one();
@@ -200,11 +200,11 @@ inline static void containerNotifierTest()
         typename T::container_type removed_from_slot;
 
         std::function<void(typename T::container_type)> remove =
-            [&](typename T::container_type removed_from_signal)
+            [&](typename T::container_type _removed_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
-                    removed_from_slot = removed_from_signal;
+                    removed_from_slot = _removed_from_signal;
                     ++remove_call_count;
                 }
                 condition_variable.notify_one();
@@ -291,12 +291,12 @@ inline static void containerNotifierTest()
         typename T::container_type new_from_slot;
 
         std::function<void(typename T::container_type, typename T::container_type)> change =
-            [&](typename T::container_type old_from_signal, typename T::container_type new_from_signal)
+            [&](typename T::container_type _old_from_signal, typename T::container_type _new_from_signal)
             {
                 {
                     std::unique_lock lock(mutex);
-                    old_from_slot = old_from_signal;
-                    new_from_slot = new_from_signal;
+                    old_from_slot = _old_from_signal;
+                    new_from_slot = _new_from_signal;
                     ++change_call_count;
                 }
                 condition_variable.notify_one();
@@ -370,35 +370,35 @@ void container_notifier_test::tearDown()
 
 void container_notifier_test::vectorTest()
 {
-    containerNotifierTest<vector>();
+    container_notifier_test_fn<vector>();
 }
 
 //------------------------------------------------------------------------------
 
 void container_notifier_test::compositeTest()
 {
-    containerNotifierTest<composite>();
+    container_notifier_test_fn<composite>();
 }
 
 //------------------------------------------------------------------------------
 
 void container_notifier_test::seriesSetTest()
 {
-    containerNotifierTest<series_set>();
+    container_notifier_test_fn<series_set>();
 }
 
 //------------------------------------------------------------------------------
 
 void container_notifier_test::activitySetTest()
 {
-    containerNotifierTest<activity_set>();
+    container_notifier_test_fn<activity_set>();
 }
 
 //------------------------------------------------------------------------------
 
 void container_notifier_test::cameraSetTest()
 {
-    containerNotifierTest<camera_set>();
+    container_notifier_test_fn<camera_set>();
 }
 
 } // namespace sight::data::tools::ut

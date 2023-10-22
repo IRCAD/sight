@@ -48,15 +48,15 @@ camera::camera()
     m_intrinsic.fill(0.);
     m_distortionCoefficient.fill(0.);
 
-    new_signal<IntrinsicCalibratedSignalType>(INTRINSIC_CALIBRATED_SIG);
-    new_signal<IdModifiedSignalType>(ID_MODIFIED_SIG);
+    new_signal<intrinsic_calibrated_signal_t>(INTRINSIC_CALIBRATED_SIG);
+    new_signal<id_modified_signal_t>(ID_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-using PixelFormatTranslatorType = boost::bimaps::bimap<camera::PixelFormat, std::string>;
-PixelFormatTranslatorType pixelFormatTranslator =
-    boost::assign::list_of<PixelFormatTranslatorType::relation>
+using pixel_format_translator_t = boost::bimaps::bimap<camera::PixelFormat, std::string>;
+pixel_format_translator_t pixel_format_translator =
+    boost::assign::list_of<pixel_format_translator_t::relation>
         (camera::PixelFormat::INVALID, std::string("INVALID"))
         (camera::PixelFormat::ARGB32, std::string("ARGB32"))
         (camera::PixelFormat::ARGB32_PREMULTIPLIED, std::string("ARGB32_PREMULTIPLIED"))
@@ -95,14 +95,14 @@ PixelFormatTranslatorType pixelFormatTranslator =
 
 //------------------------------------------------------------------------------
 
-camera::PixelFormat camera::getPixelFormat(const std::string& name)
+camera::PixelFormat camera::getPixelFormat(const std::string& _name)
 {
     PixelFormat format = PixelFormat::INVALID;
 
-    PixelFormatTranslatorType::right_const_iterator rightIter = pixelFormatTranslator.right.find(name);
-    if(rightIter != pixelFormatTranslator.right.end())
+    pixel_format_translator_t::right_const_iterator right_iter = pixel_format_translator.right.find(_name);
+    if(right_iter != pixel_format_translator.right.end())
     {
-        format = rightIter->second;
+        format = right_iter->second;
     }
 
     return format;
@@ -110,13 +110,13 @@ camera::PixelFormat camera::getPixelFormat(const std::string& name)
 
 //------------------------------------------------------------------------------
 
-std::string camera::getPixelFormatName(PixelFormat format)
+std::string camera::getPixelFormatName(PixelFormat _format)
 {
-    std::string name                                        = "INVALID";
-    PixelFormatTranslatorType::left_const_iterator leftIter = pixelFormatTranslator.left.find(format);
-    if(leftIter != pixelFormatTranslator.left.end())
+    std::string name                                         = "INVALID";
+    pixel_format_translator_t::left_const_iterator left_iter = pixel_format_translator.left.find(_format);
+    if(left_iter != pixel_format_translator.left.end())
     {
-        name = leftIter->second;
+        name = left_iter->second;
     }
 
     return name;
@@ -124,13 +124,13 @@ std::string camera::getPixelFormatName(PixelFormat format)
 
 //------------------------------------------------------------------------------
 
-void camera::shallow_copy(const object::csptr& source)
+void camera::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const camera>(source);
+    const auto& other = std::dynamic_pointer_cast<const camera>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -155,13 +155,13 @@ void camera::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void camera::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void camera::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const camera>(source);
+    const auto& other = std::dynamic_pointer_cast<const camera>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -181,50 +181,50 @@ void camera::deep_copy(const object::csptr& source, const std::unique_ptr<deep_c
     m_cameraSource          = other->m_cameraSource;
     m_scale                 = other->m_scale;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 // -------------------------------------------------------------------------
 
-void camera::setDistortionCoefficient(double k1, double k2, double p1, double p2, double k3)
+void camera::setDistortionCoefficient(double _k1, double _k2, double _p1, double _p2, double _k3)
 {
-    m_distortionCoefficient[0] = k1;
-    m_distortionCoefficient[1] = k2;
-    m_distortionCoefficient[2] = p1;
-    m_distortionCoefficient[3] = p2;
-    m_distortionCoefficient[4] = k3;
+    m_distortionCoefficient[0] = _k1;
+    m_distortionCoefficient[1] = _k2;
+    m_distortionCoefficient[2] = _p1;
+    m_distortionCoefficient[3] = _p2;
+    m_distortionCoefficient[4] = _k3;
 }
 
 // -------------------------------------------------------------------------
 
-bool camera::operator==(const camera& other) const noexcept
+bool camera::operator==(const camera& _other) const noexcept
 {
-    if(m_width != other.m_width
-       || m_height != other.m_height
-       || !core::tools::is_equal(m_intrinsic, other.m_intrinsic)
-       || !core::tools::is_equal(m_distortionCoefficient, other.m_distortionCoefficient)
-       || !core::tools::is_equal(m_skew, other.m_skew)
-       || m_isCalibrated != other.m_isCalibrated
-       || m_cameraID != other.m_cameraID
-       || !core::tools::is_equal(m_maxFrameRate, other.m_maxFrameRate)
-       || m_pixelFormat != other.m_pixelFormat
-       || m_videoFile != other.m_videoFile
-       || m_streamUrl != other.m_streamUrl
-       || m_cameraSource != other.m_cameraSource
-       || !core::tools::is_equal(m_scale, other.m_scale))
+    if(m_width != _other.m_width
+       || m_height != _other.m_height
+       || !core::tools::is_equal(m_intrinsic, _other.m_intrinsic)
+       || !core::tools::is_equal(m_distortionCoefficient, _other.m_distortionCoefficient)
+       || !core::tools::is_equal(m_skew, _other.m_skew)
+       || m_isCalibrated != _other.m_isCalibrated
+       || m_cameraID != _other.m_cameraID
+       || !core::tools::is_equal(m_maxFrameRate, _other.m_maxFrameRate)
+       || m_pixelFormat != _other.m_pixelFormat
+       || m_videoFile != _other.m_videoFile
+       || m_streamUrl != _other.m_streamUrl
+       || m_cameraSource != _other.m_cameraSource
+       || !core::tools::is_equal(m_scale, _other.m_scale))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool camera::operator!=(const camera& other) const noexcept
+bool camera::operator!=(const camera& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

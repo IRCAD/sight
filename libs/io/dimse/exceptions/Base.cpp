@@ -25,8 +25,8 @@
 namespace sight::io::dimse::exceptions
 {
 
-Base::Base(const std::string& message) :
-    core::exception(message)
+Base::Base(const std::string& _message) :
+    core::exception(_message)
 {
 }
 

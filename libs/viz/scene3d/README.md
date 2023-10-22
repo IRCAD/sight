@@ -8,9 +8,9 @@ This library links with `Ogre3d` and `OpenGL`.
 ### Interfaces
 
 - **adaptor**: provides behaviour of Ogre adaptor services.
-- **IGraphicsWorker**: interface to run gpu resource handling tasks in parallel.
-- **ILight**: interface to manage the light adaptor.
-- **IParameter**: contains common code to upload shader parameters from Sight data.
+- **graphics_worker**: interface to run gpu resource handling tasks in parallel.
+- **light_adaptor**: interface to manage the light adaptor.
+- **parameter_adaptor**: contains common code to upload shader parameters from Sight data.
 - **transformable**: provides behavior for all classes containing a transformation matrix.
 - **window_interactor**: manages ogreRenderwindow_interactor in a window.
 
@@ -21,12 +21,12 @@ This library links with `Ogre3d` and `OpenGL`.
 - **Mesh**: manages a generic mesh, from `sight::data::mesh` to an Ogre3d structure that can be rendered.
 - **ogre**: defines a static variable for resource group name ("Sight").
 - **Plane**: manages a plane mesh on which a slice texture will be applied.
-- **R2VBRenderable**: implements a render-to-vertex-buffer (r2vb) process (GL_TRANSFORM_FEEDBACK).
+- **r2vb_renderable**: implements a render-to-vertex-buffer (r2vb) process (GL_TRANSFORM_FEEDBACK).
 - **render**: defines a generic scene service that shows adaptors in a 3D Ogre scene.
 - **Text**: displays overlay text.
 - **TransfertFunction**: manages a transfer function from a GPU point of view.
-- **Utils**: provides some Ogre3d general functions for Sight
-- **WindowManager**: stores all Ogre render windows and manage their deletion (singleton).
+- **utils**: provides some Ogre3d general functions for Sight
+- **window_manager**: stores all Ogre render windows and manage their deletion (singleton).
 
 ### cmake
 
@@ -63,11 +63,11 @@ Contains helpers classes and functions.
 
 - **Camera**: contains functions to compute view and projection matrices, to convert screen space to view space, etc.
 - **Font**: contains functions to generate fonts and materials for text rendering.
-- **ManualObject**: contains functions to generate simple Ogre shapes (cylinders, cones, cubes, spheres)
+- **manual_object**: contains functions to generate simple Ogre shapes (cylinders, cones, cubes, spheres)
 - **Mesh**: implements `copyColor`, function copying the colour layer of a mesh.
-- **Scene**: implements `getNodeById`, function looking for a given node in a scene manager.
-- **Shading**: contains various functions to retrieve information about shaders.
-- **Technique**: implements `copyToMaterial`, function copying a technique to an existing material.
+- **scene**: implements `getNodeById`, function looking for a given node in a scene manager.
+- **shading**: contains various functions to retrieve information about shaders.
+- **technique**: implements `copyToMaterial`, function copying a technique to an existing material.
 
 
 ### interactor
@@ -121,6 +121,6 @@ Contains classes related to volume rendering processes.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> viz_scene3d)
+target_link_libraries( my_target <PUBLIC|PRIVATE> viz_scene3d)
 ```
 

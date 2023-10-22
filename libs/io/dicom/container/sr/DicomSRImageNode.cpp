@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,16 +32,16 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRImageNode::DicomSRImageNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    std::string sopClassUID,
-    std::string sopInstanceUID,
-    int frameNumber
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    std::string _sop_class_uid,
+    std::string _sop_instance_uid,
+    int _frame_number
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship),
-    m_sopClassUID(std::move(sopClassUID)),
-    m_sopInstanceUID(std::move(sopInstanceUID)),
-    m_frameNumber(frameNumber)
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "IMAGE", _relationship),
+    m_sopClassUID(std::move(_sop_class_uid)),
+    m_sopInstanceUID(std::move(_sop_instance_uid)),
+    m_frameNumber(_frame_number)
 {
 }
 
@@ -52,44 +52,44 @@ DicomSRImageNode::~DicomSRImageNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::write(gdcm::DataSet& dataset) const
+void DicomSRImageNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Referenced SOP Sequence
-    this->writeReferencedSOPSequence(dataset);
+    this->writeReferencedSOPSequence(_dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::writeReferencedSOPSequence(gdcm::DataSet& dataset) const
+void DicomSRImageNode::writeReferencedSOPSequence(gdcm::DataSet& _dataset) const
 {
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
     gdcm::Item item;
     item.SetVLToUndefined();
-    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& item_dataset = item.GetNestedDataSet();
 
     // Referenced SOP Class UID - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(m_sopClassUID, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(m_sopClassUID, item_dataset);
 
     // Referenced SOP Instance UID  - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(m_sopInstanceUID, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(m_sopInstanceUID, item_dataset);
 
     // Referenced Frame Number - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(&m_frameNumber, 1, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(&m_frameNumber, 1, item_dataset);
 
     sequence->AddItem(item);
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1199>(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1199>(sequence, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::print(std::ostream& os) const
+void DicomSRImageNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nSOP Class UID : [" << m_sopClassUID << "]";
-    os << "\\nSOP Instance UID : [" << m_sopInstanceUID << "]";
-    os << "\\nFrame number : [" << m_frameNumber << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nSOP Class UID : [" << m_sopClassUID << "]";
+    _os << "\\nSOP Instance UID : [" << m_sopInstanceUID << "]";
+    _os << "\\nFrame number : [" << m_frameNumber << "]";
 }
 
 //------------------------------------------------------------------------------

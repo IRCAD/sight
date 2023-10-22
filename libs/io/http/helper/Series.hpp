@@ -61,13 +61,13 @@ public:
      * @brief Convert HTTP series response to data::dicom_series
      * @param[in] answer HTTP responses from the PACS that must be converted
      */
-    IO_HTTP_API static DicomSeriesContainer toFwMedData(const QJsonObject& answer);
+    IO_HTTP_API static DicomSeriesContainer toFwMedData(const QJsonObject& _answer);
 
     /**
      * @brief Convert std::vector< data::dicom_series > to series instance uid container
      * @param[in] series Series vector used to extract the series instance uids
      */
-    IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
+    IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);
 };
 
 } // namespace sight::io::http::helper

@@ -15,5 +15,5 @@ add_dependencies(
     module_ui_icons
     module_service
     module_viz_scene3d
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
 )

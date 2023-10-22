@@ -57,12 +57,12 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationEntity(
-        SPTR(gdcm::Writer)writer,
-        SPTR(io::dicom::container::DicomInstance)instance,
-        CSPTR(DATATYPE)object,
-        core::log::logger::sptr logger = nullptr,
-        ProgressCallback progress      = nullptr,
-        CancelRequestedCallback cancel = nullptr
+        SPTR(gdcm::Writer)_writer,
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        CSPTR(DATATYPE)_object,
+        core::log::logger::sptr _logger = nullptr,
+        ProgressCallback _progress      = nullptr,
+        CancelRequestedCallback _cancel = nullptr
     );
 
     /// Destructor
@@ -93,19 +93,19 @@ protected:
 
 template<class DATATYPE>
 InformationEntity<DATATYPE>::InformationEntity(
-    SPTR(gdcm::Writer)writer,
-    SPTR(io::dicom::container::DicomInstance)instance,
-    CSPTR(DATATYPE)object,
-    core::log::logger::sptr logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    SPTR(gdcm::Writer)_writer,
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    CSPTR(DATATYPE)_object,
+    core::log::logger::sptr _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    m_writer(std::move(writer)),
-    m_instance(std::move(instance)),
-    m_object(std::move(object)),
-    m_logger(std::move(logger)),
-    m_progressCallback(std::move(progress)),
-    m_cancelRequestedCallback(std::move(cancel))
+    m_writer(std::move(_writer)),
+    m_instance(std::move(_instance)),
+    m_object(std::move(_object)),
+    m_logger(std::move(_logger)),
+    m_progressCallback(std::move(_progress)),
+    m_cancelRequestedCallback(std::move(_cancel))
 {
     SIGHT_ASSERT("Writer should not be null.", m_writer);
     SIGHT_ASSERT("Instance should not be null.", m_instance);

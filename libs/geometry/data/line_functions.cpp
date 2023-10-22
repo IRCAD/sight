@@ -35,7 +35,7 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
+bool get_closest_points(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _point_on_this, fwVec3d& _point_onfw_line)
 {
     const glm::dvec3 pos1 = glm::make_vec3<double>(_ray1.first.data());
     const glm::dvec3 dir1 = glm::make_vec3<double>(_ray1.second.data());
@@ -54,23 +54,23 @@ bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointO
     double t2 = (glm::dot(dir2, pos1 - pos2) - glm::dot(dir1, pos1 - pos2) * dd) / delta;
     double t1 = (-glm::dot(dir1, pos1 - pos2) + glm::dot(dir2, pos1 - pos2) * dd) / delta;
 
-    const glm::dvec3 pointOnThis   = pos1 + t1 * dir1;
-    const glm::dvec3 pointOnfwLine = pos2 + t2 * dir2;
+    const glm::dvec3 point_on_this   = pos1 + t1 * dir1;
+    const glm::dvec3 point_onfw_line = pos2 + t2 * dir2;
 
-    _pointOnThis[0] = pointOnThis[0];
-    _pointOnThis[1] = pointOnThis[1];
-    _pointOnThis[2] = pointOnThis[2];
+    _point_on_this[0] = point_on_this[0];
+    _point_on_this[1] = point_on_this[1];
+    _point_on_this[2] = point_on_this[2];
 
-    _pointOnfwLine[0] = pointOnfwLine[0];
-    _pointOnfwLine[1] = pointOnfwLine[1];
-    _pointOnfwLine[2] = pointOnfwLine[2];
+    _point_onfw_line[0] = point_onfw_line[0];
+    _point_onfw_line[1] = point_onfw_line[1];
+    _point_onfw_line[2] = point_onfw_line[2];
 
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point)
+fwVec3d get_closest_point(const fwLine& _ray, const fwVec3d& _point)
 {
     const glm::dvec3 pos   = glm::make_vec3<double>(_ray.first.data());
     const glm::dvec3 dir   = glm::make_vec3<double>(_ray.second.data());
@@ -91,7 +91,7 @@ fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point)
 
 bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point)
 {
-    fwVec3d point        = getClosestPoint(_ray, _point);
+    fwVec3d point        = get_closest_point(_ray, _point);
     const glm::dvec3 pt1 = glm::make_vec3<double>(_point.data());
     const glm::dvec3 pt2 = glm::make_vec3<double>(point.data());
     glm::dvec3 tmp       = pt1 - pt2;
@@ -104,14 +104,14 @@ bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point)
 bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _origin, const fwVec3d& _direction, fwVec3d& _point)
 {
     fwLine line = std::pair<fwVec3d, fwVec3d>(_origin, _direction);
-    fwVec3d pThis;
-    if(!getClosestPoints(_ray, line, pThis, _point))
+    fwVec3d p_this;
+    if(!get_closest_points(_ray, line, p_this, _point))
     {
         return false;
     }
 
     const glm::dvec3 pt1 = glm::make_vec3<double>(_point.data());
-    const glm::dvec3 pt2 = glm::make_vec3<double>(pThis.data());
+    const glm::dvec3 pt2 = glm::make_vec3<double>(p_this.data());
     glm::dvec3 tmp       = pt1 - pt2;
     double length        = glm::length(tmp);
 
@@ -135,14 +135,14 @@ bool intersect(
     const fwVec3d v12 = _v3 - _v2;
     const fwVec3d v20 = _v1 - _v3;
 
-    const fwPlane plane = getPlane(_v1, _v2, _v3);
+    const fwPlane plane = get_plane(_v1, _v2, _v3);
 
     fwVec3d v;
     v[0] = 0.0F;
     v[1] = 0.0F;
     v[2] = 1.0F;
 
-    const fwVec3d& normal = getNormal(plane);
+    const fwVec3d& normal = get_normal(plane);
     _front = ((dot(normal, v)) >= 0.0);
 
     return !(!intersect(plane, _line, _point) || ((dot(normal, cross(v01, _point - _v1))) < 0.0)

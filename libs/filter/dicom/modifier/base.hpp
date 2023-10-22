@@ -43,7 +43,7 @@ public:
     FILTER_DICOM_API ~base() override;
 
     /// Return filter type
-    FILTER_DICOM_API FilterType getFilterType() const override;
+    FILTER_DICOM_API filter_t get_filter_type() const override;
 
 protected:
 

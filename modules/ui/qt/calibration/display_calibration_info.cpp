@@ -101,42 +101,42 @@ void display_calibration_info::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void display_calibration_info::displayImage(std::size_t idx)
+void display_calibration_info::displayImage(std::size_t _idx)
 {
     if(!m_configMgr)
     {
         // Grab images from our composite data
-        const auto calInfo1 = m_calibrationInfo1.lock();
-        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
+        const auto cal_info1 = m_calibrationInfo1.lock();
+        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
-        const auto calInfo2 = m_calibrationInfo2.lock();
+        const auto cal_info2 = m_calibrationInfo2.lock();
 
-        std::string strConfig = std::string(s_ONE_IMAGE_CONFIG);
+        std::string str_config = std::string(s_ONE_IMAGE_CONFIG);
 
         // Prepare configuration
-        sight::app::field_adaptor_t replaceMap;
+        sight::app::field_adaptor_t replace_map;
 
-        data::image::csptr img1 = calInfo1->getImage(idx);
-        replaceMap["imageId1"]        = img1->get_id();
-        replaceMap["calibrationData"] = calInfo1->get_id();
-        data::point_list::csptr pointList1 = calInfo1->getPointList(img1);
-        replaceMap["pointListId1"] = pointList1->get_id();
+        data::image::csptr img1 = cal_info1->getImage(_idx);
+        replace_map["imageId1"]        = img1->get_id();
+        replace_map["calibrationData"] = cal_info1->get_id();
+        data::point_list::csptr point_list1 = cal_info1->getPointList(img1);
+        replace_map["pointListId1"] = point_list1->get_id();
 
-        if(calInfo2)
+        if(cal_info2)
         {
-            strConfig = std::string(s_TWO_IMAGES_CONFIG);
+            str_config = std::string(s_TWO_IMAGES_CONFIG);
 
-            data::image::csptr img2 = calInfo2->getImage(idx);
-            replaceMap["imageId2"] = img2->get_id();
-            data::point_list::csptr pointList2 = calInfo2->getPointList(img2);
-            replaceMap["pointListId2"] = pointList2->get_id();
+            data::image::csptr img2 = cal_info2->getImage(_idx);
+            replace_map["imageId2"] = img2->get_id();
+            data::point_list::csptr point_list2 = cal_info2->getPointList(img2);
+            replace_map["pointListId2"] = point_list2->get_id();
         }
 
-        replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+        replace_map[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         const auto config = app::extension::config::getDefault()->getAdaptedTemplateConfig(
-            strConfig,
-            replaceMap,
+            str_config,
+            replace_map,
             true
         );
 

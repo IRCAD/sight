@@ -46,7 +46,7 @@ struct SerializerStruct
 
 //------------------------------------------------------------------------------
 
-static SerializerStruct& getSerializer()
+static SerializerStruct& get_serializer()
 {
     static SerializerStruct serializer;
     return serializer;
@@ -56,66 +56,66 @@ static SerializerStruct& getSerializer()
 
 //------------------------------------------------------------------------------
 
-serializer_t session_serializer::findSerializer(const std::string& classname) const
+serializer_t session_serializer::findSerializer(const std::string& _classname) const
 {
     // First try to find in the customized serializer map
-    if(const auto& customIt = m_customSerializers.find(classname); customIt != m_customSerializers.cend())
+    if(const auto& custom_it = m_customSerializers.find(_classname); custom_it != m_customSerializers.cend())
     {
         // Return the found serializer
-        return customIt->second;
+        return custom_it->second;
     }
 
     // Then try to find in the default deserializer map
-    if(auto function = serializer(classname); function)
+    if(auto function = serializer(_classname); function)
     {
         return function;
     }
 
-    SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
+    SIGHT_THROW("There is no serializer registered for class '" << _classname << "'.");
 }
 
 //------------------------------------------------------------------------------
 
 void session_serializer::deepSerialize(
-    std::set<std::string>& cache,
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    const secure_string& password,
-    const password_keeper::encryption_policy encryptionPolicy
+    std::set<std::string>& _cache,
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    const secure_string& _password,
+    const password_keeper::encryption_policy _encryption_policy
 ) const
 {
     // Only serialize non-null object
-    if(!object)
+    if(!_object)
     {
         return;
     }
 
     // Lock the object
-    data::mt::locked_ptr<const data::object> lock(object);
+    data::mt::locked_ptr<const data::object> lock(_object);
 
     // First check the cache
-    const auto& uuid       = object->get_uuid();
-    const auto& uuid_it    = cache.find(uuid);
-    const auto& class_name = object->get_classname();
+    const auto& uuid       = _object->get_uuid();
+    const auto& uuid_it    = _cache.find(uuid);
+    const auto& class_name = _object->get_classname();
 
-    if(uuid_it != cache.cend())
+    if(uuid_it != _cache.cend())
     {
         boost::property_tree::ptree cached_tree;
         cached_tree.put(session::s_uuid, uuid);
-        tree.add_child(class_name, cached_tree);
+        _tree.add_child(class_name, cached_tree);
     }
     else
     {
         // Store uuid in cache immediately to allow circular reference
-        cache.insert(uuid);
+        _cache.insert(uuid);
 
         // Create the object ptree
         boost::property_tree::ptree object_tree;
 
         // Put basic meta information
         object_tree.put(session::s_uuid, uuid);
-        helper::write_string(object_tree, session::s_description, object->getDescription());
+        helper::write_string(object_tree, session::s_description, _object->getDescription());
 
         // Find the serializer using the classname
         const auto& serializer = findSerializer(class_name);
@@ -125,11 +125,11 @@ void session_serializer::deepSerialize(
 
         // Ask the serializer to serialize
         serializer(
-            archive,
+            _archive,
             object_tree,
-            object,
+            _object,
             children,
-            session::pickle(password, secure_string(uuid), encryptionPolicy)
+            session::pickle(_password, secure_string(uuid), _encryption_policy)
         );
 
         // Serialize children, if needed
@@ -142,7 +142,7 @@ void session_serializer::deepSerialize(
                 boost::property_tree::ptree child_tree;
 
                 // Recursively serialize child objects
-                deepSerialize(cache, archive, child_tree, child.second, password, encryptionPolicy);
+                deepSerialize(_cache, _archive, child_tree, child.second, _password, _encryption_policy);
 
                 // Append to the children tree
                 children_tree.add_child(child.first, child_tree);
@@ -153,7 +153,7 @@ void session_serializer::deepSerialize(
         }
 
         // Serialize fields, if needed
-        const auto& fields = object->getFields();
+        const auto& fields = _object->get_fields();
 
         if(!fields.empty())
         {
@@ -165,7 +165,7 @@ void session_serializer::deepSerialize(
                 boost::property_tree::ptree field_tree;
 
                 // Recursively serialize field object
-                deepSerialize(cache, archive, field_tree, field.second, password, encryptionPolicy);
+                deepSerialize(_cache, _archive, field_tree, field.second, _password, _encryption_policy);
 
                 // Append to the fields tree
                 fields_tree.add_child(field.first, field_tree);
@@ -176,54 +176,54 @@ void session_serializer::deepSerialize(
         }
 
         // Add the new tree to the root
-        tree.add_child(class_name, object_tree);
+        _tree.add_child(class_name, object_tree);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void session_serializer::setCustomSerializer(const std::string& className, serializer_t serializer)
+void session_serializer::setCustomSerializer(const std::string& _class_name, serializer_t _serializer)
 {
-    if(serializer)
+    if(_serializer)
     {
         // Set the serializer for this class name
-        m_customSerializers[className] = serializer;
+        m_customSerializers[_class_name] = _serializer;
     }
     else
     {
         // Reset the serializer for this class name
-        m_customSerializers.erase(className);
+        m_customSerializers.erase(_class_name);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void session_serializer::setSerializer(const std::string& className, serializer_t serializer)
+void session_serializer::setSerializer(const std::string& _class_name, serializer_t _serializer)
 {
     // Protect serializers map
-    auto& serializerStruct = getSerializer();
-    std::shared_lock guard(serializerStruct.serializers_mutex);
+    auto& serializer_struct = get_serializer();
+    std::shared_lock guard(serializer_struct.serializers_mutex);
 
-    if(serializer)
+    if(_serializer)
     {
         // Set the serializer for this class name
-        serializerStruct.serializer[className] = serializer;
+        serializer_struct.serializer[_class_name] = _serializer;
     }
     else
     {
-        SIGHT_THROW("There is no serializer registered for class '" << className << "'.");
+        SIGHT_THROW("There is no serializer registered for class '" << _class_name << "'.");
     }
 }
 
 //------------------------------------------------------------------------------
 
-serializer_t session_serializer::serializer(const std::string& className)
+serializer_t session_serializer::serializer(const std::string& _class_name)
 {
     // Protect serializers map
-    auto& serializerStruct = getSerializer();
-    std::shared_lock guard(serializerStruct.serializers_mutex);
+    auto& serializer_struct = get_serializer();
+    std::shared_lock guard(serializer_struct.serializers_mutex);
 
-    if(const auto& it = serializerStruct.serializer.find(className); it != serializerStruct.serializer.end())
+    if(const auto& it = serializer_struct.serializer.find(_class_name); it != serializer_struct.serializer.end())
     {
         // Return the found serializer
         return it->second;
@@ -235,23 +235,23 @@ serializer_t session_serializer::serializer(const std::string& className)
 //------------------------------------------------------------------------------
 
 void session_serializer::serialize(
-    const std::filesystem::path& archivePath,
-    data::object::csptr object,
-    const Archive::ArchiveFormat archiveFormat,
-    const secure_string& password,
-    const password_keeper::encryption_policy encryptionPolicy
+    const std::filesystem::path& _archive_path,
+    data::object::csptr _object,
+    const Archive::ArchiveFormat _archive_format,
+    const secure_string& _password,
+    const password_keeper::encryption_policy _encryption_policy
 ) const
 {
     zip::ArchiveWriter::uptr archive;
 
-    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
+    if(_archive_format == Archive::ArchiveFormat::FILESYSTEM)
     {
         // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
-        if(!password.empty())
+        if(!_password.empty())
         {
             const std::string& message =
                 "Archive format '"
-                + std::string(Archive::archiveFormatToString(archiveFormat))
+                + std::string(Archive::archiveFormatToString(_archive_format))
                 + "' doesn't support encryption.";
 
             SIGHT_ASSERT(message, false);
@@ -259,12 +259,12 @@ void session_serializer::serialize(
         }
 
         // Create the archive that will hold all binary files
-        archive = zip::ArchiveWriter::get(archivePath.parent_path(), archiveFormat);
+        archive = zip::ArchiveWriter::get(_archive_path.parent_path(), _archive_format);
     }
     else
     {
         // Create the archive that will hold the property tree and all binary files
-        archive = zip::ArchiveWriter::get(archivePath, archiveFormat);
+        archive = zip::ArchiveWriter::get(_archive_path, _archive_format);
     }
 
     // Initialize the ptree cache
@@ -274,17 +274,17 @@ void session_serializer::serialize(
     boost::property_tree::ptree tree;
 
     // Serialize recursively everything into the tree and the archive
-    deepSerialize(cache, *archive, tree, object, password, encryptionPolicy);
+    deepSerialize(cache, *archive, tree, _object, _password, _encryption_policy);
 
-    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
+    if(_archive_format == Archive::ArchiveFormat::FILESYSTEM)
     {
         // Write the final property tree to the filesystem
-        boost::property_tree::write_json(archivePath.string(), tree);
+        boost::property_tree::write_json(_archive_path.string(), tree);
     }
     else
     {
         // Open the ostream from the json stored into the archive
-        auto ostream = archive->openFile(getIndexFilePath(), password, zip::Method::DEFAULT, zip::Level::BEST);
+        auto ostream = archive->openFile(getIndexFilePath(), _password, zip::Method::DEFAULT, zip::Level::BEST);
 
         // Write the final property tree back to the archive
         boost::property_tree::write_json(*ostream, tree, false);

@@ -39,18 +39,18 @@ namespace sight::io::ut
 
 void ArrayWriterTest::basicTest()
 {
-    auto arrayWriter               = std::make_shared<writer::array_writer>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + arrayWriter->extension());
-    auto arrayIn                   = std::make_shared<data::array>();
-    arrayIn->resize({16}, core::type::UINT8);
+    auto array_writer              = std::make_shared<writer::array_writer>();
+    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + array_writer->extension());
+    auto array_in                  = std::make_shared<data::array>();
+    array_in->resize({16}, core::type::UINT8);
     {
-        auto arrayLock = arrayIn->dump_lock();
-        std::iota(arrayIn->begin<std::uint8_t>(), arrayIn->end<std::uint8_t>(), std::uint8_t(0));
+        auto array_lock = array_in->dump_lock();
+        std::iota(array_in->begin<std::uint8_t>(), array_in->end<std::uint8_t>(), std::uint8_t(0));
     }
-    arrayWriter->set_object(arrayIn);
+    array_writer->set_object(array_in);
     std::filesystem::remove(filepath);
-    arrayWriter->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(arrayWriter->write());
+    array_writer->set_file(filepath);
+    CPPUNIT_ASSERT_NO_THROW(array_writer->write());
     std::array<std::uint8_t, 16> array {};
     {
         std::ifstream in(filepath);

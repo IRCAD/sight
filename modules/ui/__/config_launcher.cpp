@@ -42,7 +42,7 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 //------------------------------------------------------------------------------
 
 config_launcher::config_launcher() noexcept :
-    m_sigLaunched(new_signal<LaunchedSignalType>(LAUNCHED_SIG)),
+    m_sigLaunched(new_signal<launched_signal_t>(LAUNCHED_SIG)),
     m_configLauncher(std::make_unique<app::helper::config_launcher>())
 {
     new_slot(STOP_CONFIG_SLOT, &config_launcher::stopConfig, this);
@@ -81,19 +81,19 @@ void config_launcher::configuring()
 
 //-----------------------------------------------------------------------------
 
-void config_launcher::setChecked(bool isChecked)
+void config_launcher::setChecked(bool _is_checked)
 {
-    this->sight::ui::action::setChecked(isChecked);
-    if(isChecked)
+    this->sight::ui::action::setChecked(_is_checked);
+    if(_is_checked)
     {
         // Check if the config is already running, this avoids to start a running config.
         if(!m_configLauncher->configIsRunning())
         {
             core::com::proxy::sptr proxies = core::com::proxy::get();
             proxies->connect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
-            app::field_adaptor_t replaceMap;
-            replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
-            m_configLauncher->startConfig(this->get_sptr(), replaceMap);
+            app::field_adaptor_t replace_map;
+            replace_map[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+            m_configLauncher->startConfig(this->get_sptr(), replace_map);
             m_sigLaunched->async_emit();
         }
     }

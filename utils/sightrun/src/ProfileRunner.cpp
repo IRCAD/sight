@@ -56,29 +56,29 @@ using sight::core::crypto::secure_string;
 //------------------------------------------------------------------------------
 
 template<class A1, class A2>
-inline static std::ostream& operator<<(std::ostream& s, std::vector<A1, A2> const& vec)
+inline static std::ostream& operator<<(std::ostream& _s, std::vector<A1, A2> const& _vec)
 {
-    copy(vec.begin(), vec.end(), std::ostream_iterator<A1>(s, " "));
-    return s;
+    copy(_vec.begin(), _vec.end(), std::ostream_iterator<A1>(_s, " "));
+    return _s;
 }
 
 //-----------------------------------------------------------------------------
 
 /// Wrapper for std::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
-inline static std::filesystem::path absolute(const std::filesystem::path& path)
+inline static std::filesystem::path absolute(const std::filesystem::path& _path)
 {
-    return std::filesystem::weakly_canonical(path);
+    return std::filesystem::weakly_canonical(_path);
 }
 
 //-----------------------------------------------------------------------------
 
-volatile sig_atomic_t gSignalStatus = 0;
+volatile sig_atomic_t g_signal_status = 0;
 //------------------------------------------------------------------------------
 
-void signalHandler(int signal)
+void signal_handler(int _signal)
 {
-    gSignalStatus = signal;
+    g_signal_status = _signal;
 
     try
     {
@@ -105,18 +105,18 @@ void signalHandler(int signal)
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path buildLogFilePath(const std::filesystem::path& log_dir, bool encrypted_log)
+inline static std::filesystem::path build_log_file_path(const std::filesystem::path& _log_dir, bool _encrypted_log)
 {
     // Use the default log file name as base
-    std::filesystem::path log_file_path = encrypted_log
+    std::filesystem::path log_file_path = _encrypted_log
                                           ? sight::core::log::ENCRYPTED_LOG_FILE
                                           : sight::core::log::LOG_FILE;
 
     // Prepend the log directory
-    if(!log_dir.empty())
+    if(!_log_dir.empty())
     {
-        std::filesystem::create_directories(log_dir);
-        log_file_path = log_dir / log_file_path;
+        std::filesystem::create_directories(_log_dir);
+        log_file_path = _log_dir / log_file_path;
     }
 
     // Test if the directory is writable. An exception will be thrown if not
@@ -133,54 +133,54 @@ inline static std::filesystem::path buildLogFilePath(const std::filesystem::path
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path findLogFilePath(
-    const std::filesystem::path& log_file,
-    const std::filesystem::path& profile_file,
-    bool encrypted_log
+inline static std::filesystem::path find_log_file_path(
+    const std::filesystem::path& _log_file,
+    const std::filesystem::path& _profile_file,
+    bool _encrypted_log
 )
 {
-    if(log_file.empty())
+    if(_log_file.empty())
     {
         // Parse the profile.xml to get the name
         boost::property_tree::ptree profile_tree;
-        boost::property_tree::read_xml(profile_file.string(), profile_tree);
+        boost::property_tree::read_xml(_profile_file.string(), profile_tree);
         const auto& profile_name = profile_tree.get<std::string>("profile.<xmlattr>.name");
 
         try
         {
             // Try the user cache directory
-            return buildLogFilePath(
+            return build_log_file_path(
                 sight::core::tools::os::get_user_cache_dir(profile_name),
-                encrypted_log
+                _encrypted_log
             );
         }
         catch(...)
         {
             // Fallback: take temporary directory
-            return buildLogFilePath(
+            return build_log_file_path(
                 std::filesystem::temp_directory_path() / "sight" / profile_name,
-                encrypted_log
+                _encrypted_log
             );
         }
     }
 
     // Take the user choice
-    return log_file;
+    return _log_file;
 }
 
 //-----------------------------------------------------------------------------
 
 int main(int argc, char* argv[])
 {
-    std::vector<std::filesystem::path> modulePaths;
-    std::filesystem::path profileFile;
-    sight::core::runtime::profile::params_container profileArgs;
+    std::vector<std::filesystem::path> module_paths;
+    std::filesystem::path profile_file;
+    sight::core::runtime::profile::params_container profile_args;
 
     // Runner options
     po::options_description options("Sight application launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("module-path,B", po::value(&modulePaths), "Adds a module path")
+        ("module-path,B", po::value(&module_paths), "Adds a module path")
     ;
 
     // Log options
@@ -204,8 +204,8 @@ int main(int argc, char* argv[])
     using spy_logger = sight::core::log::spy_logger;
     int log_level = spy_logger::SL_WARN;
 
-    po::options_description logOptions("Log options");
-    logOptions.add_options()
+    po::options_description log_options("Log options");
+    log_options.add_options()
 #if defined(SIGHT_ENABLE_ENCRYPTED_LOG)
     (
         "ask-password",
@@ -270,17 +270,17 @@ int main(int argc, char* argv[])
     );
 
     // Hidden options
-    bool macroMode = false;
+    bool macro_mode = false;
 #ifdef WIN32
     bool enableAbortDialog = true;
 #endif
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-        ("profile", po::value(&profileFile)->default_value("profile.xml"), "Profile file")
-        ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
-        ("macro", po::value(&macroMode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
-        ("no-macro", po::value(&macroMode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
+        ("profile", po::value(&profile_file)->default_value("profile.xml"), "Profile file")
+        ("profile-args", po::value(&profile_args)->multitoken(), "Profile args")
+        ("macro", po::value(&macro_mode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
+        ("no-macro", po::value(&macro_mode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
 #ifdef WIN32
     ("abort-dialog", po::value(&enableAbortDialog)->implicit_value(true)->zero_tokens(), "Enable abort dialog")
         ("no-abort-dialog", po::value(&enableAbortDialog)->implicit_value(false)->zero_tokens(), "Disable abort dialog")
@@ -289,7 +289,7 @@ int main(int argc, char* argv[])
 
     // Set options
     po::options_description cmdline_options;
-    cmdline_options.add(options).add(logOptions).add(hidden);
+    cmdline_options.add(options).add(log_options).add(hidden);
 
     po::positional_options_description p;
     p.add("profile", 1).add("profile-args", -1);
@@ -325,7 +325,7 @@ int main(int argc, char* argv[])
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
         std::cout << "  use '--' to stop processing args for sightrun" << std::endl << std::endl;
-        std::cout << options << std::endl << logOptions << std::endl;
+        std::cout << options << std::endl << log_options << std::endl;
         return 0;
     }
 
@@ -348,15 +348,15 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    SIGHT_INFO_IF("Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
-    SIGHT_INFO_IF("Profile-args: " << profileArgs, vm.count("profile-args"));
+    SIGHT_INFO_IF("Profile path: " << profile_file << " => " << ::absolute(profile_file), vm.count("profile"));
+    SIGHT_INFO_IF("Profile-args: " << profile_args, vm.count("profile-args"));
 
     // Check if profile path exist
-    profileFile = ::absolute(profileFile);
+    profile_file = ::absolute(profile_file);
 
     SIGHT_FATAL_IF(
-        "Profile file " << profileFile << " do not exists or is not a regular file.",
-        !std::filesystem::is_regular_file(profileFile)
+        "Profile file " << profile_file << " do not exists or is not a regular file.",
+        !std::filesystem::is_regular_file(profile_file)
     );
 
     // Log file
@@ -369,7 +369,7 @@ int main(int argc, char* argv[])
 
     if(file_log)
     {
-        std::filesystem::path log_file_path = findLogFilePath(log_file, profileFile, encrypted_log);
+        std::filesystem::path log_file_path = find_log_file_path(log_file, profile_file, encrypted_log);
 
         if(encrypted_log)
         {
@@ -392,19 +392,19 @@ int main(int argc, char* argv[])
     }
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there
-    const auto profileModulePath = profileFile.parent_path().parent_path();
-    bool findProfileModulePath   = false;
-    for(const std::filesystem::path& modulePath : modulePaths)
+    const auto profile_module_path = profile_file.parent_path().parent_path();
+    bool find_profile_module_path  = false;
+    for(const std::filesystem::path& module_path : module_paths)
     {
-        if(profileModulePath == modulePath)
+        if(profile_module_path == module_path)
         {
-            findProfileModulePath = true;
+            find_profile_module_path = true;
         }
     }
 
-    if(!findProfileModulePath)
+    if(!find_profile_module_path)
     {
-        modulePaths.push_back(profileModulePath);
+        module_paths.push_back(profile_module_path);
     }
 
 #if SIGHT_INFO_ENABLED
@@ -419,54 +419,54 @@ int main(int argc, char* argv[])
 
     sight::core::runtime::init();
 
-    for(const std::filesystem::path& modulePath : modulePaths)
+    for(const std::filesystem::path& module_path : module_paths)
     {
-        sight::core::runtime::add_modules(modulePath);
+        sight::core::runtime::add_modules(module_path);
     }
 
     sight::core::runtime::profile::sptr profile;
 
     try
     {
-        profile = sight::core::runtime::io::profile_reader::create_profile(profileFile);
+        profile = sight::core::runtime::io::profile_reader::create_profile(profile_file);
 
         // Install a signal handler
-        if(std::signal(SIGINT, signalHandler) == SIG_ERR)
+        if(std::signal(SIGINT, signal_handler) == SIG_ERR)
         {
             perror("std::signal(SIGINT)");
         }
 
-        if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+        if(std::signal(SIGTERM, signal_handler) == SIG_ERR)
         {
             perror("std::signal(SIGTERM)");
         }
 
 #ifndef WIN32
-        if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+        if(std::signal(SIGHUP, signal_handler) == SIG_ERR)
         {
             perror("std::signal(SIGHUP)");
         }
 
-        if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
+        if(std::signal(SIGQUIT, signal_handler) == SIG_ERR)
         {
             perror("std::signal(SIGQUIT)");
         }
 #endif
-        profile->set_params(profileArgs);
+        profile->set_params(profile_args);
 
         profile->start();
-        if(macroMode)
+        if(macro_mode)
         {
             sight::core::runtime::load_module("sight::module::ui::test");
         }
 
         profile->run();
-        if(gSignalStatus == 0)
+        if(g_signal_status == 0)
         {
             profile->stop();
         }
 
-        if(macroMode)
+        if(macro_mode)
         {
             sight::core::runtime::unload_module("sight::module::ui::test");
         }

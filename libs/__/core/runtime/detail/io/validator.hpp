@@ -54,7 +54,7 @@ public:
      *
      * @param   validator to be copied
      */
-    validator(const validator& validator);
+    validator(const validator& _validator);
 
     /**
      * @brief   Constructor
@@ -63,7 +63,7 @@ public:
      *
      * @param   schema  a string containing the XML schema
      */
-    validator(std::string buffer);
+    validator(std::string _buffer);
 
     /**
      * @brief   Constructor
@@ -72,7 +72,7 @@ public:
      *
      * @param   path    a path to the xml schema file to load
      */
-    validator(const std::filesystem::path& path);
+    validator(const std::filesystem::path& _path);
 
     /**
      * @brief   Destructor
@@ -98,7 +98,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate(const std::filesystem::path& xml_file);
+    bool validate(const std::filesystem::path& _xml_file);
 
     /**
      * @brief   Validates the given xml node.
@@ -107,7 +107,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate(xmlNodePtr node);
+    bool validate(xmlNodePtr _node);
 
     /**
      * @brief   Returns the xsd content in string format
@@ -131,7 +131,7 @@ private:
     schema_sptr m_schema;
     schema_valid_ctxt_sptr m_schema_valid_context;
 
-    static void error_handler(void* user_data, xmlErrorPtr error);
+    static void error_handler(void* _user_data, xmlErrorPtr _error);
 };
 
 } // namespace sight::core::runtime::detail::io

@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// No worker exception.
 struct worker_changed : core::exception
 {
-    CORE_API worker_changed(const std::string& err);
+    CORE_API worker_changed(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

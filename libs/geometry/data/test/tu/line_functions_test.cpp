@@ -60,18 +60,18 @@ void line_functions_test::checkGetClosestPoint()
         fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d pt  = {{5, 10, 0}};
 
-        fwVec3d closestPt = geometry::data::getClosestPoint(line, pt);
+        fwVec3d closest_pt = geometry::data::get_closest_point(line, pt);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(5., closestPt[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closestPt[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closestPt[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(5., closest_pt[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[2], 0.001);
     }
     {
         fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
         fwVec3d pt = {{1, 42, 2}};
 
-        fwVec3d closestPt;
+        fwVec3d closest_pt;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoint");
@@ -81,11 +81,11 @@ void line_functions_test::checkGetClosestPoint()
             }
         }
 #else
-        closestPt = geometry::data::getClosestPoint(line, pt);
+        closest_pt = geometry::data::get_closest_point(line, pt);
 #endif
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(8.76923, closestPt[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(24.0769, closestPt[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(-19.3077, closestPt[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(8.76923, closest_pt[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(24.0769, closest_pt[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-19.3077, closest_pt[2], 0.001);
     }
 }
 
@@ -93,17 +93,17 @@ void line_functions_test::checkGetClosestPoint()
 
 void line_functions_test::checkGetClosestPoints()
 {
-    fwVec3d pointOnThis;
-    fwVec3d pointOnLine;
+    fwVec3d point_on_this;
+    fwVec3d point_on_line;
 
     // No intersection, parallel lines
     {
         fwLine line1 = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwLine line2 = {{{0, 1, 0}}, {{1, 0, 0}}};
 
-        bool bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
+        bool b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
 
-        CPPUNIT_ASSERT(bIntersection == false);
+        CPPUNIT_ASSERT(b_intersection == false);
     }
 
     // Intersection
@@ -113,17 +113,17 @@ void line_functions_test::checkGetClosestPoints()
 
         geometry::data::normalize(line2.second);
 
-        bool bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
+        bool b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
 
-        CPPUNIT_ASSERT(bIntersection == true);
+        CPPUNIT_ASSERT(b_intersection == true);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[2], 0.001);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[2], 0.001);
     }
 
     // No intersection, but lines are not parallel
@@ -133,7 +133,7 @@ void line_functions_test::checkGetClosestPoints()
 
         geometry::data::normalize(line2.second);
 
-        bool bIntersection = false;
+        bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoints");
@@ -143,18 +143,18 @@ void line_functions_test::checkGetClosestPoints()
             }
         }
 #else
-        bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
+        b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
 #endif
 
-        CPPUNIT_ASSERT(bIntersection == true);
+        CPPUNIT_ASSERT(b_intersection == true);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnThis[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[2], 0.001);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(2., pointOnLine[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., pointOnLine[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2., point_on_line[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., point_on_line[2], 0.001);
     }
 }
 
@@ -166,22 +166,22 @@ void line_functions_test::checkIntersect1()
         fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d pt  = {{5, 10, 0}};
 
-        bool bIntersection = false;
-        bIntersection = geometry::data::intersect(line, 11.0, pt);
-        CPPUNIT_ASSERT(bIntersection == true);
+        bool b_intersection = false;
+        b_intersection = geometry::data::intersect(line, 11.0, pt);
+        CPPUNIT_ASSERT(b_intersection == true);
 
-        bIntersection = geometry::data::intersect(line, 10.0, pt);
-        CPPUNIT_ASSERT(bIntersection == true);
+        b_intersection = geometry::data::intersect(line, 10.0, pt);
+        CPPUNIT_ASSERT(b_intersection == true);
 
-        bIntersection = geometry::data::intersect(line, 9.0, pt);
-        CPPUNIT_ASSERT(bIntersection == false);
+        b_intersection = geometry::data::intersect(line, 9.0, pt);
+        CPPUNIT_ASSERT(b_intersection == false);
     }
     {
         fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
         fwVec3d pt = {{1, 42, 2}};
 
-        bool bIntersection = false;
+        bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
@@ -191,15 +191,15 @@ void line_functions_test::checkIntersect1()
             }
         }
 #else
-        bIntersection = geometry::data::intersect(line, 10.0, pt);
+        b_intersection = geometry::data::intersect(line, 10.0, pt);
 #endif
-        CPPUNIT_ASSERT(bIntersection == false);
+        CPPUNIT_ASSERT(b_intersection == false);
 
-        bIntersection = geometry::data::intersect(line, 28.0, pt);
-        CPPUNIT_ASSERT(bIntersection == false);
+        b_intersection = geometry::data::intersect(line, 28.0, pt);
+        CPPUNIT_ASSERT(b_intersection == false);
 
-        bIntersection = geometry::data::intersect(line, 29.0, pt);
-        CPPUNIT_ASSERT(bIntersection == true);
+        b_intersection = geometry::data::intersect(line, 29.0, pt);
+        CPPUNIT_ASSERT(b_intersection == true);
     }
 }
 
@@ -212,11 +212,11 @@ void line_functions_test::checkIntersect2()
         fwLine line1      = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d origin    = {{0, 1, 0}};
         fwVec3d direction = {{1, 0, 0}};
-        fwVec3d pointOnLine;
+        fwVec3d point_on_line;
 
-        bool bIntersection = geometry::data::intersect(line1, 100.0, origin, direction, pointOnLine);
+        bool b_intersection = geometry::data::intersect(line1, 100.0, origin, direction, point_on_line);
 
-        CPPUNIT_ASSERT(bIntersection == false);
+        CPPUNIT_ASSERT(b_intersection == false);
     }
 
     // Intersection
@@ -225,11 +225,11 @@ void line_functions_test::checkIntersect2()
 
         fwVec3d origin    = {{0, 0, 0}};
         fwVec3d direction = {{1, 1, 1}};
-        fwVec3d pointOnLine;
+        fwVec3d point_on_line;
 
         geometry::data::normalize(direction);
 
-        bool bIntersection = false;
+        bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
@@ -239,14 +239,14 @@ void line_functions_test::checkIntersect2()
             }
         }
 #else
-        bIntersection = geometry::data::intersect(line1, 2.0, origin, direction, pointOnLine);
+        b_intersection = geometry::data::intersect(line1, 2.0, origin, direction, point_on_line);
 #endif
 
-        CPPUNIT_ASSERT(bIntersection == true);
+        CPPUNIT_ASSERT(b_intersection == true);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., pointOnLine[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[2], 0.001);
     }
 }
 

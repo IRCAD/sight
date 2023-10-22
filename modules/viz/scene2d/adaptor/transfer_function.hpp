@@ -154,7 +154,7 @@ private:
     void destroyTFPoints();
 
     /// Creates a pieceView from a TF, fills basic data and creates graphic points.
-    PieceView* createPieceView(const data::transfer_function_piece::sptr _tf, int _zIndex);
+    PieceView* createPieceView(const data::transfer_function_piece::sptr _tf, int _z_index);
 
     /// Creates the gradient of each pieceView and stores it in each element of @ref m_pieceView.
     void createTFPolygons();
@@ -163,7 +163,7 @@ private:
      * @brief Creates lines and gradient polygons of a pieceView.
      * @param _pieceView the pieceView used to create the gradient and store the generated graphic item.
      */
-    void createTFPolygon(PieceView* _pieceView);
+    void createTFPolygon(PieceView* _piece_view);
 
     /**
      * @brief Removes all graphic gradient in @ref m_pieceView from the layer and deletes them.
@@ -176,7 +176,7 @@ private:
      * @brief Removes graphic gradient of the pieceView from the layer and deletes them.
      * @param _pieceView to where destory the polygon.
      */
-    void destroyTFPolygon(PieceView* _pieceView);
+    void destroyTFPolygon(PieceView* _piece_view);
 
     /**
      * @brief Creates lines and linear gradient polygons of a pieceView.
@@ -186,10 +186,10 @@ private:
      * @param _distanceMax the maximum distance used by the gradient.
      */
     static void buildLinearPolygons(
-        PieceView* _pieceView,
+        PieceView* _piece_view,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
-        double _distanceMax
+        double _distance_max
     );
 
     /**
@@ -200,10 +200,10 @@ private:
      * @param _distanceMax the maximum distance used by the gradient.
      */
     static void buildNearestPolygons(
-        PieceView* _pieceView,
+        PieceView* _piece_view,
         QVector<QPointF>& _position,
         QLinearGradient& _grad,
-        double _distanceMax
+        double _distance_max
     );
 
     /// Adds graphic items of @ref m_pieceView to @ref m_layer at the right z-index.
@@ -216,7 +216,7 @@ private:
      *
      * @param _pieceView the new current pieceView.
      */
-    void setCurrentTF(PieceView* _pieceView);
+    void setCurrentTF(PieceView* _piece_view);
 
     /**
      * @brief Get pieceView that match the clicked coord of the event.
@@ -254,7 +254,7 @@ private:
      * @param _pieceView the selected pieceView.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(PieceView* _pieceView, std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint);
+    void leftButtonClickOnPointEvent(PieceView* _piece_view, std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point);
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the related TF.
@@ -263,7 +263,7 @@ private:
      * @pre m_capturedTFPoint must be previously sets.
      * @see leftButtonClickOnPointEvent(PieceView* const, std::pair< vec2d_t, QGraphicsEllipseItem* >&)
      */
-    void mouseMoveOnPointEvent(PieceView* _pieceView, const sight::viz::scene2d::data::Event& _event);
+    void mouseMoveOnPointEvent(PieceView* _piece_view, const sight::viz::scene2d::data::Event& _event);
 
     /**
      * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
@@ -279,8 +279,8 @@ private:
      * @param _TFPoint the selected TF point.
      */
     void rightButtonClickOnPointEvent(
-        PieceView* _pieceView,
-        std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
+        PieceView* _piece_view,
+        std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
     );
 
     /**
@@ -289,8 +289,8 @@ private:
      * @param _TFPoint the selected TF point.
      */
     void leftButtonDoubleClickOnPointEvent(
-        PieceView* _pieceView,
-        std::pair<vec2d_t, QGraphicsEllipseItem*>& _TFPoint
+        PieceView* _piece_view,
+        std::pair<vec2d_t, QGraphicsEllipseItem*>& _tf_point
     );
 
     /**

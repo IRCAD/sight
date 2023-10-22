@@ -30,9 +30,9 @@ namespace sight::core::memory::policy::factory
 
 //------------------------------------------------------------------------------
 
-core::memory::policy::base::sptr create(const core::memory::policy::registry::key_type& classname)
+core::memory::policy::base::sptr create(const core::memory::policy::registry::key_type& _classname)
 {
-    return core::memory::policy::registry::get()->create(classname);
+    return core::memory::policy::registry::get()->create(_classname);
 }
 
 } // namespace sight::core::memory::policy::factory

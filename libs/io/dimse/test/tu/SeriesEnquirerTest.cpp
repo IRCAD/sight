@@ -50,29 +50,35 @@ void SeriesEnquirerTest::setUp()
     m_localApplicationTitle = "SeriesEnquirerTest";
 
     // Pacs host name
-    char* pacsHostName = std::getenv("FWTEST_PACS_HOST_NAME");
-    CPPUNIT_ASSERT_MESSAGE("The FWTEST_PACS_HOST_NAME environment variable is not set.", pacsHostName);
-    m_pacsHostName = std::string(pacsHostName);
+    char* pacs_host_name = std::getenv("FWTEST_PACS_HOST_NAME");
+    CPPUNIT_ASSERT_MESSAGE("The FWTEST_PACS_HOST_NAME environment variable is not set.", pacs_host_name);
+    m_pacsHostName = std::string(pacs_host_name);
 
     // Pacs application title
-    char* pacsApplicationTitle = std::getenv("FWTEST_PACS_APPLICATION_TITLE");
-    CPPUNIT_ASSERT_MESSAGE("The FWTEST_PACS_APPLICATION_TITLE environment variable is not set.", pacsApplicationTitle);
-    m_pacsApplicationTitle = std::string(pacsApplicationTitle);
+    char* pacs_application_title = std::getenv("FWTEST_PACS_APPLICATION_TITLE");
+    CPPUNIT_ASSERT_MESSAGE(
+        "The FWTEST_PACS_APPLICATION_TITLE environment variable is not set.",
+        pacs_application_title
+    );
+    m_pacsApplicationTitle = std::string(pacs_application_title);
 
     // Pacs application port (default 11112)
-    char* pacsApplicationPort = std::getenv("FWTEST_PACS_APPLICATION_PORT");
+    char* pacs_application_port = std::getenv("FWTEST_PACS_APPLICATION_PORT");
     m_pacsApplicationPort =
-        (pacsApplicationPort) != nullptr ? (boost::lexical_cast<std::uint16_t>(pacsApplicationPort)) : 11112;
+        (pacs_application_port) != nullptr ? (boost::lexical_cast<std::uint16_t>(pacs_application_port)) : 11112;
 
     // Move application title
-    char* moveApplicationTitle = std::getenv("FWTEST_MOVE_APPLICATION_TITLE");
-    CPPUNIT_ASSERT_MESSAGE("The FWTEST_MOVE_APPLICATION_TITLE environment variable is not set.", moveApplicationTitle);
-    m_moveApplicationTitle = std::string(moveApplicationTitle);
+    char* move_application_title = std::getenv("FWTEST_MOVE_APPLICATION_TITLE");
+    CPPUNIT_ASSERT_MESSAGE(
+        "The FWTEST_MOVE_APPLICATION_TITLE environment variable is not set.",
+        move_application_title
+    );
+    m_moveApplicationTitle = std::string(move_application_title);
 
     // Move application port (default 11110)
-    char* moveApplicationPort = std::getenv("FWTEST_MOVE_APPLICATION_PORT");
+    char* move_application_port = std::getenv("FWTEST_MOVE_APPLICATION_PORT");
     m_moveApplicationPort =
-        (moveApplicationPort) != nullptr ? (boost::lexical_cast<std::uint16_t>(moveApplicationPort)) : 11110;
+        (move_application_port) != nullptr ? (boost::lexical_cast<std::uint16_t>(move_application_port)) : 11110;
 }
 
 //------------------------------------------------------------------------------
@@ -135,7 +141,7 @@ void SeriesEnquirerTest::pushSeries()
     // Retrieve DICOM instances
     const std::filesystem::path path =
         utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
-    const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+    const std::string path_str = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + path.string() + "' does not exist",
@@ -248,17 +254,17 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
     m_seriesEnquirer->connect();
 
     // Try to pull instance from the pacs
-    std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(
+    std::string sop_instance_uid = m_seriesEnquirer->findSOPInstanceUID(
         "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
         5
     );
     CPPUNIT_ASSERT_MESSAGE(
         "Wrong SOP Instance UID.",
-        sopInstanceUID == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
+        sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
     );
     m_seriesEnquirer->pullInstanceUsingMoveRetrieveMethod(
         "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        sopInstanceUID
+        sop_instance_uid
     );
 
     // Disconnect from the pacs
@@ -283,17 +289,17 @@ void SeriesEnquirerTest::pullInstanceUsingGetRetrieveMethod()
     m_seriesEnquirer->connect();
 
     // Try to pull instance from the pacs
-    std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(
+    std::string sop_instance_uid = m_seriesEnquirer->findSOPInstanceUID(
         "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
         5
     );
     CPPUNIT_ASSERT_MESSAGE(
         "Wrong SOP Instance UID.",
-        sopInstanceUID == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
+        sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
     );
     m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(
         "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        sopInstanceUID
+        sop_instance_uid
     );
 
     // Disconnect from the pacs

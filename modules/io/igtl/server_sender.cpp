@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <functional>
 
@@ -56,19 +56,19 @@ void server_sender::configuring()
 
     m_portConfig = config.get("port", "4242");
 
-    const config_t configIn = config.get_child("in");
+    const config_t config_in = config.get_child("in");
 
     SIGHT_ASSERT(
         "configured group must be 'objects'",
-        configIn.get<std::string>("<xmlattr>.group", "") == "objects"
+        config_in.get<std::string>("<xmlattr>.group", "") == "objects"
     );
 
-    const auto keyCfg = configIn.equal_range("key");
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
+    const auto key_cfg = config_in.equal_range("key");
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg)
     {
-        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName  = attr.get("deviceName", "Sight");
-        m_deviceNames.push_back(deviceName);
+        const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
+        const std::string device_name = attr.get("deviceName", "Sight");
+        m_deviceNames.push_back(device_name);
     }
 }
 
@@ -78,7 +78,7 @@ void server_sender::starting()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
 
         m_server->start(port);
@@ -126,14 +126,14 @@ void server_sender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void server_sender::sendObject(const data::object::csptr& obj, const std::size_t index)
+void server_sender::sendObject(const data::object::csptr& _obj, const std::size_t _index)
 {
-    if(!m_deviceNames[index].empty())
+    if(!m_deviceNames[_index].empty())
     {
-        m_server->setMessageDeviceName(m_deviceNames[index]);
+        m_server->setMessageDeviceName(m_deviceNames[_index]);
     }
 
-    m_server->broadcast(obj);
+    m_server->broadcast(_obj);
 }
 
 //-----------------------------------------------------------------------------

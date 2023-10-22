@@ -29,7 +29,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/boolean.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/point_list.hpp>
 #include <data/string.hpp>
 
@@ -39,13 +39,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 Fiducial::Fiducial(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const io::dicom::container::DicomInstance::sptr& instance,
-    const data::image::sptr& image,
-    const core::log::logger::sptr& logger
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(gdcm::Reader)& _reader,
+    const io::dicom::container::DicomInstance::sptr& _instance,
+    const data::image::sptr& _image,
+    const core::log::logger::sptr& _logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(_dicom_series, _reader, _instance, _image, _logger)
 {
 }
 
@@ -56,80 +56,80 @@ Fiducial::~Fiducial()
 
 //------------------------------------------------------------------------------
 
-void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
+void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node)
 {
-    if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature")
-       && !node->getSubNodeContainer().empty())
+    if(_node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature")
+       && !_node->getSubNodeContainer().empty())
     {
         std::string label;
-        double x           = 0;
-        double y           = 0;
-        double z           = 0;
-        bool foundLandmark = false;
-        for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
+        double x            = 0;
+        double y            = 0;
+        double z            = 0;
+        bool found_landmark = false;
+        for(const SPTR(io::dicom::container::sr::DicomSRNode) & sub_node : _node->getSubNodeContainer())
         {
             // Read label
-            if(subNode->getCodedAttribute()
+            if(sub_node->getCodedAttribute()
                == io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
             {
-                SPTR(io::dicom::container::sr::DicomSRTextNode) intentNode =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRTextNode>(subNode);
-                if(intentNode)
+                SPTR(io::dicom::container::sr::DicomSRTextNode) intent_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRTextNode>(sub_node);
+                if(intent_node)
                 {
-                    label = intentNode->getTextValue();
+                    label = intent_node->getTextValue();
                 }
             }
             // 2D Coordinate
-            else if(subNode->getType() == "SCOORD")
+            else if(sub_node->getType() == "SCOORD")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoordNode =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(subNode);
-                if(scoordNode && scoordNode->getGraphicType() == "POINT")
+                SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoord_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(sub_node);
+                if(scoord_node && scoord_node->get_graphic_type() == "POINT")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                        scoordNode->getGraphicDataContainer();
+                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
+                        scoord_node->getGraphicDataContainer();
 
                     x = coordinates[0];
                     y = coordinates[1];
 
-                    if(!scoordNode->getSubNodeContainer().empty())
+                    if(!scoord_node->getSubNodeContainer().empty())
                     {
-                        SPTR(io::dicom::container::sr::DicomSRImageNode) imageNode =
+                        SPTR(io::dicom::container::sr::DicomSRImageNode) image_node =
                             std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRImageNode>(
-                                *scoordNode->getSubNodeContainer().begin()
+                                *scoord_node->getSubNodeContainer().begin()
                             );
-                        if(imageNode)
+                        if(image_node)
                         {
-                            const int frameNumber = imageNode->getFrameNumber();
+                            const int frame_number = image_node->getFrameNumber();
                             z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                std::size_t(frameNumber)
+                                std::size_t(frame_number)
                             );
-                            foundLandmark = true;
+                            found_landmark = true;
                         }
                     }
                 }
             }
             // 3D Coordinate
-            else if(subNode->getType() == "SCOORD3D")
+            else if(sub_node->getType() == "SCOORD3D")
             {
-                SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(subNode);
-                if(scoord3DNode && scoord3DNode->getGraphicType() == "POINT")
+                SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3_d_node =
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(sub_node);
+                if(scoord3_d_node && scoord3_d_node->get_graphic_type() == "POINT")
                 {
                     // Retrieve coordinates
-                    io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                        scoord3DNode->getGraphicDataContainer();
-                    x             = coordinates[0];
-                    y             = coordinates[1];
-                    z             = coordinates[2];
-                    foundLandmark = true;
+                    io::dicom::container::sr::DicomSRSCoordNode::graphic_data_container_t coordinates =
+                        scoord3_d_node->getGraphicDataContainer();
+                    x              = coordinates[0];
+                    y              = coordinates[1];
+                    z              = coordinates[2];
+                    found_landmark = true;
                 }
             }
         }
 
-        if(foundLandmark)
+        if(found_landmark)
         {
             this->addLandmark(x, y, z, label);
         }
@@ -138,21 +138,21 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 
 //------------------------------------------------------------------------------
 
-void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
+void Fiducial::addLandmark(double _x, double _y, double _z, const std::string& _label)
 {
-    data::point::sptr point = std::make_shared<data::point>(x, y, z);
-    point->setLabel(label);
+    data::point::sptr point = std::make_shared<data::point>(_x, _y, _z);
+    point->setLabel(_label);
 
-    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+    data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*m_object);
 
-    if(!pointList)
+    if(!point_list)
     {
-        pointList = std::make_shared<data::point_list>();
-        data::helper::MedicalImage::setLandmarks(*m_object, pointList);
+        point_list = std::make_shared<data::point_list>();
+        data::helper::medical_image::set_landmarks(*m_object, point_list);
     }
 
-    pointList->getPoints().push_back(point);
-    data::helper::MedicalImage::setLandmarksVisibility(*m_object, true);
+    point_list->getPoints().push_back(point);
+    data::helper::medical_image::set_landmarks_visibility(*m_object, true);
 }
 
 //------------------------------------------------------------------------------

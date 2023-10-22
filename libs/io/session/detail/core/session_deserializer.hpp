@@ -61,26 +61,26 @@ public:
     /// @param password password to use for optional decryption. Empty password means no decryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     sight::data::object::sptr deserialize(
-        const std::filesystem::path& archive_path,
-        io::zip::Archive::ArchiveFormat archiveFormat                     = io::zip::Archive::ArchiveFormat::DEFAULT,
-        const core::crypto::secure_string& password                       = "",
-        core::crypto::password_keeper::encryption_policy encryptionPolicy = core::crypto::password_keeper::encryption_policy::PASSWORD
+        const std::filesystem::path& _archive_path,
+        io::zip::Archive::ArchiveFormat _archive_format                     = io::zip::Archive::ArchiveFormat::DEFAULT,
+        const core::crypto::secure_string& _password                        = "",
+        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::PASSWORD
     ) const;
 
     /// Set a deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    void setCustomDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+    void setCustomDeserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
 
     /// Set a default deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    static void setDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+    static void setDeserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
 
     /// Return the registered deserialization function for an object
     /// @param className the name of the object to deserialize
     /// @return the function pointer to the deserialization function
-    static deserializer_t deserializer(const std::string& className);
+    static deserializer_t deserializer(const std::string& _class_name);
 
 private:
 
@@ -89,7 +89,7 @@ private:
 
     /// Return a deserializer from a data object class name
     /// @param className the name of the object to find a deserializer
-    deserializer_t findDeserializer(const std::string& classname) const;
+    deserializer_t findDeserializer(const std::string& _classname) const;
 
     /// Deserializes recursively an initialized archive to a data::object using an opened property tree
     /// @param cache object cache
@@ -98,11 +98,11 @@ private:
     /// @param password password to use for optional encryption. Empty password means no encryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     data::object::sptr deepDeserialize(
-        std::map<std::string, data::object::sptr>& cache,
-        zip::ArchiveReader& archive,
-        const boost::property_tree::ptree& tree,
-        const core::crypto::secure_string& password,
-        core::crypto::password_keeper::encryption_policy encryptionPolicy
+        std::map<std::string, data::object::sptr>& _cache,
+        zip::ArchiveReader& _archive,
+        const boost::property_tree::ptree& _tree,
+        const core::crypto::secure_string& _password,
+        core::crypto::password_keeper::encryption_policy _encryption_policy
     ) const;
 };
 

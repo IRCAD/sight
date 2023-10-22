@@ -51,8 +51,8 @@ public:
      * @return array of the size of one the pointlists (they must have the same size)
      */
     GEOMETRY_DATA_API static sight::data::array::sptr computeDistance(
-        sight::data::point_list::sptr _pointList1,
-        sight::data::point_list::sptr _pointList2
+        sight::data::point_list::sptr _point_list1,
+        sight::data::point_list::sptr _point_list2
     );
 
     /**
@@ -61,7 +61,7 @@ public:
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
     GEOMETRY_DATA_API static void transform(
-        sight::data::point_list::sptr& _pointList,
+        sight::data::point_list::sptr& _point_list,
         const sight::data::matrix4::csptr& _matrix
     );
 
@@ -73,8 +73,8 @@ public:
      * @param[in] _pointList2 pointlist that will be re-ordered
      */
     GEOMETRY_DATA_API static void associate(
-        const sight::data::point_list::csptr& _pointList1,
-        sight::data::point_list::sptr _pointList2
+        const sight::data::point_list::csptr& _point_list1,
+        sight::data::point_list::sptr _point_list2
     );
 
     /**
@@ -85,7 +85,7 @@ public:
      * @return the removed point or nullptr if no point has been removed
      */
     GEOMETRY_DATA_API static sight::data::point::sptr removeClosestPoint(
-        const sight::data::point_list::sptr& _pointList,
+        const sight::data::point_list::sptr& _point_list,
         const sight::data::point::csptr& _point,
         float _delta
     );

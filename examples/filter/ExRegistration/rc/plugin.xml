@@ -59,7 +59,7 @@ Detail of the ToolBar
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
     <extension implements="sight::app::extension::config">
@@ -182,7 +182,7 @@ Detail of the ToolBar
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <!-- Generic Scene (Negato) for the first tab -->
+            <!-- Generic scene (Negato) for the first tab -->
             <service uid="negato1SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
@@ -221,7 +221,7 @@ Detail of the ToolBar
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <!-- Generic Scene (Negato) for the second tab -->
+            <!-- Generic scene (Negato) for the second tab -->
             <service uid="negato2SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
@@ -253,7 +253,7 @@ Detail of the ToolBar
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <!-- Generic Scene (Negato) for the Third tab -->
+            <!-- Generic scene (Negato) for the Third tab -->
             <service uid="negato3SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />

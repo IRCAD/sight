@@ -60,26 +60,26 @@ void ArchiveTest::newTest()
     // Nominal test
     {
         // Create a temporary file
-        core::os::temp_dir tmpDir;
-        const std::filesystem::path archivePath = tmpDir / "newTest.zip";
+        core::os::temp_dir tmp_dir;
+        const std::filesystem::path archive_path = tmp_dir / "newTest.zip";
 
         {
-            auto archiveWriter = ArchiveWriter::get(archivePath);
+            auto archive_writer = ArchiveWriter::get(archive_path);
 
             // check the archive path getter
             CPPUNIT_ASSERT_EQUAL(
-                archivePath,
-                archiveWriter->getArchivePath()
+                archive_path,
+                archive_writer->getArchivePath()
             );
         }
 
         {
-            auto archiveReader = ArchiveReader::get(archivePath);
+            auto archive_reader = ArchiveReader::get(archive_path);
 
             // check the archive path getter
             CPPUNIT_ASSERT_EQUAL(
-                archivePath,
-                archiveReader->getArchivePath()
+                archive_path,
+                archive_reader->getArchivePath()
             );
         }
     }
@@ -99,16 +99,16 @@ void ArchiveTest::newTest()
 void ArchiveTest::singletonTest()
 {
     // Create a temporary file
-    core::os::temp_dir tmpDir;
-    const std::filesystem::path archivePath = tmpDir / "singletonTest.zip";
+    core::os::temp_dir tmp_dir;
+    const std::filesystem::path archive_path = tmp_dir / "singletonTest.zip";
 
     // Error test
     {
         // Due to internal limitation of minizip, you should not be able to open the same archive in both mode
-        auto archiveWriter = ArchiveWriter::get(archivePath);
+        auto archive_writer = ArchiveWriter::get(archive_path);
         CPPUNIT_ASSERT_THROW_MESSAGE(
             "Open the same archive in writing and in reading at the same time, should trigger an exception.",
-            ArchiveReader::get(archivePath),
+            ArchiveReader::get(archive_path),
             core::exception
         );
     }
@@ -119,23 +119,23 @@ void ArchiveTest::singletonTest()
 void ArchiveTest::openTest()
 {
     // Create a temporary file
-    core::os::temp_dir tmpDir;
-    const std::filesystem::path archivePath = tmpDir / "openTest.zip";
+    core::os::temp_dir tmp_dir;
+    const std::filesystem::path archive_path = tmp_dir / "openTest.zip";
 
     // Test default parameters
     const std::string unencrypted_zstd_default("unencrypted_zstd_default");
     {
         // Create the archive writer
-        auto archiveWriter = ArchiveWriter::get(archivePath);
+        auto archive_writer = ArchiveWriter::get(archive_path);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archiveWriter->openFile(unencrypted_zstd_default);
+        auto ostream = archive_writer->openFile(unencrypted_zstd_default);
         ostream->write(unencrypted_zstd_default.data(), static_cast<std::streamsize>(unencrypted_zstd_default.size()));
     }
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::get(archivePath);
+        auto archive_reader = ArchiveReader::get(archive_path);
 
         // Read the stream
         std::string buffer(unencrypted_zstd_default.size(), 0);
@@ -149,10 +149,10 @@ void ArchiveTest::openTest()
     const core::crypto::secure_string encrypted_zstd_best("encrypted_zstd_best");
     {
         // Create the archive writer
-        auto archiveWriter = ArchiveWriter::get(archivePath);
+        auto archive_writer = ArchiveWriter::get(archive_path);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archiveWriter->openFile(
+        auto ostream = archive_writer->openFile(
             encrypted_zstd_best,
             encrypted_zstd_best,
             Method::ZSTD,
@@ -164,7 +164,7 @@ void ArchiveTest::openTest()
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::get(archivePath);
+        auto archive_reader = ArchiveReader::get(archive_path);
 
         // Read the stream
         std::string buffer(encrypted_zstd_best.size(), 0);
@@ -178,10 +178,10 @@ void ArchiveTest::openTest()
     const std::string unencrypted_deflate_fast("unencrypted_deflate_fast");
     {
         // Create the archive writer
-        auto archiveWriter = ArchiveWriter::get(archivePath);
+        auto archive_writer = ArchiveWriter::get(archive_path);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archiveWriter->openFile(
+        auto ostream = archive_writer->openFile(
             unencrypted_deflate_fast,
             "",
             Method::DEFLATE,
@@ -193,7 +193,7 @@ void ArchiveTest::openTest()
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::get(archivePath);
+        auto archive_reader = ArchiveReader::get(archive_path);
 
         // Read the stream
         std::string buffer(unencrypted_deflate_fast.size(), 0);
@@ -209,25 +209,25 @@ void ArchiveTest::openTest()
 void ArchiveTest::rawTest()
 {
     // Create a temporary file
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
     // use a complex uncreated path
-    auto folderPath = tmpDir / std::filesystem::path("a/b/c/d");
+    auto folder_path = tmp_dir / std::filesystem::path("a/b/c/d");
 
     // Test default parameters
     const std::string raw_text("raw_text");
     {
         // Create the archive writer
-        auto archiveWriter = ArchiveWriter::get(folderPath, Archive::ArchiveFormat::FILESYSTEM);
+        auto archive_writer = ArchiveWriter::get(folder_path, Archive::ArchiveFormat::FILESYSTEM);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archiveWriter->openFile(raw_text);
+        auto ostream = archive_writer->openFile(raw_text);
         ostream->write(raw_text.data(), static_cast<std::streamsize>(raw_text.size()));
     }
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::get(folderPath, Archive::ArchiveFormat::FILESYSTEM);
+        auto archive_reader = ArchiveReader::get(folder_path, Archive::ArchiveFormat::FILESYSTEM);
 
         // Read the stream
         std::string buffer(raw_text.size(), 0);
@@ -237,7 +237,7 @@ void ArchiveTest::rawTest()
         CPPUNIT_ASSERT_EQUAL(raw_text, buffer);
     }
 
-    std::filesystem::remove_all(folderPath);
+    std::filesystem::remove_all(folder_path);
 }
 
 //------------------------------------------------------------------------------

@@ -30,14 +30,14 @@
 
 #include <service/op.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 namespace sight::module::ui
 {
 
 using sight::core::crypto::secure_string;
 using sight::core::crypto::password_keeper;
-using sight::ui::Preferences;
+using sight::ui::preferences;
 
 constexpr static auto s_PREFERENCES_ENABLED                     = "preferences_enabled";
 constexpr static auto s_PREFERENCES_PASSWORD_POLICY             = "preferences_password_policy";
@@ -63,7 +63,7 @@ void plugin::start()
     const bool enabled = !module->has_parameter(s_PREFERENCES_ENABLED)
                          || module->get_parameter_value(s_PREFERENCES_ENABLED) != "false";
 
-    Preferences::set_enabled(enabled);
+    preferences::set_enabled(enabled);
 
     // Set the password policy
     const password_keeper::password_policy password_policy =
@@ -72,7 +72,7 @@ void plugin::start()
         : password_keeper::string_to_password_policy(module->get_parameter_value(s_PREFERENCES_PASSWORD_POLICY));
 
     SIGHT_THROW_IF("Invalid password policy.", password_policy == password_keeper::password_policy::INVALID);
-    Preferences::set_password_policy(password_policy);
+    preferences::set_password_policy(password_policy);
 
     // Set the encryption policy
     const password_keeper::encryption_policy encryption_policy =
@@ -81,18 +81,18 @@ void plugin::start()
         : password_keeper::string_to_encryption_policy(module->get_parameter_value(s_PREFERENCES_ENCRYPTION_POLICY));
 
     SIGHT_THROW_IF("Invalid encryption policy.", encryption_policy == password_keeper::encryption_policy::INVALID);
-    Preferences::set_encryption_policy(encryption_policy);
+    preferences::set_encryption_policy(encryption_policy);
 
     // Set an hardcoded password
     if(module->has_parameter(s_PREFERENCES_PASSWORD))
     {
         // NOLINTNEXTLINE(readability-redundant-string-cstr)
-        Preferences::set_password(module->get_parameter_value(s_PREFERENCES_PASSWORD).c_str());
+        preferences::set_password(module->get_parameter_value(s_PREFERENCES_PASSWORD).c_str());
     }
 
     if(module->has_parameter(s_PREFERENCES_EXIT_ON_PASSWORD_ERROR))
     {
-        Preferences::exit_on_password_error(
+        preferences::exit_on_password_error(
             module->get_parameter_value(s_PREFERENCES_EXIT_ON_PASSWORD_ERROR)
             != "false"
         );
@@ -100,14 +100,14 @@ void plugin::start()
 
     if(module->has_parameter(S_PREFERENCES_PASSWORD_DIALOG_TITLE))
     {
-        Preferences::set_password_dialog_strings(
+        preferences::set_password_dialog_strings(
             {.title = module->get_parameter_value(S_PREFERENCES_PASSWORD_DIALOG_TITLE)
             });
     }
 
     if(module->has_parameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_TITLE))
     {
-        Preferences::set_password_dialog_strings(
+        preferences::set_password_dialog_strings(
             {.new_title = module->get_parameter_value(S_PREFERENCES_NEW_PASSWORD_DIALOG_TITLE)
             });
     }
@@ -126,11 +126,11 @@ void plugin::start()
                        + "</strong>";
         }
 
-        Preferences::set_password_dialog_strings({.message = message});
+        preferences::set_password_dialog_strings({.message = message});
     }
     else if(module->has_parameter(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE))
     {
-        Preferences::set_password_dialog_strings(
+        preferences::set_password_dialog_strings(
             {.message = module->get_parameter_value(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE)
             });
     }
@@ -150,11 +150,11 @@ void plugin::start()
                        + "</strong>";
         }
 
-        Preferences::set_password_dialog_strings({.new_message = message});
+        preferences::set_password_dialog_strings({.new_message = message});
     }
     else if(module->has_parameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE))
     {
-        Preferences::set_password_dialog_strings(
+        preferences::set_password_dialog_strings(
             {.new_message = module->get_parameter_value(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE)
             });
     }
@@ -164,7 +164,7 @@ void plugin::start()
 
 void plugin::stop() noexcept
 {
-    Preferences::set_enabled(false);
+    preferences::set_enabled(false);
 }
 
 } // namespace sight::module::ui

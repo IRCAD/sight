@@ -30,7 +30,7 @@
 namespace sight::ui::builder
 {
 
-const widget::RegistryKeyType widget::REGISTRY_KEY = "::ui::widget";
+const widget::registry_key_t widget::REGISTRY_KEY = "::ui::widget";
 
 //-----------------------------------------------------------------------------
 

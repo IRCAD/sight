@@ -42,24 +42,24 @@ color::color()
 //------------------------------------------------------------------------------
 
 color::color(
-    color::ColorType red,
-    color::ColorType green,
-    color::ColorType blue,
-    color::ColorType alpha
+    color::color_t _red,
+    color::color_t _green,
+    color::color_t _blue,
+    color::color_t _alpha
 )
 {
-    m_vRGBA = {red, green, blue, alpha};
+    m_vRGBA = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void color::shallow_copy(const object::csptr& source)
+void color::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const color>(source);
+    const auto& other = std::dynamic_pointer_cast<const color>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -72,13 +72,13 @@ void color::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void color::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void color::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const color>(source);
+    const auto& other = std::dynamic_pointer_cast<const color>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -86,50 +86,50 @@ void color::deep_copy(const object::csptr& source, const std::unique_ptr<deep_co
 
     m_vRGBA = other->m_vRGBA;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-void color::setRGBA(const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha)
+void color::setRGBA(const color_t _red, const color_t _green, const color_t _blue, const color_t _alpha)
 {
-    m_vRGBA = {red, green, blue, alpha};
+    m_vRGBA = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void color::setRGBA(const std::string& hexaColor)
+void color::setRGBA(const std::string& _hexa_color)
 {
     SIGHT_ASSERT(
         "color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " << hexaColor,
-        hexaColor[0] == '#'
-        && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        "hexadecimal digits. Given color: " << _hexa_color,
+        _hexa_color[0] == '#'
+        && (_hexa_color.length() == 7 || _hexa_color.length() == 9)
     );
 
-    const std::string redString   = hexaColor.substr(1, 2);
-    const std::string greenString = hexaColor.substr(3, 2);
-    const std::string blueString  = hexaColor.substr(5, 2);
-    std::int32_t r                = 0;
-    std::int32_t g                = 0;
-    std::int32_t b                = 0;
-    std::int32_t a                = 255;
+    const std::string red_string   = _hexa_color.substr(1, 2);
+    const std::string green_string = _hexa_color.substr(3, 2);
+    const std::string blue_string  = _hexa_color.substr(5, 2);
+    std::int32_t r                 = 0;
+    std::int32_t g                 = 0;
+    std::int32_t b                 = 0;
+    std::int32_t a                 = 255;
 
     std::istringstream iss;
-    iss.str(redString);
+    iss.str(red_string);
     iss >> std::hex >> r;
     iss.clear();
-    iss.str(greenString);
+    iss.str(green_string);
     iss >> std::hex >> g;
     iss.clear();
-    iss.str(blueString);
+    iss.str(blue_string);
     iss >> std::hex >> b;
 
-    if(hexaColor.length() == 9)
+    if(_hexa_color.length() == 9)
     {
-        const std::string alphaString = hexaColor.substr(7, 2);
+        const std::string alpha_string = _hexa_color.substr(7, 2);
         iss.clear();
-        iss.str(alphaString);
+        iss.str(alpha_string);
         iss >> std::hex >> a;
     }
 
@@ -143,79 +143,79 @@ void color::setRGBA(const std::string& hexaColor)
 
 //------------------------------------------------------------------------------
 
-color::ColorType& color::red()
+color::color_t& color::red()
 {
     return m_vRGBA[0];
 }
 
 //------------------------------------------------------------------------------
 
-color::ColorType& color::green()
+color::color_t& color::green()
 {
     return m_vRGBA[1];
 }
 
 //------------------------------------------------------------------------------
 
-color::ColorType& color::blue()
+color::color_t& color::blue()
 {
     return m_vRGBA[2];
 }
 
 //------------------------------------------------------------------------------
 
-color::ColorType& color::alpha()
+color::color_t& color::alpha()
 {
     return m_vRGBA[3];
 }
 
 //------------------------------------------------------------------------------
 
-const color::ColorType& color::red() const
+const color::color_t& color::red() const
 {
     return m_vRGBA[0];
 }
 
 //------------------------------------------------------------------------------
 
-const color::ColorType& color::green() const
+const color::color_t& color::green() const
 {
     return m_vRGBA[1];
 }
 
 //------------------------------------------------------------------------------
 
-const color::ColorType& color::blue() const
+const color::color_t& color::blue() const
 {
     return m_vRGBA[2];
 }
 
 //------------------------------------------------------------------------------
 
-const color::ColorType& color::alpha() const
+const color::color_t& color::alpha() const
 {
     return m_vRGBA[3];
 }
 
 //------------------------------------------------------------------------------
 
-bool color::operator==(const color& other) const noexcept
+bool color::operator==(const color& _other) const noexcept
 {
     // If the attributes are different, then it is not equal
-    if(!core::tools::is_equal(m_vRGBA, other.m_vRGBA))
+    if(!core::tools::is_equal(m_vRGBA, _other.m_vRGBA))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool color::operator!=(const color& other) const noexcept
+bool color::operator!=(const color& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

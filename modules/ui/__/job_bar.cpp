@@ -44,8 +44,8 @@ job_bar::job_bar() noexcept
 {
     new_slot(SHOW_JOB_SLOT, &job_bar::showJob, this);
 
-    m_sigStarted = new_signal<StartedSignalType>(STARTED_SIGNAL);
-    m_sigEnded   = new_signal<EndedSignalType>(ENDED_SIGNAL);
+    m_sigStarted = new_signal<started_signal_t>(STARTED_SIGNAL);
+    m_sigEnded   = new_signal<ended_signal_t>(ENDED_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,53 +86,53 @@ void job_bar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void job_bar::showJob(core::jobs::base::sptr job)
+void job_bar::showJob(core::jobs::base::sptr _job)
 {
-    auto progressDialog = std::make_shared<sight::ui::dialog::progress>();
-    progressDialog->setTitle(job->name());
+    auto progress_dialog = std::make_shared<sight::ui::dialog::progress>();
+    progress_dialog->setTitle(_job->name());
 
-    if(!job->is_cancelable())
+    if(!_job->is_cancelable())
     {
-        progressDialog->hideCancelButton();
+        progress_dialog->hideCancelButton();
     }
 
-    job->add_done_work_hook(
-        [ = ](core::jobs::base& job, std::uint64_t)
+    _job->add_done_work_hook(
+        [ = ](core::jobs::base& _job, std::uint64_t)
         {
-            std::string msg = (job.get_logs().empty()) ? "" : job.get_logs().back();
-            (*progressDialog)(float(job.get_done_work_units()) / float(job.get_total_work_units()), msg);
+            std::string msg = (_job.get_logs().empty()) ? "" : _job.get_logs().back();
+            (*progress_dialog)(float(_job.get_done_work_units()) / float(_job.get_total_work_units()), msg);
         });
 
-    job->add_state_hook(
-        [progressDialog, this](core::jobs::base::state state)
+    _job->add_state_hook(
+        [progress_dialog, this](core::jobs::base::state _state)
         {
-            if(state == core::jobs::base::CANCELED || state == core::jobs::base::FINISHED)
+            if(_state == core::jobs::base::CANCELED || _state == core::jobs::base::FINISHED)
             {
                 m_sigEnded->emit();
                 this->worker()->post_task<void>(
-                    [progressDialog, this]
+                    [progress_dialog, this]
                 {
-                    m_progressDialogs.erase(progressDialog);
+                    m_progressDialogs.erase(progress_dialog);
                 });
             }
-            else if(state == core::jobs::base::RUNNING)
+            else if(_state == core::jobs::base::RUNNING)
             {
                 m_sigStarted->emit();
             }
         });
 
-    core::jobs::base::wptr wIJob = job;
-    progressDialog->setCancelCallback(
+    core::jobs::base::wptr w_i_job = _job;
+    progress_dialog->setCancelCallback(
         [ = ]
         {
-            core::jobs::base::sptr job = wIJob.lock();
+            core::jobs::base::sptr job = w_i_job.lock();
             if(job)
             {
                 job->cancel();
             }
         });
 
-    m_progressDialogs.insert(progressDialog);
+    m_progressDialogs.insert(progress_dialog);
 }
 
 //-----------------------------------------------------------------------------

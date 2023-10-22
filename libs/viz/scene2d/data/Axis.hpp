@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
     {
         LINEAR,
         LOG
-    } ScaleType;
+    } scale_t;
 
     /**
      * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
@@ -52,19 +52,19 @@ public:
     [[nodiscard]] double getOrigin() const;
 
     /// Set m_origin attribute.
-    void setOrigin(double origin);
+    void setOrigin(double _origin);
 
     /// Get m_scale attribute.
     [[nodiscard]] double getScale() const;
 
     /// Set m_scale attribute.
-    void setScale(double scale);
+    void setScale(double _scale);
 
     /// Get m_scaleType attribute.
-    [[nodiscard]] ScaleType getScaleType() const;
+    [[nodiscard]] scale_t get_scale_type() const;
 
     /// Set m_scaleType attribute.
-    void setScaleType(ScaleType scaleType);
+    void set_scale_type(scale_t _scale_type);
 
 private:
 
@@ -72,7 +72,7 @@ private:
     double m_origin {0.F}, m_scale {1.F};
 
     /// The scaleType (LINEAR/LOG).
-    ScaleType m_scaleType {LINEAR};
+    scale_t m_scaleType {LINEAR};
 };
 
 //-----------------------------------------------------------------------------
@@ -84,9 +84,9 @@ inline double Axis::getOrigin() const
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setOrigin(double origin)
+inline void Axis::setOrigin(double _origin)
 {
-    m_origin = origin;
+    m_origin = _origin;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,23 +98,23 @@ inline double Axis::getScale() const
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setScale(double scale)
+inline void Axis::setScale(double _scale)
 {
-    m_scale = scale;
+    m_scale = _scale;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Axis::ScaleType Axis::getScaleType() const
+inline Axis::scale_t Axis::get_scale_type() const
 {
     return m_scaleType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setScaleType(ScaleType scaleType)
+inline void Axis::set_scale_type(scale_t _scale_type)
 {
-    m_scaleType = scaleType;
+    m_scaleType = _scale_type;
 }
 
 //-----------------------------------------------------------------------------

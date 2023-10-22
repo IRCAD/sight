@@ -47,15 +47,15 @@ public:
     } level_type;
 
     /// Constructor
-    CORE_API log(level_type level, std::string message);
+    CORE_API log(level_type _level, std::string _message);
 
     /// Destructor
     CORE_API ~log() override;
 
     /// Set Log level
-    void set_level(level_type level)
+    void set_level(level_type _level)
     {
-        m_level = level;
+        m_level = _level;
     }
 
     /// Get Log level
@@ -65,9 +65,9 @@ public:
     }
 
     /// Set Log message
-    void set_message(std::string message)
+    void set_message(std::string _message)
     {
-        m_message = message;
+        m_message = _message;
     }
 
     // Get Log message

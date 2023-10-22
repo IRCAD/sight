@@ -27,7 +27,7 @@
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
 #include <OGRE/OgreSceneManager.h>
@@ -45,9 +45,9 @@ public:
 
     /// Constructor, creates an SAT with the given resolution.
     VIZ_SCENE3D_API summed_area_table(
-        std::string _parentId,
-        Ogre::SceneManager* _sceneManager,
-        float _sizeRatio = 0.25F
+        std::string _parent_id,
+        Ogre::SceneManager* _scene_manager,
+        float _size_ratio = 0.25F
     );
 
     /// Destructor, does nothing.
@@ -58,9 +58,9 @@ public:
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
     VIZ_SCENE3D_API void computeParallel(
-        const Texture::sptr& _imgTexture,
-        const viz::scene3d::transfer_function::sptr& _gpuTf,
-        float _sampleDistance
+        const texture::sptr& _img_texture,
+        const viz::scene3d::transfer_function::sptr& _gpu_tf,
+        float _sample_distance
     );
 
     /// Returns the texture holding the SAT.
@@ -70,10 +70,10 @@ public:
     [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void updateSatFromTexture(const Texture::sptr& _imgTexture);
+    VIZ_SCENE3D_API void updateSatFromTexture(const texture::sptr& _img_texture);
 
     /// Updates the SAT size ratio and updates the SAT.
-    VIZ_SCENE3D_API void updateSatFromRatio(float _sizeRatio);
+    VIZ_SCENE3D_API void updateSatFromRatio(float _size_ratio);
 
 private:
 
@@ -104,16 +104,16 @@ private:
     /// Current image size used to resize the SAT in case of a ratio change.
     data::image::Size m_currentImageSize;
 
-    /// Texture used as source during SAT GPU computation, holds the result at the end.
+    /// texture used as source during SAT GPU computation, holds the result at the end.
     Ogre::TexturePtr m_sourceBuffer {nullptr};
 
-    /// Texture used as target during SAT GPU computation.
+    /// texture used as target during SAT GPU computation.
     Ogre::TexturePtr m_targetBuffer {nullptr};
 
     /// Prefix used to name the buffers.
     std::string m_parentId;
 
-    /// Scene manager.
+    /// scene manager.
     Ogre::SceneManager* m_sceneManager;
 
     /// Camera used as a viewport for each slice of the SAT buffers.

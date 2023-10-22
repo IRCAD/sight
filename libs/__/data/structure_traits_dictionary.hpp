@@ -42,7 +42,7 @@ public:
     SIGHT_DECLARE_CLASS(structure_traits_dictionary, object);
 
     typedef std::vector<std::string> StructureTypeNameContainer;
-    typedef std::map<std::string, structure_traits::sptr> StructureTraitsMapType;
+    typedef std::map<std::string, structure_traits::sptr> structure_traits_map_t;
 
     /// Destructor. Does nothing.
     DATA_API ~structure_traits_dictionary() noexcept override = default;
@@ -55,45 +55,45 @@ public:
      * @pre Structure attachment must be of class 'Organ' and must exist in dictionary.
      * @pre Structure type cannot contain space.
      */
-    DATA_API void addStructure(structure_traits::sptr structureTraits);
+    DATA_API void addStructure(structure_traits::sptr _structure_traits);
 
     /**
      * @brief Return the structure traits for given type
      * @pre given 'type' must exist in dictionary
      */
-    DATA_API structure_traits::sptr getStructure(std::string type);
-    DATA_API structure_traits::csptr getStructure(std::string type) const;
+    DATA_API structure_traits::sptr getStructure(std::string _type);
+    DATA_API structure_traits::csptr getStructure(std::string _type) const;
 
     /// Return all array names stock in the structureTraits-map
     DATA_API StructureTypeNameContainer getStructureTypeNames() const;
 
     /// sets the entire structures map
-    DATA_API void setStructureTraitsMap(const StructureTraitsMapType& structureTraitsMap);
+    DATA_API void setStructureTraitsMap(const structure_traits_map_t& _structure_traits_map);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const structure_traits_dictionary& other) const noexcept;
-    DATA_API bool operator!=(const structure_traits_dictionary& other) const noexcept;
+    DATA_API bool operator==(const structure_traits_dictionary& _other) const noexcept;
+    DATA_API bool operator!=(const structure_traits_dictionary& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 private:
 
     /// map to register structure traits. Map key is structure type.
-    StructureTraitsMapType m_structureTraitsMap;
+    structure_traits_map_t m_structureTraitsMap;
 };
 
 } // namespace sight::data

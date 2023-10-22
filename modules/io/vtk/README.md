@@ -29,7 +29,7 @@ This module contains services for reading and writing VTK related data.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget
+add_dependencies(my_target
     ...
     module_io_vtk
 )

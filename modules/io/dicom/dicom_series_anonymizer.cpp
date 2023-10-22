@@ -122,14 +122,14 @@ void dicom_series_anonymizer::anonymize(sight::data::vector& _vector)
     auto anonymizer = std::make_shared<sight::io::dicom::helper::DicomSeriesAnonymizer>();
     m_sigJobCreated->emit(anonymizer->getJob());
 
-    std::vector<data::dicom_series::sptr> anonymizedDicomSeriesVector;
+    std::vector<data::dicom_series::sptr> anonymized_dicom_series_vector;
 
     for(const auto& value : _vector)
     {
-        data::dicom_series::sptr dicomSeries           = std::dynamic_pointer_cast<data::dicom_series>(value);
-        data::dicom_series::sptr anonymizedDicomSeries = std::make_shared<data::dicom_series>();
-        anonymizer->anonymize(dicomSeries, anonymizedDicomSeries);
-        anonymizedDicomSeriesVector.push_back(anonymizedDicomSeries);
+        data::dicom_series::sptr dicom_series            = std::dynamic_pointer_cast<data::dicom_series>(value);
+        data::dicom_series::sptr anonymized_dicom_series = std::make_shared<data::dicom_series>();
+        anonymizer->anonymize(dicom_series, anonymized_dicom_series);
+        anonymized_dicom_series_vector.push_back(anonymized_dicom_series);
 
         m_cancelled = anonymizer->getJob()->cancel_requested();
         if(m_cancelled)
@@ -142,13 +142,13 @@ void dicom_series_anonymizer::anonymize(sight::data::vector& _vector)
     {
         for(const auto& value : _vector)
         {
-            auto dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(value);
-            series_set->remove(dicomSeries);
+            auto dicom_series = std::dynamic_pointer_cast<data::dicom_series>(value);
+            series_set->remove(dicom_series);
         }
 
-        for(const auto& anonymizedDicomSeries : anonymizedDicomSeriesVector)
+        for(const auto& anonymized_dicom_series : anonymized_dicom_series_vector)
         {
-            series_set->push_back(anonymizedDicomSeries);
+            series_set->push_back(anonymized_dicom_series);
         }
     }
 }

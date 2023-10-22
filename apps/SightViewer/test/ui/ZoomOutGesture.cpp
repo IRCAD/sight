@@ -32,46 +32,46 @@ namespace sight::sightviewer::test::ui
 
 void ZoomOutGesture::test()
 {
-    const std::string testName  = "sightViewerZoomOutGestureTest";
-    const std::string imageName = testName + ".png";
-    const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
-    if(std::filesystem::exists(snapshotPath))
+    const std::string test_name  = "sightViewerZoomOutGestureTest";
+    const std::string image_name = test_name + ".png";
+    const std::filesystem::path snapshot_path(sight::ui::test_core::Tester::getImageOutputPath() / image_name);
+    if(std::filesystem::exists(snapshot_path))
     {
-        std::filesystem::remove(snapshotPath);
+        std::filesystem::remove(snapshot_path);
     }
 
     // This test should give the same result as ZoomOut
-    const std::filesystem::path referencePath(utest_data::Data::dir()
-                                              / "sight/ui/SightViewer/sightViewerZoomOutTest.png");
+    const std::filesystem::path reference_path(utest_data::Data::dir()
+                                               / "sight/ui/SightViewer/sightViewerZoomOutTest.png");
 
     start(
-        testName,
-        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&snapshot_path, &reference_path](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "VTK",
                 utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 
             /* Pinch the fingers to zoom out */
             // Firstly, we need the 3D scene
-            tester.take("ogre scene", "sceneSrv");
+            _tester.take("ogre scene", "sceneSrv");
             // We need to a reference to it for later
-            auto* ogreScene = tester.get<QWidget*>();
-            tester.interact(
+            auto* ogre_scene = _tester.get<QWidget*>();
+            _tester.interact(
                 // Pinch fingers...
-                std::make_unique<sight::ui::testCore::PinchGesture>(
+                std::make_unique<sight::ui::test_core::PinchGesture>(
                     // ...with the first finger going to the center from 300 pixels higher...
-                    std::pair(ogreScene->rect().center() + QPoint(0, 300), ogreScene->rect().center() + QPoint(0, 1)),
+                    std::pair(ogre_scene->rect().center() + QPoint(0, 300), ogre_scene->rect().center() + QPoint(0, 1)),
                     // ...and the second finger going to the center from 300 pixels lower
-                    std::pair(ogreScene->rect().center() - QPoint(0, 300), ogreScene->rect().center() - QPoint(0, 1))
+                    std::pair(ogre_scene->rect().center() - QPoint(0, 300), ogre_scene->rect().center() - QPoint(0, 1))
                 )
             );
 
-            saveSnapshot(tester, snapshotPath);
+            saveSnapshot(_tester, snapshot_path);
 
-            compareImages(snapshotPath, referencePath);
+            compareImages(snapshot_path, reference_path);
         },
         true
     );

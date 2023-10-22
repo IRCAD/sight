@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// Bad call exception.
 struct bad_call : core::exception
 {
-    CORE_API bad_call(const std::string& err);
+    CORE_API bad_call(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

@@ -118,7 +118,7 @@ Q_SIGNALS:
 private:
 
     /// Gets recursively all nodes from the frame graph.
-    void getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes, Qt3DRender::QFrameGraphNode* _currentNode);
+    void getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes, Qt3DRender::QFrameGraphNode* _current_node);
 
     ///Contains a viewport allowing to choose which portion of the screen is rendered. Default is the whole screen.
     QPointer<Qt3DRender::QViewport> m_viewport;

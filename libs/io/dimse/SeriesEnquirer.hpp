@@ -73,7 +73,7 @@ public:
 
     IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
 
-    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> progress_callback_slot_t;
 
     typedef std::vector<std::string> InstanceUIDContainer;
 
@@ -98,12 +98,12 @@ public:
      * @param _progressCallback The progress callback.
      */
     IO_DIMSE_API void initialize(
-        const std::string& _applicationTitle,
-        const std::string& _peerHostName,
-        std::uint16_t _peerPort,
-        const std::string& _peerApplicationTitle,
-        const std::string& _moveApplicationTitle         = "",
-        ProgressCallbackSlotType::sptr _progressCallback = ProgressCallbackSlotType::sptr()
+        const std::string& _application_title,
+        const std::string& _peer_host_name,
+        std::uint16_t _peer_port,
+        const std::string& _peer_application_title,
+        const std::string& _move_application_title        = "",
+        progress_callback_slot_t::sptr _progress_callback = progress_callback_slot_t::sptr()
     );
 
     /// Initializes the network and negotiates association.
@@ -137,7 +137,7 @@ public:
      * @param _birthDate birthdate of the series.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> findSeriesByPatientBirthDate(const std::string& _birthDate);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByPatientBirthDate(const std::string& _birth_date);
 
     /**
      * @brief Finds series by study date.
@@ -147,7 +147,7 @@ public:
      *
      * @pre _fromDate and _toDate must match the format YYYYMMDD.
      */
-    IO_DIMSE_API OFList<QRResponse*> findSeriesByDate(const std::string& _fromDate, const std::string& _toDate);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByDate(const std::string& _from_date, const std::string& _to_date);
 
     /**
      * @brief Finds series by series UID.
@@ -176,19 +176,19 @@ public:
      * @param _instanceNumber The instance number.
      * @return The SOPInstanceUID corresponding to the instanceNumber.
      */
-    IO_DIMSE_API std::string findSOPInstanceUID(const std::string& _seriesInstanceUID, unsigned int _instanceNumber);
+    IO_DIMSE_API std::string findSOPInstanceUID(const std::string& _series_instance_uid, unsigned int _instance_number);
 
     /**
      * @brief Pulls series using C-MOVE requests.
      * @param _instanceUIDContainer The series instance UID container.
      */
-    IO_DIMSE_API void pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instanceUIDContainer);
+    IO_DIMSE_API void pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls series using C-GET requests.
      * @param _instanceUIDContainer The series instance UID container.
      */
-    IO_DIMSE_API void pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instanceUIDContainer);
+    IO_DIMSE_API void pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls instance using C-MOVE requests.
@@ -196,8 +196,8 @@ public:
      * @param _sopInstanceUID The sOP Instance UID.
      */
     IO_DIMSE_API void pullInstanceUsingMoveRetrieveMethod(
-        const std::string& _seriesInstanceUID,
-        const std::string& _sopInstanceUID
+        const std::string& _series_instance_uid,
+        const std::string& _sop_instance_uid
     );
 
     /**
@@ -206,21 +206,21 @@ public:
      * @param _sopInstanceUID The sOP Instance UID.
      */
     IO_DIMSE_API void pullInstanceUsingGetRetrieveMethod(
-        const std::string& _seriesInstanceUID,
-        const std::string& _sopInstanceUID
+        const std::string& _series_instance_uid,
+        const std::string& _sop_instance_uid
     );
 
     /**
      * @brief Pushs instances using C-STORE requests.
      * @param _pathContainer The instance paths container.
      */
-    IO_DIMSE_API void pushSeries(const InstancePathContainer& _pathContainer);
+    IO_DIMSE_API void pushSeries(const InstancePathContainer& _path_container);
 
     /**
      * @brief Pushs instances using C-STORE requests.
      * @param _DatasetContainer The dICOM dataset container.
      */
-    IO_DIMSE_API void pushSeries(const DatasetContainer& _datasetContainer);
+    IO_DIMSE_API void pushSeries(const DatasetContainer& _dataset_container);
 
 protected:
 
@@ -267,9 +267,9 @@ protected:
      * @return
      */
     IO_DIMSE_API OFCondition handleMOVEResponse(
-        T_ASC_PresentationContextID _presID,
+        T_ASC_PresentationContextID _pres_id,
         RetrieveResponse* _response,
-        OFBool& _waitForNextResponse
+        OFBool& _wait_for_next_response
     ) override;
 
     /**
@@ -282,7 +282,7 @@ protected:
      */
     IO_DIMSE_API OFCondition handleSTORERequest(
         T_ASC_PresentationContextID /*presID*/,
-        DcmDataset* _incomingObject,
+        DcmDataset* _incoming_object,
         OFBool& /*continueCGETSession*/,
         Uint16&
         /*cStoreReturnStatus*/
@@ -292,7 +292,7 @@ protected:
      * @brief Finds uncompressed presentation context.
      * @param _sopClass The sOP class which needs the presentation context.
      */
-    IO_DIMSE_API Uint8 findUncompressedPC(const OFString& _sopClass);
+    IO_DIMSE_API Uint8 findUncompressedPC(const OFString& _sop_class);
 
 private:
 
@@ -303,7 +303,7 @@ private:
     std::filesystem::path m_path;
 
     /// Contains the progress callback slot.
-    ProgressCallbackSlotType::sptr m_progressCallback;
+    progress_callback_slot_t::sptr m_progressCallback;
 
     /// Sets the dowloaded instance index.
     unsigned int m_instanceIndex {0};

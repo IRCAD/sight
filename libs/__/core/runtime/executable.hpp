@@ -73,7 +73,7 @@ protected:
      *
      * @param[in]   module  a pointer to the module the executable originates from
      */
-    virtual void set_module(std::shared_ptr<module> module) = 0;
+    virtual void set_module(std::shared_ptr<module> _module) = 0;
 };
 
 } // namespace sight::core::runtime

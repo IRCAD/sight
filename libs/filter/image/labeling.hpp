@@ -33,13 +33,13 @@ namespace sight::filter::image
 {
 
 /// Labels filter without template.
-FILTER_IMAGE_API data::image::sptr labeling(data::image::sptr image, unsigned int _numLabels);
+FILTER_IMAGE_API data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels);
 
 /// Labels filter with centroids.
-FILTER_IMAGE_API void computeCentroids(
-    data::image::sptr image,
-    std::vector<data::point_list::sptr> pointListCentroids,
-    std::vector<std::vector<std::size_t> > pointListLabels
+FILTER_IMAGE_API void compute_centroids(
+    data::image::sptr _image,
+    std::vector<data::point_list::sptr> _point_list_centroids,
+    std::vector<std::vector<std::size_t> > _point_list_labels
 );
 
 } //namespace sight::filter::image.

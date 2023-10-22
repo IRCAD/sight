@@ -79,27 +79,27 @@ void viewer::updating()
         if(itr != m_seriesConfigs.end())
         {
             SeriesConfigInfo info = itr->second;
-            std::string configId  = info.configId;
+            std::string config_id = info.configId;
 
-            std::map<std::string, std::string> replaceMap;
+            std::map<std::string, std::string> replace_map;
             // Generate generic UID
-            std::string genericUidAdaptor = app::extension::config::getUniqueIdentifier(this->get_id());
-            replaceMap["GENERIC_UID"] = genericUidAdaptor;
-            replaceMap["WID_PARENT"]  = m_parentView;
-            replaceMap["objectID"]    = obj->get_id();
+            std::string generic_uid_adaptor = app::extension::config::getUniqueIdentifier(this->get_id());
+            replace_map["GENERIC_UID"] = generic_uid_adaptor;
+            replace_map["WID_PARENT"]  = m_parentView;
+            replace_map["objectID"]    = obj->get_id();
 
-            for(const ReplaceValuesMapType::value_type& elt : info.parameters)
+            for(const replace_values_map_t::value_type& elt : info.parameters)
             {
                 SIGHT_ASSERT(
                     "Value '" << elt.first << "' already used in extracted values.",
-                    replaceMap.find(elt.first) == replaceMap.end()
+                    replace_map.find(elt.first) == replace_map.end()
                 );
-                replaceMap[elt.first] = elt.second;
+                replace_map[elt.first] = elt.second;
             }
 
             // Init manager
             m_configTemplateManager = app::config_manager::make();
-            m_configTemplateManager->setConfig(configId, replaceMap);
+            m_configTemplateManager->setConfig(config_id, replace_map);
 
             // Launch config
             m_configTemplateManager->launch();
@@ -121,11 +121,11 @@ void viewer::configuring()
         info.configId = elt.second.get<std::string>("<xmlattr>.id", "");
         SIGHT_ASSERT("'id' attribute must not be empty", !info.configId.empty());
 
-        const std::string seriesType = elt.second.get<std::string>("<xmlattr>.type", "");
-        SIGHT_ASSERT("'type' attribute must not be empty", !seriesType.empty());
+        const std::string series_type = elt.second.get<std::string>("<xmlattr>.type", "");
+        SIGHT_ASSERT("'type' attribute must not be empty", !series_type.empty());
         SIGHT_ASSERT(
-            "Type " << seriesType << " is already defined.",
-            m_seriesConfigs.find(seriesType) == m_seriesConfigs.end()
+            "Type " << series_type << " is already defined.",
+            m_seriesConfigs.find(series_type) == m_seriesConfigs.end()
         );
 
         for(const auto& param : boost::make_iterator_range(elt.second.equal_range("parameter")))
@@ -142,7 +142,7 @@ void viewer::configuring()
             info.parameters[replace] = by;
         }
 
-        m_seriesConfigs[seriesType] = info;
+        m_seriesConfigs[series_type] = info;
     }
 }
 

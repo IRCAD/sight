@@ -52,9 +52,9 @@ namespace sight::app::ut
 
 //------------------------------------------------------------------------------
 
-static inline void wait_service_started(const std::string& srv)
+static inline void wait_service_started(const std::string& _srv)
 {
-    auto service = core::tools::id::get_object(srv);
+    auto service = core::tools::id::get_object(_srv);
     SIGHT_TEST_WAIT(
         service != nullptr
         && std::dynamic_pointer_cast<service::base>(service)->started() == service::base::STARTED
@@ -75,9 +75,9 @@ void config_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("config_test");
 
-    app::extension::config::sptr appConfig = app::extension::config::getDefault();
-    appConfig->clear_registry();
-    appConfig->parse_plugin_infos();
+    app::extension::config::sptr app_config = app::extension::config::getDefault();
+    app_config->clear_registry();
+    app_config->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -99,84 +99,92 @@ void config_test::tearDown()
 
 void config_test::addConfigTest()
 {
-    app::extension::config::sptr currentAppConfig = app::extension::config::getDefault();
+    app::extension::config::sptr current_app_config = app::extension::config::getDefault();
 
-    const std::string configId(app::extension::config::getUniqueIdentifier());
+    const std::string config_id(app::extension::config::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string moduleId("sight::module::service");
-    app::extension::app_info::ParametersType parameters;
+    const std::string module_id("sight::module::service");
+    app::extension::app_info::parameters_t parameters;
 
     const service::config_t config = buildConfig();
 
-    currentAppConfig->addapp_info(configId, group, desc, parameters, config, moduleId);
+    current_app_config->addapp_info(config_id, group, desc, parameters, config, module_id);
 
-    std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT_EQUAL(false, allConfigs.empty());
+    std::vector<std::string> all_configs = current_app_config->getAllConfigs();
+    CPPUNIT_ASSERT_EQUAL(false, all_configs.empty());
 
-    std::vector<std::string> configs = currentAppConfig->getConfigsFromGroup(group);
+    std::vector<std::string> configs = current_app_config->getConfigsFromGroup(group);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), configs.size());
-    CPPUNIT_ASSERT_EQUAL(configId, configs.front());
+    CPPUNIT_ASSERT_EQUAL(config_id, configs.front());
 
-    auto module = currentAppConfig->get_module(configId);
+    auto module = current_app_config->get_module(config_id);
     CPPUNIT_ASSERT(module);
-    CPPUNIT_ASSERT_EQUAL(moduleId, module->identifier());
+    CPPUNIT_ASSERT_EQUAL(module_id, module->identifier());
 
-    app::field_adaptor_t replaceFields;
+    app::field_adaptor_t replace_fields;
 
-    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
-    const auto uid                        = configAdapted.get<std::string>("object.<xmlattr>.uid");
+    core::runtime::config_t config_adapted = current_app_config->getAdaptedTemplateConfig(
+        config_id,
+        replace_fields,
+        false
+    );
+    const auto uid = config_adapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("image"), uid);
 
-    const auto serviceUid1 = configAdapted.get<std::string>("service.<xmlattr>.uid");
-    CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
+    const auto service_uid1 = config_adapted.get<std::string>("service.<xmlattr>.uid");
+    CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), service_uid1);
 }
 
 //------------------------------------------------------------------------------
 
 void config_test::parametersConfigTest()
 {
-    app::extension::config::sptr currentAppConfig = app::extension::config::getDefault();
+    app::extension::config::sptr current_app_config = app::extension::config::getDefault();
 
-    const std::string configId("parametersConfigTest1");
+    const std::string config_id("parametersConfigTest1");
     const std::string group("parametersGroup");
 
-    app::field_adaptor_t replaceFields;
-    replaceFields["TEST_IMAGE"] = "objectUUID";
+    app::field_adaptor_t replace_fields;
+    replace_fields["TEST_IMAGE"] = "objectUUID";
 
-    std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
-    auto it                             = std::find(allConfigs.begin(), allConfigs.end(), configId);
-    CPPUNIT_ASSERT(it != allConfigs.end());
+    std::vector<std::string> all_configs = current_app_config->getAllConfigs();
+    auto it                              = std::find(all_configs.begin(), all_configs.end(), config_id);
+    CPPUNIT_ASSERT(it != all_configs.end());
 
-    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+    core::runtime::config_t config_adapted = current_app_config->getAdaptedTemplateConfig(
+        config_id,
+        replace_fields,
+        false
+    );
 
-    const auto uid = configAdapted.get<std::string>("object.<xmlattr>.uid");
+    const auto uid = config_adapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid);
 
-    auto servicesCfg = configAdapted.equal_range("service");
+    auto services_cfg = config_adapted.equal_range("service");
 
-    const auto serviceUid1 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
-    CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
+    const auto service_uid1 = services_cfg.first->second.get<std::string>("<xmlattr>.uid");
+    CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), service_uid1);
 
-    servicesCfg.first++;
-    const auto serviceUid2 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
-    CPPUNIT_ASSERT_EQUAL(std::string("myTestService2"), serviceUid2);
+    services_cfg.first++;
+    const auto service_uid2 = services_cfg.first->second.get<std::string>("<xmlattr>.uid");
+    CPPUNIT_ASSERT_EQUAL(std::string("myTestService2"), service_uid2);
 }
 
 //------------------------------------------------------------------------------
 
 app::config_manager::sptr config_test::launchAppConfigMgr(
-    const std::string& name,
-    bool autoPrefix
+    const std::string& _name,
+    bool _auto_prefix
 )
 {
-    auto appConfigMgr = app::config_manager::make();
+    auto app_config_mgr = app::config_manager::make();
 
     const app::field_adaptor_t fields;
-    appConfigMgr->setConfig(name, fields, autoPrefix);
-    appConfigMgr->launch();
+    app_config_mgr->setConfig(_name, fields, _auto_prefix);
+    app_config_mgr->launch();
 
-    return appConfigMgr;
+    return app_config_mgr;
 }
 
 //------------------------------------------------------------------------------
@@ -195,8 +203,8 @@ void config_test::startStopTest()
     // This service doesn't exist in the config
     CPPUNIT_ASSERT(core::tools::id::get_object("TestService142Uid") == nullptr);
 
-    auto genDataSrv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
-    CPPUNIT_ASSERT(genDataSrv != nullptr);
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     // This service has no data and is started by the config
     {
@@ -239,7 +247,7 @@ void config_test::startStopTest()
     // Create the data
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
     {
-        genDataSrv->set_output("out2", data2);
+        gen_data_srv->set_output("out2", data2);
         wait_service_started("TestService4Uid");
 
         // Now the service should have been started automatically
@@ -251,7 +259,7 @@ void config_test::startStopTest()
         }
 
         // Remove the data
-        genDataSrv->set_output("out2", nullptr);
+        gen_data_srv->set_output("out2", nullptr);
         SIGHT_TEST_WAIT(core::tools::id::exist("TestService4Uid") == false);
 
         // Now the service should have been stopped and destroyed automatically
@@ -261,7 +269,7 @@ void config_test::startStopTest()
         }
 
         // Register the data once again
-        genDataSrv->set_output("out2", data2);
+        gen_data_srv->set_output("out2", data2);
         wait_service_started("TestService4Uid");
 
         // Check again that the service was started automatically
@@ -287,7 +295,7 @@ void config_test::startStopTest()
         // Create the remaining data
         data::boolean::sptr data4 = std::make_shared<data::boolean>();
 
-        genDataSrv->set_output("out4", data4);
+        gen_data_srv->set_output("out4", data4);
         wait_service_started("TestService5Uid");
 
         // Now the service should have been started automatically
@@ -299,7 +307,7 @@ void config_test::startStopTest()
         }
 
         // Remove one data
-        genDataSrv->set_output("out2", nullptr);
+        gen_data_srv->set_output("out2", nullptr);
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -316,7 +324,7 @@ void config_test::startStopTest()
         // Put everything back
         app::ut::test_service::s_START_COUNTER  = 0;
         app::ut::test_service::s_UPDATE_COUNTER = 0;
-        genDataSrv->set_output("out2", data2);
+        gen_data_srv->set_output("out2", data2);
         wait_service_started("TestService5Uid");
 
         // Now the service should have been started automatically, check start order as well
@@ -356,9 +364,9 @@ void config_test::startStopTest()
         // Swap the data
         data::boolean::sptr data5 = std::make_shared<data::boolean>();
 
-        genDataSrv->set_output("out2", nullptr);
+        gen_data_srv->set_output("out2", nullptr);
         SIGHT_TEST_WAIT(core::tools::id::exist("TestService5Uid") == false);
-        genDataSrv->set_output("out2", data5);
+        gen_data_srv->set_output("out2", data5);
         wait_service_started("TestService5Uid");
 
         {
@@ -408,7 +416,7 @@ void config_test::autoConnectTest()
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getReceived());
 
-        auto sig1 = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig1->async_emit();
 
         SIGHT_TEST_WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
@@ -423,7 +431,7 @@ void config_test::autoConnectTest()
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
-        auto sig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig2->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated() && srv3->getReceived());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
@@ -437,8 +445,8 @@ void config_test::autoConnectTest()
     // =================================================================================================================
 
     // Service used to generate data
-    auto genDataSrv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
-    CPPUNIT_ASSERT(genDataSrv != nullptr);
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    CPPUNIT_ASSERT(gen_data_srv != nullptr);
     {
         // Check that dependent services are not created
         {
@@ -450,7 +458,7 @@ void config_test::autoConnectTest()
 
         // Create the data
         data::boolean::sptr data3 = std::make_shared<data::boolean>();
-        genDataSrv->set_output("out3", data3);
+        gen_data_srv->set_output("out3", data3);
 
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
@@ -470,7 +478,7 @@ void config_test::autoConnectTest()
             CPPUNIT_ASSERT(!srv5->getIsUpdated());
             CPPUNIT_ASSERT(!srv5->getReceived());
 
-            auto sig = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
             SIGHT_TEST_WAIT(srv5->getReceived());
 
@@ -480,7 +488,7 @@ void config_test::autoConnectTest()
         }
 
         // Remove one data
-        genDataSrv->set_output("out3", nullptr);
+        gen_data_srv->set_output("out3", nullptr);
         SIGHT_TEST_WAIT(
             core::tools::id::exist("TestService4Uid") == false
             && core::tools::id::exist("TestService5Uid") == false
@@ -493,7 +501,7 @@ void config_test::autoConnectTest()
         }
 
         // Emit, that should be ok
-        genDataSrv->set_output("out3", data3);
+        gen_data_srv->set_output("out3", data3);
 
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
@@ -513,7 +521,7 @@ void config_test::autoConnectTest()
             CPPUNIT_ASSERT(!srv5->getIsUpdated());
             CPPUNIT_ASSERT(!srv5->getReceived());
 
-            auto sig = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig->async_emit();
             SIGHT_TEST_WAIT(srv5->getReceived());
             CPPUNIT_ASSERT(srv5->getReceived());
@@ -522,7 +530,7 @@ void config_test::autoConnectTest()
             CPPUNIT_ASSERT(!srv5->getIsUpdated());
             CPPUNIT_ASSERT(srv5->getReceived());
 
-            auto sig1 = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             sig1->async_emit();
             SIGHT_TEST_WAIT(srv5->getIsUpdated());
 
@@ -569,7 +577,7 @@ void config_test::connectionTest()
     CPPUNIT_ASSERT_EQUAL(service::base::STARTED, srv4->status());
 
     // Check connection
-    auto sig = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
     SIGHT_TEST_WAIT(srv1->getIsUpdated() && srv2->getIsUpdated());
 
@@ -577,8 +585,8 @@ void config_test::connectionTest()
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
     // Service used to generate data
-    auto genDataSrv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
-    CPPUNIT_ASSERT(genDataSrv != nullptr);
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     // =================================================================================================================
     // Test connection with unavailable data at start
@@ -590,7 +598,7 @@ void config_test::connectionTest()
     }
 
     // Emit a signal just for fun, anyway the service doesn't exist
-    sig = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    sig = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->emit();
 
     srv2->resetIsUpdated();
@@ -599,7 +607,7 @@ void config_test::connectionTest()
     // Check connection data4 -> srv2
     auto data4 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data4Id"));
     CPPUNIT_ASSERT(data4 != nullptr);
-    auto sig4 = data4->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig4->async_emit();
     SIGHT_TEST_WAIT(srv2->getIsUpdated());
 
@@ -612,8 +620,8 @@ void config_test::connectionTest()
     // Create the missing data
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
     data::boolean::sptr data3 = std::make_shared<data::boolean>();
-    genDataSrv->set_output("out2", data2);
-    genDataSrv->set_output("out3", data3);
+    gen_data_srv->set_output("out2", data2);
+    gen_data_srv->set_output("out3", data3);
     wait_service_started("TestService3Uid");
     {
         core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
@@ -641,7 +649,7 @@ void config_test::connectionTest()
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
-        auto sig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig2->async_emit();
         SIGHT_TEST_WAIT(srv1->getIsUpdated() && srv3->getIsUpdated());
 
@@ -666,7 +674,7 @@ void config_test::connectionTest()
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
-        auto sig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig3->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
 
@@ -675,7 +683,7 @@ void config_test::connectionTest()
     }
 
     // Remove one data
-    genDataSrv->set_output("out3", nullptr);
+    gen_data_srv->set_output("out3", nullptr);
 
     SIGHT_TEST_WAIT(core::tools::id::exist("TestService3Uid") == false);
 
@@ -694,7 +702,7 @@ void config_test::connectionTest()
 
     srv1->resetIsUpdated();
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
-    auto sig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig2->async_emit();
     SIGHT_TEST_WAIT(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
@@ -716,7 +724,7 @@ void config_test::connectionTest()
     CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
     // Add back data 3 and check connection again
-    genDataSrv->set_output("out3", data3);
+    gen_data_srv->set_output("out3", data3);
     wait_service_started("TestService3Uid");
 
     {
@@ -743,8 +751,8 @@ void config_test::connectionTest()
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
-        auto modifiedSig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-        modifiedSig2->async_emit();
+        auto modified_sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+        modified_sig2->async_emit();
         SIGHT_TEST_WAIT(srv1->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv1->getIsUpdated());
@@ -768,7 +776,7 @@ void config_test::connectionTest()
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
-        auto sig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig3->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
 
@@ -867,8 +875,8 @@ void config_test::optionalKeyTest()
     m_appConfigMgr = this->launchAppConfigMgr("optionalKeyTest");
 
     // Service used to generate data
-    auto genDataSrv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
-    CPPUNIT_ASSERT(genDataSrv != nullptr);
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
@@ -884,7 +892,7 @@ void config_test::optionalKeyTest()
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
     // Check connection
-    auto sig = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
     SIGHT_TEST_WAIT(srv1->getIsUpdated());
 
@@ -898,7 +906,7 @@ void config_test::optionalKeyTest()
     // Create data 2
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
 
-    genDataSrv->set_output("out2", data2);
+    gen_data_srv->set_output("out2", data2);
     SIGHT_TEST_WAIT(
         !srv1->input("data2").expired()
         && srv1->input("data2").lock() == data2
@@ -913,7 +921,7 @@ void config_test::optionalKeyTest()
 
     // Check no connection with data 2
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
-    auto sig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig2->async_emit();
     SIGHT_TEST_WAIT(!srv1->getIsUpdated());
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
@@ -922,8 +930,8 @@ void config_test::optionalKeyTest()
     data::boolean::sptr data3 = std::make_shared<data::boolean>();
     data::boolean::sptr data4 = std::make_shared<data::boolean>();
 
-    genDataSrv->set_output("out3", data3);
-    genDataSrv->set_output("out4", data4);
+    gen_data_srv->set_output("out3", data3);
+    gen_data_srv->set_output("out4", data4);
 
     SIGHT_TEST_WAIT(
         !srv1->input("data3").expired()
@@ -938,20 +946,20 @@ void config_test::optionalKeyTest()
 
     // Check connection with data 3
     srv1->resetIsUpdated();
-    auto sig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig3->async_emit();
     SIGHT_TEST_WAIT(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Check connection with data 4
     srv1->resetIsUpdated();
-    auto sig4 = data4->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig4->async_emit();
     SIGHT_TEST_WAIT(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Remove data 2 and 3
-    genDataSrv->set_output("out2", nullptr);
+    gen_data_srv->set_output("out2", nullptr);
     SIGHT_TEST_WAIT(srv1->input("data2").expired());
 
     SIGHT_TEST_WAIT("data2" == srv1->getSwappedObjectKey());
@@ -959,7 +967,7 @@ void config_test::optionalKeyTest()
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject());
     CPPUNIT_ASSERT(srv1->input("data2").expired());
 
-    genDataSrv->set_output("out3", nullptr);
+    gen_data_srv->set_output("out3", nullptr);
     SIGHT_TEST_WAIT(
         !srv1->input(
             "data3"
@@ -974,7 +982,7 @@ void config_test::optionalKeyTest()
     CPPUNIT_ASSERT_EQUAL(service::base::STARTED, srv1->status());
 
     // Create data 3
-    genDataSrv->set_output("out3", data3);
+    gen_data_srv->set_output("out3", data3);
     SIGHT_TEST_WAIT(
         !srv1->input(
             "data3"
@@ -995,7 +1003,7 @@ void config_test::optionalKeyTest()
         core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv2 == nullptr);
 
-        genDataSrv->set_output("out5", data5);
+        gen_data_srv->set_output("out5", data5);
         wait_service_started("TestService2Uid");
 
         gn_srv2 = core::tools::id::get_object("TestService2Uid");
@@ -1012,13 +1020,13 @@ void config_test::optionalKeyTest()
 
         // Check connection with data 4
         srv2->resetIsUpdated();
-        auto modifiedSig4 = data4->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-        modifiedSig4->async_emit();
+        auto modified_sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+        modified_sig4->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated());
 
         // Remove data 3 and 4
-        genDataSrv->set_output("out3", nullptr);
-        genDataSrv->set_output("out4", nullptr);
+        gen_data_srv->set_output("out3", nullptr);
+        gen_data_srv->set_output("out4", nullptr);
 
         SIGHT_TEST_WAIT(
             !srv2->input("data3").expired()
@@ -1031,7 +1039,7 @@ void config_test::optionalKeyTest()
         CPPUNIT_ASSERT(srv2->input("data4").expired());
 
         // Create data 3
-        genDataSrv->set_output("out3", data3);
+        gen_data_srv->set_output("out3", data3);
         SIGHT_TEST_WAIT(!srv2->input("data3").expired());
 
         CPPUNIT_ASSERT(srv2->input("data1").lock() == data5);
@@ -1042,7 +1050,7 @@ void config_test::optionalKeyTest()
 
     // Remove data 5
     {
-        genDataSrv->set_output("out5", nullptr);
+        gen_data_srv->set_output("out5", nullptr);
         SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService2Uid"));
 
         core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService2Uid");
@@ -1051,7 +1059,7 @@ void config_test::optionalKeyTest()
 
     {
         // Create data 5
-        genDataSrv->set_output("out5", data5);
+        gen_data_srv->set_output("out5", data5);
         wait_service_started("TestService2Uid");
 
         auto gn_srv2 = core::tools::id::get_object("TestService2Uid");
@@ -1067,15 +1075,15 @@ void config_test::optionalKeyTest()
 
         // Check connection with data 3
         srv2->resetIsUpdated();
-        auto modifiedSig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-        modifiedSig3->async_emit();
+        auto modified_sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+        modified_sig3->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Create data 2
         data::boolean::sptr data2b = std::make_shared<data::boolean>();
 
-        genDataSrv->set_output("out2", data2b);
+        gen_data_srv->set_output("out2", data2b);
         SIGHT_TEST_WAIT(
             !srv2->input(
                 "data2"
@@ -1091,19 +1099,19 @@ void config_test::optionalKeyTest()
         // Check no connection with data 2
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
-        auto modifiedSig2 = data2b->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-        modifiedSig2->async_emit();
+        auto modified_sig2 = data2b->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+        modified_sig2->async_emit();
         SIGHT_TEST_WAIT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         // Overwrite data 2 with a new data generated by an another service
         data::boolean::sptr data2bis = std::make_shared<data::boolean>();
 
-        auto genDataSrv2 =
+        auto gen_data_srv2 =
             std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData2"));
-        CPPUNIT_ASSERT(genDataSrv2 != nullptr);
+        CPPUNIT_ASSERT(gen_data_srv2 != nullptr);
 
-        genDataSrv2->set_output("out", data2bis);
+        gen_data_srv2->set_output("out", data2bis);
         SIGHT_TEST_WAIT(
             !srv2->input(
                 "data2"
@@ -1119,11 +1127,11 @@ void config_test::optionalKeyTest()
         CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject());
 
         // Check that the output of SGenerateData changed as well
-        SIGHT_TEST_WAIT(data2bis == genDataSrv->data::has_data::output("out2").lock().get_shared());
-        CPPUNIT_ASSERT(data2bis == genDataSrv->data::has_data::output("out2").lock().get_shared());
+        SIGHT_TEST_WAIT(data2bis == gen_data_srv->data::has_data::output("out2").lock().get_shared());
+        CPPUNIT_ASSERT(data2bis == gen_data_srv->data::has_data::output("out2").lock().get_shared());
 
         // Revert that
-        genDataSrv2->set_output("out", data2b);
+        gen_data_srv2->set_output("out", data2b);
         SIGHT_TEST_WAIT(
             !srv2->input("data2").expired()
             && srv2->input("data2").lock() == data2b
@@ -1136,8 +1144,8 @@ void config_test::optionalKeyTest()
         CPPUNIT_ASSERT(data2b == srv2->getSwappedObject());
 
         // Check that the output of SGenerateData changed as well
-        SIGHT_TEST_WAIT(data2b == genDataSrv->data::has_data::object("out2", data::Access::out));
-        CPPUNIT_ASSERT(data2b == genDataSrv->data::has_data::object("out2", data::Access::out));
+        SIGHT_TEST_WAIT(data2b == gen_data_srv->data::has_data::object("out2", data::Access::out));
+        CPPUNIT_ASSERT(data2b == gen_data_srv->data::has_data::object("out2", data::Access::out));
     }
 }
 
@@ -1148,8 +1156,8 @@ void config_test::keyGroupTest()
     m_appConfigMgr = this->launchAppConfigMgr("keyGroupTest");
 
     // Service used to generate data
-    auto genDataSrv = std::dynamic_pointer_cast<app::ut::STestOut>(core::tools::id::get_object("SGenerateData"));
-    CPPUNIT_ASSERT(genDataSrv != nullptr);
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::STestOut>(core::tools::id::get_object("SGenerateData"));
+    CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
@@ -1171,7 +1179,7 @@ void config_test::keyGroupTest()
 
         // Create data 2b
         data::boolean::sptr data2b = std::make_shared<data::boolean>();
-        genDataSrv->set_output("out2", data2b);
+        gen_data_srv->set_output("out2", data2b);
         wait_service_started("TestService1Uid");
 
         gn_srv1 = core::tools::id::get_object("TestService1Uid");
@@ -1187,7 +1195,7 @@ void config_test::keyGroupTest()
 
         // Check connection with data 2
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
-        auto sig2 = data2b->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig2 = data2b->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig2->async_emit();
         SIGHT_TEST_WAIT(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv1->getIsUpdated());
@@ -1198,16 +1206,16 @@ void config_test::keyGroupTest()
         srv1->resetIsUpdated();
 
         // Create a slot to wait for the swap to be completed
-        bool srv1Swapped = false;
-        std::function fn = [&]()
-                           {
-                               srv1Swapped = true;
-                           };
-        auto swappedSlot = core::com::new_slot(fn);
-        swappedSlot->set_worker(core::thread::get_default_worker());
-        core::com::connection connection = srv1->signal(service::signals::SWAPPED)->connect(swappedSlot);
+        bool srv1_swapped = false;
+        std::function fn  = [&]()
+                            {
+                                srv1_swapped = true;
+                            };
+        auto swapped_slot = core::com::new_slot(fn);
+        swapped_slot->set_worker(core::thread::get_default_worker());
+        core::com::connection connection = srv1->signal(service::signals::SWAPPED)->connect(swapped_slot);
 
-        genDataSrv->set_output("out3", data3);
+        gen_data_srv->set_output("out3", data3);
 
         SIGHT_TEST_WAIT(
             !srv1->input(
@@ -1223,11 +1231,11 @@ void config_test::keyGroupTest()
         CPPUNIT_ASSERT(srv1->input("dataGroup", 1).lock() == data3);
         CPPUNIT_ASSERT(2 == srv1->m_inputGroup.size());
 
-        SIGHT_TEST_WAIT(srv1Swapped);
-        CPPUNIT_ASSERT(srv1Swapped);
+        SIGHT_TEST_WAIT(srv1_swapped);
+        CPPUNIT_ASSERT(srv1_swapped);
 
         // Check connection with data 3
-        auto sig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig3->async_emit();
         SIGHT_TEST_WAIT(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv1->getIsUpdated());
@@ -1237,7 +1245,7 @@ void config_test::keyGroupTest()
 
     // Remove data 2
     {
-        genDataSrv->set_output("out2", nullptr);
+        gen_data_srv->set_output("out2", nullptr);
 
         SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService1Uid"));
 
@@ -1274,38 +1282,38 @@ void config_test::keyGroupTest()
 
         // Check connection with data 1
         srv2->resetIsUpdated();
-        auto sig1 = data1->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig1->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Check no connection with data 3
         srv2->resetIsUpdated();
-        auto sig3 = data3->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig3->async_emit();
         SIGHT_TEST_WAIT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         // Check connection with data 4
         srv2->resetIsUpdated();
-        auto sig4 = data4->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig4->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
-        auto sigIm4 = data4->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
-        sigIm4->async_emit();
+        auto sig_im4 = data4->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
+        sig_im4->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Check no connection with data 5
         srv2->resetIsUpdated();
-        auto sig5 = data5->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+        auto sig5 = data5->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         sig5->async_emit();
         SIGHT_TEST_WAIT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        auto sigIm5 = data5->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
-        sigIm5->async_emit();
+        auto sig_im5 = data5->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
+        sig_im5->async_emit();
         SIGHT_TEST_WAIT(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
@@ -1316,13 +1324,13 @@ void config_test::keyGroupTest()
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data6 = std::make_shared<data::image>();
-        genDataSrv->m_outGroup[0] = data6;
+        gen_data_srv->m_outGroup[0] = data6;
 
         gn_srv3 = core::tools::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data7 = std::make_shared<data::image>();
-        genDataSrv->m_outGroup[1] = data7;
+        gen_data_srv->m_outGroup[1] = data7;
 
         wait_service_started("TestService3Uid");
         gn_srv3 = core::tools::id::get_object("TestService3Uid");
@@ -1333,7 +1341,7 @@ void config_test::keyGroupTest()
         CPPUNIT_ASSERT(srv3->input("dataGroup", 0).lock() == data6);
         CPPUNIT_ASSERT(srv3->input("dataGroup", 1).lock() == data7);
 
-        genDataSrv->m_outGroup[0] = nullptr;
+        gen_data_srv->m_outGroup[0] = nullptr;
     }
     {
         SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService3Uid"));
@@ -1361,8 +1369,8 @@ void config_test::concurrent_access_to_config_test()
     }
 
     app::extension::config::getDefault()->clear_registry();
-    std::vector<std::string> allConfigs = app::extension::config::getDefault()->getAllConfigs();
-    CPPUNIT_ASSERT(allConfigs.empty());
+    std::vector<std::string> all_configs = app::extension::config::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT(all_configs.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -1386,28 +1394,28 @@ void config_test::parameterReplaceTest()
     CPPUNIT_ASSERT(srv1 != nullptr);
 
     gn_srv2 = core::tools::id::get_object("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
-    auto srv2          = std::dynamic_pointer_cast<service::base>(gn_srv2);
-    auto adaptedConfig = srv2->get_config();
+    auto srv2           = std::dynamic_pointer_cast<service::base>(gn_srv2);
+    auto adapted_config = srv2->get_config();
 
-    const auto params = adaptedConfig.equal_range("parameter");
+    const auto params = adapted_config.equal_range("parameter");
 
-    std::vector<service::config_t> paramsCfg;
-    std::for_each(params.first, params.second, [&paramsCfg](const auto& p){paramsCfg.push_back(p.second);});
+    std::vector<service::config_t> params_cfg;
+    std::for_each(params.first, params.second, [&params_cfg](const auto& _p){params_cfg.push_back(_p.second);});
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), paramsCfg.size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), params_cfg.size());
 
-    std::string replaceBy;
-    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0].get<std::string>("<xmlattr>.replace"));
-    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0].get<std::string>("<xmlattr>.by"));
+    std::string replace_by;
+    CPPUNIT_ASSERT_EQUAL(std::string("patient"), params_cfg[0].get<std::string>("<xmlattr>.replace"));
+    CPPUNIT_ASSERT_EQUAL(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.by"));
 
-    replaceBy = paramsCfg[1].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
+    replace_by = params_cfg[1].get<std::string>("<xmlattr>.by");
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replace_by);
 
-    replaceBy = paramsCfg[2].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replaceBy);
+    replace_by = params_cfg[2].get<std::string>("<xmlattr>.by");
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replace_by);
 
-    replaceBy = paramsCfg[3].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
+    replace_by = params_cfg[3].get<std::string>("<xmlattr>.by");
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replace_by);
 
     core::tools::object::sptr gn_sub_srv;
 
@@ -1420,10 +1428,10 @@ void config_test::parameterReplaceTest()
         );
     }
 
-    auto srvInSubConfig = std::dynamic_pointer_cast<app::ut::test_service>(gn_sub_srv);
-    CPPUNIT_ASSERT(srvInSubConfig != nullptr);
+    auto srv_in_sub_config = std::dynamic_pointer_cast<app::ut::test_service>(gn_sub_srv);
+    CPPUNIT_ASSERT(srv_in_sub_config != nullptr);
 
-    CPPUNIT_ASSERT(srvInSubConfig->started());
+    CPPUNIT_ASSERT(srv_in_sub_config->started());
 
     auto data1 = srv1->input("data1").lock();
     CPPUNIT_ASSERT(data1 != nullptr);
@@ -1432,28 +1440,28 @@ void config_test::parameterReplaceTest()
     auto data2 = srv1->input("data2").lock();
     CPPUNIT_ASSERT(data2 != nullptr);
 
-    auto data1SubSrv = srvInSubConfig->input("data1").lock();
-    CPPUNIT_ASSERT(data1 == data1SubSrv);
+    auto data1_sub_srv = srv_in_sub_config->input("data1").lock();
+    CPPUNIT_ASSERT(data1 == data1_sub_srv);
 
-    auto data2SubSrv = srvInSubConfig->input("data2").lock();
-    CPPUNIT_ASSERT(data2 == data2SubSrv);
+    auto data2_sub_srv = srv_in_sub_config->input("data2").lock();
+    CPPUNIT_ASSERT(data2 == data2_sub_srv);
 
     // check connections through the subconfig channel
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
-    auto sig1 = data1SubSrv->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig1 = data1_sub_srv->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig1->async_emit();
 
     SIGHT_TEST_WAIT(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
-    CPPUNIT_ASSERT(!srvInSubConfig->getIsUpdated());
+    CPPUNIT_ASSERT(!srv_in_sub_config->getIsUpdated());
 
-    auto sig2 = data2->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig2->async_emit();
 
-    SIGHT_TEST_WAIT(srvInSubConfig->getIsUpdated());
-    CPPUNIT_ASSERT(srvInSubConfig->getIsUpdated());
+    SIGHT_TEST_WAIT(srv_in_sub_config->getIsUpdated());
+    CPPUNIT_ASSERT(srv_in_sub_config->getIsUpdated());
 }
 
 //------------------------------------------------------------------------------
@@ -1480,9 +1488,9 @@ void config_test::objectConfigTest()
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::CONFIGURED, srv1->config_status());
 
-    auto srvData1 = srv1->input<data::composite>("data1");
-    CPPUNIT_ASSERT(!srvData1.expired());
-    CPPUNIT_ASSERT(srvData1.lock() == compo1);
+    auto srv_data1 = srv1->input<data::composite>("data1");
+    CPPUNIT_ASSERT(!srv_data1.expired());
+    CPPUNIT_ASSERT(srv_data1.lock() == compo1);
 
     auto config = srv1->get_config();
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
@@ -1496,34 +1504,34 @@ service::config_t config_test::buildConfig()
     service::config_t cfg;
 
     // Object
-    service::config_t objCfg;
-    objCfg.add("<xmlattr>.uid", "image");
-    objCfg.add("<xmlattr>.type", "sight::data::image");
-    cfg.add_child("object", objCfg);
+    service::config_t obj_cfg;
+    obj_cfg.add("<xmlattr>.uid", "image");
+    obj_cfg.add("<xmlattr>.type", "sight::data::image");
+    cfg.add_child("object", obj_cfg);
 
     // Service
-    service::config_t srvCfg;
-    srvCfg.add("<xmlattr>.uid", "myTestService1");
-    srvCfg.add("<xmlattr>.type", "sight::app::ut::STest1Image");
-    srvCfg.add("<xmlattr>.auto_connect", "false");
-    cfg.add_child("service", srvCfg);
+    service::config_t srv_cfg;
+    srv_cfg.add("<xmlattr>.uid", "myTestService1");
+    srv_cfg.add("<xmlattr>.type", "sight::app::ut::STest1Image");
+    srv_cfg.add("<xmlattr>.auto_connect", "false");
+    cfg.add_child("service", srv_cfg);
 
     // Connections
-    service::config_t connectCfg;
-    connectCfg.add("<xmlattr>.channel", "channel1");
-    connectCfg.add("signal", "image/modified");
-    connectCfg.add("slot", "myTestService1/update");
-    cfg.add_child("connect", connectCfg);
+    service::config_t connect_cfg;
+    connect_cfg.add("<xmlattr>.channel", "channel1");
+    connect_cfg.add("signal", "image/modified");
+    connect_cfg.add("slot", "myTestService1/update");
+    cfg.add_child("connect", connect_cfg);
 
     // Start method from object's services
-    service::config_t startCfg;
-    startCfg.add("<xmlattr>.uid", "myTestService1");
-    cfg.add_child("start", startCfg);
+    service::config_t start_cfg;
+    start_cfg.add("<xmlattr>.uid", "myTestService1");
+    cfg.add_child("start", start_cfg);
 
     // Update method from object's services
-    service::config_t updateCfg;
-    updateCfg.add("<xmlattr>.uid", "myTestService1");
-    cfg.add_child("update", updateCfg);
+    service::config_t update_cfg;
+    update_cfg.add("<xmlattr>.uid", "myTestService1");
+    cfg.add_child("update", update_cfg);
 
     return cfg;
 }

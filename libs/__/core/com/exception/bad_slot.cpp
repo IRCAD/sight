@@ -29,8 +29,8 @@
 namespace sight::core::com::exception
 {
 
-bad_slot::bad_slot(const std::string& err) :
-    core::exception(err)
+bad_slot::bad_slot(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

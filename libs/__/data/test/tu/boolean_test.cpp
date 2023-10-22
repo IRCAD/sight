@@ -48,22 +48,22 @@ void boolean_test::tearDown()
 
 void boolean_test::methode1()
 {
-    const bool TRUE_VALUE  = true;
-    const bool FALSE_VALUE = !TRUE_VALUE;
+    const bool true_value  = true;
+    const bool false_value = !true_value;
 
-    auto p1 = std::make_shared<data::boolean>(TRUE_VALUE);
-    auto p2 = std::make_shared<data::boolean>(FALSE_VALUE);
+    auto p1 = std::make_shared<data::boolean>(true_value);
+    auto p2 = std::make_shared<data::boolean>(false_value);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(TRUE_VALUE, std::make_shared<data::boolean>(TRUE_VALUE)->value());
-    CPPUNIT_ASSERT_EQUAL(FALSE_VALUE, std::make_shared<data::boolean>(FALSE_VALUE)->value());
+    CPPUNIT_ASSERT_EQUAL(true_value, std::make_shared<data::boolean>(true_value)->value());
+    CPPUNIT_ASSERT_EQUAL(false_value, std::make_shared<data::boolean>(false_value)->value());
 
-    CPPUNIT_ASSERT_EQUAL(TRUE_VALUE, p1->value());
-    CPPUNIT_ASSERT_EQUAL(FALSE_VALUE, p2->value());
+    CPPUNIT_ASSERT_EQUAL(true_value, p1->value());
+    CPPUNIT_ASSERT_EQUAL(false_value, p2->value());
 
     CPPUNIT_ASSERT(*p1 != *p2);
 
-    p2->setValue(TRUE_VALUE);
+    p2->setValue(true_value);
 
     CPPUNIT_ASSERT(*p1 == *p2);
 }

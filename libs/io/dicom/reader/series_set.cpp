@@ -259,8 +259,8 @@ void series_set::readDicom()
 //------------------------------------------------------------------------------
 
 void series_set::readFromDicomSeriesSet(
-    const data::series_set::csptr& dicom_series_set,
-    const service::base::sptr& notifier
+    const data::series_set::csptr& _dicom_series_set,
+    const service::base::sptr& _notifier
 )
 {
     // Clear DicomSeries container
@@ -269,11 +269,11 @@ void series_set::readFromDicomSeriesSet(
     m_job->add(m_converterJob);
 
     // Read series
-    for(const auto& series : *dicom_series_set)
+    for(const auto& series : *_dicom_series_set)
     {
-        const auto& dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
-        SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
-        m_dicomSeriesContainer.push_back(dicomSeries);
+        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
+        SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicom_series);
+        m_dicomSeriesContainer.push_back(dicom_series);
     }
 
     // Apply Default filters
@@ -292,7 +292,7 @@ void series_set::readFromDicomSeriesSet(
     else
     {
         // Read series
-        this->convertDicomSeries(notifier);
+        this->convertDicomSeries(_notifier);
     }
 
     try
@@ -320,7 +320,7 @@ bool series_set::isDicomDirAvailable()
 
 //------------------------------------------------------------------------------
 
-void series_set::convertDicomSeries(const service::base::sptr& notifier)
+void series_set::convertDicomSeries(const service::base::sptr& _notifier)
 {
     auto series_set = this->getConcreteObject();
 
@@ -328,66 +328,66 @@ void series_set::convertDicomSeries(const service::base::sptr& notifier)
     std::sort(m_dicomSeriesContainer.begin(), m_dicomSeriesContainer.end(), series_set::dicomSeriesComparator);
 
     // Create reader
-    auto seriesReader = std::make_shared<io::dicom::reader::series>();
-    seriesReader->setBufferRotationEnabled(m_enableBufferRotation);
-    seriesReader->setLogger(m_logger);
+    auto series_reader = std::make_shared<io::dicom::reader::series>();
+    series_reader->setBufferRotationEnabled(m_enableBufferRotation);
+    series_reader->setLogger(m_logger);
 
     m_converterJob->set_total_work_units(m_dicomSeriesContainer.size());
 
     // Compute total work units
     // We do not use an aggregator here as the jobs
     // are created after updating the main aggregator.
-    std::uint64_t totalWorkUnits = 0;
-    for(const data::dicom_series::sptr& dicomSeries : m_dicomSeriesContainer)
+    std::uint64_t total_work_units = 0;
+    for(const data::dicom_series::sptr& dicom_series : m_dicomSeriesContainer)
     {
-        totalWorkUnits += dicomSeries->getDicomContainer().size();
+        total_work_units += dicom_series->getDicomContainer().size();
     }
 
-    m_converterJob->set_total_work_units(totalWorkUnits);
+    m_converterJob->set_total_work_units(total_work_units);
 
-    std::uint64_t completedProgress = 0;
-    auto progress_callback = [&](std::uint64_t progress)
+    std::uint64_t completed_progress = 0;
+    auto progress_callback = [&](std::uint64_t _progress)
                              {
-                                 m_converterJob->done_work(completedProgress + progress);
+                                 m_converterJob->done_work(completed_progress + _progress);
                              };
 
     // Read series
-    for(const data::dicom_series::csptr dicomSeries : m_dicomSeriesContainer)
+    for(const data::dicom_series::csptr dicom_series : m_dicomSeriesContainer)
     {
-        data::dicom_series::sop_classUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+        data::dicom_series::sop_classUIDContainerType sop_class_uid_container = dicom_series->getSOPClassUIDs();
         SIGHT_THROW_IF(
             "The series contains several sop_classUIDs. Try to apply a filter in order to split the series.",
-            sopClassUIDContainer.size() != 1
+            sop_class_uid_container.size() != 1
         );
-        const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
+        const std::string sop_class_uid = sop_class_uid_container.begin()->c_str();
 
-        const auto& bIt = m_supportedSOPClassContainer.begin();
-        const auto& eIt = m_supportedSOPClassContainer.end();
+        const auto& b_it = m_supportedSOPClassContainer.begin();
+        const auto& e_it = m_supportedSOPClassContainer.end();
 
-        if(m_supportedSOPClassContainer.empty() || std::find(bIt, eIt, sopClassUID) != eIt)
+        if(m_supportedSOPClassContainer.empty() || std::find(b_it, e_it, sop_class_uid) != e_it)
         {
-            seriesReader->setProgressCallback(progress_callback);
-            seriesReader->setCancelRequestedCallback(m_converterJob->cancel_requested_callback());
+            series_reader->setProgressCallback(progress_callback);
+            series_reader->setCancelRequestedCallback(m_converterJob->cancel_requested_callback());
             try
             {
-                data::series::sptr series = seriesReader->read(dicomSeries);
+                data::series::sptr series = series_reader->read(dicom_series);
 
                 if(series)
                 {
                     // Add the series to the DB
-                    const auto series_scoped_emitter = notifier ? series_set->scoped_emit() : nullptr;
+                    const auto series_scoped_emitter = _notifier ? series_set->scoped_emit() : nullptr;
                     series_set->push_back(series);
                 }
             }
             catch(io::dicom::exception::Failed& e)
             {
-                m_logger->critical("Unable to read series '" + dicomSeries->getSeriesInstanceUID() + "': " + e.what());
+                m_logger->critical("Unable to read series '" + dicom_series->getSeriesInstanceUID() + "': " + e.what());
             }
         }
         else
         {
-            const std::string sopClassName = io::dicom::helper::sop_class::getSOPClassName(sopClassUID);
-            m_logger->critical("DICOM SOP Class \"" + sopClassName + "\" is not supported by the selected reader.");
+            const std::string sop_class_name = io::dicom::helper::sop_class::getSOPClassName(sop_class_uid);
+            m_logger->critical("DICOM SOP Class \"" + sop_class_name + "\" is not supported by the selected reader.");
         }
 
         if(m_job->cancel_requested())
@@ -395,7 +395,7 @@ void series_set::convertDicomSeries(const service::base::sptr& notifier)
             break;
         }
 
-        completedProgress = m_converterJob->get_done_work_units();
+        completed_progress = m_converterJob->get_done_work_units();
     }
 
     m_converterJob->done();
@@ -404,38 +404,42 @@ void series_set::convertDicomSeries(const service::base::sptr& notifier)
 
 //------------------------------------------------------------------------------
 
-bool series_set::dicomSeriesComparator(const SPTR(data::dicom_series)& a, const SPTR(data::dicom_series)& b)
+bool series_set::dicomSeriesComparator(const SPTR(data::dicom_series)& _a, const SPTR(data::dicom_series)& _b)
 {
-    const data::dicom_series::sop_classUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
-    const std::string aSOPClassUID                                            = *(aSOPClassUIDContainer.begin());
-    const data::dicom_series::sop_classUIDContainerType bSOPClassUIDContainer = b->getSOPClassUIDs();
-    const std::string bSOPClassUID                                            = *(bSOPClassUIDContainer.begin());
+    const data::dicom_series::sop_classUIDContainerType a_sop_class_uid_container = _a->getSOPClassUIDs();
+    const std::string a_sop_class_uid                                             =
+        *(a_sop_class_uid_container.begin());
+    const data::dicom_series::sop_classUIDContainerType b_sop_class_uid_container = _b->getSOPClassUIDs();
+    const std::string b_sop_class_uid                                             =
+        *(b_sop_class_uid_container.begin());
 
     // a > b if a contains a SR and not b
-    const bool aIsAnImage =
-        (gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::EnhancedSR
-         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::ComprehensiveSR
-         || aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         ||                                                 // "gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                                                            // gdcm::MediaStorage::Comprehensive3DSR"
-         gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
-         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
+    const bool a_is_an_image =
+        (gdcm::MediaStorage::GetMSType(a_sop_class_uid.c_str()) == gdcm::MediaStorage::EnhancedSR
+         || gdcm::MediaStorage::GetMSType(a_sop_class_uid.c_str()) == gdcm::MediaStorage::ComprehensiveSR
+         || a_sop_class_uid == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
+         ||                                                    // "gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str())
+                                                               // ==
+                                                               // gdcm::MediaStorage::Comprehensive3DSR"
+         gdcm::MediaStorage::GetMSType(a_sop_class_uid.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
+         || gdcm::MediaStorage::GetMSType(a_sop_class_uid.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
 
-    const bool bIsAnImage =
-        (gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::EnhancedSR
-         || gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::ComprehensiveSR
-         || bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         ||                                                 // "gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
-                                                            // gdcm::MediaStorage::Comprehensive3DSR"
-         gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
-         || gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
+    const bool b_is_an_image =
+        (gdcm::MediaStorage::GetMSType(b_sop_class_uid.c_str()) == gdcm::MediaStorage::EnhancedSR
+         || gdcm::MediaStorage::GetMSType(b_sop_class_uid.c_str()) == gdcm::MediaStorage::ComprehensiveSR
+         || b_sop_class_uid == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
+         ||                                                    // "gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str())
+                                                               // ==
+                                                               // gdcm::MediaStorage::Comprehensive3DSR"
+         gdcm::MediaStorage::GetMSType(b_sop_class_uid.c_str()) == gdcm::MediaStorage::SpacialFiducialsStorage
+         || gdcm::MediaStorage::GetMSType(a_sop_class_uid.c_str()) == gdcm::MediaStorage::SurfaceSegmentationStorage);
 
-    return bIsAnImage && !aIsAnImage;
+    return b_is_an_image && !a_is_an_image;
 }
 
 //------------------------------------------------------------------------------
 
-series_set::DicomSeriesContainerType& series_set::getDicomSeries()
+series_set::dicom_series_container_t& series_set::getDicomSeries()
 {
     return m_dicomSeriesContainer;
 }

@@ -103,7 +103,7 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF and ANY will guess using the file extension. "*J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API std::size_t write(Backend backend, Mode mode = Mode::FAST);
+    IO_BITMAP_API std::size_t write(Backend _backend, Mode _mode = Mode::FAST);
 
     /// Specialized writing method that allows to write to a ostream
     /// @arg ostream: the stream to write to. It is up to the user to open it.
@@ -112,9 +112,9 @@ public:
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
-        std::ostream& ostream,
-        Backend backend = Backend::LIBTIFF,
-        Mode mode       = Mode::FAST
+        std::ostream& _ostream,
+        Backend _backend = Backend::LIBTIFF,
+        Mode _mode       = Mode::FAST
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -124,9 +124,9 @@ public:
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
-        std::uint8_t** buffer,
-        Backend backend = Backend::LIBTIFF,
-        Mode mode       = Mode::FAST
+        std::uint8_t** _buffer,
+        Backend _backend = Backend::LIBTIFF,
+        Mode _mode       = Mode::FAST
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -136,9 +136,9 @@ public:
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
-        std::uint8_t* buffer,
-        Backend backend = Backend::LIBTIFF,
-        Mode mode       = Mode::FAST
+        std::uint8_t* _buffer,
+        Backend _backend = Backend::LIBTIFF,
+        Mode _mode       = Mode::FAST
     );
 
     /// Specialized writing method that allows to write to a std::uint8_t* buffer
@@ -148,9 +148,9 @@ public:
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
     IO_BITMAP_API std::size_t write(
-        std::vector<uint8_t>& buffer,
-        Backend backend = Backend::LIBTIFF,
-        Mode mode       = Mode::FAST
+        std::vector<uint8_t>& _buffer,
+        Backend _backend = Backend::LIBTIFF,
+        Mode _mode       = Mode::FAST
     );
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid

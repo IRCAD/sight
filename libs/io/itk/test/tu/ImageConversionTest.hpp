@@ -47,7 +47,7 @@ public:
     void stressTest();
     static void testConversion2D();
 
-    static void roundSpacing(data::image::sptr image);
+    static void roundSpacing(data::image::sptr _image);
 
     template<class TYPE>
     void stressTestForAType();

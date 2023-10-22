@@ -22,7 +22,7 @@
 
 #include "resampler_test.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
@@ -51,49 +51,49 @@ void resampler_test::tearDown()
 
 void resampler_test::identityTest()
 {
-    const data::image::Size SIZE = {{32, 32, 32}};
+    const data::image::Size size = {{32, 32, 32}};
 
     // TODO: make it work with an anisotropic spacing.
-    const data::image::Spacing SPACING = {{0.5, 0.5, 0.5}};
-    const data::image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::type TYPE              = core::type::INT16;
+    const data::image::Spacing spacing = {{0.5, 0.5, 0.5}};
+    const data::image::Origin origin   = {{0., 0., 0.}};
+    const core::type type              = core::type::INT16;
 
-    data::image::sptr imageIn = std::make_shared<data::image>();
+    data::image::sptr image_in = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::image::GRAY_SCALE);
-    utest_data::generator::image::randomizeImage(imageIn);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
+    utest_data::generator::image::randomizeImage(image_in);
 
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
     // Identity.
-    data::matrix4::sptr idMat = std::make_shared<data::matrix4>();
+    data::matrix4::sptr id_mat = std::make_shared<data::matrix4>();
 
     filter::image::resampler::resample(
-        data::image::csptr(imageIn),
-        imageOut,
-        data::matrix4::csptr(idMat),
-        std::make_tuple(imageIn->size(), imageIn->getOrigin(), imageIn->getSpacing())
+        data::image::csptr(image_in),
+        image_out,
+        data::matrix4::csptr(id_mat),
+        std::make_tuple(image_in->size(), image_in->getOrigin(), image_in->getSpacing())
     );
 
-    CPPUNIT_ASSERT(imageOut->size() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
-    CPPUNIT_ASSERT(imageOut->getType() == TYPE);
+    CPPUNIT_ASSERT(image_out->size() == size);
+    CPPUNIT_ASSERT(image_out->getSpacing() == spacing);
+    CPPUNIT_ASSERT(image_out->getType() == type);
 
-    const auto inDumpLock  = imageIn->dump_lock();
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto in_dump_lock  = image_in->dump_lock();
+    const auto out_dump_lock = image_out->dump_lock();
 
-    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const std::int16_t valueIn  = imageIn->at<std::int16_t>(i, j, k);
-                const std::int16_t valueOut = imageOut->at<std::int16_t>(i, j, k);
+                const std::int16_t value_in  = image_in->at<std::int16_t>(i, j, k);
+                const std::int16_t value_out = image_out->at<std::int16_t>(i, j, k);
 
                 // The image shouldn't change.
-                std::string msg = std::to_string(valueIn) + " " + std::to_string(valueOut);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, valueIn, valueOut);
+                std::string msg = std::to_string(value_in) + " " + std::to_string(value_out);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, value_in, value_out);
             }
         }
     }
@@ -104,136 +104,136 @@ void resampler_test::identityTest()
 void resampler_test::translateTest()
 {
     // Generate a simple image with a white cube at its center.
-    const data::image::Size SIZE       = {{16, 16, 16}};
-    const data::image::Spacing SPACING = {{1., 1., 1.}};
-    const data::image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::type TYPE              = core::type::UINT8;
+    const data::image::Size size       = {{16, 16, 16}};
+    const data::image::Spacing spacing = {{1., 1., 1.}};
+    const data::image::Origin origin   = {{0., 0., 0.}};
+    const core::type type              = core::type::UINT8;
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::image::GRAY_SCALE);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
 
     std::uint8_t value = 255;
 
-    SPTR(data::image::BufferType) bufferValue =
-        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
+    SPTR(data::image::buffer_t) buffer_value =
+        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
-    const auto inDumpLock = imageIn->dump_lock();
+    const auto in_dump_lock = image_in->dump_lock();
 
     // Draw a tiny 2x2 cube at the center
-    imageIn->at<std::uint8_t>(7, 7, 7) = value;
-    imageIn->at<std::uint8_t>(7, 7, 8) = value;
-    imageIn->at<std::uint8_t>(7, 8, 7) = value;
-    imageIn->at<std::uint8_t>(7, 8, 8) = value;
-    imageIn->at<std::uint8_t>(8, 7, 7) = value;
-    imageIn->at<std::uint8_t>(8, 7, 8) = value;
-    imageIn->at<std::uint8_t>(8, 8, 7) = value;
-    imageIn->at<std::uint8_t>(8, 8, 8) = value;
+    image_in->at<std::uint8_t>(7, 7, 7) = value;
+    image_in->at<std::uint8_t>(7, 7, 8) = value;
+    image_in->at<std::uint8_t>(7, 8, 7) = value;
+    image_in->at<std::uint8_t>(7, 8, 8) = value;
+    image_in->at<std::uint8_t>(8, 7, 7) = value;
+    image_in->at<std::uint8_t>(8, 7, 8) = value;
+    image_in->at<std::uint8_t>(8, 8, 7) = value;
+    image_in->at<std::uint8_t>(8, 8, 8) = value;
 
     // 5 mm translation along the x axis.
-    data::matrix4::sptr transMat = std::make_shared<data::matrix4>();
-    (*transMat)(0, 3) = 5;
+    data::matrix4::sptr trans_mat = std::make_shared<data::matrix4>();
+    (*trans_mat)(0, 3) = 5;
 
     filter::image::resampler::resample(
-        data::image::csptr(imageIn),
-        imageOut,
-        data::matrix4::csptr(transMat)
+        data::image::csptr(image_in),
+        image_out,
+        data::matrix4::csptr(trans_mat)
     );
 
-    const auto dumpLock = imageOut->dump_lock();
+    const auto dump_lock = image_out->dump_lock();
 
-    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, k);
+                const uint8_t value_out = image_out->at<std::uint8_t>(i, j, k);
 
                 if((i >= 2 && i <= 3) && (j >= 7 && j <= 8) && (k >= 7 && k <= 8))
                 {
-                    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), valueOut);
+                    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), value_out);
                 }
                 else
                 {
-                    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(0), valueOut);
+                    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(0), value_out);
                 }
             }
         }
     }
 
     // Check if size and spacing are the same as the input.
-    CPPUNIT_ASSERT(imageOut->size() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
+    CPPUNIT_ASSERT(image_out->size() == size);
+    CPPUNIT_ASSERT(image_out->getSpacing() == spacing);
 }
 
 //------------------------------------------------------------------------------
 
 void resampler_test::rotateTest()
 {
-    const data::image::Size SIZE       = {{64, 64, 64}};
-    const data::image::Spacing SPACING = {{1., 1., 1.}};
-    const data::image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::type TYPE              = core::type::FLOAT;
+    const data::image::Size size       = {{64, 64, 64}};
+    const data::image::Spacing spacing = {{1., 1., 1.}};
+    const data::image::Origin origin   = {{0., 0., 0.}};
+    const core::type type              = core::type::FLOAT;
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::image::GRAY_SCALE);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, data::image::GRAY_SCALE);
 
     const float value = 1.F;
 
-    const auto dumpLock = imageIn->dump_lock();
+    const auto dump_lock = image_in->dump_lock();
 
     // draw the back Z face.
     for(std::size_t i = 0 ; i < 64 ; ++i)
     {
         for(std::size_t j = 0 ; j < 64 ; ++j)
         {
-            imageIn->at<float>(i, j, 0) = value;
+            image_in->at<float>(i, j, 0) = value;
         }
     }
 
     // FIXME: compute to appropriate matrix to rotate a face from negative Z to negative X.
 
-    data::matrix4::sptr rotMat = std::make_shared<data::matrix4>();
+    data::matrix4::sptr rot_mat = std::make_shared<data::matrix4>();
     // 90° rotation along the Y axis.
-    (*rotMat)(0, 0) = 0;
-    (*rotMat)(0, 2) = 1;
-    (*rotMat)(2, 0) = -1;
-    (*rotMat)(2, 2) = 0;
+    (*rot_mat)(0, 0) = 0;
+    (*rot_mat)(0, 2) = 1;
+    (*rot_mat)(2, 0) = -1;
+    (*rot_mat)(2, 2) = 0;
 
     // 32 mm translation along the X axis.
-    (*rotMat)(0, 3) = double(SIZE[0]) / 2.;
+    (*rot_mat)(0, 3) = double(size[0]) / 2.;
 
     filter::image::resampler::resample(
-        data::image::csptr(imageIn),
-        imageOut,
-        data::matrix4::csptr(rotMat)
+        data::image::csptr(image_in),
+        image_out,
+        data::matrix4::csptr(rot_mat)
     );
 
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto out_dump_lock = image_out->dump_lock();
 
-    for(std::size_t i = 0 ; i < SIZE[0] ; ++i)
+    for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
-        for(std::size_t j = 0 ; j < SIZE[1] ; ++j)
+        for(std::size_t j = 0 ; j < size[1] ; ++j)
         {
-            for(std::size_t k = 0 ; k < SIZE[2] ; ++k)
+            for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const float valueOut = imageOut->at<float>(i, j, k);
+                const float value_out = image_out->at<float>(i, j, k);
 
                 std::string msg = std::to_string(i) + " " + std::to_string(j) + " " + std::to_string(k);
 
                 if(i == 0)
                 {
                     // The negative Z face must be 'white'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 1.F, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 1.F, value_out);
                 }
                 else
                 {
                     // Everything else should be 'black'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 0.F, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 0.F, value_out);
                 }
             }
         }

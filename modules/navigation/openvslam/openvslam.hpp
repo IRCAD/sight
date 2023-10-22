@@ -105,7 +105,7 @@ namespace sight::module::navigation::openvslam
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  *   - showFeatures: Call an imshow to display internal image of openvslam (with features projected).
  * - \b setEnumParameter(string, string): Calls an enum parameter slot according to the given key.
- * - MapType: "Global" or "Local", fill either the global map or the local map in the pointcloud output.
+ * - map_t: "Global" or "Local", fill either the global map or the local map in the pointcloud output.
  *
  * @section XML XML Configuration
  *
@@ -244,7 +244,7 @@ private:
 
     /// Type of the signals.
 
-    using SignalType = core::com::signal<void ()>;
+    using signal_t = core::com::signal<void ()>;
     /** @} */
 
     /**
@@ -254,28 +254,28 @@ private:
      */
 
     /// Signal: sent when the tracking is initialized.
-    SignalType::sptr m_sigTrackingInitialized;
+    signal_t::sptr m_sigTrackingInitialized;
 
     /// Signal: sended when the tracking is not initialized.
-    SignalType::sptr m_sigTrackingNotInitialized;
+    signal_t::sptr m_sigTrackingNotInitialized;
 
     /// Signal: sent when the tracking is found.
-    SignalType::sptr m_sigTracked;
+    signal_t::sptr m_sigTracked;
 
     /// Signal: sent when the tracking is lost.
-    SignalType::sptr m_sigTrackingLost;
+    signal_t::sptr m_sigTrackingLost;
 
     /// Signal: sent when the vocabulary file is unloaded.
-    SignalType::sptr m_sigVocFileUnloaded;
+    signal_t::sptr m_sigVocFileUnloaded;
 
     /// Signal: sent when the vocabulary file is loading.
-    SignalType::sptr m_sigVocFileLoadingStarted;
+    signal_t::sptr m_sigVocFileLoadingStarted;
 
     /// Signal: sent when the vocabulary file is loaded.
-    SignalType::sptr m_sigVocFileLoaded;
+    signal_t::sptr m_sigVocFileLoaded;
 
     /// Signal: sent when the map file is loaded.
-    SignalType::sptr m_sigMapLoaded;
+    signal_t::sptr m_sigMapLoaded;
     /** @} */
 
     /// Start the tracking with the path of the _mapFile.

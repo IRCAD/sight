@@ -32,14 +32,14 @@ namespace sight::core::crypto
 
 //------------------------------------------------------------------------------
 template<typename T>
-inline static T fromBase64(const T& message)
+inline static T from_base64(const T& _message)
 {
-    const std::size_t message_size = message.size();
+    const std::size_t message_size = _message.size();
 
     // Do nothing if the message is empty...
     if(message_size == 0)
     {
-        return message;
+        return _message;
     }
 
     // Compute the ouput size
@@ -52,7 +52,7 @@ inline static T fromBase64(const T& message)
     // Decode
     const int output_size = EVP_DecodeBlock(
         reinterpret_cast<unsigned char*>(output.data()),
-        reinterpret_cast<const unsigned char*>(message.data()),
+        reinterpret_cast<const unsigned char*>(_message.data()),
         static_cast<int>(message_size)
     );
 
@@ -64,11 +64,11 @@ inline static T fromBase64(const T& message)
     // Compute padding to be able to remove it
     std::size_t padding = 0;
 
-    if(message[message_size - 1] == '=')
+    if(_message[message_size - 1] == '=')
     {
         padding++;
 
-        if(message[message_size - 2] == '=')
+        if(_message[message_size - 2] == '=')
         {
             padding++;
         }
@@ -81,25 +81,25 @@ inline static T fromBase64(const T& message)
 
 //------------------------------------------------------------------------------
 
-secure_string from_base64(const secure_string& message)
+secure_string from_base64(const secure_string& _message)
 {
-    return fromBase64<secure_string>(message);
+    return from_base64<secure_string>(_message);
 }
 
 //------------------------------------------------------------------------------
 
-std::string from_base64(const std::string& message)
+std::string from_base64(const std::string& _message)
 {
-    return fromBase64<std::string>(message);
+    return from_base64<std::string>(_message);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-T toBase64(const T& message)
+T to_base64(const T& _message)
 {
     // Compute the output size
-    const std::size_t predicted = 4 * ((message.size() + 2) / 3);
+    const std::size_t predicted = 4 * ((_message.size() + 2) / 3);
 
     // Create the output (take care of final \0);
     T output;
@@ -108,8 +108,8 @@ T toBase64(const T& message)
     // Encode
     const int output_size = EVP_EncodeBlock(
         reinterpret_cast<unsigned char*>(output.data()),
-        reinterpret_cast<const unsigned char*>(message.data()),
-        static_cast<int>(message.size())
+        reinterpret_cast<const unsigned char*>(_message.data()),
+        static_cast<int>(_message.size())
     );
 
     output.resize(static_cast<std::size_t>(output_size));
@@ -119,16 +119,16 @@ T toBase64(const T& message)
 
 //------------------------------------------------------------------------------
 
-secure_string to_base64(const secure_string& message)
+secure_string to_base64(const secure_string& _message)
 {
-    return toBase64<secure_string>(message);
+    return to_base64<secure_string>(_message);
 }
 
 //------------------------------------------------------------------------------
 
-std::string to_base64(const std::string& message)
+std::string to_base64(const std::string& _message)
 {
-    return toBase64<std::string>(message);
+    return to_base64<std::string>(_message);
 }
 
 } // namespace sight::core::crypto

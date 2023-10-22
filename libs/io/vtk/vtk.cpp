@@ -27,7 +27,7 @@
 #include <core/runtime/profile.hpp>
 #include <core/tools/os.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <geometry/data/mesh_functions.hpp>
@@ -64,7 +64,7 @@ namespace sight::io::vtk
 //------------------------------------------------------------------------------
 
 // Function to initialize VTK Log file, where VTK message will be printed in.
-static bool initVTKLogFile()
+static bool init_vtk_log_file()
 {
     SIGHT_INFO("Creating VTK Log file");
 
@@ -95,27 +95,27 @@ static bool initVTKLogFile()
 }
 
 // static variable to call initVTKLogFile();
-static bool s_enableLog = initVTKLogFile();
+static bool s_enable_log = init_vtk_log_file();
 
 // ------------------------------------------------------------------------------
 
 TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::fwToolsToVtkMap::key_type& key
+    const TypeTranslator::fwToolsToVtkMap::key_type& _key
 )
 {
-    auto it = s_toVtk.find(key);
-    SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end());
+    auto it = s_toVtk.find(_key);
+    SIGHT_THROW_IF("Unknown Type: " << _key, it == s_toVtk.end());
     return it->second;
 }
 
 // ------------------------------------------------------------------------------
 
 TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::VtkTofwToolsMap::key_type& key
+    const TypeTranslator::VtkTofwToolsMap::key_type& _key
 )
 {
-    auto it = s_fromVtk.find(key);
-    SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end());
+    auto it = s_fromVtk.find(_key);
+    SIGHT_THROW_IF("Unknown Type: " << _key, it == s_fromVtk.end());
     return it->second;
 }
 
@@ -164,159 +164,159 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
 
 // -----------------------------------------------------------------------------
 
-void toVTKImage(data::image::csptr data, vtkImageData* dst)
+void to_vtk_image(data::image::csptr _data, vtkImageData* _dst)
 {
     vtkSmartPointer<vtkImageImport> importer = vtkSmartPointer<vtkImageImport>::New();
 
-    configureVTKImageImport(importer, data);
+    configure_vtk_image_import(importer, _data);
 
     importer->Update();
 
-    dst->ShallowCopy(importer->GetOutput());
+    _dst->ShallowCopy(importer->GetOutput());
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void* newBuffer(std::size_t size)
+void* new_buffer(std::size_t _size)
 {
-    IMAGETYPE* destBuffer = nullptr;
+    IMAGETYPE* dest_buffer = nullptr;
     try
     {
-        destBuffer = new IMAGETYPE[size];
+        dest_buffer = new IMAGETYPE[_size];
     }
     catch(std::exception& e)
     {
         SIGHT_ERROR(
             "No enough memory to allocate an image of type "
             << core::type::get<IMAGETYPE>().name()
-            << " and of size " << size << "." << std::endl
+            << " and of size " << _size << "." << std::endl
             << e.what()
         );
         throw;
     }
-    return destBuffer;
+    return dest_buffer;
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
+void from_rgb_buffer(void* _input, std::size_t _size, void*& _dest_buffer)
 {
-    if(destBuffer == nullptr)
+    if(_dest_buffer == nullptr)
     {
-        destBuffer = newBuffer<IMAGETYPE>(size);
+        _dest_buffer = newBuffer<IMAGETYPE>(_size);
     }
 
-    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
-    IMAGETYPE valR;
-    IMAGETYPE valG;
-    IMAGETYPE valB;
+    auto* dest_buffer_typed = static_cast<IMAGETYPE*>(_dest_buffer);
+    auto* input_typed       = static_cast<IMAGETYPE*>(_input);
+    IMAGETYPE* final_ptr    = static_cast<IMAGETYPE*>(_dest_buffer) + _size;
+    IMAGETYPE val_r;
+    IMAGETYPE val_g;
+    IMAGETYPE val_b;
 
-    while(destBufferTyped < finalPtr)
+    while(dest_buffer_typed < final_ptr)
     {
-        valR                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.30));
-        valG                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.59));
-        valB                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.11));
-        (*destBufferTyped++) = valR + valG + valB;
+        val_r                  = static_cast<IMAGETYPE>(float((*(input_typed++)) * 0.30));
+        val_g                  = static_cast<IMAGETYPE>(float((*(input_typed++)) * 0.59));
+        val_b                  = static_cast<IMAGETYPE>(float((*(input_typed++)) * 0.11));
+        (*dest_buffer_typed++) = val_r + val_g + val_b;
     }
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void fromRGBBufferColor(void* input, std::size_t size, void*& destBuffer)
+void from_rgb_buffer_color(void* _input, std::size_t _size, void*& _dest_buffer)
 {
-    if(destBuffer == nullptr)
+    if(_dest_buffer == nullptr)
     {
-        destBuffer = newBuffer<IMAGETYPE>(size);
+        _dest_buffer = newBuffer<IMAGETYPE>(_size);
     }
 
-    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
+    auto* dest_buffer_typed = static_cast<IMAGETYPE*>(_dest_buffer);
+    auto* input_typed       = static_cast<IMAGETYPE*>(_input);
+    IMAGETYPE* final_ptr    = static_cast<IMAGETYPE*>(_dest_buffer) + _size;
 
-    while(destBufferTyped < finalPtr)
+    while(dest_buffer_typed < final_ptr)
     {
-        (*destBufferTyped++) = (*(inputTyped++));
+        (*dest_buffer_typed++) = (*(input_typed++));
     }
 }
 
 // -----------------------------------------------------------------------------
 
-void fromVTKImage(vtkImageData* source, data::image::sptr destination)
+void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
 {
-    SIGHT_ASSERT("vtkImageData source and/or data::image destination are not correct", destination && source);
+    SIGHT_ASSERT("vtkImageData source and/or data::image destination are not correct", _destination && _source);
 
     // ensure image size correct
 //    source->UpdateInformation();
 //    source->PropagateUpdateExtent();
 
-    int dim = source->GetDataDimension();
-    data::image::Size imageSize;
+    int dim = _source->GetDataDimension();
+    data::image::Size image_size;
 
     if(dim == 2)
     {
-        imageSize = {static_cast<std::size_t>(source->GetDimensions()[0]),
-                     static_cast<std::size_t>(source->GetDimensions()[1]), 0
+        image_size = {static_cast<std::size_t>(_source->GetDimensions()[0]),
+                      static_cast<std::size_t>(_source->GetDimensions()[1]), 0
         };
 
-        const data::image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
+        const data::image::Spacing spacing = {_source->GetSpacing()[0], _source->GetSpacing()[1], 0.
         };
-        destination->setSpacing(spacing);
+        _destination->setSpacing(spacing);
 
-        const data::image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.
+        const data::image::Origin origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], 0.
         };
-        destination->setOrigin(origin);
+        _destination->setOrigin(origin);
     }
     else
     {
-        imageSize = {static_cast<std::size_t>(source->GetDimensions()[0]),
-                     static_cast<std::size_t>(source->GetDimensions()[1]),
-                     static_cast<std::size_t>(source->GetDimensions()[2])
+        image_size = {static_cast<std::size_t>(_source->GetDimensions()[0]),
+                      static_cast<std::size_t>(_source->GetDimensions()[1]),
+                      static_cast<std::size_t>(_source->GetDimensions()[2])
         };
 
         const data::image::Spacing spacing =
-        {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]
+        {_source->GetSpacing()[0], _source->GetSpacing()[1], _source->GetSpacing()[2]
         };
-        destination->setSpacing(spacing);
+        _destination->setSpacing(spacing);
 
-        const data::image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]
+        const data::image::Origin origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], _source->GetOrigin()[2]
         };
-        destination->setOrigin(origin);
+        _destination->setOrigin(origin);
     }
 
-    const int nbComponents = source->GetNumberOfScalarComponents();
-    const std::size_t size = static_cast<std::size_t>(
+    const int nb_components = _source->GetNumberOfScalarComponents();
+    const std::size_t size  = static_cast<std::size_t>(
         std::accumulate(
-            source->GetDimensions(),
-            source->GetDimensions() + static_cast<std::size_t>(dim),
-            std::max(static_cast<std::size_t>(3), static_cast<std::size_t>(nbComponents)),
+            _source->GetDimensions(),
+            _source->GetDimensions() + static_cast<std::size_t>(dim),
+            std::max(static_cast<std::size_t>(3), static_cast<std::size_t>(nb_components)),
             std::multiplies<>()
         )
     );
-    const void* input = source->GetScalarPointer();
+    const void* input = _source->GetScalarPointer();
 
     if(size != 0)
     {
-        void* destBuffer = nullptr;
+        void* dest_buffer = nullptr;
 
         sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
-        if(nbComponents == 1)
+        if(nb_components == 1)
         {
             format = data::image::PixelFormat::GRAY_SCALE;
         }
-        else if(nbComponents == 2)
+        else if(nb_components == 2)
         {
             format = data::image::PixelFormat::RG;
         }
-        else if(nbComponents == 3)
+        else if(nb_components == 3)
         {
             format = data::image::PixelFormat::RGB;
         }
-        else if(nbComponents == 4)
+        else if(nb_components == 4)
         {
             format = data::image::PixelFormat::RGBA;
         }
@@ -325,95 +325,95 @@ void fromVTKImage(vtkImageData* source, data::image::sptr destination)
             SIGHT_FATAL("Unhandled pixel format");
         }
 
-        destination->resize(imageSize, TypeTranslator::translate(source->GetScalarType()), format);
+        _destination->resize(image_size, TypeTranslator::translate(_source->GetScalarType()), format);
 
-        const auto dumpLock = destination->dump_lock();
+        const auto dump_lock = _destination->dump_lock();
 
-        destBuffer = destination->buffer();
-        const std::size_t sizeInBytes = destination->getSizeInBytes();
-        std::memcpy(destBuffer, input, sizeInBytes);
+        dest_buffer = _destination->buffer();
+        const std::size_t size_in_bytes = _destination->getSizeInBytes();
+        std::memcpy(dest_buffer, input, size_in_bytes);
 
-        sight::data::helper::MedicalImage::checkImageSliceIndex(destination);
+        sight::data::helper::medical_image::check_image_slice_index(_destination);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void configureVTKImageImport(vtkImageImport* _pImageImport, data::image::csptr _pDataImage)
+void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::csptr _p_data_image)
 {
-    const auto dumpLock = _pDataImage->dump_lock();
+    const auto dump_lock = _p_data_image->dump_lock();
 
-    if(_pDataImage->numDimensions() == 2)
+    if(_p_data_image->numDimensions() == 2)
     {
-        _pImageImport->SetDataSpacing(
-            _pDataImage->getSpacing()[0],
-            _pDataImage->getSpacing()[1],
+        _p_image_import->SetDataSpacing(
+            _p_data_image->getSpacing()[0],
+            _p_data_image->getSpacing()[1],
             0
         );
 
-        _pImageImport->SetDataOrigin(
-            _pDataImage->getOrigin()[0],
-            _pDataImage->getOrigin()[1],
+        _p_image_import->SetDataOrigin(
+            _p_data_image->getOrigin()[0],
+            _p_data_image->getOrigin()[1],
             0
         );
 
-        _pImageImport->SetWholeExtent(
+        _p_image_import->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->size()[0]) - 1,
+            static_cast<int>(_p_data_image->size()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->size()[1]) - 1,
+            static_cast<int>(_p_data_image->size()[1]) - 1,
             0,
             0
         );
     }
     else
     {
-        _pImageImport->SetDataSpacing(
-            _pDataImage->getSpacing()[0],
-            _pDataImage->getSpacing()[1],
-            _pDataImage->getSpacing()[2]
+        _p_image_import->SetDataSpacing(
+            _p_data_image->getSpacing()[0],
+            _p_data_image->getSpacing()[1],
+            _p_data_image->getSpacing()[2]
         );
 
-        _pImageImport->SetDataOrigin(
-            _pDataImage->getOrigin()[0],
-            _pDataImage->getOrigin()[1],
-            _pDataImage->getOrigin()[2]
+        _p_image_import->SetDataOrigin(
+            _p_data_image->getOrigin()[0],
+            _p_data_image->getOrigin()[1],
+            _p_data_image->getOrigin()[2]
         );
 
-        _pImageImport->SetWholeExtent(
+        _p_image_import->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->size()[0]) - 1,
+            static_cast<int>(_p_data_image->size()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->size()[1]) - 1,
+            static_cast<int>(_p_data_image->size()[1]) - 1,
             0,
-            static_cast<int>(_pDataImage->size()[2]) - 1
+            static_cast<int>(_p_data_image->size()[2]) - 1
         );
     }
 
-    _pImageImport->SetNumberOfScalarComponents(static_cast<int>(_pDataImage->numComponents()));
+    _p_image_import->SetNumberOfScalarComponents(static_cast<int>(_p_data_image->numComponents()));
 
     // copy WholeExtent to DataExtent
-    _pImageImport->SetDataExtentToWholeExtent();
+    _p_image_import->SetDataExtentToWholeExtent();
 
     // no copy, no buffer destruction/management
     // Remove const of the pointer.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->buffer()));
+    _p_image_import->SetImportVoidPointer(const_cast<void*>(_p_data_image->buffer()));
 
     // used to set correct pixeltype to VtkImage
-    _pImageImport->SetDataScalarType(TypeTranslator::translate(_pDataImage->getType()));
+    _p_image_import->SetDataScalarType(TypeTranslator::translate(_p_data_image->getType()));
 }
 
 // -----------------------------------------------------------------------------
 
-vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::matrix4::csptr _transfoMatrix)
+vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _transfo_matrix)
 {
     auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(std::uint8_t l = 0 ; l < 4 ; l++)
     {
         for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
-            matrix->SetElement(l, c, (*_transfoMatrix)(l, c));
+            matrix->SetElement(l, c, (*_transfo_matrix)(l, c));
         }
     }
 
@@ -422,14 +422,14 @@ vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::matrix4::csptr _transfoMatrix)
 
 // -----------------------------------------------------------------------------
 
-bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::matrix4::sptr _transfoMatrix)
+bool from_vtk_matrix(vtkMatrix4x4* _matrix, data::matrix4::sptr _transfo_matrix)
 {
     bool res = true;
     for(std::uint8_t l = 0 ; l < 4 ; l++)
     {
         for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
-            (*_transfoMatrix)(l, c) = _matrix->GetElement(l, c);
+            (*_transfo_matrix)(l, c) = _matrix->GetElement(l, c);
         }
     }
 

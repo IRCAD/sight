@@ -82,7 +82,7 @@ protected:
      * @param _isVisible the visibility status.
      * @see setVisible(bool)
      */
-    VIZ_QT3D_API void updateVisibility(bool _isVisible);
+    VIZ_QT3D_API void updateVisibility(bool _is_visible);
 
     /// SLOT: toggles the visibility of the adaptor.
     VIZ_QT3D_API void toggleVisibility();

@@ -50,101 +50,101 @@ constexpr static auto s_Groups {"Groups"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto landmarks = helper::safe_cast<data::landmarks>(object);
+    const auto landmarks = helper::safe_cast<data::landmarks>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::landmarks>(tree, 1);
+    helper::write_version<data::landmarks>(_tree, 1);
 
-    boost::property_tree::ptree groupsTree;
+    boost::property_tree::ptree groups_tree;
 
     for(const auto& name : landmarks->getGroupNames())
     {
         // Serialize landmark group
         const auto& group = landmarks->getGroup(name);
 
-        boost::property_tree::ptree groupTree;
-        groupTree.put(s_Size, group.m_size);
+        boost::property_tree::ptree group_tree;
+        group_tree.put(s_Size, group.m_size);
 
         switch(group.m_shape)
         {
             case data::landmarks::Shape::CUBE:
-                groupTree.put(s_Shape, 0);
+                group_tree.put(s_Shape, 0);
                 break;
 
             case data::landmarks::Shape::SPHERE:
-                groupTree.put(s_Shape, 1);
+                group_tree.put(s_Shape, 1);
                 break;
         }
 
-        groupTree.put(s_Visibility, group.m_visibility);
+        group_tree.put(s_Visibility, group.m_visibility);
 
         // Group color
-        boost::property_tree::ptree colorTree;
-        colorTree.put(s_Red, group.m_color[0]);
-        colorTree.put(s_Green, group.m_color[1]);
-        colorTree.put(s_Blue, group.m_color[2]);
-        colorTree.put(s_Alpha, group.m_color[3]);
-        groupTree.add_child(s_Color, colorTree);
+        boost::property_tree::ptree color_tree;
+        color_tree.put(s_Red, group.m_color[0]);
+        color_tree.put(s_Green, group.m_color[1]);
+        color_tree.put(s_Blue, group.m_color[2]);
+        color_tree.put(s_Alpha, group.m_color[3]);
+        group_tree.add_child(s_Color, color_tree);
 
         // Points
-        boost::property_tree::ptree pointsTree;
+        boost::property_tree::ptree points_tree;
 
         for(const auto& point : group.m_points)
         {
-            boost::property_tree::ptree pointTree;
-            pointTree.put(s_X, point[0]);
-            pointTree.put(s_Y, point[1]);
-            pointTree.put(s_Z, point[2]);
-            pointsTree.add_child(s_Point, pointTree);
+            boost::property_tree::ptree point_tree;
+            point_tree.put(s_X, point[0]);
+            point_tree.put(s_Y, point[1]);
+            point_tree.put(s_Z, point[2]);
+            points_tree.add_child(s_Point, point_tree);
         }
 
-        groupTree.add_child(s_Points, pointsTree);
-        groupsTree.add_child(name, groupTree);
+        group_tree.add_child(s_Points, points_tree);
+        groups_tree.add_child(name, group_tree);
     }
 
-    tree.add_child(s_Groups, groupsTree);
+    _tree.add_child(s_Groups, groups_tree);
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::landmarks::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto landmarks = helper::cast_or_create<data::landmarks>(object);
+    auto landmarks = helper::cast_or_create<data::landmarks>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::landmarks>(tree, 0, 1);
+    helper::read_version<data::landmarks>(_tree, 0, 1);
 
     // Iterate on groups
-    for(const auto& groupTree : tree.get_child(s_Groups))
+    for(const auto& group_tree : _tree.get_child(s_Groups))
     {
-        const auto& colorTree            = groupTree.second.get_child(s_Color);
+        const auto& color_tree           = group_tree.second.get_child(s_Color);
         const std::array<float, 4> color = {
-            colorTree.get<float>(s_Red),
-            colorTree.get<float>(s_Green),
-            colorTree.get<float>(s_Blue),
-            colorTree.get<float>(s_Alpha),
+            color_tree.get<float>(s_Red),
+            color_tree.get<float>(s_Green),
+            color_tree.get<float>(s_Blue),
+            color_tree.get<float>(s_Alpha),
         };
 
         landmarks->addGroup(
-            groupTree.first,
+            group_tree.first,
             color,
-            groupTree.second.get<float>(s_Size),
+            group_tree.second.get<float>(s_Size),
             [&]
             {
-                const int shape = groupTree.second.get<int>(s_Shape);
+                const int shape = group_tree.second.get<int>(s_Shape);
                 switch(shape)
                 {
                     case 0:
@@ -157,19 +157,19 @@ inline static data::landmarks::sptr read(
                         SIGHT_THROW("Unknown landmark shape: " << shape);
                 }
             }(),
-            groupTree.second.get<bool>(s_Visibility)
+            group_tree.second.get<bool>(s_Visibility)
         );
 
-        const auto& pointsTree = groupTree.second.get_child(s_Points);
-        for(const auto& pointTree : pointsTree)
+        const auto& points_tree = group_tree.second.get_child(s_Points);
+        for(const auto& point_tree : points_tree)
         {
             const std::array<double, 3> point = {
-                pointTree.second.get<double>(s_X),
-                pointTree.second.get<double>(s_Y),
-                pointTree.second.get<double>(s_Z)
+                point_tree.second.get<double>(s_X),
+                point_tree.second.get<double>(s_Y),
+                point_tree.second.get<double>(s_Z)
             };
 
-            landmarks->addPoint(groupTree.first, point);
+            landmarks->addPoint(group_tree.first, point);
         }
     }
 

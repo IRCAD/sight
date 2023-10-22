@@ -36,18 +36,18 @@ namespace sight::viz::scene3d::compositor
 
 //-----------------------------------------------------------------------------
 
-void sao_listener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+void sao_listener::notifyMaterialRender(Ogre::uint32 _pass_id, Ogre::MaterialPtr& _mat)
 {
     // change the sao arguments
-    auto fragmentParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+    auto fragment_params = _mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 
     // try to go here only when the AO_mat is called
-    if(pass_id == 1)
+    if(_pass_id == 1)
     {
-        Ogre::CompositorChain* compChain =
+        Ogre::CompositorChain* comp_chain =
             Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
 
-        Ogre::CompositorInstance* saoCompositor = compChain->getCompositor("SAO");
+        Ogre::CompositorInstance* sao_compositor = comp_chain->getCompositor("SAO");
         Ogre::TexturePtr mip0;
         Ogre::TexturePtr mip1;
         Ogre::TexturePtr mip2;
@@ -59,16 +59,16 @@ void sao_listener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr&
         Ogre::TexturePtr mip8;
         Ogre::TexturePtr rt0;
 
-        mip0 = saoCompositor->getTextureInstance("mip0", 0);
-        mip1 = saoCompositor->getTextureInstance("mip1", 0);
-        mip2 = saoCompositor->getTextureInstance("mip2", 0);
-        mip3 = saoCompositor->getTextureInstance("mip3", 0);
-        mip4 = saoCompositor->getTextureInstance("mip4", 0);
-        mip5 = saoCompositor->getTextureInstance("mip5", 0);
-        mip6 = saoCompositor->getTextureInstance("mip6", 0);
-        mip7 = saoCompositor->getTextureInstance("mip7", 0);
-        mip8 = saoCompositor->getTextureInstance("mip8", 0);
-        rt0  = saoCompositor->getTextureInstance("rt0", 0);
+        mip0 = sao_compositor->getTextureInstance("mip0", 0);
+        mip1 = sao_compositor->getTextureInstance("mip1", 0);
+        mip2 = sao_compositor->getTextureInstance("mip2", 0);
+        mip3 = sao_compositor->getTextureInstance("mip3", 0);
+        mip4 = sao_compositor->getTextureInstance("mip4", 0);
+        mip5 = sao_compositor->getTextureInstance("mip5", 0);
+        mip6 = sao_compositor->getTextureInstance("mip6", 0);
+        mip7 = sao_compositor->getTextureInstance("mip7", 0);
+        mip8 = sao_compositor->getTextureInstance("mip8", 0);
+        rt0  = sao_compositor->getTextureInstance("rt0", 0);
 
         // ---------------------------------------------------
         //  Copy the content of mip0,mip1... in rt0
@@ -97,33 +97,33 @@ void sao_listener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr&
         rt0->getBuffer(0, 7)->blit(mip7.get()->getBuffer());
         rt0->getBuffer(0, 8)->blit(mip8.get()->getBuffer());
 
-        fragmentParams->setNamedConstant("u_radius", static_cast<float>(0.85));
+        fragment_params->setNamedConstant("u_radius", static_cast<float>(0.85));
 
-        fragmentParams->setNamedConstant("u_numSamples", 11);
+        fragment_params->setNamedConstant("u_numSamples", 11);
 
         const Ogre::Matrix4& proj = m_viewport->getCamera()->getProjectionMatrix();
 
-        const Ogre::Vector4 projInfo(-2.F / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
-                                     -2.F / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
-                                     (1.F - proj[0][2]) / proj[0][0],
-                                     (1.F + proj[1][2]) / proj[1][1]);
-        fragmentParams->setNamedConstant("eu_projInfo", projInfo);
+        const Ogre::Vector4 proj_info(-2.F / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
+                                      -2.F / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
+                                      (1.F - proj[0][2]) / proj[0][0],
+                                      (1.F + proj[1][2]) / proj[1][1]);
+        fragment_params->setNamedConstant("eu_projInfo", proj_info);
     }
 
-    if(pass_id >= 41)
+    if(_pass_id >= 41)
     {
-        Ogre::CompositorChain* compChain =
+        Ogre::CompositorChain* comp_chain =
             Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
 
-        Ogre::CompositorInstance* Sao_compositor = compChain->getCompositor("SAO");
+        Ogre::CompositorInstance* sao_compositor = comp_chain->getCompositor("SAO");
 
-        Ogre::TexturePtr prevMip = Sao_compositor->getTextureInstance("mip" + std::to_string(pass_id - 41), 0);
+        Ogre::TexturePtr prev_mip = sao_compositor->getTextureInstance("mip" + std::to_string(_pass_id - 41), 0);
 
-        fragmentParams->setNamedConstant("eu_vpWidth", static_cast<float>(prevMip.get()->getWidth()));
-        fragmentParams->setNamedConstant("eu_vpHeight", static_cast<float>(prevMip.get()->getHeight()));
+        fragment_params->setNamedConstant("eu_vpWidth", static_cast<float>(prev_mip.get()->getWidth()));
+        fragment_params->setNamedConstant("eu_vpHeight", static_cast<float>(prev_mip.get()->getHeight()));
     }
 
-    if(pass_id == 4)
+    if(_pass_id == 4)
     {
         // Change the Blend State
 
@@ -131,10 +131,10 @@ void sao_listener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr&
         int state = 1;
 
         // change the blend state
-        fragmentParams->setNamedConstant("u_blend", state);
+        fragment_params->setNamedConstant("u_blend", state);
 
         // Change the AO Intensity value
-        fragmentParams->setNamedConstant("aoIntensity", static_cast<float>(1.0));
+        fragment_params->setNamedConstant("aoIntensity", static_cast<float>(1.0));
     }
 }
 

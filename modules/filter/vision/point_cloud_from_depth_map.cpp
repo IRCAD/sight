@@ -76,86 +76,86 @@ void point_cloud_from_depth_map::configuring()
 void point_cloud_from_depth_map::updating()
 {
     const auto calibration = m_calibration.lock();
-    const auto depthMap    = m_depthMap.lock();
-    const auto pointCloud  = m_pointCloud.lock();
+    const auto depth_map   = m_depthMap.lock();
+    const auto point_cloud = m_pointCloud.lock();
 
-    SIGHT_ASSERT("Missing 'pointCloud' inout", pointCloud);
+    SIGHT_ASSERT("Missing 'pointCloud' inout", point_cloud);
     SIGHT_ASSERT("Missing 'calibration' input", calibration);
-    SIGHT_ASSERT("Missing 'depthMap' input", depthMap);
+    SIGHT_ASSERT("Missing 'depthMap' input", depth_map);
 
-    const auto depthCalibration = calibration->get_camera(0);
+    const auto depth_calibration = calibration->get_camera(0);
 
-    const auto rgbMap = m_rgbMap.lock();
+    const auto rgb_map = m_rgbMap.lock();
 
-    data::camera::csptr colorCalibration;
-    data::matrix4::csptr extrinsicMatrix;
+    data::camera::csptr color_calibration;
+    data::matrix4::csptr extrinsic_matrix;
 
-    if(rgbMap)
+    if(rgb_map)
     {
-        colorCalibration = calibration->get_camera(1);
-        extrinsicMatrix  = calibration->get_extrinsic_matrix(1);
-        SIGHT_ASSERT("Missing extrinsic matrix", extrinsicMatrix);
+        color_calibration = calibration->get_camera(1);
+        extrinsic_matrix  = calibration->get_extrinsic_matrix(1);
+        SIGHT_ASSERT("Missing extrinsic matrix", extrinsic_matrix);
     }
 
     // Initialize mesh points memory one time in order to increase performances
-    if(pointCloud->numPoints() == 0)
+    if(point_cloud->numPoints() == 0)
     {
-        const auto size            = depthMap->size();
-        const std::size_t width    = size[0];
-        const std::size_t height   = size[1];
-        const std::size_t nbPoints = width * height;
+        const auto size             = depth_map->size();
+        const std::size_t width     = size[0];
+        const std::size_t height    = size[1];
+        const std::size_t nb_points = width * height;
 
         // allocate mesh
         data::mesh::Attributes attribute = data::mesh::Attributes::NONE;
-        if(rgbMap)
+        if(rgb_map)
         {
             attribute = data::mesh::Attributes::POINT_COLORS;
         }
 
-        pointCloud->resize(
-            data::mesh::size_t(nbPoints),
-            data::mesh::size_t(nbPoints),
-            data::mesh::CellType::POINT,
+        point_cloud->resize(
+            data::mesh::size_t(nb_points),
+            data::mesh::size_t(nb_points),
+            data::mesh::cell_type_t::POINT,
             attribute
         );
 
-        const auto dumpLock = pointCloud->dump_lock();
+        const auto dump_lock = point_cloud->dump_lock();
 
-        auto itr = pointCloud->begin<data::iterator::cell::point>();
+        auto itr = point_cloud->begin<data::iterator::cell::point>();
 
         // to display the mesh, we need to create cells with one point.
-        for(std::size_t i = 0 ; i < nbPoints ; ++i, ++itr)
+        for(std::size_t i = 0 ; i < nb_points ; ++i, ++itr)
         {
             itr->pt = data::mesh::cell_t(i);
         }
 
-        auto sig = pointCloud->signal<data::mesh::ModifiedSignalType>(data::mesh::MODIFIED_SIG);
+        auto sig = point_cloud->signal<data::mesh::modified_signal_t>(data::mesh::MODIFIED_SIG);
         sig->async_emit();
     }
 
-    if(rgbMap)
+    if(rgb_map)
     {
         this->depthMapToPointCloudRGB(
-            depthCalibration,
-            colorCalibration,
-            depthMap.get_shared(),
-            rgbMap.get_shared(),
-            extrinsicMatrix,
-            pointCloud.get_shared()
+            depth_calibration,
+            color_calibration,
+            depth_map.get_shared(),
+            rgb_map.get_shared(),
+            extrinsic_matrix,
+            point_cloud.get_shared()
         );
 
         auto sig =
-            pointCloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
+            point_cloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
         sig->async_emit();
 
-        auto sig2 = pointCloud->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
+        auto sig2 = point_cloud->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
         sig2->async_emit();
     }
     else
     {
-        this->depthMapToPointCloud(depthCalibration, depthMap.get_shared(), pointCloud.get_shared());
+        this->depthMapToPointCloud(depth_calibration, depth_map.get_shared(), point_cloud.get_shared());
         auto sig =
-            pointCloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
+            point_cloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
         sig->async_emit();
     }
 
@@ -199,55 +199,55 @@ void point_cloud_from_depth_map::setDepthRange(int _val, std::string _key)
 //------------------------------------------------------------------------------
 
 void point_cloud_from_depth_map::depthMapToPointCloud(
-    const data::camera::csptr& depthCamera,
-    const data::image::csptr& depthMap,
-    const data::mesh::sptr& pointCloud
+    const data::camera::csptr& _depth_camera,
+    const data::image::csptr& _depth_map,
+    const data::mesh::sptr& _point_cloud
 ) const
 {
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
-    const auto type = depthMap->getType();
+    const auto type = _depth_map->getType();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
-    const auto size          = depthMap->size();
+    const auto size          = _depth_map->size();
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
-    const auto depthDumpLock = depthMap->dump_lock();
+    const auto depth_dump_lock = _depth_map->dump_lock();
 
-    auto depthItr = depthMap->begin<std::uint16_t>();
+    auto depth_itr = _depth_map->begin<std::uint16_t>();
 
-    const double cx = depthCamera->getCx();
-    const double cy = depthCamera->getCy();
-    const double fx = depthCamera->getFx();
-    const double fy = depthCamera->getFy();
+    const double cx = _depth_camera->getCx();
+    const double cy = _depth_camera->getCy();
+    const double fx = _depth_camera->getFx();
+    const double fy = _depth_camera->getFy();
 
-    const auto meshDumpLock = pointCloud->dump_lock();
+    const auto mesh_dump_lock = _point_cloud->dump_lock();
 
-    auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
+    auto points_itr = _point_cloud->begin<data::iterator::point::xyz>();
 
     for(std::size_t y = 0 ; y != height ; ++y)
     {
         for(std::size_t x = 0 ; x != width ; ++x)
         {
-            const uint16_t depth = *depthItr;
+            const uint16_t depth = *depth_itr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 double px = NAN;
                 double py = NAN;
                 double pz = NAN;
                 sight::filter::vision::projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                pointsItr->x = static_cast<float>(px);
-                pointsItr->y = static_cast<float>(py);
-                pointsItr->z = static_cast<float>(pz);
-                ++pointsItr;
+                points_itr->x = static_cast<float>(px);
+                points_itr->y = static_cast<float>(py);
+                points_itr->z = static_cast<float>(pz);
+                ++points_itr;
             }
 
-            ++depthItr;
+            ++depth_itr;
         }
     }
 }
@@ -255,17 +255,17 @@ void point_cloud_from_depth_map::depthMapToPointCloud(
 //------------------------------------------------------------------------------
 
 void point_cloud_from_depth_map::depthMapToPointCloudRGB(
-    const data::camera::csptr& depthCamera,
-    const data::camera::csptr& colorCamera,
-    const data::image::csptr& depthMap,
-    const data::image::csptr& colorMap,
-    const data::matrix4::csptr& extrinsic,
-    const data::mesh::sptr& pointCloud
+    const data::camera::csptr& _depth_camera,
+    const data::camera::csptr& _color_camera,
+    const data::image::csptr& _depth_map,
+    const data::image::csptr& _color_map,
+    const data::matrix4::csptr& _extrinsic,
+    const data::mesh::sptr& _point_cloud
 ) const
 {
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
-    const auto type = depthMap->getType();
+    const auto type = _depth_map->getType();
     if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
@@ -273,67 +273,67 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size          = depthMap->size();
+    const auto size          = _depth_map->size();
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
-    const auto rgbType = colorMap->getType();
-    if(rgbType != core::type::UINT8)
+    const auto rgb_type = _color_map->getType();
+    if(rgb_type != core::type::UINT8)
     {
-        SIGHT_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
+        SIGHT_ERROR("Wrong input rgb format: " << rgb_type << ", uint8 is expected.");
         return;
     }
 
-    if(4 != colorMap->numComponents())
+    if(4 != _color_map->numComponents())
     {
-        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->numComponents() << ", 4 is expected.");
+        SIGHT_ERROR("Wrong number of components in rgb : " << _color_map->numComponents() << ", 4 is expected.");
         return;
     }
 
-    const auto rgbSize          = colorMap->size();
-    const std::size_t rgbWidth  = rgbSize[0];
-    const std::size_t rgbHeight = rgbSize[1];
+    const auto rgb_size          = _color_map->size();
+    const std::size_t rgb_width  = rgb_size[0];
+    const std::size_t rgb_height = rgb_size[1];
 
-    if(rgbWidth != width || rgbHeight != height)
+    if(rgb_width != width || rgb_height != height)
     {
         SIGHT_ERROR("RGB and depth maps must have the same size");
         return;
     }
 
-    const auto depthDumpLock = depthMap->dump_lock();
-    auto depthItr            = depthMap->begin<std::uint16_t>();
+    const auto depth_dump_lock = _depth_map->dump_lock();
+    auto depth_itr             = _depth_map->begin<std::uint16_t>();
 
-    const auto rgbDumpLock = colorMap->dump_lock();
-    const auto rgbBegin    = colorMap->begin<data::iterator::rgba>();
+    const auto rgb_dump_lock = _color_map->dump_lock();
+    const auto rgb_begin     = _color_map->begin<data::iterator::rgba>();
 
-    const double cx = depthCamera->getCx();
-    const double cy = depthCamera->getCy();
-    const double fx = depthCamera->getFx();
-    const double fy = depthCamera->getFy();
+    const double cx = _depth_camera->getCx();
+    const double cy = _depth_camera->getCy();
+    const double fx = _depth_camera->getFx();
+    const double fy = _depth_camera->getFy();
 
-    const double rgbCx = colorCamera->getCx();
-    const double rgbCy = colorCamera->getCy();
-    const double rgbFx = colorCamera->getFx();
-    const double rgbFy = colorCamera->getFy();
+    const double rgb_cx = _color_camera->getCx();
+    const double rgb_cy = _color_camera->getCy();
+    const double rgb_fx = _color_camera->getFx();
+    const double rgb_fy = _color_camera->getFy();
 
-    const auto meshDumpLock = pointCloud->dump_lock();
+    const auto mesh_dump_lock = _point_cloud->dump_lock();
 
-    auto pointsItr = pointCloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
+    auto points_itr = _point_cloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
 
-    const data::iterator::rgba defaultColor = {255, 255, 255, 255};
+    const data::iterator::rgba default_color = {255, 255, 255, 255};
 
-    unsigned int nbRealPoints = 0;
-    auto glmExtrinsicMatrix   = geometry::data::getMatrixFromTF3D(*extrinsic);
+    unsigned int nb_real_points = 0;
+    auto glm_extrinsic_matrix   = geometry::data::to_glm_mat(*_extrinsic);
 
-    const auto imageSize = height * width;
+    const auto image_size = height * width;
     for(std::size_t y = 0 ; y != height ; ++y)
     {
         for(std::size_t x = 0 ; x != width ; ++x)
         {
-            const uint16_t depth = *depthItr;
+            const uint16_t depth = *depth_itr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
-                auto&& [p, c] = *pointsItr;
+                auto&& [p, c] = *points_itr;
 
                 // get the 3D coordinates in the depth world
                 double px = NAN;
@@ -346,53 +346,53 @@ void point_cloud_from_depth_map::depthMapToPointCloudRGB(
 
                 // Transform point to the rgb sensor world
                 const glm::dvec4 point(px, py, pz, 1.0);
-                const glm::dvec4 rgbPoint = glmExtrinsicMatrix * point;
+                const glm::dvec4 rgb_point = glm_extrinsic_matrix * point;
 
                 // project point to the rgb image
-                std::size_t rgbPx      = 0;
-                std::size_t rgbPy      = 0;
-                const bool isProjected = sight::filter::vision::projection::projectPoint(
-                    rgbPoint.x,
-                    rgbPoint.y,
-                    rgbPoint.z,
-                    rgbCx,
-                    rgbCy,
-                    rgbFx,
-                    rgbFy,
-                    rgbWidth,
-                    rgbHeight,
-                    rgbPx,
-                    rgbPy
+                std::size_t rgb_px      = 0;
+                std::size_t rgb_py      = 0;
+                const bool is_projected = sight::filter::vision::projection::projectPoint(
+                    rgb_point.x,
+                    rgb_point.y,
+                    rgb_point.z,
+                    rgb_cx,
+                    rgb_cy,
+                    rgb_fx,
+                    rgb_fy,
+                    rgb_width,
+                    rgb_height,
+                    rgb_px,
+                    rgb_py
                 );
 
-                if(isProjected)
+                if(is_projected)
                 {
-                    const std::size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
-                    if(rgbIdx < imageSize)
+                    const std::size_t rgb_idx = rgb_py * rgb_width + rgb_px;
+                    if(rgb_idx < image_size)
                     {
-                        const auto color = rgbBegin + std::int64_t(rgbIdx);
+                        const auto color = rgb_begin + std::int64_t(rgb_idx);
                         c = *color;
                     }
                     else
                     {
-                        c = defaultColor;
+                        c = default_color;
                     }
                 }
                 else
                 {
-                    c = defaultColor;
+                    c = default_color;
                 }
 
-                ++pointsItr;
-                ++nbRealPoints;
+                ++points_itr;
+                ++nb_real_points;
             }
 
-            ++depthItr;
+            ++depth_itr;
         }
     }
 
     // Since we discard points for which the depth map is zero, the mesh buffers are not full
-    pointCloud->truncate(nbRealPoints, nbRealPoints);
+    _point_cloud->truncate(nb_real_points, nb_real_points);
 }
 
 //-----------------------------------------------------------------------------

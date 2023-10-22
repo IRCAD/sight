@@ -60,16 +60,16 @@ void buffer_manager_test::allocate_test()
 {
     core::memory::buffer_manager::sptr manager = core::memory::buffer_manager::get();
 
-    const int SIZE                       = 100000;
+    const int size                       = 100000;
     core::memory::buffer_object::sptr bo = std::make_shared<core::memory::buffer_object>();
 
     CPPUNIT_ASSERT(bo->is_empty());
     CPPUNIT_ASSERT(bo->lock().buffer() == nullptr);
 
-    bo->allocate(SIZE);
+    bo->allocate(size);
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     // We need to wait before checking that the buffer was unlocked because all buffer operations are done on a worker.
@@ -84,7 +84,7 @@ void buffer_manager_test::allocate_test()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(1), bo->lock_count());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(int i = 0 ; i < SIZE ; ++i)
+        for(int i = 0 ; i < size ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -94,7 +94,7 @@ void buffer_manager_test::allocate_test()
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(int i = 0 ; i < SIZE ; ++i)
+        for(int i = 0 ; i < size ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -128,17 +128,17 @@ void buffer_manager_test::allocate_test()
     CPPUNIT_ASSERT(bo->is_empty());
     CPPUNIT_ASSERT(bo->lock().buffer() == nullptr);
 
-    bo->allocate(SIZE, std::make_shared<core::memory::buffer_new_policy>());
+    bo->allocate(size, std::make_shared<core::memory::buffer_new_policy>());
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     {
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(int i = 0 ; i < SIZE ; ++i)
+        for(int i = 0 ; i < size ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -148,7 +148,7 @@ void buffer_manager_test::allocate_test()
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(int i = 0 ; i < SIZE ; ++i)
+        for(int i = 0 ; i < size ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -169,8 +169,8 @@ void buffer_manager_test::memory_info_test()
     {
         SIGHT_INFO(manager->to_string().get());
         core::memory::buffer_object::sptr bo = std::make_shared<core::memory::buffer_object>();
-        const int SIZE                       = 100000;
-        bo->allocate(SIZE);
+        const int size                       = 100000;
+        bo->allocate(size);
         SIGHT_INFO(manager->to_string().get());
         core::memory::buffer_object::sptr bo1 = std::make_shared<core::memory::buffer_object>();
         SIGHT_INFO(manager->to_string().get());
@@ -180,17 +180,17 @@ void buffer_manager_test::memory_info_test()
         }
         core::memory::buffer_object::sptr bo2 = std::make_shared<core::memory::buffer_object>();
         SIGHT_INFO(manager->to_string().get());
-        bo->reallocate(SIZE * std::size_t(2));
+        bo->reallocate(size * std::size_t(2));
         {
             core::memory::buffer_object::lock_t lock(bo->lock());
             SIGHT_INFO(manager->to_string().get());
         }
         bo->destroy();
         SIGHT_INFO(manager->to_string().get());
-        bo1->allocate(SIZE);
-        bo2->allocate(SIZE);
-        char* buff = new char [SIZE];
-        bo->set_buffer(buff, SIZE, std::make_shared<core::memory::buffer_new_policy>());
+        bo1->allocate(size);
+        bo2->allocate(size);
+        char* buff = new char [size];
+        bo->set_buffer(buff, size, std::make_shared<core::memory::buffer_new_policy>());
         SIGHT_INFO(manager->to_string().get());
 
         {
@@ -294,9 +294,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static void set_free_system_memory(std::uint64_t new_memory)
+    static void set_free_system_memory(std::uint64_t _new_memory)
     {
-        s_free_system_memory = new_memory;
+        s_free_system_memory = _new_memory;
     }
 
 private:

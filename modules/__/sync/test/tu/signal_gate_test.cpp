@@ -80,11 +80,11 @@ void signal_gate_test::basicTest()
     object2->set_id("object2");
     auto object3 = std::make_shared<object>();
     object3->set_id("object3");
-    bool allReceived     = false;
-    auto allReceivedSlot = core::com::new_slot([&allReceived]{allReceived = true;});
+    bool all_received      = false;
+    auto all_received_slot = core::com::new_slot([&all_received]{all_received = true;});
     m_worker = core::thread::worker::make();
-    allReceivedSlot->set_worker(m_worker);
-    m_signalGate->signal("allReceived")->connect(allReceivedSlot);
+    all_received_slot->set_worker(m_worker);
+    m_signalGate->signal("allReceived")->connect(all_received_slot);
     boost::property_tree::ptree ptree;
     ptree.add("signal", "object1/signal");
     ptree.add("signal", "object2/signal");
@@ -96,8 +96,8 @@ void signal_gate_test::basicTest()
     object1->emitSignal();
     object2->emitSignal();
     object3->emitSignal();
-    SIGHT_TEST_WAIT(allReceived);
-    CPPUNIT_ASSERT(allReceived);
+    SIGHT_TEST_WAIT(all_received);
+    CPPUNIT_ASSERT(all_received);
 }
 
 } // namespace sight::module::sync::ut

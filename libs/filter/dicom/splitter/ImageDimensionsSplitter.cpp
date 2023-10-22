@@ -58,23 +58,23 @@ std::string ImageDimensionsSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+ImageDimensionsSplitter::dicom_series_container_t ImageDimensionsSplitter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 ) const
 {
-    DicomSeriesContainerType result;
-    result.push_back(series);
+    dicom_series_container_t result;
+    result.push_back(_series);
 
     // Columns splitter
-    auto columnsSplitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
-    columnsSplitter->setTag(DCM_Columns);
-    sight::filter::dicom::helper::Filter::applyFilter(result, columnsSplitter, false, logger);
+    auto columns_splitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
+    columns_splitter->setTag(DCM_Columns);
+    sight::filter::dicom::helper::Filter::applyFilter(result, columns_splitter, false, _logger);
 
     // Rows splitter
-    auto rowsSplitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
-    rowsSplitter->setTag(DCM_Rows);
-    sight::filter::dicom::helper::Filter::applyFilter(result, rowsSplitter, false, logger);
+    auto rows_splitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
+    rows_splitter->setTag(DCM_Rows);
+    sight::filter::dicom::helper::Filter::applyFilter(result, rows_splitter, false, _logger);
 
     return result;
 }

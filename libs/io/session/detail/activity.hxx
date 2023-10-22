@@ -43,54 +43,54 @@ constexpr static auto s_activityConfigId {"activityConfigId"};
 
 inline static void write(
     zip::ArchiveWriter&,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& = ""
 )
 {
-    const auto activity = helper::safe_cast<data::activity>(object);
+    const auto activity = helper::safe_cast<data::activity>(_object);
 
-    helper::write_version<data::activity>(tree, 2);
+    helper::write_version<data::activity>(_tree, 2);
 
     // Now serialize the remaining
     // Serialize children properties
-    children = std::map<std::string, data::object::csptr>(activity->cbegin(), activity->cend());
+    _children = std::map<std::string, data::object::csptr>(activity->cbegin(), activity->cend());
 
     // Serialize trivial properties
-    helper::write_string(tree, s_activityConfigId, activity->getActivityConfigId());
+    helper::write_string(_tree, s_activityConfigId, activity->getActivityConfigId());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::activity::sptr read(
     zip::ArchiveReader&,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
-    auto activity = helper::cast_or_create<data::activity>(object);
+    auto activity = helper::cast_or_create<data::activity>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    const int version = helper::read_version<data::activity>(tree, 0, 2);
+    const int version = helper::read_version<data::activity>(_tree, 0, 2);
 
     // Deserialize the remaining
     // Deserialize children properties
     if(version < 2)
     {
-        auto composite = std::dynamic_pointer_cast<data::composite>(children.at(s_Data));
+        auto composite = std::dynamic_pointer_cast<data::composite>(_children.at(s_Data));
         std::ranges::copy(*composite, std::inserter(*activity, activity->begin()));
     }
     else
     {
-        std::ranges::copy(children, std::inserter(*activity, activity->begin()));
+        std::ranges::copy(_children, std::inserter(*activity, activity->begin()));
     }
 
     // Deserialize trivial properties
-    activity->setActivityConfigId(helper::read_string(tree, s_activityConfigId));
+    activity->setActivityConfigId(helper::read_string(_tree, s_activityConfigId));
 
     return activity;
 }

@@ -30,21 +30,21 @@
 namespace sight::ui::builder
 {
 
-const menubar::RegistryKeyType menubar::REGISTRY_KEY = "::ui::menubar";
+const menubar::registry_key_t menubar::REGISTRY_KEY = "::ui::menubar";
 
 //-----------------------------------------------------------------------------
 
-void menubar::initialize(const ui::config_t& configuration)
+void menubar::initialize(const ui::config_t& _configuration)
 {
-    if(const auto hexaColor = configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexaColor.empty())
+    if(const auto hexa_color = _configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexa_color.empty())
     {
         SIGHT_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
-            "hexadecimal digits. Given color: " << hexaColor,
-            hexaColor[0] == '#'
-            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+            "hexadecimal digits. Given color: " << hexa_color,
+            hexa_color[0] == '#'
+            && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
-        m_backgroundColor = hexaColor;
+        m_backgroundColor = hexa_color;
     }
 }
 

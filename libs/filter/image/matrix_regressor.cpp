@@ -40,75 +40,75 @@ namespace sight::filter::image
 
 //-----------------------------------------------------------------------------
 
-matrix_regressor::matrix_regressor(const data::vector::csptr& matrixList, std::vector<PointType> points) :
-    m_pointList(std::move(points))
+matrix_regressor::matrix_regressor(const data::vector::csptr& _matrix_list, std::vector<point_t> _points) :
+    m_pointList(std::move(_points))
 {
-    for(const auto& elt : *matrixList)
+    for(const auto& elt : *_matrix_list)
     {
         data::matrix4::sptr mat = std::dynamic_pointer_cast<data::matrix4>(elt);
 
-        m_matList.push_back(geometry::data::getMatrixFromTF3D(*mat));
+        m_matList.push_back(geometry::data::to_glm_mat(*mat));
     }
 }
 
 //-----------------------------------------------------------------------------
 
 data::matrix4::sptr matrix_regressor::minimize(
-    const data::matrix4& initValue,
-    double stepLength,
-    double stepTolerance,
-    double valueTolerance,
-    unsigned int maxIter
+    const data::matrix4& _init_value,
+    double _step_length,
+    double _step_tolerance,
+    double _value_tolerance,
+    unsigned int _max_iter
 )
 {
-    glm::dmat4 initMat = geometry::data::getMatrixFromTF3D(initValue);
-    double scale       = std::pow(glm::determinant(initMat), 1. / 3.);
+    glm::dmat4 init_mat = geometry::data::to_glm_mat(_init_value);
+    double scale        = std::pow(glm::determinant(init_mat), 1. / 3.);
 
-    glm::dvec3 angles = glm::eulerAngles(glm::toQuat(initMat / scale));
+    glm::dvec3 angles = glm::eulerAngles(glm::toQuat(init_mat / scale));
 
-    glm::dvec3 translation = glm::dvec3(glm::column(initMat, 3));
+    glm::dvec3 translation = glm::dvec3(glm::column(init_mat, 3));
 
-    powell_optimizer::FunctionParametersType initParams(7);
-    initParams.put(0, translation[0]);
-    initParams.put(1, translation[1]);
-    initParams.put(2, translation[2]);
-    initParams.put(3, angles[0]);
-    initParams.put(4, angles[1]);
-    initParams.put(5, angles[2]);
-    initParams.put(6, scale);
+    powell_optimizer::function_parameters_t init_params(7);
+    init_params.put(0, translation[0]);
+    init_params.put(1, translation[1]);
+    init_params.put(2, translation[2]);
+    init_params.put(3, angles[0]);
+    init_params.put(4, angles[1]);
+    init_params.put(5, angles[2]);
+    init_params.put(6, scale);
 
-    powell_optimizer::OptimizedFunctionType distanceSum =
-        [this](const powell_optimizer::FunctionParametersType& parameters)
+    powell_optimizer::optimized_function_t distance_sum =
+        [this](const powell_optimizer::function_parameters_t& _parameters)
         {
-            glm::dmat4 M = glm::eulerAngleYXZ(parameters[4], parameters[3], parameters[5]);
-            M = glm::translate(M, glm::dvec3(parameters[0], parameters[1], parameters[2]));
-            M = glm::scale(M, glm::dvec3(parameters[6], parameters[6], parameters[6]));
+            glm::dmat4 mat = glm::eulerAngleYXZ(_parameters[4], _parameters[3], _parameters[5]);
+            mat = glm::translate(mat, glm::dvec3(_parameters[0], _parameters[1], _parameters[2]));
+            mat = glm::scale(mat, glm::dvec3(_parameters[6], _parameters[6], _parameters[6]));
 
             double distance = 0;
 
             for(const glm::dmat4& m : this->m_matList)
             {
-                for(const matrix_regressor::PointType& p : this->m_pointList)
+                for(const matrix_regressor::point_t& p : this->m_pointList)
                 {
-                    distance += glm::distance2(m * p, M * p);
+                    distance += glm::distance2(m * p, mat * p);
                 }
             }
 
             return distance;
         };
 
-    powell_optimizer optimizer(distanceSum, stepTolerance, valueTolerance, stepLength, maxIter);
+    powell_optimizer optimizer(distance_sum, _step_tolerance, _value_tolerance, _step_length, _max_iter);
 
-    powell_optimizer::FunctionParametersType finalPosition = optimizer.optimize(initParams);
+    powell_optimizer::function_parameters_t final_position = optimizer.optimize(init_params);
 
-    glm::dmat4 result = glm::eulerAngleYXZ(finalPosition[4], finalPosition[3], finalPosition[5]);
-    result = glm::translate(result, glm::dvec3(finalPosition[0], finalPosition[1], finalPosition[2]));
-    result = glm::scale(result, glm::dvec3(finalPosition[6], finalPosition[6], finalPosition[6]));
+    glm::dmat4 result = glm::eulerAngleYXZ(final_position[4], final_position[3], final_position[5]);
+    result = glm::translate(result, glm::dvec3(final_position[0], final_position[1], final_position[2]));
+    result = glm::scale(result, glm::dvec3(final_position[6], final_position[6], final_position[6]));
 
-    data::matrix4::sptr resMat = std::make_shared<data::matrix4>();
-    geometry::data::setTF3DFromMatrix(*resMat, result);
+    data::matrix4::sptr res_mat = std::make_shared<data::matrix4>();
+    geometry::data::from_glm_mat(*res_mat, result);
 
-    return resMat;
+    return res_mat;
 }
 
 //-----------------------------------------------------------------------------

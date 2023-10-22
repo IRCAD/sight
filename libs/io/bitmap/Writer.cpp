@@ -45,7 +45,7 @@ std::string Writer::extension() const
 {
     try
     {
-        const auto& [backend, extensions] = detail::guessBackendOrExtension(
+        const auto& [backend, extensions] = detail::guess_backend_or_extension(
             Backend::ANY,
             get_file().extension().string()
         );
@@ -67,7 +67,7 @@ void Writer::write()
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(Backend backend, Mode mode)
+std::size_t Writer::write(Backend _backend, Mode _mode)
 {
     auto file = get_file();
 
@@ -79,7 +79,7 @@ std::size_t Writer::write(Backend backend, Mode mode)
         }
 
         // Compute the right backend to use
-        const auto& [backend_to_use, extensions_to_use] = detail::guessBackendOrExtension(backend, extension());
+        const auto& [backend_to_use, extensions_to_use] = detail::guess_backend_or_extension(_backend, extension());
 
         // If there is no extension
         if(!file.has_extension())
@@ -111,7 +111,7 @@ std::size_t Writer::write(Backend backend, Mode mode)
         std::ofstream output;
         output.open(file.string(), std::ios::out | std::ios::binary | std::ios::trunc);
 
-        return write(output, backend_to_use, mode);
+        return write(output, backend_to_use, _mode);
     }
     catch(...)
     {
@@ -123,30 +123,30 @@ std::size_t Writer::write(Backend backend, Mode mode)
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::ostream& ostream, Backend backend, Mode mode)
+std::size_t Writer::write(std::ostream& _ostream, Backend _backend, Mode _mode)
 {
-    return m_pimpl->write(ostream, backend, mode);
+    return m_pimpl->write(_ostream, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::uint8_t** buffer, Backend backend, Mode mode)
+std::size_t Writer::write(std::uint8_t** _buffer, Backend _backend, Mode _mode)
 {
-    return m_pimpl->write(buffer, backend, mode);
+    return m_pimpl->write(_buffer, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::uint8_t* buffer, Backend backend, Mode mode)
+std::size_t Writer::write(std::uint8_t* _buffer, Backend _backend, Mode _mode)
 {
-    return m_pimpl->write(buffer, backend, mode);
+    return m_pimpl->write(_buffer, _backend, _mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Writer::write(std::vector<uint8_t>& buffer, Backend backend, Mode mode)
+std::size_t Writer::write(std::vector<uint8_t>& _buffer, Backend _backend, Mode _mode)
 {
-    return m_pimpl->write(buffer, backend, mode);
+    return m_pimpl->write(_buffer, _backend, _mode);
 }
 
 } // namespace sight::io::bitmap

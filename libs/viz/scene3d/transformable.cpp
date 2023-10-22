@@ -23,7 +23,7 @@
 #include "viz/scene3d/transformable.hpp"
 
 #include "viz/scene3d/adaptor.hpp"
-#include "viz/scene3d/helper/Scene.hpp"
+#include "viz/scene3d/helper/scene.hpp"
 
 namespace sight::viz::scene3d
 {
@@ -32,14 +32,14 @@ const std::string transformable::s_TRANSFORM_CONFIG = "config.<xmlattr>.transfor
 
 //------------------------------------------------------------------------------
 
-void transformable::setTransformId(viz::scene3d::render::OgreObjectIdType _id)
+void transformable::setTransformId(viz::scene3d::render::ogre_object_id_t _id)
 {
     m_transformId = _id;
 }
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::render::OgreObjectIdType transformable::getTransformId() const
+viz::scene3d::render::ogre_object_id_t transformable::getTransformId() const
 {
     return m_transformId;
 }
@@ -54,18 +54,18 @@ Ogre::SceneNode* transformable::getTransformNode() const
 //------------------------------------------------------------------------------
 
 Ogre::SceneNode* transformable::getOrCreateTransformNode(
-    Ogre::SceneNode* const _parentNode
+    Ogre::SceneNode* const _parent_node
 )
 {
     SIGHT_ASSERT("Transform id is not set.", !m_transformId.empty());
-    auto* transformNode = viz::scene3d::helper::Scene::getNodeById(m_transformId, _parentNode);
-    if(transformNode == nullptr)
+    auto* transform_node = viz::scene3d::helper::scene::getNodeById(m_transformId, _parent_node);
+    if(transform_node == nullptr)
     {
-        transformNode = _parentNode->createChildSceneNode(m_transformId);
+        transform_node = _parent_node->createChildSceneNode(m_transformId);
     }
 
     // assign m_transform to the retrieved/created node.
-    m_transformNode = transformNode;
+    m_transformNode = transform_node;
 
     return m_transformNode;
 }

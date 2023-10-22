@@ -47,7 +47,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(object_parser, service::base);
 
-    SERVICE_API void setObjectConfig(const service::config_t& _cfgElem);
+    SERVICE_API void setObjectConfig(const service::config_t& _cfg_elem);
 
     SERVICE_API virtual void createConfig(core::tools::object::sptr _obj);
 

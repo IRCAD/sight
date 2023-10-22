@@ -32,7 +32,7 @@
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class Synchronization : public sight::ui::testCore::test
+class Synchronization : public sight::ui::test_core::test
 {
 CPPUNIT_TEST_SUITE(Synchronization);
 CPPUNIT_TEST(test);

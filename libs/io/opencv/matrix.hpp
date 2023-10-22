@@ -39,11 +39,11 @@ class IO_OPENCV_CLASS_API matrix
 public:
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure to Sight data.
+     * @brief copy_from_cv: copies values from OpenCV structure to Sight data.
      * @param _src [cv::Matx44f]: OpenCV 4x4 double matrix.
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copyFromCv(const cv::Matx44d& _src, data::matrix4::sptr& _dst);
+    IO_OPENCV_API static void copy_from_cv(const cv::Matx44d& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.
@@ -53,11 +53,11 @@ public:
     IO_OPENCV_API static void copyToCv(const data::matrix4::csptr& _src, cv::Matx44d& _dst);
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure to Sight data.
+     * @brief copy_from_cv: copies values from OpenCV structure to Sight data.
      * @param _src [cv::Matx44f]: OpenCV 4x4 float matrix.
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copyFromCv(const cv::Matx44f& _src, data::matrix4::sptr& _dst);
+    IO_OPENCV_API static void copy_from_cv(const cv::Matx44f& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.
@@ -67,12 +67,12 @@ public:
     IO_OPENCV_API static void copyToCv(const data::matrix4::csptr& _src, cv::Matx44f& _dst);
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure (rotation & translation matrix) to Sight data.
+     * @brief copy_from_cv: copies values from OpenCV structure (rotation & translation matrix) to Sight data.
      * @param _rvec [cv::Mat]: OpenCV 1x3 rotation vector (cast in CV_64F).
      * @param _tvec [cv::Mat]: OpenCV 1x3 translation vector (cast in CV_64F).
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copyFromCv(
+    IO_OPENCV_API static void copy_from_cv(
         const cv::Mat& _rvec,
         const cv::Mat& _tvec,
         data::matrix4::sptr& _dst
@@ -91,11 +91,11 @@ public:
     );
 
     /**
-     * @brief copyFromCv copies values from OpenCV structure to Sight data.
+     * @brief copy_from_cv copies values from OpenCV structure to Sight data.
      * @param _src [cv::Mat] OpenCV 4x4 matrix (cast in CV_64F).
      * @param _dst [data::matrix4::sptr]:TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copyFromCv(const cv::Mat& _src, data::matrix4::sptr& _dst);
+    IO_OPENCV_API static void copy_from_cv(const cv::Mat& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.

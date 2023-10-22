@@ -101,7 +101,7 @@ protected Q_SLOTS:
 
 private:
 
-    typedef core::com::slot<void ()> UpdateSlotType;
+    typedef core::com::slot<void ()> update_slot_t;
 
     QFutureWatcher<core::memory::buffer_manager::buffer_info_map_t> m_watcher;
 
@@ -120,7 +120,7 @@ private:
     /// Editor to show few memory information
     QTableView* m_infoEditor {};
 
-    SPTR(UpdateSlotType) m_updateSlot;
+    SPTR(update_slot_t) m_updateSlot;
 
     /// Manage connection between buffManager updated signal and onUpdate method
     core::com::connection m_connection;

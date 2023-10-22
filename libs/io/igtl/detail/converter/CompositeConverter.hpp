@@ -43,13 +43,13 @@ public:
     IO_IGTL_API ~CompositeConverter() override;
 
     /// convert a ::igtl::MessageBase to a data::object
-    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const override;
 
     /**
      * @brief convert a data::composite to a igtl::TrackingDataMessage
      * @return an igtl::TrackingDataMessage converted from an data::composite
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override;
 
     /**
      * @brief create new CompositeConverter
@@ -61,7 +61,7 @@ public:
      * @brief get the igtlType supported for conversion
      * @return the igtlType supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& getIgtlType() const override;
+    [[nodiscard]] IO_IGTL_API std::string const& get_igtl_type() const override;
 
     /**
      * @brief get the fwData object type supported for conversion

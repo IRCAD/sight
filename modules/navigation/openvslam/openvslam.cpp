@@ -95,14 +95,14 @@ const core::com::slots::key_t INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "InternalDownloa
 
 openvslam::openvslam() noexcept :
     notifier(m_signals),
-    m_sigTrackingInitialized(new_signal<SignalType>(TRACKING_INITIALIZED_SIG)),
-    m_sigTrackingNotInitialized(new_signal<SignalType>(TRACKING_NOT_INITIALIZED_SIG)),
-    m_sigTracked(new_signal<SignalType>(TRACKED_SIG)),
-    m_sigTrackingLost(new_signal<SignalType>(TRACKING_LOST_SIG)),
-    m_sigVocFileUnloaded(new_signal<SignalType>(VOCFILE_UNLOADED_SIG)),
-    m_sigVocFileLoadingStarted(new_signal<SignalType>(VOCFILE_LOADING_STARTED_SIG)),
-    m_sigVocFileLoaded(new_signal<SignalType>(VOCFILE_LOADED_SIG)),
-    m_sigMapLoaded(new_signal<SignalType>(MAP_LOADED_SIG))
+    m_sigTrackingInitialized(new_signal<signal_t>(TRACKING_INITIALIZED_SIG)),
+    m_sigTrackingNotInitialized(new_signal<signal_t>(TRACKING_NOT_INITIALIZED_SIG)),
+    m_sigTracked(new_signal<signal_t>(TRACKED_SIG)),
+    m_sigTrackingLost(new_signal<signal_t>(TRACKING_LOST_SIG)),
+    m_sigVocFileUnloaded(new_signal<signal_t>(VOCFILE_UNLOADED_SIG)),
+    m_sigVocFileLoadingStarted(new_signal<signal_t>(VOCFILE_LOADING_STARTED_SIG)),
+    m_sigVocFileLoaded(new_signal<signal_t>(VOCFILE_LOADED_SIG)),
+    m_sigMapLoaded(new_signal<signal_t>(MAP_LOADED_SIG))
 {
     new_slot(ENABLE_LOCALIZATION_SLOT, &openvslam::enableLocalization, this);
     new_slot(ACTIVATE_LOCALIZATION_SLOT, &openvslam::activateLocalization, this);
@@ -145,7 +145,7 @@ openvslam::openvslam() noexcept :
                     url = env_download_url;
                 }
 
-                io::http::downloadFile(url, m_vocabularyPath);
+                io::http::download_file(url, m_vocabularyPath);
                 m_sigVocFileLoaded->async_emit();
             }
             catch(core::exception& _e)
@@ -705,7 +705,7 @@ void openvslam::resetPointCloud()
 
     // Clear Sight mesh
     pointcloud->clear();
-    auto sigMesh = pointcloud->signal<data::object::ModifiedSignalType>
+    auto sigMesh = pointcloud->signal<data::object::modified_signal_t>
                        (data::object::MODIFIED_SIG);
     sigMesh->async_emit();
 
@@ -744,7 +744,7 @@ void openvslam::tracking(core::hires_clock::type& timestamp)
                                     const std::uint8_t* frameData = &bufferFrame->getElement(0);
 
                                     // this is the main image
-                                    return io::opencv::frame_tl::moveToCv(frameTL.get_shared(), frameData);
+                                    return io::opencv::frame_tl::move_to_cv(frameTL.get_shared(), frameData);
                                 }();
 
         if(imgLeft.empty())
@@ -768,7 +768,7 @@ void openvslam::tracking(core::hires_clock::type& timestamp)
 
             const std::uint8_t* frameData2 = &bufferFrame2->getElement(0);
 
-            cv::Mat imgRight = io::opencv::frame_tl::moveToCv(frameTL2.get_shared(), frameData2);
+            cv::Mat imgRight = io::opencv::frame_tl::move_to_cv(frameTL2.get_shared(), frameData2);
 
             // the two frames need to have same size
             if(imgLeft.cols != imgRight.cols || imgLeft.rows != imgRight.rows)
@@ -814,7 +814,7 @@ void openvslam::tracking(core::hires_clock::type& timestamp)
         float scale         = 1.0F;
         if(floatObj)
         {
-            // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D Scene.
+            // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D scene.
             if(floatObj->value() > 0.)
             {
                 scale = scale / static_cast<float>(floatObj->value());
@@ -846,7 +846,7 @@ void openvslam::tracking(core::hires_clock::type& timestamp)
                 matrix[7]  *= scale;
                 matrix[11] *= scale;
 
-                SPTR(data::matrix_tl::BufferType) data = cameraMatrixTL->createBuffer(timestamp);
+                SPTR(data::matrix_tl::buffer_t) data = cameraMatrixTL->createBuffer(timestamp);
                 data->setElement(matrix, 0);
                 cameraMatrixTL->pushObject(data);
 
@@ -948,7 +948,7 @@ void openvslam::updatePointCloud()
 
         m_sigTrackingInitialized->async_emit();
         m_sigTracked->async_emit();
-        auto sigMesh = pointcloud->signal<data::object::ModifiedSignalType>
+        auto sigMesh = pointcloud->signal<data::object::modified_signal_t>
                            (data::object::MODIFIED_SIG);
         sigMesh->async_emit();
     }

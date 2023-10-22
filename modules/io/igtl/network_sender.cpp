@@ -35,8 +35,8 @@ const core::com::signals::key_t network_sender::DISCONNECTED_SIGNAL = "disconnec
 //-----------------------------------------------------------------------------
 
 network_sender::network_sender() :
-    m_sigConnected(new_signal<ConnectedSignalType>(CONNECTED_SIGNAL)),
-    m_sigDisconnected(new_signal<DisconnectSignalType>(DISCONNECTED_SIGNAL))
+    m_sigConnected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
+    m_sigDisconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
 {
 }
 
@@ -51,9 +51,9 @@ void network_sender::updating()
 {
     if(this->started())
     {
-        const std::size_t numObjects = m_objects.size();
+        const std::size_t num_objects = m_objects.size();
         // Grab the objects to send.
-        for(std::size_t i = 0 ; i < numObjects ; ++i)
+        for(std::size_t i = 0 ; i < num_objects ; ++i)
         {
             const auto object = m_objects[i].lock();
 

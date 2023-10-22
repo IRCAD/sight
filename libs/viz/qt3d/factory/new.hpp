@@ -39,7 +39,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
 VIZ_QT3D_API SPTR(viz::qt3d::window_interactor) make(
-    const viz::qt3d::registry::key_t& classname
+    const viz::qt3d::registry::key_t& _classname
 );
 
 template<class CLASSNAME>

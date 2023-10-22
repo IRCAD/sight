@@ -55,7 +55,7 @@ public:
      *
      * @return a data::object
      */
-    [[nodiscard]] IO_IGTL_API virtual data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const =
+    [[nodiscard]] IO_IGTL_API virtual data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const =
     0;
 
     /**
@@ -63,14 +63,14 @@ public:
      *
      * @return a ::igtl::MessageBase
      */
-    [[nodiscard]] IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const = 0;
+    [[nodiscard]] IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const = 0;
 
     /**
      * @brief get the igtlType supported for conversion
      *
      * @return the igtlType supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API virtual std::string const& getIgtlType() const = 0;
+    [[nodiscard]] IO_IGTL_API virtual std::string const& get_igtl_type() const = 0;
 
     /**
      * @brief get the fwData object type supported for conversion

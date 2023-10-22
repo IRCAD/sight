@@ -77,7 +77,7 @@ public:
     IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
     /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
-    IO_VTK_API static void getAvailableExtensions(std::vector<std::string>& ext);
+    IO_VTK_API static void getAvailableExtensions(std::vector<std::string>& _ext);
 
 private:
 

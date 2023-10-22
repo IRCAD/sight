@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,13 +59,13 @@ public:
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can read the file specified.
      */
-    bool CanReadFile(const char* FileNameToRead) override;
+    bool CanReadFile(const char* _file_name_to_read) override;
 
     /** Set the spacing and dimension information for the set filename. */
     void ReadImageInformation() override;
 
     /** Reads the data from disk into the memory buffer provided. */
-    void Read(void* buffer) override;
+    void Read(void* _buffer) override;
 
     /*-------- This part of the interfaces deals with writing data. ----- */
 
@@ -74,20 +74,20 @@ public:
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can write the file specified.
      */
-    bool CanWriteFile(const char* FileNameToWrite) override;
+    bool CanWriteFile(const char* _file_name_to_write) override;
 
     /** Set the spacing and dimension information for the set filename. */
     void WriteImageInformation() override;
 
     /** Writes the data to disk from the memory buffer provided. Make sure
      * that the IORegions has been set properly. */
-    void Write(const void* buffer) override;
+    void Write(const void* _buffer) override;
 
 protected:
 
     IO_ITK_API InrImageIO();
     IO_ITK_API ~InrImageIO() override;
-    void PrintSelf(std::ostream& os, Indent indent) const override;
+    void PrintSelf(std::ostream& _os, Indent _indent) const override;
 
 private:
 

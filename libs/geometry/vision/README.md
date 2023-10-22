@@ -24,7 +24,7 @@ Contains functions related to calibration and 3d reconstruction
 
 ```cmake
 
-target_link_libraries(myTarget <PUBLIC|PRIVATE> geometry_vision)
+target_link_libraries(my_target <PUBLIC|PRIVATE> geometry_vision)
 
 ```
 

@@ -64,9 +64,9 @@ intrinsic_edition::~intrinsic_edition()
 
 // -------------------------------------------------------------------------
 
-void intrinsic_edition::onNewCalibration(std::array<double, 12>& cal)
+void intrinsic_edition::onNewCalibration(std::array<double, 12>& _cal)
 {
-    m_calibration = cal;
+    m_calibration = _cal;
 
     this->updateCalibration();
 }
@@ -96,8 +96,8 @@ void intrinsic_edition::updateCalibration()
 
     camera->setSkew(m_calibration[11]);
 
-    data::camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = camera->signal<data::camera::IntrinsicCalibratedSignalType>(
+    data::camera::intrinsic_calibrated_signal_t::sptr sig;
+    sig = camera->signal<data::camera::intrinsic_calibrated_signal_t>(
         data::camera::INTRINSIC_CALIBRATED_SIG
     );
 

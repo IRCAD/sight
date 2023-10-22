@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 
 #include <data/boolean.hpp>
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 
@@ -37,8 +37,8 @@ const core::com::signals::key_t model_series_list::EMPTIED_SELECTION_SIG       =
 
 model_series_list::model_series_list() noexcept
 {
-    m_sigReconstructionSelected = new_signal<ReconstructionSelectedSignalType>(RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = new_signal<EmptiedSelectionSignalType>(EMPTIED_SELECTION_SIG);
+    m_sigReconstructionSelected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
+    m_sigEmptiedSelection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -72,26 +72,26 @@ void model_series_list::configuring()
 
 void model_series_list::updating()
 {
-    auto modelSeries = m_modelSeries.lock();
-    SIGHT_ASSERT("inout 'modelSeries' is missing", modelSeries);
+    auto model_series = m_modelSeries.lock();
+    SIGHT_ASSERT("inout 'modelSeries' is missing", model_series);
 
     SIGHT_ASSERT("list model is not defined.", m_listModel);
-    m_listModel->updateModelSeries(modelSeries.get_shared());
+    m_listModel->updateModelSeries(model_series.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onOrganSelected(int index)
+void model_series_list::onOrganSelected(int _index)
 {
-    if(index >= 0)
+    if(_index >= 0)
     {
-        auto modelSeries = m_modelSeries.lock();
-        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
+        auto model_series = m_modelSeries.lock();
+        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-        const auto& recs = modelSeries->getReconstructionDB();
+        const auto& recs = model_series->getReconstructionDB();
 
-        const auto& selectedRec = recs.at(static_cast<std::size_t>(index));
-        m_sigReconstructionSelected->async_emit(selectedRec);
+        const auto& selected_rec = recs.at(static_cast<std::size_t>(_index));
+        m_sigReconstructionSelected->async_emit(selected_rec);
     }
     else
     {
@@ -101,58 +101,58 @@ void model_series_list::onOrganSelected(int index)
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onShowReconstructions(int state)
+void model_series_list::onShowReconstructions(int _state)
 {
-    auto modelSeries = m_modelSeries.lock();
-    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
-    data::helper::Field helper(modelSeries.get_shared());
-    helper.addOrSwap("ShowReconstructions", std::make_shared<data::boolean>(state == Qt::Unchecked));
+    auto model_series = m_modelSeries.lock();
+    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
+    data::helper::field helper(model_series.get_shared());
+    helper.addOrSwap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
     helper.notify();
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onOrganVisibilityChanged(int index, bool visible)
+void model_series_list::onOrganVisibilityChanged(int _index, bool _visible)
 {
-    if(index >= 0)
+    if(_index >= 0)
     {
-        auto modelSeries = m_modelSeries.lock();
-        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
+        auto model_series = m_modelSeries.lock();
+        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-        const auto& recs        = modelSeries->getReconstructionDB();
-        const auto& selectedRec = recs.at(static_cast<std::size_t>(index));
+        const auto& recs         = model_series->getReconstructionDB();
+        const auto& selected_rec = recs.at(static_cast<std::size_t>(_index));
 
-        if(selectedRec->getIsVisible() != visible)
+        if(selected_rec->getIsVisible() != _visible)
         {
-            selectedRec->setIsVisible(visible);
+            selected_rec->setIsVisible(_visible);
 
-            data::reconstruction::VisibilityModifiedSignalType::sptr sig;
-            sig = selectedRec->signal<data::reconstruction::VisibilityModifiedSignalType>(
+            data::reconstruction::visibility_modified_signal_t::sptr sig;
+            sig = selected_rec->signal<data::reconstruction::visibility_modified_signal_t>(
                 data::reconstruction::VISIBILITY_MODIFIED_SIG
             );
-            sig->async_emit(visible);
+            sig->async_emit(_visible);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void model_series_list::onCheckAllBoxes(bool checked)
+void model_series_list::onCheckAllBoxes(bool _checked)
 {
-    auto modelSeries = m_modelSeries.lock();
-    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
+    auto model_series = m_modelSeries.lock();
+    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", model_series);
 
-    for(const auto& rec : modelSeries->getReconstructionDB())
+    for(const auto& rec : model_series->getReconstructionDB())
     {
-        if(rec->getIsVisible() != checked)
+        if(rec->getIsVisible() != _checked)
         {
-            rec->setIsVisible(checked);
+            rec->setIsVisible(_checked);
 
-            data::reconstruction::VisibilityModifiedSignalType::sptr sig;
-            sig = rec->signal<data::reconstruction::VisibilityModifiedSignalType>(
+            data::reconstruction::visibility_modified_signal_t::sptr sig;
+            sig = rec->signal<data::reconstruction::visibility_modified_signal_t>(
                 data::reconstruction::VISIBILITY_MODIFIED_SIG
             );
-            sig->async_emit(checked);
+            sig->async_emit(_checked);
         }
     }
 

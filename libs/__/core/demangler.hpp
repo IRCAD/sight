@@ -48,14 +48,14 @@ public:
      *
      * @param t Typeinfo to demangle
      */
-    CORE_API demangler(const std::type_info& t);
+    CORE_API demangler(const std::type_info& _t);
 
     /**
      * @brief Constructor from a std::string
      *
      * @param s string to demangle
      */
-    CORE_API demangler(std::string s);
+    CORE_API demangler(std::string _s);
 
     /**
      * @brief Constructor from any type
@@ -63,8 +63,8 @@ public:
      * @param s object which type has to be demangled
      */
     template<typename T>
-    demangler(T& s) :
-        m_name(typeid(s).name())
+    demangler(T& _s) :
+        M_NAME(typeid(_s).name())
     {
     }
 
@@ -94,7 +94,7 @@ protected:
     /**
      * @brief Store the name to demangle
      */
-    const std::string m_name;
+    const std::string M_NAME;
 
     /**
      * @brief Process the name to demangle and return the same string whatever the OS is.

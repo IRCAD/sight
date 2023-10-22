@@ -21,8 +21,8 @@
  ***********************************************************************/
 
 #include "ui/__/action.hpp"
+#include "ui/__/detail/registry/action.hpp"
 
-#include "ui/__/detail/registry/Action.hpp"
 #include "ui/__/dialog/message.hpp"
 
 #include <core/com/signal.hxx>
@@ -61,12 +61,12 @@ action::action()
     new_slot(UNCHECK_SLOT, [this](){this->setChecked(false);});
 
     new_slot(SET_ENABLED_SLOT, &action::setEnabled, this);
-    new_slot(SET_DISABLED_SLOT, [this](bool disabled){this->setEnabled(!disabled);});
+    new_slot(SET_DISABLED_SLOT, [this](bool _disabled){this->setEnabled(!_disabled);});
     new_slot(ENABLE_SLOT, [this](){this->setEnabled(true);});
     new_slot(DISABLE_SLOT, [this](){this->setEnabled(false);});
 
     new_slot(SET_VISIBLE_SLOT, &action::setVisible, this);
-    new_slot(SET_HIDDEN_SLOT, [this](bool hidden){this->setVisible(!hidden);});
+    new_slot(SET_HIDDEN_SLOT, [this](bool _hidden){this->setVisible(!_hidden);});
     new_slot(SHOW_SLOT, [this](){this->setVisible(true);});
     new_slot(HIDE_SLOT, [this](){this->setVisible(false);});
     new_slot(TOGGLE_VISIBILITY_SLOT, [this]{this->setVisible(!m_visible);});
@@ -89,7 +89,7 @@ action::~action()
 
 void action::initialize()
 {
-    m_registry = ui::detail::registry::Action::make(this->get_id());
+    m_registry = ui::detail::registry::action::make(this->get_id());
 
     auto config = this->get_config();
 
@@ -121,9 +121,9 @@ void action::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void action::setChecked(bool checked)
+void action::setChecked(bool _checked)
 {
-    m_checked = checked;
+    m_checked = _checked;
 
     if(this->confirmAction())
     {
@@ -153,9 +153,9 @@ bool action::checked() const
 
 //-----------------------------------------------------------------------------
 
-void action::setEnabled(bool enabled)
+void action::setEnabled(bool _enabled)
 {
-    m_enabled = enabled;
+    m_enabled = _enabled;
 
     this->m_registry->actionServiceSetEnabled(m_enabled);
     if(m_enabled)
@@ -182,11 +182,11 @@ bool action::enabled() const
 
 //-----------------------------------------------------------------------------
 
-void action::setVisible(bool visible)
+void action::setVisible(bool _visible)
 {
-    m_visible = visible;
-    this->m_registry->actionServiceSetVisible(visible);
-    signal<bool_signal_t>(IS_VISIBLE_SIG)->async_emit(visible);
+    m_visible = _visible;
+    this->m_registry->actionServiceSetVisible(_visible);
+    signal<bool_signal_t>(IS_VISIBLE_SIG)->async_emit(_visible);
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ bool action::inverted() const
 
 bool action::confirmAction()
 {
-    bool actionIsConfirmed = true;
+    bool action_is_confirmed = true;
 
     if(m_confirmAction && this->status() == base::STARTED)
     {
@@ -248,10 +248,10 @@ bool action::confirmAction()
         dialog.addButton(ui::dialog::message::YES_NO);
         ui::dialog::message::Buttons button = dialog.show();
 
-        actionIsConfirmed = (button == ui::dialog::message::YES);
+        action_is_confirmed = (button == ui::dialog::message::YES);
     }
 
-    return actionIsConfirmed;
+    return action_is_confirmed;
 }
 
 //-----------------------------------------------------------------------------

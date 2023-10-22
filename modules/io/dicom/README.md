@@ -16,7 +16,7 @@ Contains services dealing with the reading and writing of DICOM (Digital Imaging
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_dicom ...)
+add_dependencies(my_target module_io_dicom ...)
 ```
 
 ### XML

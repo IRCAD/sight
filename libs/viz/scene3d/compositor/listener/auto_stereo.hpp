@@ -36,17 +36,17 @@ class auto_stereo_compositor_listener : public Ogre::MaterialManager::Listener
 public:
 
     /// Constructor, needs to know how many views are needed.
-    auto_stereo_compositor_listener(std::uint8_t _viewpointNumber);
+    auto_stereo_compositor_listener(std::uint8_t _viewpoint_number);
 
     /// Destructor, destroys created techniques.
     ~auto_stereo_compositor_listener() override;
 
     /// Callback called each time a scheme is not found
     Ogre::Technique* handleSchemeNotFound(
-        std::uint16_t _schemeIndex,
-        const Ogre::String& _schemeName,
-        Ogre::Material* _originalMaterial,
-        std::uint16_t _lodIndex,
+        std::uint16_t _scheme_index,
+        const Ogre::String& _scheme_name,
+        Ogre::Material* _original_material,
+        std::uint16_t _lod_index,
         const Ogre::Renderable* _renderable
     ) override;
 
@@ -59,7 +59,7 @@ private:
     std::vector<TechniqueMaterialPair> m_createdTechniques;
 
     /// Number of viewpoints used for stereo rendering.
-    const std::uint8_t m_viewpointNumber;
+    const std::uint8_t M_VIEWPOINT_NUMBER;
 };
 
 } // namespace sight::viz::scene3d::compositor::listener

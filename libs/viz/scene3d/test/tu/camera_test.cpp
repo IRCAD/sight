@@ -24,12 +24,12 @@
 
 #include "data/camera.hpp"
 
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <utest/Filter.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/WindowManager.hpp>
+#include <viz/scene3d/window_manager.hpp>
 
 #include <OgreLogManager.h>
 #include <OgreMatrix4.h>
@@ -60,7 +60,7 @@ void camera_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void compareMatrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
+void compare_matrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
 {
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
@@ -73,7 +73,7 @@ void compareMatrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
 
 //------------------------------------------------------------------------------
 
-void comparePoint(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
+void compare_point(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
 {
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.0001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.0001);
@@ -166,7 +166,7 @@ void camera_test::computeProjectionMatrix()
                     n,
                     f
                 );
-            compareMatrix(expected, actual);
+            compare_matrix(expected, actual);
         }
     }
 
@@ -216,7 +216,7 @@ void camera_test::computeProjectionMatrix()
                     n,
                     f
                 );
-            compareMatrix(expected, actual);
+            compare_matrix(expected, actual);
         }
     }
 }
@@ -225,16 +225,16 @@ void camera_test::computeProjectionMatrix()
 
 void camera_test::convertPixelToWorldSpace()
 {
-    auto* const root         = viz::scene3d::Utils::getOgreRoot();
-    auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
+    auto* const root          = viz::scene3d::utils::getOgreRoot();
+    auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
-    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-    Ogre::RenderWindow* renderWindow             = mgr->get("test");
-    auto* const camera                           = sceneManager->createCamera("TestCamera");
-    renderWindow->addViewport(camera, 0);
+    sight::viz::scene3d::window_manager::sptr mgr = sight::viz::scene3d::window_manager::get();
+    Ogre::RenderWindow* render_window             = mgr->get("test");
+    auto* const camera                            = scene_manager->createCamera("TestCamera");
+    render_window->addViewport(camera, 0);
 
-    const auto width  = static_cast<float>(renderWindow->getWidth());
-    const auto height = static_cast<float>(renderWindow->getHeight());
+    const auto width  = static_cast<float>(render_window->getWidth());
+    const auto height = static_cast<float>(render_window->getHeight());
 
     camera->setNearClipDistance(1);
     camera->setFarClipDistance(10);
@@ -245,59 +245,59 @@ void camera_test::convertPixelToWorldSpace()
     camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
     {
         // Manually project a point
-        const Ogre::Vector4 standardPoint(1.F, 2.F, 3.F, 1.F);
-        const Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
-        const Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
+        const Ogre::Vector4 standard_point(1.F, 2.F, 3.F, 1.F);
+        const Ogre::Vector4 clipped_point = camera->getProjectionMatrix() * camera->getViewMatrix() * standard_point;
+        const Ogre::Vector3 ndc_point     = clipped_point.xyz() / clipped_point.w;
 
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const Ogre::Real fX = (ndcPoint.x + 1.F) * 0.5F;
-        const Ogre::Real fY = 1.F - (ndcPoint.y + 1.F) * 0.5F;
-        const Ogre::Real fZ = (ndcPoint.z + 1.F) * 0.5F;
-        const Ogre::Vector3 viewportPoint(fX, fY, fZ);
+        const Ogre::Real f_x = (ndc_point.x + 1.F) * 0.5F;
+        const Ogre::Real f_y = 1.F - (ndc_point.y + 1.F) * 0.5F;
+        const Ogre::Real f_z = (ndc_point.z + 1.F) * 0.5F;
+        const Ogre::Vector3 viewport_point(f_x, f_y, f_z);
 
         // Unproject the projected point
-        const Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
-        const Ogre::Vector3 unprojectedPoint =
+        const Ogre::Vector3 point             = viewport_point * Ogre::Vector3(width, height, 1);
+        const Ogre::Vector3 unprojected_point =
             viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, point);
 
-        comparePoint(standardPoint, unprojectedPoint);
+        compare_point(standard_point, unprojected_point);
     }
 
     camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
         // Manually project a point
-        const Ogre::Vector4 standardPoint(1.F, 2.F, 3.F, 1.F);
-        const Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
-        const Ogre::Vector3 ndcPoint     = clippedPoint.xyz() / clippedPoint.w;
+        const Ogre::Vector4 standard_point(1.F, 2.F, 3.F, 1.F);
+        const Ogre::Vector4 clipped_point = camera->getProjectionMatrix() * camera->getViewMatrix() * standard_point;
+        const Ogre::Vector3 ndc_point     = clipped_point.xyz() / clipped_point.w;
 
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const Ogre::Real fX = (ndcPoint.x + 1.F) * 0.5F;
-        const Ogre::Real fY = 1.F - (ndcPoint.y + 1.F) * 0.5F;
-        const Ogre::Real fZ = (ndcPoint.z + 1.F) * 0.5F;
-        const Ogre::Vector3 viewportPoint(fX, fY, fZ);
+        const Ogre::Real f_x = (ndc_point.x + 1.F) * 0.5F;
+        const Ogre::Real f_y = 1.F - (ndc_point.y + 1.F) * 0.5F;
+        const Ogre::Real f_z = (ndc_point.z + 1.F) * 0.5F;
+        const Ogre::Vector3 viewport_point(f_x, f_y, f_z);
 
         // Unproject the projected point
-        const Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
-        const Ogre::Vector3 unprojectedPoint =
+        const Ogre::Vector3 point             = viewport_point * Ogre::Vector3(width, height, 1);
+        const Ogre::Vector3 unprojected_point =
             viz::scene3d::helper::camera::convertScreenSpaceToViewSpace(*camera, point);
 
-        comparePoint(standardPoint, unprojectedPoint);
+        compare_point(standard_point, unprojected_point);
     }
-    renderWindow->removeViewport(0);
-    root->destroySceneManager(sceneManager);
+    render_window->removeViewport(0);
+    root->destroySceneManager(scene_manager);
 }
 
 //------------------------------------------------------------------------------
 
 void camera_test::convertWorldSpaceToScreenSpace()
 {
-    auto* const root         = viz::scene3d::Utils::getOgreRoot();
-    auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
+    auto* const root          = viz::scene3d::utils::getOgreRoot();
+    auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
-    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-    Ogre::RenderWindow* renderWindow             = mgr->get("test");
-    auto* const camera                           = sceneManager->createCamera("TestCamera");
-    renderWindow->addViewport(camera, 0);
+    sight::viz::scene3d::window_manager::sptr mgr = sight::viz::scene3d::window_manager::get();
+    Ogre::RenderWindow* render_window             = mgr->get("test");
+    auto* const camera                            = scene_manager->createCamera("TestCamera");
+    render_window->addViewport(camera, 0);
 
     camera->setNearClipDistance(1);
     camera->setFarClipDistance(10);
@@ -305,41 +305,41 @@ void camera_test::convertWorldSpaceToScreenSpace()
     camera->setOrthoWindowWidth(1920);
     camera->setOrthoWindowHeight(1080);
 
-    auto* cameraNode = sceneManager->createSceneNode();
-    const Ogre::Quaternion rotateX(Ogre::Degree(65), Ogre::Vector3(1, 0, 0));
-    const Ogre::Quaternion rotateY(Ogre::Degree(-176), Ogre::Vector3(0, 1, 0));
-    cameraNode->setOrientation(rotateX * rotateY);
-    cameraNode->setPosition(-12.F, 5.F, 234.F);
+    auto* camera_node = scene_manager->createSceneNode();
+    const Ogre::Quaternion rotate_x(Ogre::Degree(65), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotate_y(Ogre::Degree(-176), Ogre::Vector3(0, 1, 0));
+    camera_node->setOrientation(rotate_x * rotate_y);
+    camera_node->setPosition(-12.F, 5.F, 234.F);
 
     camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
     {
-        const Ogre::Vector3 standardPoint(-4.F, 4.F, 3.F);
-        const Ogre::Vector2 projectedPoint = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector3 standard_point(-4.F, 4.F, 3.F);
+        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
             *camera,
-            standardPoint
+            standard_point
         );
 
         const Ogre::Vector2 point(341.4213F, 421.8951F);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projectedPoint[0], 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projectedPoint[1], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projected_point[0], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projected_point[1], 0.0001);
     }
 
     camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
-        const Ogre::Vector3 standardPoint(-4.F, 87.F, 3.F);
-        const Ogre::Vector2 projectedPoint = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector3 standard_point(-4.F, 87.F, 3.F);
+        const Ogre::Vector2 projected_point = viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(
             *camera,
-            standardPoint
+            standard_point
         );
 
         const Ogre::Vector2 point(99.4444F, 83.8888F);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projectedPoint[0], 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projectedPoint[1], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projected_point[0], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projected_point[1], 0.0001);
     }
-    renderWindow->removeViewport(0);
-    root->destroySceneManager(sceneManager);
+    render_window->removeViewport(0);
+    root->destroySceneManager(scene_manager);
 }
 
 //------------------------------------------------------------------------------

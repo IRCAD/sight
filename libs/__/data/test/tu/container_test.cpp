@@ -46,7 +46,7 @@ namespace sight::data::ut
 //------------------------------------------------------------------------------
 
 template<class C>
-inline static void testContainer(const C& source, const C& modified_source)
+inline static void test_container(const C& _source, const C& _modified_source)
 {
     class Container : public data::container<C>
     {
@@ -58,12 +58,12 @@ inline static void testContainer(const C& source, const C& modified_source)
 
     // Initialization test
     {
-        Container container(source);
+        Container container(_source);
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, source));
+        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
-        Container modified_container(modified_source);
+        Container modified_container(_modified_source);
 
         // Should be different
         CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
@@ -72,13 +72,13 @@ inline static void testContainer(const C& source, const C& modified_source)
     // Assignement test
     {
         Container container;
-        container = source;
+        container = _source;
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, source));
+        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
         Container modified_container;
-        modified_container = modified_source;
+        modified_container = _modified_source;
 
         // Should be different
         CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
@@ -90,14 +90,14 @@ inline static void testContainer(const C& source, const C& modified_source)
     {
         Container container;
 
-        std::copy(source.cbegin(), source.cend(), inserter(container));
+        std::copy(_source.cbegin(), _source.cend(), inserter(container));
 
         // Should be a perfect copy
-        CPPUNIT_ASSERT(core::tools::is_equal(container, source));
+        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
 
         Container modified_container;
 
-        std::copy(modified_source.cbegin(), modified_source.cend(), inserter(modified_container));
+        std::copy(_modified_source.cbegin(), _modified_source.cend(), inserter(modified_container));
 
         // Should be different (test inequality operator)
         CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
@@ -106,7 +106,7 @@ inline static void testContainer(const C& source, const C& modified_source)
     // Clear test
     if constexpr(core::tools::is_container_dynamic<C>::value)
     {
-        Container container(source);
+        Container container(_source);
         Container empty;
 
         CPPUNIT_ASSERT(!core::tools::is_equal(container, empty));
@@ -119,9 +119,9 @@ inline static void testContainer(const C& source, const C& modified_source)
     // Special features of vector kind container
     if constexpr(core::tools::is_vector<C>::value)
     {
-        Container container(source);
+        Container container(_source);
 
-        const auto& element = source[0];
+        const auto& element = _source[0];
 
         // Add some elements
         container.push_back(element);
@@ -129,77 +129,77 @@ inline static void testContainer(const C& source, const C& modified_source)
         container.push_back(element);
 
         // Test remove one (container[0] should be removed)
-        CPPUNIT_ASSERT(container.size() == (source.size() + 3));
+        CPPUNIT_ASSERT(container.size() == (_source.size() + 3));
         container.remove_one(element);
-        CPPUNIT_ASSERT(container.size() == (source.size() + 2));
+        CPPUNIT_ASSERT(container.size() == (_source.size() + 2));
         CPPUNIT_ASSERT(container.front() != element);
         CPPUNIT_ASSERT(container.back() == element);
 
         container.remove_one(element);
-        CPPUNIT_ASSERT(container.size() == (source.size() + 1));
+        CPPUNIT_ASSERT(container.size() == (_source.size() + 1));
         CPPUNIT_ASSERT(container.front() != element);
         CPPUNIT_ASSERT(container.back() == element);
 
         // Test returned iterator
         const auto& it = container.remove_one(element);
-        CPPUNIT_ASSERT(container.size() == source.size());
+        CPPUNIT_ASSERT(container.size() == _source.size());
         CPPUNIT_ASSERT(container.front() != element);
         CPPUNIT_ASSERT(container.back() == element);
         CPPUNIT_ASSERT_NO_THROW(container.erase(it));
-        CPPUNIT_ASSERT(container.size() == (source.size() - 1));
+        CPPUNIT_ASSERT(container.size() == (_source.size() - 1));
         CPPUNIT_ASSERT(container.front() != element);
         CPPUNIT_ASSERT(container.back() != element);
 
         // Removing an element that does not exist should not change the container
         container.remove_one(element);
-        CPPUNIT_ASSERT(container.size() == source.size() - 1);
+        CPPUNIT_ASSERT(container.size() == _source.size() - 1);
 
         // Add some elements
-        container.push_back(source[0]);
-        container.push_back(source[0]);
-        container.push_back(source[0]);
+        container.push_back(_source[0]);
+        container.push_back(_source[0]);
+        container.push_back(_source[0]);
 
         // Test remove all
-        CPPUNIT_ASSERT(container.size() == (source.size() + 2));
-        container.remove(source[0]);
-        CPPUNIT_ASSERT(container.size() == (source.size() - 1));
+        CPPUNIT_ASSERT(container.size() == (_source.size() + 2));
+        container.remove(_source[0]);
+        CPPUNIT_ASSERT(container.size() == (_source.size() - 1));
 
         // Removing an element that does not exist should not change the container
-        container.remove(source[0]);
-        CPPUNIT_ASSERT(container.size() == (source.size() - 1));
+        container.remove(_source[0]);
+        CPPUNIT_ASSERT(container.size() == (_source.size() - 1));
     }
 }
 
 //------------------------------------------------------------------------------
 
 template<class C>
-inline static void testDispatcher(
-    const std::initializer_list<C>& original_list,
-    const std::initializer_list<C>& modified_list
+inline static void test_dispatcher(
+    const std::initializer_list<C>& _original_list,
+    const std::initializer_list<C>& _modified_list
 )
 {
-    testContainer<std::vector<C> >(original_list, modified_list);
-    testContainer<std::deque<C> >(original_list, modified_list);
-    testContainer<std::list<C> >(original_list, modified_list);
-    testContainer<std::set<C> >(original_list, modified_list);
-    testContainer<std::multiset<C> >(original_list, modified_list);
-    testContainer<std::unordered_set<C> >(original_list, modified_list);
-    testContainer<std::unordered_multiset<C> >(original_list, modified_list);
-    testContainer<sequenced_set<C> >(original_list, modified_list);
+    test_container<std::vector<C> >(_original_list, _modified_list);
+    test_container<std::deque<C> >(_original_list, _modified_list);
+    test_container<std::list<C> >(_original_list, _modified_list);
+    test_container<std::set<C> >(_original_list, _modified_list);
+    test_container<std::multiset<C> >(_original_list, _modified_list);
+    test_container<std::unordered_set<C> >(_original_list, _modified_list);
+    test_container<std::unordered_multiset<C> >(_original_list, _modified_list);
+    test_container<sequenced_set<C> >(_original_list, _modified_list);
 }
 
 //------------------------------------------------------------------------------
 
 template<class Key, class T>
-inline static void mapTestDispatcher(
-    const std::initializer_list<std::pair<const Key, T> >& original_list,
-    const std::initializer_list<std::pair<const Key, T> >& modified_list
+inline static void map_test_dispatcher(
+    const std::initializer_list<std::pair<const Key, T> >& _original_list,
+    const std::initializer_list<std::pair<const Key, T> >& _modified_list
 )
 {
-    testContainer<std::map<Key, T> >(original_list, modified_list);
-    testContainer<std::multimap<Key, T> >(original_list, modified_list);
-    testContainer<std::unordered_map<Key, T> >(original_list, modified_list);
-    testContainer<std::unordered_multimap<Key, T> >(original_list, modified_list);
+    test_container<std::map<Key, T> >(_original_list, _modified_list);
+    test_container<std::multimap<Key, T> >(_original_list, _modified_list);
+    test_container<std::unordered_map<Key, T> >(_original_list, _modified_list);
+    test_container<std::unordered_multimap<Key, T> >(_original_list, _modified_list);
 }
 
 //------------------------------------------------------------------------------
@@ -218,12 +218,12 @@ void containerTest::tearDown()
 
 void containerTest::array_test()
 {
-    testContainer(
+    test_container(
         std::array<int, 3>({1, 2, 3}),
         std::array<int, 3>({4, 5, 6})
     );
 
-    testContainer(
+    test_container(
         std::array<integer::sptr, 3>(
             {std::make_shared<integer>(1), std::make_shared<integer>(2), std::make_shared<integer>(3)
             }),
@@ -233,7 +233,7 @@ void containerTest::array_test()
             })
     );
 
-    testContainer(
+    test_container(
         std::array<std::shared_ptr<int>, 3>(
         {
             std::make_shared<int>(1),
@@ -253,12 +253,12 @@ void containerTest::array_test()
 
 void containerTest::generic_test()
 {
-    testDispatcher<int>(
+    test_dispatcher<int>(
         {1, 2, 3},
         {4, 5, 6
         });
 
-    testDispatcher<integer::sptr>(
+    test_dispatcher<integer::sptr>(
         {
             std::make_shared<integer>(1),
             std::make_shared<integer>(2),
@@ -270,7 +270,7 @@ void containerTest::generic_test()
             std::make_shared<integer>(6)
         });
 
-    testDispatcher<std::shared_ptr<int> >(
+    test_dispatcher<std::shared_ptr<int> >(
         {
             std::make_shared<int>(1),
             std::make_shared<int>(2),
@@ -287,9 +287,9 @@ void containerTest::generic_test()
 
 void containerTest::map_test()
 {
-    mapTestDispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
+    map_test_dispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
 
-    mapTestDispatcher<int, integer::sptr>(
+    map_test_dispatcher<int, integer::sptr>(
         {
             {1, std::make_shared<integer>(1)},
             {2, std::make_shared<integer>(2)},
@@ -301,7 +301,7 @@ void containerTest::map_test()
             {6, std::make_shared<integer>(6)}
         });
 
-    mapTestDispatcher<int, std::shared_ptr<int> >(
+    map_test_dispatcher<int, std::shared_ptr<int> >(
         {
             {1, std::make_shared<int>(1)},
             {2, std::make_shared<int>(2)},

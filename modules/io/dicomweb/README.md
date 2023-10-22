@@ -18,7 +18,7 @@
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_dicomweb ...)
+add_dependencies(my_target module_io_dicomweb ...)
 ```
 
 ### XML

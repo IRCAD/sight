@@ -16,7 +16,7 @@ color and transparency.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget config_viz_scene3d ... )
+add_dependencies(my_target config_viz_scene3d ... )
 ```
 
 ### XML

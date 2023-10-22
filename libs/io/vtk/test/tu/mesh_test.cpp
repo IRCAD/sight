@@ -107,18 +107,18 @@ void mesh_test::testMeshToVtk()
     CPPUNIT_ASSERT(mesh1->has<data::mesh::Attributes::CELL_COLORS>());
     CPPUNIT_ASSERT(mesh1->has<data::mesh::Attributes::POINT_TEX_COORDS>());
 
-    const vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh1, vtkMesh);
-    CPPUNIT_ASSERT(vtkMesh);
+    const vtkSmartPointer<vtkPolyData> vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(mesh1, vtk_mesh);
+    CPPUNIT_ASSERT(vtk_mesh);
 
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), vtkMesh->GetNumberOfVerts());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfLines(), vtkMesh->GetNumberOfLines());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPolys(), vtkMesh->GetNumberOfPolys());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), vtkMesh->GetNumberOfStrips());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), vtk_mesh->GetNumberOfVerts());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfLines(), vtk_mesh->GetNumberOfLines());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPolys(), vtk_mesh->GetNumberOfPolys());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), vtk_mesh->GetNumberOfStrips());
 
     const data::mesh::sptr mesh2 = std::make_shared<data::mesh>();
     CPPUNIT_ASSERT(mesh2);
-    io::vtk::helper::mesh::fromVTKMesh(vtkMesh, mesh2);
+    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh2);
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
@@ -154,15 +154,15 @@ void mesh_test::testMeshToGrid()
     CPPUNIT_ASSERT(mesh1->has<data::mesh::Attributes::POINT_COLORS>());
     CPPUNIT_ASSERT(mesh1->has<data::mesh::Attributes::CELL_COLORS>());
     CPPUNIT_ASSERT(mesh1->has<data::mesh::Attributes::POINT_TEX_COORDS>());
-    const vtkSmartPointer<vtkUnstructuredGrid> vtkGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    io::vtk::helper::mesh::toVTKGrid(mesh1, vtkGrid);
-    CPPUNIT_ASSERT(vtkGrid);
+    const vtkSmartPointer<vtkUnstructuredGrid> vtk_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+    io::vtk::helper::mesh::toVTKGrid(mesh1, vtk_grid);
+    CPPUNIT_ASSERT(vtk_grid);
 
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPoints(), vtkGrid->GetNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPoints(), vtk_grid->GetNumberOfPoints());
 
     const data::mesh::sptr mesh2 = std::make_shared<data::mesh>();
     CPPUNIT_ASSERT(mesh2);
-    io::vtk::helper::mesh::fromVTKGrid(vtkGrid, mesh2);
+    io::vtk::helper::mesh::fromVTKGrid(vtk_grid, mesh2);
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
@@ -221,19 +221,19 @@ void mesh_test::testExportImportSyntheticMesh()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "testExportImportSyntheticMesh.vtk";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "testExportImportSyntheticMesh.vtk";
 
     const io::vtk::MeshWriter::sptr writer = std::make_shared<io::vtk::MeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     writer->write();
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 
     const data::mesh::sptr mesh2           = std::make_shared<data::mesh>();
     const io::vtk::MeshReader::sptr reader = std::make_shared<io::vtk::MeshReader>();
     reader->set_object(mesh2);
-    reader->set_file(testFile);
+    reader->set_file(test_file);
     reader->read();
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
@@ -243,15 +243,15 @@ void mesh_test::testExportImportSyntheticMesh()
 
 void mesh_test::testPointCloud()
 {
-    const auto NB_POINTS = static_cast<data::mesh::size_t>(100 + safe_rand() % 1000);
+    const auto nb_points = static_cast<data::mesh::size_t>(100 + safe_rand() % 1000);
 
     const data::mesh::sptr mesh1 = std::make_shared<data::mesh>();
 
-    mesh1->reserve(NB_POINTS, NB_POINTS, data::mesh::CellType::POINT);
+    mesh1->reserve(nb_points, nb_points, data::mesh::cell_type_t::POINT);
 
-    const auto dumpLock = mesh1->dump_lock();
+    const auto dump_lock = mesh1->dump_lock();
 
-    for(data::mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
+    for(data::mesh::size_t i = 0 ; i < nb_points ; ++i)
     {
         std::array<data::mesh::position_t, 3> point {};
         point[0] = (static_cast<float>(safe_rand() % 1000) - 500.F) / 3.F;
@@ -268,8 +268,8 @@ void mesh_test::testPointCloud()
     const data::mesh::sptr mesh2 = std::make_shared<data::mesh>();
     io::vtk::helper::mesh::fromVTKMesh(poly, mesh2);
 
-    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numPoints());
-    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numCells());
+    CPPUNIT_ASSERT_EQUAL(nb_points, mesh2->numPoints());
+    CPPUNIT_ASSERT_EQUAL(nb_points, mesh2->numCells());
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
@@ -277,10 +277,10 @@ void mesh_test::testPointCloud()
 
 void mesh_test::testReadVtkFile()
 {
-    const std::filesystem::path testFile(utest_data::Data::dir() / ("sight/mesh/vtk/sphere.vtk"));
+    const std::filesystem::path test_file(utest_data::Data::dir() / ("sight/mesh/vtk/sphere.vtk"));
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
@@ -288,7 +288,7 @@ void mesh_test::testReadVtkFile()
     io::vtk::MeshReader::sptr vtk_reader = std::make_shared<io::vtk::MeshReader>();
 
     vtk_reader->set_object(mesh);
-    vtk_reader->set_file(testFile);
+    vtk_reader->set_file(test_file);
 
     CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
@@ -300,10 +300,10 @@ void mesh_test::testReadVtkFile()
 
 void mesh_test::testReadVtpFile()
 {
-    const std::filesystem::path testFile(utest_data::Data::dir() / ("sight/mesh/vtp/sphere.vtp"));
+    const std::filesystem::path test_file(utest_data::Data::dir() / ("sight/mesh/vtp/sphere.vtp"));
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
@@ -311,7 +311,7 @@ void mesh_test::testReadVtpFile()
     io::vtk::VtpMeshReader::sptr vtk_reader = std::make_shared<io::vtk::VtpMeshReader>();
 
     vtk_reader->set_object(mesh);
-    vtk_reader->set_file(testFile);
+    vtk_reader->set_file(test_file);
 
     CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
@@ -323,10 +323,10 @@ void mesh_test::testReadVtpFile()
 
 void mesh_test::testReadObjFile()
 {
-    const std::filesystem::path testFile(utest_data::Data::dir() / ("sight/mesh/obj/sphere.obj"));
+    const std::filesystem::path test_file(utest_data::Data::dir() / ("sight/mesh/obj/sphere.obj"));
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
@@ -334,7 +334,7 @@ void mesh_test::testReadObjFile()
     io::vtk::ObjMeshReader::sptr vtk_reader = std::make_shared<io::vtk::ObjMeshReader>();
 
     vtk_reader->set_object(mesh);
-    vtk_reader->set_file(testFile);
+    vtk_reader->set_file(test_file);
 
     CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
@@ -346,10 +346,10 @@ void mesh_test::testReadObjFile()
 
 void mesh_test::testReadPlyFile()
 {
-    const std::filesystem::path testFile(utest_data::Data::dir() / ("sight/mesh/ply/sphere.ply"));
+    const std::filesystem::path test_file(utest_data::Data::dir() / ("sight/mesh/ply/sphere.ply"));
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
@@ -357,7 +357,7 @@ void mesh_test::testReadPlyFile()
     io::vtk::PlyMeshReader::sptr vtk_reader = std::make_shared<io::vtk::PlyMeshReader>();
 
     vtk_reader->set_object(mesh);
-    vtk_reader->set_file(testFile);
+    vtk_reader->set_file(test_file);
 
     CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
@@ -369,10 +369,10 @@ void mesh_test::testReadPlyFile()
 
 void mesh_test::testReadStlFile()
 {
-    const std::filesystem::path testFile(utest_data::Data::dir() / ("sight/mesh/stl/sphere.stl"));
+    const std::filesystem::path test_file(utest_data::Data::dir() / ("sight/mesh/stl/sphere.stl"));
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + testFile.string() + "' does not exist",
-        std::filesystem::exists(testFile)
+        "The file '" + test_file.string() + "' does not exist",
+        std::filesystem::exists(test_file)
     );
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
@@ -380,7 +380,7 @@ void mesh_test::testReadStlFile()
     io::vtk::StlMeshReader::sptr vtk_reader = std::make_shared<io::vtk::StlMeshReader>();
 
     vtk_reader->set_object(mesh);
-    vtk_reader->set_file(testFile);
+    vtk_reader->set_file(test_file);
 
     CPPUNIT_ASSERT_NO_THROW(vtk_reader->read());
 
@@ -402,14 +402,14 @@ void mesh_test::testWriteVtkFile()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "vtkTestMesh.vtk";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "vtkTestMesh.vtk";
 
     const auto writer = std::make_shared<io::vtk::MeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 }
 
 //------------------------------------------------------------------------------
@@ -426,14 +426,14 @@ void mesh_test::testWriteVtpFile()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "vtpTestMesh.vtp";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "vtpTestMesh.vtp";
 
     const auto writer = std::make_shared<io::vtk::VtpMeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 }
 
 //------------------------------------------------------------------------------
@@ -450,14 +450,14 @@ void mesh_test::testWriteObjFile()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "objTestMesh.obj";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "objTestMesh.obj";
 
     const auto writer = std::make_shared<io::vtk::ObjMeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 }
 
 //------------------------------------------------------------------------------
@@ -474,14 +474,14 @@ void mesh_test::testWritePlyFile()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "plyTestMesh.ply";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "plyTestMesh.ply";
 
     const auto writer = std::make_shared<io::vtk::PlyMeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 }
 
 //------------------------------------------------------------------------------
@@ -498,23 +498,23 @@ void mesh_test::testWriteStlFile()
 
     mesh1->shrinkToFit();
 
-    core::os::temp_dir tmpDir;
-    const auto testFile = tmpDir / "stlTestMesh.stl";
+    core::os::temp_dir tmp_dir;
+    const auto test_file = tmp_dir / "stlTestMesh.stl";
 
     const auto writer = std::make_shared<io::vtk::StlMeshWriter>();
     writer->set_object(mesh1);
-    writer->set_file(testFile);
+    writer->set_file(test_file);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
-    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(test_file));
 }
 
 //------------------------------------------------------------------------------
 
 void mesh_test::toVtkMeshWithLinesTest()
 {
-    auto mesh     = std::make_shared<data::mesh>();
-    auto meshLock = mesh->dump_lock();
-    mesh->reserve(4, 3, data::mesh::CellType::LINE);
+    auto mesh      = std::make_shared<data::mesh>();
+    auto mesh_lock = mesh->dump_lock();
+    mesh->reserve(4, 3, data::mesh::cell_type_t::LINE);
     mesh->pushPoint(0, 1, 2);
     mesh->pushPoint(3, 4, 5);
     mesh->pushPoint(6, 7, 8);
@@ -523,8 +523,8 @@ void mesh_test::toVtkMeshWithLinesTest()
     mesh->pushCell(1U, 2U);
     mesh->pushCell(2U, 3U);
 
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, vtkMesh);
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(mesh, vtk_mesh);
 
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
@@ -533,21 +533,21 @@ void mesh_test::toVtkMeshWithLinesTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "component " + std::to_string(j) + " of point " + std::to_string(i),
                 i * 3. + j,
-                vtkMesh->GetPoints()->GetPoint(i)[j]
+                vtk_mesh->GetPoints()->GetPoint(i)[j]
             );
         }
     }
 
-    auto* pointIdList = vtkIdList::New();
+    auto* point_id_list = vtkIdList::New();
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
-        vtkMesh->GetCellPoints(i, pointIdList);
+        vtk_mesh->GetCellPoints(i, point_id_list);
         for(std::uint8_t j = 0 ; j < 2 ; j++)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "point " + std::to_string(j) + " of cell " + std::to_string(i),
                 vtkIdType(i) + j,
-                pointIdList->GetId(j)
+                point_id_list->GetId(j)
             );
         }
     }
@@ -557,9 +557,9 @@ void mesh_test::toVtkMeshWithLinesTest()
 
 void mesh_test::toVtkMeshWithTetrasTest()
 {
-    auto mesh     = std::make_shared<data::mesh>();
-    auto meshLock = mesh->dump_lock();
-    mesh->reserve(5, 3, data::mesh::CellType::TETRA);
+    auto mesh      = std::make_shared<data::mesh>();
+    auto mesh_lock = mesh->dump_lock();
+    mesh->reserve(5, 3, data::mesh::cell_type_t::TETRA);
     mesh->pushPoint(0, 1, 2);
     mesh->pushPoint(3, 4, 5);
     mesh->pushPoint(6, 7, 8);
@@ -569,8 +569,8 @@ void mesh_test::toVtkMeshWithTetrasTest()
     mesh->pushCell(1U, 2U, 3U, 4U);
     mesh->pushCell(2U, 3U, 4U, 0U);
 
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, vtkMesh);
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(mesh, vtk_mesh);
 
     for(std::uint8_t i = 0 ; i < 5 ; i++)
     {
@@ -579,18 +579,18 @@ void mesh_test::toVtkMeshWithTetrasTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "component " + std::to_string(j) + " of point " + std::to_string(i),
                 i * 3. + j,
-                vtkMesh->GetPoints()->GetPoint(i)[j]
+                vtk_mesh->GetPoints()->GetPoint(i)[j]
             );
         }
     }
 
-    auto* pointIdList = vtkIdList::New();
+    auto* point_id_list = vtkIdList::New();
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
-        vtkMesh->GetCellPoints(i, pointIdList);
+        vtk_mesh->GetCellPoints(i, point_id_list);
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            // TODO: fix crash. With CellType = TETRA, the pointIdList is always empty.
+            // TODO: fix crash. With cell_type_t = TETRA, the pointIdList is always empty.
             // CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(j) + " of cell " + std::to_string(i),
             // (vtkIdType(i) + j)%4, pointIdList->GetId(j));
         }
@@ -601,9 +601,9 @@ void mesh_test::toVtkMeshWithTetrasTest()
 
 void mesh_test::toVtkMeshWithCellTexCoordsTest()
 {
-    auto mesh     = std::make_shared<data::mesh>();
-    auto meshLock = mesh->dump_lock();
-    mesh->reserve(3, 3, data::mesh::CellType::POINT, data::mesh::Attributes::CELL_TEX_COORDS);
+    auto mesh      = std::make_shared<data::mesh>();
+    auto mesh_lock = mesh->dump_lock();
+    mesh->reserve(3, 3, data::mesh::cell_type_t::POINT, data::mesh::Attributes::CELL_TEX_COORDS);
     mesh->pushPoint(0, 1, 2);
     mesh->pushPoint(3, 4, 5);
     mesh->pushPoint(6, 7, 8);
@@ -614,8 +614,8 @@ void mesh_test::toVtkMeshWithCellTexCoordsTest()
     mesh->setCellTexCoord(1, 1, 2);
     mesh->setCellTexCoord(2, 2, 3);
 
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(mesh, vtkMesh);
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(mesh, vtk_mesh);
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
@@ -624,16 +624,16 @@ void mesh_test::toVtkMeshWithCellTexCoordsTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "component " + std::to_string(j) + " of point " + std::to_string(i),
                 i * 3. + j,
-                vtkMesh->GetPoints()->GetPoint(i)[j]
+                vtk_mesh->GetPoints()->GetPoint(i)[j]
             );
         }
     }
 
-    auto* pointIdList = vtkIdList::New();
+    auto* point_id_list = vtkIdList::New();
     for(std::uint8_t i = 0 ; i < 3 ; i++)
     {
-        vtkMesh->GetCellPoints(i, pointIdList);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), vtkIdType(i), pointIdList->GetId(0));
+        vtk_mesh->GetCellPoints(i, point_id_list);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), vtkIdType(i), point_id_list->GetId(0));
     }
 
     for(std::uint8_t i = 0 ; i < 3 ; i++)
@@ -643,7 +643,7 @@ void mesh_test::toVtkMeshWithCellTexCoordsTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "cell " + std::to_string(i),
                 double(i) + j,
-                vtkMesh->GetCellData()->GetTCoords()->GetTuple(i)[j]
+                vtk_mesh->GetCellData()->GetTCoords()->GetTuple(i)[j]
             );
         }
     }
@@ -653,23 +653,23 @@ void mesh_test::toVtkMeshWithCellTexCoordsTest()
 
 void mesh_test::fromVtkMeshWithLinesTest()
 {
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    auto points  = vtkSmartPointer<vtkPoints>::New();
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points   = vtkSmartPointer<vtkPoints>::New();
     points->InsertNextPoint(0, 1, 2);
     points->InsertNextPoint(3, 4, 5);
     points->InsertNextPoint(6, 7, 8);
     points->InsertNextPoint(9, 10, 11);
-    vtkMesh->SetPoints(points);
+    vtk_mesh->SetPoints(points);
     auto cells = vtkSmartPointer<vtkCellArray>::New();
     cells->InsertNextCell({0, 1});
     cells->InsertNextCell({1, 2});
     cells->InsertNextCell({2, 3});
-    vtkMesh->SetLines(cells);
+    vtk_mesh->SetLines(cells);
 
     auto mesh = std::make_shared<data::mesh>();
-    io::vtk::helper::mesh::fromVTKMesh(vtkMesh, mesh);
+    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh);
 
-    auto meshLock  = mesh->dump_lock();
+    auto mesh_lock = mesh->dump_lock();
     std::uint8_t i = 0;
     for(auto p : mesh->crange<data::iterator::point::xyz>())
     {
@@ -679,11 +679,11 @@ void mesh_test::fromVtkMeshWithLinesTest()
         i++;
     }
 
-    auto* pointIdList = vtkIdList::New();
+    auto* point_id_list = vtkIdList::New();
     i = 0;
     for(auto c : mesh->crange<data::iterator::cell::line>())
     {
-        vtkMesh->GetCellPoints(i, pointIdList);
+        vtk_mesh->GetCellPoints(i, point_id_list);
         for(std::uint8_t j = 0 ; j < 2 ; j++)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -701,24 +701,24 @@ void mesh_test::fromVtkMeshWithLinesTest()
 
 void mesh_test::fromVtkMeshWithQuadsTest()
 {
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    auto points  = vtkSmartPointer<vtkPoints>::New();
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points   = vtkSmartPointer<vtkPoints>::New();
     points->InsertNextPoint(0, 1, 2);
     points->InsertNextPoint(3, 4, 5);
     points->InsertNextPoint(6, 7, 8);
     points->InsertNextPoint(9, 10, 11);
     points->InsertNextPoint(12, 13, 14);
-    vtkMesh->SetPoints(points);
+    vtk_mesh->SetPoints(points);
     auto cells = vtkSmartPointer<vtkCellArray>::New();
     cells->InsertNextCell({0, 1, 2, 3});
     cells->InsertNextCell({1, 2, 3, 4});
     cells->InsertNextCell({2, 3, 4, 0});
-    vtkMesh->SetPolys(cells);
+    vtk_mesh->SetPolys(cells);
 
     auto mesh = std::make_shared<data::mesh>();
-    io::vtk::helper::mesh::fromVTKMesh(vtkMesh, mesh);
+    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh);
 
-    auto meshLock  = mesh->dump_lock();
+    auto mesh_lock = mesh->dump_lock();
     std::uint8_t i = 0;
     for(auto p : mesh->crange<data::iterator::point::xyz>())
     {
@@ -750,30 +750,30 @@ void mesh_test::fromVtkMeshWithQuadsTest()
 
 void mesh_test::fromVtkMeshWithCellTexCoordsTest()
 {
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    auto points  = vtkSmartPointer<vtkPoints>::New();
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points   = vtkSmartPointer<vtkPoints>::New();
     points->InsertNextPoint(0, 1, 2);
     points->InsertNextPoint(3, 4, 5);
     points->InsertNextPoint(6, 7, 8);
-    vtkMesh->SetPoints(points);
-    auto cells                    = vtkSmartPointer<vtkCellArray>::New();
-    std::vector<vtkIdType> idList = {0};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    idList = {1};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    idList = {2};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    vtkMesh->SetVerts(cells);
-    auto* texCoordsArray = new float [6] {0, 1, 1, 2, 2, 3};
-    auto texCoords       = vtkSmartPointer<vtkFloatArray>::New();
-    texCoords->SetNumberOfComponents(2);
-    texCoords->SetArray(texCoordsArray, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
-    vtkMesh->GetCellData()->SetTCoords(texCoords);
+    vtk_mesh->SetPoints(points);
+    auto cells                     = vtkSmartPointer<vtkCellArray>::New();
+    std::vector<vtkIdType> id_list = {0};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    id_list = {1};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    id_list = {2};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    vtk_mesh->SetVerts(cells);
+    auto* tex_coords_array = new float [6] {0, 1, 1, 2, 2, 3};
+    auto tex_coords        = vtkSmartPointer<vtkFloatArray>::New();
+    tex_coords->SetNumberOfComponents(2);
+    tex_coords->SetArray(tex_coords_array, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+    vtk_mesh->GetCellData()->SetTCoords(tex_coords);
 
     auto mesh = std::make_shared<data::mesh>();
-    io::vtk::helper::mesh::fromVTKMesh(vtkMesh, mesh);
+    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh);
 
-    auto meshLock  = mesh->dump_lock();
+    auto mesh_lock = mesh->dump_lock();
     std::uint8_t i = 0;
     for(auto p : mesh->crange<data::iterator::point::xyz>())
     {
@@ -797,31 +797,31 @@ void mesh_test::fromVtkMeshWithCellTexCoordsTest()
 
 void mesh_test::fromVtkMeshWith3ComponentsCellColorsTest()
 {
-    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    auto points  = vtkSmartPointer<vtkPoints>::New();
+    auto vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points   = vtkSmartPointer<vtkPoints>::New();
     points->InsertNextPoint(0, 1, 2);
     points->InsertNextPoint(3, 4, 5);
     points->InsertNextPoint(6, 7, 8);
-    vtkMesh->SetPoints(points);
-    auto cells                    = vtkSmartPointer<vtkCellArray>::New();
-    std::vector<vtkIdType> idList = {0};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    idList = {1};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    idList = {2};
-    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
-    vtkMesh->SetVerts(cells);
-    auto* colorsArray = new std::uint8_t[9] {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    auto colors       = vtkSmartPointer<vtkUnsignedCharArray>::New();
+    vtk_mesh->SetPoints(points);
+    auto cells                     = vtkSmartPointer<vtkCellArray>::New();
+    std::vector<vtkIdType> id_list = {0};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    id_list = {1};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    id_list = {2};
+    cells->InsertNextCell(static_cast<vtkIdType>(id_list.size()), id_list.data());
+    vtk_mesh->SetVerts(cells);
+    auto* colors_array = new std::uint8_t[9] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    auto colors        = vtkSmartPointer<vtkUnsignedCharArray>::New();
     colors->SetNumberOfComponents(3);
     colors->SetName("Colors");
-    colors->SetArray(colorsArray, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
-    vtkMesh->GetCellData()->SetScalars(colors);
+    colors->SetArray(colors_array, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+    vtk_mesh->GetCellData()->SetScalars(colors);
 
     auto mesh = std::make_shared<data::mesh>();
-    io::vtk::helper::mesh::fromVTKMesh(vtkMesh, mesh);
+    io::vtk::helper::mesh::fromVTKMesh(vtk_mesh, mesh);
 
-    auto meshLock  = mesh->dump_lock();
+    auto mesh_lock = mesh->dump_lock();
     std::uint8_t i = 0;
     for(auto p : mesh->crange<data::iterator::point::xyz>())
     {

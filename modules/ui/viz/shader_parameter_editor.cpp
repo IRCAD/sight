@@ -32,7 +32,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 
-#include <modules/ui/viz/helper/ParameterEditor.hpp>
+#include <modules/ui/viz/helper/parameter_editor.hpp>
 
 #include <QWidget>
 
@@ -60,15 +60,15 @@ void shader_parameter_editor::starting()
 
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(m_sizer);
+    qt_container->setLayout(m_sizer);
 
     this->updating();
 }
@@ -103,15 +103,15 @@ void shader_parameter_editor::clear()
 {
     m_editorInfo.connections.disconnect();
 
-    service::base::sptr objService = m_editorInfo.srv.lock();
+    service::base::sptr obj_service = m_editorInfo.srv.lock();
 
-    if(objService)
+    if(obj_service)
     {
-        objService->stop();
+        obj_service->stop();
 
-        sight::ui::registry::unregisterSIDContainer(m_editorInfo.uuid);
+        sight::ui::registry::unregister_sid_container(m_editorInfo.uuid);
 
-        sight::service::remove(objService);
+        sight::service::remove(obj_service);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -126,10 +126,10 @@ void shader_parameter_editor::updateGuiInfo()
     /// Getting all Material adaptors
     const auto reconstruction = m_reconstruction.lock();
 
-    const auto srvVec = sight::service::getServices("sight::module::viz::scene3d::adaptor::material");
+    const auto srv_vec = sight::service::get_services("sight::module::viz::scene3d::adaptor::material");
 
     /// Stop if no Material adaptors have been find
-    if(srvVec.empty())
+    if(srv_vec.empty())
     {
         SIGHT_WARN("No module::viz::scene3d::adaptor::material found in the application");
         return;
@@ -137,33 +137,33 @@ void shader_parameter_editor::updateGuiInfo()
 
     /// Try to find the material adaptor working with the same data::material
     /// as the one contained by the current reconstruction
-    sight::viz::scene3d::adaptor::sptr matService;
-    for(const auto& srv : srvVec)
+    sight::viz::scene3d::adaptor::sptr mat_service;
+    for(const auto& srv : srv_vec)
     {
         if(srv->inout("material").lock()->get_id() == reconstruction->getMaterial()->get_id())
         {
-            matService = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
+            mat_service = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
             break;
         }
     }
 
-    SIGHT_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", matService);
+    SIGHT_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", mat_service);
 
     bool found = false;
 
     // Is there at least one parameter that we can handle ?
-    for(const auto& wParamSrv : matService->getRegisteredServices())
+    for(const auto& w_param_srv : mat_service->getRegisteredServices())
     {
-        const auto paramSrv = wParamSrv.lock();
-        if(paramSrv->get_classname() == "sight::module::viz::scene3d::adaptor::shader_parameter")
+        const auto param_srv = w_param_srv.lock();
+        if(param_srv->get_classname() == "sight::module::viz::scene3d::adaptor::shader_parameter")
         {
             /// Filter object types
-            const auto shaderObj =
-                paramSrv->inout(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
-            const ObjectClassnameType objType = shaderObj->get_classname();
+            const auto shader_obj =
+                param_srv->inout(sight::viz::scene3d::parameter_adaptor::s_PARAMETER_INOUT).lock();
+            const object_classname_t obj_type = shader_obj->get_classname();
 
-            if(objType == "sight::data::boolean" || objType == "sight::data::real"
-               || objType == "sight::data::integer")
+            if(obj_type == "sight::data::boolean" || obj_type == "sight::data::real"
+               || obj_type == "sight::data::integer")
             {
                 found = true;
                 break;
@@ -177,8 +177,8 @@ void shader_parameter_editor::updateGuiInfo()
     }
 
     /// Getting this widget's container
-    auto qtContainer   = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
+    auto qt_container  = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    QWidget* container = qt_container->getQtContainer();
 
     auto* p2 = new QWidget(container);
     m_editorInfo.editorPanel = sight::ui::qt::container::widget::make();
@@ -187,45 +187,45 @@ void shader_parameter_editor::updateGuiInfo()
     const std::string uuid = this->get_id();
     m_editorInfo.uuid = uuid + "-editor";
 
-    sight::ui::registry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+    sight::ui::registry::register_sid_container(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = sight::service::add("sight::module::ui::qt::parameters", m_editorInfo.uuid);
-    m_editorInfo.srv = editorService;
+    auto editor_service = sight::service::add("sight::module::ui::qt::parameters", m_editorInfo.uuid);
+    m_editorInfo.srv = editor_service;
 
-    service::config_t editorConfig;
+    service::config_t editor_config;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for(const auto& wAdaptor : matService->getRegisteredServices())
+    for(const auto& w_adaptor : mat_service->getRegisteredServices())
     {
-        const auto adaptor = wAdaptor.lock();
+        const auto adaptor = w_adaptor.lock();
         if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::shader_parameter")
         {
-            auto paramAdaptor = std::dynamic_pointer_cast<sight::viz::scene3d::IParameter>(adaptor);
-            auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(
-                paramAdaptor,
+            auto param_adaptor = std::dynamic_pointer_cast<sight::viz::scene3d::parameter_adaptor>(adaptor);
+            auto param_config  = module::ui::viz::helper::parameter_editor::createConfig(
+                param_adaptor,
                 m_editorInfo.srv.lock(),
                 m_editorInfo.connections
             );
 
-            if(!paramConfig.empty())
+            if(!param_config.empty())
             {
-                editorConfig.add_child("parameters.param", paramConfig);
+                editor_config.add_child("parameters.param", param_config);
             }
         }
     }
 
-    editorService->set_config(editorConfig);
-    editorService->configure();
+    editor_service->set_config(editor_config);
+    editor_service->configure();
 
-    editorService->start();
+    editor_service->start();
 }
 
 //------------------------------------------------------------------------------
 
 void shader_parameter_editor::fillGui()
 {
-    auto editorService = m_editorInfo.srv.lock();
-    if(editorService)
+    auto editor_service = m_editorInfo.srv.lock();
+    if(editor_service)
     {
         m_sizer->addWidget(m_editorInfo.editorPanel->getQtContainer(), 0);
     }

@@ -29,8 +29,8 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-const structure_traits_helper::CategoryTranslatorType structure_traits_helper::s_CATEGORYTRANSLATOR =
-    boost::assign::list_of<structure_traits_helper::CategoryTranslatorType::relation>
+const structure_traits_helper::category_translator_t structure_traits_helper::s_CATEGORYTRANSLATOR =
+    boost::assign::list_of<structure_traits_helper::category_translator_t::relation>
         (data::structure_traits::BODY, std::string("Body"))
         (data::structure_traits::HEAD, std::string("Head"))
         (data::structure_traits::NECK, std::string("Neck"))
@@ -44,8 +44,8 @@ const structure_traits_helper::CategoryTranslatorType structure_traits_helper::s
 
 //------------------------------------------------------------------------------
 
-const structure_traits_helper::ClassTranslatorType structure_traits_helper::s_CLASSTRANSLATOR =
-    boost::assign::list_of<structure_traits_helper::ClassTranslatorType::relation>
+const structure_traits_helper::class_translator_t structure_traits_helper::s_CLASSTRANSLATOR =
+    boost::assign::list_of<structure_traits_helper::class_translator_t::relation>
         (data::structure_traits::TOOL, std::string("Tool"))
         (data::structure_traits::ENVIRONMENT, std::string("Environment"))
         (data::structure_traits::VESSEL, std::string("Vessel"))

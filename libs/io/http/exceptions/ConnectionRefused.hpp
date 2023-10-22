@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ public:
     /**
      * @name Constructor/Destructor.
      * @{ */
-    IO_HTTP_API ConnectionRefused(const std::string& message);
+    IO_HTTP_API ConnectionRefused(const std::string& _message);
     ~ConnectionRefused() noexcept override;
     /**  @} */
 };

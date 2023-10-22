@@ -51,20 +51,20 @@ void DownloadTest::tearDown()
 
 void DownloadTest::downloadTestSuccess()
 {
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
-    const auto& sample_bin_path = tmpDir / "sample.bin";
-    const auto& sample_txt_path = tmpDir / "sample.txt";
+    const auto& sample_bin_path = tmp_dir / "sample.bin";
+    const auto& sample_txt_path = tmp_dir / "sample.txt";
 
     CPPUNIT_ASSERT_NO_THROW(
-        io::http::downloadFile(
+        io::http::download_file(
             "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
             sample_bin_path
         )
     );
 
     CPPUNIT_ASSERT_NO_THROW(
-        io::http::downloadFile(
+        io::http::download_file(
             "https://cloud.ircad.fr/s/5GA5bjqsEYwenPT/download",
             sample_txt_path
         )
@@ -81,11 +81,11 @@ void DownloadTest::downloadTestSuccess()
 
 void DownloadTest::downloadTestFailure()
 {
-    core::os::temp_dir tmpDir;
-    const auto& test_bin_path = tmpDir / "test.bin";
+    core::os::temp_dir tmp_dir;
+    const auto& test_bin_path = tmp_dir / "test.bin";
 
     CPPUNIT_ASSERT_THROW(
-        io::http::downloadFile(
+        io::http::download_file(
             "https://whateverTheCloud.com/fileDoesNotExists.txt/download",
             test_bin_path
         ),
@@ -99,13 +99,13 @@ void DownloadTest::downloadTestFailure()
 
 void DownloadTest::downloadTestWrongInputs()
 {
-    core::os::temp_dir tmpDir;
-    const auto& test2_bin_path = tmpDir / "test2.bin";
+    core::os::temp_dir tmp_dir;
+    const auto& test2_bin_path = tmp_dir / "test2.bin";
 
-    CPPUNIT_ASSERT_THROW(io::http::downloadFile("", test2_bin_path), sight::core::exception);
+    CPPUNIT_ASSERT_THROW(io::http::download_file("", test2_bin_path), sight::core::exception);
 
     CPPUNIT_ASSERT_THROW(
-        io::http::downloadFile("https://whateverTheCloud.com/fileDoesNotExists.txt/download", ""),
+        io::http::download_file("https://whateverTheCloud.com/fileDoesNotExists.txt/download", ""),
         sight::core::exception
     );
 }
@@ -114,11 +114,11 @@ void DownloadTest::downloadTestWrongInputs()
 
 void DownloadTest::downloadTestOverwritesFile()
 {
-    core::os::temp_dir tmpDir;
-    const auto& sample_bin_path = tmpDir / "sample.bin";
+    core::os::temp_dir tmp_dir;
+    const auto& sample_bin_path = tmp_dir / "sample.bin";
 
     CPPUNIT_ASSERT_NO_THROW(
-        io::http::downloadFile(
+        io::http::download_file(
             "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
             sample_bin_path
         )
@@ -127,7 +127,7 @@ void DownloadTest::downloadTestOverwritesFile()
     CPPUNIT_ASSERT(fs::exists(sample_bin_path));
 
     CPPUNIT_ASSERT_THROW(
-        io::http::downloadFile(
+        io::http::download_file(
             "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
             sample_bin_path
         ),

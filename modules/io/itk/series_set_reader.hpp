@@ -109,7 +109,7 @@ protected:
 private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    static void initSeries(SPTR(data::series) series, const std::string& instanceUID);
+    static void initSeries(SPTR(data::series) _series, const std::string& _instance_uid);
 };
 
 } // namespace sight::module::io::itk

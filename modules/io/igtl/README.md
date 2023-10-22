@@ -19,7 +19,7 @@ IGTL message except TDATA, for which a specific service **tdata_listener** exist
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_igtl ...)
+add_dependencies(my_target module_io_igtl ...)
 ```
 
 ### XML

@@ -45,8 +45,8 @@ const core::com::slots::key_t PREVIOUS_SLOT   = "previous";
 //------------------------------------------------------------------------------
 
 sequencer::sequencer() :
-    m_sigActivityCreated(new_signal<ActivityCreatedSignalType>(ACTIVITY_CREATED_SIG)),
-    m_sigDataRequired(new_signal<DataRequiredSignalType>(DATA_REQUIRED_SIG))
+    m_sigActivityCreated(new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG)),
+    m_sigDataRequired(new_signal<data_required_signal_t>(DATA_REQUIRED_SIG))
 {
     new_slot(GO_TO_SLOT, &sequencer::goTo, this);
     new_slot(CHECK_NEXT_SLOT, &sequencer::checkNext, this);
@@ -69,9 +69,9 @@ void sequencer::configuring()
 
 void sequencer::starting()
 {
-    for(const auto& m_qActivityId : m_qActivityIds)
+    for(const auto& m_q_activity_id : m_qActivityIds)
     {
-        m_activityIds.push_back(m_qActivityId.toStdString());
+        m_activityIds.push_back(m_q_activity_id.toStdString());
     }
 }
 
@@ -111,11 +111,11 @@ void sequencer::updating()
 
 //------------------------------------------------------------------------------
 
-void sequencer::goTo(int index)
+void sequencer::goTo(int _index)
 {
-    if(index < 0 || index >= static_cast<int>(m_activityIds.size()))
+    if(_index < 0 || _index >= static_cast<int>(m_activityIds.size()))
     {
-        SIGHT_ERROR("no activity to launch at index " << index)
+        SIGHT_ERROR("no activity to launch at index " << _index)
         return;
     }
 
@@ -127,22 +127,22 @@ void sequencer::goTo(int index)
         storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    auto activity = getActivity(*activity_set, std::size_t(index), slot(service::slots::UPDATE));
+    auto activity = getActivity(*activity_set, std::size_t(_index), slot(service::slots::UPDATE));
 
     bool ok = true;
-    std::string errorMsg;
+    std::string error_msg;
 
-    std::tie(ok, errorMsg) = sight::module::ui::qml::activity::sequencer::validateActivity(activity);
+    std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validateActivity(activity);
     if(ok)
     {
         m_sigActivityCreated->async_emit(activity);
 
-        m_currentActivity = index;
-        Q_EMIT select(index);
+        m_currentActivity = _index;
+        Q_EMIT select(_index);
     }
     else
     {
-        sight::ui::dialog::message::show("Activity not valid", errorMsg);
+        sight::ui::dialog::message::show("Activity not valid", error_msg);
         m_sigDataRequired->async_emit(activity);
     }
 }
@@ -161,15 +161,15 @@ void sequencer::checkNext()
         this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
-    if(nextIdx < m_activityIds.size())
+    const auto next_idx = static_cast<std::size_t>(m_currentActivity) + 1;
+    if(next_idx < m_activityIds.size())
     {
-        data::activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(service::slots::UPDATE));
+        data::activity::sptr next_activity = this->getActivity(*activity_set, next_idx, slot(service::slots::UPDATE));
 
         bool ok = true;
-        std::string errorMsg;
+        std::string error_msg;
 
-        std::tie(ok, errorMsg) = sight::module::ui::qml::activity::sequencer::validateActivity(nextActivity);
+        std::tie(ok, error_msg) = sight::module::ui::qml::activity::sequencer::validateActivity(next_activity);
 
         if(ok)
         {

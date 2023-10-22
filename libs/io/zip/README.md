@@ -15,5 +15,5 @@ Library for dealing with archives, either compressed as a zip archive or uncompr
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_zip)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_zip)
 ```

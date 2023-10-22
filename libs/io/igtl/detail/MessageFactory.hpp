@@ -43,8 +43,8 @@ class IO_IGTL_CLASS_API MessageFactory
 {
 public:
 
-    typedef boost::function< ::igtl::MessageBase::Pointer()> CreatorType;
-    typedef std::map<std::string, CreatorType> CreatorContainer;
+    typedef boost::function< ::igtl::MessageBase::Pointer()> creator_t;
+    typedef std::map<std::string, creator_t> CreatorContainer;
 
     MessageFactory()  = delete;
     ~MessageFactory() = delete;
@@ -60,7 +60,7 @@ public:
      * @param[in] type
      * @return a smart pointer to a igtl message
      */
-    static IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& type);
+    static IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& _type);
 
     /// Map of equivalence between a device type and igtl message creator method
     static IO_IGTL_API CreatorContainer s_creators;
@@ -101,11 +101,11 @@ public:
          * @brief create message from type specified in template
          * @return a ::igtl::MessageBase smart pointer contain the message
          */
-        static ::igtl::MessageBase::Pointer createMessage(std::string const& bodyType)
+        static ::igtl::MessageBase::Pointer createMessage(std::string const& _body_type)
         {
             typename T::Pointer msg;
 
-            msg = T::New(bodyType);
+            msg = T::New(_body_type);
             return ::igtl::MessageBase::Pointer(msg);
         }
     };

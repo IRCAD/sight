@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,18 +35,18 @@ static std::set<std::filesystem::path> s_archives;
 static std::mutex s_archives_mutex;
 
 /// Constructor
-Archive::Archive(const std::filesystem::path& archive_path) :
-    m_archive_path(archive_path.lexically_normal())
+Archive::Archive(const std::filesystem::path& _archive_path) :
+    M_ARCHIVE_PATH(_archive_path.lexically_normal())
 {
     std::unique_lock guard(s_archives_mutex);
 
     SIGHT_THROW_IF(
-        "The archive file '" + m_archive_path.string() + "' is already opened.",
-        s_archives.find(m_archive_path) != s_archives.end()
+        "The archive file '" + M_ARCHIVE_PATH.string() + "' is already opened.",
+        s_archives.find(M_ARCHIVE_PATH) != s_archives.end()
     );
 
     // Store the path as long as the archive is opened
-    s_archives.insert(m_archive_path);
+    s_archives.insert(M_ARCHIVE_PATH);
 }
 
 Archive::~Archive()
@@ -54,7 +54,7 @@ Archive::~Archive()
     std::unique_lock guard(s_archives_mutex);
 
     // Remove completely the archive if not used anymore
-    s_archives.erase(m_archive_path);
+    s_archives.erase(M_ARCHIVE_PATH);
 }
 
 } // namespace sight::io::zip

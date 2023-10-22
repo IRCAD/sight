@@ -55,72 +55,72 @@ void mesh_test::copyColors()
     ////////////////////////////////////////////////////////////////////////////
     /// 3 components
     {
-        const std::size_t numComponents = 3;
-        const std::size_t numPoints     = 1024;
-        auto* pDestAlloc                = new Ogre::RGBA[numPoints];
-        Ogre::RGBA* pDest               = pDestAlloc;
-        auto* pSrcAlloc                 = new std::uint8_t[numPoints * numComponents];
-        std::uint8_t* pSrc              = pSrcAlloc;
+        const std::size_t num_components = 3;
+        const std::size_t num_points     = 1024;
+        auto* p_dest_alloc               = new Ogre::RGBA[num_points];
+        Ogre::RGBA* p_dest               = p_dest_alloc;
+        auto* p_src_alloc                = new std::uint8_t[num_points * num_components];
+        std::uint8_t* p_src              = p_src_alloc;
 
-        for(std::size_t i = 0 ; i < numPoints ; ++i)
+        for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc   += numComponents;
+            p_src[0] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src[1] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src[2] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src   += num_components;
         }
 
-        viz::scene3d::helper::mesh::copyColors(pDest, pSrcAlloc, numPoints, numComponents);
+        viz::scene3d::helper::mesh::copyColors(p_dest, p_src_alloc, num_points, num_components);
 
-        pSrc = pSrcAlloc;
-        for(std::size_t i = 0 ; i < numPoints ; ++i)
+        p_src = p_src_alloc;
+        for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[0]), (*pDest & 0x000000FF));
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[1]), (*pDest & 0x0000FF00) >> 8);
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[2]), (*pDest & 0x00FF0000) >> 16);
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(0xFF), (*pDest & 0xFF000000) >> 24);
-            ++pDest;
-            pSrc += numComponents;
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[0]), (*p_dest & 0x000000FF));
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[1]), (*p_dest & 0x0000FF00) >> 8);
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[2]), (*p_dest & 0x00FF0000) >> 16);
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(0xFF), (*p_dest & 0xFF000000) >> 24);
+            ++p_dest;
+            p_src += num_components;
         }
 
-        delete[] pDestAlloc;
-        delete[] pSrcAlloc;
+        delete[] p_dest_alloc;
+        delete[] p_src_alloc;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     /// 4 components
     {
-        const std::size_t numComponents = 4;
-        const std::size_t numPoints     = 2047;
-        auto* pDestAlloc                = new Ogre::RGBA[numPoints];
-        Ogre::RGBA* pDest               = pDestAlloc;
-        auto* pSrcAlloc                 = new std::uint8_t[numPoints * numComponents];
-        std::uint8_t* pSrc              = pSrcAlloc;
+        const std::size_t num_components = 4;
+        const std::size_t num_points     = 2047;
+        auto* p_dest_alloc               = new Ogre::RGBA[num_points];
+        Ogre::RGBA* p_dest               = p_dest_alloc;
+        auto* p_src_alloc                = new std::uint8_t[num_points * num_components];
+        std::uint8_t* p_src              = p_src_alloc;
 
-        for(std::size_t i = 0 ; i < numPoints ; ++i)
+        for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc[3] = static_cast<std::uint8_t>(safe_rand() % 255);
-            pSrc   += numComponents;
+            p_src[0] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src[1] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src[2] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src[3] = static_cast<std::uint8_t>(safe_rand() % 255);
+            p_src   += num_components;
         }
 
-        viz::scene3d::helper::mesh::copyColors(pDest, pSrcAlloc, numPoints, numComponents);
+        viz::scene3d::helper::mesh::copyColors(p_dest, p_src_alloc, num_points, num_components);
 
-        pSrc = pSrcAlloc;
-        for(std::size_t i = 0 ; i < numPoints ; ++i)
+        p_src = p_src_alloc;
+        for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[0]), (*pDest & 0x000000FF));
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[1]), (*pDest & 0x0000FF00) >> 8);
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[2]), (*pDest & 0x00FF0000) >> 16);
-            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(pSrc[3]), (*pDest & 0xFF000000) >> 24);
-            ++pDest;
-            pSrc += numComponents;
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[0]), (*p_dest & 0x000000FF));
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[1]), (*p_dest & 0x0000FF00) >> 8);
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[2]), (*p_dest & 0x00FF0000) >> 16);
+            CPPUNIT_ASSERT_EQUAL(static_cast<Ogre::RGBA>(p_src[3]), (*p_dest & 0xFF000000) >> 24);
+            ++p_dest;
+            p_src += num_components;
         }
 
-        delete[] pDestAlloc;
-        delete[] pSrcAlloc;
+        delete[] p_dest_alloc;
+        delete[] p_src_alloc;
     }
 }
 

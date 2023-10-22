@@ -99,13 +99,13 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (std::string)> LandmarkUpdatedSignalType;
+    typedef core::com::signal<void (std::string)> landmark_updated_signal_t;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint(std::string name, std::size_t index);
+    void updateSelectedPoint(std::string _name, std::size_t _index);
 
     /// SLOT: updates added point.
-    void updatePoint(std::string name);
+    void updatePoint(std::string _name);
 
     /// SLOT: updates removed point.
     void removePoint();

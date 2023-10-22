@@ -18,7 +18,7 @@ This sub-folder contains classes defining some actions.
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                  ...
                  module_ui_debug
 )

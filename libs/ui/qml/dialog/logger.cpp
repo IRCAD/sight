@@ -40,23 +40,23 @@ namespace sight::ui::qml::dialog
 
 //------------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& title)
+void logger::setTitle(const std::string& _title)
 {
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& message)
+void logger::setMessage(const std::string& _message)
 {
-    m_message = QString::fromStdString(message);
+    m_message = QString::fromStdString(_message);
 }
 
 //------------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& logger)
+void logger::setLogger(const core::log::logger::sptr& _logger)
 {
-    m_logger = logger;
+    m_logger = _logger;
 }
 
 //------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ bool logger::show()
     ui::qml::model::RoleTableModel model;
 
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath =
+    const auto& dialog_path =
         core::runtime::get_library_resource_file_path("ui_qml/dialog/logger.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
@@ -78,7 +78,7 @@ bool logger::show()
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("logger", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialogPath, context);
+    QObject* window = engine->createComponent(dialog_path, context);
     SIGHT_ASSERT("The Qml File logger is not found or not loaded", window);
     // keep window to destroy it
     window->setProperty("title", m_title);
@@ -137,23 +137,23 @@ bool logger::show()
     model.addRole(Qt::UserRole + 2, "message");
     for( ; it != m_logger->end() ; ++it)
     {
-        QString levelString = "Unkown";
+        QString level_string = "Unkown";
         QHash<QByteArray, QVariant> data;
         core::log::log::level_type level = it->get_level();
         if(level == core::log::log::INFORMATION)
         {
-            levelString = "Information";
+            level_string = "Information";
         }
         else if(level == core::log::log::WARNING)
         {
-            levelString = "Warning";
+            level_string = "Warning";
         }
         else if(level == core::log::log::CRITICAL)
         {
-            levelString = "Critical";
+            level_string = "Critical";
         }
 
-        data.insert("level", levelString);
+        data.insert("level", level_string);
         data.insert("message", QString::fromStdString(it->get_message()));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
@@ -176,40 +176,40 @@ bool logger::show()
 
 //------------------------------------------------------------------------------
 
-void logger::resultDialog(bool isOk)
+void logger::resultDialog(bool _is_ok)
 {
-    m_isOk = isOk;
+    m_isOk = _is_ok;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitHidden(const QUrl& hidden)
+void logger::emitHidden(const QUrl& _hidden)
 {
-    m_hidden = hidden;
+    m_hidden = _hidden;
     Q_EMIT hiddenChanged();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitIcon(const QUrl& path)
+void logger::emitIcon(const QUrl& _path)
 {
-    m_icon = path;
+    m_icon = _path;
     Q_EMIT iconChanged();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitMessage(const QString& message)
+void logger::emitMessage(const QString& _message)
 {
-    m_message = message;
+    m_message = _message;
     Q_EMIT messageChanged();
 }
 
 //------------------------------------------------------------------------------
 
-void logger::emitShown(const QUrl& shown)
+void logger::emitShown(const QUrl& _shown)
 {
-    m_shown = shown;
+    m_shown = _shown;
     Q_EMIT shownChanged();
 }
 

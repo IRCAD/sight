@@ -59,9 +59,9 @@ void dicom_seriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    core::os::temp_file tmpFile;
+    core::os::temp_file tmp_file;
     std::ofstream file;
-    file.open(tmpFile, std::ofstream::out);
+    file.open(tmp_file, std::ofstream::out);
     file << "42";
     file.close();
 
@@ -72,60 +72,60 @@ void dicom_seriesTest::dicomTest()
     CPPUNIT_ASSERT_EQUAL(nb_instances, m_series->numInstances());
 
     //Paths
-    m_series->addDicomPath(42, tmpFile);
+    m_series->addDicomPath(42, tmp_file);
     CPPUNIT_ASSERT(m_series->isInstanceAvailable(42));
 
     //Binaries
-    core::memory::buffer_object::sptr bufferObj = std::make_shared<core::memory::buffer_object>();
-    m_series->addBinary(1664, bufferObj);
-    CPPUNIT_ASSERT_EQUAL(bufferObj, m_series->getDicomContainer().at(1664));
+    core::memory::buffer_object::sptr buffer_obj = std::make_shared<core::memory::buffer_object>();
+    m_series->addBinary(1664, buffer_obj);
+    CPPUNIT_ASSERT_EQUAL(buffer_obj, m_series->getDicomContainer().at(1664));
 }
 
 //------------------------------------------------------------------------------
 
 void dicom_seriesTest::equalityTest()
 {
-    auto dicomSeries1 = std::make_shared<data::dicom_series>();
-    auto dicomSeries2 = std::make_shared<data::dicom_series>();
+    auto dicom_series1 = std::make_shared<data::dicom_series>();
+    auto dicom_series2 = std::make_shared<data::dicom_series>();
 
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
-    dicomSeries1->setNumberOfInstances(666);
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
-    dicomSeries2->setNumberOfInstances(dicomSeries1->numInstances());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    dicom_series1->setNumberOfInstances(666);
+    CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
+    dicom_series2->setNumberOfInstances(dicom_series1->numInstances());
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
-    dicomSeries1->setSOPClassUIDs({"1", "2", "3"});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
-    dicomSeries2->setSOPClassUIDs(dicomSeries1->getSOPClassUIDs());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    dicom_series1->setSOPClassUIDs({"1", "2", "3"});
+    CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
+    dicom_series2->setSOPClassUIDs(dicom_series1->getSOPClassUIDs());
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
-    dicomSeries1->setComputedTagValues({{"4", "4"}, {"5", "5"}, {"6", "6"}});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
-    dicomSeries2->setComputedTagValues(dicomSeries1->getComputedTagValues());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    dicom_series1->setComputedTagValues({{"4", "4"}, {"5", "5"}, {"6", "6"}});
+    CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
+    dicom_series2->setComputedTagValues(dicom_series1->getComputedTagValues());
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
-    auto bufferObject = std::make_shared<core::memory::buffer_object>();
-    bufferObject->allocate(2);
-    auto lock    = bufferObject->lock();
+    auto buffer_object = std::make_shared<core::memory::buffer_object>();
+    buffer_object->allocate(2);
+    auto lock    = buffer_object->lock();
     auto* buffer = reinterpret_cast<char*>(lock.buffer());
     buffer[0] = 'a';
     buffer[1] = '\0';
 
-    dicomSeries1->setDicomContainer({{7, bufferObject}});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
-    dicomSeries2->setDicomContainer(dicomSeries1->getDicomContainer());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    dicom_series1->setDicomContainer({{7, buffer_object}});
+    CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
+    dicom_series2->setDicomContainer(dicom_series1->getDicomContainer());
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
-    dicomSeries1->setFirstInstanceNumber(1);
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
-    dicomSeries2->setFirstInstanceNumber(dicomSeries1->getFirstInstanceNumber());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+    dicom_series1->setFirstInstanceNumber(1);
+    CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
+    dicom_series2->setFirstInstanceNumber(dicom_series1->getFirstInstanceNumber());
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
     // Test also deepcopy, just for fun
-    auto dicomSeries3 = std::make_shared<data::dicom_series>();
-    dicomSeries3->deep_copy(dicomSeries1);
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries3 && !(*dicomSeries1 != *dicomSeries3));
+    auto dicom_series3 = std::make_shared<data::dicom_series>();
+    dicom_series3->deep_copy(dicom_series1);
+    CPPUNIT_ASSERT(*dicom_series1 == *dicom_series3 && !(*dicom_series1 != *dicom_series3));
 }
 
 //------------------------------------------------------------------------------

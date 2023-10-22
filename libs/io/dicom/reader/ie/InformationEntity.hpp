@@ -65,13 +65,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationEntity(
-        CSPTR(data::dicom_series)dicomSeries,
-        SPTR(gdcm::Reader)reader,
-        SPTR(io::dicom::container::DicomInstance)instance,
-        SPTR(DATATYPE)object,
-        core::log::logger::sptr logger = nullptr,
-        ProgressCallback progress      = nullptr,
-        CancelRequestedCallback cancel = nullptr
+        CSPTR(data::dicom_series)_dicom_series,
+        SPTR(gdcm::Reader)_reader,
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(DATATYPE)_object,
+        core::log::logger::sptr _logger = nullptr,
+        ProgressCallback _progress      = nullptr,
+        CancelRequestedCallback _cancel = nullptr
     );
 
     /// Destructor
@@ -105,21 +105,21 @@ protected:
 
 template<class DATATYPE>
 InformationEntity<DATATYPE>::InformationEntity(
-    CSPTR(data::dicom_series)dicomSeries,
-    SPTR(gdcm::Reader)reader,
-    SPTR(io::dicom::container::DicomInstance)instance,
-    SPTR(DATATYPE)object,
-    core::log::logger::sptr logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    CSPTR(data::dicom_series)_dicom_series,
+    SPTR(gdcm::Reader)_reader,
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(DATATYPE)_object,
+    core::log::logger::sptr _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    m_dicomSeries(std::move(dicomSeries)),
-    m_reader(std::move(reader)),
-    m_instance(std::move(instance)),
-    m_object(std::move(object)),
-    m_logger(std::move(logger)),
-    m_progressCallback(std::move(progress)),
-    m_cancelRequestedCallback(std::move(cancel))
+    m_dicomSeries(std::move(_dicom_series)),
+    m_reader(std::move(_reader)),
+    m_instance(std::move(_instance)),
+    m_object(std::move(_object)),
+    m_logger(std::move(_logger)),
+    m_progressCallback(std::move(_progress)),
+    m_cancelRequestedCallback(std::move(_cancel))
 {
     SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
     SIGHT_ASSERT("Reader should not be null.", m_reader);

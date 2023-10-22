@@ -44,8 +44,8 @@ public:
      * @see activity::validator::base::validate
      */
     ACTIVITY_API validator::return_t validate(
-        const activity::extension::activity_info& activity_info,
-        const CSPTR(data::vector)& currentSelection
+        const activity::extension::activity_info& _activity_info,
+        const CSPTR(data::vector)& _current_selection
     ) const override;
 };
 

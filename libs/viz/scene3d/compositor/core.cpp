@@ -22,7 +22,7 @@
 
 #include <viz/scene3d/compositor/core.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
@@ -37,11 +37,11 @@ namespace sight::viz::scene3d::compositor
 
 //----------------------------------------------------------------------------
 
-static const std::map<core::StereoModeType, std::string> s_stereoCompositorMap = {
-    {core::StereoModeType::AUTOSTEREO_5, "AutoStereo5"},
-    {core::StereoModeType::AUTOSTEREO_8, "AutoStereo8"},
-    {core::StereoModeType::STEREO, "Stereo"},
-    {core::StereoModeType::NONE, "Default"}
+static const std::map<core::stereo_mode_t, std::string> s_stereoCompositorMap = {
+    {core::stereo_mode_t::AUTOSTEREO_5, "AutoStereo5"},
+    {core::stereo_mode_t::AUTOSTEREO_8, "AutoStereo8"},
+    {core::stereo_mode_t::STEREO, "Stereo"},
+    {core::stereo_mode_t::NONE, "Default"}
 };
 
 // ----------------------------------------------------------------------------
@@ -50,10 +50,10 @@ const std::string core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 
 // ----------------------------------------------------------------------------
 
-core::core(Ogre::Viewport* viewport) :
+core::core(Ogre::Viewport* _viewport) :
 
     m_coreCompositorName("Default"),
-    m_viewport(viewport)
+    m_viewport(_viewport)
 {
 }
 
@@ -78,10 +78,10 @@ int core::getTransparencyDepth() const
 
 //-----------------------------------------------------------------------------
 
-bool core::setTransparencyTechnique(transparencyTechnique technique)
+bool core::setTransparencyTechnique(transparencyTechnique _technique)
 {
     Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
-    m_transparencyTechnique = technique;
+    m_transparencyTechnique = _technique;
 
     return true;
 }
@@ -94,7 +94,7 @@ void core::update()
 
     SIGHT_ERROR_IF(
         "OIT isn't supported when stereo is enabled, falling back to mono rendering.",
-        m_transparencyTechnique != DEFAULT && m_stereoMode != StereoModeType::NONE
+        m_transparencyTechnique != DEFAULT && m_stereoMode != stereo_mode_t::NONE
     );
 
     switch(m_transparencyTechnique)
@@ -137,23 +137,23 @@ void core::update()
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepth(int depth)
+void core::setTransparencyDepth(int _depth)
 {
     Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
-    m_numPass = depth;
+    m_numPass = _depth;
 }
 
 //-----------------------------------------------------------------------------
 
-void core::setStereoMode(core::StereoModeType stereoMode)
+void core::setStereoMode(core::stereo_mode_t _stereo_mode)
 {
     Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
-    m_stereoMode = stereoMode;
+    m_stereoMode = _stereo_mode;
 }
 
 //-----------------------------------------------------------------------------
 
-core::StereoModeType core::getStereoMode() const
+core::stereo_mode_t core::getStereoMode() const
 {
     return m_stereoMode;
 }
@@ -170,17 +170,17 @@ void core::setupDefaultTransparency()
 void core::setupTransparency()
 {
     // Check if compositor is already existing
-    Ogre::CompositorChain* compChain = Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
+    Ogre::CompositorChain* comp_chain = Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
 
-    const auto& compInstances = compChain->getCompositorInstances();
+    const auto& comp_instances = comp_chain->getCompositorInstances();
 
     m_compositorInstance = nullptr;
 
-    for(auto* targetComp : compInstances)
+    for(auto* target_comp : comp_instances)
     {
-        if(targetComp->getCompositor()->getName() == m_coreCompositorName)
+        if(target_comp->getCompositor()->getName() == m_coreCompositorName)
         {
-            m_compositorInstance = targetComp;
+            m_compositorInstance = target_comp;
             break;
         }
     }
@@ -188,30 +188,30 @@ void core::setupTransparency()
     // If we didn't retrieve the good compositor
     if(m_compositorInstance == nullptr)
     {
-        Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
-        bool needFinalCompositorSwap(false);
+        Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
+        bool need_final_compositor_swap(false);
 
         // If the compositor chain already contains the final compositor, we have to remove it
-        if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
+        if(compositor_manager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
         {
-            compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
-            compositorManager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
-            needFinalCompositorSwap = true;
+            compositor_manager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
+            compositor_manager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
+            need_final_compositor_swap = true;
         }
 
         // Now, we can add the new compositor to the compositor chain
-        m_compositorInstance = compositorManager.addCompositor(
+        m_compositorInstance = compositor_manager.addCompositor(
             m_viewport,
             m_coreCompositorName,
             0
         );
-        compositorManager.setCompositorEnabled(m_viewport, m_coreCompositorName, true);
+        compositor_manager.setCompositorEnabled(m_viewport, m_coreCompositorName, true);
 
         // If the final compositor has been removed, we need to add it to the compositor chain
-        if(needFinalCompositorSwap)
+        if(need_final_compositor_swap)
         {
-            compositorManager.addCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
-            compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, true);
+            compositor_manager.addCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
+            compositor_manager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, true);
         }
 
         if(m_compositorInstance == nullptr)
@@ -226,73 +226,73 @@ void core::setupTransparency()
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfDepthPeeling(int depth)
+void core::setTransparencyDepthOfDepthPeeling(int _depth)
 {
-    Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
 
     // Check if depthpeeling technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
+    const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
 
     // 3 is the first ping pong target
-    const int firstPingPongTarget = 4;
-    for(int i = firstPingPongTarget ; i < numOfTargetPass ; i++)
+    const int first_ping_pong_target = 4;
+    for(int i = first_ping_pong_target ; i < num_of_target_pass ; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
-        dpCompTech->removeTargetPass(firstPingPongTarget);
+        dp_comp_tech->removeTargetPass(first_ping_pong_target);
     }
 
     // Ping pong peel and blend
-    for(int i = 0 ; i < depth ; i++)
+    for(int i = 0 ; i < _depth ; i++)
     {
-        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
+        std::string ping_pong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
+            Ogre::CompositionTargetPass* dp_comp_target_peel = dp_comp_tech->createTargetPass();
+            dp_comp_target_peel->setOutputName("p" + ping_pong + "Buffer");
 
             // No previous input
-            dpCompTargetPeel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_peel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Clear pass
             {
-                Ogre::CompositionPass* dpCompPassClear = dpCompTargetPeel->createPass();
-                dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
+                Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_peel->createPass();
+                dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme(m_cellShadingName + "DepthPeeling/peelP" + pingPong);
+            dp_comp_target_peel->setMaterialScheme(m_cellShadingName + "DepthPeeling/peelP" + ping_pong);
 
             // No shadow
-            dpCompTargetPeel->setShadowsEnabled(false);
+            dp_comp_target_peel->setShadowsEnabled(false);
 
             // Render scene pass
             {
-                Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
-                dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+                Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
+                dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
         // Blend buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetBlend = dpCompTech->createTargetPass();
-            dpCompTargetBlend->setOutputName("gbuffer");
+            Ogre::CompositionTargetPass* dp_comp_target_blend = dp_comp_tech->createTargetPass();
+            dp_comp_target_blend->setOutputName("gbuffer");
 
             // No previous input
-            dpCompTargetBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Render quad
             {
-                Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
-                dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName(m_cellShadingName + "DepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 0);
+                Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_blend->createPass();
+                dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+                dp_comp_pass_render_quad->setMaterialName(m_cellShadingName + "DepthPeeling/Blend");
+                dp_comp_pass_render_quad->setInput(0, "p" + ping_pong + "Buffer", 0);
                 if(!m_cellShadingName.empty())
                 {
-                    dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer", 1);
-                    dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer", 2);
+                    dp_comp_pass_render_quad->setInput(1, "p" + ping_pong + "Buffer", 1);
+                    dp_comp_pass_render_quad->setInput(2, "p" + ping_pong + "Buffer", 2);
                 }
             }
         }
@@ -303,71 +303,71 @@ void core::setTransparencyDepthOfDepthPeeling(int depth)
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfDualDepthPeeling(int depth)
+void core::setTransparencyDepthOfDualDepthPeeling(int _depth)
 {
-    Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
 
     // Check if depthpeeling technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
+    const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
 
     // 3 is the first ping pong target
-    const int firstPingPongTarget = 2;
-    for(int i = firstPingPongTarget ; i < numOfTargetPass ; i++)
+    const int first_ping_pong_target = 2;
+    for(int i = first_ping_pong_target ; i < num_of_target_pass ; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
-        dpCompTech->removeTargetPass(firstPingPongTarget);
+        dp_comp_tech->removeTargetPass(first_ping_pong_target);
     }
 
     // Ping pong peel and blend
-    for(int i = 0 ; i < depth ; i++)
+    for(int i = 0 ; i < _depth ; i++)
     {
-        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
+        std::string ping_pong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
+            Ogre::CompositionTargetPass* dp_comp_target_peel = dp_comp_tech->createTargetPass();
+            dp_comp_target_peel->setOutputName("p" + ping_pong + "Buffer");
 
             // No previous input
-            dpCompTargetPeel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_peel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Clear pass
             {
-                Ogre::CompositionPass* dpCompPassClear = dpCompTargetPeel->createPass();
-                dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-                dpCompPassClear->setClearColour(Ogre::ColourValue(-1.F, 0.F, 0.F, 0.F));
+                Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_peel->createPass();
+                dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
+                dp_comp_pass_clear->setClearColour(Ogre::ColourValue(-1.F, 0.F, 0.F, 0.F));
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme("DualDepthPeeling/peelP" + pingPong);
+            dp_comp_target_peel->setMaterialScheme("DualDepthPeeling/peelP" + ping_pong);
 
             // No shadow
-            dpCompTargetPeel->setShadowsEnabled(false);
+            dp_comp_target_peel->setShadowsEnabled(false);
 
             // Render scene pass
             {
-                Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
-                dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+                Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
+                dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
         // Blend buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetBlend = dpCompTech->createTargetPass();
-            dpCompTargetBlend->setOutputName("gbuffer");
+            Ogre::CompositionTargetPass* dp_comp_target_blend = dp_comp_tech->createTargetPass();
+            dp_comp_target_blend->setOutputName("gbuffer");
 
             // No previous input
-            dpCompTargetBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Render quad
             {
-                Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
-                dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName("DualDepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 3);
-                dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer", 5);
+                Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_blend->createPass();
+                dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+                dp_comp_pass_render_quad->setMaterialName("DualDepthPeeling/Blend");
+                dp_comp_pass_render_quad->setInput(0, "p" + ping_pong + "Buffer", 3);
+                dp_comp_pass_render_quad->setInput(1, "p" + ping_pong + "Buffer", 5);
             }
         }
     }
@@ -377,193 +377,193 @@ void core::setTransparencyDepthOfDualDepthPeeling(int depth)
 
 //-----------------------------------------------------------------------------
 
-void core::setTransparencyDepthOfHybridTransparency(int depth)
+void core::setTransparencyDepthOfHybridTransparency(int _depth)
 {
-    Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
+    Ogre::CompositionTechnique* dp_comp_tech = m_compositorInstance->getTechnique();
 
     // Check if hybrid transparency technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
+    const int num_of_target_pass = static_cast<int>(dp_comp_tech->getTargetPasses().size());
 
     // 3 is the first ping pong target
-    const int firstPingPongTarget = 4;
+    const int first_ping_pong_target = 4;
 
-    for(int i = firstPingPongTarget ; i < numOfTargetPass ; i++)
+    for(int i = first_ping_pong_target ; i < num_of_target_pass ; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
-        dpCompTech->removeTargetPass(firstPingPongTarget);
+        dp_comp_tech->removeTargetPass(first_ping_pong_target);
     }
 
     // Ping pong peel and blend
-    for(int i = 0 ; i < (depth / 2) * 2 ; i++)
+    for(int i = 0 ; i < (_depth / 2) * 2 ; i++)
     {
-        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
+        std::string ping_pong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
+            Ogre::CompositionTargetPass* dp_comp_target_peel = dp_comp_tech->createTargetPass();
+            dp_comp_target_peel->setOutputName("p" + ping_pong + "Buffer");
 
             // No previous input
-            dpCompTargetPeel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_peel->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Clear pass
             {
-                Ogre::CompositionPass* dpCompPassClear = dpCompTargetPeel->createPass();
-                dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
+                Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_peel->createPass();
+                dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme("HybridTransparency/peelP" + pingPong);
+            dp_comp_target_peel->setMaterialScheme("HybridTransparency/peelP" + ping_pong);
 
             // No shadow
-            dpCompTargetPeel->setShadowsEnabled(false);
+            dp_comp_target_peel->setShadowsEnabled(false);
 
             // Render scene pass
             {
-                Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
-                dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+                Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
+                dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
         // Blend buffer
         {
-            Ogre::CompositionTargetPass* dpCompTargetBlend = dpCompTech->createTargetPass();
-            dpCompTargetBlend->setOutputName("gbuffer");
+            Ogre::CompositionTargetPass* dp_comp_target_blend = dp_comp_tech->createTargetPass();
+            dp_comp_target_blend->setOutputName("gbuffer");
 
             // No previous input
-            dpCompTargetBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+            dp_comp_target_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
             // Render quad
             {
-                Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
-                dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName("DepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 0);
+                Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_blend->createPass();
+                dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+                dp_comp_pass_render_quad->setMaterialName("DepthPeeling/Blend");
+                dp_comp_pass_render_quad->setInput(0, "p" + ping_pong + "Buffer", 0);
             }
         }
     }
 
     // Occlusion buffer
     {
-        Ogre::CompositionTargetPass* dpCompTargetOcclusion = dpCompTech->createTargetPass();
-        dpCompTargetOcclusion->setOutputName("occlusion");
+        Ogre::CompositionTargetPass* dp_comp_target_occlusion = dp_comp_tech->createTargetPass();
+        dp_comp_target_occlusion->setOutputName("occlusion");
 
         // No previous input
-        dpCompTargetOcclusion->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+        dp_comp_target_occlusion->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
         // Clear pass
         {
-            Ogre::CompositionPass* dpCompPassClear = dpCompTargetOcclusion->createPass();
-            dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
+            Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_occlusion->createPass();
+            dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
+            dp_comp_pass_clear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
         }
 
         // Material scheme
-        dpCompTargetOcclusion->setMaterialScheme("HybridTransparency/occlusionMap");
+        dp_comp_target_occlusion->setMaterialScheme("HybridTransparency/occlusionMap");
 
         // No shadow
-        dpCompTargetOcclusion->setShadowsEnabled(false);
+        dp_comp_target_occlusion->setShadowsEnabled(false);
 
         // Render scene pass
         {
-            Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetOcclusion->createPass();
-            dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+            Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_occlusion->createPass();
+            dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
     // Weight blend buffer
     {
-        Ogre::CompositionTargetPass* dpCompTargetWeightBlend = dpCompTech->createTargetPass();
-        dpCompTargetWeightBlend->setOutputName("weightedColor");
+        Ogre::CompositionTargetPass* dp_comp_target_weight_blend = dp_comp_tech->createTargetPass();
+        dp_comp_target_weight_blend->setOutputName("weightedColor");
 
         // No previous input
-        dpCompTargetWeightBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+        dp_comp_target_weight_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
         // Clear pass
         {
-            Ogre::CompositionPass* dpCompPassClear = dpCompTargetWeightBlend->createPass();
-            dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearBuffers(Ogre::FBT_COLOUR);
+            Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_weight_blend->createPass();
+            dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
+            dp_comp_pass_clear->setClearBuffers(Ogre::FBT_COLOUR);
         }
 
         // Material scheme
-        dpCompTargetWeightBlend->setMaterialScheme("HybridTransparency/weightBlend");
+        dp_comp_target_weight_blend->setMaterialScheme("HybridTransparency/weightBlend");
 
         // No shadow
-        dpCompTargetWeightBlend->setShadowsEnabled(false);
+        dp_comp_target_weight_blend->setShadowsEnabled(false);
 
         // Render scene pass
         {
-            Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetWeightBlend->createPass();
-            dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+            Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_weight_blend->createPass();
+            dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
     // Transmittance blend buffer
     {
-        Ogre::CompositionTargetPass* dpCompTargetTransmittance = dpCompTech->createTargetPass();
-        dpCompTargetTransmittance->setOutputName("transmittance");
+        Ogre::CompositionTargetPass* dp_comp_target_transmittance = dp_comp_tech->createTargetPass();
+        dp_comp_target_transmittance->setOutputName("transmittance");
 
         // No previous input
-        dpCompTargetTransmittance->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+        dp_comp_target_transmittance->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
         // Clear pass
         {
-            Ogre::CompositionPass* dpCompPassClear = dpCompTargetTransmittance->createPass();
-            dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
+            Ogre::CompositionPass* dp_comp_pass_clear = dp_comp_target_transmittance->createPass();
+            dp_comp_pass_clear->setType(Ogre::CompositionPass::PT_CLEAR);
+            dp_comp_pass_clear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
         }
 
         // Material scheme
-        dpCompTargetTransmittance->setMaterialScheme("HybridTransparency/transmittanceBlend");
+        dp_comp_target_transmittance->setMaterialScheme("HybridTransparency/transmittanceBlend");
 
         // No shadow
-        dpCompTargetTransmittance->setShadowsEnabled(false);
+        dp_comp_target_transmittance->setShadowsEnabled(false);
 
         // Render scene pass
         {
-            Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetTransmittance->createPass();
-            dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
+            Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_transmittance->createPass();
+            dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
     // WBOIT blend buffer
     {
-        Ogre::CompositionTargetPass* dpCompTargetWBOITBlend = dpCompTech->createTargetPass();
-        dpCompTargetWBOITBlend->setOutputName("WBOIT_output");
+        Ogre::CompositionTargetPass* dp_comp_target_wboit_blend = dp_comp_tech->createTargetPass();
+        dp_comp_target_wboit_blend->setOutputName("WBOIT_output");
 
         // No previous input
-        dpCompTargetWBOITBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+        dp_comp_target_wboit_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
         // Render quad
         {
-            Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetWBOITBlend->createPass();
-            dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-            dpCompPassRenderQuad->setMaterialName("HybridTransparency/WBOITBlend");
-            dpCompPassRenderQuad->setInput(0, "weightedColor");
-            dpCompPassRenderQuad->setInput(1, "transmittance");
+            Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_wboit_blend->createPass();
+            dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+            dp_comp_pass_render_quad->setMaterialName("HybridTransparency/WBOITBlend");
+            dp_comp_pass_render_quad->setInput(0, "weightedColor");
+            dp_comp_pass_render_quad->setInput(1, "transmittance");
         }
     }
 
     // Blend final (Depth Peeling + WBOIT) buffer
     {
-        Ogre::CompositionTargetPass* dpCompTargetFinalBlend = dpCompTech->createTargetPass();
-        dpCompTargetFinalBlend->setOutputName("gbuffer");
+        Ogre::CompositionTargetPass* dp_comp_target_final_blend = dp_comp_tech->createTargetPass();
+        dp_comp_target_final_blend->setOutputName("gbuffer");
 
         // No previous input
-        dpCompTargetFinalBlend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+        dp_comp_target_final_blend->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
 
         // Render quad
         {
-            Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetFinalBlend->createPass();
-            dpCompPassRenderQuad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
-            dpCompPassRenderQuad->setMaterialName("HybridTransparency/BlendFinal");
-            dpCompPassRenderQuad->setInput(0, "WBOIT_output");
+            Ogre::CompositionPass* dp_comp_pass_render_quad = dp_comp_target_final_blend->createPass();
+            dp_comp_pass_render_quad->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+            dp_comp_pass_render_quad->setMaterialName("HybridTransparency/BlendFinal");
+            dp_comp_pass_render_quad->setInput(0, "WBOIT_output");
         }
     }
 

@@ -51,15 +51,15 @@ public:
 
 private:
 
-    const core::type m_type {core::type::INT8};
+    const core::type M_TYPE {core::type::INT8};
 
-    const data::image::PixelFormat m_format {data::image::PixelFormat::GRAY_SCALE};
+    const data::image::PixelFormat M_FORMAT {data::image::PixelFormat::GRAY_SCALE};
 
-    const data::image::Size m_size {8, 16, 24};
+    const data::image::Size M_SIZE {8, 16, 24};
 
-    const data::image::Origin m_origin {0.F, 0.F, 0.F};
+    const data::image::Origin M_ORIGIN {0.F, 0.F, 0.F};
 
-    const data::image::Spacing m_spacing {1.F, 1.F, 1.F};
+    const data::image::Spacing M_SPACING {1.F, 1.F, 1.F};
 
     data::image::sptr m_image;
 };

@@ -47,7 +47,7 @@ public:
      * @param path file in archive.
      * @return input stream from request file.
      */
-    virtual SPTR(std::istream) get_file(const std::filesystem::path& path) = 0;
+    virtual SPTR(std::istream) get_file(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Returns archive path.

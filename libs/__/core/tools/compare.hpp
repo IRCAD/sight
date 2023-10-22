@@ -663,30 +663,30 @@ template<
     typename T2,
     typename std::enable_if_t<std::is_floating_point<T1>::value && std::is_floating_point<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(T1 a, T2 b)
+constexpr static bool is_equal(T1 _a, T2 _b)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
         // Special corner cases: NaN, Inf, ...
-        if(a == b)
+        if(_a == _b)
         {
             // If direct compare is true, then it is certainly equal. Should also take care of Inf, ...
             return true;
         }
 
-        if(std::isinf(a) || std::isinf(b))
+        if(std::isinf(_a) || std::isinf(_b))
         {
             // If one of them is infinite, then they are certainly not equal.
             return false;
         }
 
-        if(const bool a_nan = std::isnan(a), b_nan = std::isnan(b); a_nan || b_nan)
+        if(const bool a_nan = std::isnan(_a), b_nan = std::isnan(_b); a_nan || b_nan)
         {
             // Normally, NaN == NaN returns false. We want the opposite
             return a_nan && b_nan;
         }
 
-        const T1 abs_diff = std::abs(a - b);
+        const T1 abs_diff = std::abs(_a - _b);
         if(abs_diff <= std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
@@ -694,17 +694,17 @@ constexpr static bool is_equal(T1 a, T2 b)
         }
 
         // Otherwise, use a scaled epsilon
-        return abs_diff <= std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
+        return abs_diff <= std::numeric_limits<T1>::epsilon() * std::max(std::abs(_a), std::abs(_b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
         // In case one is float and the other is double or long double
-        return is_equal(static_cast<float>(a), static_cast<float>(b));
+        return is_equal(static_cast<float>(_a), static_cast<float>(_b));
     }
     else if constexpr(std::is_same_v<T1, double>|| std::is_same_v<T2, double>)
     {
         // In case one is double and the other is long double
-        return is_equal(static_cast<double>(a), static_cast<double>(b));
+        return is_equal(static_cast<double>(_a), static_cast<double>(_b));
     }
 }
 
@@ -726,19 +726,19 @@ template<
         && (!std::is_floating_point_v<T1>|| !std::is_floating_point_v<T2>)
     >* = nullptr
 >
-constexpr static bool is_equal(const T1& a, const T2& b)
+constexpr static bool is_equal(const T1& _a, const T2& _b)
 {
     if constexpr(std::is_integral_v<T1>&& std::is_floating_point_v<T2>)
     {
-        return is_equal(static_cast<T2>(a), b);
+        return is_equal(static_cast<T2>(_a), _b);
     }
     else if constexpr(std::is_floating_point_v<T1>&& std::is_integral_v<T2>)
     {
-        return is_equal(a, static_cast<T1>(b));
+        return is_equal(_a, static_cast<T1>(_b));
     }
     else
     {
-        return a == b;
+        return _a == _b;
     }
 }
 
@@ -750,9 +750,9 @@ template<
     typename T2,
     typename std::enable_if_t<is_pair<T1>::value && is_pair<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(T1 a, T2 b)
+constexpr static bool is_equal(T1 _a, T2 _b)
 {
-    return is_equal(a.first, b.first) && is_equal(a.second, b.second);
+    return is_equal(_a.first, _b.first) && is_equal(_a.second, _b.second);
 }
 
 /// This is a weak pointer comparison helper. It automatically dereferences the pointer and compare the values
@@ -763,23 +763,23 @@ template<
     typename T2,
     typename std::enable_if_t<is_weak_ptr<T1>::value || is_weak_ptr<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(T1 a, T2 b)
+constexpr static bool is_equal(T1 _a, T2 _b)
 {
     // Manage weak_ptr cases
     if constexpr(is_weak_ptr<T1>::value)
     {
-        return is_equal(a.lock(), b);
+        return is_equal(_a.lock(), _b);
     }
     else if constexpr(is_weak_ptr<T2>::value)
     {
-        return is_equal(a, b.lock());
+        return is_equal(_a, _b.lock());
     }
     else
     {
         // Should not be reached
-        const auto a_ptr = a.lock();
-        const auto b_ptr = b.lock();
-        return a == b || is_equal(*a_ptr, *b_ptr);
+        const auto a_ptr = _a.lock();
+        const auto b_ptr = _b.lock();
+        return _a == _b || is_equal(*a_ptr, *b_ptr);
     }
 }
 
@@ -791,29 +791,29 @@ template<
     typename T2,
     typename std::enable_if_t<is_dereferenceable<T1>::value && is_dereferenceable<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(T1 a, T2 b)
+constexpr static bool is_equal(T1 _a, T2 _b)
 {
     // c++ forbids to compare pointers to different types
     if constexpr(std::is_same_v<T1, T2>)
     {
         // Simple fast pointer comparison,
-        if(a == b)
+        if(_a == _b)
         {
             return true;
         }
     }
-    else if(a == nullptr && b == nullptr)
+    else if(_a == nullptr && _b == nullptr)
     {
         return true;
     }
 
-    if(a == nullptr || b == nullptr)
+    if(_a == nullptr || _b == nullptr)
     {
         return false;
     }
 
     // Dereferenced comparison
-    return is_equal(*a, *b);
+    return is_equal(*_a, *_b);
 }
 
 /// This is a comparison helper for container. It uses internally is_equal() for each element.
@@ -824,17 +824,17 @@ template<
     typename T2,
     typename std::enable_if_t<is_container_ordered<T1>::value && is_container_ordered<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(const T1& a, const T2& b)
+constexpr static bool is_equal(const T1& _a, const T2& _b)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
         return false;
     }
 
-    auto a_it = a.cbegin();
-    auto b_it = b.cbegin();
+    auto a_it = _a.cbegin();
+    auto b_it = _b.cbegin();
 
-    const auto a_end = a.cend();
+    const auto a_end = _a.cend();
 
     while(a_it != a_end)
     {
@@ -873,21 +873,21 @@ template<
             || (is_set_like<T1>::value && is_set_like<T2>::value))
     >* = nullptr
 >
-constexpr static bool is_equal(const T1& a, const T2& b)
+constexpr static bool is_equal(const T1& _a, const T2& _b)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
         return false;
     }
 
-    const auto b_end = b.cend();
+    const auto b_end = _b.cend();
 
     // Map case
     if constexpr(is_map_like<T1>::value && is_map_like<T2>::value)
     {
-        for(const auto& [a_key, a_value] : a)
+        for(const auto& [a_key, a_value] : _a)
         {
-            const auto& b_it = b.find(a_key);
+            const auto& b_it = _b.find(a_key);
             if(b_it == b_end)
             {
                 return false;
@@ -902,9 +902,9 @@ constexpr static bool is_equal(const T1& a, const T2& b)
     // Set case
     else if constexpr(is_set_like<T1>::value && is_set_like<T2>::value)
     {
-        for(const auto& a_value : a)
+        for(const auto& a_value : _a)
         {
-            const auto& b_it = b.find(a_value);
+            const auto& b_it = _b.find(a_value);
             if(b_it == b_end)
             {
                 return false;
@@ -929,42 +929,42 @@ template<
     typename T2,
     typename std::enable_if_t<std::is_floating_point_v<T1>&& std::is_floating_point_v<T2> >* = nullptr
 >
-constexpr static bool is_less(T1 a, T2 b)
+constexpr static bool is_less(T1 _a, T2 _b)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
         // Special corner cases: NaN, Inf, ...
-        if(std::isnan(a) || std::isnan(b))
+        if(std::isnan(_a) || std::isnan(_b))
         {
             // If one of them is NaN, assume the comparison is always false.
             return false;
         }
 
-        if(std::isinf(a) || std::isinf(b))
+        if(std::isinf(_a) || std::isinf(_b))
         {
             // We assume std::isless returns true for -Inf < Inf and false for -Inf < -Inf
-            return std::isless(a, b);
+            return std::isless(_a, _b);
         }
 
-        const T1 diff = a - b;
+        const T1 diff = _a - _b;
         if(diff < std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
-            return std::isless(a, b);
+            return std::isless(_a, _b);
         }
 
         // Otherwise, use a scaled epsilon
-        return diff < std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
+        return diff < std::numeric_limits<T1>::epsilon() * std::max(std::abs(_a), std::abs(_b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
         // In case one is float and the other is double or long double
-        return is_less(static_cast<float>(a), static_cast<float>(b));
+        return is_less(static_cast<float>(_a), static_cast<float>(_b));
     }
     else if constexpr(std::is_same_v<T1, double>|| std::is_same_v<T2, double>)
     {
         // In case one is double and the other is long double
-        return is_less(static_cast<double>(a), static_cast<double>(b));
+        return is_less(static_cast<double>(_a), static_cast<double>(_b));
     }
 }
 
@@ -977,42 +977,42 @@ template<
     typename T2,
     typename std::enable_if_t<std::is_floating_point_v<T1>&& std::is_floating_point_v<T2> >* = nullptr
 >
-constexpr static bool is_greater(T1 a, T2 b)
+constexpr static bool is_greater(T1 _a, T2 _b)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
         // Special corner cases: NaN, Inf, ...
-        if(std::isnan(a) || std::isnan(b))
+        if(std::isnan(_a) || std::isnan(_b))
         {
             // If one of them is NaN, assume the comparison is always false.
             return false;
         }
 
-        if(std::isinf(a) || std::isinf(b))
+        if(std::isinf(_a) || std::isinf(_b))
         {
             // We assume std::isgreater returns true for Inf > -Inf and false for Inf > Inf
-            return std::isgreater(a, b);
+            return std::isgreater(_a, _b);
         }
 
-        const T1 diff = a - b;
+        const T1 diff = _a - _b;
         if(diff > std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
-            return std::isgreater(a, b);
+            return std::isgreater(_a, _b);
         }
 
         // Otherwise, use a scaled epsilon
-        return diff > std::numeric_limits<T1>::epsilon() * std::max(std::abs(a), std::abs(b));
+        return diff > std::numeric_limits<T1>::epsilon() * std::max(std::abs(_a), std::abs(_b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
         // In case one is float and the other is double or long double
-        return is_greater(static_cast<float>(a), static_cast<float>(b));
+        return is_greater(static_cast<float>(_a), static_cast<float>(_b));
     }
     else if constexpr(std::is_same_v<T1, double>|| std::is_same_v<T2, double>)
     {
         // In case one is double and the other is long double
-        return is_greater(static_cast<double>(a), static_cast<double>(b));
+        return is_greater(static_cast<double>(_a), static_cast<double>(_b));
     }
 }
 

@@ -38,10 +38,10 @@ namespace sight::core::jobs
 
 //------------------------------------------------------------------------------
 
-job::job(const std::string& name, job::task task, core::thread::worker::sptr worker) :
-    base(name),
-    m_task(std::move(task)),
-    m_worker(std::move(worker))
+job::job(const std::string& _name, job::task _task, core::thread::worker::sptr _worker) :
+    base(_name),
+    m_task(std::move(_task)),
+    m_worker(std::move(_worker))
 {
     m_total_work_units = 100;
 }
@@ -103,9 +103,9 @@ base::shared_future job::cancel()
 
 job::progress_callback_t job::progress_callback()
 {
-    return [this](std::uint64_t done_work)
+    return [this](std::uint64_t _done_work)
            {
-               this->done_work(done_work);
+               this->done_work(_done_work);
            };
 }
 

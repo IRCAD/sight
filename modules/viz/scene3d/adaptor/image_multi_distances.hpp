@@ -30,8 +30,8 @@
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/material.hpp>
+#include <viz/scene3d/text.hpp>
 
 #include <Ogre.h>
 
@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 /**
  * @brief This adaptor displays distances retrieved from the image fields.
- * @deprecated Use sight::module::viz::scene3dQt::adaptor::image_multi_distances instead.
+ * @deprecated Use sight::module::viz::scene3d_qt::adaptor::image_multi_distances instead.
 
  * @section XML XML Configuration
  * @code{.xml}
@@ -187,7 +187,7 @@ private:
         Ogre::ManualObject* m_line {};
         Ogre::ManualObject* m_dashedLine {};
         Ogre::SceneNode* m_labelNode {};
-        sight::viz::scene3d::IText::sptr m_label;
+        sight::viz::scene3d::text::sptr m_label;
     };
 
     /// Stores picking information.

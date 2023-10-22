@@ -37,23 +37,23 @@ namespace sight::io::ut
 
 void ArrayReaderTest::basicTest()
 {
-    auto arrayReader               = std::make_shared<reader::array_reader>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + arrayReader->extension());
-    std::array<std::uint8_t, 16> arrayIn {};
-    std::iota(arrayIn.begin(), arrayIn.end(), std::uint8_t(0));
+    auto array_reader              = std::make_shared<reader::array_reader>();
+    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + array_reader->extension());
+    std::array<std::uint8_t, 16> array_in {};
+    std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
     {
         std::ofstream out(filepath, std::ios::binary);
-        out.write(reinterpret_cast<char*>(arrayIn.data()), 16);
+        out.write(reinterpret_cast<char*>(array_in.data()), 16);
     }
-    auto arrayOut = std::make_shared<data::array>();
-    arrayOut->resize({16}, core::type::UINT8);
-    arrayReader->set_object(arrayOut);
-    arrayReader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(arrayReader->read());
+    auto array_out = std::make_shared<data::array>();
+    array_out->resize({16}, core::type::UINT8);
+    array_reader->set_object(array_out);
+    array_reader->set_file(filepath);
+    CPPUNIT_ASSERT_NO_THROW(array_reader->read());
     std::uint8_t i = 0;
     {
-        auto arrayLock = arrayOut->dump_lock();
-        for(auto it = arrayOut->begin<std::uint8_t>(), end = arrayOut->end<std::uint8_t>() ; it != end ; ++it, ++i)
+        auto array_lock = array_out->dump_lock();
+        for(auto it = array_out->begin<std::uint8_t>(), end = array_out->end<std::uint8_t>() ; it != end ; ++it, ++i)
         {
             CPPUNIT_ASSERT_EQUAL(i, *it);
         }

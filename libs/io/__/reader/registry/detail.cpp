@@ -31,8 +31,8 @@ struct FwDataIOReaderRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    using InstantiatorType = core::lazy_instantiator<Type, FwDataIOReaderRegistryInstantiatorTag>;
-    return InstantiatorType::get_instance();
+    using instantiator_t = core::lazy_instantiator<Type, FwDataIOReaderRegistryInstantiatorTag>;
+    return instantiator_t::get_instance();
 }
 
 } // namespace sight::io::reader::registry

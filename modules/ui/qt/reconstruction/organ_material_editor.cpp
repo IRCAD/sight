@@ -75,25 +75,25 @@ void organ_material_editor::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
     m_diffuseColourButton = new QPushButton(tr("Diffuse"));
-    m_diffuseColourButton->setObjectName(serviceID + "/" + m_diffuseColourButton->text());
+    m_diffuseColourButton->setObjectName(service_id + "/" + m_diffuseColourButton->text());
     m_diffuseColourButton->setToolTip(tr("Selected organ's diffuse color"));
     m_diffuseColourButton->setMinimumSize(m_diffuseColourButton->sizeHint());
 
     m_ambientColourButton = new QPushButton(tr("Ambient"));
-    m_ambientColourButton->setObjectName(serviceID + "/" + m_ambientColourButton->text());
+    m_ambientColourButton->setObjectName(service_id + "/" + m_ambientColourButton->text());
     m_ambientColourButton->setToolTip(tr("Selected organ's ambient color"));
     m_ambientColourButton->setMinimumSize(m_ambientColourButton->sizeHint());
 
-    const char* transparency      = "Transparency";
-    auto* const transparencyLabel = new QLabel(tr((std::string(transparency) + " : ").c_str()));
+    const char* transparency       = "Transparency";
+    auto* const transparency_label = new QLabel(tr((std::string(transparency) + " : ").c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
-    m_opacitySlider->setObjectName(serviceID + "/" + transparency);
+    m_opacitySlider->setObjectName(service_id + "/" + transparency);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
     m_opacitySlider->setRange(0, 100);
     m_opacitySlider->setTickInterval(20);
@@ -101,24 +101,24 @@ void organ_material_editor::starting()
     m_opacitySlider->setMinimumSize(m_opacitySlider->sizeHint());
 
     m_transparencyValue = new QLabel("");
-    m_transparencyValue->setObjectName(serviceID + "/transparencyValue");
+    m_transparencyValue->setObjectName(service_id + "/transparencyValue");
     m_transparencyValue->setMinimumSize(m_transparencyValue->sizeHint());
 
-    auto* const mainLayout = new QVBoxLayout();
+    auto* const main_layout = new QVBoxLayout();
 
-    auto* const buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(m_diffuseColourButton, 0);
-    buttonLayout->addWidget(m_ambientColourButton, 0);
-    mainLayout->addLayout(buttonLayout, 0);
+    auto* const button_layout = new QHBoxLayout();
+    button_layout->addWidget(m_diffuseColourButton, 0);
+    button_layout->addWidget(m_ambientColourButton, 0);
+    main_layout->addLayout(button_layout, 0);
 
-    auto* const transparencyLayout = new QHBoxLayout();
-    transparencyLayout->addWidget(transparencyLabel, 0);
-    transparencyLayout->addWidget(m_opacitySlider, 1);
-    transparencyLayout->addWidget(m_transparencyValue, 0);
-    mainLayout->addLayout(transparencyLayout, 0);
+    auto* const transparency_layout = new QHBoxLayout();
+    transparency_layout->addWidget(transparency_label, 0);
+    transparency_layout->addWidget(m_opacitySlider, 1);
+    transparency_layout->addWidget(m_transparencyValue, 0);
+    main_layout->addLayout(transparency_layout, 0);
 
-    qtContainer->setLayout(mainLayout);
-    qtContainer->setEnabled(false);
+    qt_container->setLayout(main_layout);
+    qt_container->setEnabled(false);
 
     QObject::connect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
     QObject::connect(m_diffuseColourButton, SIGNAL(clicked()), this, SLOT(onDiffuseColorButton()));
@@ -166,13 +166,13 @@ void organ_material_editor::onDiffuseColorButton()
         int blue  = static_cast<int>(material->diffuse()->blue() * 255);
 
         // Create Color choice dialog.
-        auto qtContainer =
+        auto qt_container =
             std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-        QWidget* const container = qtContainer->getQtContainer();
+        QWidget* const container = qt_container->getQtContainer();
         SIGHT_ASSERT("container not instanced", container);
 
-        const QColor oldColor(red, green, blue);
-        const QColor color = QColorDialog::getColor(oldColor, container);
+        const QColor old_color(red, green, blue);
+        const QColor color = QColorDialog::getColor(old_color, container);
         if(color.isValid())
         {
             material->diffuse()->red()   = static_cast<float>(color.redF());
@@ -210,13 +210,13 @@ void organ_material_editor::onAmbientColorButton()
         const int blue  = static_cast<int>(material->ambient()->blue() * 255.F);
 
         // Create Color choice dialog.
-        auto qtContainer =
+        auto qt_container =
             std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-        QWidget* const container = qtContainer->getQtContainer();
+        QWidget* const container = qt_container->getQtContainer();
         SIGHT_ASSERT("container not instanced", container);
 
-        const QColor oldColor(red, green, blue);
-        const QColor color = QColorDialog::getColor(oldColor, container);
+        const QColor old_color(red, green, blue);
+        const QColor color = QColorDialog::getColor(old_color, container);
         if(color.isValid())
         {
             material->ambient()->red()   = static_cast<float>(color.redF());
@@ -259,10 +259,10 @@ void organ_material_editor::onOpacitySlider(int _value)
 
 void organ_material_editor::refreshMaterial()
 {
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    QWidget* const container = qtContainer->getQtContainer();
+    QWidget* const container = qt_container->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
     data::material::csptr material;
@@ -279,30 +279,30 @@ void organ_material_editor::refreshMaterial()
         data::mt::locked_ptr<const data::material> lock(material);
 
         {
-            const QColor materialDiffuseColor = QColor(
+            const QColor material_diffuse_color = QColor(
                 static_cast<int>(material->diffuse()->red() * 255.F),
                 static_cast<int>(material->diffuse()->green() * 255.F),
                 static_cast<int>(material->diffuse()->blue() * 255.F),
                 static_cast<int>(material->diffuse()->alpha() * 255.F)
             );
 
-            const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-            QPixmap pix(iconSize, iconSize);
-            pix.fill(materialDiffuseColor);
+            const int icon_size = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(icon_size, icon_size);
+            pix.fill(material_diffuse_color);
             m_diffuseColourButton->setIcon(QIcon(pix));
         }
 
         {
-            const QColor materialAmbientColor = QColor(
+            const QColor material_ambient_color = QColor(
                 static_cast<int>(material->ambient()->red() * 255.F),
                 static_cast<int>(material->ambient()->green() * 255.F),
                 static_cast<int>(material->ambient()->blue() * 255.F),
                 static_cast<int>(material->ambient()->alpha() * 255.F)
             );
 
-            const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-            QPixmap pix(iconSize, iconSize);
-            pix.fill(materialAmbientColor);
+            const int icon_size = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(icon_size, icon_size);
+            pix.fill(material_ambient_color);
             m_ambientColourButton->setIcon(QIcon(pix));
         }
 
@@ -322,8 +322,8 @@ void organ_material_editor::materialNotification()
     SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
-    data::object::ModifiedSignalType::sptr sig =
-        reconstruction->getMaterial()->signal<data::object::ModifiedSignalType>(
+    data::object::modified_signal_t::sptr sig =
+        reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
             data::object::MODIFIED_SIG
         );
     sig->async_emit();

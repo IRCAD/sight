@@ -112,7 +112,7 @@
      </extension>
 
      <extension implements="sight::service::extension::factory">
-          <type>sight::ui::view::IActivityView</type>
+          <type>sight::ui::activity_view</type>
           <service>sight::module::ui::qt::activity::view</service>
           <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
      </extension>

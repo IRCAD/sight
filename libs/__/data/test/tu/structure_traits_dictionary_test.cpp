@@ -49,91 +49,91 @@ void structure_traits_dictionary_test::tearDown()
 
 void structure_traits_dictionary_test::testAddingStructure()
 {
-    data::structure_traits_dictionary::sptr structDico = std::make_shared<data::structure_traits_dictionary>();
-    data::structure_traits::sptr skin                  = std::make_shared<data::structure_traits>();
-    std::string skinType                               = "Skin";
-    skin->setType(skinType);
+    data::structure_traits_dictionary::sptr struct_dico = std::make_shared<data::structure_traits_dictionary>();
+    data::structure_traits::sptr skin                   = std::make_shared<data::structure_traits>();
+    std::string skin_type                               = "Skin";
+    skin->setType(skin_type);
     skin->setClass(data::structure_traits::ENVIRONMENT);
-    data::color::sptr skinColor = std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
-    skin->setColor(skinColor);
-    data::structure_traits::CategoryContainer skinCat(1);
-    skinCat[0] = data::structure_traits::BODY;
-    skin->setCategories(skinCat);
-    CPPUNIT_ASSERT_EQUAL(skinType, skin->getType());
+    data::color::sptr skin_color = std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
+    skin->setColor(skin_color);
+    data::structure_traits::CategoryContainer skin_cat(1);
+    skin_cat[0] = data::structure_traits::BODY;
+    skin->setCategories(skin_cat);
+    CPPUNIT_ASSERT_EQUAL(skin_type, skin->getType());
     CPPUNIT_ASSERT_EQUAL(data::structure_traits::ENVIRONMENT, skin->getClass());
-    CPPUNIT_ASSERT(skinColor == skin->getColor());
-    CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(skin));
+    CPPUNIT_ASSERT(skin_color == skin->getColor());
+    CPPUNIT_ASSERT_NO_THROW(struct_dico->addStructure(skin));
 
     data::structure_traits::sptr liver = std::make_shared<data::structure_traits>();
     liver->setType("Liver");
     liver->setClass(data::structure_traits::ORGAN);
     liver->setColor(std::make_shared<data::color>(204.0F / 255.0F, 51.0F / 255.0F, 51.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer liverCat(1);
-    liverCat[0] = data::structure_traits::ABDOMEN;
-    liver->setCategories(liverCat);
-    std::string nativeExp = "inter(world(type(Skin)),not(class(Organ)))";
-    liver->setNativeExp(nativeExp);
-    CPPUNIT_ASSERT_EQUAL(nativeExp, liver->getNativeExp());
-    CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(liver));
+    data::structure_traits::CategoryContainer liver_cat(1);
+    liver_cat[0] = data::structure_traits::ABDOMEN;
+    liver->setCategories(liver_cat);
+    std::string native_exp = "inter(world(type(Skin)),not(class(Organ)))";
+    liver->setNativeExp(native_exp);
+    CPPUNIT_ASSERT_EQUAL(native_exp, liver->getNativeExp());
+    CPPUNIT_ASSERT_NO_THROW(struct_dico->addStructure(liver));
 
-    data::structure_traits::sptr liverTumor = std::make_shared<data::structure_traits>();
-    liverTumor->setType("Liver_Tumor");
-    liverTumor->setClass(data::structure_traits::LESION);
-    liverTumor->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
-    data::structure_traits::CategoryContainer liverTumorCat(1);
-    liverTumorCat[0] = data::structure_traits::ABDOMEN;
-    liverTumor->setCategories(liverTumorCat);
-    liverTumor->setAttachmentType("Liver");
-    CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(liverTumor));
+    data::structure_traits::sptr liver_tumor = std::make_shared<data::structure_traits>();
+    liver_tumor->setType("Liver_Tumor");
+    liver_tumor->setClass(data::structure_traits::LESION);
+    liver_tumor->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
+    data::structure_traits::CategoryContainer liver_tumor_cat(1);
+    liver_tumor_cat[0] = data::structure_traits::ABDOMEN;
+    liver_tumor->setCategories(liver_tumor_cat);
+    liver_tumor->set_attachment_type("Liver");
+    CPPUNIT_ASSERT_NO_THROW(struct_dico->addStructure(liver_tumor));
 
     data::structure_traits::sptr tumor = std::make_shared<data::structure_traits>();
     tumor->setType("Tumor");
     tumor->setClass(data::structure_traits::LESION);
     tumor->setColor(std::make_shared<data::color>(0.0F, 0.0F, 1.0F, 1.0F));
-    data::structure_traits::CategoryContainer tumorCat(8);
-    tumorCat[0] = data::structure_traits::BODY;
-    tumorCat[1] = data::structure_traits::HEAD;
-    tumorCat[2] = data::structure_traits::NECK;
-    tumorCat[3] = data::structure_traits::THORAX;
-    tumorCat[4] = data::structure_traits::ABDOMEN;
-    tumorCat[5] = data::structure_traits::PELVIS;
-    tumorCat[6] = data::structure_traits::ARM;
-    tumorCat[7] = data::structure_traits::LEG;
-    tumor->setCategories(tumorCat);
-    CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(tumor));
+    data::structure_traits::CategoryContainer tumor_cat(8);
+    tumor_cat[0] = data::structure_traits::BODY;
+    tumor_cat[1] = data::structure_traits::HEAD;
+    tumor_cat[2] = data::structure_traits::NECK;
+    tumor_cat[3] = data::structure_traits::THORAX;
+    tumor_cat[4] = data::structure_traits::ABDOMEN;
+    tumor_cat[5] = data::structure_traits::PELVIS;
+    tumor_cat[6] = data::structure_traits::ARM;
+    tumor_cat[7] = data::structure_traits::LEG;
+    tumor->setCategories(tumor_cat);
+    CPPUNIT_ASSERT_NO_THROW(struct_dico->addStructure(tumor));
 
-    CPPUNIT_ASSERT(skin == structDico->getStructure("Skin"));
-    CPPUNIT_ASSERT(liver == structDico->getStructure("Liver"));
-    CPPUNIT_ASSERT(liverTumor == structDico->getStructure("Liver_Tumor"));
+    CPPUNIT_ASSERT(skin == struct_dico->getStructure("Skin"));
+    CPPUNIT_ASSERT(liver == struct_dico->getStructure("Liver"));
+    CPPUNIT_ASSERT(liver_tumor == struct_dico->getStructure("Liver_Tumor"));
 
     // check exception is raised if wrong structure
-    data::structure_traits::sptr badClassStructure = std::make_shared<data::structure_traits>();
-    badClassStructure->setType("my_structure");
-    badClassStructure->setClass(data::structure_traits::ORGAN);
-    badClassStructure->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
-    data::structure_traits::CategoryContainer structCat(1);
-    structCat[0] = data::structure_traits::ABDOMEN;
-    badClassStructure->setCategories(structCat);
-    badClassStructure->setAttachmentType("Liver");
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(badClassStructure), core::exception);
+    data::structure_traits::sptr bad_class_structure = std::make_shared<data::structure_traits>();
+    bad_class_structure->setType("my_structure");
+    bad_class_structure->setClass(data::structure_traits::ORGAN);
+    bad_class_structure->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
+    data::structure_traits::CategoryContainer struct_cat(1);
+    struct_cat[0] = data::structure_traits::ABDOMEN;
+    bad_class_structure->setCategories(struct_cat);
+    bad_class_structure->set_attachment_type("Liver");
+    CPPUNIT_ASSERT_THROW(struct_dico->addStructure(bad_class_structure), core::exception);
 
-    data::structure_traits::sptr badAttachmentStructure = std::make_shared<data::structure_traits>();
-    badAttachmentStructure->setType("my_structure");
-    badAttachmentStructure->setClass(data::structure_traits::LESION);
-    badAttachmentStructure->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
-    badAttachmentStructure->setCategories(structCat);
-    badAttachmentStructure->setAttachmentType("Unknown");
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), core::exception);
+    data::structure_traits::sptr bad_attachment_structure = std::make_shared<data::structure_traits>();
+    bad_attachment_structure->setType("my_structure");
+    bad_attachment_structure->setClass(data::structure_traits::LESION);
+    bad_attachment_structure->setColor(std::make_shared<data::color>(0.0F, 179.0F / 255.0F, 0.0F, 1.0F));
+    bad_attachment_structure->setCategories(struct_cat);
+    bad_attachment_structure->set_attachment_type("Unknown");
+    CPPUNIT_ASSERT_THROW(struct_dico->addStructure(bad_attachment_structure), core::exception);
 
     // check exception is raised if structure already exist
     data::structure_traits::sptr liver2 = std::make_shared<data::structure_traits>();
     liver2->setType("Liver");
     liver2->setClass(data::structure_traits::ORGAN);
     liver2->setColor(std::make_shared<data::color>(204.0F / 255.0F, 51.0F / 255.0F, 51.0F / 255.0F, 1.0F));
-    data::structure_traits::CategoryContainer liver2Cat(1);
-    liver2Cat[0] = data::structure_traits::ABDOMEN;
-    liver2->setCategories(liver2Cat);
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(liver2), core::exception);
+    data::structure_traits::CategoryContainer liver2_cat(1);
+    liver2_cat[0] = data::structure_traits::ABDOMEN;
+    liver2->setCategories(liver2_cat);
+    CPPUNIT_ASSERT_THROW(struct_dico->addStructure(liver2), core::exception);
 }
 
 } // namespace sight::data::ut

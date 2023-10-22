@@ -93,20 +93,20 @@ private:
     static std::int64_t s_total_memory;
 
     /* Extract numbers from a string between the start and end indices */
-    static std::uint64_t extract_number(char* str, int start, int end);
+    static std::uint64_t extract_number(char* _str, int _start, int _end);
 
     /* Parse the contents of /proc/meminfo file into the meminfo structure */
-    static void get_memory_stats(mem_info& meminfo);
+    static void get_memory_stats(mem_info& _meminfo);
 
-    static void print_status(status& stat);
+    static void print_status(status& _stat);
 
-    static void analyse_mem_info(std::string& line, mem_info& meminfo);
+    static void analyse_mem_info(std::string& _line, mem_info& _meminfo);
 
-    static void analyse_status_line(std::string& line, status& stat);
+    static void analyse_status_line(std::string& _line, status& _stat);
 
-    static void get_status_of_pid(std::uint64_t pid, status& stat);
+    static void get_status_of_pid(std::uint64_t _pid, status& _stat);
 
-    static void get_all_status(status& all_stat);
+    static void get_all_status(status& _all_stat);
 
     static void print_all_status();
 };

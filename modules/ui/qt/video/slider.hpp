@@ -61,7 +61,7 @@ public:
      */
 
     MODULE_UI_QT_API static const core::com::signals::key_t POSITION_CHANGED_SIG;
-    typedef core::com::signal<void (int64_t)> PositionChangedSignalType;
+    typedef core::com::signal<void (int64_t)> position_changed_signal_t;
 
     /** @} */
 
@@ -71,10 +71,10 @@ public:
      */
 
     MODULE_UI_QT_API static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
-    typedef core::com::slot<void (int64_t)> ChangePositionSlotType;
+    typedef core::com::slot<void (int64_t)> change_position_slot_t;
 
     MODULE_UI_QT_API static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
-    typedef core::com::slot<void (int64_t)> ChangeDurationSlotType;
+    typedef core::com::slot<void (int64_t)> change_duration_slot_t;
 
     ///@}
 
@@ -100,13 +100,13 @@ protected:
     void configuring() override;
 
     /// Signal when the position os the slider changed
-    PositionChangedSignalType::sptr m_sigPositionChanged;
+    position_changed_signal_t::sptr m_sigPositionChanged;
 
     /// SLOT : Call to set the video position.
-    void setPosition(int64_t newPos);
+    void setPosition(int64_t _new_pos);
 
     /// SLOT : Call to set the video position.
-    void setDuration(int64_t duration);
+    void setDuration(int64_t _duration);
 
 protected Q_SLOTS:
 

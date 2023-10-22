@@ -103,10 +103,10 @@ protected:
 private:
 
     /// SLOT: updates selected landmark point position on the crosshair.
-    void updateSelectedPoint(std::string name, std::size_t index);
+    void updateSelectedPoint(std::string _name, std::size_t _index);
 
     /// SLOT: updates last landmark point position on the crosshair.
-    void updatePoint(std::string name);
+    void updatePoint(std::string _name);
 
     /// SLOT: removes the landmark's position on the crosshair.
     void removePoint();

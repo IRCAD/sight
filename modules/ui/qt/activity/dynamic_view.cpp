@@ -55,8 +55,8 @@ dynamic_view::dynamic_view() noexcept
 {
     new_slot(CREATE_TAB_SLOT, &dynamic_view::createTab, this);
 
-    m_sigActivitySelected = new_signal<ActivitySelectedSignalType>(ACTIVITY_SELECTED_SLOT);
-    m_sigNothingSelected  = new_signal<NothingSelectedSignalType>(NOTHING_SELECTED_SLOT);
+    m_sigActivitySelected = new_signal<activity_selected_signal_t>(ACTIVITY_SELECTED_SLOT);
+    m_sigNothingSelected  = new_signal<nothing_selected_signal_t>(NOTHING_SELECTED_SLOT);
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ dynamic_view::~dynamic_view() noexcept =
 
 void dynamic_view::configuring()
 {
-    this->sight::ui::view::IActivityView::configuring();
+    this->sight::ui::activity_view::configuring();
 
     const auto& config = this->get_config();
 
@@ -82,7 +82,7 @@ void dynamic_view::starting()
 {
     this->sight::ui::service::create();
 
-    auto parentContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto parent_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable(true);
@@ -95,7 +95,7 @@ void dynamic_view::starting()
     auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget(m_tabWidget);
 
-    parentContainer->setLayout(layout);
+    parent_container->setLayout(layout);
 
     m_currentWidget = nullptr;
 
@@ -128,40 +128,40 @@ void dynamic_view::updating()
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::launchActivity(data::activity::sptr activity)
+void dynamic_view::launchActivity(data::activity::sptr _activity)
 {
-    if(this->validateActivity(activity))
+    if(this->validateActivity(_activity))
     {
-        dynamic_viewInfo viewInfo = this->createViewInfo(activity);
-        viewInfo.closable = true;
+        dynamic_viewInfo view_info = this->createViewInfo(_activity);
+        view_info.closable = true;
 
-        this->launchTab(viewInfo);
+        this->launchTab(view_info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::createTab(sight::activity::message info)
+void dynamic_view::createTab(sight::activity::message _info)
 {
-    dynamic_viewInfo viewInfo;
-    viewInfo.title          = info.getTitle();
-    viewInfo.tabID          = info.getTabID();
-    viewInfo.closable       = info.isClosable();
-    viewInfo.icon           = info.getIconPath();
-    viewInfo.tooltip        = info.getToolTip();
-    viewInfo.viewConfigID   = info.getAppConfigID();
-    viewInfo.replacementMap = info.getReplacementMap();
-    viewInfo.activity       = info.getActivity();
+    dynamic_viewInfo view_info;
+    view_info.title          = _info.getTitle();
+    view_info.tabID          = _info.getTabID();
+    view_info.closable       = _info.isClosable();
+    view_info.icon           = _info.getIconPath();
+    view_info.tooltip        = _info.getToolTip();
+    view_info.viewConfigID   = _info.getAppConfigID();
+    view_info.replacementMap = _info.getReplacementMap();
+    view_info.activity       = _info.getActivity();
 
-    this->launchTab(viewInfo);
+    this->launchTab(view_info);
 }
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::launchTab(dynamic_viewInfo& info)
+void dynamic_view::launchTab(dynamic_viewInfo& _info)
 {
     static int count = 0;
-    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activity->get_id());
+    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), _info.activity->get_id());
 
     if(iter != m_activityIds.end())
     {
@@ -174,31 +174,31 @@ void dynamic_view::launchTab(dynamic_viewInfo& info)
         return;
     }
 
-    if(m_titleToCount.find(info.title) != m_titleToCount.end())
+    if(m_titleToCount.find(_info.title) != m_titleToCount.end())
     {
-        m_titleToCount[info.title]++;
+        m_titleToCount[_info.title]++;
     }
     else
     {
-        m_titleToCount[info.title] = 1;
+        m_titleToCount[_info.title] = 1;
     }
 
-    QString finalTitle = QString("%1 %2").arg(info.title.c_str(), "(%1)").arg(m_titleToCount[info.title]);
-    info.wid = QString("dynamic_view-%1").arg(count++).toStdString();
+    QString final_title = QString("%1 %2").arg(_info.title.c_str(), "(%1)").arg(m_titleToCount[_info.title]);
+    _info.wid = QString("dynamic_view-%1").arg(count++).toStdString();
 
-    auto subContainer = sight::ui::qt::container::widget::make();
-    auto* widget      = new QWidget(m_tabWidget);
-    subContainer->setQtContainer(widget);
-    sight::ui::registry::registerWIDContainer(info.wid, subContainer);
+    auto sub_container = sight::ui::qt::container::widget::make();
+    auto* widget       = new QWidget(m_tabWidget);
+    sub_container->setQtContainer(widget);
+    sight::ui::registry::register_wid_container(_info.wid, sub_container);
 
-    info.replacementMap["WID_PARENT"]  = info.wid;
-    info.replacementMap["GENERIC_UID"] = sight::app::extension::config::getUniqueIdentifier(info.viewConfigID);
+    _info.replacementMap["WID_PARENT"]  = _info.wid;
+    _info.replacementMap["GENERIC_UID"] = sight::app::extension::config::getUniqueIdentifier(_info.viewConfigID);
 
     auto helper = sight::app::config_manager::make();
 
     try
     {
-        helper->setConfig(info.viewConfigID, info.replacementMap);
+        helper->setConfig(_info.viewConfigID, _info.replacementMap);
         if(!m_dynamicConfigStartStop)
         {
             helper->launch();
@@ -219,22 +219,22 @@ void dynamic_view::launchTab(dynamic_viewInfo& info)
         return;
     }
 
-    info.container = subContainer;
-    info.helper    = helper;
-    m_activityIds.insert(info.activity->get_id());
+    _info.container = sub_container;
+    _info.helper    = helper;
+    m_activityIds.insert(_info.activity->get_id());
 
-    m_dynamicInfoMap[widget] = info;
-    m_tabIDList.insert(info.tabID);
+    m_dynamicInfoMap[widget] = _info;
+    m_tabIDList.insert(_info.tabID);
 
-    int index = m_tabWidget->addTab(widget, finalTitle);
-    if(!info.tooltip.empty())
+    int index = m_tabWidget->addTab(widget, final_title);
+    if(!_info.tooltip.empty())
     {
-        m_tabWidget->setTabToolTip(index, QString::fromStdString(info.tooltip));
+        m_tabWidget->setTabToolTip(index, QString::fromStdString(_info.tooltip));
     }
 
-    if(!info.icon.empty())
+    if(!_info.icon.empty())
     {
-        m_tabWidget->setTabIcon(index, QIcon(QString::fromStdString(info.icon)));
+        m_tabWidget->setTabIcon(index, QIcon(QString::fromStdString(_info.icon)));
     }
 
     m_tabWidget->setCurrentWidget(widget);
@@ -248,20 +248,20 @@ void dynamic_view::info(std::ostream& /*_sstream*/)
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::closeTabSignal(int index)
+void dynamic_view::closeTabSignal(int _index)
 {
-    closeTab(index, false);
+    closeTab(_index, false);
 }
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::closeTab(int index, bool forceClose)
+void dynamic_view::closeTab(int _index, bool _force_close)
 {
-    QWidget* widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(_index);
 
     SIGHT_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
     dynamic_viewInfo info = m_dynamicInfoMap[widget];
-    if(info.closable || forceClose)
+    if(info.closable || _force_close)
     {
         m_tabIDList.erase(info.tabID);
         if(!m_dynamicConfigStartStop)
@@ -282,9 +282,9 @@ void dynamic_view::closeTab(int index, bool forceClose)
 
         //Remove tab first, to avoid tab beeing removed by container->destroy
         m_currentWidget = nullptr;
-        m_tabWidget->removeTab(index);
+        m_tabWidget->removeTab(_index);
 
-        sight::ui::registry::unregisterWIDContainer(info.wid);
+        sight::ui::registry::unregister_wid_container(info.wid);
 
         info.container->destroyContainer();
         info.container.reset();
@@ -303,9 +303,9 @@ void dynamic_view::closeTab(int index, bool forceClose)
 
 //------------------------------------------------------------------------------
 
-void dynamic_view::changedTab(int index)
+void dynamic_view::changedTab(int _index)
 {
-    QWidget* widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(_index);
 
     if(m_dynamicConfigStartStop && widget != m_currentWidget)
     {
@@ -328,7 +328,7 @@ void dynamic_view::changedTab(int index)
 
     m_currentWidget = widget;
 
-    if(index >= 0)
+    if(_index >= 0)
     {
         dynamic_viewInfo info = m_dynamicInfoMap[widget];
         m_sigActivitySelected->async_emit(info.activity);
@@ -347,32 +347,32 @@ void dynamic_view::buildMainActivity()
 
     if(activity)
     {
-        dynamic_viewInfo viewInfo;
-        viewInfo          = this->createViewInfo(activity);
-        viewInfo.closable = m_mainActivityClosable;
+        dynamic_viewInfo view_info;
+        view_info          = this->createViewInfo(activity);
+        view_info.closable = m_mainActivityClosable;
 
-        this->launchTab(viewInfo);
+        this->launchTab(view_info);
     }
 }
 
 //------------------------------------------------------------------------------
 
-dynamic_view::dynamic_viewInfo dynamic_view::createViewInfo(data::activity::sptr activity)
+dynamic_view::dynamic_viewInfo dynamic_view::createViewInfo(data::activity::sptr _activity)
 {
     auto [info, replacementMap] = sight::activity::extension::activity::getDefault()->getInfoAndReplacementMap(
-        *activity,
+        *_activity,
         m_parameters
     );
 
-    dynamic_viewInfo viewInfo;
-    viewInfo.title          = info.title;
-    viewInfo.icon           = info.icon;
-    viewInfo.tooltip        = info.tabInfo.empty() ? info.title : info.tabInfo;
-    viewInfo.viewConfigID   = info.appConfig.id;
-    viewInfo.activity       = activity;
-    viewInfo.replacementMap = replacementMap;
+    dynamic_viewInfo view_info;
+    view_info.title          = info.title;
+    view_info.icon           = info.icon;
+    view_info.tooltip        = info.tabInfo.empty() ? info.title : info.tabInfo;
+    view_info.viewConfigID   = info.appConfig.id;
+    view_info.activity       = _activity;
+    view_info.replacementMap = replacementMap;
 
-    return viewInfo;
+    return view_info;
 }
 
 //------------------------------------------------------------------------------

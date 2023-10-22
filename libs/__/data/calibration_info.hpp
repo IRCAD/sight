@@ -48,24 +48,24 @@ public:
     SIGHT_DECLARE_CLASS(calibration_info, object);
 
     ///typedefs
-    typedef std::list<image::sptr> ImageContainerType;
-    typedef std::list<point_list::sptr> PointListContainerType;
+    typedef std::list<image::sptr> image_container_t;
+    typedef std::list<point_list::sptr> point_list_container_t;
 
     /**
      * @name Signals API
      * @{
      */
     DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
-    typedef core::com::signal<void ()> AddedRecordSignalType;
+    typedef core::com::signal<void ()> added_record_signal_t;
 
     DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
-    typedef core::com::signal<void ()> RemovedRecordSignalType;
+    typedef core::com::signal<void ()> removed_record_signal_t;
 
     DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
-    typedef core::com::signal<void ()> ResetRecordSignalType;
+    typedef core::com::signal<void ()> Reset_record_signal_type;
 
     DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
-    typedef core::com::signal<void (std::size_t)> GetRecordSignalType;
+    typedef core::com::signal<void (std::size_t)> get_record_signal_t;
 
     /**
      * @}
@@ -82,13 +82,13 @@ public:
      * @param[in] img the new image
      * @param[in] pl the corresponding point list
      */
-    DATA_API void addRecord(const image::sptr& img, const point_list::sptr& pl);
+    DATA_API void addRecord(const image::sptr& _img, const point_list::sptr& _pl);
 
     /**
      * @brief remove the desired record (both image and pointList)
      * @param[in] idx index of the record to be removed
      */
-    DATA_API void removeRecord(std::size_t idx);
+    DATA_API void removeRecord(std::size_t _idx);
 
     /// Reset all records
     DATA_API void resetRecords();
@@ -112,7 +112,7 @@ public:
      * @return pointList corresponding to the image
      *
      */
-    DATA_API point_list::csptr getPointList(const image::csptr& img) const;
+    DATA_API point_list::csptr getPointList(const image::csptr& _img) const;
 
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
@@ -120,7 +120,7 @@ public:
      * @param[in] pl the pointList
      * @return image corresponding to the pointList
      */
-    DATA_API image::csptr getImage(const point_list::csptr& pl) const;
+    DATA_API image::csptr getImage(const point_list::csptr& _pl) const;
 
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
@@ -129,29 +129,29 @@ public:
      * @return image corresponding to the index
      * @{
      */
-    DATA_API image::sptr getImage(std::size_t idx);
-    DATA_API image::csptr getImage(std::size_t idx) const;
+    DATA_API image::sptr getImage(std::size_t _idx);
+    DATA_API image::csptr getImage(std::size_t _idx) const;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const calibration_info& other) const noexcept;
-    DATA_API bool operator!=(const calibration_info& other) const noexcept;
+    DATA_API bool operator==(const calibration_info& _other) const noexcept;
+    DATA_API bool operator!=(const calibration_info& _other) const noexcept;
 
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -161,13 +161,13 @@ protected:
     ///List of pointList
     std::list<point_list::sptr> m_pointListContainer;
     ///added record signal
-    AddedRecordSignalType::sptr m_sigAddedRecord;
+    added_record_signal_t::sptr m_sigAddedRecord;
     /// removed record signal
-    RemovedRecordSignalType::sptr m_sigRemovedRecord;
+    removed_record_signal_t::sptr m_sigRemovedRecord;
     ///reset records signal
-    ResetRecordSignalType::sptr m_sigResetRecord;
+    Reset_record_signal_type::sptr m_sigResetRecord;
     ///get record signal
-    GetRecordSignalType::sptr m_sigGetRecord;
+    get_record_signal_t::sptr m_sigGetRecord;
 };
 
 } // namespace sight::data

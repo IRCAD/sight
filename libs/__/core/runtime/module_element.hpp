@@ -72,7 +72,7 @@ public:
      *
      * @param[in]   enable To know if module element is enabled
      */
-    CORE_API void set_enable(bool enable);
+    CORE_API void set_enable(bool _enable);
 
 protected:
 
@@ -93,7 +93,7 @@ protected:
      * @post        The module isn't null.
      * @param[in]   module  a shared pointer to the managing module
      */
-    CORE_API module_element(std::shared_ptr<module> module);
+    CORE_API module_element(std::shared_ptr<module> _module);
 
 private:
 

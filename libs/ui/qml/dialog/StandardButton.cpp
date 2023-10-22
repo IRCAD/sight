@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,9 +37,9 @@ StandardButton::~StandardButton()
 
 //------------------------------------------------------------------------------
 
-void StandardButton::setButton(ButtonList button)
+void StandardButton::setButton(ButtonList _button)
 {
-    m_button = button;
+    m_button = _button;
     Q_EMIT buttonChanged();
 }
 

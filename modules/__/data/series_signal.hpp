@@ -87,7 +87,7 @@ public:
 
     MODULE_DATA_API static const core::com::slots::key_t REPORT_SERIES_SLOT;
 
-    typedef core::com::signal<void (sight::data::series::sptr)> SeriesAddedSignalType;
+    typedef core::com::signal<void (sight::data::series::sptr)> series_added_signal_t;
     MODULE_DATA_API static const core::com::signals::key_t SERIES_ADDED_SIG;
 
 protected:
@@ -115,16 +115,16 @@ protected:
 
 private:
 
-    typedef std::vector<std::string> TypesType;
+    typedef std::vector<std::string> types_t;
 
     /**
      * @brief This slot is called when a series is added in the series_set.
      * It emits a signal for each added series corresponding to the configured type.
      */
-    void reportSeriesSlot(sight::data::series_set::container_type addedSeries);
+    void reportSeriesSlot(sight::data::series_set::container_type _added_series);
 
     template<typename T>
-    void reportSeries(const T& addedSeries);
+    void reportSeries(const T& _added_series);
 
     /**
      * @brief Filter mode : include or exclude activity configurations.
@@ -133,10 +133,10 @@ private:
     std::string m_filterMode;
 
     /// Types of series to be enabled or disabled, according to filter mode.
-    TypesType m_types;
+    types_t m_types;
 
     /// Signal emitted when the added series correspond to the configured type.
-    SeriesAddedSignalType::sptr m_sigSeriesAdded;
+    series_added_signal_t::sptr m_sigSeriesAdded;
 
     static constexpr std::string_view s_SERIES_SET_INPUT = "seriesSet";
     sight::data::ptr<sight::data::series_set, sight::data::Access::in> m_series_set {this, s_SERIES_SET_INPUT};

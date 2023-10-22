@@ -48,11 +48,11 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API Fiducial(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::sptr& image,
-        const core::log::logger::sptr& logger
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::sptr& _image,
+        const core::log::logger::sptr& _logger
     );
 
     /// Destructor
@@ -62,7 +62,7 @@ public:
      * @brief Read a fiducial node
      * @param[in] node Node that must be read
      */
-    IO_DICOM_API virtual void readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node);
+    IO_DICOM_API virtual void readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node);
 
 protected:
 
@@ -73,7 +73,7 @@ protected:
      * @param z Z coordinate
      * @param label Landmark label
      */
-    void addLandmark(double x, double y, double z, const std::string& label);
+    void addLandmark(double _x, double _y, double _z, const std::string& _label);
 };
 
 } // namespace sight::io::dicom::reader::tid

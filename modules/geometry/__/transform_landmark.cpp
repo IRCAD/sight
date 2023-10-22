@@ -44,7 +44,7 @@ const core::com::slots::key_t REMOVE_POINT_SLOT   = "removePoint";
 
 transform_landmark::transform_landmark() noexcept
 {
-    new_signal<LandmarkUpdatedSignalType>(LANDMARK_UPDATED_SIG);
+    new_signal<landmark_updated_signal_t>(LANDMARK_UPDATED_SIG);
     new_slot(SELECTED_POINT_SLOT, &transform_landmark::updateSelectedPoint, this);
     new_slot(UPDATE_POINT_SLOT, &transform_landmark::updatePoint, this);
     new_slot(REMOVE_POINT_SLOT, &transform_landmark::removePoint, this);
@@ -89,13 +89,13 @@ void transform_landmark::updating()
         const auto transform = m_transform.lock();
         try
         {
-            data::landmarks::PointType& point = landmark->getPoint(m_label, m_index);
+            data::landmarks::point_t& point = landmark->getPoint(m_label, m_index);
             point[0] = (*transform)[3];
             point[1] = (*transform)[7];
             point[2] = (*transform)[11];
 
             //notify point is modified
-            auto sig = landmark->signal<data::landmarks::PointModifiedSigType>(
+            auto sig = landmark->signal<data::landmarks::point_modified_sig_t>(
                 data::landmarks::POINT_MODIFIED_SIG
             );
             sig->async_emit(m_label, m_index);
@@ -121,20 +121,20 @@ service::connections_t transform_landmark::auto_connections() const
 
 // -----------------------------------------------------------------------------
 
-void transform_landmark::updateSelectedPoint(std::string /*name*/, std::size_t index)
+void transform_landmark::updateSelectedPoint(std::string /*name*/, std::size_t _index)
 {
     m_landmarkSelected = true;
-    m_index            = index;
+    m_index            = _index;
     this->update();
 }
 
 // -----------------------------------------------------------------------------
 
-void transform_landmark::updatePoint(std::string name)
+void transform_landmark::updatePoint(std::string _name)
 {
     m_landmarkSelected = true;
     const auto landmark    = m_landmarks.lock();
-    const std::size_t size = landmark->getGroup(name).m_points.size();
+    const std::size_t size = landmark->getGroup(_name).m_points.size();
     m_index = size - 1;
     this->update();
 }

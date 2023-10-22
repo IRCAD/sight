@@ -30,9 +30,9 @@ namespace sight::io::dicom::codec
 
 //------------------------------------------------------------------------------
 
-static inline core::type gdcmToSightPf(const gdcm::PixelFormat& pf)
+static inline core::type gdcm_to_sight_pf(const gdcm::PixelFormat& _pf)
 {
-    switch(pf.GetScalarType())
+    switch(_pf.GetScalarType())
     {
         case gdcm::PixelFormat::SINGLEBIT:
         case gdcm::PixelFormat::UINT8:
@@ -72,18 +72,18 @@ static inline core::type gdcmToSightPf(const gdcm::PixelFormat& pf)
 
 //------------------------------------------------------------------------------
 
-static inline data::image::PixelFormat gdcmToSightPi(
-    const gdcm::PhotometricInterpretation& pi,
-    const gdcm::PixelFormat& pf
+static inline data::image::PixelFormat gdcm_to_sight_pi(
+    const gdcm::PhotometricInterpretation& _pi,
+    const gdcm::PixelFormat& _pf
 )
 {
-    if(pi == gdcm::PhotometricInterpretation::PALETTE_COLOR)
+    if(_pi == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
         return data::image::PixelFormat::RGB;
     }
 
-    const auto gdcm_sample_per_pixel = pf.GetSamplesPerPixel();
+    const auto gdcm_sample_per_pixel = _pf.GetSamplesPerPixel();
 
     if(gdcm_sample_per_pixel == 1)
     {
@@ -92,11 +92,11 @@ static inline data::image::PixelFormat gdcmToSightPi(
     }
 
     if(gdcm_sample_per_pixel == 3
-       && (pi == gdcm::PhotometricInterpretation::YBR_FULL
-           || pi == gdcm::PhotometricInterpretation::YBR_FULL_422
-           || pi == gdcm::PhotometricInterpretation::YBR_ICT
-           || pi == gdcm::PhotometricInterpretation::YBR_RCT
-           || pi == gdcm::PhotometricInterpretation::RGB))
+       && (_pi == gdcm::PhotometricInterpretation::YBR_FULL
+           || _pi == gdcm::PhotometricInterpretation::YBR_FULL_422
+           || _pi == gdcm::PhotometricInterpretation::YBR_ICT
+           || _pi == gdcm::PhotometricInterpretation::YBR_RCT
+           || _pi == gdcm::PhotometricInterpretation::RGB))
     {
         return data::image::PixelFormat::RGB;
     }
@@ -107,15 +107,15 @@ static inline data::image::PixelFormat gdcmToSightPi(
 
 //------------------------------------------------------------------------------
 
-bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
+bool NvJpeg2K::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 {
-    out = in;
+    _out = _in;
 
     gdcm::SmartPointer<gdcm::SequenceOfFragments> sq = new gdcm::SequenceOfFragments;
 
     const auto* dims = this->GetDimensions();
 
-    const auto* in_byte_value = in.GetByteValue();
+    const auto* in_byte_value = _in.GetByteValue();
     const auto* in_pointer    = in_byte_value->GetPointer();
     const auto in_length      = in_byte_value->GetLength();
     const auto frame_size     = in_length / dims[2];
@@ -131,9 +131,9 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
     // The output buffer is resized by the writer if not big enough
     std::vector<std::uint8_t> output_buffer(frame_size);
 
-    const auto& sight_type   = gdcmToSightPf(this->GetPixelFormat());
+    const auto& sight_type   = gdcm_to_sight_pf(this->GetPixelFormat());
     const auto& sight_size   = sight::data::image::Size {dims[0], dims[1], 1};
-    const auto& sight_format = gdcmToSightPi(this->GetPhotometricInterpretation(), this->GetPixelFormat());
+    const auto& sight_format = gdcm_to_sight_pi(this->GetPhotometricInterpretation(), this->GetPixelFormat());
 
     for(std::size_t z = 0, end = dims[2] ; z < end ; ++z)
     {
@@ -166,7 +166,7 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
         sq->AddFragment(frag);
     }
 
-    out.SetValue(*sq);
+    _out.SetValue(*sq);
 
     return true;
 }

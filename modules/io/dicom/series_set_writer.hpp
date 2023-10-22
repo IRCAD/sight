@@ -97,7 +97,7 @@ private:
      * @param[in] folder DICOM folder
      * @param[in] series_set series_set that must be written
      */
-    void saveSeriesSet(const std::filesystem::path folder, SPTR(data::series_set) series_set);
+    void saveSeriesSet(const std::filesystem::path _folder, SPTR(data::series_set) _series_set);
 
     /// Select Fiducial Export Mode using a dialog
     bool selectFiducialsExportMode();

@@ -24,7 +24,7 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <ui/qml/editor.hpp>
 
@@ -47,7 +47,7 @@ namespace sight::module::ui::qml::image
  * @section QSignal Qt Signals
  * - \b setSliceRange(int min, int max): emitted to change the range of the slice indices slider
  * - \b setSliceValue(int value): emitted to change the slice index value
- * - \b setSliceType(int type): emitted to change the slice type (0: sagittal, 1: frontal, 2: axial)
+ * - \b set_slice_type(int type): emitted to change the slice type (0: sagittal, 1: frontal, 2: axial)
  *
  * @section QSlots Qt Slots
  * - \b onSliceIndex(int): set the current slice index value
@@ -86,7 +86,7 @@ namespace sight::module::ui::qml::image
 class MODULE_UI_QML_CLASS_API slice_index_position_editor : public sight::ui::qml::editor
 {
 Q_OBJECT
-Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
+Q_PROPERTY(int sliceIndex READ get_slice_index WRITE set_slice_index)
 
 public:
 
@@ -99,21 +99,21 @@ public:
     MODULE_UI_QML_API ~slice_index_position_editor() noexcept override;
 
     /// To handle orientation of slices.
-    using orientation_t = data::helper::MedicalImage::orientation_t;
+    using orientation_t = data::helper::medical_image::orientation_t;
 
 Q_SIGNALS:
 
-    void setSliceRange(int min, int max);
-    void setSliceValue(int value);
-    void setSliceType(int type);
+    void setSliceRange(int _min, int _max);
+    void setSliceValue(int _value);
+    void set_slice_type(int _type);
 
 public Q_SLOTS:
 
     /// This method is called when the slider is moved. Notify the slice index is modified.
-    MODULE_UI_QML_API void onSliceIndex(int index);
+    MODULE_UI_QML_API void onSliceIndex(int _index);
 
     /// This method is called when the slice type selected changes. Notify the slice type is modified.
-    MODULE_UI_QML_API void onSliceType(int type);
+    MODULE_UI_QML_API void onSliceType(int _type);
 
 protected:
 
@@ -144,7 +144,7 @@ protected:
     MODULE_UI_QML_API void updateSliceIndexFromImg();
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QML_API void updateSliceTypeFromImg(const orientation_t& type);
+    MODULE_UI_QML_API void updateSliceTypeFromImg(const orientation_t& _type);
 
 private:
 
@@ -153,17 +153,17 @@ private:
      * @{
      */
     /// Slot: update image slice index
-    void updateSliceIndex(int axial, int frontal, int sagittal);
+    void updateSliceIndex(int _axial, int _frontal, int _sagittal);
 
     /// Slot: update image slice type
-    void updateSliceType(int from, int to);
+    void updateSliceType(int _from, int _to);
     /**
      * @}
      */
 
     /// Define the slice type, it should only be called before starting from the qml interface
-    void setSliceIndex(int sliceIndex);
-    int getSliceIndex() const;
+    void set_slice_index(int _slice_index);
+    int get_slice_index() const;
 
     /// image data
     static constexpr std::string_view s_IMAGE_INOUT = "image";

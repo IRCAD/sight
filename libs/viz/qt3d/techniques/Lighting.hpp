@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,22 +78,22 @@ public:
     VIZ_QT3D_API LightingMode getLightingMode();
 
     /// Updates light position.
-    VIZ_QT3D_API void setLightPosition(QVector3D _lightPosition);
+    VIZ_QT3D_API void setLightPosition(QVector3D _light_position);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void setLightIntensity(QVector3D _lightIntensity);
+    VIZ_QT3D_API void setLightIntensity(QVector3D _light_intensity);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void setLightingMode(LightingMode _lightingMode);
+    VIZ_QT3D_API void setLightingMode(LightingMode _lighting_mode);
 
     /// Enables/Disables cells normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void enableCellsNormals(bool _isEnable);
+    VIZ_QT3D_API Q_INVOKABLE void enableCellsNormals(bool _is_enable);
 
     /// Enables/Disables normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void showNormals(bool _isEnable);
+    VIZ_QT3D_API Q_INVOKABLE void showNormals(bool _is_enable);
 
     /// Modifies raster mode (SURFACE, POINT, LINE, EDGE).
-    VIZ_QT3D_API Q_INVOKABLE void updateRasterMode(int _rasterMode);
+    VIZ_QT3D_API Q_INVOKABLE void updateRasterMode(int _raster_mode);
 
 Q_SIGNALS:
 

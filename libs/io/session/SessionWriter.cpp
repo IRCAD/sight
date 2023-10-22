@@ -47,9 +47,9 @@ public:
     SessionWriterImpl& operator=(SessionWriterImpl&&)      = delete;
 
     /// Constructor
-    inline explicit SessionWriterImpl(SessionWriter* const sessionWriter) :
-        m_sessionWriter(sessionWriter),
-        m_password(std::make_unique<password_keeper>()),
+    inline explicit SessionWriterImpl(SessionWriter* const _session_writer) :
+        M_SESSION_WRITER(_session_writer),
+        M_PASSWORD(std::make_unique<password_keeper>()),
         m_encryptionPolicy(password_keeper::encryption_policy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
@@ -62,15 +62,15 @@ public:
     inline void write()
     {
         // Retrieve the root object
-        auto root_object = std::dynamic_pointer_cast<const data::object>(m_sessionWriter->getObject());
+        auto root_object = std::dynamic_pointer_cast<const data::object>(M_SESSION_WRITER->getObject());
         SIGHT_FATAL_IF("Root object is null or not a data object.", !root_object);
 
         // Serialize the root object
         m_sessionSerializer.serialize(
-            m_sessionWriter->get_file(),
+            M_SESSION_WRITER->get_file(),
             root_object,
             m_archiveFormat,
-            m_password->get_password(),
+            M_PASSWORD->get_password(),
             m_encryptionPolicy
         );
     }
@@ -79,10 +79,10 @@ public:
     detail::session_serializer m_sessionSerializer;
 
     /// Pointer to the public interface
-    SessionWriter* const m_sessionWriter;
+    SessionWriter* const M_SESSION_WRITER;
 
     /// Keep the password in a vault
-    const std::unique_ptr<password_keeper> m_password;
+    const std::unique_ptr<password_keeper> M_PASSWORD;
 
     /// The encryption policy
     password_keeper::encryption_policy m_encryptionPolicy;
@@ -115,44 +115,44 @@ std::string SessionWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setPassword(const secure_string& password)
+void SessionWriter::setPassword(const secure_string& _password)
 {
-    m_pimpl->m_password->set_password(password);
+    m_pimpl->M_PASSWORD->set_password(_password);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setEncryptionPolicy(const password_keeper::encryption_policy policy)
+void SessionWriter::setEncryptionPolicy(const password_keeper::encryption_policy _policy)
 {
-    m_pimpl->m_encryptionPolicy = policy;
+    m_pimpl->m_encryptionPolicy = _policy;
 }
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
+void SessionWriter::setArchiveFormat(const Archive::ArchiveFormat _archive_format)
 {
-    m_pimpl->m_archiveFormat = archiveFormat;
+    m_pimpl->m_archiveFormat = _archive_format;
 }
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setCustomSerializer(const std::string& className, serializer_t serializer)
+void SessionWriter::setCustomSerializer(const std::string& _class_name, serializer_t _serializer)
 {
-    m_pimpl->m_sessionSerializer.setCustomSerializer(className, serializer);
+    m_pimpl->m_sessionSerializer.setCustomSerializer(_class_name, _serializer);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
+void SessionWriter::setSerializer(const std::string& _class_name, serializer_t _serializer)
 {
-    detail::session_serializer::setSerializer(className, serializer);
+    detail::session_serializer::setSerializer(_class_name, _serializer);
 }
 
 //------------------------------------------------------------------------------
 
-serializer_t SessionWriter::serializer(const std::string& className)
+serializer_t SessionWriter::serializer(const std::string& _class_name)
 {
-    return detail::session_serializer::serializer(className);
+    return detail::session_serializer::serializer(_class_name);
 }
 
 } //namespace sight::io::session

@@ -26,7 +26,7 @@
 
 #include <ui/__/editor.hpp>
 
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -91,14 +91,14 @@ protected:
     /// FILL ME.
     MODULE_UI_VIZ_API void refreshRenderers();
 
-    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
-    sight::viz::scene3d::Layer::wptr m_currentLayer;
+    std::vector<sight::viz::scene3d::layer::wptr> m_layers;
+    sight::viz::scene3d::layer::wptr m_currentLayer;
 
 protected Q_SLOTS:
 
-    void onSelectedLayerItem(int index);
-    void onEditTransparencyDepth(int depth);
-    void onEditTransparency(int index);
+    void onSelectedLayerItem(int _index);
+    void onEditTransparencyDepth(int _depth);
+    void onEditTransparency(int _index);
 
 private:
 

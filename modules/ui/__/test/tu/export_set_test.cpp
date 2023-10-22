@@ -67,9 +67,9 @@ void export_set_test::tearDown()
 
 void export_set_test::basicTest()
 {
-    data::string::sptr helloWorld = std::make_shared<data::string>("Hello world!");
-    data::set::sptr set           = std::make_shared<data::set>();
-    m_exportSet->set_inout(helloWorld, "data");
+    data::string::sptr hello_world = std::make_shared<data::string>("Hello world!");
+    data::set::sptr set            = std::make_shared<data::set>();
+    m_exportSet->set_inout(hello_world, "data");
     m_exportSet->set_inout(set, "container");
     CPPUNIT_ASSERT(set->empty());
     CPPUNIT_ASSERT_NO_THROW(m_exportSet->configure());
@@ -78,7 +78,7 @@ void export_set_test::basicTest()
     CPPUNIT_ASSERT_NO_THROW(m_exportSet->update().get());
     CPPUNIT_ASSERT_NO_THROW(m_exportSet->stop().get());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), set->size());
-    CPPUNIT_ASSERT((*set)[0] == helloWorld);
+    CPPUNIT_ASSERT((*set)[0] == hello_world);
 }
 
 //------------------------------------------------------------------------------

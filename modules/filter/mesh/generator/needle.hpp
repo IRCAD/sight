@@ -159,7 +159,7 @@ private:
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the filtered and colored object.
      */
     static vtkSmartPointer<vtkPolyData> filterAndColorSourceObject(
-        vtkAlgorithmOutput* _sourceAlgorithm,
+        vtkAlgorithmOutput* _source_algorithm,
         const std::array<unsigned char, 4>& _rgba
     );
 

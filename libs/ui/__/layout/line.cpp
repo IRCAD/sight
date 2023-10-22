@@ -35,23 +35,23 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-const line::RegistryKeyType line::REGISTRY_KEY = "sight::ui::layout::line";
+const line::registry_key_t line::REGISTRY_KEY = "sight::ui::layout::line";
 
 //-----------------------------------------------------------------------------
 
-void line::initialize(const ui::config_t& configuration)
+void line::initialize(const ui::config_t& _configuration)
 {
-    const auto orientationCfg = configuration.get<std::string>("orientation.<xmlattr>.value", "");
+    const auto orientation_cfg = _configuration.get<std::string>("orientation.<xmlattr>.value", "");
 
-    SIGHT_FATAL_IF("missing orientation configuration", orientationCfg.empty());
+    SIGHT_FATAL_IF("missing orientation configuration", orientation_cfg.empty());
     SIGHT_ASSERT(
-        "Wrong value '" + orientationCfg + "' for 'orientation' attribute (require vertical or horizontal)",
-        orientationCfg == "vertical" || orientationCfg == "horizontal"
+        "Wrong value '" + orientation_cfg + "' for 'orientation' attribute (require vertical or horizontal)",
+        orientation_cfg == "vertical" || orientation_cfg == "horizontal"
     );
-    m_orientation = (orientationCfg == "vertical") ? VERTICAL : HORIZONTAL;
+    m_orientation = (orientation_cfg == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
-    for(auto view : configuration)
+    for(auto view : _configuration)
     {
         if(view.first == "spacer")
         {
@@ -62,49 +62,49 @@ void line::initialize(const ui::config_t& configuration)
         else if(view.first == "view")
         {
             ViewInfo vi;
-            if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
+            if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
             {
-                vi.m_proportion = viewCfg->get<int>("proportion", vi.m_proportion);
+                vi.m_proportion = view_cfg->get<int>("proportion", vi.m_proportion);
 
-                if(const auto border = viewCfg->get_optional<int>("border"); border.has_value())
+                if(const auto border = view_cfg->get_optional<int>("border"); border.has_value())
                 {
                     vi.m_border = border.value();
                 }
                 else
                 {
-                    vi.m_leftBorder   = viewCfg->get<int>("leftBorder", vi.m_leftBorder);
-                    vi.m_topBorder    = viewCfg->get<int>("topBorder", vi.m_topBorder);
-                    vi.m_rightBorder  = viewCfg->get<int>("rightBorder", vi.m_rightBorder);
-                    vi.m_bottomBorder = viewCfg->get<int>("bottomBorder", vi.m_bottomBorder);
+                    vi.m_leftBorder   = view_cfg->get<int>("leftBorder", vi.m_leftBorder);
+                    vi.m_topBorder    = view_cfg->get<int>("topBorder", vi.m_topBorder);
+                    vi.m_rightBorder  = view_cfg->get<int>("rightBorder", vi.m_rightBorder);
+                    vi.m_bottomBorder = view_cfg->get<int>("bottomBorder", vi.m_bottomBorder);
                 }
 
-                vi.m_spacing = viewCfg->get<int>("spacing", vi.m_spacing);
+                vi.m_spacing = view_cfg->get<int>("spacing", vi.m_spacing);
 
-                vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
-                vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
-                vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
-                vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
+                vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
+                vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
+                vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
+                vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
 
-                vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
-                vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-                vi.m_toolTip      = viewCfg->get<std::string>("toolTip", vi.m_toolTip);
-                vi.m_qssKey       = viewCfg->get<std::string>("QSSClass", "");
+                vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
+                vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+                vi.m_toolTip      = view_cfg->get<std::string>("toolTip", vi.m_toolTip);
+                vi.m_qssKey       = view_cfg->get<std::string>("QSSClass", "");
 
-                if(auto caption = viewCfg->get_optional<std::string>("caption"); caption.has_value())
+                if(auto caption = view_cfg->get_optional<std::string>("caption"); caption.has_value())
                 {
                     vi.m_caption.first  = true;
                     vi.m_caption.second = caption.value();
                 }
 
-                if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
+                if(const auto hexa_color = view_cfg->get<std::string>("backgroundColor", ""); !hexa_color.empty())
                 {
                     SIGHT_ASSERT(
                         "Color string should start with '#' and followed by 6 or 8 "
-                        "hexadecimal digits. Given color: " << hexaColor,
-                        hexaColor[0] == '#'
-                        && (hexaColor.length() == 7 || hexaColor.length() == 9)
+                        "hexadecimal digits. Given color: " << hexa_color,
+                        hexa_color[0] == '#'
+                        && (hexa_color.length() == 7 || hexa_color.length() == 9)
                     );
-                    vi.m_backgroundColor = hexaColor;
+                    vi.m_backgroundColor = hexa_color;
                 }
             }
 

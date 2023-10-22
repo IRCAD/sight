@@ -116,18 +116,18 @@ public:
          *
          * @param bo BufferObject to lock
          */
-        lock_base(const SPTR(T)& bo) :
-            m_count(bo->m_count.lock()),
-            m_buffer_object(bo)
+        lock_base(const SPTR(T)& _bo) :
+            m_count(_bo->m_count.lock()),
+            m_buffer_object(_bo)
         {
-            SIGHT_ASSERT("Can't lock NULL object", bo);
+            SIGHT_ASSERT("Can't lock NULL object", _bo);
 
-            core::mt::scoped_lock lock(bo->m_lock_dump_mutex);
+            core::mt::scoped_lock lock(_bo->m_lock_dump_mutex);
 
             if(!m_count)
             {
-                m_count     = bo->m_buffer_manager->lock_buffer(&(bo->m_buffer)).get();
-                bo->m_count = m_count;
+                m_count      = _bo->m_buffer_manager->lock_buffer(&(_bo->m_buffer)).get();
+                _bo->m_count = m_count;
             }
         }
 
@@ -171,7 +171,7 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    CORE_API buffer_object(bool auto_delete = false);
+    CORE_API buffer_object(bool _auto_delete = false);
 
     /**
      * @brief BufferObject destructor
@@ -191,8 +191,8 @@ public:
      *
      */
     CORE_API virtual void allocate(
-        size_t size,
-        const core::memory::buffer_allocation_policy::sptr& policy =
+        size_t _size,
+        const core::memory::buffer_allocation_policy::sptr& _policy =
         std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
@@ -206,7 +206,7 @@ public:
      * @param size New buffer size
      *
      */
-    CORE_API virtual void reallocate(size_t size);
+    CORE_API virtual void reallocate(size_t _size);
 
     /**
      * @brief Buffer deallocation
@@ -228,11 +228,11 @@ public:
      *
      */
     CORE_API virtual void set_buffer(
-        core::memory::buffer_manager::buffer_t buffer,
-        size_t size,
-        const core::memory::buffer_allocation_policy::sptr& policy =
+        core::memory::buffer_manager::buffer_t _buffer,
+        size_t _size,
+        const core::memory::buffer_allocation_policy::sptr& _policy =
         std::make_shared<core::memory::buffer_malloc_policy>(),
-        bool auto_delete = false
+        bool _auto_delete = false
     );
 
     /**
@@ -312,17 +312,17 @@ public:
      * @param policy Buffer allocation policy
      */
     CORE_API void set_istream_factory(
-        const SPTR(core::memory::stream::in::factory)& factory,
-        size_t size,
-        const std::filesystem::path& source_file                   = "",
-        core::memory::file_format_type format                      = core::memory::OTHER,
-        const core::memory::buffer_allocation_policy::sptr& policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        const SPTR(core::memory::stream::in::factory)& _factory,
+        size_t _size,
+        const std::filesystem::path& _source_file                   = "",
+        core::memory::file_format_type _format                      = core::memory::OTHER,
+        const core::memory::buffer_allocation_policy::sptr& _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     /// Equality comparison operators
     /// @{
-    CORE_API bool operator==(const buffer_object& other) const noexcept;
-    CORE_API bool operator!=(const buffer_object& other) const noexcept;
+    CORE_API bool operator==(const buffer_object& _other) const noexcept;
+    CORE_API bool operator!=(const buffer_object& _other) const noexcept;
 
     /// @}
 

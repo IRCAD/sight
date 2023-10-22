@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/__/config.hpp"
-#include "ui/__/detail/registry/Menu.hpp"
+#include "ui/__/detail/registry/menu.hpp"
 #include "ui/__/layout/menu_manager.hpp"
 
 #include <service/base.hpp>
@@ -34,7 +34,7 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class Menu;
+class menu;
 
 }
 
@@ -48,19 +48,19 @@ public:
     SIGHT_DECLARE_SERVICE(menu, service::base);
 
     /// Method called when an action service is stopping
-    UI_API void actionServiceStopping(std::string actionSrvSID);
+    UI_API void actionServiceStopping(std::string _action_srv_sid);
 
     /// Method called when an action service is starting
-    UI_API void actionServiceStarting(std::string actionSrvSID);
+    UI_API void actionServiceStarting(std::string _action_srv_sid);
 
     /// Method called when the action service is activated
-    UI_API void actionServiceSetChecked(std::string actionSrvSID, bool isChecked);
+    UI_API void actionServiceSetChecked(std::string _action_srv_sid, bool _is_checked);
 
     /// Method called when the action service is executable
-    UI_API void actionServiceSetEnabled(std::string actionSrvSID, bool isEnabled);
+    UI_API void actionServiceSetEnabled(std::string _action_srv_sid, bool _is_enabled);
 
     /// Method called when the action service is visible
-    UI_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
+    UI_API void actionServiceSetVisible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
 
@@ -107,7 +107,7 @@ protected:
      *   For example: the menu item named "My item 1" will be connected with the service which have the sid = "item1".
      * - A menu can't have the same service connected on two different menu items.
      *
-     * @see ui::registry::Menu::initialize(), ui::layout::menu_manager::initialize()
+     * @see ui::registry::menu::initialize(), ui::layout::menu_manager::initialize()
      */
     UI_API void initialize();
 
@@ -119,10 +119,10 @@ protected:
 
 private:
 
-    void initializeLayoutManager(const ui::config_t& layoutConfig);
+    void initializeLayoutManager(const ui::config_t& _layout_config);
 
     ui::layout::menu_manager::sptr m_layoutManager;
-    SPTR(ui::detail::registry::Menu) m_registry;
+    SPTR(ui::detail::registry::menu) m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hideActions {false};

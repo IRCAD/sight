@@ -34,32 +34,32 @@ namespace sight::ui::dicom::widget
 
 //-----------------------------------------------------------------------------
 
-QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) :
-    QWidget(parent),
+QTagSelectorWidget::QTagSelectorWidget(QWidget* _parent) :
+    QWidget(_parent),
     m_groupSpinBox(new ui::dicom::widget::QHexSpinBox()),
     m_elementSpinBox(new ui::dicom::widget::QHexSpinBox())
 {
     // Create main layout
-    auto* mainLayout = new QVBoxLayout();
-    this->setLayout(mainLayout);
-    mainLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    auto* main_layout = new QVBoxLayout();
+    this->setLayout(main_layout);
+    main_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Add tag label
     m_tagNameLabel = new QLabel("<b>Tag name :</b> ");
-    mainLayout->addWidget(m_tagNameLabel);
+    main_layout->addWidget(m_tagNameLabel);
 
     // Create bottom widget
-    auto* bottomWidget = new QWidget();
-    mainLayout->addWidget(bottomWidget);
-    auto* bottomLayout = new QHBoxLayout();
-    bottomWidget->setLayout(bottomLayout);
-    bottomLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    auto* bottom_widget = new QWidget();
+    main_layout->addWidget(bottom_widget);
+    auto* bottom_layout = new QHBoxLayout();
+    bottom_widget->setLayout(bottom_layout);
+    bottom_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Spin box
-    bottomLayout->addWidget(new QLabel("<b>Group :</b>"));
-    bottomLayout->addWidget(m_groupSpinBox, 1);
-    bottomLayout->addWidget(new QLabel("<b>Element :</b>"));
-    bottomLayout->addWidget(m_elementSpinBox, 1);
+    bottom_layout->addWidget(new QLabel("<b>Group :</b>"));
+    bottom_layout->addWidget(m_groupSpinBox, 1);
+    bottom_layout->addWidget(new QLabel("<b>Element :</b>"));
+    bottom_layout->addWidget(m_elementSpinBox, 1);
 
     // Update current name
     this->updateTagName();
@@ -89,10 +89,10 @@ void QTagSelectorWidget::updateTagName(int /*value*/)
 
 //-----------------------------------------------------------------------------
 
-void QTagSelectorWidget::setTagValue(const DcmTagKey& tag)
+void QTagSelectorWidget::setTagValue(const DcmTagKey& _tag)
 {
-    m_groupSpinBox->setValue(tag.getGroup());
-    m_elementSpinBox->setValue(tag.getElement());
+    m_groupSpinBox->setValue(_tag.getGroup());
+    m_elementSpinBox->setValue(_tag.getElement());
     this->updateTagName();
 }
 

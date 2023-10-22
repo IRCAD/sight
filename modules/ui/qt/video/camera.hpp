@@ -139,7 +139,7 @@ protected Q_SLOTS:
 private:
 
     /// Type of the 'configured' signal.
-    typedef core::com::signal<void ()> ConfiguredSignalType;
+    typedef core::com::signal<void ()> configured_signal_t;
 
     /// Configures the service.
     void configuring() final;
@@ -178,7 +178,7 @@ private:
     bool m_useAbsolutePath {false};
 
     /// Signal emitted when the cameraSet has been configured.
-    ConfiguredSignalType::sptr m_sigConfiguredCameras;
+    configured_signal_t::sptr m_sigConfiguredCameras;
 
     /// Label of the selector.
     std::string m_label {"Video source: "};

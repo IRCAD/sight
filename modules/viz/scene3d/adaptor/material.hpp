@@ -33,11 +33,11 @@
 #include <data/mesh.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IMaterialAdaptor.hpp>
 #include <viz/scene3d/material.hpp>
+#include <viz/scene3d/material_adaptor.hpp>
 #include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/R2VBRenderable.hpp>
+#include <viz/scene3d/r2vb_renderable.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
@@ -58,7 +58,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor adapts a data::material, allowing to tweak material parameters.
  *
  * @section Slots Slots
- * - \b updateField(data::object::FieldsContainerType): listen to the fields in the data::material.
+ * - \b updateField(data::object::fields_container_t): listen to the fields in the data::material.
  * - \b swapTexture(): listen to the module::viz::scene3d::adaptor::texture changes.
  * - \b addTexture(): called when a texture is added in the data::material.
  * - \b removeTexture(): called when a texture is removed in the data::material.
@@ -88,12 +88,12 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::material.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API material final : public sight::viz::scene3d::IMaterialAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API material final : public sight::viz::scene3d::material_adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(material, sight::viz::scene3d::IMaterialAdaptor);
+    SIGHT_DECLARE_SERVICE(material, sight::viz::scene3d::material_adaptor);
 
     /**
      * @name Slots API
@@ -124,8 +124,8 @@ public:
         const std::string& _name,
         sight::viz::scene3d::render::sptr _service,
         const std::string& _layer,
-        const std::string& _shadingMode = "",
-        const std::string& _template    = sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
+        const std::string& _shading_mode = "",
+        const std::string& _template     = sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
     ) override;
 
     /// Gets Ogre associated material.
@@ -135,13 +135,13 @@ public:
     MODULE_VIZ_SCENE3D_API std::string getMaterialName() const override;
 
     /// Retrieves the associated texture name.
-    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _textureName) override;
+    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _texture_name) override;
 
     /// Sets material name.
-    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _materialName) override;
+    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _material_name) override;
 
     /// Sets material template name.
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName) override;
+    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _material_name) override;
 
     /// Tells if there is a texture currently bound.
     MODULE_VIZ_SCENE3D_API bool hasDiffuseTexture() const override;
@@ -150,10 +150,10 @@ public:
     MODULE_VIZ_SCENE3D_API const std::string& getShadingMode() const override;
 
     /// Sets the shading mode.
-    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shadingMode) override;
+    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shading_mode) override;
 
     /// Set the renderable object.
-    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject) override;
+    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
 
     /// Gets the internal material code.
     MODULE_VIZ_SCENE3D_API sight::viz::scene3d::material* getMaterialFw() const override;
@@ -190,7 +190,7 @@ private:
      * @brief SLOT: updates the material from the input data fields.
      * @param _fields fields to update, only "ogreMaterial" is taken into account.
      */
-    void updateField(data::object::FieldsContainerType _fields);
+    void updateField(data::object::fields_container_t _fields);
 
     /// SLOT: swaps the texture of the material.
     void swapTexture();
@@ -231,14 +231,14 @@ private:
     /// Defines the configured representation mode.
     std::string m_representationMode {"SURFACE"};
 
-    /// Stores a map to convert from string to data::material::RepresentationType (ex: "SURFACE" = SURFACE).
-    std::map<std::string, data::material::RepresentationType> m_representationDict;
+    /// Stores a map to convert from string to data::material::representation_t (ex: "SURFACE" = SURFACE).
+    std::map<std::string, data::material::representation_t> m_representationDict;
 
     /// Contains the Ogre material.
     sight::viz::scene3d::material::uptr m_materialFw;
 
     /// Contains the renderable object.
-    sight::viz::scene3d::R2VBRenderable* m_r2vbObject {nullptr};
+    sight::viz::scene3d::r2vb_renderable* m_r2vbObject {nullptr};
 
     data::ptr<data::material, data::Access::inout> m_materialData {this, s_MATERIAL_INOUT, true};
 };
@@ -252,16 +252,16 @@ inline Ogre::MaterialPtr material::getMaterial()
 
 //------------------------------------------------------------------------------
 
-inline void material::setMaterialTemplateName(const std::string& _materialName)
+inline void material::setMaterialTemplateName(const std::string& _material_name)
 {
-    m_materialTemplateName = _materialName;
+    m_materialTemplateName = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setMaterialName(const std::string& _materialName)
+inline void material::setMaterialName(const std::string& _material_name)
 {
-    m_materialName = _materialName;
+    m_materialName = _material_name;
 }
 
 //------------------------------------------------------------------------------
@@ -287,16 +287,16 @@ inline const std::string& material::getShadingMode() const
 
 //------------------------------------------------------------------------------
 
-inline void material::setShadingMode(const std::string& _shadingMode)
+inline void material::setShadingMode(const std::string& _shading_mode)
 {
-    m_shadingMode = _shadingMode;
+    m_shadingMode = _shading_mode;
 }
 
 //------------------------------------------------------------------------------
 
-inline void material::setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject)
+inline void material::setR2VBObject(sight::viz::scene3d::r2vb_renderable* _r2vb_object)
 {
-    m_r2vbObject = _r2vbObject;
+    m_r2vbObject = _r2vb_object;
 }
 
 //------------------------------------------------------------------------------

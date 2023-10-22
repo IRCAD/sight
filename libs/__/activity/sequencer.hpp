@@ -53,13 +53,13 @@ protected:
      *
      * @warning This method remove the activity that are not in the list of activity to launch
      */
-    ACTIVITY_API int parseActivities(data::activity_set& activity_set);
+    ACTIVITY_API int parseActivities(data::activity_set& _activity_set);
 
     /// Store the data of the activity at the given index
     ACTIVITY_API void storeActivityData(
-        const data::activity_set& activity_set,
-        std::size_t index,
-        const data::composite::csptr& overrides = nullptr
+        const data::activity_set& _activity_set,
+        std::size_t _index,
+        const data::composite::csptr& _overrides = nullptr
     );
 
     /**
@@ -74,9 +74,9 @@ protected:
      * the activity_set
      */
     ACTIVITY_API data::activity::sptr getActivity(
-        data::activity_set& activity_set,
-        std::size_t index,
-        const core::com::slot_base::sptr& slot = nullptr
+        data::activity_set& _activity_set,
+        std::size_t _index,
+        const core::com::slot_base::sptr& _slot = nullptr
     );
 
     /**
@@ -87,7 +87,7 @@ protected:
      * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void removeLastActivities(data::activity_set& activity_set, std::size_t index);
+    ACTIVITY_API void removeLastActivities(data::activity_set& _activity_set, std::size_t _index);
 
     /**
      * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
@@ -97,7 +97,7 @@ protected:
      * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be cleaned
      */
-    ACTIVITY_API void cleanRequirements(std::size_t index);
+    ACTIVITY_API void cleanRequirements(std::size_t _index);
 
     /// List of the activity to create.
     std::vector<std::string> m_activityIds;

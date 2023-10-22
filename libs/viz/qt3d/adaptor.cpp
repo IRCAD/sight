@@ -70,20 +70,20 @@ void adaptor::initialize()
     // Retrieve the render service attached to the adaptor.
     if(m_renderService.expired())
     {
-        auto servicesVector = sight::service::getServices("sight::viz::qt3d::render");
+        auto services_vector = sight::service::get_services("sight::viz::qt3d::render");
 
-        auto& registry       = viz::qt3d::registry::get_adaptor_registry();
-        auto renderServiceId = registry[this->get_id()];
+        auto& registry         = viz::qt3d::registry::get_adaptor_registry();
+        auto render_service_id = registry[this->get_id()];
 
         auto result =
             std::find_if(
-                servicesVector.begin(),
-                servicesVector.end(),
-                [renderServiceId](const service::base::sptr& srv)
+                services_vector.begin(),
+                services_vector.end(),
+                [render_service_id](const service::base::sptr& _srv)
             {
-                return srv->get_id() == renderServiceId;
+                return _srv->get_id() == render_service_id;
             });
-        SIGHT_ASSERT("Can't find '" + renderServiceId + "' render service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + render_service_id + "' render service.", result != services_vector.end());
 
         m_renderService = std::dynamic_pointer_cast<viz::qt3d::render>(*result);
     }

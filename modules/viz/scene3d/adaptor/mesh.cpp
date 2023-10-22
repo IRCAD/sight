@@ -32,8 +32,8 @@
 #include <service/macros.hpp>
 #include <service/op.hpp>
 
-#include <viz/scene3d/helper/Scene.hpp>
-#include <viz/scene3d/R2VBRenderable.hpp>
+#include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/r2vb_renderable.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -64,8 +64,8 @@ mesh::~mesh() noexcept
 {
     if(m_entity != nullptr)
     {
-        Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        sceneMgr->destroyEntity(m_entity);
+        Ogre::SceneManager* scene_mgr = this->getSceneManager();
+        scene_mgr->destroyEntity(m_entity);
     }
 }
 
@@ -87,9 +87,10 @@ void mesh::configuring()
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created material
-    if(const auto materialName = config.get_optional<std::string>(s_CONFIG + "materialName"); materialName.has_value())
+    if(const auto material_name = config.get_optional<std::string>(s_CONFIG + "materialName");
+       material_name.has_value())
     {
-        m_materialName = materialName.value();
+        m_materialName = material_name.value();
     }
     else
     {
@@ -112,15 +113,15 @@ void mesh::configuring()
     m_isDynamic         = config.get<bool>(s_CONFIG + "dynamic", m_isDynamic);
     m_isDynamicVertices = config.get<bool>(s_CONFIG + "dynamicVertices", m_isDynamicVertices);
 
-    if(const auto hexaMask = config.get_optional<std::string>(s_CONFIG + "queryFlags"); hexaMask.has_value())
+    if(const auto hexa_mask = config.get_optional<std::string>(s_CONFIG + "queryFlags"); hexa_mask.has_value())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask.value(),
-            hexaMask->length() > 2
-            && hexaMask->substr(0, 2) == "0x"
+            "Given value : " + hexa_mask.value(),
+            hexa_mask->length() > 2
+            && hexa_mask->substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask.value(), nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask.value(), nullptr, 16));
     }
 }
 
@@ -148,22 +149,22 @@ void mesh::starting()
     if(!m_useNewMaterialAdaptor)
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = this->getRenderService()->getAdaptors<module::viz::scene3d::adaptor::material>();
+        auto mtl_adaptors = this->getRenderService()->getAdaptors<module::viz::scene3d::adaptor::material>();
 
         auto result =
             std::find_if(
-                mtlAdaptors.begin(),
-                mtlAdaptors.end(),
-                [this](const module::viz::scene3d::adaptor::material::sptr& srv)
+                mtl_adaptors.begin(),
+                mtl_adaptors.end(),
+                [this](const module::viz::scene3d::adaptor::material::sptr& _srv)
             {
-                return srv->getMaterialName() == m_materialName;
+                return _srv->getMaterialName() == m_materialName;
             });
 
         m_materialAdaptor = *result;
 
         SIGHT_ASSERT(
             "material adaptor managing material'" + m_materialName + "' is not found",
-            result != mtlAdaptors.end()
+            result != mtl_adaptors.end()
         );
         m_material = m_materialAdaptor->inout<data::material>(material::s_MATERIAL_INOUT).lock().get_shared();
     }
@@ -198,9 +199,9 @@ void mesh::updating()
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
-        Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
-        m_meshGeometry->clearMesh(*sceneMgr);
+        Ogre::SceneManager* scene_mgr = this->getSceneManager();
+        SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
+        m_meshGeometry->clearMesh(*scene_mgr);
     }
 
     this->updateMesh(mesh.get_shared());
@@ -212,17 +213,17 @@ void mesh::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
     this->unregisterServices();
 
-    m_meshGeometry->clearMesh(*sceneMgr);
+    m_meshGeometry->clearMesh(*scene_mgr);
     m_materialAdaptor.reset();
 
     if(m_entity != nullptr)
     {
-        sceneMgr->destroyEntity(m_entity);
+        scene_mgr->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 
@@ -247,21 +248,21 @@ void module::viz::scene3d::adaptor::mesh::setVisible(bool _visible)
 
 void mesh::updateMesh(data::mesh::csptr _mesh)
 {
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
-    const std::size_t uiNumVertices = _mesh->numPoints();
-    if(uiNumVertices == 0)
+    const std::size_t ui_num_vertices = _mesh->numPoints();
+    if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
 
         if(m_entity != nullptr)
         {
-            sceneMgr->destroyEntity(m_entity);
+            scene_mgr->destroyEntity(m_entity);
             m_entity = nullptr;
         }
 
-        m_meshGeometry->clearMesh(*sceneMgr);
+        m_meshGeometry->clearMesh(*scene_mgr);
         return;
     }
 
@@ -283,10 +284,10 @@ void mesh::updateMesh(data::mesh::csptr _mesh)
 
     if(m_entity == nullptr)
     {
-        m_entity = m_meshGeometry->createEntity(*sceneMgr);
+        m_entity = m_meshGeometry->createEntity(*scene_mgr);
         m_entity->setVisible(m_isVisible);
         m_entity->setQueryFlags(m_queryFlags);
-        sceneMgr->getRootSceneNode()->detachObject(m_entity);
+        scene_mgr->getRootSceneNode()->detachObject(m_entity);
     }
     else
     {
@@ -310,37 +311,37 @@ void mesh::updateMesh(data::mesh::csptr _mesh)
 
     this->attachNode(m_entity);
 
-    auto r2vbRenderables = m_meshGeometry->updateR2VB(
+    auto r2vb_renderables = m_meshGeometry->updateR2VB(
         _mesh,
-        *sceneMgr,
+        *scene_mgr,
         m_materialAdaptor->getMaterialName()
     );
-    for(auto* renderable : r2vbRenderables.second)
+    for(auto* renderable : r2vb_renderables.second)
     {
         auto adaptor = renderable->m_materialAdaptor.lock();
 
-        if(r2vbRenderables.first)
+        if(r2vb_renderables.first)
         {
             if(adaptor)
             {
-                auto r2vbMtlAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
-                m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
+                auto r2vb_mtl_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
+                m_meshGeometry->updateMaterial(r2vb_mtl_adaptor->getMaterialFw(), true);
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-                r2vbMtlAdaptor->slot(service::slots::UPDATE)->run();
+                r2vb_mtl_adaptor->slot(service::slots::UPDATE)->run();
             }
             else
             {
                 // Instantiate a material adaptor for the r2vb process for this primitive type
                 adaptor = this->createMaterialService(_mesh, renderable->getName());
 
-                auto r2vbMtlAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
-                r2vbMtlAdaptor->setR2VBObject(renderable);
-                r2vbMtlAdaptor->start();
-                m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
-                r2vbMtlAdaptor->update();
+                auto r2vb_mtl_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
+                r2vb_mtl_adaptor->setR2VBObject(renderable);
+                r2vb_mtl_adaptor->start();
+                m_meshGeometry->updateMaterial(r2vb_mtl_adaptor->getMaterialFw(), true);
+                r2vb_mtl_adaptor->update();
 
-                renderable->setRenderToBufferMaterial(r2vbMtlAdaptor->getMaterialName());
-                renderable->m_materialAdaptor = r2vbMtlAdaptor;
+                renderable->setRenderToBufferMaterial(r2vb_mtl_adaptor->getMaterialName());
+                renderable->m_materialAdaptor = r2vb_mtl_adaptor;
             }
 
             // Attach r2vb object in the scene graph
@@ -370,36 +371,36 @@ void mesh::updateMesh(data::mesh::csptr _mesh)
 
 adaptor::material::sptr mesh::createMaterialService(
     data::mesh::csptr _mesh,
-    const std::string& _materialSuffix
+    const std::string& _material_suffix
 )
 {
-    auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    auto material_adaptor = this->registerService<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    materialAdaptor->set_inout(m_material, "material", true);
+    material_adaptor->set_inout(m_material, "material", true);
 
-    const std::string meshName = _mesh->get_id();
-    const std::string mtlName  = meshName + "_" + (materialAdaptor->get_id()) + _materialSuffix;
-    const auto tplName         =
+    const std::string mesh_name = _mesh->get_id();
+    const std::string mtl_name  = mesh_name + "_" + (material_adaptor->get_id()) + _material_suffix;
+    const auto template_name    =
         !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::material::
         DEFAULT_MATERIAL_TEMPLATE_NAME;
 
-    materialAdaptor->configure(
-        this->get_id() + "_" + materialAdaptor->get_id(),
-        mtlName,
+    material_adaptor->configure(
+        this->get_id() + "_" + material_adaptor->get_id(),
+        mtl_name,
         this->getRenderService(),
         m_layerID,
         m_shadingMode,
-        tplName
+        template_name
     );
 
-    if(_materialSuffix.empty())
+    if(_material_suffix.empty())
     {
         // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
-        materialAdaptor->setTextureName(m_textureName);
+        material_adaptor->setTextureName(m_textureName);
     }
 
-    return materialAdaptor;
+    return material_adaptor;
 }
 
 //------------------------------------------------------------------------------
@@ -439,9 +440,9 @@ void mesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            const auto mesh      = m_mesh.lock();
-            std::string meshName = mesh->get_id();
-            m_materialAdaptor->setMaterialName(meshName + "_Material");
+            const auto mesh       = m_mesh.lock();
+            std::string mesh_name = mesh->get_id();
+            m_materialAdaptor->setMaterialName(mesh_name + "_Material");
         }
 
         if(m_entity != nullptr)
@@ -474,10 +475,10 @@ void mesh::modifyVertices()
 
     m_meshGeometry->updateVertices(mesh.get_shared());
 
-    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const scene_mgr = this->getSceneManager();
     m_meshGeometry->updateR2VB(
         mesh.get_shared(),
-        *sceneMgr,
+        *scene_mgr,
         m_materialAdaptor->getMaterialName()
     );
 
@@ -508,9 +509,9 @@ void mesh::modifyPointColors()
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
-        Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
-        m_meshGeometry->clearMesh(*sceneMgr);
+        Ogre::SceneManager* scene_mgr = this->getSceneManager();
+        SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
+        m_meshGeometry->clearMesh(*scene_mgr);
         this->updateMesh(mesh.get_shared());
     }
     else
@@ -544,15 +545,15 @@ void mesh::modifyTexCoords()
 
 void mesh::attachNode(Ogre::MovableObject* _node)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
 
     Ogre::SceneNode* node = _node->getParentSceneNode();
 
-    if(node != transNode)
+    if(node != trans_node)
     {
         _node->detachFromParent();
-        transNode->attachObject(_node);
+        trans_node->attachObject(_node);
     }
 }
 

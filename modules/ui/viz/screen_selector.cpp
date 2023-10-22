@@ -41,7 +41,7 @@ static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screenSelected";
 //------------------------------------------------------------------------------
 
 screen_selector::screen_selector() :
-    m_screenSelectedSig(new_signal<ScreenSelectedSignalType>(SCREEN_SELECTED_SIG))
+    m_screenSelectedSig(new_signal<screen_selected_signal_t>(SCREEN_SELECTED_SIG))
 {
 }
 
@@ -56,9 +56,9 @@ void screen_selector::configuring()
 {
     this->initialize();
 
-    const auto configTree = this->get_config();
+    const auto config_tree = this->get_config();
 
-    m_mode = configTree.get("config.<xmlattr>.mode", m_mode);
+    m_mode = config_tree.get("config.<xmlattr>.mode", m_mode);
 
     SIGHT_ERROR_IF(
         "Unknown selection mode '" + m_mode + "'.",
@@ -77,34 +77,34 @@ void screen_selector::starting()
 
 void screen_selector::updating()
 {
-    int screenNum = -1;
+    int screen_num = -1;
     if(m_mode == "select")
     {
-        screenNum = sight::module::ui::viz::screen_selector::selectScreen();
+        screen_num = sight::module::ui::viz::screen_selector::selectScreen();
     }
     else
     {
         const QDesktopWidget* desktop = QApplication::desktop();
 
-        screenNum = desktop->screenNumber(qApp->activeWindow());
+        screen_num = desktop->screenNumber(qApp->activeWindow());
 
         if(m_mode == "neighbor")
         {
-            screenNum++;
+            screen_num++;
         }
 
         const auto screens = QGuiApplication::screens();
-        if(screenNum >= QGuiApplication::screens().count())
+        if(screen_num >= QGuiApplication::screens().count())
         {
             QScreen* screen = QGuiApplication::primaryScreen();
             auto it         = std::ranges::find(screens, screen);
-            screenNum = it - screens.begin();
+            screen_num = it - screens.begin();
         }
     }
 
-    if(screenNum >= 0)
+    if(screen_num >= 0)
     {
-        m_screenSelectedSig->async_emit(screenNum);
+        m_screenSelectedSig->async_emit(screen_num);
     }
 }
 
@@ -119,8 +119,8 @@ void screen_selector::stopping()
 
 int screen_selector::selectScreen()
 {
-    QStringList screenNames;
-    int screenNumber = 0;
+    QStringList screen_names;
+    int screen_number = 0;
 
     if(QGuiApplication::screens().size() <= 1)
     {
@@ -129,54 +129,54 @@ int screen_selector::selectScreen()
 
     for(QScreen* screen : QGuiApplication::screens())
     {
-        const QString numberStr = QString::number(screenNumber++) + ".";
+        const QString number_str = QString::number(screen_number++) + ".";
 
         // Compute the screen's diagonal length in inches.
-        constexpr qreal inchesPerMillimeter = 0.03937008;
-        const auto screenSize               = screen->physicalSize();
-        const qreal diagonalLengthMm        = std::sqrt(
-            screenSize.width() * screenSize.width()
-            + screenSize.height() * screenSize.height()
+        constexpr qreal inches_per_millimeter = 0.03937008;
+        const auto screen_size                = screen->physicalSize();
+        const qreal diagonal_length_mm        = std::sqrt(
+            screen_size.width() * screen_size.width()
+            + screen_size.height() * screen_size.height()
         );
-        const qreal diagonalLengthInches = diagonalLengthMm * inchesPerMillimeter;
+        const qreal diagonal_length_inches = diagonal_length_mm * inches_per_millimeter;
 
-        const QString diagonal = QString::number(diagonalLengthInches, 'f', 1) + "\"";
+        const QString diagonal = QString::number(diagonal_length_inches, 'f', 1) + "\"";
 
         const auto geom          = screen->geometry();
         const QString resolution = "[" + QString::number(geom.width()) + "x" + QString::number(geom.height()) + "]";
 
-        QString displayName = screen->manufacturer() + " " + screen->model();
-        if(displayName.size() == 1)
+        QString display_name = screen->manufacturer() + " " + screen->model();
+        if(display_name.size() == 1)
         {
-            displayName = screen->name();
+            display_name = screen->name();
         }
 
-        screenNames << numberStr + " " + diagonal + " " + resolution + " " + displayName;
+        screen_names << number_str + " " + diagonal + " " + resolution + " " + display_name;
     }
 
-    bool okClicked       = false;
-    QString selectedItem = QInputDialog::getItem(
+    bool ok_clicked       = false;
+    QString selected_item = QInputDialog::getItem(
         nullptr,
         "Select a screen.",
         "Screen:",
-        screenNames,
+        screen_names,
         0,
         false,
-        &okClicked
+        &ok_clicked
     );
 
-    std::int64_t retScreen = -1;
-    if(okClicked)
+    std::int64_t ret_screen = -1;
+    if(ok_clicked)
     {
-        auto nameIt = std::find(screenNames.cbegin(), screenNames.cend(), selectedItem);
+        auto name_it = std::find(screen_names.cbegin(), screen_names.cend(), selected_item);
 
-        if(nameIt != screenNames.cend())
+        if(name_it != screen_names.cend())
         {
-            retScreen = std::distance(screenNames.cbegin(), nameIt);
+            ret_screen = std::distance(screen_names.cbegin(), name_it);
         }
     }
 
-    return static_cast<int>(retScreen);
+    return static_cast<int>(ret_screen);
 }
 
 //------------------------------------------------------------------------------

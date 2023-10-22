@@ -23,7 +23,7 @@
 #include "ui/qt/builder/menubar.hpp"
 #include "ui/qt/container/menubar.hpp"
 
-#include "ui/qt/App.hpp"
+#include "ui/qt/app.hpp"
 #include "ui/qt/container/widget.hpp"
 
 #include <data/tools/color.hpp>
@@ -40,9 +40,9 @@ namespace sight::ui::qt::builder
 
 //-----------------------------------------------------------------------------
 
-void menubar::createMenuBar(ui::container::widget::sptr parent)
+void menubar::createMenuBar(ui::container::widget::sptr _parent)
 {
-    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(parent);
+    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
     auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
     if(window == nullptr)
@@ -53,11 +53,11 @@ void menubar::createMenuBar(ui::container::widget::sptr parent)
     SIGHT_ASSERT("The parent container must be a QMainWindow", window);
     if(window != nullptr)
     {
-        auto menuBarContainer = ui::qt::container::menubar::make();
-        auto* menuBar         = new QMenuBar(nullptr);
-        menuBarContainer->setQtMenuBar(menuBar);
-        window->setMenuBar(menuBar);
-        m_menuBar = menuBarContainer;
+        auto menu_bar_container = ui::qt::container::menubar::make();
+        auto* menu_bar          = new QMenuBar(nullptr);
+        menu_bar_container->setQtMenuBar(menu_bar);
+        window->setMenuBar(menu_bar);
+        m_menuBar = menu_bar_container;
 
         if(!m_backgroundColor.empty())
         {
@@ -69,7 +69,7 @@ void menubar::createMenuBar(ui::container::widget::sptr parent)
             << static_cast<std::int16_t>(rgba[2]) << ','
             << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
-            menuBar->setStyleSheet(qApp->styleSheet() + style);
+            menu_bar->setStyleSheet(qApp->styleSheet() + style);
         }
     }
 }

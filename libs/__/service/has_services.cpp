@@ -52,9 +52,9 @@ has_services::~has_services() noexcept
 service::base::csptr has_services::getRegisteredService(const core::tools::id::type& _id) const
 {
     service::base::sptr srv;
-    for(const auto& wService : m_subServices)
+    for(const auto& w_service : m_subServices)
     {
-        const service::base::sptr& service = wService.lock();
+        const service::base::sptr& service = w_service.lock();
         if(service && (service->get_id() == _id))
         {
             srv = service;
@@ -69,18 +69,18 @@ service::base::csptr has_services::getRegisteredService(const core::tools::id::t
 
 void has_services::unregisterService(const core::tools::id::type& _id)
 {
-    for(auto itSrv = m_subServices.begin() ; itSrv != m_subServices.end() ; )
+    for(auto it_srv = m_subServices.begin() ; it_srv != m_subServices.end() ; )
     {
-        const service::base::sptr& service = itSrv->lock();
+        const service::base::sptr& service = it_srv->lock();
         if(service && (service->get_id() == _id))
         {
             service->stop().wait();
-            service::unregisterService(service);
-            itSrv = m_subServices.erase(itSrv);
+            service::unregister_service(service);
+            it_srv = m_subServices.erase(it_srv);
         }
         else
         {
-            itSrv++;
+            it_srv++;
         }
     }
 }
@@ -92,23 +92,23 @@ void has_services::unregisterService(const base::sptr& _service)
     auto iter = std::find_if(
         m_subServices.begin(),
         m_subServices.end(),
-        [ = ](const service::base::wptr& adaptor)
+        [ = ](const service::base::wptr& _adaptor)
         {
-            return adaptor.lock() == _service;
+            return _adaptor.lock() == _service;
         });
 
     SIGHT_ASSERT("service '" + _service->get_id() + "' is not registered", iter != m_subServices.end());
     m_subServices.erase(iter);
 
     _service->stop().wait();
-    service::unregisterService(_service);
+    service::unregister_service(_service);
 }
 
 //------------------------------------------------------------------------------
 
-service::base::sptr has_services::registerService(const std::string& _implType, const std::string& _id)
+service::base::sptr has_services::registerService(const std::string& _impl_type, const std::string& _id)
 {
-    auto srv = service::add(_implType, _id);
+    auto srv = service::add(_impl_type, _id);
     m_subServices.push_back(srv);
 
     return srv;
@@ -119,18 +119,18 @@ service::base::sptr has_services::registerService(const std::string& _implType, 
 void has_services::unregisterServices(const std::string& _classname)
 {
     const std::string classname = core::runtime::filter_id(_classname);
-    for(auto itSrv = m_subServices.begin() ; itSrv != m_subServices.end() ; )
+    for(auto it_srv = m_subServices.begin() ; it_srv != m_subServices.end() ; )
     {
-        const service::base::sptr& srv = itSrv->lock();
+        const service::base::sptr& srv = it_srv->lock();
         if(srv && (classname.empty() || srv->get_classname() == classname))
         {
             srv->stop().wait();
-            service::unregisterService(srv);
-            itSrv = m_subServices.erase(itSrv);
+            service::unregister_service(srv);
+            it_srv = m_subServices.erase(it_srv);
         }
         else
         {
-            itSrv++;
+            it_srv++;
         }
     }
 }

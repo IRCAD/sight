@@ -28,7 +28,7 @@
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -49,11 +49,11 @@ void WriterTest::setUp()
 {
     // Set the profile name (needed for the preferences to work)
     sight::core::runtime::init();
-    const std::string& profileName = sight::core::tools::UUID::generate();
-    sight::core::runtime::get_current_profile()->set_name(profileName);
+    const std::string& profile_name = sight::core::tools::UUID::generate();
+    sight::core::runtime::get_current_profile()->set_name(profile_name);
 
     // Enables the preferences
-    sight::ui::Preferences::set_enabled(true);
+    sight::ui::preferences::set_enabled(true);
 
     m_rootPath = core::os::temp_dir::shared_directory();
 }
@@ -64,12 +64,12 @@ void WriterTest::tearDown()
 {
     m_rootPath = "";
 
-    ui::Preferences preferences;
+    ui::preferences preferences;
 
     // Clear the preferences
-    ui::Preferences::clear();
+    ui::preferences::clear();
     // Disables the preferences
-    sight::ui::Preferences::set_enabled(false);
+    sight::ui::preferences::set_enabled(false);
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void WriterTest::test_typeOK()
         srv->start();
 
         CPPUNIT_ASSERT_NO_THROW(srv->get_file());
-        CPPUNIT_ASSERT_THROW(srv->get_folder(), __FWCORE_EXCEPTION_CLASS);
+        CPPUNIT_ASSERT_THROW(srv->get_folder(), FWCORE_EXCEPTION_CLASS);
     }
 
     // Test using the wrong method for accessing a folder
@@ -102,7 +102,7 @@ void WriterTest::test_typeOK()
         srv->configure();
         srv->start();
 
-        CPPUNIT_ASSERT_THROW(srv->get_file(), __FWCORE_EXCEPTION_CLASS);
+        CPPUNIT_ASSERT_THROW(srv->get_file(), FWCORE_EXCEPTION_CLASS);
         CPPUNIT_ASSERT_NO_THROW(srv->get_folder());
     }
 }

@@ -179,7 +179,7 @@ private:
      * @brief Create a series_set and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(data::series_set) createSeriesSet(const std::filesystem::path& dicomDir);
+    SPTR(data::series_set) createSeriesSet(const std::filesystem::path& _dicom_dir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterConfig;

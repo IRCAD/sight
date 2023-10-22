@@ -49,7 +49,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="imageDumpLocker" type="sight::module::memory::LockDumpSrv">
+        <service uid="imageDumpLocker" type="sight::module::memory::lock_dump">
             <inout key="target" uid="image" />
         </service>
 

@@ -35,22 +35,22 @@ namespace sight::io::session::detail::plane_list
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto planeList = helper::safe_cast<data::plane_list>(object);
+    const auto plane_list = helper::safe_cast<data::plane_list>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::plane_list>(tree, 1);
+    helper::write_version<data::plane_list>(_tree, 1);
 
     // Add points to children list
     std::size_t index = 0;
-    for(const auto& plane : planeList->getPlanes())
+    for(const auto& plane : plane_list->getPlanes())
     {
-        children[data::plane::classname() + std::to_string(index++)] = plane;
+        _children[data::plane::classname() + std::to_string(index++)] = plane;
     }
 }
 
@@ -58,29 +58,29 @@ inline static void write(
 
 inline static data::plane_list::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto planeList = helper::cast_or_create<data::plane_list>(object);
+    auto plane_list = helper::cast_or_create<data::plane_list>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::plane_list>(tree, 0, 1);
+    helper::read_version<data::plane_list>(_tree, 0, 1);
 
     // Deserialize planes
-    auto& planes = planeList->getPlanes();
+    auto& planes = plane_list->getPlanes();
 
     // Clearing is required in case the object is reused
     planes.clear();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::plane::classname() + std::to_string(index));
+        const auto& it = _children.find(data::plane::classname() + std::to_string(index));
 
-        if(it == children.cend())
+        if(it == _children.cend())
         {
             break;
         }
@@ -88,7 +88,7 @@ inline static data::plane_list::sptr read(
         planes.push_back(std::dynamic_pointer_cast<data::plane>(it->second));
     }
 
-    return planeList;
+    return plane_list;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::plane_list, write, read);

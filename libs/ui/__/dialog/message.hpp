@@ -49,9 +49,9 @@ public:
      * @return Returns the button enum value corresponding to the pressed button
      */
     UI_API static message::Buttons show(
-        const std::string& title,
-        const std::string& message,
-        message::Icons icon = INFO
+        const std::string& _title,
+        const std::string& _message,
+        message::Icons _icon = INFO
     );
 
     /// Constructor. Create the implementation of the specific message box
@@ -65,28 +65,28 @@ public:
      * @param message Message of the message box
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
-    UI_API message(const std::string& title, const std::string& message, message::Icons icon = INFO);
+    UI_API message(const std::string& _title, const std::string& _message, message::Icons _icon = INFO);
 
     /// Destructor. Do nothing
     UI_API ~message() override;
 
     /// Set the title of the message box
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     /// Set the message
-    UI_API void setMessage(const std::string& msg) override;
+    UI_API void setMessage(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API void setIcon(message::Icons icon) override;
+    UI_API void setIcon(message::Icons _icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_API void addButton(message::Buttons button) override;
+    UI_API void addButton(message::Buttons _button) override;
 
     /// Set the default button
-    UI_API void setDefaultButton(message::Buttons button) override;
+    UI_API void setDefaultButton(message::Buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Show the message box and return the clicked button.
     UI_API message::Buttons show() override;

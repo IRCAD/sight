@@ -27,7 +27,7 @@
 #include <ui/__/editor.hpp>
 #include <ui/qt/container/widget.hpp>
 
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <QVBoxLayout>
@@ -83,7 +83,7 @@ protected:
 private:
 
     /// Slot: update the interface.
-    void updateCompositor(std::string _compositorName, bool _enabled, sight::viz::scene3d::Layer::sptr _layer);
+    void updateCompositor(std::string _compositor_name, bool _enabled, sight::viz::scene3d::layer::sptr _layer);
 
     /// Clear the current container
     void clear();

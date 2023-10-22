@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <itkImage.h>
 #include <itkImageRegion.h>
@@ -35,134 +35,134 @@ namespace sight::io::itk
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-void moveFromItk(
-    typename ITKIMAGE::Pointer _itkImage,
-    data::image::sptr _dataImage,
-    bool _bufferManagerIsDataImage
+void move_from_itk(
+    typename ITKIMAGE::Pointer _itk_image,
+    data::image::sptr _data_image,
+    bool _buffer_manager_is_data_image
 )
 {
-    SIGHT_ASSERT("_dataImage not instanced", _dataImage);
+    SIGHT_ASSERT("_dataImage not instanced", _data_image);
 
     // Add by arnaud
-    std::uint8_t dim              = ITKIMAGE::ImageDimension;
-    data::image::Spacing vSpacing = {0., 0., 0.};
-    data::image::Origin vOrigin   = {0., 0., 0.};
-    data::image::Size vSize       = {0, 0, 0};
+    std::uint8_t dim               = ITKIMAGE::ImageDimension;
+    data::image::Spacing v_spacing = {0., 0., 0.};
+    data::image::Origin v_origin   = {0., 0., 0.};
+    data::image::Size v_size       = {0, 0, 0};
 
     for(std::uint8_t d = 0 ; d < dim ; ++d)
     {
-        vOrigin[d]  = _itkImage->GetOrigin()[d];
-        vSize[d]    = _itkImage->GetBufferedRegion().GetSize()[d];
-        vSpacing[d] = _itkImage->GetSpacing()[d];
+        v_origin[d]  = _itk_image->GetOrigin()[d];
+        v_size[d]    = _itk_image->GetBufferedRegion().GetSize()[d];
+        v_spacing[d] = _itk_image->GetSpacing()[d];
     }
 
-    _dataImage->setOrigin(vOrigin);
-    _dataImage->setSpacing(vSpacing);
+    _data_image->setOrigin(v_origin);
+    _data_image->setSpacing(v_spacing);
 
-    const auto pixelType = core::type::get<typename ITKIMAGE::PixelType>();
-    const auto dumpLock  = _dataImage->dump_lock();
-    if(_bufferManagerIsDataImage)
+    const auto pixel_type = core::type::get<typename ITKIMAGE::PixelType>();
+    const auto dump_lock  = _data_image->dump_lock();
+    if(_buffer_manager_is_data_image)
     {
         SIGHT_ASSERT(
             "Sorry, this method requires that itkImage manages its buffer.",
-            _itkImage->GetPixelContainer()->GetContainerManageMemory()
+            _itk_image->GetPixelContainer()->GetContainerManageMemory()
         );
-        _dataImage->setBuffer(
-            static_cast<void*>(_itkImage->GetBufferPointer()),
+        _data_image->setBuffer(
+            static_cast<void*>(_itk_image->GetBufferPointer()),
             true,
-            pixelType,
-            vSize,
+            pixel_type,
+            v_size,
             data::image::GRAY_SCALE,
             std::make_shared<core::memory::buffer_new_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
-        _itkImage->GetPixelContainer()->SetContainerManageMemory(false);
+        _itk_image->GetPixelContainer()->SetContainerManageMemory(false);
     }
     else
     {
-        _dataImage->setBuffer(
-            static_cast<void*>(_itkImage->GetBufferPointer()),
+        _data_image->setBuffer(
+            static_cast<void*>(_itk_image->GetBufferPointer()),
             false,
-            pixelType,
-            vSize,
+            pixel_type,
+            v_size,
             data::image::GRAY_SCALE
         );
     }
 
-    if(sight::data::helper::MedicalImage::checkImageValidity(_dataImage))
+    if(sight::data::helper::medical_image::check_image_validity(_data_image))
     {
-        sight::data::helper::MedicalImage::checkImageSliceIndex(_dataImage);
+        sight::data::helper::medical_image::check_image_slice_index(_data_image);
     }
 
-    // Post Condition correct PixelType
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::type::NONE);
+    // Post Condition correct pixel_t
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _data_image->getType() != core::type::NONE);
 }
 
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-data::image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage)
+data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buffer_manager_is_data_image)
 {
     data::image::sptr data = std::make_shared<data::image>();
-    io::itk::moveFromItk<ITKIMAGE>(itkImage, data, bufferManagerIsDataImage);
+    io::itk::move_from_itk<ITKIMAGE>(_itk_image, data, _buffer_manager_is_data_image);
     return data;
 }
 
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE_PTR>
-void moveFromItk(ITKIMAGE_PTR itkImage, data::image::sptr _dataImage)
+void move_from_itk(ITKIMAGE_PTR _itk_image, data::image::sptr _data_image)
 {
-    moveFromItk<typename ITKIMAGE_PTR::ObjectType>(itkImage, _dataImage);
+    move_from_itk<typename ITKIMAGE_PTR::ObjectType>(_itk_image, _data_image);
 }
 
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer moveToItk(data::image::csptr imageData)
+typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
 {
     // Pre Condition
     SIGHT_ASSERT(
         "Sorry, itk image dimension not correspond to fwData image",
-        imageData->numDimensions() == ITKIMAGE::ImageDimension
+        _image_data->numDimensions() == ITKIMAGE::ImageDimension
     );
 
-    const auto dumpLock = imageData->dump_lock();
+    const auto dump_lock = _image_data->dump_lock();
 
-    typename ITKIMAGE::Pointer itkImage = ITKIMAGE::New();
+    typename ITKIMAGE::Pointer itk_image = ITKIMAGE::New();
 
     // update spacing information ; workaround due to GetSpacing const
-    typename ITKIMAGE::SpacingType spacing = itkImage->GetSpacing();
+    typename ITKIMAGE::SpacingType spacing = itk_image->GetSpacing();
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
-        spacing[d] = imageData->getSpacing()[d];
+        spacing[d] = _image_data->getSpacing()[d];
     }
 
-    itkImage->SetSpacing(spacing);
+    itk_image->SetSpacing(spacing);
 
     // update origin information
-    itkImage->SetOrigin(imageData->getOrigin().data());
+    itk_image->SetOrigin(_image_data->getOrigin().data());
 
-    ::itk::ImageRegion<ITKIMAGE::ImageDimension> itkRegion;
+    ::itk::ImageRegion<ITKIMAGE::ImageDimension> itk_region;
 
     std::uint64_t nb_pixels = 1;
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
-        itkRegion.SetSize(d, static_cast<std::uint64_t>(imageData->size()[d]));
-        nb_pixels *= static_cast<std::uint64_t>(itkRegion.GetSize()[d]);
+        itk_region.SetSize(d, static_cast<std::uint64_t>(_image_data->size()[d]));
+        nb_pixels *= static_cast<std::uint64_t>(itk_region.GetSize()[d]);
     }
 
-    itkImage->SetRegions(itkRegion);
+    itk_image->SetRegions(itk_region);
 
-    itkImage->GetPixelContainer()->SetImportPointer(
+    itk_image->GetPixelContainer()->SetImportPointer(
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(imageData->buffer())),
+        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(_image_data->buffer())),
         nb_pixels,
         false
     );
 
-    return itkImage;
+    return itk_image;
 }
 
 //------------------------------------------------------------------------------

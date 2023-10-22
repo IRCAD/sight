@@ -47,12 +47,12 @@ public:
      * @param[in] _targetImg image used to set the desired origin, spacing and size.
      */
     static FILTER_IMAGE_API void resample(
-        const data::image::csptr& _inImage,
-        const data::image::sptr& _outImage,
+        const data::image::csptr& _in_image,
+        const data::image::sptr& _out_image,
         const data::matrix4::csptr& _trf,
         std::optional<std::tuple<data::image::Size,
                                  data::image::Origin,
-                                 data::image::Spacing> > parameters = std::nullopt
+                                 data::image::Spacing> > _parameters = std::nullopt
     );
 
     /**
@@ -65,7 +65,7 @@ public:
     static FILTER_IMAGE_API data::image::sptr resample(
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
-        const data::image::Spacing& _outputSpacing
+        const data::image::Spacing& _output_spacing
     );
 };
 

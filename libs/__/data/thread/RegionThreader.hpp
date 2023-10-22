@@ -36,37 +36,37 @@ class RegionThreader
 public:
 
     RegionThreader() :
-        m_nbThread((std::thread::hardware_concurrency() > 1) ? std::thread::hardware_concurrency() : 1)
+        M_NB_THREAD((std::thread::hardware_concurrency() > 1) ? std::thread::hardware_concurrency() : 1)
     {
     }
 
-    RegionThreader(std::size_t nbThread, bool capped = true) :
-        m_nbThread(std::min(capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
-                            (nbThread > 1) ? nbThread : 1))
+    RegionThreader(std::size_t _nb_thread, bool _capped = true) :
+        M_NB_THREAD(std::min(_capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
+                             (_nb_thread > 1) ? _nb_thread : 1))
     {
     }
 
     //------------------------------------------------------------------------------
 
     template<typename T>
-    void operator()(T func, const std::ptrdiff_t dataSize)
+    void operator()(T _func, const std::ptrdiff_t _data_size)
     {
         std::vector<std::thread> threads;
 
-        const std::ptrdiff_t step = (dataSize / static_cast<std::ptrdiff_t>(m_nbThread)) + 1;
+        const std::ptrdiff_t step = (_data_size / static_cast<std::ptrdiff_t>(M_NB_THREAD)) + 1;
 
-        if(m_nbThread > 1)
+        if(M_NB_THREAD > 1)
         {
-            std::ptrdiff_t regionBegin = 0;
-            std::size_t threadId       = 0;
-            for( ; regionBegin < dataSize ; regionBegin += step, ++threadId)
+            std::ptrdiff_t region_begin = 0;
+            std::size_t thread_id       = 0;
+            for( ; region_begin < _data_size ; region_begin += step, ++thread_id)
             {
                 threads.push_back(
                     std::thread(
-                        func,
-                        regionBegin,
-                        std::min(dataSize, regionBegin + step),
-                        threadId
+                        _func,
+                        region_begin,
+                        std::min(_data_size, region_begin + step),
+                        thread_id
                     )
                 );
             }
@@ -80,7 +80,7 @@ public:
         }
         else
         {
-            func(0, dataSize, 0);
+            _func(0, _data_size, 0);
         }
     }
 
@@ -88,12 +88,12 @@ public:
 
     [[nodiscard]] std::size_t numberOfThread() const
     {
-        return m_nbThread;
+        return M_NB_THREAD;
     }
 
 protected:
 
-    const std::size_t m_nbThread;
+    const std::size_t M_NB_THREAD;
 };
 
 } // namespace sight::data::thread

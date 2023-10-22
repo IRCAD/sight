@@ -70,11 +70,11 @@ void sliced_image_series_writer::configuring()
 
 void sliced_image_series_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
-    dialog.setDefaultLocation(defaultDirectory);
+    dialog.setDefaultLocation(default_directory);
     dialog.setOption(ui::dialog::location::WRITE);
     dialog.setType(ui::dialog::location::FOLDER);
 
@@ -88,13 +88,13 @@ void sliced_image_series_writer::openLocationDialog()
         }
 
         // message box
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Overwrite confirmation");
-        messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(ui::dialog::message::QUESTION);
-        messageBox.addButton(ui::dialog::message::YES);
-        messageBox.addButton(ui::dialog::message::CANCEL);
-        if(messageBox.show() == sight::ui::dialog::message::YES)
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Overwrite confirmation");
+        message_box.setMessage("The selected directory is not empty. Write anyway ?");
+        message_box.setIcon(ui::dialog::message::QUESTION);
+        message_box.addButton(ui::dialog::message::YES);
+        message_box.addButton(ui::dialog::message::CANCEL);
+        if(message_box.show() == sight::ui::dialog::message::YES)
         {
             break;
         }
@@ -103,8 +103,8 @@ void sliced_image_series_writer::openLocationDialog()
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialog.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -138,12 +138,12 @@ void sliced_image_series_writer::updating()
     m_writeFailed = true;
     if(this->hasLocationDefined())
     {
-        const auto data        = m_data.lock();
-        const auto imageSeries = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        const auto data         = m_data.lock();
+        const auto image_series = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
+        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", image_series);
 
         sight::ui::BusyCursor cursor;
-        image_writer::saveImage(this->get_folder(), imageSeries);
+        image_writer::saveImage(this->get_folder(), image_series);
         m_writeFailed = false;
     }
 }

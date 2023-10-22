@@ -13,7 +13,7 @@ The `realsense` module contains services to bring support for the Intel Realsens
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_io_realsense
 )

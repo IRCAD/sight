@@ -21,22 +21,22 @@
 
 #include "Dialog.hpp"
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void Dialog::take(Tester& tester, const std::string& desc, const std::string& childName)
+void Dialog::take(Tester& _tester, const std::string& _desc, const std::string& _child_name)
 {
-    auto bt = tester.addInBacktrace("take " + desc + " dialog");
-    take<QWidget*>(tester, desc, childName);
+    auto bt = _tester.addInBacktrace("take " + _desc + " dialog");
+    take<QWidget*>(_tester, _desc, _child_name);
 }
 
 //------------------------------------------------------------------------------
 
-void Dialog::maybeTake(Tester& tester, const std::string& desc, const std::string& childName)
+void Dialog::maybeTake(Tester& _tester, const std::string& _desc, const std::string& _child_name)
 {
-    maybeTake<QWidget*>(tester, desc, childName);
+    maybeTake<QWidget*>(_tester, _desc, _child_name);
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

@@ -46,7 +46,7 @@
             </registry>
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericScene1Srv" type="sight::viz::scene3d::render">
             <scene>
@@ -64,7 +64,7 @@
             <config radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericScene2Srv" type="sight::viz::scene3d::render">
             <scene>

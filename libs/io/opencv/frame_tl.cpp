@@ -33,98 +33,98 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
-static void toCv(
+static void to_cv(
     const data::frame_tl::csptr& _timeline,
-    const data::frame_tl::BufferType::ElementType* _buffer,
-    cv::Mat& _cvImage,
+    const data::frame_tl::buffer_t::element_t* _buffer,
+    cv::Mat& _cv_image,
     bool _copy
 )
 {
-    const auto imageType = _timeline->getType();
-    const auto imageComp = _timeline->numComponents();
+    const auto image_type = _timeline->getType();
+    const auto image_comp = _timeline->numComponents();
 
-    const auto cvType = io::opencv::type::toCv(imageType, imageComp);
+    const auto cv_type = io::opencv::type::toCv(image_type, image_comp);
 
-    cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
+    cv::Size cv_size(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
 
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    auto* buffer = static_cast<void*>(const_cast<data::frame_tl::BufferType::ElementType*>(_buffer));
+    auto* buffer = static_cast<void*>(const_cast<data::frame_tl::buffer_t::element_t*>(_buffer));
     if(_copy)
     {
-        cv::Mat mat = cv::Mat(cvSize, cvType, buffer);
-        _cvImage = mat.clone();
+        cv::Mat mat = cv::Mat(cv_size, cv_type, buffer);
+        _cv_image = mat.clone();
     }
     else
     {
-        _cvImage = cv::Mat(cvSize, cvType, buffer);
+        _cv_image = cv::Mat(cv_size, cv_type, buffer);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void frame_tl::moveToCv(
+void frame_tl::move_to_cv(
     const data::frame_tl::csptr& _timeline,
-    data::frame_tl::BufferType::ElementType* _buffer,
-    cv::Mat& _cvImage
+    data::frame_tl::buffer_t::element_t* _buffer,
+    cv::Mat& _cv_image
 )
 {
-    toCv(_timeline, _buffer, _cvImage, false);
+    to_cv(_timeline, _buffer, _cv_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat frame_tl::moveToCv(
+cv::Mat frame_tl::move_to_cv(
     const data::frame_tl::csptr& _timeline,
-    const data::frame_tl::BufferType::ElementType* _buffer
+    const data::frame_tl::buffer_t::element_t* _buffer
 )
 {
     cv::Mat mat;
-    toCv(_timeline, _buffer, mat, false);
+    to_cv(_timeline, _buffer, mat, false);
     return mat;
 }
 
 //------------------------------------------------------------------------------
 
-void frame_tl::copyFromCv(
+void frame_tl::copy_from_cv(
     const data::frame_tl::csptr& _timeline,
-    data::frame_tl::BufferType::ElementType* _buffer,
-    const cv::Mat& _cvImage
+    data::frame_tl::buffer_t::element_t* _buffer,
+    const cv::Mat& _cv_image
 )
 {
-    const auto prevImageType = _timeline->getType();
-    const auto prevImageComp = _timeline->numComponents();
+    const auto prev_image_type = _timeline->getType();
+    const auto prev_image_comp = _timeline->numComponents();
 
-    const auto imageFormat = io::opencv::type::fromCv(_cvImage.type());
-    const auto imageType   = imageFormat.first;
-    const auto imageComp   = imageFormat.second;
-    SIGHT_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
+    const auto image_format = io::opencv::type::fromCv(_cv_image.type());
+    const auto image_type   = image_format.first;
+    const auto image_comp   = image_format.second;
+    SIGHT_ASSERT("Number of components should be between 1 and 4", image_comp >= 1 && image_comp <= 4);
 
-    std::vector<std::size_t> cvImageSize;
-    for(int i = _cvImage.dims - 1 ; i >= 0 ; --i)
+    std::vector<std::size_t> cv_image_size;
+    for(int i = _cv_image.dims - 1 ; i >= 0 ; --i)
     {
-        cvImageSize.push_back(static_cast<std::size_t>(_cvImage.size[i]));
+        cv_image_size.push_back(static_cast<std::size_t>(_cv_image.size[i]));
     }
 
-    const std::vector<std::size_t> imageSize = {{_timeline->getWidth(), _timeline->getHeight()}};
+    const std::vector<std::size_t> image_size = {{_timeline->getWidth(), _timeline->getHeight()}};
 
-    if(prevImageComp != imageComp || prevImageType != imageType || cvImageSize != imageSize)
+    if(prev_image_comp != image_comp || prev_image_type != image_type || cv_image_size != image_size)
     {
         SIGHT_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
     }
 
-    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.size();
-    std::copy(_cvImage.data, _cvImage.data + size, _buffer);
+    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * image_comp * image_type.size();
+    std::copy(_cv_image.data, _cv_image.data + size, _buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void frame_tl::copyToCv(
     const data::frame_tl::csptr& _timeline,
-    const data::frame_tl::BufferType::ElementType* _buffer,
-    cv::Mat& _cvImage
+    const data::frame_tl::buffer_t::element_t* _buffer,
+    cv::Mat& _cv_image
 )
 {
-    toCv(_timeline, _buffer, _cvImage, true);
+    to_cv(_timeline, _buffer, _cv_image, true);
 }
 
 //------------------------------------------------------------------------------

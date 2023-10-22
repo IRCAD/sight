@@ -50,8 +50,8 @@ public:
      * @brief constructor
      * @param[in] content readable content it correspond to a data of a entry in archive
      */
-    explicit MemoryArchiveSource(BufferCSPtr content) :
-        m_content(std::move(content))
+    explicit MemoryArchiveSource(BufferCSPtr _content) :
+        m_content(std::move(_content))
     {
     }
 
@@ -65,7 +65,7 @@ public:
      * @param[in] n maximum number of bytes to read
      * @return number of bytes of content it was read
      */
-    std::streamsize read(char* s, std::streamsize n);
+    std::streamsize read(char* _s, std::streamsize _n);
 
 private:
 
@@ -78,37 +78,37 @@ private:
 
 //-----------------------------------------------------------------------------
 
-std::streamsize MemoryArchiveSource::read(char* s, std::streamsize n)
+std::streamsize MemoryArchiveSource::read(char* _s, std::streamsize _n)
 {
-    std::size_t oldReadIndex = 0;
-    std::size_t endIndex     = 0;
+    std::size_t old_read_index = 0;
+    std::size_t end_index      = 0;
 
-    endIndex = std::size_t(std::int64_t(m_readIndex) + n);
-    if(endIndex > m_content->size())
+    end_index = std::size_t(std::int64_t(m_readIndex) + _n);
+    if(end_index > m_content->size())
     {
-        endIndex = m_content->size();
+        end_index = m_content->size();
     }
 
-    std::copy(m_content->begin() + std::int64_t(m_readIndex), m_content->begin() + std::int64_t(endIndex), s);
-    oldReadIndex = m_readIndex;
-    m_readIndex  = endIndex;
-    return std::int64_t(endIndex - oldReadIndex);
+    std::copy(m_content->begin() + std::int64_t(m_readIndex), m_content->begin() + std::int64_t(end_index), _s);
+    old_read_index = m_readIndex;
+    m_readIndex    = end_index;
+    return std::int64_t(end_index - old_read_index);
 }
 
 //-----------------------------------------------------------------------------
 
-MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size) :
-    m_SIZE(size),
-    m_BUFFER(buffer),
+MemoryReadArchive::MemoryReadArchive(const char* _buffer, const std::size_t _size) :
+    M_SIZE(_size),
+    m_BUFFER(_buffer),
     m_archive(archive_read_new())
 {
     SPTR(boost::iostreams::stream<MemoryArchiveSource>) is;
     std::string filename;
     struct archive_entry* entry = nullptr;
-    BufferSPtr fileContent;
+    BufferSPtr file_content;
 
     archive_read_support_format_all(m_archive);
-    if(archive_read_open_memory(m_archive, buffer, size) != ARCHIVE_OK)
+    if(archive_read_open_memory(m_archive, _buffer, _size) != ARCHIVE_OK)
     {
         throw io::zip::exception::Read(
                   "Error when open memory archive : " + std::string(
@@ -121,10 +121,10 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
 
     while((archive_read_next_header(m_archive, &entry)) == ARCHIVE_OK)
     {
-        fileContent = std::make_shared<std::vector<char> >();
-        filename    = std::string(archive_entry_pathname(entry));
-        this->readEntry(fileContent);
-        is                  = std::make_shared<boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
+        file_content = std::make_shared<std::vector<char> >();
+        filename     = std::string(archive_entry_pathname(entry));
+        this->readEntry(file_content);
+        is                  = std::make_shared<boost::iostreams::stream<MemoryArchiveSource> >(file_content);
         m_streams[filename] = is;
     }
 
@@ -139,14 +139,14 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
 
 //-----------------------------------------------------------------------------
 
-void MemoryReadArchive::readEntry(BufferSPtr content)
+void MemoryReadArchive::readEntry(BufferSPtr _content)
 {
     std::int64_t ret = 0;
     std::array<char, MemoryReadArchive::s_BUFFER_READ_SIZE> buffer {};
 
     while((ret = archive_read_data(m_archive, buffer.data(), MemoryReadArchive::s_BUFFER_READ_SIZE)) > 0)
     {
-        content->insert(content->end(), buffer.data(), buffer.data() + ret);
+        _content->insert(_content->end(), buffer.data(), buffer.data() + ret);
     }
 }
 
@@ -157,11 +157,11 @@ MemoryReadArchive::~MemoryReadArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) MemoryReadArchive::get_file(const std::filesystem::path& path)
+SPTR(std::istream) MemoryReadArchive::get_file(const std::filesystem::path& _path)
 {
-    if(m_streams.find(path.string()) != m_streams.end())
+    if(m_streams.find(_path.string()) != m_streams.end())
     {
-        return m_streams[path.string()];
+        return m_streams[_path.string()];
     }
 
     throw io::zip::exception::Read("Cannot get file");

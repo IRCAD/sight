@@ -42,8 +42,8 @@ public:
     UI_API virtual void destroyContainer() = 0;
     UI_API virtual bool isShownOnScreen()  = 0;
 
-    UI_API virtual void setVisible(bool isVisible) = 0;
-    UI_API virtual void setEnabled(bool isEnabled) = 0;
+    UI_API virtual void setVisible(bool _is_visible) = 0;
+    UI_API virtual void setEnabled(bool _is_enabled) = 0;
 };
 
 } // namespace sight::ui::container

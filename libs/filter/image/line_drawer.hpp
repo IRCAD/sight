@@ -40,10 +40,10 @@ class FILTER_IMAGE_CLASS_API line_drawer
 {
 public:
 
-    typedef bresenham_line::CoordinatesType CoordinatesType;
+    typedef bresenham_line::coordinates_t coordinates_t;
 
     /// Constructor, instantiates a drawer with an image and a region of interest.
-    FILTER_IMAGE_API line_drawer(data::image::sptr img, data::image::csptr roi);
+    FILTER_IMAGE_API line_drawer(data::image::sptr _img, data::image::csptr _roi);
 
     /**
      * @brief Draws a line in an image slice.
@@ -56,12 +56,12 @@ public:
      * @return The differences in the image before and after drawing.
      */
     FILTER_IMAGE_API image_diff draw(
-        bresenham_line::Orientation orientation,
-        const CoordinatesType& startCoord,
-        const CoordinatesType& endCoord,
-        data::image::BufferType* value,
-        double thickness,
-        bool overwrite = true
+        bresenham_line::Orientation _orientation,
+        const coordinates_t& _start_coord,
+        const coordinates_t& _end_coord,
+        data::image::buffer_t* _value,
+        double _thickness,
+        bool _overwrite = true
     );
 
 private:
@@ -81,13 +81,13 @@ private:
      * @return true if at least one pixel has been drawn, false otherwise.
      */
     bool drawEllipse(
-        const line_drawer::CoordinatesType& c,
-        data::image::BufferType* value,
-        double radius,
-        std::size_t firstDim,
-        std::size_t secondDim,
-        bool overwrite,
-        image_diff& diff
+        const line_drawer::coordinates_t& _c,
+        data::image::buffer_t* _value,
+        double _radius,
+        std::size_t _first_dim,
+        std::size_t _second_dim,
+        bool _overwrite,
+        image_diff& _diff
     );
 
     /**
@@ -105,10 +105,10 @@ private:
      * @return true if at least one pixel has been drawn, false otherwise.
      */
     bool drawPixel(
-        data::image::IndexType index,
-        data::image::BufferType* value,
-        bool overwrite,
-        image_diff& diff
+        data::image::index_t _index,
+        data::image::buffer_t* _value,
+        bool _overwrite,
+        image_diff& _diff
     );
 
     /// Takes ROI into account.
@@ -121,10 +121,10 @@ private:
     unsigned char m_roiTypeSize;
 
     /// image length.
-    data::image::IndexType m_yPitch;
+    data::image::index_t m_yPitch;
 
     /// image depth.
-    data::image::IndexType m_zPitch;
+    data::image::index_t m_zPitch;
 
     /// image to draw in.
     data::image::sptr m_image;

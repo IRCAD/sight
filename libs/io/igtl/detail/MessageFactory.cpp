@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,16 +59,16 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MessageFactory::create(const std::string& type)
+::igtl::MessageBase::Pointer MessageFactory::create(const std::string& _type)
 {
     CreatorContainer::const_iterator it;
 
-    if((it = MessageFactory::s_creators.find(type)) != MessageFactory::s_creators.end())
+    if((it = MessageFactory::s_creators.find(_type)) != MessageFactory::s_creators.end())
     {
         return it->second();
     }
 
-    throw io::igtl::detail::exception::Conversion("Cannot find a creator for type " + type);
+    throw io::igtl::detail::exception::Conversion("Cannot find a creator for type " + _type);
 }
 
 } //namespace sight::io::igtl::detail

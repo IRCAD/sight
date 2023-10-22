@@ -76,30 +76,30 @@ message::~message()
 
 //------------------------------------------------------------------------------
 
-void message::setTitle(const std::string& title)
+void message::setTitle(const std::string& _title)
 {
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
-void message::setMessage(const std::string& msg)
+void message::setMessage(const std::string& _msg)
 {
-    m_message = QString::fromStdString(msg);
+    m_message = QString::fromStdString(_msg);
 }
 
 //------------------------------------------------------------------------------
 
-void message::setIcon(message::Icons icon)
+void message::setIcon(message::Icons _icon)
 {
-    m_icon = icon;
+    m_icon = _icon;
 }
 
 //------------------------------------------------------------------------------
 
-void message::addButton(message::Buttons button)
+void message::addButton(message::Buttons _button)
 {
-    m_buttons = (message::Buttons) (m_buttons | button);
+    m_buttons = (message::Buttons) (m_buttons | _button);
 }
 
 //------------------------------------------------------------------------------
@@ -118,21 +118,21 @@ void message::setDefaultButton(message::Buttons /*button*/)
 
 message::Buttons message::show()
 {
-    auto iterIcon = messageDialogQmlIcons.find(m_icon);
-    SIGHT_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
+    auto iter_icon = messageDialogQmlIcons.find(m_icon);
+    SIGHT_ASSERT("Unknown Icon", iter_icon != messageDialogQmlIcons.end());
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
-    std::string icon = iterIcon->second;
+    std::string icon = iter_icon->second;
 
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath = core::runtime::get_library_resource_file_path(
+    const auto& dialog_path = core::runtime::get_library_resource_file_path(
         "ui_qml/dialog/message.qml"
     );
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("message", this);
     // load the qml ui component
-    QObject* window = engine->createComponent(dialogPath, context);
+    QObject* window = engine->createComponent(dialog_path, context);
     SIGHT_ASSERT("The Qml File message is not found or not loaded", window);
     // keep window to destroy it
 
@@ -140,17 +140,17 @@ message::Buttons message::show()
     auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
-    auto* buttonSetting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
+    auto* button_setting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
     Q_EMIT messageChanged();
     //set icon
-    auto pathIcon = core::runtime::get_library_resource_file_path(icon);
-    if(!std::filesystem::exists(pathIcon))
+    auto path_icon = core::runtime::get_library_resource_file_path(icon);
+    if(!std::filesystem::exists(path_icon))
     {
-        pathIcon = "";
+        path_icon = "";
     }
 
-    emitIcon(QUrl::fromLocalFile(QString::fromStdString(pathIcon.string())));
-    emitButtons(buttonSetting);
+    emitIcon(QUrl::fromLocalFile(QString::fromStdString(path_icon.string())));
+    emitButtons(button_setting);
 
     m_clicked = dialog::message::CANCEL;
     QEventLoop loop;
@@ -167,12 +167,12 @@ message::Buttons message::show()
 
 //------------------------------------------------------------------------------
 
-void message::resultDialog(int clicked)
+void message::resultDialog(int _clicked)
 {
     for(MessageDialogQmlButtonType::value_type button : messageDialogQmlButton)
     {
         // get the button that has been click
-        if(clicked == button.second)
+        if(_clicked == button.second)
         {
             m_clicked = button.first;
             break;
@@ -182,15 +182,15 @@ void message::resultDialog(int clicked)
 
 //------------------------------------------------------------------------------
 
-void message::emitIcon(const QUrl& iconPath)
+void message::emitIcon(const QUrl& _icon_path)
 {
-    m_iconImage = iconPath;
+    m_iconImage = _icon_path;
     Q_EMIT iconChanged();
 }
 
 //------------------------------------------------------------------------------
 
-void message::emitButtons(StandardButton* standardButton)
+void message::emitButtons(StandardButton* _standard_button)
 {
     int buttons = 0;
     // add the different type of button needed
@@ -202,7 +202,7 @@ void message::emitButtons(StandardButton* standardButton)
         }
     }
 
-    standardButton->setButton(static_cast<StandardButton::ButtonList>(buttons));
+    _standard_button->setButton(static_cast<StandardButton::ButtonList>(buttons));
 }
 
 //------------------------------------------------------------------------------

@@ -23,8 +23,8 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/utils.hpp"
 #include "viz/scene3d/window_interactor.hpp"
 
 #include <data/image.hpp>
@@ -40,7 +40,7 @@ namespace sight::viz::scene3d
 {
 
 class adaptor;
-class Layer;
+class layer;
 
 /**
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
@@ -141,7 +141,7 @@ public:
     {
         using key_t                      = sight::core::com::signals::key_t;
         using void_signal_t              = sight::core::com::signal<void ()>;
-        using compositorUpdated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::Layer::sptr)>;
+        using compositorUpdated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
 
         static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
         static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
@@ -149,16 +149,16 @@ public:
     };
 
     /// Defines the type of adaptors ID.
-    typedef std::string AdaptorIdType;
+    typedef std::string adaptor_id_t;
 
     /// Defines the type of object ID.
-    typedef std::string OgreObjectIdType;
+    typedef std::string ogre_object_id_t;
 
     /// Defines the type of scene ID.
-    typedef std::string SceneIdType;
+    typedef std::string scene_id_t;
 
     /// Defines actives layouts in the scene.
-    typedef std::map<SceneIdType, SPTR(viz::scene3d::Layer)> LayerMapType;
+    typedef std::map<scene_id_t, SPTR(viz::scene3d::layer)> layer_map_t;
 
     /// Contains the slot name that computes the parameters to reset the camera.
     VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
@@ -203,19 +203,19 @@ public:
     VIZ_SCENE3D_API bool isShownOnScreen();
 
     /// @returns the scene manager corresponding to the sceneID.
-    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager(const std::string& sceneID);
+    VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager(const std::string& _scene_id);
 
     /// @returns the layer corresponding to the sceneID.
-    VIZ_SCENE3D_API viz::scene3d::Layer::sptr getLayer(const std::string& sceneID);
+    VIZ_SCENE3D_API viz::scene3d::layer::sptr getLayer(const std::string& _scene_id);
 
     /// @returns this render layers.
-    VIZ_SCENE3D_API LayerMapType getLayers();
+    VIZ_SCENE3D_API layer_map_t getLayers();
 
     /// @returns m_interactorManager.
     VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr getInteractorManager() const;
 
     /// Resets camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void resetCameraCoordinates(const std::string& _layerId);
+    VIZ_SCENE3D_API void resetCameraCoordinates(const std::string& _layer_id);
 
     /// Resets all layers camera parameters with the actual global bounding box.
     VIZ_SCENE3D_API void resetCameras();
@@ -252,7 +252,7 @@ private:
     void configureLayer(const config_t& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static Layer::ViewportConfigType configureLayerViewport(const service::config_t& _cfg);
+    static layer::viewport_config_t configureLayerViewport(const service::config_t& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
@@ -264,7 +264,7 @@ private:
     void disableFullscreen();
 
     /// Contains all the layers of the scene.
-    LayerMapType m_layers;
+    layer_map_t m_layers;
 
     /// Contains the Ogre window interactor manager.
     viz::scene3d::window_interactor::sptr m_interactorManager;
@@ -300,22 +300,22 @@ private:
 template<class T>
 std::vector<SPTR(T)> render::getAdaptors() const
 {
-    auto servicesVector = sight::service::getServices("sight::viz::scene3d::adaptor");
-    std::vector<SPTR(T)> resultVector;
+    auto services_vector = sight::service::get_services("sight::viz::scene3d::adaptor");
+    std::vector<SPTR(T)> result_vector;
 
-    for(const auto& sceneAdaptor : servicesVector)
+    for(const auto& scene_adaptor : services_vector)
     {
-        SPTR(T) adaptor = std::dynamic_pointer_cast<T>(sceneAdaptor);
+        SPTR(T) adaptor = std::dynamic_pointer_cast<T>(scene_adaptor);
         if(adaptor)
         {
             if(adaptor->getRenderService() == this->get_const_sptr())
             {
-                resultVector.push_back(adaptor);
+                result_vector.push_back(adaptor);
             }
         }
     }
 
-    return resultVector;
+    return result_vector;
 }
 
 //------------------------------------------------------------------------------

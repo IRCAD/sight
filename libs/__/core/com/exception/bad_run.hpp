@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// Bad run exception.
 struct bad_run : core::exception
 {
-    CORE_API bad_run(const std::string& err);
+    CORE_API bad_run(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

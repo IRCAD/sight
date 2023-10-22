@@ -57,25 +57,25 @@ void sig_slot_connection_test::basicTest()
 {
     auto buffer_data = std::make_shared<buffer>();
 
-    SShowTest::sptr showTestSrv = service::factory::make<SShowTest>();
-    service::registerService(showTestSrv);
-    showTestSrv->set_inout(buffer_data, basic_srv::s_BUFFER_INOUT, true);
-    showTestSrv->set_worker(core::thread::get_default_worker());
+    SShowTest::sptr show_test_srv = service::factory::make<SShowTest>();
+    service::register_service(show_test_srv);
+    show_test_srv->set_inout(buffer_data, basic_srv::s_BUFFER_INOUT, true);
+    show_test_srv->set_worker(core::thread::get_default_worker());
 
-    data::object::ModifiedSignalType::sptr sig =
-        buffer_data->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    data::object::modified_signal_t::sptr sig =
+        buffer_data->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
-    CPPUNIT_ASSERT_EQUAL(0, showTestSrv->m_receiveCount);
+    CPPUNIT_ASSERT_EQUAL(0, show_test_srv->m_receiveCount);
 
-    showTestSrv->start().wait();
+    show_test_srv->start().wait();
     sig->async_emit();
-    showTestSrv->stop().wait();
-    CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
+    show_test_srv->stop().wait();
+    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receiveCount);
 
     sig->async_emit();
-    CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
+    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receiveCount);
 
-    service::unregisterService(showTestSrv);
+    service::unregister_service(show_test_srv);
 }
 
 //------------------------------------------------------------------------------

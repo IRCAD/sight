@@ -88,7 +88,7 @@
            </registry>
         </service>
 
-        <!-- ******************************* Begin 3D Scene ******************************* -->
+        <!-- ******************************* Begin 3D scene ******************************* -->
 
         <service uid="mainSceneCfg" type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene3d::volumeRendering" />

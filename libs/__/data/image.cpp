@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
+#include "data/helper/medical_image.hpp"
 #include "data/image.hpp"
 
 #include "data/exception.hpp"
-#include "data/helper/MedicalImage.hpp"
 #include "data/registry/macros.hpp"
 
 #include <core/com/signal.hxx>
@@ -39,8 +39,8 @@ SIGHT_REGISTER_DATA(sight::data::image);
 namespace sight::data
 {
 
-auto pixelFormatToNumComponents =
-    [](image::PixelFormat format)
+auto pixel_format_to_num_components =
+    [](image::PixelFormat _format)
     {
         static const std::array<std::size_t, image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
         {
@@ -52,7 +52,7 @@ auto pixelFormatToNumComponents =
             1,
             2
         };
-        return s_pixelFormatToNumComponents[format];
+        return s_pixelFormatToNumComponents[_format];
     };
 
 const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "bufferModified";
@@ -71,30 +71,30 @@ const core::com::signals::key_t image::SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModi
 image::image() :
     m_dataArray(std::make_shared<data::array>())
 {
-    new_signal<BufferModifiedSignalType>(BUFFER_MODIFIED_SIG);
-    new_signal<LandmarkAddedSignalType>(LANDMARK_ADDED_SIG);
-    new_signal<LandmarkRemovedSignalType>(LANDMARK_REMOVED_SIG);
-    new_signal<LandmarkDisplayedSignalType>(LANDMARK_DISPLAYED_SIG);
-    new_signal<DistanceDisplayedSignalType>(DISTANCE_DISPLAYED_SIG);
-    new_signal<DistanceAddedSignalType>(DISTANCE_ADDED_SIG);
-    new_signal<DistanceModifiedSignalType>(DISTANCE_MODIFIED_SIG);
-    new_signal<DistanceRemovedSignalType>(DISTANCE_REMOVED_SIG);
+    new_signal<buffer_modified_signal_t>(BUFFER_MODIFIED_SIG);
+    new_signal<landmark_added_signal_t>(LANDMARK_ADDED_SIG);
+    new_signal<landmark_removed_signal_t>(LANDMARK_REMOVED_SIG);
+    new_signal<landmark_displayed_signal_t>(LANDMARK_DISPLAYED_SIG);
+    new_signal<distance_displayed_signal_t>(DISTANCE_DISPLAYED_SIG);
+    new_signal<distance_added_signal_t>(DISTANCE_ADDED_SIG);
+    new_signal<distance_modified_signal_t>(DISTANCE_MODIFIED_SIG);
+    new_signal<distance_removed_signal_t>(DISTANCE_REMOVED_SIG);
     new_signal<SliceIndexModifiedSignalType>(SLICE_INDEX_MODIFIED_SIG);
     new_signal<SliceTypeModifiedSignalType>(SLICE_TYPE_MODIFIED_SIG);
 
     auto pl = std::make_shared<data::point_list>();
-    data::helper::MedicalImage::setLandmarks(*this, pl);
+    data::helper::medical_image::set_landmarks(*this, pl);
 }
 
 //-----------------------------------------------------------------------------
 
-void image::shallow_copy(const object::csptr& source)
+void image::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const image>(source);
+    const auto& other = std::dynamic_pointer_cast<const image>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -110,13 +110,13 @@ void image::shallow_copy(const object::csptr& source)
 
 //-----------------------------------------------------------------------------
 
-void image::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void image::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const image>(source);
+    const auto& other = std::dynamic_pointer_cast<const image>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !other
@@ -127,49 +127,49 @@ void image::deep_copy(const object::csptr& source, const std::unique_ptr<deep_co
 
     if(other->m_dataArray)
     {
-        m_dataArray = object::copy(other->m_dataArray, cache);
+        m_dataArray = object::copy(other->m_dataArray, _cache);
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t image::resize(const Size& size, const core::type& type, PixelFormat format)
+std::size_t image::resize(const Size& _size, const core::type& _type, PixelFormat _format)
 {
-    return this->_resize(size, type, format, true);
+    return this->resize(_size, _type, _format, true);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t image::_resize(const Size& size, const core::type& type, PixelFormat format, bool realloc)
+std::size_t image::resize(const Size& _size, const core::type& _type, PixelFormat _format, bool _realloc)
 {
-    m_size          = size;
-    m_type          = type;
-    m_pixelFormat   = format;
-    m_numComponents = pixelFormatToNumComponents(format);
+    m_size          = _size;
+    m_type          = _type;
+    m_pixelFormat   = _format;
+    m_numComponents = pixel_format_to_num_components(_format);
 
     SIGHT_ASSERT("Number of components must be > 0", m_numComponents > 0);
     SIGHT_ASSERT("Number of components must be <= 4", m_numComponents <= 4);
 
-    const std::size_t imageDims = this->numDimensions();
-    data::array::SizeType arraySize(imageDims);
+    const std::size_t image_dims = this->numDimensions();
+    data::array::size_t array_size(image_dims);
 
     std::size_t count = 0;
     if(m_numComponents > 1)
     {
-        arraySize.resize(imageDims + 1);
-        arraySize[0] = m_numComponents;
-        count        = 1;
+        array_size.resize(image_dims + 1);
+        array_size[0] = m_numComponents;
+        count         = 1;
     }
 
-    for(std::size_t i = 0 ; i < imageDims ; ++i)
+    for(std::size_t i = 0 ; i < image_dims ; ++i)
     {
-        arraySize[count] = m_size[i];
+        array_size[count] = m_size[i];
         ++count;
     }
 
-    return m_dataArray->resize(arraySize, m_type, realloc);
+    return m_dataArray->resize(array_size, m_type, _realloc);
 }
 
 //------------------------------------------------------------------------------
@@ -248,10 +248,10 @@ std::size_t image::getAllocatedSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-void image::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const
+void image::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const
 {
     const auto& array_locks = m_dataArray->dump_lock();
-    locks.insert(locks.end(), array_locks.cbegin(), array_locks.cend());
+    _locks.insert(_locks.end(), array_locks.cbegin(), array_locks.cend());
 }
 
 //-----------------------------------------------------------------------------
@@ -270,43 +270,43 @@ const void* image::buffer() const
 
 //------------------------------------------------------------------------------
 
-void* image::getPixel(IndexType index)
+void* image::getPixel(index_t _index)
 {
-    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    auto* buf                        = static_cast<BufferType*>(this->buffer());
-    const IndexType bufIndex         = index * imagePixelSize;
-    return buf + bufIndex;
+    const std::size_t image_pixel_size = m_type.size() * m_numComponents;
+    auto* buf                          = static_cast<buffer_t*>(this->buffer());
+    const index_t buf_index            = _index * image_pixel_size;
+    return buf + buf_index;
 }
 
 //------------------------------------------------------------------------------
 
-const void* image::getPixel(IndexType index) const
+const void* image::getPixel(index_t _index) const
 {
-    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    const auto* buf                  = static_cast<const BufferType*>(this->buffer());
-    const IndexType bufIndex         = index * imagePixelSize;
-    return buf + bufIndex;
+    const std::size_t image_pixel_size = m_type.size() * m_numComponents;
+    const auto* buf                    = static_cast<const buffer_t*>(this->buffer());
+    const index_t buf_index            = _index * image_pixel_size;
+    return buf + buf_index;
 }
 
 //------------------------------------------------------------------------------
 
-void image::setPixel(IndexType index, const image::BufferType* pixBuf)
+void image::setPixel(index_t _index, const image::buffer_t* _pix_buf)
 {
-    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
-    auto* buf                        = static_cast<BufferType*>(this->getPixel(index));
+    const std::size_t image_pixel_size = m_type.size() * m_numComponents;
+    auto* buf                          = static_cast<buffer_t*>(this->getPixel(_index));
 
-    std::copy(pixBuf, pixBuf + imagePixelSize, buf);
+    std::copy(_pix_buf, _pix_buf + image_pixel_size, buf);
 }
 
 //------------------------------------------------------------------------------
 
 std::string image::getPixelAsString(
-    IndexType x,
-    IndexType y,
-    IndexType z
+    index_t _x,
+    index_t _y,
+    index_t _z
 ) const
 {
-    const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
+    const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
     return m_type.to_string(this->getPixel(offset));
 }
 
@@ -346,15 +346,15 @@ image::const_iterator<char> image::end() const
 
 std::size_t image::numElements() const
 {
-    std::size_t nbElts = 0;
+    std::size_t nb_elts = 0;
     if(m_size[0] > 0)
     {
-        nbElts = m_numComponents;
+        nb_elts = m_numComponents;
         for(const auto& val : m_size)
         {
             if(val > 0)
             {
-                nbElts *= val;
+                nb_elts *= val;
             }
             else
             {
@@ -363,27 +363,27 @@ std::size_t image::numElements() const
         }
     }
 
-    return nbElts;
+    return nb_elts;
 }
 
 //------------------------------------------------------------------------------
 
 void image::setBuffer(
-    void* buf,
-    bool takeOwnership,
-    const core::type& type,
-    const data::image::Size& size,
-    PixelFormat format,
-    core::memory::buffer_allocation_policy::sptr policy
+    void* _buf,
+    bool _take_ownership,
+    const core::type& _type,
+    const data::image::Size& _size,
+    PixelFormat _format,
+    core::memory::buffer_allocation_policy::sptr _policy
 )
 {
-    this->_resize(size, type, format, false);
-    this->setBuffer(buf, takeOwnership, policy);
+    this->resize(_size, _type, _format, false);
+    this->setBuffer(_buf, _take_ownership, _policy);
 }
 
 //------------------------------------------------------------------------------
 
-void image::setBuffer(void* buf, bool takeOwnership, core::memory::buffer_allocation_policy::sptr policy)
+void image::setBuffer(void* _buf, bool _take_ownership, core::memory::buffer_allocation_policy::sptr _policy)
 {
     if(m_dataArray->getIsBufferOwner())
     {
@@ -394,13 +394,13 @@ void image::setBuffer(void* buf, bool takeOwnership, core::memory::buffer_alloca
     }
     else
     {
-        core::memory::buffer_object::sptr newBufferObject = std::make_shared<core::memory::buffer_object>();
-        core::memory::buffer_object::sptr oldBufferObject = m_dataArray->get_buffer_object();
-        oldBufferObject->swap(newBufferObject);
+        core::memory::buffer_object::sptr new_buffer_object = std::make_shared<core::memory::buffer_object>();
+        core::memory::buffer_object::sptr old_buffer_object = m_dataArray->get_buffer_object();
+        old_buffer_object->swap(new_buffer_object);
     }
 
-    m_dataArray->get_buffer_object()->set_buffer(buf, (buf == nullptr) ? 0 : m_dataArray->getSizeInBytes(), policy);
-    m_dataArray->setIsBufferOwner(takeOwnership);
+    m_dataArray->get_buffer_object()->set_buffer(_buf, (_buf == nullptr) ? 0 : m_dataArray->getSizeInBytes(), _policy);
+    m_dataArray->setIsBufferOwner(_take_ownership);
 }
 
 //------------------------------------------------------------------------------
@@ -419,30 +419,30 @@ core::memory::buffer_object::csptr image::get_buffer_object() const
 
 //------------------------------------------------------------------------------
 
-bool image::operator==(const image& other) const noexcept
+bool image::operator==(const image& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_size, other.m_size)
-       || !core::tools::is_equal(m_spacing, other.m_spacing)
-       || !core::tools::is_equal(m_origin, other.m_origin)
-       || m_type != other.m_type
-       || !core::tools::is_equal(m_windowCenters, other.m_windowCenters)
-       || !core::tools::is_equal(m_windowWidths, other.m_windowWidths)
-       || m_numComponents != other.m_numComponents
-       || m_pixelFormat != other.m_pixelFormat
-       || !core::tools::is_equal(m_dataArray, other.m_dataArray))
+    if(!core::tools::is_equal(m_size, _other.m_size)
+       || !core::tools::is_equal(m_spacing, _other.m_spacing)
+       || !core::tools::is_equal(m_origin, _other.m_origin)
+       || m_type != _other.m_type
+       || !core::tools::is_equal(m_windowCenters, _other.m_windowCenters)
+       || !core::tools::is_equal(m_windowWidths, _other.m_windowWidths)
+       || m_numComponents != _other.m_numComponents
+       || m_pixelFormat != _other.m_pixelFormat
+       || !core::tools::is_equal(m_dataArray, _other.m_dataArray))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool image::operator!=(const image& other) const noexcept
+bool image::operator!=(const image& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

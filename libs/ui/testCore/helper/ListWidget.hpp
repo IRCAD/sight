@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class ListWidget
@@ -38,7 +38,7 @@ public:
      * @param list How to get the list widget to check
      * @param count The number of element the list widget should have
      */
-    GUITEST_API static void countEquals(Tester& tester, const Select& list, int count);
+    GUITEST_API static void countEquals(Tester& _tester, const Select& _list, int _count);
 
     /**
      * Sets the row of the specified index as current in a list widget
@@ -46,7 +46,7 @@ public:
      * @param list How to get the list widget to set
      * @param index The index of the new current row
      */
-    GUITEST_API static void setCurrentRow(Tester& tester, const Select& list, int index);
+    GUITEST_API static void setCurrentRow(Tester& _tester, const Select& _list, int _index);
 
     /**
      * Sets the row which has the specified text as current in a list widget
@@ -54,7 +54,7 @@ public:
      * @param list How to get the list widget to set
      * @param text The text of the new current row
      */
-    GUITEST_API static void setCurrentText(Tester& tester, const Select& list, const std::string& text);
+    GUITEST_API static void setCurrentText(Tester& _tester, const Select& _list, const std::string& _text);
 };
 
 } // namespace sight::ui::testCore::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
     UI_QML_API ~StandardButton() override;
 
     /// Set the button mask
-    UI_QML_API void setButton(ButtonList button);
+    UI_QML_API void setButton(ButtonList _button);
 
     /// Get the button mask
     UI_QML_API const ButtonList& getButton();

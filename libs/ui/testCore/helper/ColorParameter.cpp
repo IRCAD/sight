@@ -27,59 +27,59 @@
 #include <QColorDialog>
 #include <QPushButton>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-static std::string colorToString(const QColor& color)
+static std::string color_to_string(const QColor& _color)
 {
-    return "{" + std::to_string(color.red()) + ", " + std::to_string(color.green()) + ", "
-           + std::to_string(color.blue()) + "}";
+    return "{" + std::to_string(_color.red()) + ", " + std::to_string(_color.green()) + ", "
+           + std::to_string(_color.blue()) + "}";
 }
 
 //------------------------------------------------------------------------------
 
-void ColorParameter::select(Tester& tester, const Select& colorParam, const QColor& color)
+void ColorParameter::select(Tester& _tester, const Select& _color_param, const QColor& _color)
 {
-    auto bt = tester.addInBacktrace(
-        "selecting color " + colorToString(color) + " in" + colorParam.getDescription(
-            tester
+    auto bt = _tester.addInBacktrace(
+        "selecting color " + color_to_string(_color) + " in" + _color_param.getDescription(
+            _tester
         ) + "\" color parameter"
     );
-    helper::Button::push(tester, colorParam);
-    helper::Dialog::take<QColorDialog*>(tester, "color select dialog");
-    QPointer<QColorDialog> colorDialog = tester.get<QColorDialog*>();
-    tester.doSomethingAsynchronously<QColorDialog*>(
-        [&color](QColorDialog* obj)
+    helper::Button::push(_tester, _color_param);
+    helper::Dialog::take<QColorDialog*>(_tester, "color select dialog");
+    QPointer<QColorDialog> color_dialog = _tester.get<QColorDialog*>();
+    _tester.doSomethingAsynchronously<QColorDialog*>(
+        [&_color](QColorDialog* _obj)
         {
-            obj->setCurrentColor(color);
-            obj->accept();
+            _obj->setCurrentColor(_color);
+            _obj->accept();
         });
-    tester.doubt(
+    _tester.doubt(
         "the color select window is closed",
-        [&colorDialog](QObject*)
+        [&color_dialog](QObject*)
         {
-            return colorDialog == nullptr || !colorDialog->isVisible();
+            return color_dialog == nullptr || !color_dialog->isVisible();
         });
 }
 
 //------------------------------------------------------------------------------
 
-void ColorParameter::colorEquals(Tester& tester, const Select& colorParam, const QColor& color)
+void ColorParameter::colorEquals(Tester& _tester, const Select& _color_param, const QColor& _color)
 {
-    auto bt = tester.addInBacktrace(
-        "checking whether " + colorParam.getDescription(
-            tester
-        ) + "\" color parameter has the color " + colorToString(color)
+    auto bt = _tester.addInBacktrace(
+        "checking whether " + _color_param.getDescription(
+            _tester
+        ) + "\" color parameter has the color " + color_to_string(_color)
     );
-    colorParam.select(tester);
-    tester.doubt<QPushButton*>(
-        colorParam.getDescription(tester) + " should have the color " + colorToString(color),
-        [&color](QPushButton* obj)
+    _color_param.select(_tester);
+    _tester.doubt<QPushButton*>(
+        _color_param.getDescription(_tester) + " should have the color " + color_to_string(_color),
+        [&_color](QPushButton* _obj)
         {
-            return obj->icon().pixmap(1).toImage().pixelColor(0, 0) == color;
+            return _obj->icon().pixmap(1).toImage().pixelColor(0, 0) == _color;
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

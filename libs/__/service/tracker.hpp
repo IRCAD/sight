@@ -76,9 +76,9 @@ public:
     }
 
     /// Enable/Disable drop
-    void enableDrop(bool enable)
+    void enableDrop(bool _enable)
     {
-        m_dropObj = enable;
+        m_dropObj = _enable;
     }
 
     /// Return true if tracker drop frames
@@ -103,7 +103,7 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    SERVICE_API virtual void track(core::hires_clock::type timestamp);
+    SERVICE_API virtual void track(core::hires_clock::type _timestamp);
 
     /// start the tracking
     SERVICE_API virtual void startTracking();
@@ -115,7 +115,7 @@ protected:
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    SERVICE_API virtual void tracking(core::hires_clock::type& timestamp) = 0;
+    SERVICE_API virtual void tracking(core::hires_clock::type& _timestamp) = 0;
 
     /// timestamp of the last tracking
     core::hires_clock::type m_lastTimestamp {0};

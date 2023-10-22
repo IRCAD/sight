@@ -61,20 +61,20 @@ surface_segmentation_writer::~surface_segmentation_writer() noexcept =
 
 void surface_segmentation_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_folder());
+        default_directory->set_folder(result->get_folder());
         this->set_folder(result->get_folder());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -147,12 +147,12 @@ void surface_segmentation_writer::updating()
         }
 
         /* Build up the filename */
-        std::filesystem::path outputPath = this->get_folder() / "imSeg";
+        std::filesystem::path output_path = this->get_folder() / "imSeg";
 
         /* Write the data */
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
-        saveSurfaceSegmentation(outputPath, model);
+        saveSurfaceSegmentation(output_path, model);
         cursor.setDefaultCursor();
     }
     else
@@ -164,14 +164,14 @@ void surface_segmentation_writer::updating()
 //------------------------------------------------------------------------------
 
 void surface_segmentation_writer::saveSurfaceSegmentation(
-    const std::filesystem::path filename,
-    const data::model_series::csptr& model
+    const std::filesystem::path _filename,
+    const data::model_series::csptr& _model
 )
 {
     auto writer = std::make_shared<sight::io::dicom::writer::SurfaceSegmentation>();
 
-    writer->set_object(model);
-    writer->set_file(filename);
+    writer->set_object(_model);
+    writer->set_file(_filename);
 
     try
     {

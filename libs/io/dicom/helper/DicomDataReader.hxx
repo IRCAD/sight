@@ -55,45 +55,45 @@ public:
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>
     static std::string getTagValue(
-        const gdcm::DataSet& dataset,
-        const std::string& charset            = "",
-        const core::log::logger::sptr& logger = nullptr
+        const gdcm::DataSet& _dataset,
+        const std::string& _charset            = "",
+        const core::log::logger::sptr& _logger = nullptr
 )
     {
         std::string result;
 
         const gdcm::Tag tag(GROUP, ELEMENT);
 
-        if(dataset.FindDataElement(tag))
+        if(_dataset.FindDataElement(tag))
         {
-            const gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
+            const gdcm::DataElement& data_element = _dataset.GetDataElement(tag);
 
-            if(!dataElement.IsEmpty()) // Can be type 2
+            if(!data_element.IsEmpty()) // Can be type 2
             {
                 // Retrieve buffer
-                const gdcm::ByteValue* bv = dataElement.GetByteValue();
+                const gdcm::ByteValue* bv = data_element.GetByteValue();
 
                 if(bv)
                 {
                     std::string buffer(bv->GetPointer(), bv->GetLength());
 
                     // Trim buffer
-                    const std::string trimmedBuffer = gdcm::LOComp::Trim(buffer.c_str());
+                    const std::string trimmed_buffer = gdcm::LOComp::Trim(buffer.c_str());
 
                     try
                     {
-                        result = io::dicom::helper::Encoding::convertString(trimmedBuffer, charset, logger);
+                        result = io::dicom::helper::Encoding::convertString(trimmed_buffer, _charset, _logger);
                     }
                     catch(const std::runtime_error& e)
                     {
-                        if(logger)
+                        if(_logger)
                         {
                             std::stringstream ss;
                             ss << "Could not read tag " << tag << " : " << e.what();
-                            logger->warning(ss.str());
+                            _logger->warning(ss.str());
                         }
 
-                        result = trimmedBuffer;
+                        result = trimmed_buffer;
                     }
                 }
             }
@@ -115,9 +115,9 @@ public:
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT>
     static std::string getTagValue(
-        const std::string& buffer,
-        const std::string& charset            = "",
-        const core::log::logger::sptr& logger = nullptr
+        const std::string& _buffer,
+        const std::string& _charset            = "",
+        const core::log::logger::sptr& _logger = nullptr
 )
     {
         std::string result;
@@ -125,22 +125,22 @@ public:
         const gdcm::Tag tag = gdcm::Attribute<GROUP, ELEMENT>::GetTag();
 
         // Trim buffer
-        const std::string trimmedBuffer = gdcm::LOComp::Trim(buffer.c_str());
+        const std::string trimmed_buffer = gdcm::LOComp::Trim(_buffer.c_str());
 
         try
         {
-            result = io::dicom::helper::Encoding::convertString(trimmedBuffer, charset, logger);
+            result = io::dicom::helper::Encoding::convertString(trimmed_buffer, _charset, _logger);
         }
         catch(const std::runtime_error& e)
         {
-            if(logger)
+            if(_logger)
             {
                 std::stringstream ss;
                 ss << "Could not read tag " << tag << " : " << e.what();
-                logger->warning(ss.str());
+                _logger->warning(ss.str());
             }
 
-            result = trimmedBuffer;
+            result = trimmed_buffer;
         }
 
         return result;
@@ -155,10 +155,10 @@ public:
      * @return The tag value.
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT, typename T>
-    static T getTagValue(const gdcm::DataSet& dataset)
+    static T getTagValue(const gdcm::DataSet& _dataset)
     {
         gdcm::Attribute<GROUP, ELEMENT> attribute {};
-        attribute.SetFromDataSet(dataset);
+        attribute.SetFromDataSet(_dataset);
         return attribute.GetValue();
     }
 };

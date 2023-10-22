@@ -29,17 +29,17 @@ namespace sight::core::com
 
 //-----------------------------------------------------------------------------
 
-signals& signals::operator()(const signal_key_type& key, const signal_base::sptr& signal)
+signals& signals::operator()(const signal_key_type& _key, const signal_base::sptr& _signal)
 {
-    m_signals.insert({key, signal});
+    m_signals.insert({_key, _signal});
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-signal_base::sptr signals::operator[](const signal_key_type& key) const
+signal_base::sptr signals::operator[](const signal_key_type& _key) const
 {
-    auto it = m_signals.find(key);
+    auto it = m_signals.find(_key);
 
     if(it != m_signals.end())
     {

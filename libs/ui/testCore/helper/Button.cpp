@@ -23,59 +23,59 @@
 
 #include <QAction>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
 static void take(
-    Tester& tester,
-    const Select& button
+    Tester& _tester,
+    const Select& _button
 )
 {
-    button.select(tester);
-    if(tester.is_a<QAction*>())
+    _button.select(_tester);
+    if(_tester.is_a<QAction*>())
     {
-        tester.yields(
-            "actual " + button.getDescription(tester) + " button",
-            [](QObject* old)
+        _tester.yields(
+            "actual " + _button.getDescription(_tester) + " button",
+            [](QObject* _old)
             {
-                return Tester::getWidgetFromAction(qobject_cast<QAction*>(old));
+                return Tester::getWidgetFromAction(qobject_cast<QAction*>(_old));
             });
     }
 
-    tester.doubt<QWidget*>(
-        button.getDescription(tester) + " button is clickable",
-        [](QWidget* obj)
+    _tester.doubt<QWidget*>(
+        _button.getDescription(_tester) + " button is clickable",
+        [](QWidget* _obj)
         {
-            return obj->isEnabled();
+            return _obj->isEnabled();
         });
 }
 
 //------------------------------------------------------------------------------
 
-void Button::push(Tester& tester, const Select& button)
+void Button::push(Tester& _tester, const Select& _button)
 {
-    auto bt = tester.addInBacktrace("pushing " + button.getDescription(tester) + " button");
-    take(tester, button);
-    tester.interact(std::make_unique<MouseClick>());
+    auto bt = _tester.addInBacktrace("pushing " + _button.getDescription(_tester) + " button");
+    take(_tester, _button);
+    _tester.interact(std::make_unique<MouseClick>());
 }
 
 //------------------------------------------------------------------------------
 
-void Button::pushMenuBarItem(Tester& tester, const Select& button)
+void Button::pushMenuBarItem(Tester& _tester, const Select& _button)
 {
-    auto bt = tester.addInBacktrace("pushing " + button.getDescription(tester) + " button");
-    button.select(tester);
-    tester.doSomething<QAction*>([](QAction* obj){obj->trigger();});
+    auto bt = _tester.addInBacktrace("pushing " + _button.getDescription(_tester) + " button");
+    _button.select(_tester);
+    _tester.doSomething<QAction*>([](QAction* _obj){_obj->trigger();});
 }
 
 //------------------------------------------------------------------------------
 
-void Button::waitForClickability(Tester& tester, const Select& button)
+void Button::waitForClickability(Tester& _tester, const Select& _button)
 {
-    auto bt = tester.addInBacktrace("waiting for " + button.getDescription(tester) + " to become clickable");
-    take(tester, button);
+    auto bt = _tester.addInBacktrace("waiting for " + _button.getDescription(_tester) + " to become clickable");
+    take(_tester, _button);
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

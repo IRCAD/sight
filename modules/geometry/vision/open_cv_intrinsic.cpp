@@ -27,7 +27,7 @@
 
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -43,7 +43,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
 open_cv_intrinsic::open_cv_intrinsic() noexcept
 {
-    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_intrinsic::updateChessboardSize, this);
 }
 
@@ -56,18 +56,18 @@ open_cv_intrinsic::~open_cv_intrinsic() noexcept =
 
 void open_cv_intrinsic::configuring()
 {
-    const auto config   = this->get_config();
-    const auto cfgBoard = config.get_child("board.<xmlattr>");
+    const auto config    = this->get_config();
+    const auto cfg_board = config.get_child("board.<xmlattr>");
 
-    m_widthKey = cfgBoard.get<std::string>("width");
+    m_widthKey = cfg_board.get<std::string>("width");
     SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
-    m_heightKey = cfgBoard.get<std::string>("height");
+    m_heightKey = cfg_board.get<std::string>("height");
     SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
-    if(const auto squareSizeKey = cfgBoard.get_optional<std::string>("squareSize"); squareSizeKey.has_value())
+    if(const auto square_size_key = cfg_board.get_optional<std::string>("squareSize"); square_size_key.has_value())
     {
-        m_squareSizeKey = squareSizeKey.value();
+        m_squareSizeKey = square_size_key.value();
         SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }
@@ -89,14 +89,14 @@ void open_cv_intrinsic::stopping()
 
 void open_cv_intrinsic::updating()
 {
-    const auto calInfo = m_calibrationInfo.lock();
+    const auto cal_info = m_calibrationInfo.lock();
 
-    SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
-    SIGHT_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
+    SIGHT_ASSERT("Object with 'calibrationInfo' is not found", cal_info);
+    SIGHT_WARN_IF("Calibration info is empty.", cal_info->getPointListContainer().empty());
 
-    if(!calInfo->getPointListContainer().empty())
+    if(!cal_info->getPointListContainer().empty())
     {
-        std::vector<std::vector<cv::Point3f> > objectPoints;
+        std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
         for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
@@ -112,9 +112,9 @@ void open_cv_intrinsic::updating()
             }
         }
 
-        std::vector<std::vector<cv::Point2f> > imagePoints;
+        std::vector<std::vector<cv::Point2f> > image_points;
 
-        for(const data::point_list::csptr& capture : calInfo->getPointListContainer())
+        for(const data::point_list::csptr& capture : cal_info->getPointListContainer())
         {
             std::vector<cv::Point2f> dst;
 
@@ -128,38 +128,39 @@ void open_cv_intrinsic::updating()
                 );
             }
 
-            imagePoints.push_back(dst);
-            objectPoints.push_back(points);
+            image_points.push_back(dst);
+            object_points.push_back(points);
         }
 
-        data::image::csptr img = calInfo->getImageContainer().front();
+        data::image::csptr img = cal_info->getImageContainer().front();
 
-        cv::Mat cameraMatrix;
-        std::vector<float> distCoeffs;
+        cv::Mat camera_matrix;
+        std::vector<float> dist_coeffs;
         std::vector<cv::Mat> rvecs;
         std::vector<cv::Mat> tvecs;
         cv::Size2i imgsize(static_cast<int>(img->size()[0]), static_cast<int>(img->size()[1]));
 
-        double err = cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+        double err =
+            cv::calibrateCamera(object_points, image_points, imgsize, camera_matrix, dist_coeffs, rvecs, tvecs);
 
-        this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(err);
+        this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(err);
 
-        const auto poseCamera = m_poseVector.lock();
-        if(poseCamera)
+        const auto pose_camera = m_poseVector.lock();
+        if(pose_camera)
         {
-            poseCamera->clear();
+            pose_camera->clear();
 
             for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
-                data::matrix4::sptr mat3D = std::make_shared<data::matrix4>();
+                data::matrix4::sptr mat3_d = std::make_shared<data::matrix4>();
 
-                io::opencv::matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
+                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), mat3_d);
 
-                poseCamera->push_back(mat3D);
-                auto sig = poseCamera->signal<data::vector::added_signal_t>(
+                pose_camera->push_back(mat3_d);
+                auto sig = pose_camera->signal<data::vector::added_signal_t>(
                     data::vector::ADDED_OBJECTS_SIG
                 );
-                sig->async_emit(poseCamera->get_content());
+                sig->async_emit(pose_camera->get_content());
             }
         }
 
@@ -167,18 +168,18 @@ void open_cv_intrinsic::updating()
 
         const auto cam = m_camera.lock();
 
-        cam->setCx(cameraMatrix.at<double>(0, 2));
-        cam->setCy(cameraMatrix.at<double>(1, 2));
-        cam->setFx(cameraMatrix.at<double>(0, 0));
-        cam->setFy(cameraMatrix.at<double>(1, 1));
+        cam->setCx(camera_matrix.at<double>(0, 2));
+        cam->setCy(camera_matrix.at<double>(1, 2));
+        cam->setFx(camera_matrix.at<double>(0, 0));
+        cam->setFy(camera_matrix.at<double>(1, 1));
         cam->setWidth(img->size()[0]);
         cam->setHeight(img->size()[1]);
-        cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
+        cam->setDistortionCoefficient(dist_coeffs[0], dist_coeffs[1], dist_coeffs[2], dist_coeffs[3], dist_coeffs[4]);
 
         cam->setIsCalibrated(true);
 
-        data::camera::IntrinsicCalibratedSignalType::sptr sig;
-        sig = cam->signal<data::camera::IntrinsicCalibratedSignalType>(
+        data::camera::intrinsic_calibrated_signal_t::sptr sig;
+        sig = cam->signal<data::camera::intrinsic_calibrated_signal_t>(
             data::camera::INTRINSIC_CALIBRATED_SIG
         );
 
@@ -192,7 +193,7 @@ void open_cv_intrinsic::updateChessboardSize()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
 
         if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
@@ -209,7 +210,7 @@ void open_cv_intrinsic::updateChessboardSize()
             m_squareSize = *saved;
         }
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }

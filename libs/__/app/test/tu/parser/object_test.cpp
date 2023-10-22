@@ -67,8 +67,11 @@ void object_test::basicTest()
     auto object = std::make_shared<data::string>();
     objectParser.setObjectConfig(ptree);
     objectParser.createConfig(object);
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->getField("data")) != nullptr);
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, std::dynamic_pointer_cast<data::string>(object->getField("data"))->getValue());
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->get_field("data")) != nullptr);
+    CPPUNIT_ASSERT_EQUAL(
+        "Hello world"s,
+        std::dynamic_pointer_cast<data::string>(object->get_field("data"))->getValue()
+    );
 }
 
 } // namespace sight::app::parser::ut

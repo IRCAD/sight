@@ -37,12 +37,12 @@ class ACTIVITY_CLASS_API message
 {
 public:
 
-    typedef activity::extension::activity_config_params_type ParametersType;
+    typedef activity::extension::activity_config_params_type parameters_t;
 
     ACTIVITY_API message(
-        const data::activity::sptr& activity,
-        const activity::extension::activity_info& info,
-        const ParametersType& parameters
+        const data::activity::sptr& _activity,
+        const activity::extension::activity_info& _info,
+        const parameters_t& _parameters
     );
 
     ACTIVITY_API virtual ~message()

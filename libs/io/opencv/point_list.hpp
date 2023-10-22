@@ -45,7 +45,7 @@ public:
     IO_OPENCV_API static void copyToCv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst);
 
     /// Convert OpenCV points to a Sight point list.
-    IO_OPENCV_API static void copyFromCv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst);
+    IO_OPENCV_API static void copy_from_cv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst);
 };
 
 } //namespace sight::io::opencv

@@ -49,9 +49,9 @@ void toolbar::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setQtToolBar(QToolBar* toolBar)
+void toolbar::setQtToolBar(QToolBar* _tool_bar)
 {
-    this->m_toolBar = toolBar;
+    this->m_toolBar = _tool_bar;
 }
 
 //-----------------------------------------------------------------------------

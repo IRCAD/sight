@@ -54,11 +54,11 @@ public:
     UI_API core::location::base::sptr show() override;
 
     /// allow to set option to the file dialog mode=READ/WRITE, check=FILE_MUST_EXIST
-    UI_API void setOption(location::Options option)
+    UI_API void setOption(location::Options _option)
     override;
 
     /// Set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
-    UI_API void setType(location::Types type) override;
+    UI_API void setType(location::Types _type) override;
 
     /**
      * @brief specify some filtering when browsing files:
@@ -66,22 +66,22 @@ public:
      * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
-    UI_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+    UI_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
     /// Set the title for the dialog
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     /// Returns the title for the dialog
     UI_API const std::string& getTitle() override;
 
     /// Set the initial location for the dialog
-    UI_API void setDefaultLocation(core::location::base::sptr loc) override;
+    UI_API void setDefaultLocation(core::location::base::sptr _loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
     UI_API core::location::base::sptr getDefaultLocation() override;
 
     /// Save the specified default location for the dialog in preferences (if available)
-    UI_API void saveDefaultLocation(core::location::base::sptr loc) override;
+    UI_API void saveDefaultLocation(core::location::base::sptr _loc) override;
 
     /// Gets the current extension file selection
     UI_API std::string getCurrentSelection() const override;

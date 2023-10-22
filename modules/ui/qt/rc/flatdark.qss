@@ -510,10 +510,10 @@ QGroupBox::title
 }
 
 /************************************************************************/
-/***************************** SlideBar *********************************/
+/***************************** slide_bar *********************************/
 /************************************************************************/
 
-QGroupBox#SlideBar
+QGroupBox#slide_bar
 {
     margin: 0px;
     background: transparent;
@@ -1436,7 +1436,7 @@ QProgressBar::chunk
 
 /************************** Custom class *****************************/
 
-.AccordionMenu[folded="false"]
+.accordion_menu[folded="false"]
 {
     background-color: rgba(0, 0, 0, 15%);
     border: 1px solid rgba(0, 0, 0, 40%);

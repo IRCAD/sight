@@ -28,12 +28,12 @@
 #include <core/com/slots.hxx>
 
 #include <data/boolean.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/tools/color.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -64,7 +64,7 @@ negato3d::negato3d() noexcept
     new_slot(UPDATE_SLICES_FROM_WORLD, &negato3d::updateSlicesFromWorld, this);
     new_slot(UPDATE_TF_SLOT, &negato3d::updateTF, this);
 
-    m_pickedVoxelSignal = new_signal<PickedVoxelSigType>(PICKED_VOXEL_SIG);
+    m_pickedVoxelSignal = new_signal<picked_voxel_sig_t>(PICKED_VOXEL_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -92,14 +92,14 @@ void negato3d::configuring()
 
     if(config.count(s_FILTERING_CONFIG) != 0U)
     {
-        const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
+        const auto filtering_value = config.get<std::string>(s_FILTERING_CONFIG);
         sight::viz::scene3d::plane::filter_t filtering(sight::viz::scene3d::plane::filter_t::LINEAR);
 
-        if(filteringValue == "none")
+        if(filtering_value == "none")
         {
             filtering = sight::viz::scene3d::plane::filter_t::NONE;
         }
-        else if(filteringValue == "anisotropic")
+        else if(filtering_value == "anisotropic")
         {
             filtering = sight::viz::scene3d::plane::filter_t::ANISOTROPIC;
         }
@@ -107,16 +107,16 @@ void negato3d::configuring()
         m_filtering = filtering;
     }
 
-    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
-    if(!hexaMask.empty())
+    const std::string hexa_mask = config.get<std::string>(s_QUERY_CONFIG, "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
@@ -124,9 +124,9 @@ void negato3d::configuring()
     m_priority    = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 
-    const std::string transformId =
+    const std::string transform_id =
         config.get<std::string>(sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG, this->get_id() + "_transform");
-    this->setTransformId(transformId);
+    this->setTransformId(transform_id);
 }
 
 //------------------------------------------------------------------------------
@@ -139,17 +139,17 @@ void negato3d::starting()
     {
         // 3D source texture instantiation
         const auto image = m_image.lock();
-        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::texture>(image.get_shared());
 
         // TF texture initialization
         const auto tf = m_tf.lock();
         m_gpuTF = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
     }
 
-    // Scene node's instantiation
-    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
-    m_negatoSceneNode = transformNode->createChildSceneNode();
+    // scene node's instantiation
+    Ogre::SceneNode* const root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transform_node  = this->getOrCreateTransformNode(root_scene_node);
+    m_negatoSceneNode = transform_node->createChildSceneNode();
 
     // Instantiation of the planes
     for(auto& plane : m_planes)
@@ -177,7 +177,7 @@ void negato3d::starting()
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         this->getLayer()->addInteractor(interactor, m_priority);
 
-        m_pickingCross = std::make_unique<sight::viz::scene3d::PickingCross>(
+        m_pickingCross = std::make_unique<sight::viz::scene3d::picking_cross>(
             this->get_id(),
             *this->getSceneManager(),
             *m_negatoSceneNode
@@ -223,7 +223,7 @@ void negato3d::stopping()
     }
 
     m_pickedPlane.reset();
-    std::ranges::for_each(m_planes, [](auto& p){p.reset();});
+    std::ranges::for_each(m_planes, [](auto& _p){_p.reset();});
 
     m_negatoSceneNode->removeAndDestroyAllChildren();
     this->getSceneManager()->destroySceneNode(m_negatoSceneNode);
@@ -242,13 +242,13 @@ void negato3d::newImage()
 {
     this->getRenderService()->makeCurrent();
 
-    int axialIdx    = 0;
-    int frontalIdx  = 0;
-    int sagittalIdx = 0;
+    int axial_idx    = 0;
+    int frontal_idx  = 0;
+    int sagittal_idx = 0;
     {
         const auto image = m_image.lock();
 
-        if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
             return;
         }
@@ -256,24 +256,26 @@ void negato3d::newImage()
         // Retrieves or creates the slice index fields
         m_3DOgreTexture->update();
 
-        const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+        const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
 
         // Fits the planes to the new texture
-        for(int orientationNum = 0 ; const auto& plane : m_planes)
+        for(int orientation_num = 0 ; const auto& plane : m_planes)
         {
-            plane->update(static_cast<OrientationMode>(orientationNum++), spacing, origin, m_enableAlpha);
+            plane->update(static_cast<OrientationMode>(orientation_num++), spacing, origin, m_enableAlpha);
             plane->setQueryFlags(m_queryFlags);
         }
 
         // Update Slice
-        namespace imHelper = data::helper::MedicalImage;
+        namespace imHelper = data::helper::medical_image;
 
-        axialIdx    = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0)));
-        frontalIdx  = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
-        sagittalIdx = std::max(0, int(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
+        axial_idx   = std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::AXIAL).value_or(0)));
+        frontal_idx =
+            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::FRONTAL).value_or(0)));
+        sagittal_idx =
+            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::SAGITTAL).value_or(0)));
     }
 
-    this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
+    this->changeSliceIndex(axial_idx, frontal_idx, sagittal_idx);
 
     // Update transfer function in Gpu programs
     this->updateTF();
@@ -299,28 +301,28 @@ void negato3d::changeSliceType(int /*unused*/, int /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void negato3d::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
+void negato3d::changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index)
 {
     const auto image = m_image.lock();
 
-    auto imgSize = image->size();
+    auto img_size = image->size();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
     // So we increase the image size to 2 to divide by 1.
-    imgSize[0] = imgSize[0] == 1 ? 2 : imgSize[0];
-    imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
-    imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
+    img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
+    img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
+    img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
 
-    const std::array<float, 3> sliceIndices = {
-        static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
-        static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
-        static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
+    const std::array<float, 3> slice_indices = {
+        static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
+        static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
+        static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
     };
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        m_planes[i]->changeSlice(sliceIndices);
+        m_planes[i]->changeSlice(slice_indices);
     }
 
     this->requestRender();
@@ -334,7 +336,7 @@ void negato3d::updateTF()
     m_gpuTF->update();
 
     // Sends the TF texture to the negato-related passes
-    std::ranges::for_each(m_planes, [this](auto& p){p->setTFData(*m_gpuTF.get());});
+    std::ranges::for_each(m_planes, [this](auto& _p){_p->setTFData(*m_gpuTF.get());});
 
     this->requestRender();
 }
@@ -346,7 +348,7 @@ void negato3d::setTransparency(double _transparency)
     SIGHT_ASSERT("Service not started", this->started());
 
     const float opacity = 1.F - static_cast<float>(_transparency);
-    std::ranges::for_each(m_planes, [opacity](auto& p){p->setEntityOpacity(opacity);});
+    std::ranges::for_each(m_planes, [opacity](auto& _p){_p->setEntityOpacity(opacity);});
 
     this->requestRender();
 }
@@ -355,7 +357,7 @@ void negato3d::setTransparency(double _transparency)
 
 void negato3d::setVisible(bool _visible)
 {
-    std::ranges::for_each(m_planes, [_visible](auto& p){p->setVisible(_visible);});
+    std::ranges::for_each(m_planes, [_visible](auto& _p){_p->setVisible(_visible);});
     this->requestRender();
 }
 
@@ -363,7 +365,7 @@ void negato3d::setVisible(bool _visible)
 
 void negato3d::setPlanesQueryFlags(std::uint32_t _flags)
 {
-    std::ranges::for_each(m_planes, [_flags](auto& p){p->setQueryFlags(_flags);});
+    std::ranges::for_each(m_planes, [_flags](auto& _p){_p->setQueryFlags(_flags);});
 }
 
 //------------------------------------------------------------------------------
@@ -445,31 +447,31 @@ void negato3d::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, i
 
 void negato3d::moveSlices(int _x, int _y)
 {
-    const auto pickRes = this->getPickedSlices(_x, _y);
+    const auto pick_res = this->getPickedSlices(_x, _y);
 
-    if(pickRes.has_value())
+    if(pick_res.has_value())
     {
         const auto image = m_image.lock();
 
-        auto pickedPt = pickRes.value();
+        auto picked_pt = pick_res.value();
 
         std::ranges::for_each(
             m_planes,
-            [this](auto& p)
+            [this](auto& _p)
             {
-                if(p != m_pickedPlane)
+                if(_p != m_pickedPlane)
                 {
-                    p->setQueryFlags(0x0);
+                    _p->setQueryFlags(0x0);
                 }
             });
 
-        const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
-        pickedPt                     = (pickedPt - origin) / spacing;
+        const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
+        picked_pt                    = (picked_pt - origin) / spacing;
 
-        const Ogre::Vector3i pickedPtI(pickedPt);
+        const Ogre::Vector3i picked_pt_i(picked_pt);
         const auto sig = image->signal<data::image::SliceIndexModifiedSignalType>
                              (data::image::SLICE_INDEX_MODIFIED_SIG);
-        sig->async_emit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
+        sig->async_emit(picked_pt_i[2], picked_pt_i[1], picked_pt_i[0]);
     }
 }
 
@@ -483,11 +485,11 @@ void negato3d::updateSlicesFromWorld(double _x, double _y, double _z)
     Ogre::Vector3i slice_idx;
     try
     {
-        slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
+        slice_idx = sight::viz::scene3d::utils::worldToSlices(*image, point);
     }
-    catch(core::exception& _e)
+    catch(core::exception& e)
     {
-        SIGHT_WARN("Cannot update slice index: " << _e.what());
+        SIGHT_WARN("Cannot update slice index: " << e.what());
         return;
     }
 
@@ -503,25 +505,26 @@ void negato3d::pickIntensity(int _x, int _y)
 {
     if(m_pickedVoxelSignal->num_connections() > 0)
     {
-        const auto pickedPos = this->getPickedSlices(_x, _y);
+        const auto picked_pos = this->getPickedSlices(_x, _y);
 
-        if(pickedPos.has_value())
+        if(picked_pos.has_value())
         {
             const auto image = m_image.lock();
 
-            if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+            if(!data::helper::medical_image::check_image_validity(image.get_shared()))
             {
                 return;
             }
 
-            const auto imageBufferLock = image->dump_lock();
+            const auto image_buffer_lock = image->dump_lock();
 
-            const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+            const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
 
-            auto crossLines = m_pickedPlane->computeCross(*pickedPos, origin);
-            m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
-            const std::string pickingText = sight::viz::scene3d::Utils::pickImage(*image, *pickedPos, origin, spacing);
-            m_pickedVoxelSignal->async_emit(pickingText);
+            auto cross_lines = m_pickedPlane->computeCross(*picked_pos, origin);
+            m_pickingCross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
+            const std::string picking_text =
+                sight::viz::scene3d::utils::pickImage(*image, *picked_pos, origin, spacing);
+            m_pickedVoxelSignal->async_emit(picking_text);
 
             this->requestRender();
 
@@ -536,12 +539,12 @@ void negato3d::pickIntensity(int _x, int _y)
 std::optional<Ogre::Vector3> negato3d::getPickedSlices(int _x, int _y)
 {
     Ogre::SceneManager* sm = this->getSceneManager();
-    const auto result      = sight::viz::scene3d::Utils::pickObject(_x, _y, m_queryFlags, *sm);
+    const auto result      = sight::viz::scene3d::utils::pickObject(_x, _y, m_queryFlags, *sm);
 
     if(result.has_value())
     {
-        const auto isPicked = [&result](const auto& _p){return _p->getMovableObject() == result->first;};
-        const auto it = std::ranges::find_if(m_planes, isPicked); // NOLINT(readability-qualified-auto,llvm-qualified-auto)
+        const auto is_picked = [&result](const auto& _p){return _p->getMovableObject() == result->first;};
+        const auto it = std::ranges::find_if(m_planes, is_picked); // NOLINT(readability-qualified-auto,llvm-qualified-auto)
 
         if(it != m_planes.cend())
         {
@@ -557,19 +560,19 @@ std::optional<Ogre::Vector3> negato3d::getPickedSlices(int _x, int _y)
 
 void negato3d::updateWindowing(double _dw, double _dl)
 {
-    const double newWindow = m_initialWindow + _dw;
-    const double newLevel  = m_initialLevel - _dl;
+    const double new_window = m_initialWindow + _dw;
+    const double new_level  = m_initialLevel - _dl;
 
     {
         const auto tf = m_tf.lock();
 
-        tf->setWindow(newWindow);
-        tf->setLevel(newLevel);
-        const auto sig = tf->signal<data::transfer_function::WindowingModifiedSignalType>(
+        tf->setWindow(new_window);
+        tf->setLevel(new_level);
+        const auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
             data::transfer_function::WINDOWING_MODIFIED_SIG
         );
         {
-            sig->async_emit(newWindow, newLevel);
+            sig->async_emit(new_window, new_level);
         }
     }
 }

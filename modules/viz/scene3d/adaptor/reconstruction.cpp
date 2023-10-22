@@ -60,16 +60,16 @@ void reconstruction::configuring()
     );
     m_autoResetCamera = config.get<bool>(s_CONFIG + "autoresetcamera", true);
 
-    const std::string hexaMask = config.get<std::string>(s_CONFIG + "queryFlags", "");
-    if(!hexaMask.empty())
+    const std::string hexa_mask = config.get<std::string>(s_CONFIG + "queryFlags", "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 }
 
@@ -100,15 +100,15 @@ void reconstruction::updating()
     {
         const auto reconstruction = m_reconstruction.lock();
 
-        module::viz::scene3d::adaptor::mesh::sptr meshAdaptor = this->getMeshAdaptor();
+        module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = meshAdaptor->input<sight::data::mesh>("mesh").lock();
+        auto mesh = mesh_adaptor->input<sight::data::mesh>("mesh").lock();
         if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction
-            meshAdaptor->setMaterial(std::const_pointer_cast<data::material>(reconstruction->getMaterial()));
-            meshAdaptor->setVisible(reconstruction->getIsVisible());
+            mesh_adaptor->setMaterial(std::const_pointer_cast<data::material>(reconstruction->getMaterial()));
+            mesh_adaptor->setVisible(reconstruction->getIsVisible());
         }
     }
     else
@@ -135,29 +135,29 @@ void reconstruction::createMeshService()
     if(mesh)
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
-        auto meshAdaptor = this->registerService<module::viz::scene3d::adaptor::mesh>(
+        auto mesh_adaptor = this->registerService<module::viz::scene3d::adaptor::mesh>(
             "sight::module::viz::scene3d::adaptor::mesh"
         );
-        meshAdaptor->set_input(mesh, "mesh", true);
+        mesh_adaptor->set_input(mesh, "mesh", true);
 
-        meshAdaptor->set_id(this->get_id() + meshAdaptor->get_id());
-        meshAdaptor->setLayerID(m_layerID);
-        meshAdaptor->setRenderService(this->getRenderService());
+        mesh_adaptor->set_id(this->get_id() + mesh_adaptor->get_id());
+        mesh_adaptor->setLayerID(m_layerID);
+        mesh_adaptor->setRenderService(this->getRenderService());
 
-        meshAdaptor->setIsReconstructionManaged(true);
+        mesh_adaptor->setIsReconstructionManaged(true);
         // Here Material cannot be const since material created by mesh can modify it.
-        meshAdaptor->setMaterial(std::const_pointer_cast<data::material>(reconstruction->getMaterial()));
-        meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
-        meshAdaptor->setAutoResetCamera(m_autoResetCamera);
-        meshAdaptor->setTransformId(this->getTransformId());
-        meshAdaptor->setVisible(reconstruction->getIsVisible());
-        meshAdaptor->setDynamic(m_isDynamic);
-        meshAdaptor->setDynamicVertices(m_isDynamicVertices);
-        meshAdaptor->setQueryFlags(m_queryFlags);
+        mesh_adaptor->setMaterial(std::const_pointer_cast<data::material>(reconstruction->getMaterial()));
+        mesh_adaptor->setMaterialTemplateName(m_materialTemplateName);
+        mesh_adaptor->setAutoResetCamera(m_autoResetCamera);
+        mesh_adaptor->setTransformId(this->getTransformId());
+        mesh_adaptor->setVisible(reconstruction->getIsVisible());
+        mesh_adaptor->setDynamic(m_isDynamic);
+        mesh_adaptor->setDynamicVertices(m_isDynamicVertices);
+        mesh_adaptor->setQueryFlags(m_queryFlags);
 
-        meshAdaptor->start();
+        mesh_adaptor->start();
 
-        m_meshAdaptor = meshAdaptor;
+        m_meshAdaptor = mesh_adaptor;
     }
 }
 
@@ -167,12 +167,12 @@ void reconstruction::setVisible(bool _hide)
 {
     if(!m_meshAdaptor.expired())
     {
-        module::viz::scene3d::adaptor::mesh::sptr meshAdaptor = this->getMeshAdaptor();
+        module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = this->getMeshAdaptor();
 
-        if(meshAdaptor)
+        if(mesh_adaptor)
         {
             const auto reconstruction = m_reconstruction.lock();
-            meshAdaptor->setVisible(_hide ? false : reconstruction->getIsVisible());
+            mesh_adaptor->setVisible(_hide ? false : reconstruction->getIsVisible());
         }
     }
 }
@@ -200,10 +200,10 @@ void reconstruction::modifyVisibility()
 adaptor::mesh::sptr reconstruction::getMeshAdaptor()
 {
     // Retrieves the associated mesh adaptor
-    auto adaptor     = m_meshAdaptor.lock();
-    auto meshAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::mesh>(adaptor);
+    auto adaptor      = m_meshAdaptor.lock();
+    auto mesh_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::mesh>(adaptor);
 
-    return meshAdaptor;
+    return mesh_adaptor;
 }
 
 //------------------------------------------------------------------------------

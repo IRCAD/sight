@@ -148,18 +148,18 @@ void mesh_test::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::point_t>(4), cell_it->pt[2]);
 
         mesh->setPoint(4, 45, 59, 48);
-        auto itPt = mesh->begin<data::iterator::point::xyz>();
-        itPt += 4;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->z);
+        auto it_pt = mesh->begin<data::iterator::point::xyz>();
+        it_pt += 4;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), it_pt->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), it_pt->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), it_pt->z);
     }
 
     {
-        const data::mesh::size_t NB_POINTS       = 60;
-        const data::mesh::size_t NB_CELLS        = 59;
-        const data::mesh::CellType CELL_TYPE     = data::mesh::CellType::TRIANGLE;
-        const data::mesh::Attributes EXTRA_ARRAY =
+        const data::mesh::size_t nb_points       = 60;
+        const data::mesh::size_t nb_cells        = 59;
+        const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::TRIANGLE;
+        const data::mesh::Attributes extra_array =
             data::mesh::Attributes::POINT_NORMALS
             | data::mesh::Attributes::POINT_COLORS
             | data::mesh::Attributes::POINT_TEX_COORDS
@@ -169,93 +169,93 @@ void mesh_test::insertion()
 
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
-        mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
+        mesh->reserve(nb_points, nb_cells, cell_type, extra_array);
         const auto lock = mesh->dump_lock();
 
-        for(std::size_t i = 0 ; i < NB_POINTS ; ++i)
+        for(std::size_t i = 0 ; i < nb_points ; ++i)
         {
-            const auto val                                        = static_cast<uint8_t>(i);
-            const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-            const auto floatVal                                   = static_cast<float>(i);
-            const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-            const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-            const std::size_t value                               = 3 * i;
-            const auto id                                         = mesh->pushPoint(
+            const auto val                                         = static_cast<uint8_t>(i);
+            const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+            const auto float_val                                   = static_cast<float>(i);
+            const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+            const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
+            const std::size_t value                                = 3 * i;
+            const auto id                                          = mesh->pushPoint(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
                 static_cast<float>(value + 2)
             );
             mesh->setPointColor(id, color);
             mesh->setPointNormal(id, normal);
-            mesh->setPointTexCoord(id, texCoords);
+            mesh->setPointTexCoord(id, tex_coords);
         }
 
-        for(data::mesh::size_t i = 0 ; i < NB_CELLS ; ++i)
+        for(data::mesh::size_t i = 0 ; i < nb_cells ; ++i)
         {
             const auto id = mesh->pushCell(i, i + 1, i + 2);
 
-            const auto val                                        = static_cast<data::mesh::color_t>(i);
-            const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-            const auto floatVal                                   = static_cast<float>(i);
-            const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-            const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
+            const auto val                                         = static_cast<data::mesh::color_t>(i);
+            const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+            const auto float_val                                   = static_cast<float>(i);
+            const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+            const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
             mesh->setCellColor(id, color);
             mesh->setCellNormal(id, normal);
-            mesh->setCellTexCoord(id, texCoords);
+            mesh->setCellTexCoord(id, tex_coords);
         }
 
-        CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(NB_CELLS, mesh->numCells());
+        CPPUNIT_ASSERT_EQUAL(nb_points, mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(nb_cells, mesh->numCells());
         CPPUNIT_ASSERT_EQUAL(mesh->getAllocatedSizeInBytes(), mesh->getDataSizeInBytes());
-        const bool resizeMemory = mesh->shrinkToFit();
-        CPPUNIT_ASSERT_EQUAL(false, resizeMemory);
+        const bool resize_memory = mesh->shrinkToFit();
+        CPPUNIT_ASSERT_EQUAL(false, resize_memory);
     }
     {
-        const data::mesh::size_t NB_POINTS = 1;
-        const data::mesh::size_t NB_CELLS  = 1;
+        const data::mesh::size_t nb_points = 1;
+        const data::mesh::size_t nb_cells  = 1;
 
-        const data::mesh::CellType CELL_TYPE     = data::mesh::CellType::POINT;
-        const data::mesh::Attributes EXTRA_ARRAY =
+        const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::POINT;
+        const data::mesh::Attributes extra_array =
             data::mesh::Attributes::POINT_NORMALS
             | data::mesh::Attributes::POINT_COLORS
             | data::mesh::Attributes::POINT_TEX_COORDS;
 
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
-        mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-        const auto lock                               = mesh->dump_lock();
-        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3LL * sizeof(data::mesh::normal_t);
-        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4LL * sizeof(data::mesh::color_t);
-        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2LL * sizeof(data::mesh::texcoord_t);
-        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3LL * sizeof(data::mesh::position_t);
+        mesh->reserve(nb_points, nb_cells, cell_type, extra_array);
+        const auto lock                                   = mesh->dump_lock();
+        const std::size_t point_normals_allocated_size    = nb_points * 3LL * sizeof(data::mesh::normal_t);
+        const std::size_t point_colors_allocated_size     = nb_points * 4LL * sizeof(data::mesh::color_t);
+        const std::size_t point_tex_coords_allocated_size = nb_points * 2LL * sizeof(data::mesh::texcoord_t);
+        const std::size_t point_position_allocated_size   = nb_points * 3LL * sizeof(data::mesh::position_t);
 
-        // data::mesh::CellType::POINT;
-        const std::size_t cellDataAllocatedSize = NB_CELLS * 1LL * sizeof(data::mesh::cell_t);
+        // data::mesh::cell_type_t::POINT;
+        const std::size_t cell_data_allocated_size = nb_cells * 1LL * sizeof(data::mesh::cell_t);
 
-        const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
-                                      + pointNormalsAllocatedSize + pointColorsAllocatedSize
-                                      + pointTexCoordsAllocatedSize;
+        const std::size_t point_size = point_position_allocated_size + cell_data_allocated_size
+                                       + point_normals_allocated_size + point_colors_allocated_size
+                                       + point_tex_coords_allocated_size;
 
         CPPUNIT_ASSERT_EQUAL(
-            pointSize,
+            point_size,
             mesh->getAllocatedSizeInBytes()
         );
         for(std::size_t i = 0 ; i < 1001 ; ++i)
         {
-            const auto val                                        = static_cast<uint8_t>(i);
-            const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-            const auto floatVal                                   = static_cast<float>(i);
-            const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-            const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-            const std::size_t value                               = 3 * i;
-            const auto id                                         = mesh->pushPoint(
+            const auto val                                         = static_cast<uint8_t>(i);
+            const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+            const auto float_val                                   = static_cast<float>(i);
+            const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+            const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
+            const std::size_t value                                = 3 * i;
+            const auto id                                          = mesh->pushPoint(
                 static_cast<float>(value),
                 static_cast<float>(value + 1),
                 static_cast<float>(value + 2)
             );
             mesh->setPointColor(id, color);
             mesh->setPointNormal(id, normal);
-            mesh->setPointTexCoord(id, texCoords);
+            mesh->setPointTexCoord(id, tex_coords);
         }
 
         namespace point = iterator::point;
@@ -265,22 +265,22 @@ void mesh_test::insertion()
             data::mesh::size_t count = 0;
             for(const auto& [p, n, c, uv] : range)
             {
-                const auto fValue = static_cast<float>(3 * count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
-                const auto cVal = static_cast<data::mesh::color_t>(count);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.r);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.g);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.b);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.a);
-                const auto fVal = static_cast<data::mesh::normal_t>(count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nx, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.ny, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nz, EPSILON);
+                const auto f_value = static_cast<float>(3 * count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value, p.x, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 1, p.y, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 2, p.z, EPSILON);
+                const auto c_val = static_cast<data::mesh::color_t>(count);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.r);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.g);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.b);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.a);
+                const auto f_val = static_cast<data::mesh::normal_t>(count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.nz, EPSILON);
 
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, uv.u, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, uv.v, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, uv.v, EPSILON);
 
                 ++count;
             }
@@ -298,37 +298,37 @@ void mesh_test::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(72040), mesh->getAllocatedSizeInBytes());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(36072), mesh->getDataSizeInBytes());
         CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(1002), mesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(EXTRA_ARRAY, mesh->getAttributes());
+        CPPUNIT_ASSERT_EQUAL(extra_array, mesh->getAttributes());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_COLORS>());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_NORMALS>());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>());
     }
 
     {
-        const data::mesh::size_t NB_POINTS            = 1;
-        const data::mesh::size_t NB_CELLS             = 1;
-        const data::mesh::CellType CELL_TYPE1         = data::mesh::CellType::TRIANGLE;
-        const data::mesh::Attributes ATTRIBUTES_ARRAY =
+        const data::mesh::size_t nb_points            = 1;
+        const data::mesh::size_t nb_cells             = 1;
+        const data::mesh::cell_type_t cell_typ_e1     = data::mesh::cell_type_t::TRIANGLE;
+        const data::mesh::Attributes attributes_array =
             data::mesh::Attributes::CELL_NORMALS
             | data::mesh::Attributes::CELL_COLORS
             | data::mesh::Attributes::CELL_TEX_COORDS;
         data::mesh::sptr mesh = std::make_shared<data::mesh>();
-        mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE1, ATTRIBUTES_ARRAY);
-        const auto lock                               = mesh->dump_lock();
-        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3LL * sizeof(data::mesh::normal_t);
-        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4LL * sizeof(data::mesh::color_t);
-        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2LL * sizeof(data::mesh::texcoord_t);
-        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3LL * sizeof(data::mesh::position_t);
+        mesh->reserve(nb_points, nb_cells, cell_typ_e1, attributes_array);
+        const auto lock                                   = mesh->dump_lock();
+        const std::size_t point_normals_allocated_size    = nb_points * 3LL * sizeof(data::mesh::normal_t);
+        const std::size_t point_colors_allocated_size     = nb_points * 4LL * sizeof(data::mesh::color_t);
+        const std::size_t point_tex_coords_allocated_size = nb_points * 2LL * sizeof(data::mesh::texcoord_t);
+        const std::size_t point_position_allocated_size   = nb_points * 3LL * sizeof(data::mesh::position_t);
 
-        // data::mesh::CellType::TRIANGLE;
-        const std::size_t cellDataAllocatedSize = NB_CELLS * 3LL * sizeof(data::mesh::cell_t);
+        // data::mesh::cell_type_t::TRIANGLE;
+        const std::size_t cell_data_allocated_size = nb_cells * 3LL * sizeof(data::mesh::cell_t);
 
-        const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
-                                      + pointNormalsAllocatedSize + pointColorsAllocatedSize
-                                      + pointTexCoordsAllocatedSize;
+        const std::size_t point_size = point_position_allocated_size + cell_data_allocated_size
+                                       + point_normals_allocated_size + point_colors_allocated_size
+                                       + point_tex_coords_allocated_size;
 
         CPPUNIT_ASSERT_EQUAL(
-            pointSize,
+            point_size,
             mesh->getAllocatedSizeInBytes()
         );
 
@@ -336,14 +336,14 @@ void mesh_test::insertion()
         {
             const auto id = mesh->pushCell(i, i + 1, i + 2);
 
-            const auto val                                        = static_cast<data::mesh::color_t>(i);
-            const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-            const auto floatVal                                   = static_cast<float>(i);
-            const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-            const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
+            const auto val                                         = static_cast<data::mesh::color_t>(i);
+            const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+            const auto float_val                                   = static_cast<float>(i);
+            const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+            const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
             mesh->setCellColor(id, color);
             mesh->setCellNormal(id, normal);
-            mesh->setCellTexCoord(id, texCoords);
+            mesh->setCellTexCoord(id, tex_coords);
         }
 
         namespace cell = iterator::cell;
@@ -357,19 +357,19 @@ void mesh_test::insertion()
                 CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(count + 1), p.pt[1]);
                 CPPUNIT_ASSERT_EQUAL(static_cast<data::mesh::size_t>(count + 2), p.pt[2]);
 
-                const auto cVal = static_cast<data::mesh::color_t>(count);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.r);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.g);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.b);
-                CPPUNIT_ASSERT_EQUAL(cVal, c.a);
+                const auto c_val = static_cast<data::mesh::color_t>(count);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.r);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.g);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.b);
+                CPPUNIT_ASSERT_EQUAL(c_val, c.a);
 
-                const auto fVal = static_cast<data::mesh::normal_t>(count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nx, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.ny, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nz, EPSILON);
+                const auto f_val = static_cast<data::mesh::normal_t>(count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, n.nz, EPSILON);
 
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, uv.u, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, uv.v, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(f_val, uv.v, EPSILON);
 
                 ++count;
             }
@@ -387,7 +387,7 @@ void mesh_test::insertion()
             | data::mesh::Attributes::CELL_TEX_COORDS,
             mesh->getAttributes()
         );
-        CPPUNIT_ASSERT_EQUAL(ATTRIBUTES_ARRAY, mesh->getAttributes());
+        CPPUNIT_ASSERT_EQUAL(attributes_array, mesh->getAttributes());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_COLORS>());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_NORMALS>());
         CPPUNIT_ASSERT(mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
@@ -398,11 +398,11 @@ void mesh_test::insertion()
 
 void mesh_test::copy()
 {
-    data::mesh::sptr mesh             = std::make_shared<data::mesh>();
-    data::mesh::sptr shallow_copyMesh = std::make_shared<data::mesh>();
-    CPPUNIT_ASSERT(*mesh == *shallow_copyMesh);
+    data::mesh::sptr mesh              = std::make_shared<data::mesh>();
+    data::mesh::sptr shallow_copy_mesh = std::make_shared<data::mesh>();
+    CPPUNIT_ASSERT(*mesh == *shallow_copy_mesh);
 
-    const auto dumpLock = mesh->dump_lock();
+    const auto dump_lock = mesh->dump_lock();
 
     mesh->pushPoint(10, 20, 30);
     mesh->pushPoint(10, 10, 10);
@@ -429,7 +429,7 @@ void mesh_test::copy()
     mesh->resize(
         mesh->numPoints(),
         mesh->numCells(),
-        data::mesh::CellType::QUAD,
+        data::mesh::cell_type_t::QUAD,
         data::mesh::Attributes::POINT_COLORS | data::mesh::Attributes::POINT_TEX_COORDS
     );
 
@@ -455,54 +455,55 @@ void mesh_test::copy()
 
     // check deep copy
     {
-        data::mesh::sptr deep_copyMesh = data::object::copy(mesh);
-        const auto copyDumpLock        = deep_copyMesh->dump_lock();
+        data::mesh::sptr deep_copy_mesh = data::object::copy(mesh);
+        const auto copy_dump_lock       = deep_copy_mesh->dump_lock();
 
-        CPPUNIT_ASSERT(*mesh == *deep_copyMesh);
+        CPPUNIT_ASSERT(*mesh == *deep_copy_mesh);
 
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), deep_copyMesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), deep_copyMesh->numCells());
-        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), deep_copyMesh->getDataSizeInBytes());
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), deep_copy_mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), deep_copy_mesh->numCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), deep_copy_mesh->getDataSizeInBytes());
 
-        auto pointItr         = mesh->cbegin<point::xyz>();
-        const auto pointEnd   = mesh->cend<point::xyz>();
-        auto pointItrCopyMesh = deep_copyMesh->cbegin<point::xyz>();
+        auto point_itr           = mesh->cbegin<point::xyz>();
+        const auto point_end     = mesh->cend<point::xyz>();
+        auto point_itr_copy_mesh = deep_copy_mesh->cbegin<point::xyz>();
 
-        for( ; pointItr != pointEnd ; ++pointItr, ++pointItrCopyMesh)
+        for( ; point_itr != point_end ; ++point_itr, ++point_itr_copy_mesh)
         {
-            CPPUNIT_ASSERT_EQUAL(pointItr->x, pointItrCopyMesh->x);
-            CPPUNIT_ASSERT_EQUAL(pointItr->y, pointItrCopyMesh->y);
-            CPPUNIT_ASSERT_EQUAL(pointItr->z, pointItrCopyMesh->z);
+            CPPUNIT_ASSERT_EQUAL(point_itr->x, point_itr_copy_mesh->x);
+            CPPUNIT_ASSERT_EQUAL(point_itr->y, point_itr_copy_mesh->y);
+            CPPUNIT_ASSERT_EQUAL(point_itr->z, point_itr_copy_mesh->z);
         }
 
         const sight::data::mesh::csptr mesh3 = mesh; // copy into a const pointer to explicit test const begin()
-        auto cellItr                         = mesh3->begin<cell::quad>();
-        const auto cellEnd                   = mesh3->end<cell::quad>();
-        auto cellItrCopyMesh                 = deep_copyMesh->cbegin<cell::quad>();
+        auto cell_itr                        = mesh3->begin<cell::quad>();
+        const auto cell_end                  = mesh3->end<cell::quad>();
+        auto cell_itr_copy_mesh              = deep_copy_mesh->cbegin<cell::quad>();
 
-        for( ; cellItr != cellEnd ; ++cellItr, ++cellItrCopyMesh)
+        for( ; cell_itr != cell_end ; ++cell_itr, ++cell_itr_copy_mesh)
         {
             for(std::size_t i = 0 ; i < 4 ; ++i)
             {
-                CPPUNIT_ASSERT_EQUAL(cellItr->pt[i], cellItrCopyMesh->pt[i]);
+                CPPUNIT_ASSERT_EQUAL(cell_itr->pt[i], cell_itr_copy_mesh->pt[i]);
             }
         }
     }
 
     //check shallow copy
     {
-        shallow_copyMesh->shallow_copy(mesh);
-        CPPUNIT_ASSERT(*mesh == *shallow_copyMesh);
-        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), shallow_copyMesh->numPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), shallow_copyMesh->numCells());
-        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), shallow_copyMesh->getDataSizeInBytes());
+        shallow_copy_mesh->shallow_copy(mesh);
+        CPPUNIT_ASSERT(*mesh == *shallow_copy_mesh);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), shallow_copy_mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), shallow_copy_mesh->numCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), shallow_copy_mesh->getDataSizeInBytes());
 
         {
-            auto pointItr     = mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>().begin();
-            auto pointItrCopy = shallow_copyMesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>().begin();
+            auto point_itr      = mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>().begin();
+            auto point_itr_copy =
+                shallow_copy_mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>().begin();
 
-            const auto& [p1, n1, c1, u1] = *pointItr;
-            const auto& [p2, n2, c2, u2] = *pointItrCopy;
+            const auto& [p1, n1, c1, u1] = *point_itr;
+            const auto& [p2, n2, c2, u2] = *point_itr_copy;
             CPPUNIT_ASSERT_EQUAL(&p1.x, &p2.x);
             CPPUNIT_ASSERT_EQUAL(&n1.nx, &n2.nx);
             CPPUNIT_ASSERT_EQUAL(&c1.r, &c2.r);
@@ -510,11 +511,11 @@ void mesh_test::copy()
         }
 
         {
-            const auto cellItr         = mesh->zip_range<cell::quad, cell::rgba, cell::uv>().begin();
-            const auto cellItrCopyMesh = shallow_copyMesh->zip_range<cell::quad, cell::rgba, cell::uv>().begin();
+            const auto cell_itr           = mesh->zip_range<cell::quad, cell::rgba, cell::uv>().begin();
+            const auto cell_itr_copy_mesh = shallow_copy_mesh->zip_range<cell::quad, cell::rgba, cell::uv>().begin();
 
-            const auto& [i1, c1, t1] = *cellItr;
-            const auto& [i2, c2, t2] = *cellItrCopyMesh;
+            const auto& [i1, c1, t1] = *cell_itr;
+            const auto& [i2, c2, t2] = *cell_itr_copy_mesh;
             CPPUNIT_ASSERT_EQUAL((i1.pt).data(), (i2.pt).data());
             CPPUNIT_ASSERT_EQUAL(&c1.r, &c2.r);
             CPPUNIT_ASSERT_EQUAL(&t1.u, &t2.u);
@@ -543,15 +544,15 @@ void mesh_test::allocationTest()
         mesh->getDataSizeInBytes()
     );
 
-    data::mesh::size_t pointSize = 3000;
-    data::mesh::size_t cellSize  = 2000;
-    mesh->reserve(pointSize, cellSize, data::mesh::CellType::TRIANGLE);
+    data::mesh::size_t point_size = 3000;
+    data::mesh::size_t cell_size  = 2000;
+    mesh->reserve(point_size, cell_size, data::mesh::cell_type_t::TRIANGLE);
 
-    const std::size_t pointPositionAllocatedSize = pointSize * 3LL * sizeof(data::mesh::position_t);
-    const std::size_t cellDataAllocatedSize      = cellSize * 3LL * sizeof(data::mesh::cell_t);
+    const std::size_t point_position_allocated_size = point_size * 3LL * sizeof(data::mesh::position_t);
+    const std::size_t cell_data_allocated_size      = cell_size * 3LL * sizeof(data::mesh::cell_t);
 
     CPPUNIT_ASSERT_EQUAL(
-        pointPositionAllocatedSize + cellDataAllocatedSize,
+        point_position_allocated_size + cell_data_allocated_size,
         mesh->getAllocatedSizeInBytes()
     );
 
@@ -567,19 +568,19 @@ void mesh_test::allocationTest()
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
 
     mesh->reserve(
-        pointSize,
-        cellSize,
-        data::mesh::CellType::TRIANGLE,
+        point_size,
+        cell_size,
+        data::mesh::cell_type_t::TRIANGLE,
         data::mesh::Attributes::POINT_NORMALS
         | data::mesh::Attributes::POINT_COLORS | data::mesh::Attributes::POINT_TEX_COORDS
     );
 
-    const std::size_t pointNormalsAllocatedSize   = pointSize * 3LL * sizeof(data::mesh::normal_t);
-    const std::size_t pointColorsAllocatedSize    = pointSize * 4LL * sizeof(data::mesh::color_t);
-    const std::size_t pointTexCoordsAllocatedSize = pointSize * 2LL * sizeof(data::mesh::texcoord_t);
+    const std::size_t point_normals_allocated_size    = point_size * 3LL * sizeof(data::mesh::normal_t);
+    const std::size_t point_colors_allocated_size     = point_size * 4LL * sizeof(data::mesh::color_t);
+    const std::size_t point_tex_coords_allocated_size = point_size * 2LL * sizeof(data::mesh::texcoord_t);
     CPPUNIT_ASSERT_EQUAL(
-        pointPositionAllocatedSize + cellDataAllocatedSize
-        + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize,
+        point_position_allocated_size + cell_data_allocated_size
+        + point_normals_allocated_size + point_colors_allocated_size + point_tex_coords_allocated_size,
         mesh->getAllocatedSizeInBytes()
     );
 
@@ -596,9 +597,9 @@ void mesh_test::allocationTest()
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>());
 
     mesh->reserve(
-        pointSize,
-        cellSize,
-        data::mesh::CellType::TRIANGLE,
+        point_size,
+        cell_size,
+        data::mesh::cell_type_t::TRIANGLE,
         data::mesh::Attributes::POINT_NORMALS
         | data::mesh::Attributes::POINT_COLORS
         | data::mesh::Attributes::POINT_TEX_COORDS
@@ -607,12 +608,12 @@ void mesh_test::allocationTest()
         | data::mesh::Attributes::CELL_TEX_COORDS
     );
 
-    std::size_t oldsize = mesh->getAllocatedSizeInBytes();
-    bool adjusted       = mesh->shrinkToFit();
-    std::size_t newSize = mesh->getAllocatedSizeInBytes();
+    std::size_t oldsize  = mesh->getAllocatedSizeInBytes();
+    bool adjusted        = mesh->shrinkToFit();
+    std::size_t new_size = mesh->getAllocatedSizeInBytes();
 
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
-    CPPUNIT_ASSERT(oldsize > newSize);
+    CPPUNIT_ASSERT(oldsize > new_size);
 
     CPPUNIT_ASSERT_EQUAL(
         data::mesh::Attributes::POINT_NORMALS
@@ -647,12 +648,12 @@ void mesh_test::allocationTest()
 
 void mesh_test::iteratorTest()
 {
-    auto msg = [](auto& count){return "iteration: " + std::to_string(count);};
+    auto msg = [](auto& _count){return "iteration: " + std::to_string(_count);};
 
-    const data::mesh::size_t NB_POINTS       = 60;
-    const data::mesh::size_t NB_CELLS        = 59;
-    const data::mesh::CellType CELL_TYPE     = data::mesh::CellType::TRIANGLE;
-    const data::mesh::Attributes EXTRA_ARRAY =
+    const data::mesh::size_t nb_points       = 60;
+    const data::mesh::size_t nb_cells        = 59;
+    const data::mesh::cell_type_t cell_type  = data::mesh::cell_type_t::TRIANGLE;
+    const data::mesh::Attributes extra_array =
         data::mesh::Attributes::POINT_NORMALS
         | data::mesh::Attributes::POINT_COLORS
         | data::mesh::Attributes::POINT_TEX_COORDS
@@ -662,35 +663,35 @@ void mesh_test::iteratorTest()
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
 
-    mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
+    mesh->resize(nb_points, nb_cells, cell_type, extra_array);
     const auto lock = mesh->dump_lock();
 
-    for(data::mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
+    for(data::mesh::size_t i = 0 ; i < nb_points ; ++i)
     {
-        const auto val                                        = static_cast<uint8_t>(i);
-        const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-        const auto floatVal                                   = static_cast<float>(i);
-        const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-        const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-        const std::size_t value                               = std::size_t(3) * i;
+        const auto val                                         = static_cast<uint8_t>(i);
+        const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+        const auto float_val                                   = static_cast<float>(i);
+        const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+        const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
+        const std::size_t value                                = std::size_t(3) * i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
-        mesh->setPointTexCoord(i, texCoords);
+        mesh->setPointTexCoord(i, tex_coords);
     }
 
-    for(data::mesh::size_t i = 0 ; i < NB_CELLS ; ++i)
+    for(data::mesh::size_t i = 0 ; i < nb_cells ; ++i)
     {
         mesh->setCell(i, i, i + 1, i + 2);
 
-        const auto val                                        = static_cast<data::mesh::color_t>(i);
-        const std::array<data::mesh::color_t, 4> color        = {val, val, val, val};
-        const auto floatVal                                   = static_cast<float>(i);
-        const std::array<data::mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
-        const std::array<data::mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
+        const auto val                                         = static_cast<data::mesh::color_t>(i);
+        const std::array<data::mesh::color_t, 4> color         = {val, val, val, val};
+        const auto float_val                                   = static_cast<float>(i);
+        const std::array<data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
+        const std::array<data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
         mesh->setCellColor(i, color);
         mesh->setCellNormal(i, normal);
-        mesh->setCellTexCoord(i, texCoords);
+        mesh->setCellTexCoord(i, tex_coords);
     }
 
     namespace point = iterator::point;
@@ -701,24 +702,24 @@ void mesh_test::iteratorTest()
         data::mesh::size_t count = 0;
         for(const auto& [p, n, c, uv] : range)
         {
-            const auto fValue = static_cast<float>(3 * count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
+            const auto f_value = static_cast<float>(3 * count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value, p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 1, p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 2, p.z, EPSILON);
 
-            const auto cVal = static_cast<data::mesh::color_t>(count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+            const auto c_val = static_cast<data::mesh::color_t>(count);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.a);
 
-            const auto fVal = static_cast<data::mesh::normal_t>(count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+            const auto f_val = static_cast<data::mesh::normal_t>(count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nz, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.v, EPSILON);
 
             ++count;
         }
@@ -732,32 +733,32 @@ void mesh_test::iteratorTest()
         auto begin                           = std::make_reverse_iterator(range.end());
         auto end                             = std::make_reverse_iterator(range.begin());
 
-        std::size_t count = NB_POINTS;
+        std::size_t count = nb_points;
         std::for_each(
             begin,
             end,
-            [&](const auto& it)
+            [&](const auto& _it)
             {
-                const auto& [p, n, c, uv] = it;
+                const auto& [p, n, c, uv] = _it;
                 --count;
-                const auto fValue = static_cast<float>(3 * count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue, p.x, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 1, p.y, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 2, p.z, EPSILON);
+                const auto f_value = static_cast<float>(3 * count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_value, p.x, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_value + 1, p.y, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_value + 2, p.z, EPSILON);
 
-                const auto cVal = static_cast<data::mesh::color_t>(count);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+                const auto c_val = static_cast<data::mesh::color_t>(count);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.r);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.g);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.b);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.a);
 
-                const auto fVal = static_cast<data::mesh::normal_t>(count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+                const auto f_val = static_cast<data::mesh::normal_t>(count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nz, EPSILON);
 
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.v, EPSILON);
             });
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), count);
@@ -773,19 +774,19 @@ void mesh_test::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<data::mesh::size_t>(count + 1), p.pt[1]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<data::mesh::size_t>(count + 2), p.pt[2]);
 
-            const auto cVal = static_cast<data::mesh::color_t>(count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+            const auto c_val = static_cast<data::mesh::color_t>(count);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.a);
 
-            const auto fVal = static_cast<data::mesh::normal_t>(count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+            const auto f_val = static_cast<data::mesh::normal_t>(count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nz, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.v, EPSILON);
 
             ++count;
         }
@@ -802,39 +803,39 @@ void mesh_test::iteratorTest()
         std::for_each(
             begin,
             end,
-            [&](const auto& it)
+            [&](const auto& _it)
             {
-                const auto& [p, n, c, uv] = it;
+                const auto& [p, n, c, uv] = _it;
 
                 CPPUNIT_ASSERT_EQUAL_MESSAGE(
                     msg(count),
-                    static_cast<data::mesh::size_t>(NB_CELLS - 1 - count),
+                    static_cast<data::mesh::size_t>(nb_cells - 1 - count),
                     p.pt[0]
                 );
                 CPPUNIT_ASSERT_EQUAL_MESSAGE(
                     msg(count),
-                    static_cast<data::mesh::size_t>(NB_CELLS - 1 - count + 1),
+                    static_cast<data::mesh::size_t>(nb_cells - 1 - count + 1),
                     p.pt[1]
                 );
                 CPPUNIT_ASSERT_EQUAL_MESSAGE(
                     msg(count),
-                    static_cast<data::mesh::size_t>(NB_CELLS - 1 - count + 2),
+                    static_cast<data::mesh::size_t>(nb_cells - 1 - count + 2),
                     p.pt[2]
                 );
 
-                const auto cVal = static_cast<data::mesh::color_t>(NB_CELLS - 1 - count);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+                const auto c_val = static_cast<data::mesh::color_t>(nb_cells - 1 - count);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.r);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.g);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.b);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.a);
 
-                const auto fVal = static_cast<data::mesh::normal_t>(NB_CELLS - 1 - count);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+                const auto f_val = static_cast<data::mesh::normal_t>(nb_cells - 1 - count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nz, EPSILON);
 
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.v, EPSILON);
                 ++count;
             });
 
@@ -866,34 +867,34 @@ void mesh_test::iteratorTest()
             const auto& [p, n, c, uv] = *it;
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 msg(count),
-                static_cast<data::mesh::size_t>(NB_CELLS - 1 - count),
+                static_cast<data::mesh::size_t>(nb_cells - 1 - count),
                 p.pt[0]
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 msg(count),
-                static_cast<data::mesh::size_t>(NB_CELLS - 1 - count + 1),
+                static_cast<data::mesh::size_t>(nb_cells - 1 - count + 1),
                 p.pt[1]
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 msg(count),
-                static_cast<data::mesh::size_t>(NB_CELLS - 1 - count + 2),
+                static_cast<data::mesh::size_t>(nb_cells - 1 - count + 2),
                 p.pt[2]
             );
 
-            const auto cVal = static_cast<data::mesh::color_t>(NB_CELLS - 1 - count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+            const auto c_val = static_cast<data::mesh::color_t>(nb_cells - 1 - count);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c_val, c.a);
 
-            const auto fVal =
-                static_cast<data::mesh::normal_t>(NB_CELLS - 1 - count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+            const auto f_val =
+                static_cast<data::mesh::normal_t>(nb_cells - 1 - count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, n.nz, EPSILON);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), f_val, uv.v, EPSILON);
 
             ++count;
         }
@@ -903,7 +904,7 @@ void mesh_test::iteratorTest()
 
     data::mesh::sptr mesh3 = std::make_shared<data::mesh>();
     const auto lock3       = mesh3->dump_lock();
-    mesh3->resize(NB_POINTS, NB_CELLS, data::mesh::CellType::QUAD, EXTRA_ARRAY);
+    mesh3->resize(nb_points, nb_cells, data::mesh::cell_type_t::QUAD, extra_array);
 
     {
         auto range = mesh3->zip_range<point::xyz, point::nxyz, point::rgba, point::uv>();
@@ -966,25 +967,25 @@ void mesh_test::iteratorTest()
         data::mesh::size_t count = 0;
         for(const auto& [p, n, c, uv] : range)
         {
-            const auto fValue = static_cast<float>(3 * count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
+            const auto f_value = static_cast<float>(3 * count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value, p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 1, p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(f_value + 2, p.z, EPSILON);
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count, static_cast<data::mesh::size_t>(c.r));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 1, static_cast<data::mesh::size_t>(c.g));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 2, static_cast<data::mesh::size_t>(c.b));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 3, static_cast<data::mesh::size_t>(c.a));
 
-            const auto nVal = static_cast<data::mesh::normal_t>(3 * count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 1, n.nx, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 2, n.ny, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 3, n.nz, EPSILON);
+            const auto n_val = static_cast<data::mesh::normal_t>(3 * count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 1, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 2, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 3, n.nz, EPSILON);
 
-            const auto uvVal = static_cast<data::mesh::normal_t>(2 * count);
+            const auto uv_val = static_cast<data::mesh::normal_t>(2 * count);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal, uv.u, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal + 1, uv.v, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv_val, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv_val + 1, uv.v, EPSILON);
 
             ++count;
         }
@@ -1007,14 +1008,14 @@ void mesh_test::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 2, static_cast<data::mesh::size_t>(c.b));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 3, static_cast<data::mesh::size_t>(c.a));
 
-            const auto nVal = static_cast<data::mesh::normal_t>(3 * count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 1, n.nx, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 2, n.ny, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 3, n.nz, EPSILON);
+            const auto n_val = static_cast<data::mesh::normal_t>(3 * count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 1, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 2, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n_val + 3, n.nz, EPSILON);
 
-            const auto uvVal = static_cast<data::mesh::normal_t>(2 * count);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal, uv.u, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal + 1, uv.v, EPSILON);
+            const auto uv_val = static_cast<data::mesh::normal_t>(2 * count);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv_val, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv_val + 1, uv.v, EPSILON);
 
             ++count;
         }
@@ -1027,13 +1028,13 @@ void mesh_test::iteratorTest()
 
 void mesh_test::iteratorCopyTest()
 {
-    auto msg = [](auto& count){return "iteration: " + std::to_string(count);};
+    auto msg = [](auto& _count){return "iteration: " + std::to_string(_count);};
 
     data::mesh::sptr mesh = std::make_shared<data::mesh>();
     mesh->resize(
         10,
         10,
-        data::mesh::CellType::POINT,
+        data::mesh::cell_type_t::POINT,
         data::mesh::Attributes::POINT_NORMALS
         | data::mesh::Attributes::POINT_COLORS
         | data::mesh::Attributes::POINT_TEX_COORDS
@@ -1138,13 +1139,13 @@ void mesh_test::iteratorCopyTest()
         CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
-    data::mesh::sptr copiedMesh = std::make_shared<data::mesh>();
-    CPPUNIT_ASSERT(*mesh != *copiedMesh);
+    data::mesh::sptr copied_mesh = std::make_shared<data::mesh>();
+    CPPUNIT_ASSERT(*mesh != *copied_mesh);
 
-    copiedMesh->resize(
+    copied_mesh->resize(
         10,
         10,
-        data::mesh::CellType::POINT,
+        data::mesh::cell_type_t::POINT,
         data::mesh::Attributes::POINT_NORMALS
         | data::mesh::Attributes::POINT_COLORS
         | data::mesh::Attributes::POINT_TEX_COORDS
@@ -1152,29 +1153,29 @@ void mesh_test::iteratorCopyTest()
         | data::mesh::Attributes::CELL_COLORS
         | data::mesh::Attributes::CELL_TEX_COORDS
     );
-    const auto lock2 = copiedMesh->dump_lock();
+    const auto lock2 = copied_mesh->dump_lock();
     {
         // copy the mesh points and cells with the iterator
         auto range = mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
                                       cell::point, cell::nxyz, cell::rgba, cell::uv>();
-        auto rangeCopy = copiedMesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv,
-                                               cell::point, cell::nxyz, cell::rgba, cell::uv>();
+        auto range_copy = copied_mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv,
+                                                 cell::point, cell::nxyz, cell::rgba, cell::uv>();
 
-        std::copy(range.begin(), range.end(), rangeCopy.begin());
+        std::copy(range.begin(), range.end(), range_copy.begin());
     }
 
-    CPPUNIT_ASSERT(*mesh == *copiedMesh);
+    CPPUNIT_ASSERT(*mesh == *copied_mesh);
 
     {
         // check the copied mesh
         auto range = mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv, cell::point,
                                       cell::nxyz, cell::rgba, cell::uv>();
-        auto rangeCopy = copiedMesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv, cell::point,
-                                                cell::nxyz, cell::rgba, cell::uv>();
-        auto combinedRange = boost::combine(range, rangeCopy);
+        auto range_copy = copied_mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv, cell::point,
+                                                  cell::nxyz, cell::rgba, cell::uv>();
+        auto combined_range = boost::combine(range, range_copy);
 
         data::mesh::size_t count = 0;
-        for(const auto& [pt1, pt2] : combinedRange)
+        for(const auto& [pt1, pt2] : combined_range)
         {
             const auto& [p1, n1, c1, uv1, cell1, cn1, cc1, cuv1] = pt1;
             const auto& [p2, n2, c2, uv2, cell2, cn2, cc2, cuv2] = pt2;
@@ -1276,11 +1277,11 @@ void mesh_test::iteratorCopyTest()
 
         CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
 
-        auto rangeCopy = copiedMesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
-                                                cell::point, cell::nxyz, cell::rgba, cell::uv>();
+        auto range_copy = copied_mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
+                                                  cell::point, cell::nxyz, cell::rgba, cell::uv>();
 
         count = 0;
-        for(const auto& [p, n, c, uv, cell, cn, cc, cuv] : rangeCopy)
+        for(const auto& [p, n, c, uv, cell, cn, cc, cuv] : range_copy)
         {
             // point
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count), p.x, 0.00001);
@@ -1326,7 +1327,7 @@ void mesh_test::benchmarkIterator()
     mesh->resize(
         655360,
         10000,
-        data::mesh::CellType::TRIANGLE,
+        data::mesh::cell_type_t::TRIANGLE,
         data::mesh::Attributes::POINT_NORMALS
     );
 
@@ -1336,9 +1337,9 @@ void mesh_test::benchmarkIterator()
     auto pos2  = mesh->end<iterator::point::xyz>();
     auto norm2 = mesh->end<iterator::point::nxyz>();
 
-    auto fn2 = [](const auto& tuple)
+    auto fn2 = [](const auto& _tuple)
                {
-                   auto& [p, n] = tuple;
+                   auto& [p, n] = _tuple;
                    p.x          = std::intptr_t(&p) % std::intptr_t(&n) == 0 ? 5.F : 1.F;
                    p.y          = 2.F;
                    p.z          = 3.F;
@@ -1347,18 +1348,18 @@ void mesh_test::benchmarkIterator()
                    n.nz         = 1.F;
                };
 
-    auto fn3 = [](auto& p)
+    auto fn3 = [](auto& _p)
                {
-                   p.x = std::intptr_t(&p) % 2 == 0 ? 5.F : 1.F;
-                   p.y = 2.F;
-                   p.z = 3.F;
+                   _p.x = std::intptr_t(&_p) % 2 == 0 ? 5.F : 1.F;
+                   _p.y = 2.F;
+                   _p.z = 3.F;
                };
 
-    auto fn4 = [](auto& n)
+    auto fn4 = [](auto& _n)
                {
-                   n.nx = std::intptr_t(&n) % 2 == 0 ? 5.F : 1.F;
-                   n.ny = -1.F;
-                   n.nz = 1.F;
+                   _n.nx = std::intptr_t(&_n) % 2 == 0 ? 5.F : 1.F;
+                   _n.ny = -1.F;
+                   _n.nz = 1.F;
                };
 
     {
@@ -1379,10 +1380,10 @@ void mesh_test::benchmarkIterator()
         }
     }
 
-    std::vector<iterator::point::xyz> posV(655360);
-    std::vector<iterator::point::nxyz> normV(655360);
+    std::vector<iterator::point::xyz> pos_v(655360);
+    std::vector<iterator::point::nxyz> norm_v(655360);
     {
-        auto z = boost::combine(posV, normV);
+        auto z = boost::combine(pos_v, norm_v);
         {
             FW_PROFILE("std::for - std boost combine");
             for(std::size_t i = 0 ; i < N ; ++i)
@@ -1423,9 +1424,9 @@ void mesh_test::equalityTest()
         *mesh1 == *mesh2 && !(*mesh1 != *mesh2) \
     );
 
-    mesh1->resize(1, 1, data::mesh::CellType::QUAD, data::mesh::Attributes::NONE);
+    mesh1->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE);
     CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
-    mesh2->resize(1, 1, data::mesh::CellType::QUAD, data::mesh::Attributes::NONE);
+    mesh2->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE);
     auto lock1 = mesh1->dump_lock();
     auto lock2 = mesh2->dump_lock();
     mesh1->setPoint(0, {1, 2, 3});
@@ -1434,13 +1435,13 @@ void mesh_test::equalityTest()
     mesh2->setCell(0, {1, 2, 3, 4});
     CPPUNIT_ASSERT(*mesh1 == *mesh2 && !(*mesh1 != *mesh2));
 
-    mesh1->resize(1, 1, data::mesh::CellType::QUAD, data::mesh::Attributes::POINT_COLORS);
+    mesh1->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::POINT_COLORS);
     CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
-    mesh2->resize(1, 1, data::mesh::CellType::QUAD, data::mesh::Attributes::POINT_COLORS);
+    mesh2->resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::POINT_COLORS);
     TEST(setPointColor(0, {1, 2, 3}));
 
-    TEST(resize(1, 1, data::mesh::CellType::TETRA, data::mesh::Attributes::POINT_COLORS));
-    TEST(resize(1, 1, data::mesh::CellType::QUAD, data::mesh::Attributes::NONE));
+    TEST(resize(1, 1, data::mesh::cell_type_t::TETRA, data::mesh::Attributes::POINT_COLORS));
+    TEST(resize(1, 1, data::mesh::cell_type_t::QUAD, data::mesh::Attributes::NONE));
 
     #undef TEST
 }

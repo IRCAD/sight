@@ -27,9 +27,9 @@
 #include "viz/qt3d/core/GenericScene.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::generic_scene_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3d_test::ut::generic_scene_test);
 
-namespace sight::viz::qt3dTest::ut
+namespace sight::viz::qt3d_test::ut
 {
 
 //------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ void generic_scene_test::initializeEmptyScene()
 {
     test_application app;
 
-    auto* scene    = new sight::viz::qt3d::core::GenericScene(false);
-    auto* sceneQml = new sight::viz::qt3d::core::GenericScene(true);
+    auto* scene     = new sight::viz::qt3d::core::GenericScene(false);
+    auto* scene_qml = new sight::viz::qt3d::core::GenericScene(true);
 
     CPPUNIT_ASSERT(scene != nullptr);
     CPPUNIT_ASSERT(scene->getCamera() != nullptr);
@@ -70,20 +70,20 @@ void generic_scene_test::initializeEmptyScene()
     CPPUNIT_ASSERT(scene->getInputSettings() == nullptr);
     CPPUNIT_ASSERT(scene->getRenderSettings() == nullptr);
 
-    CPPUNIT_ASSERT(sceneQml != nullptr);
-    CPPUNIT_ASSERT(sceneQml->getCamera() != nullptr);
-    CPPUNIT_ASSERT(sceneQml->getCameraController() != nullptr);
-    CPPUNIT_ASSERT(sceneQml->getFrameGraph() != nullptr);
-    CPPUNIT_ASSERT(sceneQml->getInputSettings() != nullptr);
-    CPPUNIT_ASSERT(sceneQml->getRenderSettings() != nullptr);
+    CPPUNIT_ASSERT(scene_qml != nullptr);
+    CPPUNIT_ASSERT(scene_qml->getCamera() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->getCameraController() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->getFrameGraph() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->getInputSettings() != nullptr);
+    CPPUNIT_ASSERT(scene_qml->getRenderSettings() != nullptr);
 
     CPPUNIT_ASSERT_EQUAL(scene->getCameraController()->camera(), scene->getCamera());
     CPPUNIT_ASSERT_EQUAL(qobject_cast<Qt3DRender::QCamera*>(scene->getFrameGraph()->getCamera()), scene->getCamera());
 
     delete scene;
-    delete sceneQml;
+    delete scene_qml;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::qt3dTest::ut
+} // namespace sight::viz::qt3d_test::ut

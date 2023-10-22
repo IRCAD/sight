@@ -47,20 +47,20 @@ public:
      * @param path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual SPTR(std::ostream) createFile(const std::filesystem::path& path) = 0;
+    virtual SPTR(std::ostream) createFile(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Writes source file in archive.
      * @param sourceFile source file.
      * @param path file in archive.
      */
-    virtual void putFile(const std::filesystem::path& sourceFile, const std::filesystem::path& path) = 0;
+    virtual void putFile(const std::filesystem::path& _source_file, const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Creates a folder in archive.
      * @param path folder to create in archive.
      */
-    virtual bool createDir(const std::filesystem::path& path) = 0;
+    virtual bool createDir(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Returns archive path.

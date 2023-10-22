@@ -57,7 +57,7 @@ public:
     UI_QT_API void clean() override;
     UI_QT_API void destroyContainer() override;
 
-    UI_QT_API virtual void setQtToolBar(QToolBar* toolBar);
+    UI_QT_API virtual void setQtToolBar(QToolBar* _tool_bar);
     UI_QT_API virtual QToolBar* getQtToolBar();
 
 private:

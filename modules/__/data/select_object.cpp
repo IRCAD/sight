@@ -75,9 +75,9 @@ void select_object::info(std::ostream& /*_sstream*/)
 
 //-----------------------------------------------------------------------------
 
-void select_object::add(sight::data::object::sptr obj)
+void select_object::add(sight::data::object::sptr _obj)
 {
-    m_object = obj;
+    m_object = _obj;
 }
 
 //-----------------------------------------------------------------------------

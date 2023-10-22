@@ -65,7 +65,7 @@ public:
 
     MODULE_VIZ_SAMPLE_API static const core::com::signals::key_t CAM_UPDATED_SIG;
 
-    typedef core::com::signal<void (data::matrix4::sptr)> CamUpdatedSignalType;
+    typedef core::com::signal<void (data::matrix4::sptr)> cam_updated_signal_t;
 
     /// Creates slots and the signal.
     MODULE_VIZ_SAMPLE_API mesh() noexcept;
@@ -121,7 +121,7 @@ private:
     data::matrix4::sptr m_cameraTransform;
 
     /// Contains the signal emitted when camera position is updated.
-    CamUpdatedSignalType::sptr m_sigCamUpdated;
+    cam_updated_signal_t::sptr m_sigCamUpdated;
 
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;

@@ -37,7 +37,7 @@
 
 #include "Interaction.hpp"
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 /// An event which has a function as a payload. Useful to execute arbitrary code on the main GUI thread.
@@ -45,7 +45,7 @@ class TestEvent : public QEvent
 {
 public:
 
-    GUITEST_API TestEvent(std::function<void()> f);
+    GUITEST_API TestEvent(std::function<void()> _f);
     std::function<void()> function();
 
 private:
@@ -60,7 +60,7 @@ Q_OBJECT
 
 protected:
 
-    bool eventFilter(QObject* obj, QEvent* event) override;
+    bool eventFilter(QObject* _obj, QEvent* _event) override;
 };
 
 /// The exception which is thrown when a GUI test fails.
@@ -68,11 +68,11 @@ class TesterAssertionFailed : public std::runtime_error
 {
 public:
 
-    TesterAssertionFailed(const std::string& msg);
+    TesterAssertionFailed(const std::string& _msg);
 };
 
 /// A function which always return true, ignoring its parameter.
-GUITEST_API bool alwaysTrue(QObject* /*unused*/);
+GUITEST_API bool always_true(QObject* /*unused*/);
 
 /// The main class of the GUI test library, which allows creating GUI tests.
 class GUITEST_CLASS_API Tester
@@ -83,7 +83,7 @@ public:
     {
     public:
 
-        GUITEST_API BacktraceLock(Tester& tester);
+        GUITEST_API BacktraceLock(Tester& _tester);
         GUITEST_API ~BacktraceLock();
 
     private:
@@ -92,7 +92,7 @@ public:
     };
 
     /// Constructor. Initializes the test name.
-    GUITEST_API Tester(std::string testName, bool verboseMode = false);
+    GUITEST_API Tester(std::string _test_name, bool _verbose_mode = false);
 
     /// Destructor. Joins the thread.
     GUITEST_API ~Tester();
@@ -112,16 +112,16 @@ public:
      */
     template<typename T>
     void take(
-        const std::string& componentDescription,
-        std::function<T()> graphicComponent,
-        std::function<bool(T)> condition = alwaysTrue,
-        int timeout                      = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<T()> _graphic_component,
+        std::function<bool(T)> _condition = always_true,
+        int _timeout                      = DEFAULT_TIMEOUT
     );
     GUITEST_API void take(
-        const std::string& componentDescription,
-        std::function<QObject* ()> graphicComponent,
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<QObject* ()> _graphic_component,
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -131,7 +131,7 @@ public:
      * @param componentDescription The description of the new graphic component. Used in failure messages.
      * @param graphicComponent The new graphic component.
      */
-    GUITEST_API void take(const std::string& componentDescription, QObject* graphicComponent);
+    GUITEST_API void take(const std::string& _component_description, QObject* _graphic_component);
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
@@ -143,17 +143,17 @@ public:
      * @{
      */
     GUITEST_API void take(
-        const std::string& componentDescription,
-        QObject* parent,
-        const std::string& objectName,
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        QObject* _parent,
+        const std::string& _object_name,
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     GUITEST_API void take(
-        const std::string& componentDescription,
-        const std::string& objectName,
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        const std::string& _object_name,
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -165,7 +165,7 @@ public:
      * @warning The interaction must be allocated on the heap. GuiTester will take care of freeing the interaction, it
      * is unsafe to try to access the interaction after this method is called.
      */
-    GUITEST_API void interact(std::unique_ptr<Interaction>&& interaction);
+    GUITEST_API void interact(std::unique_ptr<Interaction>&& _interaction);
 
     /**
      * @brief Check if the assertion is true.
@@ -180,14 +180,14 @@ public:
      */
     template<typename T>
     void doubt(
-        const std::string& resultDescription,
-        std::function<bool(T)> result,
-        int timeout = DEFAULT_TIMEOUT
+        const std::string& _result_description,
+        std::function<bool(T)> _result,
+        int _timeout = DEFAULT_TIMEOUT
     );
     GUITEST_API void doubt(
-        const std::string& resultDescription,
-        std::function<bool(QObject*)> result,
-        int timeout = DEFAULT_TIMEOUT
+        const std::string& _result_description,
+        std::function<bool(QObject*)> _result,
+        int _timeout = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -207,16 +207,16 @@ public:
      */
     template<typename T>
     void yields(
-        const std::string& componentDescription,
-        std::function<T(QObject*)> graphicComponent,
-        std::function<bool(T)> condition = alwaysTrue,
-        int timeout                      = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<T(QObject*)> _graphic_component,
+        std::function<bool(T)> _condition = always_true,
+        int _timeout                      = DEFAULT_TIMEOUT
     );
     GUITEST_API void yields(
-        const std::string& componentDescription,
-        std::function<QObject* (QObject*)> graphicComponent,
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<QObject* (QObject*)> _graphic_component,
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -233,16 +233,16 @@ public:
      */
     template<typename T>
     void yields(
-        const std::string& componentDescription,
-        const std::string& objectName           = "",
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        const std::string& _object_name          = "",
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     void yields(
-        const std::string& componentDescription,
-        const std::string& objectName           = "",
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        const std::string& _object_name          = "",
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -262,16 +262,16 @@ public:
      */
     template<typename T>
     void maybeTake(
-        const std::string& componentDescription,
-        std::function<T()> graphicComponent,
-        std::function<bool(T)> condition = alwaysTrue,
-        int timeout                      = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<T()> _graphic_component,
+        std::function<bool(T)> _condition = always_true,
+        int _timeout                      = DEFAULT_TIMEOUT
     );
     GUITEST_API void maybeTake(
-        const std::string& componentDescription,
-        std::function<QObject* ()> graphicComponent,
-        std::function<bool(QObject*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<QObject* ()> _graphic_component,
+        std::function<bool(QObject*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
     /// @}
 
@@ -285,8 +285,8 @@ public:
      * @{
      */
     template<typename T>
-    void doSomething(std::function<void(T)> f);
-    GUITEST_API void doSomething(std::function<void(QObject*)> f);
+    void doSomething(std::function<void(T)> _f);
+    GUITEST_API void doSomething(std::function<void(QObject*)> _f);
     /// @}
 
     /**
@@ -299,15 +299,15 @@ public:
      * @{
      */
     template<typename T>
-    void doSomethingAsynchronously(std::function<void(T)> f);
-    GUITEST_API void doSomethingAsynchronously(std::function<void(QObject*)> f);
+    void doSomethingAsynchronously(std::function<void(T)> _f);
+    GUITEST_API void doSomethingAsynchronously(std::function<void(QObject*)> _f);
     /// @}
 
     /**
      * @brief Takes a screenshot of the current graphic component
      * @param path Where to save the screenshot
      */
-    GUITEST_API void takeScreenshot(const std::filesystem::path& path);
+    GUITEST_API void takeScreenshot(const std::filesystem::path& _path);
 
     /**
      * @brief Starts the test.
@@ -319,7 +319,7 @@ public:
      *
      * @pre @ref init was called.
      */
-    GUITEST_API void start(std::function<void()> f);
+    GUITEST_API void start(std::function<void()> _f);
 
     /**
      * @brief Check if the specified component doesn't exist or exists but is hidden, the test fails else.
@@ -334,10 +334,10 @@ public:
      * @warning The current graphic component becomes undefined after the call of this method.
      */
     GUITEST_API void shouldBeHidden(
-        const std::string& componentDescription,
-        std::function<QWidget* ()> graphicComponent,
-        std::function<bool(QWidget*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<QWidget* ()> _graphic_component,
+        std::function<bool(QWidget*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
 
     /**
@@ -352,10 +352,10 @@ public:
      * @return Is the component present?
      */
     GUITEST_API void shouldBePresent(
-        const std::string& componentDescription,
-        std::function<QWidget* ()> graphicComponent,
-        std::function<bool(QWidget*)> condition = alwaysTrue,
-        int timeout                             = DEFAULT_TIMEOUT
+        const std::string& _component_description,
+        std::function<QWidget* ()> _graphic_component,
+        std::function<bool(QWidget*)> _condition = always_true,
+        int _timeout                             = DEFAULT_TIMEOUT
     );
 
     /**
@@ -407,7 +407,7 @@ public:
      */
     [[nodiscard]] GUITEST_API bool failed() const;
 
-    [[nodiscard]] GUITEST_API BacktraceLock addInBacktrace(const std::string& description);
+    [[nodiscard]] GUITEST_API BacktraceLock addInBacktrace(const std::string& _description);
 
     /**
      * @brief Returns the description associated to the current graphic component.
@@ -433,7 +433,7 @@ public:
      *
      * @note For convenience, if action is nullptr, this method returns nullptr.
      */
-    GUITEST_API static QWidget* getWidgetFromAction(QAction* action);
+    GUITEST_API static QWidget* getWidgetFromAction(QAction* _action);
 
     /**
      * @brief Move the mouse on a component, alternative to QTest::mouseMove as a workaround to QTBUG-5232.
@@ -447,18 +447,18 @@ public:
      * @{
      */
     GUITEST_API static void mouseMove(
-        QWidget* component,
-        QPoint pos                      = QPoint(),
-        int delay                       = -1,
-        Qt::MouseButton button          = Qt::NoButton,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier
+        QWidget* _component,
+        QPoint _pos                      = QPoint(),
+        int _delay                       = -1,
+        Qt::MouseButton _button          = Qt::NoButton,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier
     );
     GUITEST_API static void mouseMove(
-        QWindow* component,
-        QPoint pos                      = QPoint(),
-        int delay                       = -1,
-        Qt::MouseButton button          = Qt::NoButton,
-        Qt::KeyboardModifiers modifiers = Qt::NoModifier
+        QWindow* _component,
+        QPoint _pos                      = QPoint(),
+        int _delay                       = -1,
+        Qt::MouseButton _button          = Qt::NoButton,
+        Qt::KeyboardModifiers _modifiers = Qt::NoModifier
     );
     /// @}
 
@@ -471,7 +471,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesPixelPerfect(QImage a, QImage b, bool strict = false);
+    GUITEST_API static double compareImagesPixelPerfect(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images using the Mean Square Error.
@@ -482,7 +482,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesMSE(QImage a, QImage b, bool strict = false);
+    GUITEST_API static double compareImagesMSE(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by computing the cosine of the angle between the matrices of the two images.
@@ -493,7 +493,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesCosine(QImage a, QImage b, bool strict = false);
+    GUITEST_API static double compareImagesCosine(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by computing an histogram.
@@ -502,7 +502,7 @@ public:
      * @param a,b The images to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesHistogram(const QImage& a, const QImage& b);
+    GUITEST_API static double compareImagesHistogram(const QImage& _a, const QImage& _b);
 
     /**
      * @brief Compare images by computing Spearman's correlation coefficient of the two matrices of the two images.
@@ -510,7 +510,7 @@ public:
      * @param a,b The images to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesCorrelation(QImage a, QImage b, bool strict = false);
+    GUITEST_API static double compareImagesCorrelation(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by using the MSE on normalized, scaled-down, rotated and flipped version of the images.
@@ -519,7 +519,7 @@ public:
      * @param a,b The images to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    GUITEST_API static double compareImagesVoodoo(const QImage& a, const QImage& b);
+    GUITEST_API static double compareImagesVoodoo(const QImage& _a, const QImage& _b);
 
     /**
      * @brief Respectively returns the center, the left, the right, the top and the bottom of a widget.
@@ -529,11 +529,11 @@ public:
      *
      * @{
      */
-    GUITEST_API static QPoint centerOf(const QWidget* widget);
-    GUITEST_API static QPoint leftOf(const QWidget* widget);
-    GUITEST_API static QPoint rightOf(const QWidget* widget);
-    GUITEST_API static QPoint topOf(const QWidget* widget);
-    GUITEST_API static QPoint bottomOf(const QWidget* widget);
+    GUITEST_API static QPoint centerOf(const QWidget* _widget);
+    GUITEST_API static QPoint leftOf(const QWidget* _widget);
+    GUITEST_API static QPoint rightOf(const QWidget* _widget);
+    GUITEST_API static QPoint topOf(const QWidget* _widget);
+    GUITEST_API static QPoint bottomOf(const QWidget* _widget);
     /// @}
 
     /**
@@ -553,13 +553,13 @@ public:
 
 private:
 
-    static GUITEST_API void fail(const std::string& message);
+    static GUITEST_API void fail(const std::string& _message);
     std::string generateFailureMessage();
 
-    static QVector<QVector<QVector<double> > > computeHistogram(const QImage& img);
-    static QImage normalize(QImage img);
-    static QImage voodooize(const QImage& img);
-    GUITEST_API static bool waitForAsynchronously(std::function<bool()> predicate, int timeout = DEFAULT_TIMEOUT);
+    static QVector<QVector<QVector<double> > > computeHistogram(const QImage& _img);
+    static QImage normalize(QImage _img);
+    static QImage voodooize(const QImage& _img);
+    GUITEST_API static bool waitForAsynchronously(std::function<bool()> _predicate, int _timeout = DEFAULT_TIMEOUT);
 
     QPointer<QObject> m_graphicComponent = nullptr;
     std::string m_componentDescription;
@@ -569,7 +569,7 @@ private:
     QWidget* m_mainWindow = nullptr;
     std::string m_failureMessage;
     std::string m_resultDescription;
-    const std::string m_testName;
+    const std::string M_TEST_NAME;
     bool m_verboseMode;
     std::vector<std::string> m_backtrace;
 

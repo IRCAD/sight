@@ -126,11 +126,11 @@ struct counter_thread
 
 void lazy_instantiator_test::thread_safety_test()
 {
-    const int NB_THREAD(100);
+    const int nb_thread(100);
     counter_thread::counter_type::s_counter = 0;
 
     std::vector<std::thread> tg;
-    for(std::size_t i = 0 ; i <= NB_THREAD ; i++)
+    for(std::size_t i = 0 ; i <= nb_thread ; i++)
     {
         counter_thread::sptr ct = std::make_shared<counter_thread>();
         tg.emplace_back(&counter_thread::run);

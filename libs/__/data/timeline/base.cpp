@@ -38,17 +38,17 @@ base::base()
 
 //------------------------------------------------------------------------------
 
-bool base::operator==(const base& other) const noexcept
+bool base::operator==(const base& _other) const noexcept
 {
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool base::operator!=(const base& other) const noexcept
+bool base::operator!=(const base& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data::timeline

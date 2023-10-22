@@ -38,9 +38,9 @@ public:
     typedef std::size_t size_type;
     typedef void* buffer_t;
 
-    CORE_API virtual void allocate(buffer_t& buffer, size_type size)   = 0;
-    CORE_API virtual void reallocate(buffer_t& buffer, size_type size) = 0;
-    CORE_API virtual void destroy(buffer_t& buffer)                    = 0;
+    CORE_API virtual void allocate(buffer_t& _buffer, size_type _size)   = 0;
+    CORE_API virtual void reallocate(buffer_t& _buffer, size_type _size) = 0;
+    CORE_API virtual void destroy(buffer_t& _buffer)                     = 0;
 
     CORE_API virtual ~buffer_allocation_policy()
     = default;
@@ -51,14 +51,14 @@ class CORE_CLASS_API buffer_malloc_policy : public buffer_allocation_policy
 public:
 
     CORE_API void allocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
     CORE_API void reallocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& buffer) override;
+    CORE_API void destroy(buffer_t& _buffer) override;
 };
 
 class CORE_CLASS_API buffer_new_policy : public buffer_allocation_policy
@@ -66,14 +66,14 @@ class CORE_CLASS_API buffer_new_policy : public buffer_allocation_policy
 public:
 
     CORE_API void allocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
     CORE_API void reallocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& buffer) override;
+    CORE_API void destroy(buffer_t& _buffer) override;
 };
 
 class CORE_CLASS_API buffer_no_alloc_policy : public buffer_allocation_policy
@@ -81,14 +81,14 @@ class CORE_CLASS_API buffer_no_alloc_policy : public buffer_allocation_policy
 public:
 
     CORE_API void allocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
     CORE_API void reallocate(
-        buffer_t& buffer,
-        buffer_allocation_policy::size_type size
+        buffer_t& _buffer,
+        buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& buffer) override;
+    CORE_API void destroy(buffer_t& _buffer) override;
 };
 
 } // namespace sight::core::memory

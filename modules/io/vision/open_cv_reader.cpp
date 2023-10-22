@@ -71,22 +71,22 @@ bool open_cv_reader::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
-    dialogFile.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
+    dialog_file.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
 
     if(result)
     {
         this->set_file(result->get_file());
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         ok = true;
     }
     else
@@ -148,15 +148,15 @@ void open_cv_reader::updating()
         sig->async_emit(std::const_pointer_cast<data::camera>(cam));
     }
 
-    int nbCameras = 0;
-    fs["nbCameras"] >> nbCameras;
+    int nb_cameras = 0;
+    fs["nbCameras"] >> nb_cameras;
 
-    for(int c = 0 ; c < nbCameras ; ++c)
+    for(int c = 0 ; c < nb_cameras ; ++c)
     {
-        std::stringstream camNum;
-        camNum << "camera_" << c;
+        std::stringstream cam_num;
+        cam_num << "camera_" << c;
 
-        cv::FileNode n = fs[camNum.str()];
+        cv::FileNode n = fs[cam_num.str()];
 
         std::string id;
         std::string desc;
@@ -213,26 +213,26 @@ void open_cv_reader::updating()
 
         if(!extrinsic.empty())
         {
-            data::matrix4::sptr extMat = std::make_shared<data::matrix4>();
+            data::matrix4::sptr ext_mat = std::make_shared<data::matrix4>();
 
             for(std::size_t i = 0 ; i < 4 ; ++i)
             {
                 for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
-                    (*extMat)(i, j) = extrinsic.at<double>(static_cast<int>(i), static_cast<int>(j));
+                    (*ext_mat)(i, j) = extrinsic.at<double>(static_cast<int>(i), static_cast<int>(j));
                 }
             }
 
-            camera_set->set_extrinsic_matrix(static_cast<std::size_t>(c), extMat);
-            auto sigExtrinsic = camera_set->signal<data::camera_set::extrinsic_calibrated_signal_t>
-                                    (data::camera_set::EXTRINSIC_CALIBRATED_SIG);
-            sigExtrinsic->async_emit();
+            camera_set->set_extrinsic_matrix(static_cast<std::size_t>(c), ext_mat);
+            auto sig_extrinsic = camera_set->signal<data::camera_set::extrinsic_calibrated_signal_t>
+                                     (data::camera_set::EXTRINSIC_CALIBRATED_SIG);
+            sig_extrinsic->async_emit();
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camera_set->signal<data::camera_set::ModifiedSignalType>(data::camera_set::MODIFIED_SIG);
+    auto sig = camera_set->signal<data::camera_set::modified_signal_t>(data::camera_set::MODIFIED_SIG);
     sig->async_emit();
 
     //clear locations only if it was configured through GUI.

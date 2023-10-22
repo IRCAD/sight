@@ -57,25 +57,25 @@ public:
      * @brief Add information log into the logger
      * @param[in] message Log message
      */
-    CORE_API void information(const std::string& message);
+    CORE_API void information(const std::string& _message);
 
     /**
      * @brief Add warning log into the logger
      * @param[in] message Log message
      */
-    CORE_API void warning(const std::string& message);
+    CORE_API void warning(const std::string& _message);
 
     /**
      * @brief Add critical log into the logger
      * @param[in] message Log message
      */
-    CORE_API void critical(const std::string& message);
+    CORE_API void critical(const std::string& _message);
 
     /**
      * @brief Return the log matching the specified index
      * @param[in] index Log's index
      */
-    CORE_API core::log::log get_log(unsigned int index);
+    CORE_API core::log::log get_log(unsigned int _index);
 
     /// Returns the number of logs
     CORE_API std::size_t count() const;
@@ -84,7 +84,7 @@ public:
      * @brief Return the number of logs matching the specified level
      * @param[in] level Log level
      */
-    CORE_API std::size_t count(core::log::log::level_type level) const;
+    CORE_API std::size_t count(core::log::log::level_type _level) const;
 
     /**
      * @brief Sort logs according to log levels
@@ -165,7 +165,7 @@ protected:
      * @param logA First log
      * @param logB Second log
      */
-    static bool log_sorter(const core::log::log& log_a, const core::log::log& log_b);
+    static bool log_sorter(const core::log::log& _log_a, const core::log::log& _log_b);
 
     /// Log container
     log_container_type m_log_container;

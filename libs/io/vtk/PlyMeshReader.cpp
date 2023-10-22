@@ -58,11 +58,11 @@ void PlyMeshReader::read()
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
-    [[maybe_unused]] const auto objectLock = m_object.lock();
+    [[maybe_unused]] const auto object_lock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock);
+    SIGHT_ASSERT("Object Lock null.", object_lock);
 
-    const data::mesh::sptr pMesh = getConcreteObject();
+    const data::mesh::sptr p_mesh = getConcreteObject();
 
     using helper::vtkLambdaCommand;
 
@@ -73,9 +73,9 @@ void PlyMeshReader::read()
 
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [&](vtkObject* caller, std::uint64_t, void*)
+        [&](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* const filter = static_cast<vtkPLYReader*>(caller);
+            auto* const filter = static_cast<vtkPLYReader*>(_caller);
             m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
@@ -87,7 +87,7 @@ void PlyMeshReader::read()
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
     SIGHT_THROW_IF("PlyMeshReader cannot read VTK Mesh file : " << this->get_file().string(), !mesh);
-    io::vtk::helper::mesh::fromVTKMesh(mesh, pMesh);
+    io::vtk::helper::mesh::fromVTKMesh(mesh, p_mesh);
 
     m_job->finish();
 }

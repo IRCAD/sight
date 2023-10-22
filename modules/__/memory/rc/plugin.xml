@@ -2,7 +2,7 @@
 
     <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
-         <service>sight::module::memory::LockDumpSrv</service>
+         <service>sight::module::memory::lock_dump</service>
          <object>sight::data::object</object>
          <desc>This services dump lock object. Unlock it on stopping.</desc>
     </extension>

@@ -37,11 +37,11 @@ class CORE_CLASS_API type
 public:
 
     constexpr type() = default;
-    CORE_API type(const std::string& str);
+    CORE_API type(const std::string& _str);
 
-    constexpr bool operator==(const type& t) const;
-    constexpr bool operator!=(const type& t) const;
-    constexpr bool operator<(const type& t) const;
+    constexpr bool operator==(const type& _t) const;
+    constexpr bool operator!=(const type& _t) const;
+    constexpr bool operator<(const type& _t) const;
 
     /// Returns the size of the type
     [[nodiscard]] CORE_API size_t size() const;
@@ -53,7 +53,7 @@ public:
     [[nodiscard]] CORE_API const std::string& name() const;
 
     /// Converts the value in parameter into a string according to this type
-    CORE_API std::string to_string(const void* value) const;
+    CORE_API std::string to_string(const void* _value) const;
 
     /// Convert a static C++ type to a dynamic Type
     template<typename T>
@@ -90,7 +90,7 @@ public:
     };
 
     // This constructor is only used to initialize static members
-    constexpr type(type_t t);
+    constexpr type(type_t _t);
 
     // This allows to use a Type in switch case
     constexpr operator type_t() const;
@@ -107,30 +107,30 @@ private:
 
 //------------------------------------------------------------------------------
 
-constexpr type::type(type_t t) :
-    m_type(t)
+constexpr type::type(type_t _t) :
+    m_type(_t)
 {
 }
 
 //------------------------------------------------------------------------------
 
-constexpr bool type::operator==(const type& t) const
+constexpr bool type::operator==(const type& _t) const
 {
-    return m_type == t.m_type;
+    return m_type == _t.m_type;
 }
 
 //------------------------------------------------------------------------------
 
-constexpr bool type::operator!=(const type& t) const
+constexpr bool type::operator!=(const type& _t) const
 {
-    return m_type != t.m_type;
+    return m_type != _t.m_type;
 }
 
 //------------------------------------------------------------------------------
 
-constexpr bool type::operator<(const type& t) const
+constexpr bool type::operator<(const type& _t) const
 {
-    return m_type < t.m_type;
+    return m_type < _t.m_type;
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ constexpr type type::get<double>()
 
 //------------------------------------------------------------------------------
 
-CORE_API std::ostream& operator<<(std::ostream& os, const sight::core::type& type);
+CORE_API std::ostream& operator<<(std::ostream& _os, const sight::core::type& _type);
 
 inline constexpr type type::INT8  = type::type_t::INT8;
 inline constexpr type type::INT16 = type::type_t::INT16;

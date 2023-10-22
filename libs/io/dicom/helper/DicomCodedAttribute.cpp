@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,27 +30,27 @@ namespace sight::io::dicom::helper
 //------------------------------------------------------------------------------
 
 DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertEntryToCodedAttribute(
-    const std::string& entry
+    const std::string& _entry
 )
 {
     DicomCodedAttributeVectorType result;
 
-    if(!entry.empty())
+    if(!_entry.empty())
     {
-        const std::regex codeRegex("\\(([^;]+);([^;]+);([^;)]+)\\)");
+        const std::regex code_regex("\\(([^;]+);([^;]+);([^;)]+)\\)");
         std::smatch match;
 
-        auto textIt = entry.begin();
+        auto text_it = _entry.begin();
 
         // Loop through matches
         // - match[0] = Single entry '(AAA;BBB;CCC)'
         // - match[1] = Code Value 'AAA'
         // - match[2] = Coding Scheme Designator 'BBB'
         // - match[3] = Code Meaning 'CCC'
-        while(std::regex_search(textIt, entry.end(), match, codeRegex))
+        while(std::regex_search(text_it, _entry.end(), match, code_regex))
         {
-            result.push_back(io::dicom::container::DicomCodedAttribute(match[1], match[2], match[3]));
-            textIt = match[0].second;
+            result.emplace_back(match[1], match[2], match[3]);
+            text_it = match[0].second;
         }
     }
 
@@ -59,12 +59,12 @@ DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertE
 
 //------------------------------------------------------------------------------
 
-gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCodedAttribute(const std::string& entry)
+gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCodedAttribute(const std::string& _entry)
 {
     gdcm::Segment::BasicCodedEntryVector result;
 
-    DicomCodedAttributeVectorType codedAttributes = convertEntryToCodedAttribute(entry);
-    for(const auto& attribute : codedAttributes)
+    DicomCodedAttributeVectorType coded_attributes = convertEntryToCodedAttribute(_entry);
+    for(const auto& attribute : coded_attributes)
     {
         result.push_back(attribute.toGDCMFormat());
     }
@@ -74,32 +74,32 @@ gdcm::Segment::BasicCodedEntryVector DicomCodedAttribute::convertEntryToGDCMCode
 
 //------------------------------------------------------------------------------
 
-bool DicomCodedAttribute::checkAndFormatEntry(std::string& entry, bool multipleValue)
+bool DicomCodedAttribute::checkAndFormatEntry(std::string& _entry, bool _multiple_value)
 {
-    const std::string input = entry;
+    const std::string input = _entry;
 
-    std::vector<std::string> attributeContainer;
+    std::vector<std::string> attribute_container;
 
-    const std::regex codeRegex("(\\([^;]+;[^;]+;[^;)]+\\))");
+    const std::regex code_regex("(\\([^;]+;[^;]+;[^;)]+\\))");
     std::smatch match;
 
-    auto textIt = input.begin();
+    auto text_it = input.begin();
 
     // Loop through matches
-    while(std::regex_search(textIt, input.end(), match, codeRegex))
+    while(std::regex_search(text_it, input.end(), match, code_regex))
     {
-        attributeContainer.push_back(match[1]);
-        textIt = match[0].second;
+        attribute_container.push_back(match[1]);
+        text_it = match[0].second;
     }
 
     // If the entry matches the criterion, we format the entry by concatenating
     // all the matches
-    if(attributeContainer.size() == 1 || (attributeContainer.size() > 1 && multipleValue))
+    if(attribute_container.size() == 1 || (attribute_container.size() > 1 && _multiple_value))
     {
-        entry = "";
-        for(const auto& attribute : attributeContainer)
+        _entry = "";
+        for(const auto& attribute : attribute_container)
         {
-            entry += attribute;
+            _entry += attribute;
         }
 
         return true;

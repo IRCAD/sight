@@ -33,7 +33,7 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
-data::fiducials_series::sptr initFiducialsSeries()
+data::fiducials_series::sptr init_fiducials_series()
 {
     auto fs = std::make_shared<sight::data::fiducials_series>();
     fs->setContentLabel("TestLabel");
@@ -42,42 +42,42 @@ data::fiducials_series::sptr initFiducialsSeries()
     fs->setContentCreatorName("John Doe");
 
     // Adds a dummy fiducial set
-    fiducials_series::FiducialSet fiducialSet;
+    fiducials_series::FiducialSet fiducial_set;
 
-    fiducials_series::ReferencedImage referencedImage;
-    referencedImage.referencedSOPClassUID    = "1";
-    referencedImage.referencedSOPInstanceUID = "2";
-    referencedImage.referencedFrameNumber    = {3};
-    referencedImage.referencedSegmentNumber  = {4};
-    fiducialSet.referencedImageSequence      = {referencedImage};
+    fiducials_series::ReferencedImage referenced_image;
+    referenced_image.referencedSOPClassUID    = "1";
+    referenced_image.referencedSOPInstanceUID = "2";
+    referenced_image.referencedFrameNumber    = {3};
+    referenced_image.referencedSegmentNumber  = {4};
+    fiducial_set.referencedImageSequence      = {referenced_image};
 
-    fiducialSet.frameOfReferenceUID = "5";
+    fiducial_set.frameOfReferenceUID = "5";
 
     fiducials_series::Fiducial fiducial;
     fiducial.shapeType           = fiducials_series::Shape::POINT;
     fiducial.fiducialDescription = "6";
     fiducial.fiducialIdentifier  = "7";
 
-    fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "8";
-    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "9";
-    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {10};
-    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {11};
-    graphicCoordinatesData.graphicData                                      = {{12, 13}};
-    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+    fiducials_series::GraphicCoordinatesData graphic_coordinates_data;
+    graphic_coordinates_data.referencedImageSequence.referencedSOPClassUID    = "8";
+    graphic_coordinates_data.referencedImageSequence.referencedSOPInstanceUID = "9";
+    graphic_coordinates_data.referencedImageSequence.referencedFrameNumber    = {10};
+    graphic_coordinates_data.referencedImageSequence.referencedSegmentNumber  = {11};
+    graphic_coordinates_data.graphicData                                      = {{12, 13}};
+    fiducial.graphicCoordinatesDataSequence                                   = {graphic_coordinates_data};
 
     fiducial.fiducialUID = "14";
     fiducial.contourData = {{15, 16, 17}};
-    fiducialSet.fiducialSequence.push_back(fiducial);
+    fiducial_set.fiducialSequence.push_back(fiducial);
 
-    fiducialSet.groupName  = "18";
-    fiducialSet.color      = {{19, 20, 21, 22}};
-    fiducialSet.size       = 23.F;
-    fiducialSet.shape      = fiducials_series::PrivateShape::CUBE;
-    fiducialSet.visibility = true;
+    fiducial_set.groupName  = "18";
+    fiducial_set.color      = {{19, 20, 21, 22}};
+    fiducial_set.size       = 23.F;
+    fiducial_set.shape      = fiducials_series::PrivateShape::CUBE;
+    fiducial_set.visibility = true;
 
     // Test setFiducialSets method
-    fs->setFiducialSets({fiducialSet});
+    fs->setFiducialSets({fiducial_set});
 
     return fs;
 }
@@ -86,7 +86,7 @@ data::fiducials_series::sptr initFiducialsSeries()
 
 void fiducials_series_test::shallow_copyTest()
 {
-    auto fs1 = initFiducialsSeries();
+    auto fs1 = init_fiducials_series();
     auto fs2 = std::make_shared<data::fiducials_series>();
 
     CPPUNIT_ASSERT(*fs1 != *fs2);
@@ -98,7 +98,7 @@ void fiducials_series_test::shallow_copyTest()
 
 void fiducials_series_test::deep_copyTest()
 {
-    auto fs1 = initFiducialsSeries();
+    auto fs1 = init_fiducials_series();
     auto fs2 = std::make_shared<data::fiducials_series>();
 
     CPPUNIT_ASSERT(*fs1 != *fs2);
@@ -162,7 +162,7 @@ void fiducials_series_test::simpleSetterGetterTest()
 
     CPPUNIT_ASSERT(fiducialsSeries->getFiducials(0).empty());
 
-    COMPARE_GETSETTERS(ShapeType, fiducials_series::Shape::INVALID, fiducials_series::Shape::POINT, 0, 0);
+    COMPARE_GETSETTERS(_shape_type, fiducials_series::Shape::INVALID, fiducials_series::Shape::POINT, 0, 0);
     COMPARE_GETSETTERS(FiducialDescription, ""s, "9"s, 0, 0);
     COMPARE_GETSETTERS(FiducialIdentifier, ""s, "10"s, 0, 0);
 
@@ -197,85 +197,85 @@ void fiducials_series_test::simpleSetterGetterTest()
 
 //------------------------------------------------------------------------------
 
-static void compareReferencedImages(
-    fiducials_series::ReferencedImage expected,
-    fiducials_series::ReferencedImage actual
+static void compare_referenced_images(
+    fiducials_series::ReferencedImage _expected,
+    fiducials_series::ReferencedImage _actual
 )
 {
-    CPPUNIT_ASSERT_EQUAL(expected.referencedSOPClassUID, actual.referencedSOPClassUID);
-    CPPUNIT_ASSERT_EQUAL(expected.referencedSOPInstanceUID, actual.referencedSOPInstanceUID);
-    CPPUNIT_ASSERT(expected.referencedFrameNumber == actual.referencedFrameNumber);
-    CPPUNIT_ASSERT(expected.referencedSegmentNumber == actual.referencedSegmentNumber);
+    CPPUNIT_ASSERT_EQUAL(_expected.referencedSOPClassUID, _actual.referencedSOPClassUID);
+    CPPUNIT_ASSERT_EQUAL(_expected.referencedSOPInstanceUID, _actual.referencedSOPInstanceUID);
+    CPPUNIT_ASSERT(_expected.referencedFrameNumber == _actual.referencedFrameNumber);
+    CPPUNIT_ASSERT(_expected.referencedSegmentNumber == _actual.referencedSegmentNumber);
 }
 
 //------------------------------------------------------------------------------
 
-static void compareGraphicCoordinatesData(
-    fiducials_series::GraphicCoordinatesData expected,
-    fiducials_series::GraphicCoordinatesData actual
+static void compare_graphic_coordinates_data(
+    fiducials_series::GraphicCoordinatesData _expected,
+    fiducials_series::GraphicCoordinatesData _actual
 )
 {
-    compareReferencedImages(expected.referencedImageSequence, actual.referencedImageSequence);
-    CPPUNIT_ASSERT(expected.graphicData == actual.graphicData);
+    compare_referenced_images(_expected.referencedImageSequence, _actual.referencedImageSequence);
+    CPPUNIT_ASSERT(_expected.graphicData == _actual.graphicData);
 }
 
 //------------------------------------------------------------------------------
 
-static void compareFiducials(fiducials_series::Fiducial expected, fiducials_series::Fiducial actual)
+static void compare_fiducials(fiducials_series::Fiducial _expected, fiducials_series::Fiducial _actual)
 {
-    CPPUNIT_ASSERT_EQUAL(expected.shapeType, actual.shapeType);
-    CPPUNIT_ASSERT_EQUAL(expected.fiducialDescription, actual.fiducialDescription);
-    CPPUNIT_ASSERT_EQUAL(expected.fiducialIdentifier, actual.fiducialIdentifier);
+    CPPUNIT_ASSERT_EQUAL(_expected.shapeType, _actual.shapeType);
+    CPPUNIT_ASSERT_EQUAL(_expected.fiducialDescription, _actual.fiducialDescription);
+    CPPUNIT_ASSERT_EQUAL(_expected.fiducialIdentifier, _actual.fiducialIdentifier);
 
     CPPUNIT_ASSERT_EQUAL(
-        expected.graphicCoordinatesDataSequence.has_value(),
-        actual.graphicCoordinatesDataSequence.has_value()
+        _expected.graphicCoordinatesDataSequence.has_value(),
+        _actual.graphicCoordinatesDataSequence.has_value()
     );
-    if(expected.graphicCoordinatesDataSequence.has_value())
+    if(_expected.graphicCoordinatesDataSequence.has_value())
     {
         CPPUNIT_ASSERT_EQUAL(
-            expected.graphicCoordinatesDataSequence->size(),
-            actual.graphicCoordinatesDataSequence->size()
+            _expected.graphicCoordinatesDataSequence->size(),
+            _actual.graphicCoordinatesDataSequence->size()
         );
-        for(std::size_t i = 0 ; i < expected.graphicCoordinatesDataSequence->size() ; i++)
+        for(std::size_t i = 0 ; i < _expected.graphicCoordinatesDataSequence->size() ; i++)
         {
-            compareGraphicCoordinatesData(
-                expected.graphicCoordinatesDataSequence->at(i),
-                actual.graphicCoordinatesDataSequence->at(i)
+            compare_graphic_coordinates_data(
+                _expected.graphicCoordinatesDataSequence->at(i),
+                _actual.graphicCoordinatesDataSequence->at(i)
             );
         }
     }
 
-    CPPUNIT_ASSERT(expected.fiducialUID == actual.fiducialUID);
-    CPPUNIT_ASSERT(expected.contourData == actual.contourData);
+    CPPUNIT_ASSERT(_expected.fiducialUID == _actual.fiducialUID);
+    CPPUNIT_ASSERT(_expected.contourData == _actual.contourData);
 }
 
 //------------------------------------------------------------------------------
 
-static void compareFiducialSets(fiducials_series::FiducialSet expected, fiducials_series::FiducialSet actual)
+static void compare_fiducial_sets(fiducials_series::FiducialSet _expected, fiducials_series::FiducialSet _actual)
 {
-    CPPUNIT_ASSERT_EQUAL(expected.referencedImageSequence.has_value(), actual.referencedImageSequence.has_value());
-    if(expected.referencedImageSequence.has_value())
+    CPPUNIT_ASSERT_EQUAL(_expected.referencedImageSequence.has_value(), _actual.referencedImageSequence.has_value());
+    if(_expected.referencedImageSequence.has_value())
     {
-        CPPUNIT_ASSERT_EQUAL(expected.referencedImageSequence->size(), actual.referencedImageSequence->size());
-        for(std::size_t i = 0 ; i < expected.referencedImageSequence->size() ; i++)
+        CPPUNIT_ASSERT_EQUAL(_expected.referencedImageSequence->size(), _actual.referencedImageSequence->size());
+        for(std::size_t i = 0 ; i < _expected.referencedImageSequence->size() ; i++)
         {
-            compareReferencedImages(expected.referencedImageSequence->at(i), actual.referencedImageSequence->at(i));
+            compare_referenced_images(_expected.referencedImageSequence->at(i), _actual.referencedImageSequence->at(i));
         }
     }
 
-    CPPUNIT_ASSERT(expected.frameOfReferenceUID == actual.frameOfReferenceUID);
+    CPPUNIT_ASSERT(_expected.frameOfReferenceUID == _actual.frameOfReferenceUID);
 
-    CPPUNIT_ASSERT_EQUAL(expected.fiducialSequence.size(), actual.fiducialSequence.size());
-    for(std::size_t i = 0 ; i < expected.fiducialSequence.size() ; i++)
+    CPPUNIT_ASSERT_EQUAL(_expected.fiducialSequence.size(), _actual.fiducialSequence.size());
+    for(std::size_t i = 0 ; i < _expected.fiducialSequence.size() ; i++)
     {
-        compareFiducials(expected.fiducialSequence[i], actual.fiducialSequence[i]);
+        compare_fiducials(_expected.fiducialSequence[i], _actual.fiducialSequence[i]);
     }
 
-    CPPUNIT_ASSERT(expected.groupName == actual.groupName);
-    CPPUNIT_ASSERT(expected.color == actual.color);
-    CPPUNIT_ASSERT(expected.size == actual.size);
-    CPPUNIT_ASSERT(expected.shape == actual.shape);
+    CPPUNIT_ASSERT(_expected.groupName == _actual.groupName);
+    CPPUNIT_ASSERT(_expected.color == _actual.color);
+    CPPUNIT_ASSERT(_expected.size == _actual.size);
+    CPPUNIT_ASSERT(_expected.shape == _actual.shape);
 }
 
 //------------------------------------------------------------------------------
@@ -284,65 +284,65 @@ void fiducials_series_test::fiducialSetSetterGetterTest()
 {
     // This method checks that adding fiducial sets works correctly.
 
-    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
-    CPPUNIT_ASSERT(fiducialsSeries->getFiducialSets().empty());
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+    CPPUNIT_ASSERT(fiducials_series->getFiducialSets().empty());
 
-    fiducials_series::FiducialSet fiducialSet;
+    fiducials_series::FiducialSet fiducial_set;
 
-    fiducials_series::ReferencedImage referencedImage;
-    referencedImage.referencedSOPClassUID    = "1";
-    referencedImage.referencedSOPInstanceUID = "2";
-    referencedImage.referencedFrameNumber    = {3};
-    referencedImage.referencedSegmentNumber  = {4};
-    fiducialSet.referencedImageSequence      = {referencedImage};
+    fiducials_series::ReferencedImage referenced_image;
+    referenced_image.referencedSOPClassUID    = "1";
+    referenced_image.referencedSOPInstanceUID = "2";
+    referenced_image.referencedFrameNumber    = {3};
+    referenced_image.referencedSegmentNumber  = {4};
+    fiducial_set.referencedImageSequence      = {referenced_image};
 
-    fiducialSet.frameOfReferenceUID = "5";
+    fiducial_set.frameOfReferenceUID = "5";
 
     fiducials_series::Fiducial fiducial;
     fiducial.shapeType           = fiducials_series::Shape::POINT;
     fiducial.fiducialDescription = "6";
     fiducial.fiducialIdentifier  = "7";
 
-    fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "8";
-    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "9";
-    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {10};
-    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {11};
-    graphicCoordinatesData.graphicData                                      = {{12, 13}};
-    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+    fiducials_series::GraphicCoordinatesData graphic_coordinates_data;
+    graphic_coordinates_data.referencedImageSequence.referencedSOPClassUID    = "8";
+    graphic_coordinates_data.referencedImageSequence.referencedSOPInstanceUID = "9";
+    graphic_coordinates_data.referencedImageSequence.referencedFrameNumber    = {10};
+    graphic_coordinates_data.referencedImageSequence.referencedSegmentNumber  = {11};
+    graphic_coordinates_data.graphicData                                      = {{12, 13}};
+    fiducial.graphicCoordinatesDataSequence                                   = {graphic_coordinates_data};
 
     fiducial.fiducialUID = "14";
     fiducial.contourData = {{15, 16, 17}};
-    fiducialSet.fiducialSequence.push_back(fiducial);
+    fiducial_set.fiducialSequence.push_back(fiducial);
 
-    fiducialSet.groupName  = "18";
-    fiducialSet.color      = {{19, 20, 21, 22}};
-    fiducialSet.size       = 23.F;
-    fiducialSet.shape      = fiducials_series::PrivateShape::CUBE;
-    fiducialSet.visibility = true;
+    fiducial_set.groupName  = "18";
+    fiducial_set.color      = {{19, 20, 21, 22}};
+    fiducial_set.size       = 23.F;
+    fiducial_set.shape      = fiducials_series::PrivateShape::CUBE;
+    fiducial_set.visibility = true;
 
     // Test setFiducialSets method
-    fiducialsSeries->setFiducialSets({fiducialSet});
-    std::vector<fiducials_series::FiducialSet> fiducialSets = fiducialsSeries->getFiducialSets();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), fiducialSets.size());
-    compareFiducialSets(fiducialSet, fiducialSets[0]);
+    fiducials_series->setFiducialSets({fiducial_set});
+    std::vector<fiducials_series::FiducialSet> fiducial_sets = fiducials_series->getFiducialSets();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), fiducial_sets.size());
+    compare_fiducial_sets(fiducial_set, fiducial_sets[0]);
 
     // Test setFiducialSet method
-    fiducialsSeries->setFiducialSet(1, fiducialSet);
-    fiducialSets = fiducialsSeries->getFiducialSets();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), fiducialSets.size());
+    fiducials_series->setFiducialSet(1, fiducial_set);
+    fiducial_sets = fiducials_series->getFiducialSets();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), fiducial_sets.size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareFiducialSets(fiducialSet, fiducialSets[i]);
+        compare_fiducial_sets(fiducial_set, fiducial_sets[i]);
     }
 
     // Test appendFiducialSet
-    fiducialsSeries->appendFiducialSet(fiducialSet);
-    fiducialSets = fiducialsSeries->getFiducialSets();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducialSets.size());
+    fiducials_series->appendFiducialSet(fiducial_set);
+    fiducial_sets = fiducials_series->getFiducialSets();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducial_sets.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducialSets(fiducialSet, fiducialSets[i]);
+        compare_fiducial_sets(fiducial_set, fiducial_sets[i]);
     }
 }
 
@@ -352,92 +352,92 @@ void fiducials_series_test::referencedImageSetterGetterTest()
 {
     // This method checks that adding referenced images works correctly.
 
-    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
-    CPPUNIT_ASSERT(!fiducialsSeries->getReferencedImages(0));
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+    CPPUNIT_ASSERT(!fiducials_series->getReferencedImages(0));
 
-    fiducials_series::ReferencedImage referencedImage;
-    referencedImage.referencedSOPClassUID    = "1";
-    referencedImage.referencedSOPInstanceUID = "2";
-    referencedImage.referencedFrameNumber    = {3};
-    referencedImage.referencedSegmentNumber  = {4};
+    fiducials_series::ReferencedImage referenced_image;
+    referenced_image.referencedSOPClassUID    = "1";
+    referenced_image.referencedSOPInstanceUID = "2";
+    referenced_image.referencedFrameNumber    = {3};
+    referenced_image.referencedSegmentNumber  = {4};
 
     // Test setReferencedImages method
-    fiducialsSeries->setReferencedImages(0, {{referencedImage}});
-    std::optional<std::vector<fiducials_series::ReferencedImage> > referencedImages =
-        fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), referencedImages->size());
-    compareReferencedImages(referencedImage, referencedImages->at(0));
+    fiducials_series->setReferencedImages(0, {{referenced_image}});
+    std::optional<std::vector<fiducials_series::ReferencedImage> > referenced_images =
+        fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), referenced_images->size());
+    compare_referenced_images(referenced_image, referenced_images->at(0));
 
     // Test setReferencedImage method
-    fiducialsSeries->setReferencedImage(0, 1, referencedImage);
-    referencedImages = fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), referencedImages->size());
+    fiducials_series->setReferencedImage(0, 1, referenced_image);
+    referenced_images = fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), referenced_images->size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
     // Test appendReferencedImage method
-    fiducialsSeries->appendReferencedImage(0, referencedImage);
-    referencedImages = fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referencedImages->size());
+    fiducials_series->appendReferencedImage(0, referenced_image);
+    referenced_images = fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referenced_images->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
     // Test setReferencedImages method in a second fiducial set
-    fiducialsSeries->setReferencedImages(1, {{referencedImage}});
-    referencedImages = fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referencedImages->size());
+    fiducials_series->setReferencedImages(1, {{referenced_image}});
+    referenced_images = fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referenced_images->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
-    referencedImages = fiducialsSeries->getReferencedImages(1);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), referencedImages->size());
-    compareReferencedImages(referencedImage, referencedImages->at(0));
+    referenced_images = fiducials_series->getReferencedImages(1);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), referenced_images->size());
+    compare_referenced_images(referenced_image, referenced_images->at(0));
 
     // Test setReferencedImage method in a second fiducial set
-    fiducialsSeries->setReferencedImage(1, 1, referencedImage);
-    referencedImages = fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referencedImages->size());
+    fiducials_series->setReferencedImage(1, 1, referenced_image);
+    referenced_images = fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referenced_images->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
-    referencedImages = fiducialsSeries->getReferencedImages(1);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), referencedImages->size());
+    referenced_images = fiducials_series->getReferencedImages(1);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), referenced_images->size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
     // Test appendReferencedImage method in a second fiducial set
-    fiducialsSeries->appendReferencedImage(1, referencedImage);
-    referencedImages = fiducialsSeries->getReferencedImages(0);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referencedImages->size());
+    fiducials_series->appendReferencedImage(1, referenced_image);
+    referenced_images = fiducials_series->getReferencedImages(0);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referenced_images->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 
-    referencedImages = fiducialsSeries->getReferencedImages(1);
-    CPPUNIT_ASSERT(referencedImages);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referencedImages->size());
+    referenced_images = fiducials_series->getReferencedImages(1);
+    CPPUNIT_ASSERT(referenced_images);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), referenced_images->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareReferencedImages(referencedImage, referencedImages->at(i));
+        compare_referenced_images(referenced_image, referenced_images->at(i));
     }
 }
 
@@ -447,92 +447,92 @@ void fiducials_series_test::fiducialSetterGetterTest()
 {
     // This method checks that adding fiducials works correctly.
 
-    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
-    CPPUNIT_ASSERT(fiducialsSeries->getFiducials(0).empty());
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+    CPPUNIT_ASSERT(fiducials_series->getFiducials(0).empty());
 
     fiducials_series::Fiducial fiducial;
     fiducial.shapeType           = fiducials_series::Shape::POINT;
     fiducial.fiducialDescription = "1";
     fiducial.fiducialIdentifier  = "2";
 
-    fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "3";
-    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "4";
-    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {5};
-    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {6};
-    graphicCoordinatesData.graphicData                                      = {{7, 8}};
-    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+    fiducials_series::GraphicCoordinatesData graphic_coordinates_data;
+    graphic_coordinates_data.referencedImageSequence.referencedSOPClassUID    = "3";
+    graphic_coordinates_data.referencedImageSequence.referencedSOPInstanceUID = "4";
+    graphic_coordinates_data.referencedImageSequence.referencedFrameNumber    = {5};
+    graphic_coordinates_data.referencedImageSequence.referencedSegmentNumber  = {6};
+    graphic_coordinates_data.graphicData                                      = {{7, 8}};
+    fiducial.graphicCoordinatesDataSequence                                   = {graphic_coordinates_data};
 
     fiducial.fiducialUID = "9";
     fiducial.contourData = {{10, 11, 12}};
 
     // Test setFiducials method
-    fiducialsSeries->setFiducials(0, {fiducial});
-    std::vector<fiducials_series::Fiducial> fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->setFiducials(0, {fiducial});
+    std::vector<fiducials_series::Fiducial> fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), fiducials.size());
-    compareFiducials(fiducial, fiducials[0]);
+    compare_fiducials(fiducial, fiducials[0]);
 
     // Test setFiducial method
-    fiducialsSeries->setFiducial(0, 1, fiducial);
-    fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->setFiducial(0, 1, fiducial);
+    fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), fiducials.size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
     // Test appendFiducial method
-    fiducialsSeries->appendFiducial(0, fiducial);
-    fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->appendFiducial(0, fiducial);
+    fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducials.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
     // Test setFiducials method in a second fiducial set
-    fiducialsSeries->setFiducials(1, {fiducial});
-    fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->setFiducials(1, {fiducial});
+    fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducials.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
-    fiducials = fiducialsSeries->getFiducials(1);
+    fiducials = fiducials_series->getFiducials(1);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), fiducials.size());
-    compareFiducials(fiducial, fiducials[0]);
+    compare_fiducials(fiducial, fiducials[0]);
 
     // Test setFiducial method in a second fiducial set
-    fiducialsSeries->setFiducial(1, 1, fiducial);
-    fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->setFiducial(1, 1, fiducial);
+    fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducials.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
-    fiducials = fiducialsSeries->getFiducials(1);
+    fiducials = fiducials_series->getFiducials(1);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), fiducials.size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
     // Test appendFiducial method in a second fiducial set
-    fiducialsSeries->appendFiducial(1, fiducial);
-    fiducials = fiducialsSeries->getFiducials(0);
+    fiducials_series->appendFiducial(1, fiducial);
+    fiducials = fiducials_series->getFiducials(0);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducials.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 
-    fiducials = fiducialsSeries->getFiducials(1);
+    fiducials = fiducials_series->getFiducials(1);
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), fiducials.size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareFiducials(fiducial, fiducials[i]);
+        compare_fiducials(fiducial, fiducials[i]);
     }
 }
 
@@ -542,93 +542,93 @@ void fiducials_series_test::graphicCoordinatesDataSetterGetterTest()
 {
     // This method checks that adding graphic coordinates data works correctly.
 
-    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
-    CPPUNIT_ASSERT(!fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0));
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+    CPPUNIT_ASSERT(!fiducials_series->getGraphicCoordinatesDataSequence(0, 0));
 
-    fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "1";
-    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "2";
-    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {3};
-    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {4};
-    graphicCoordinatesData.graphicData                                      = {{5, 6}};
+    fiducials_series::GraphicCoordinatesData graphic_coordinates_data;
+    graphic_coordinates_data.referencedImageSequence.referencedSOPClassUID    = "1";
+    graphic_coordinates_data.referencedImageSequence.referencedSOPInstanceUID = "2";
+    graphic_coordinates_data.referencedImageSequence.referencedFrameNumber    = {3};
+    graphic_coordinates_data.referencedImageSequence.referencedSegmentNumber  = {4};
+    graphic_coordinates_data.graphicData                                      = {{5, 6}};
 
     // Test setGraphicCoordinatesDataSequence method
-    fiducialsSeries->setGraphicCoordinatesDataSequence(0, 0, {{graphicCoordinatesData}});
-    std::optional<std::vector<fiducials_series::GraphicCoordinatesData> > graphicCoordinatesDataSequence =
-        fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), graphicCoordinatesDataSequence->size());
-    compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(0));
+    fiducials_series->setGraphicCoordinatesDataSequence(0, 0, {{graphic_coordinates_data}});
+    std::optional<std::vector<fiducials_series::GraphicCoordinatesData> > graphic_coordinates_data_sequence =
+        fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), graphic_coordinates_data_sequence->size());
+    compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(0));
 
     // Test setGraphicCoordinatesData method
-    fiducialsSeries->setGraphicCoordinatesData(0, 0, 1, graphicCoordinatesData);
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), graphicCoordinatesDataSequence->size());
+    fiducials_series->setGraphicCoordinatesData(0, 0, 1, graphic_coordinates_data);
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
     // Test appendGraphicCoordinatesData method
-    fiducialsSeries->appendGraphicCoordinatesData(0, 0, graphicCoordinatesData);
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphicCoordinatesDataSequence->size());
+    fiducials_series->appendGraphicCoordinatesData(0, 0, graphic_coordinates_data);
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
     // Test setGraphicCoordinatesDataSequence method in a second fiducial
-    fiducialsSeries->setGraphicCoordinatesDataSequence(0, 1, {{graphicCoordinatesData}});
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphicCoordinatesDataSequence->size());
+    fiducials_series->setGraphicCoordinatesDataSequence(0, 1, {{graphic_coordinates_data}});
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 1);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), graphicCoordinatesDataSequence->size());
-    compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(0));
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 1);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), graphic_coordinates_data_sequence->size());
+    compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(0));
 
     // Test setGraphicCoordinatesData method in a second fiducial
-    fiducialsSeries->setGraphicCoordinatesData(0, 1, 1, graphicCoordinatesData);
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphicCoordinatesDataSequence->size());
+    fiducials_series->setGraphicCoordinatesData(0, 1, 1, graphic_coordinates_data);
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 1);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), graphicCoordinatesDataSequence->size());
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 1);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 2 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
     // Test appendGraphicCoordinatesData method in a second fiducial
-    fiducialsSeries->appendGraphicCoordinatesData(0, 1, graphicCoordinatesData);
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 0);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphicCoordinatesDataSequence->size());
+    fiducials_series->appendGraphicCoordinatesData(0, 1, graphic_coordinates_data);
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 0);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 
-    graphicCoordinatesDataSequence = fiducialsSeries->getGraphicCoordinatesDataSequence(0, 1);
-    CPPUNIT_ASSERT(graphicCoordinatesDataSequence);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphicCoordinatesDataSequence->size());
+    graphic_coordinates_data_sequence = fiducials_series->getGraphicCoordinatesDataSequence(0, 1);
+    CPPUNIT_ASSERT(graphic_coordinates_data_sequence);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), graphic_coordinates_data_sequence->size());
     for(std::size_t i = 0 ; i < 3 ; i++)
     {
-        compareGraphicCoordinatesData(graphicCoordinatesData, graphicCoordinatesDataSequence->at(i));
+        compare_graphic_coordinates_data(graphic_coordinates_data, graphic_coordinates_data_sequence->at(i));
     }
 }
 

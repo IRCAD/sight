@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,10 @@ class IO_DICOM_CLASS_API DicomSRContainerNode : public io::dicom::container::sr:
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRContainerNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship = "");
+    IO_DICOM_API DicomSRContainerNode(
+        const DicomCodedAttribute& _coded_attribute,
+        const std::string& _relationship = ""
+    );
 
     /// Destructor
     IO_DICOM_API ~DicomSRContainerNode() override;
@@ -48,7 +51,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
+    IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 };
 
 } // namespace sight::io::dicom::container::sr

@@ -32,21 +32,21 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-static overlay::View::Coord parseSize(const std::string& s)
+static overlay::view::Coord parse_size(const std::string& _s)
 {
-    SIGHT_ASSERT("The provided size shouldn't be empty", !s.empty());
-    bool relative = (s.back() == '%');
-    int value     = static_cast<int>(std::strtol(s.c_str(), nullptr, 10));
-    bool negative = s[0] == '-';
+    SIGHT_ASSERT("The provided size shouldn't be empty", !_s.empty());
+    bool relative = (_s.back() == '%');
+    int value     = static_cast<int>(std::strtol(_s.c_str(), nullptr, 10));
+    bool negative = _s[0] == '-';
     return {relative, negative, value};
 }
 
 //------------------------------------------------------------------------------
 
-void overlay::initialize(const ui::config_t& configuration)
+void overlay::initialize(const ui::config_t& _configuration)
 {
     m_views.clear();
-    for(auto view : configuration)
+    for(auto view : _configuration)
     {
         if(view.first == "<xmlattr>")
         {
@@ -54,20 +54,20 @@ void overlay::initialize(const ui::config_t& configuration)
         }
 
         SIGHT_ASSERT(
-            "View type '" + view.first + "' isn't supported; the only supported value is 'view'",
+            "view type '" + view.first + "' isn't supported; the only supported value is 'view'",
             view.first == "view"
         );
-        View vi;
-        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
+        overlay::view vi;
+        if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
-            vi.x         = parseSize(viewCfg->get("x", "0"));
-            vi.y         = parseSize(viewCfg->get("y", "0"));
-            vi.width     = parseSize(viewCfg->get("width", "0"));
-            vi.height    = parseSize(viewCfg->get("height", "0"));
-            vi.minWidth  = viewCfg->get("minWidth", 0);
-            vi.minHeight = viewCfg->get("minHeight", 0);
-            vi.visible   = viewCfg->get("visible", true);
-            vi.opacity   = viewCfg->get("opacity", 0.F);
+            vi.x         = parse_size(view_cfg->get("x", "0"));
+            vi.y         = parse_size(view_cfg->get("y", "0"));
+            vi.width     = parse_size(view_cfg->get("width", "0"));
+            vi.height    = parse_size(view_cfg->get("height", "0"));
+            vi.minWidth  = view_cfg->get("minWidth", 0);
+            vi.minHeight = view_cfg->get("minHeight", 0);
+            vi.visible   = view_cfg->get("visible", true);
+            vi.opacity   = view_cfg->get("opacity", 0.F);
         }
 
         m_views.push_back(vi);

@@ -12,7 +12,7 @@ Module containing services to output data to document files.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> module_io_document)
+target_link_libraries( my_target <PUBLIC|PRIVATE> module_io_document)
 
 ```
 

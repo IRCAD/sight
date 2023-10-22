@@ -101,7 +101,7 @@ private:
      * @brief Sends a modified signal on the configuration.
      * @param _pacsConfiguration the modified data .
      */
-    void modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacsConfiguration);
+    void modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacs_configuration);
 
     /**
      * @brief Displays an information dialog.

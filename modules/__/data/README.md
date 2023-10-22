@@ -19,7 +19,7 @@ This module contains contains several interfaces for data management in XML conf
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_data
 )

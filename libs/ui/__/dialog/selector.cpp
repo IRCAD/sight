@@ -30,8 +30,8 @@ namespace sight::ui::dialog
 //-----------------------------------------------------------------------------
 
 selector::selector(
-    const std::string& title,
-    const std::string& message,
+    const std::string& _title,
+    const std::string& _message,
     std::vector<std::string> _selections,
     bool _multiple
 ) :
@@ -40,8 +40,8 @@ selector::selector(
     core::thread::get_default_worker()->post_task<void>(
         [&]
         {
-            m_implementation->setTitle(title);
-            m_implementation->setMessage(message);
+            m_implementation->setTitle(_title);
+            m_implementation->setMessage(_message);
             m_implementation->set_choices(_selections);
             m_implementation->set_multiple(_multiple);
         }).wait();
@@ -55,21 +55,21 @@ selector::selector()
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(selector_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::selector_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(selector_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::selector_base>(gui_obj);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void selector::setTitle(std::string title)
+void selector::setTitle(std::string _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setTitle(title);
+            m_implementation->setTitle(_title);
         })
     ).wait();
 }
@@ -112,26 +112,26 @@ void selector::set_choices_preset(choices_preset_t _selections)
 
 //-----------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& msg)
+void selector::setMessage(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setMessage(msg);
+            m_implementation->setMessage(_msg);
         })
     ).wait();
 }
 
 //------------------------------------------------------------------------------
 
-void selector::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void selector::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->addCustomButton(label, clickedFn);
+            m_implementation->addCustomButton(_label, _clicked_fn);
         })
     ).wait();
 }

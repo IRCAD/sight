@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,15 +38,15 @@ class IO_DICOM_CLASS_API DicomSRSCoord3DNode : public io::dicom::container::sr::
 {
 public:
 
-    typedef std::vector<float> GraphicDataContainerType;
+    typedef std::vector<float> graphic_data_container_t;
 
     /// Constructor
     IO_DICOM_API DicomSRSCoord3DNode(
-        const DicomCodedAttribute& codedAttribute,
-        const std::string& relationship,
-        std::string graphicType,
-        GraphicDataContainerType graphicDataContainer,
-        std::string frameOfReferenceUID
+        const DicomCodedAttribute& _coded_attribute,
+        const std::string& _relationship,
+        std::string _graphic_type,
+        graphic_data_container_t _graphic_data_container,
+        std::string _frame_of_reference_uid
     );
 
     /// Destructor
@@ -56,7 +56,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
+    IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Frame of reference UID
     [[nodiscard]] const std::string& getFrameOfReferenceUID() const
@@ -65,39 +65,39 @@ public:
     }
 
     ///Set Frame of reference UID
-    void setFrameOfReferenceUID(const std::string& frameOfReferenceUID)
+    void setFrameOfReferenceUID(const std::string& _frame_of_reference_uid)
     {
-        m_frameOfReferenceUID = frameOfReferenceUID;
+        m_frameOfReferenceUID = _frame_of_reference_uid;
     }
 
     /// Get Graphic type
-    [[nodiscard]] const std::string& getGraphicType() const
+    [[nodiscard]] const std::string& get_graphic_type() const
     {
         return m_graphicType;
     }
 
     ///Set Graphic type
-    void setGraphicType(const std::string& graphicType)
+    void set_graphic_type(const std::string& _graphic_type)
     {
-        m_graphicType = graphicType;
+        m_graphicType = _graphic_type;
     }
 
     /// Get Graphic data container
-    [[nodiscard]] const GraphicDataContainerType& getGraphicDataContainer() const
+    [[nodiscard]] const graphic_data_container_t& getGraphicDataContainer() const
     {
         return m_graphicDataContainer;
     }
 
     ///Set Graphic data container
-    void setGraphicDataContainer(const GraphicDataContainerType& graphicDataContainer)
+    void setGraphicDataContainer(const graphic_data_container_t& _graphic_data_container)
     {
-        m_graphicDataContainer = graphicDataContainer;
+        m_graphicDataContainer = _graphic_data_container;
     }
 
 protected:
 
     /// Dump function
-    void print(std::ostream& os) const override;
+    void print(std::ostream& _os) const override;
 
     /// Referenced Frame of Reference UID
     std::string m_frameOfReferenceUID;
@@ -106,7 +106,7 @@ protected:
     std::string m_graphicType;
 
     /// Graphic Data
-    GraphicDataContainerType m_graphicDataContainer;
+    graphic_data_container_t m_graphicDataContainer;
 };
 
 } // namespace sight::io::dicom::container::sr

@@ -52,7 +52,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 model_series_obj_writer::model_series_obj_writer() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -66,11 +66,11 @@ sight::io::service::IOPathType model_series_obj_writer::getIOPathType() const
 
 void model_series_obj_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation(defaultDirectory);
+    dialog.setDefaultLocation(default_directory);
     dialog.setOption(ui::dialog::location::WRITE);
     dialog.setType(ui::dialog::location::FOLDER);
 
@@ -84,13 +84,13 @@ void model_series_obj_writer::openLocationDialog()
         }
 
         // message box
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Overwrite confirmation");
-        messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(ui::dialog::message::QUESTION);
-        messageBox.addButton(ui::dialog::message::YES);
-        messageBox.addButton(ui::dialog::message::CANCEL);
-        if(messageBox.show() == sight::ui::dialog::message::YES)
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Overwrite confirmation");
+        message_box.setMessage("The selected directory is not empty. Write anyway ?");
+        message_box.setIcon(ui::dialog::message::QUESTION);
+        message_box.addButton(ui::dialog::message::YES);
+        message_box.addButton(ui::dialog::message::CANCEL);
+        if(message_box.show() == sight::ui::dialog::message::YES)
         {
             break;
         }
@@ -99,8 +99,8 @@ void model_series_obj_writer::openLocationDialog()
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialog.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -143,8 +143,8 @@ void model_series_obj_writer::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked      = m_data.lock();
-        const auto modelSeries = std::dynamic_pointer_cast<const data::model_series>(locked.get_shared());
+        const auto locked       = m_data.lock();
+        const auto model_series = std::dynamic_pointer_cast<const data::model_series>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -152,11 +152,11 @@ void model_series_obj_writer::updating()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            modelSeries
+            model_series
         );
 
         auto writer = std::make_shared<sight::io::vtk::ModelSeriesObjWriter>();
-        writer->set_object(modelSeries);
+        writer->set_object(model_series);
         writer->set_folder(this->get_folder());
 
         sight::ui::cursor cursor;
@@ -174,24 +174,24 @@ void model_series_obj_writer::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            sight::ui::dialog::message messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage(ss.str());
-            messageBox.setIcon(ui::dialog::message::WARNING);
-            messageBox.addButton(ui::dialog::message::OK);
-            messageBox.show();
+            sight::ui::dialog::message message_box;
+            message_box.setTitle("Warning");
+            message_box.setMessage(ss.str());
+            message_box.setIcon(ui::dialog::message::WARNING);
+            message_box.addButton(ui::dialog::message::OK);
+            message_box.show();
         }
         catch(...)
         {
             std::stringstream ss;
             ss << "Warning during saving.";
 
-            sight::ui::dialog::message messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage(ss.str());
-            messageBox.setIcon(ui::dialog::message::WARNING);
-            messageBox.addButton(ui::dialog::message::OK);
-            messageBox.show();
+            sight::ui::dialog::message message_box;
+            message_box.setTitle("Warning");
+            message_box.setMessage(ss.str());
+            message_box.setIcon(ui::dialog::message::WARNING);
+            message_box.addButton(ui::dialog::message::OK);
+            message_box.show();
         }
 
         cursor.setDefaultCursor();

@@ -33,9 +33,9 @@ namespace sight::io::bitmap
 
 //------------------------------------------------------------------------------
 
-data::sequenced_set<std::string> extensions(Backend backend)
+data::sequenced_set<std::string> extensions(Backend _backend)
 {
-    switch(backend)
+    switch(_backend)
     {
         case Backend::NVJPEG:
         case Backend::LIBJPEG:
@@ -56,7 +56,7 @@ data::sequenced_set<std::string> extensions(Backend backend)
             return {detail::PNG_EXT};
 
         default:
-            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(backend) << "'");
+            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(_backend) << "'");
     }
 }
 
@@ -117,17 +117,17 @@ static const bool NVJPEG_AVAILABLE = false;
 
 //------------------------------------------------------------------------------
 
-bool nvJPEG()
+bool nv_jpeg()
 {
     return NVJPEG_AVAILABLE;
 }
 
 //------------------------------------------------------------------------------
 
-bool nvJPEG2K()
+bool nv_jpeg_2k()
 {
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    return nvJPEG();
+    return nv_jpeg();
 #else
     return false;
 #endif
@@ -135,9 +135,9 @@ bool nvJPEG2K()
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, std::string> wildcardFilter(Backend backend)
+std::pair<std::string, std::string> wildcard_filter(Backend _backend)
 {
-    switch(backend)
+    switch(_backend)
     {
         case Backend::NVJPEG:
         case Backend::LIBJPEG:
@@ -158,7 +158,7 @@ std::pair<std::string, std::string> wildcardFilter(Backend backend)
             return std::make_pair(detail::PNG_LABEL, std::string("*") + detail::PNG_EXT);
 
         default:
-            SIGHT_THROW("Unsupported backend: " << uint8_t(backend));
+            SIGHT_THROW("Unsupported backend: " << uint8_t(_backend));
     }
 }
 

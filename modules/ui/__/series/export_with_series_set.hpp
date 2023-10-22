@@ -99,8 +99,8 @@ public:
      * @name Signal/Slot typedefs
      * @{
      */
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
-    typedef core::com::slot<void (SPTR(core::jobs::base))> ForwardJobSlotType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
+    typedef core::com::slot<void (SPTR(core::jobs::base))> forward_job_slot_t;
     /// @}
 
     MODULE_UI_API export_with_series_set() noexcept;
@@ -128,12 +128,12 @@ protected:
 private:
 
     /// SLOT: Allows to forward job process between io selector service and other services.
-    void forwardJob(SPTR(core::jobs::base) job);
+    void forwardJob(SPTR(core::jobs::base) _job);
 
     std::string m_ioSelectorSrvConfig; ///< Configuration used for launched selector service
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated; ///< signal emitted to forward selector job process
-    SPTR(ForwardJobSlotType) m_slotForwardJob;  ///< slot used to forward selector job process
+    SPTR(job_created_signal_t) m_sigJobCreated; ///< signal emitted to forward selector job process
+    SPTR(forward_job_slot_t) m_slotForwardJob;  ///< slot used to forward selector job process
 
     data::ptr<data::series, data::Access::inout> m_series {this, "series"};
 };

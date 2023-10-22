@@ -28,7 +28,7 @@
 
 #include <ui/__/action.hpp>
 
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -80,17 +80,17 @@ protected:
 
 private:
 
-    using StereoModeType      = sight::viz::scene3d::compositor::core::StereoModeType;
-    using StereoActiveSigType = core::com::signal<void (bool)>;
+    using stereo_mode_t       = sight::viz::scene3d::compositor::core::stereo_mode_t;
+    using stereo_active_sig_t = core::com::signal<void (bool)>;
 
-    /// Layer in which we enable/disable stereo.
+    /// layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    sight::viz::scene3d::compositor::core::StereoModeType m_stereoMode {StereoModeType::NONE};
+    sight::viz::scene3d::compositor::core::stereo_mode_t m_stereoMode {stereo_mode_t::NONE};
 
     /// Sent at each update, notifies if stereo is enabled.
-    StereoActiveSigType::sptr m_stereoActiveSig;
+    stereo_active_sig_t::sptr m_stereoActiveSig;
 };
 
 } // namespace sight::module::ui::viz

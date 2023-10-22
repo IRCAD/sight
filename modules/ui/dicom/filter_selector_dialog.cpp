@@ -99,75 +99,75 @@ void filter_selector_dialog::stopping()
 void filter_selector_dialog::updating()
 {
     // Retrieve available filters
-    std::vector<sight::filter::dicom::filter::sptr> registredFilters;
+    std::vector<sight::filter::dicom::filter::sptr> registred_filters;
     for(const std::string& key : sight::filter::dicom::registry::get()->get_factory_keys())
     {
         sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
-        registredFilters.push_back(filter);
+        registred_filters.push_back(filter);
     }
 
     // Filter available extensions and replace id by service description
-    std::map<std::string, sight::filter::dicom::filter::sptr> availableFiltersMap;
-    std::vector<std::string> availableFilterNames;
+    std::map<std::string, sight::filter::dicom::filter::sptr> available_filters_map;
+    std::vector<std::string> available_filter_names;
 
-    for(const sight::filter::dicom::filter::sptr& filter : registredFilters)
+    for(const sight::filter::dicom::filter::sptr& filter : registred_filters)
     {
-        const bool filterIsSelectedByUser = std::find(
+        const bool filter_is_selected_by_user = std::find(
             m_selectedFilters.begin(),
             m_selectedFilters.end(),
             filter->get_classname()
-                                            ) != m_selectedFilters.end();
+                                                ) != m_selectedFilters.end();
 
         // Test if the filter is considered here as available by users
         // excluded mode => add filters that are not selected by users
         // included mode => add filters selected by users
-        if((m_filtersAreExcluded && !filterIsSelectedByUser)
-           || (!m_filtersAreExcluded && filterIsSelectedByUser))
+        if((m_filtersAreExcluded && !filter_is_selected_by_user)
+           || (!m_filtersAreExcluded && filter_is_selected_by_user))
         {
             // Add this filter
-            std::string filterName = filter->getName();
-            filterName                      = (filterName.empty()) ? filter->get_classname() : filterName;
-            availableFiltersMap[filterName] = filter;
-            availableFilterNames.push_back(filterName);
+            std::string filter_name = filter->getName();
+            filter_name                        = (filter_name.empty()) ? filter->get_classname() : filter_name;
+            available_filters_map[filter_name] = filter;
+            available_filter_names.push_back(filter_name);
         }
     }
 
     // Sort available services (lexical string sort)
-    std::sort(availableFilterNames.begin(), availableFilterNames.end());
+    std::sort(available_filter_names.begin(), available_filter_names.end());
 
     // Test if we have an extension
-    if(!availableFilterNames.empty())
+    if(!available_filter_names.empty())
     {
-        std::string filterName         = *availableFilterNames.begin();
-        bool filterSelectionIsCanceled = false;
+        std::string filter_name           = *available_filter_names.begin();
+        bool filter_selection_is_canceled = false;
 
         // Selection of extension when availableFilterNames.size() > 1
-        if(availableFilterNames.size() > 1)
+        if(available_filter_names.size() > 1)
         {
             sight::ui::dialog::selector selector;
 
             selector.setTitle("Filter to use");
-            selector.set_choices(availableFilterNames);
+            selector.set_choices(available_filter_names);
 
             if(const auto& choices = selector.show(); choices.empty())
             {
-                filterSelectionIsCanceled = true;
+                filter_selection_is_canceled = true;
             }
             else
             {
-                filterName = choices.front();
+                filter_name = choices.front();
             }
 
             SIGHT_ASSERT(
                 "Unable to find the selected filter name in the filter map.",
-                filterSelectionIsCanceled
-                || availableFiltersMap.find(filterName) != availableFiltersMap.end()
+                filter_selection_is_canceled
+                || available_filters_map.find(filter_name) != available_filters_map.end()
             );
         }
 
-        if(!filterSelectionIsCanceled)
+        if(!filter_selection_is_canceled)
         {
-            sight::filter::dicom::filter::sptr filter = availableFiltersMap[filterName];
+            sight::filter::dicom::filter::sptr filter = available_filters_map[filter_name];
 
             auto obj = m_filter.lock();
             SIGHT_ASSERT("The inout key 'filter' is not correctly set.", obj);
@@ -175,7 +175,7 @@ void filter_selector_dialog::updating()
             obj->setValue(filter->get_classname());
 
             auto sig =
-                obj->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             {
                 core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
                 sig->async_emit();
@@ -185,12 +185,12 @@ void filter_selector_dialog::updating()
     else
     {
         SIGHT_WARN("filter_selector_dialog::load : availableFilters is empty.");
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Filter not found");
-        messageBox.setMessage("There is no available filter for this reader.");
-        messageBox.setIcon(sight::ui::dialog::message::WARNING);
-        messageBox.addButton(sight::ui::dialog::message::OK);
-        messageBox.show();
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Filter not found");
+        message_box.setMessage("There is no available filter for this reader.");
+        message_box.setIcon(sight::ui::dialog::message::WARNING);
+        message_box.addButton(sight::ui::dialog::message::OK);
+        message_box.show();
     }
 }
 

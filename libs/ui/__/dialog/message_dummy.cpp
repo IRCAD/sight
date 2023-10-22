@@ -64,9 +64,9 @@ void message_dummy::addCustomButton(const std::string& /*label*/, std::function<
 
 //------------------------------------------------------------------------------
 
-void message_dummy::pushAction(Buttons action)
+void message_dummy::pushAction(Buttons _action)
 {
-    actions.push(action);
+    actions.push(_action);
 }
 
 //------------------------------------------------------------------------------

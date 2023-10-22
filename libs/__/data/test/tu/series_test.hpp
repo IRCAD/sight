@@ -223,9 +223,9 @@ public:
 
 protected:
 
-    typedef std::vector<std::shared_ptr<series> > SeriesVectorType;
+    typedef std::vector<std::shared_ptr<series> > series_vector_t;
 
-    SeriesVectorType m_series;
+    series_vector_t m_series;
 };
 
 } // namespace sight::data::ut

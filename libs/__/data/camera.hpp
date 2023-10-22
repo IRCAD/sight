@@ -49,8 +49,8 @@ public:
 
     SIGHT_DECLARE_CLASS(camera, object);
 
-    typedef std::array<double, 5> DistArrayType;
-    typedef std::array<double, 4> IntrinsecType;
+    typedef std::array<double, 5> dist_array_t;
+    typedef std::array<double, 4> intrinsic_t;
 
     typedef enum
     {
@@ -58,7 +58,7 @@ public:
         STREAM,
         DEVICE,
         UNKNOWN = 0xFF
-    } SourceType;
+    } source_t;
 
     typedef enum
     {
@@ -106,20 +106,20 @@ public:
     /// Destructor
     DATA_API ~camera() noexcept override = default;
 
-    DATA_API static PixelFormat getPixelFormat(const std::string& name);
+    DATA_API static PixelFormat getPixelFormat(const std::string& _name);
 
-    DATA_API static std::string getPixelFormatName(PixelFormat format);
+    DATA_API static std::string getPixelFormatName(PixelFormat _format);
 
     /**@name Signals API
      * @{
      */
     /// Signal when camera is calibrated
     DATA_API static const core::com::signals::key_t INTRINSIC_CALIBRATED_SIG;
-    typedef core::com::signal<void ()> IntrinsicCalibratedSignalType;
+    typedef core::com::signal<void ()> intrinsic_calibrated_signal_t;
 
     /// Signal when camera id is modified
     DATA_API static const core::com::signals::key_t ID_MODIFIED_SIG;
-    typedef core::com::signal<void (std::string)> IdModifiedSignalType;
+    typedef core::com::signal<void (std::string)> id_modified_signal_t;
     /** @} */
 
     /// @return cx or u0 = x-coordinate of optical center
@@ -135,15 +135,15 @@ public:
     }
 
     /// Sets cx or u0 = x-coordinate of optical center
-    void setCx(double cx)
+    void setCx(double _cx)
     {
-        m_intrinsic[2] = cx;
+        m_intrinsic[2] = _cx;
     }
 
     /// Sets cy or v0 = y-coordinate of optical center
-    void setCy(double cy)
+    void setCy(double _cy)
     {
-        m_intrinsic[3] = cy;
+        m_intrinsic[3] = _cy;
     }
 
     /// @return fx = x-coordinate of optical center
@@ -153,9 +153,9 @@ public:
     }
 
     /// Sets fx = x-coordinate of optical center
-    void setFx(double fx)
+    void setFx(double _fx)
     {
-        m_intrinsic[0] = fx;
+        m_intrinsic[0] = _fx;
     }
 
     /// @return fy = y-coordinate of optical center
@@ -165,9 +165,9 @@ public:
     }
 
     /// Sets fy = y-coordinate of optical center
-    void setFy(double fy)
+    void setFy(double _fy)
     {
-        m_intrinsic[1] = fy;
+        m_intrinsic[1] = _fy;
     }
 
     /// @return camera resolution in pixels
@@ -177,9 +177,9 @@ public:
     }
 
     /// Sets camera resolution in pixels
-    void setWidth(std::size_t w)
+    void setWidth(std::size_t _w)
     {
-        m_width = w;
+        m_width = _w;
     }
 
     /// @return camera resolution in pixels
@@ -189,13 +189,13 @@ public:
     }
 
     /// Sets camera resolution in pixels
-    void setHeight(std::size_t h)
+    void setHeight(std::size_t _h)
     {
-        m_height = h;
+        m_height = _h;
     }
 
     /// Sets the distortion coefficient
-    DATA_API void setDistortionCoefficient(double k1, double k2, double p1, double p2, double k3);
+    DATA_API void setDistortionCoefficient(double _k1, double _k2, double _p1, double _p2, double _k3);
 
     /**
      * @name Getters / Setters
@@ -203,16 +203,16 @@ public:
     /**
      * @brief distortion coefficient
      * @{ */
-    const DistArrayType& getDistortionCoefficient() const
+    const dist_array_t& getDistortionCoefficient() const
     {
         return m_distortionCoefficient;
     }
 
     //------------------------------------------------------------------------------
 
-    void setDistortionCoefficient(const DistArrayType& val)
+    void setDistortionCoefficient(const dist_array_t& _val)
     {
-        m_distortionCoefficient = val;
+        m_distortionCoefficient = _val;
     }
 
     /**  @} */
@@ -227,9 +227,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setSkew(double val)
+    void setSkew(double _val)
     {
-        m_skew = val;
+        m_skew = _val;
     }
 
     /**  @} */
@@ -244,83 +244,83 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setIsCalibrated(bool val)
+    void setIsCalibrated(bool _val)
     {
-        m_isCalibrated = val;
+        m_isCalibrated = _val;
     }
 
     /**  @} */
 
     /// Gets the camera source (file, stream or device).
-    SourceType getCameraSource() const
+    source_t getCameraSource() const
     {
         return m_cameraSource;
     }
 
     /// Sets the camera source (file, stream or device).
-    void setCameraSource(SourceType cameraSource)
+    void setCameraSource(source_t _camera_source)
     {
-        m_cameraSource = cameraSource;
+        m_cameraSource = _camera_source;
     }
 
-    /// Gets the device name of the camera (only available in SourceType DEVICE mode).
+    /// Gets the device name of the camera (only available in source_t DEVICE mode).
     std::string getCameraID() const
     {
         return m_cameraID;
     }
 
-    /// Sets the device name of the camera (only available in SourceType DEVICE mode).
-    void setCameraID(const std::string& cameraID)
+    /// Sets the device name of the camera (only available in source_t DEVICE mode).
+    void setCameraID(const std::string& _camera_id)
     {
-        m_cameraID = cameraID;
+        m_cameraID = _camera_id;
     }
 
-    /// Gets the minimum frame rate in frames per second (only available in SourceType DEVICE mode).
+    /// Gets the minimum frame rate in frames per second (only available in source_t DEVICE mode).
     float getMaximumFrameRate() const
     {
         return m_maxFrameRate;
     }
 
-    /// Sets the minimum frame rate in frames per second (only available in SourceType DEVICE mode).
-    void setMaximumFrameRate(float maxFrameRate)
+    /// Sets the minimum frame rate in frames per second (only available in source_t DEVICE mode).
+    void setMaximumFrameRate(float _max_frame_rate)
     {
-        m_maxFrameRate = maxFrameRate;
+        m_maxFrameRate = _max_frame_rate;
     }
 
-    /// Gets the color format of a video frame (only available in SourceType DEVICE mode).
+    /// Gets the color format of a video frame (only available in source_t DEVICE mode).
     PixelFormat getPixelFormat() const
     {
         return m_pixelFormat;
     }
 
-    /// Sets the color format of a video frame (only available in SourceType DEVICE mode).
-    void setPixelFormat(PixelFormat pixelFormat)
+    /// Sets the color format of a video frame (only available in source_t DEVICE mode).
+    void setPixelFormat(PixelFormat _pixel_format)
     {
-        m_pixelFormat = pixelFormat;
+        m_pixelFormat = _pixel_format;
     }
 
-    /// Gets the video source file (only available in SourceType FILE mode).
+    /// Gets the video source file (only available in source_t FILE mode).
     std::filesystem::path getVideoFile() const
     {
         return m_videoFile;
     }
 
-    /// Sets the video source file (only available in SourceType FILE mode).
-    void setVideoFile(const std::filesystem::path& videoFile)
+    /// Sets the video source file (only available in source_t FILE mode).
+    void setVideoFile(const std::filesystem::path& _video_file)
     {
-        m_videoFile = videoFile;
+        m_videoFile = _video_file;
     }
 
-    /// Gets the video source stream (only available in SourceType STREAM mode).
+    /// Gets the video source stream (only available in source_t STREAM mode).
     std::string getStreamUrl() const
     {
         return m_streamUrl;
     }
 
-    /// Sets the video source stream (only available in SourceType STREAM mode).
-    void setStreamUrl(const std::string& streamUrl)
+    /// Sets the video source stream (only available in source_t STREAM mode).
+    void setStreamUrl(const std::string& _stream_url)
     {
-        m_streamUrl = streamUrl;
+        m_streamUrl = _stream_url;
     }
 
     /**
@@ -328,7 +328,7 @@ public:
      * Used for RGBD cameras, where depth sensor and RGB sensor are up to a scale factor.
      * @param scale double (default 1.0)
      */
-    void setScale(double scale);
+    void setScale(double _scale);
     /**
      * @brief getScale get the scale factor of the camera (see: setScale)
      * @return the scale factor in double.
@@ -338,28 +338,28 @@ public:
     /**
      * @brief getIndex returns index of the device as Qt give us in module::ui::qt::video::CameraDeviceDlg.
      * The index is the first character of m_description. (ex: "1. Microsoft HD camera")
-     * @return an integer of the index, -1 if invalid (if SourceType isn't DEVICES)
+     * @return an integer of the index, -1 if invalid (if source_t isn't DEVICES)
      */
     int getIndex() const;
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const camera& other) const noexcept;
-    DATA_API bool operator!=(const camera& other) const noexcept;
+    DATA_API bool operator==(const camera& _other) const noexcept;
+    DATA_API bool operator!=(const camera& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -371,10 +371,10 @@ protected:
     std::size_t m_height {0};
 
     /// Intrinsic parameters [fx, fy, cx, cy]
-    IntrinsecType m_intrinsic {};
+    intrinsic_t m_intrinsic {};
 
     /// Image distortion coefficients (radial and tangential distortions, [k1, k2, p1, p2, k3])
-    DistArrayType m_distortionCoefficient {};
+    dist_array_t m_distortionCoefficient {};
 
     /// Skew coefficient (angle between the x and y pixel axes)
     double m_skew {0.};
@@ -398,7 +398,7 @@ protected:
     std::string m_streamUrl;
 
     //! camera source (file, stream or device)
-    SourceType m_cameraSource {UNKNOWN};
+    source_t m_cameraSource {UNKNOWN};
 
     //! Used for depth sensor: scale of the depth values (default: 1.)
     double m_scale {1.};
@@ -406,9 +406,9 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline void camera::setScale(double scale)
+inline void camera::setScale(double _scale)
 {
-    m_scale = scale;
+    m_scale = _scale;
 }
 
 //-----------------------------------------------------------------------------
@@ -423,16 +423,16 @@ inline double camera::getScale() const
 inline int camera::getIndex() const
 {
     int index = -1;
-    if(m_cameraSource == SourceType::DEVICE)
+    if(m_cameraSource == source_t::DEVICE)
     {
         try
         {
             // Limited to [0-9] range
             index = std::stoi(&m_description.at(0));
         }
-        catch(std::exception& _e)
+        catch(std::exception& e)
         {
-            SIGHT_ERROR("Cannot get index of: " + m_description + " " + _e.what());
+            SIGHT_ERROR("Cannot get index of: " + m_description + " " + e.what());
         }
     }
 

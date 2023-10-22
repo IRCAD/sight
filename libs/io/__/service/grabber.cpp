@@ -66,14 +66,14 @@ grabber::grabber() noexcept :
     notifier(m_signals)
 {
     //Declare all signals
-    new_signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
-    new_signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
-    new_signal<CameraStartedSignalType>(CAMERA_STARTED_SIG);
-    new_signal<CameraStoppedSignalType>(CAMERA_STOPPED_SIG);
-    new_signal<FramePresentedSignalType>(FRAME_PRESENTED_SIG);
+    new_signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
+    new_signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
+    new_signal<camera_started_signal_t>(CAMERA_STARTED_SIG);
+    new_signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
+    new_signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
 
-    new_signal<ParameterChangedSignalType>(PARAMETER_CHANGED_SIG);
-    new_signal<JobCreatedSignalType>(JOB_CREATED_SIG);
+    new_signal<parameter_changed_signal_t>(PARAMETER_CHANGED_SIG);
+    new_signal<job_created_signal_t>(JOB_CREATED_SIG);
     new_signal<FPSChangedSignalType>(FPS_CHANGED_SIG);
 
     new_slot(START_CAMERA_SLOT, &grabber::startCamera, this);
@@ -170,27 +170,27 @@ void grabber::clearTimeline(data::frame_tl& _tl)
         // Clear the timeline: send a black frame
         const core::hires_clock::type timestamp = _tl.getNewerTimestamp() + 1;
 
-        SPTR(data::frame_tl::BufferType) buffer = _tl.createBuffer(timestamp);
-        auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
+        SPTR(data::frame_tl::buffer_t) buffer = _tl.createBuffer(timestamp);
+        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        std::memset(destBuffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
+        std::memset(dest_buffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
 
         // push buffer and notify
         _tl.clearTimeline();
         _tl.pushObject(buffer);
 
-        auto sigTL = _tl.signal<data::timeline::signals::pushed_t>(
+        auto sig_tl = _tl.signal<data::timeline::signals::pushed_t>(
             data::timeline::signals::PUSHED
         );
-        sigTL->async_emit(timestamp);
+        sig_tl->async_emit(timestamp);
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void grabber::setStartState(bool state)
+void grabber::setStartState(bool _state)
 {
-    m_isStarted = state;
+    m_isStarted = _state;
 }
 
 //------------------------------------------------------------------------------

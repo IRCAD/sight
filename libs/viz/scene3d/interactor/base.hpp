@@ -39,7 +39,7 @@
 namespace sight::viz::scene3d
 {
 
-class Layer;
+class layer;
 
 namespace interactor
 {
@@ -80,13 +80,13 @@ public:
      * @param _layer the layer on which the interator work.
      * @param _layerOrderDependant define if the interaction must take into account above layers.
      */
-    VIZ_SCENE3D_API base(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
+    VIZ_SCENE3D_API base(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
 
     /// Destroys the interactor.
     VIZ_SCENE3D_API virtual ~base();
 
     /// Sets the scene's length, that is the length of the scene's bounding cube.
-    VIZ_SCENE3D_API virtual void setSceneLength(float _sceneLength);
+    VIZ_SCENE3D_API virtual void setSceneLength(float _scene_length);
 
     /**
      * @brief Listens to mouse move events when one of the mouse buttons is pressed.
@@ -107,7 +107,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void wheelEvent(Modifier _mods, double _angleDelta, int _x, int _y);
+    VIZ_SCENE3D_API virtual void wheelEvent(Modifier _mods, double _angle_delta, int _x, int _y);
 
     /**
      * @brief Listens to mouse move buttons being released.
@@ -143,7 +143,7 @@ public:
      * @param _x width coordinate of the mouse at the time of the event.
      * @param _y height coordinate of the mouse at the time of the event.
      */
-    VIZ_SCENE3D_API virtual void keyPressEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
+    VIZ_SCENE3D_API virtual void keyPressEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y);
 
     /**
      * @brief Listens to keyboard keys being released.
@@ -152,7 +152,7 @@ public:
      * @param _x width coordinate of the mouse at the time of the event.
      * @param _y height coordinate of the mouse at the time of the event.
      */
-    VIZ_SCENE3D_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
+    VIZ_SCENE3D_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y);
 
     /**
      * @brief Called when the mouse leaves the widget
@@ -171,7 +171,7 @@ public:
      * @param _layer layer on which to check the cursor's belonging.
      * @param _layerOrderDependant define if interaction must take into account above layers.
      */
-    VIZ_SCENE3D_API static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer, bool _layerOrderDependant);
+    VIZ_SCENE3D_API static bool isInLayer(int _mouse_x, int _mouse_y, SPTR(layer) _layer, bool _layer_order_dependant);
 
     /**
      * @brief Listen to render window resize events.
@@ -187,7 +187,7 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY);
+    VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y);
 
     /**
      * @brief Listens to pan gesture move events.
@@ -217,7 +217,7 @@ public:
 protected:
 
     /// Weak reference to the layer on which the interactor interacts.
-    WPTR(Layer) m_layer;
+    WPTR(layer) m_layer;
 
     /// Defines if the interaction must take into account above layers.
     bool m_layerOrderDependant {true};
@@ -225,7 +225,7 @@ protected:
 private:
 
     /// Checks if the cursor is on top of the given viewport.
-    static bool isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* _vp);
+    static bool isInViewport(int _mouse_x, int _mouse_y, const Ogre::Viewport* _vp);
 };
 
 //------------------------------------------------------------------------------

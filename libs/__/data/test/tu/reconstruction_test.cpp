@@ -57,26 +57,26 @@ void reconstruction_test::methode1() //test des setters et getters
 {
     const bool is_visible            = true;
     const std::string organ_name     = "OrganName";
-    const std::string structure_type = "StructureType";
+    const std::string structure_type = "structure_t";
 
     // process
     auto p1 = std::make_shared<data::reconstruction>();
 
     p1->setIsVisible(is_visible);
     p1->setOrganName(organ_name);
-    p1->setStructureType(structure_type);
+    p1->set_structure_type(structure_type);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), is_visible);
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), organ_name);
-    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), structure_type);
+    CPPUNIT_ASSERT_EQUAL(p1->get_structure_type(), structure_type);
 
     auto p2 = std::make_shared<data::reconstruction>();
     CPPUNIT_ASSERT(*p1 != *p2);
 
     p2->setIsVisible(is_visible);
     p2->setOrganName(organ_name);
-    p2->setStructureType(structure_type);
+    p2->set_structure_type(structure_type);
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void reconstruction_test::equalityTest()
 
     TEST(setIsVisible(true));
     TEST(setOrganName("1"));
-    TEST(setStructureType("2"));
+    TEST(set_structure_type("2"));
     TEST(setImage(std::make_shared<data::image>()));
     TEST(setMesh(std::make_shared<data::mesh>()));
     auto material = std::make_shared<data::material>();

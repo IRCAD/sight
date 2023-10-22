@@ -65,7 +65,7 @@ public:
      * @brief Get/Set value of the bIsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(bool _bIsVisible);
+    void setIsVisible(bool _b_is_visible);
     /// @}
 
     /**
@@ -73,15 +73,15 @@ public:
      * @brief Get/Set value of the organName.
      */
     std::string getOrganName() const;
-    void setOrganName(const std::string& _sOrganName);
+    void setOrganName(const std::string& _s_organ_name);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the structureType.
      */
-    std::string getStructureType() const;
-    void setStructureType(const std::string& _sStructureType);
+    std::string get_structure_type() const;
+    void set_structure_type(const std::string& _s_structure_type);
     /// @}
 
     /**
@@ -89,14 +89,14 @@ public:
      */
     image::sptr getImage();
     image::csptr getImage() const;
-    void setImage(const image::sptr& val);
+    void setImage(const image::sptr& _val);
 
     /**
      * @brief Get/Set the mesh associated with the acquisition
      */
     mesh::sptr getMesh();
     mesh::csptr getMesh() const;
-    void setMesh(const mesh::sptr& val);
+    void setMesh(const mesh::sptr& _val);
     /// @}
 
     /**
@@ -104,14 +104,14 @@ public:
      */
     material::sptr getMaterial();
     material::csptr getMaterial() const;
-    void setMaterial(const material::sptr& val);
+    void setMaterial(const material::sptr& _val);
     /// @}
 
     /**
      * @brief Get/Set the volume from mask
      */
     double getComputedMaskVolume() const;
-    void setComputedMaskVolume(double val);
+    void setComputedMaskVolume(double _val);
     /// @}
 
     /***
@@ -120,13 +120,13 @@ public:
      */
 
     /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    typedef core::com::signal<void (mesh::sptr)> MeshChangedSignalType;
+    typedef core::com::signal<void (mesh::sptr)> mesh_changed_signal_t;
 
     /// Key in m_signals map of signal m_sigMeshModified
     DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
-    typedef core::com::signal<void (bool)> VisibilityModifiedSignalType;
+    typedef core::com::signal<void (bool)> visibility_modified_signal_t;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
@@ -136,22 +136,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const reconstruction& other) const noexcept;
-    DATA_API bool operator!=(const reconstruction& other) const noexcept;
+    DATA_API bool operator==(const reconstruction& _other) const noexcept;
+    DATA_API bool operator!=(const reconstruction& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -185,10 +185,10 @@ protected:
      */
 
     /// Signal emitted when mesh changed, mesh parameter is used to store old mesh
-    MeshChangedSignalType::sptr m_sigMeshChanged;
+    mesh_changed_signal_t::sptr m_sigMeshChanged;
 
     /// Signal emitted  when visibility is modified
-    VisibilityModifiedSignalType::sptr m_sigVisibilityModified;
+    visibility_modified_signal_t::sptr m_sigVisibilityModified;
     /**
      * @}
      */
@@ -203,9 +203,9 @@ inline bool reconstruction::getIsVisible() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setIsVisible(const bool _bIsVisible)
+inline void reconstruction::setIsVisible(const bool _b_is_visible)
 {
-    m_bIsVisible = _bIsVisible;
+    m_bIsVisible = _b_is_visible;
 }
 
 //-----------------------------------------------------------------------------
@@ -217,23 +217,23 @@ inline std::string reconstruction::getOrganName() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setOrganName(const std::string& _sOrganName)
+inline void reconstruction::setOrganName(const std::string& _s_organ_name)
 {
-    m_sOrganName = _sOrganName;
+    m_sOrganName = _s_organ_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string reconstruction::getStructureType() const
+inline std::string reconstruction::get_structure_type() const
 {
     return this->m_sStructureType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setStructureType(const std::string& _sStructureType)
+inline void reconstruction::set_structure_type(const std::string& _s_structure_type)
 {
-    this->m_sStructureType = _sStructureType;
+    this->m_sStructureType = _s_structure_type;
 }
 
 //-----------------------------------------------------------------------------
@@ -252,9 +252,9 @@ inline image::csptr reconstruction::getImage() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setImage(const image::sptr& val)
+inline void reconstruction::setImage(const image::sptr& _val)
 {
-    m_image = val;
+    m_image = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -273,9 +273,9 @@ inline mesh::csptr reconstruction::getMesh() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setMesh(const mesh::sptr& val)
+inline void reconstruction::setMesh(const mesh::sptr& _val)
 {
-    m_mesh = val;
+    m_mesh = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -294,9 +294,9 @@ inline material::csptr reconstruction::getMaterial() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setMaterial(const material::sptr& val)
+inline void reconstruction::setMaterial(const material::sptr& _val)
 {
-    m_material = val;
+    m_material = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -308,9 +308,9 @@ inline double reconstruction::getComputedMaskVolume() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::setComputedMaskVolume(double val)
+inline void reconstruction::setComputedMaskVolume(double _val)
 {
-    m_computedMaskVolume = val;
+    m_computedMaskVolume = _val;
 }
 
 //-----------------------------------------------------------------------------

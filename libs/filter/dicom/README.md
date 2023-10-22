@@ -4,7 +4,7 @@ Contains filters used to pre-process DICOM files before reading
 
 ## Filter classes
 
-The interface filter class is `sight::filter::filter`. All filters need to implement the abstract methods defined in it, notably `apply()`, `getName()`, `getDescription()` and `getFilterType()`
+The interface filter class is `sight::filter::filter`. All filters need to implement the abstract methods defined in it, notably `apply()`, `getName()`, `getDescription()` and `get_filter_type()`
 
 ### Composite
 - **CTImageStorageDefaultComposite**: reads CTImageStorage SOP class.
@@ -26,7 +26,7 @@ The interface filter class is `sight::filter::filter`. All filters need to imple
 - **ImageDimensionsSplitter**: uses the image dimensions to split the instances.
 - **ImageOrientationSplitter**: uses the ImageOrientationPatient tag to split the instances.
 - **ImagePositionPatientSplitter**: uses the ImagePositionPatient tag to split the instances
-- **ImageTypeSplitter**: uses the ImageType tag to split the instances.
+- **ImageTypeSplitter**: uses the image_t tag to split the instances.
 - **sop_class_uid_splitter**: uses the sop_classUID tag to split the instances.
 - **TagValueInstanceRemoveSplitter**: removes instances according to tag value
 - **TagValueSplitter**: uses a random tag to split the instances
@@ -37,5 +37,5 @@ The interface filter class is `sight::filter::filter`. All filters need to imple
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> filter_dicom)
+target_link_libraries( my_target <PUBLIC|PRIVATE> filter_dicom)
 ```

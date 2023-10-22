@@ -58,8 +58,8 @@ namespace sight::data
  * memory.
  *
  * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
- * use setType(const core::type& type) and resize(const SizeType& size, bool reallocate) or directly call
- * resize(const SizeType& size, const core::type& type, bool reallocate).
+ * use setType(const core::type& type) and resize(const size_t& size, bool reallocate) or directly call
+ * resize(const size_t& size, const core::type& type, bool reallocate).
  *
  * @section Access Buffer access
  *
@@ -158,15 +158,15 @@ public:
     /**
      * @brief array size type
      */
-    typedef std::vector<std::size_t> SizeType;
+    typedef std::vector<std::size_t> size_t;
     /**
      * @brief Offset type
      */
-    typedef std::vector<std::size_t> OffsetType;
+    typedef std::vector<std::size_t> offset_t;
     /**
      * @brief Index type
      */
-    typedef OffsetType IndexType;
+    typedef offset_t index_t;
 
     /**
      * @brief Constructor
@@ -195,7 +195,7 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const SizeType& size, const core::type& type, bool reallocate = true);
+    DATA_API std::size_t resize(const size_t& _size, const core::type& _type, bool _reallocate = true);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -217,7 +217,7 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const SizeType& size, bool reallocate = true);
+    DATA_API std::size_t resize(const size_t& _size, bool _reallocate = true);
 
     /**
      * @brief Clear this array.
@@ -260,14 +260,14 @@ public:
      *
      * @return vector of size lengths in each dimension
      */
-    DATA_API const SizeType& size() const;
+    DATA_API const size_t& size() const;
 
     /**
      * @brief Getter for the array strides
      *
      * @return vector of steps in each dimension for array walking
      */
-    DATA_API const OffsetType& getStrides() const;
+    DATA_API const offset_t& getStrides() const;
 
     /**
      * @brief Getter for number of dimensions, ie. size().size()
@@ -281,7 +281,7 @@ public:
      *
      * @param own New ownership value
      */
-    DATA_API void setIsBufferOwner(bool own);
+    DATA_API void setIsBufferOwner(bool _own);
 
     /**
      * @brief Getter for array's buffer ownership
@@ -303,7 +303,7 @@ public:
      * @param size array size
      * @param sizeOfType size of a component
      */
-    DATA_API static OffsetType computeStrides(SizeType size, std::size_t sizeOfType);
+    DATA_API static offset_t computeStrides(size_t _size, std::size_t _size_of_type);
 
     /// Return buffer object
     ///@{
@@ -312,7 +312,7 @@ public:
     ///@}
 
     /// Set buffer object
-    void setBufferObject(const core::memory::buffer_object::sptr& bufferObj);
+    void setBufferObject(const core::memory::buffer_object::sptr& _buffer_obj);
 
     /// Exchanges the content of the array with the content of _source.
     DATA_API void swap(array::sptr _source) noexcept;
@@ -334,7 +334,7 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    T& at(const array::IndexType& id);
+    T& at(const array::index_t& _id);
 
     /**
      * @brief Get the value of an element
@@ -348,7 +348,7 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    const T& at(const array::IndexType& id) const;
+    const T& at(const array::index_t& _id) const;
 
     /**
      * @brief Get the value of an element
@@ -362,7 +362,7 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    T& at(const std::size_t& offset);
+    T& at(const std::size_t& _offset);
 
     /**
      * @brief Get the value of an element
@@ -376,7 +376,7 @@ public:
      * @throw Exception Index out of bounds
      */
     template<typename T>
-    const T& at(const std::size_t& offset) const;
+    const T& at(const std::size_t& _offset) const;
 
     /**
      * @brief Getter for the array buffer
@@ -402,11 +402,11 @@ public:
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      */
     DATA_API void setBuffer(
-        void* buf,
-        bool takeOwnership,
-        const array::SizeType& size,
-        const core::type& type,
-        core::memory::buffer_allocation_policy::sptr policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        void* _buf,
+        bool _take_ownership,
+        const array::size_t& _size,
+        const core::type& _type,
+        core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     /**
@@ -486,22 +486,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const array& other) const noexcept;
-    DATA_API bool operator!=(const array& other) const noexcept;
+    DATA_API bool operator==(const array& _other) const noexcept;
+    DATA_API bool operator!=(const array& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -516,9 +516,9 @@ protected:
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     DATA_API void setBuffer(
-        void* buf,
-        bool takeOwnership                                  = false,
-        core::memory::buffer_allocation_policy::sptr policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        void* _buf,
+        bool _take_ownership                                 = false,
+        core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
     /**
@@ -528,8 +528,8 @@ protected:
      * @return buffer item pointer
      * @{
      */
-    DATA_API char* getBufferPtr(const array::IndexType& id);
-    DATA_API const char* getBufferPtr(const array::IndexType& id) const;
+    DATA_API char* getBufferPtr(const array::index_t& _id);
+    DATA_API const char* getBufferPtr(const array::index_t& _id) const;
     ///@}
 
     /**
@@ -537,11 +537,11 @@ protected:
      * @param id Item array index
      * @return buffer offset
      */
-    DATA_API std::size_t getBufferOffset(const array::IndexType& id) const;
+    DATA_API std::size_t getBufferOffset(const array::index_t& _id) const;
 
     /// Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const override;
+    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
     /// Not implemented
     array(const array&);
@@ -550,10 +550,10 @@ protected:
 
 private:
 
-    OffsetType m_strides {0};
+    offset_t m_strides {0};
     core::type m_type;
     core::memory::buffer_object::sptr m_bufferObject;
-    SizeType m_size;
+    size_t m_size;
     bool m_isBufferOwner {true};
 };
 
@@ -573,68 +573,68 @@ inline core::memory::buffer_object::sptr array::get_buffer_object()
 
 //-----------------------------------------------------------------------------
 
-inline void array::setBufferObject(const core::memory::buffer_object::sptr& bufferObj)
+inline void array::setBufferObject(const core::memory::buffer_object::sptr& _buffer_obj)
 {
-    m_bufferObject = bufferObj;
+    m_bufferObject = _buffer_obj;
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& array::at(const array::IndexType& id)
+inline T& array::at(const array::index_t& _id)
 {
-    const bool isIndexInBounds =
+    const bool is_index_in_bounds =
         std::equal(
-            id.begin(),
-            id.end(),
+            _id.begin(),
+            _id.end(),
             m_size.begin(),
-            [](const IndexType::value_type& a, const IndexType::value_type& b)
+            [](const index_t::value_type& _a, const index_t::value_type& _b)
         {
-            return a < b;
+            return _a < _b;
         });
-    SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !isIndexInBounds);
-    return *reinterpret_cast<T*>(this->getBufferPtr(id));
+    SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !is_index_in_bounds);
+    return *reinterpret_cast<T*>(this->getBufferPtr(_id));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const T& array::at(const array::IndexType& id) const
+inline const T& array::at(const array::index_t& _id) const
 {
-    const bool isIndexInBounds =
-        std::equal(id.begin(), id.end(), m_size.begin(), std::less<>());
-    SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !isIndexInBounds);
-    return *reinterpret_cast<T*>(this->getBufferPtr(id));
+    const bool is_index_in_bounds =
+        std::equal(_id.begin(), _id.end(), m_size.begin(), std::less<>());
+    SIGHT_THROW_EXCEPTION_IF(exception("Index out of bounds"), !is_index_in_bounds);
+    return *reinterpret_cast<T*>(this->getBufferPtr(_id));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& array::at(const std::size_t& offset)
-{
-    SIGHT_THROW_EXCEPTION_IF(
-        exception(
-            "Index out of bounds, " + std::to_string(offset) + " is not in [0-"
-            + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
-        ),
-        offset >= this->getSizeInBytes() / sizeof(T)
-    );
-    return *(reinterpret_cast<T*>(this->buffer()) + offset);
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline const T& array::at(const std::size_t& offset) const
+inline T& array::at(const std::size_t& _offset)
 {
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+            "Index out of bounds, " + std::to_string(_offset) + " is not in [0-"
             + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
         ),
-        offset >= this->getSizeInBytes() / sizeof(T)
+        _offset >= this->getSizeInBytes() / sizeof(T)
     );
-    return *(reinterpret_cast<const T*>(this->buffer()) + offset);
+    return *(reinterpret_cast<T*>(this->buffer()) + _offset);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const T& array::at(const std::size_t& _offset) const
+{
+    SIGHT_THROW_EXCEPTION_IF(
+        exception(
+            "Index out of bounds, " + std::to_string(_offset) + " is not in [0-"
+            + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
+        ),
+        _offset >= this->getSizeInBytes() / sizeof(T)
+    );
+    return *(reinterpret_cast<const T*>(this->buffer()) + _offset);
 }
 
 //------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ namespace sight::core::tools::os
  *
  * @return The environment variable content if it exists, else an empty string
  */
-CORE_API std::string get_env(const std::string& name, bool* ok = nullptr);
+CORE_API std::string get_env(const std::string& _name, bool* _ok = nullptr);
 
 /**
  * @brief Returns a environment variable value
@@ -47,7 +47,7 @@ CORE_API std::string get_env(const std::string& name, bool* ok = nullptr);
  * @param name environment variable 'name'
  * @param defaultValue Value returned if variable 'name' doesn't exist
  */
-CORE_API std::string get_env(const std::string& name, const std::string& default_value);
+CORE_API std::string get_env(const std::string& _name, const std::string& _default_value);
 
 /**
  * @brief   Return the users's application config directory
@@ -61,9 +61,9 @@ CORE_API std::string get_env(const std::string& name, const std::string& default
  * For example, the UserConfigDir under linux will be "~/.local/share/company/appName"
  */
 CORE_API std::filesystem::path get_user_data_dir(
-    const std::string& app_name = "",
-    bool create_directory       = true,
-    const std::string& company  = "sight"
+    const std::string& _app_name = "",
+    bool _create_directory       = true,
+    const std::string& _company  = "sight"
 );
 
 /**
@@ -78,9 +78,9 @@ CORE_API std::filesystem::path get_user_data_dir(
  * For example, the UserConfigDir under linux will be "~/.config/company/appName"
  */
 CORE_API std::filesystem::path get_user_config_dir(
-    const std::string& app_name = "",
-    bool create_directory       = true,
-    const std::string& company  = "sight"
+    const std::string& _app_name = "",
+    bool _create_directory       = true,
+    const std::string& _company  = "sight"
 );
 
 /**
@@ -95,9 +95,9 @@ CORE_API std::filesystem::path get_user_config_dir(
  * For example, the UserCacheDir under linux will be "~/.cache/company/appName"
  */
 CORE_API std::filesystem::path get_user_cache_dir(
-    const std::string& app_name = "",
-    bool create_directory       = true,
-    const std::string& company  = "sight"
+    const std::string& _app_name = "",
+    bool _create_directory       = true,
+    const std::string& _company  = "sight"
 );
 
 /**

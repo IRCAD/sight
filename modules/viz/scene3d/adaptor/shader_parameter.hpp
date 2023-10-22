@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IParameter.hpp>
+#include <viz/scene3d/parameter_adaptor.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -62,12 +62,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the material
  * - \b shaderType (optional, vertex/geometry/fragment, default=vertex): the type of the shader.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API shader_parameter final : public sight::viz::scene3d::IParameter
+class MODULE_VIZ_SCENE3D_CLASS_API shader_parameter final : public sight::viz::scene3d::parameter_adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(shader_parameter, sight::viz::scene3d::IParameter);
+    SIGHT_DECLARE_SERVICE(shader_parameter, sight::viz::scene3d::parameter_adaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API shader_parameter() noexcept = default;

@@ -30,8 +30,8 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene3d/helper/ManualObject.hpp>
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <OgreNode.h>
@@ -56,12 +56,12 @@ void vector::configuring()
 
     const config_t config = this->get_config();
 
-    const std::string transformId = config.get<std::string>(
+    const std::string transform_id = config.get<std::string>(
         module::viz::scene3d::adaptor::transform::s_TRANSFORM_CONFIG,
         this->get_id() + "_transform"
     );
 
-    this->setTransformId(transformId);
+    this->setTransformId(transform_id);
     m_length = config.get<float>(s_CONFIG + "length", m_length);
     m_color  = config.get<std::string>(s_CONFIG + "color", m_color);
     SIGHT_ASSERT(
@@ -80,9 +80,9 @@ void vector::starting()
 
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transformNode = this->getOrCreateTransformNode(rootSceneNode);
-    m_sceneNode = transformNode->createChildSceneNode(this->get_id() + "_mainNode");
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transform_node  = this->getOrCreateTransformNode(root_scene_node);
+    m_sceneNode = transform_node->createChildSceneNode(this->get_id() + "_mainNode");
 
     // set the material
     m_material = std::make_shared<data::material>();
@@ -131,10 +131,10 @@ void vector::stopping()
 
     this->deleteVector();
 
-    Ogre::SceneNode* transformNode = this->getTransformNode();
-    if(transformNode != nullptr)
+    Ogre::SceneNode* transform_node = this->getTransformNode();
+    if(transform_node != nullptr)
     {
-        transformNode->removeAndDestroyChild(this->get_id() + "_mainNode");
+        transform_node->removeAndDestroyChild(this->get_id() + "_mainNode");
     }
 
     this->unregisterServices();
@@ -146,50 +146,50 @@ void vector::stopping()
 void vector::createVector()
 {
     // Size, these value allow to display a vector with good enough ratio.
-    const float cylinderLength = m_length - m_length / 10;
-    const float cylinderRadius = m_length / 80;
-    const float coneLength     = m_length - cylinderLength;
-    const float coneRadius     = cylinderRadius * 2;
-    const unsigned sample      = 64;
+    const float cylinder_length = m_length - m_length / 10;
+    const float cylinder_radius = m_length / 80;
+    const float cone_length     = m_length - cylinder_length;
+    const float cone_radius     = cylinder_radius * 2;
+    const unsigned sample       = 64;
 
     // Color
     std::array<std::uint8_t, 4> color {};
     data::tools::color::hexaStringToRGBA(m_color, color);
-    Ogre::ColourValue ogreColor(float(color[0]) / 255.F, float(color[1]) / 255.F, float(color[2]) / 255.F);
+    Ogre::ColourValue ogre_color(float(color[0]) / 255.F, float(color[1]) / 255.F, float(color[2]) / 255.F);
 
     // Draw
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    m_line = sceneMgr->createManualObject(this->get_id() + "_line");
-    m_cone = sceneMgr->createManualObject(this->get_id() + "_cone");
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    m_line = scene_mgr->createManualObject(this->get_id() + "_line");
+    m_cone = scene_mgr->createManualObject(this->get_id() + "_cone");
 
     // Line
-    sight::viz::scene3d::helper::ManualObject::createCylinder(
+    sight::viz::scene3d::helper::manual_object::createCylinder(
         m_line,
         m_materialAdaptor->getMaterialName(),
-        ogreColor,
-        cylinderRadius,
-        cylinderLength,
+        ogre_color,
+        cylinder_radius,
+        cylinder_length,
         sample
     );
-    Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_lineNode");
-    lineNode->attachObject(m_line);
+    Ogre::SceneNode* line_node = m_sceneNode->createChildSceneNode(this->get_id() + "_lineNode");
+    line_node->attachObject(m_line);
     // Rotate around y axis to create the cylinder on z Axis (consistent with line adaptor)
-    lineNode->yaw(Ogre::Degree(-90));
+    line_node->yaw(Ogre::Degree(-90));
 
     // Cone
-    sight::viz::scene3d::helper::ManualObject::createCone(
+    sight::viz::scene3d::helper::manual_object::createCone(
         m_cone,
         m_materialAdaptor->getMaterialName(),
-        ogreColor,
-        coneRadius,
-        coneLength,
+        ogre_color,
+        cone_radius,
+        cone_length,
         sample
     );
-    Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->get_id() + "_coneNode");
+    Ogre::SceneNode* cone_node = m_sceneNode->createChildSceneNode(this->get_id() + "_coneNode");
 
-    coneNode->attachObject(m_cone);
-    coneNode->translate(0.F, 0.F, cylinderLength);
-    coneNode->yaw(Ogre::Degree(-90));
+    cone_node->attachObject(m_cone);
+    cone_node->translate(0.F, 0.F, cylinder_length);
+    cone_node->yaw(Ogre::Degree(-90));
 }
 
 //-----------------------------------------------------------------------------
@@ -202,10 +202,10 @@ void vector::deleteVector()
         m_sceneNode->removeAndDestroyChild(this->get_id() + "_coneNode");
     }
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
 
-    sceneMgr->destroyManualObject(m_line);
-    sceneMgr->destroyManualObject(m_cone);
+    scene_mgr->destroyManualObject(m_line);
+    scene_mgr->destroyManualObject(m_cone);
 }
 
 //-----------------------------------------------------------------------------

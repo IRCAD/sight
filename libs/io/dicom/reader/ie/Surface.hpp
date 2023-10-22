@@ -59,13 +59,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API Surface(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::model_series::sptr& series,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::model_series::sptr& _series,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /**
@@ -73,7 +73,7 @@ public:
      * @param[in] filepath Path to the registry CSV file
      * @return True on success
      */
-    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& filepath);
+    IO_DICOM_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& _filepath);
 
     /// Destructor
     IO_DICOM_API ~Surface() override;
@@ -94,9 +94,9 @@ protected:
      * @see PS 3.3 C.8.23.1
      */
     virtual void readSurfaceSegmentationModule(
-        const SPTR(data::reconstruction)& reconstruction,
-        const gdcm::SmartPointer<gdcm::Segment>& segment,
-        const gdcm::Item& segmentItem
+        const SPTR(data::reconstruction)& _reconstruction,
+        const gdcm::SmartPointer<gdcm::Segment>& _segment,
+        const gdcm::Item& _segment_item
     );
     /**
      * @brief Read Surface Mesh Module tags
@@ -105,8 +105,8 @@ protected:
      * @see PS 3.3 C.27.1
      */
     IO_DICOM_API virtual void readSurfaceMeshModule(
-        const SPTR(data::reconstruction)& reconstruction,
-        const gdcm::SmartPointer<gdcm::Surface>& surface
+        const SPTR(data::reconstruction)& _reconstruction,
+        const gdcm::SmartPointer<gdcm::Surface>& _surface
     );
     /// Segment Property Registry
     io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;

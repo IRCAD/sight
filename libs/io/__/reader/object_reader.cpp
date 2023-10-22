@@ -27,9 +27,9 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void object_reader::set_object(core::tools::object::sptr _pObject)
+void object_reader::set_object(core::tools::object::sptr _p_object)
 {
-    m_object = _pObject;
+    m_object = _p_object;
 }
 
 //------------------------------------------------------------------------------

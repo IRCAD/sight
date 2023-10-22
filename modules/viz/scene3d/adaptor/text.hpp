@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IText.hpp>
+#include <viz/scene3d/text.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreVector.h>
@@ -64,7 +64,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration:
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
- * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b hAlign (optional, left|center|right, default="left"): horizontal alignment.
  * - \b vAlign (optional, top|center|bottom, default="bottom"): vertical alignment.
@@ -110,13 +110,13 @@ protected:
 private:
 
     /// Defines the text string.
-    void setText(std::string str);
+    void setText(std::string _str);
 
     /// Updates the displayed text from the input object.
     void updateText();
 
     /// Contains the displayed stats in the overlay.
-    sight::viz::scene3d::IText::sptr m_text;
+    sight::viz::scene3d::text::sptr m_text;
 
     /// Defines the text's color.
     std::string m_textColor;
@@ -136,7 +136,7 @@ private:
     /// Defines the displayed message.
     std::string m_textString;
 
-    /// Defines the TrueType font source file.
+    /// Defines the true_t font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     static constexpr std::string_view s_OBJECT_INPUT = "object";

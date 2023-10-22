@@ -42,7 +42,7 @@
  */
 
 /**
- * @defgroup apprequirement Application requirements
+ * @defgroup apprequirement application requirements
  * @ingroup  requirement
  *  This list contains the modules that could be added in your application's requirements.
  */

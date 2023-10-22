@@ -44,13 +44,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr make(const std::filesystem::path& archive)
+    static sptr make(const std::filesystem::path& _archive)
     {
-        return std::make_shared<WriteDirArchive>(archive);
+        return std::make_shared<WriteDirArchive>(_archive);
     }
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
-    IO_ZIP_API WriteDirArchive(std::filesystem::path archive);
+    IO_ZIP_API WriteDirArchive(std::filesystem::path _archive);
 
     /// Destructor. Flush and close last output file stream.
     IO_ZIP_API ~WriteDirArchive() override;
@@ -62,7 +62,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    IO_ZIP_API SPTR(std::ostream) createFile(const std::filesystem::path& path) override;
+    IO_ZIP_API SPTR(std::ostream) createFile(const std::filesystem::path& _path) override;
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -72,15 +72,15 @@ public:
      * @note Do nothing if destinationFile already exists in archive.
      */
     IO_ZIP_API void putFile(
-        const std::filesystem::path& sourceFile,
-        const std::filesystem::path& destinationFile
+        const std::filesystem::path& _source_file,
+        const std::filesystem::path& _destination_file
     ) override;
 
     /**
      * @brief Creates a folder in archive.
      * @param path folder to create in archive.
      */
-    IO_ZIP_API bool createDir(const std::filesystem::path& path) override;
+    IO_ZIP_API bool createDir(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.

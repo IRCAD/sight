@@ -53,21 +53,21 @@ public:
 
     /// Connect signal to slot, and register this new connection in  m_connections
     CORE_API void connect(
-        const core::com::has_signals::csptr& has_signals,
-        core::com::signals::signal_key_type signal_key,
-        const core::com::has_slots::csptr& has_slots,
-        core::com::slots::key_t slot_key
+        const core::com::has_signals::csptr& _has_signals,
+        core::com::signals::signal_key_type _signal_key,
+        const core::com::has_slots::csptr& _has_slots,
+        core::com::slots::key_t _slot_key
     );
 
     /// Connect signals to slots, and register these new connections in  m_connections
     CORE_API void connect(
-        const core::com::has_signals::csptr& has_signals,
-        const core::com::has_slots::csptr& has_slots,
-        const key_connections_t& key_connections
+        const core::com::has_signals::csptr& _has_signals,
+        const core::com::has_slots::csptr& _has_slots,
+        const key_connections_t& _key_connections
     );
 
     /// Add a connection
-    CORE_API void add_connection(core::com::connection connection);
+    CORE_API void add_connection(core::com::connection _connection);
 
     /// Disconnect all registered connections and clear m_connections
     CORE_API void disconnect();

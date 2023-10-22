@@ -81,26 +81,26 @@ void data_parser_test::tearDown()
 
 void data_parser_test::testObjectCreationWithConfig()
 {
-    const std::string objectUUID   = "objectUUID";
-    const std::string serviceUUID1 = "myTestService1";
-    const std::string serviceUUID2 = "myTestService2";
+    const std::string object_uuid    = "objectUUID";
+    const std::string service_uui_d1 = "myTestService1";
+    const std::string service_uui_d2 = "myTestService2";
 
     // Create object configuration
     const auto config = buildObjectConfig();
 
     // Create the object and its services from the configuration
-    auto configManager = app::config_manager::make();
-    configManager->app::config_manager::setConfig(config);
-    configManager->create();
-    auto image = std::dynamic_pointer_cast<data::image>(configManager->getConfigRoot());
+    auto config_manager = app::config_manager::make();
+    config_manager->app::config_manager::setConfig(config);
+    config_manager->create();
+    auto image = std::dynamic_pointer_cast<data::image>(config_manager->getConfigRoot());
 
     // Test object uid
-    CPPUNIT_ASSERT_EQUAL(objectUUID, image->get_id());
+    CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
 
     // Test start services
-    configManager->start();
-    const auto& srv1 = service::get(serviceUUID1);
-    const auto& srv2 = service::get(serviceUUID2);
+    config_manager->start();
+    const auto& srv1 = service::get(service_uui_d1);
+    const auto& srv2 = service::get(service_uui_d2);
     CPPUNIT_ASSERT(srv1->started());
     CPPUNIT_ASSERT(srv2->started());
 
@@ -108,49 +108,49 @@ void data_parser_test::testObjectCreationWithConfig()
     CPPUNIT_ASSERT(image == srv1->data::has_data::object("data", data::Access::in));
 
     // Test update services
-    configManager->update();
+    config_manager->update();
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::TestConfigService>(srv1)->getIsUpdated());
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::TestConfigService>(srv2)->getIsUpdated() == false);
 
     // Test stop services
-    configManager->stop();
+    config_manager->stop();
     CPPUNIT_ASSERT(srv1->stopped());
     CPPUNIT_ASSERT(srv2->stopped());
 
-    configManager->destroy();
+    config_manager->destroy();
 }
 
 //------------------------------------------------------------------------------
 
 void data_parser_test::testImageParser()
 {
-    const std::string objectUUID = "objectUUID";
+    const std::string object_uuid = "objectUUID";
     service::config_t config;
 
     // Configuration on core::tools::object which uid is objectUUID
-    service::config_t objCfg;
-    objCfg.add("<xmlattr>.uid", objectUUID);
-    objCfg.add("<xmlattr>.type", "sight::data::image");
-    objCfg.add("color", "#FF459812");
-    config.add_child("object", objCfg);
+    service::config_t obj_cfg;
+    obj_cfg.add("<xmlattr>.uid", object_uuid);
+    obj_cfg.add("<xmlattr>.type", "sight::data::image");
+    obj_cfg.add("color", "#FF459812");
+    config.add_child("object", obj_cfg);
 
     // Create the object and its services from the configuration
-    auto configManager = app::config_manager::make();
-    configManager->app::config_manager::setConfig(config);
-    configManager->create();
-    auto image = std::dynamic_pointer_cast<data::image>(core::tools::id::get_object(objectUUID));
+    auto config_manager = app::config_manager::make();
+    config_manager->app::config_manager::setConfig(config);
+    config_manager->create();
+    auto image = std::dynamic_pointer_cast<data::image>(core::tools::id::get_object(object_uuid));
 
     // Test object uid
-    CPPUNIT_ASSERT_EQUAL(objectUUID, image->get_id());
+    CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
     CPPUNIT_ASSERT_EQUAL(sight::data::image::RGBA, image->getPixelFormat());
     CPPUNIT_ASSERT_EQUAL(sight::core::type::UINT8, image->getType());
 
     // We only test the image content, we do not really care about the image size and other attributes for now
-    const auto dumpLock = image->dump_lock();
-    auto itr            = image->begin<sight::data::iterator::rgba>();
-    const auto itrEnd   = image->end<sight::data::iterator::rgba>();
+    const auto dump_lock = image->dump_lock();
+    auto itr             = image->begin<sight::data::iterator::rgba>();
+    const auto itr_end   = image->end<sight::data::iterator::rgba>();
 
-    for( ; itr != itrEnd ; ++itr)
+    for( ; itr != itr_end ; ++itr)
     {
         CPPUNIT_ASSERT_EQUAL(std::uint8_t(0xFF), itr->r);
         CPPUNIT_ASSERT_EQUAL(std::uint8_t(0x45), itr->g);
@@ -158,7 +158,7 @@ void data_parser_test::testImageParser()
         CPPUNIT_ASSERT_EQUAL(std::uint8_t(0X12), itr->a);
     }
 
-    configManager->destroy();
+    config_manager->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -220,35 +220,35 @@ service::config_t data_parser_test::buildObjectConfig()
     service::config_t config;
 
     // Configuration on core::tools::object which uid is objectUUID
-    service::config_t objCfg;
-    objCfg.add("<xmlattr>.uid", "objectUUID");
-    objCfg.add("<xmlattr>.type", "sight::data::image");
-    config.add_child("object", objCfg);
+    service::config_t obj_cfg;
+    obj_cfg.add("<xmlattr>.uid", "objectUUID");
+    obj_cfg.add("<xmlattr>.type", "sight::data::image");
+    config.add_child("object", obj_cfg);
 
     // Object's service A
-    service::config_t serviceA;
-    serviceA.add("<xmlattr>.uid", "myTestService1");
-    serviceA.add("<xmlattr>.type", "sight::app::ut::STest1Image");
+    service::config_t service_a;
+    service_a.add("<xmlattr>.uid", "myTestService1");
+    service_a.add("<xmlattr>.type", "sight::app::ut::STest1Image");
 
-    service::config_t dataServiceA;
-    dataServiceA.add("<xmlattr>.key", "data");
-    dataServiceA.add("<xmlattr>.uid", "objectUUID");
-    serviceA.add_child("in", dataServiceA);
-    config.add_child("service", serviceA);
+    service::config_t data_service_a;
+    data_service_a.add("<xmlattr>.key", "data");
+    data_service_a.add("<xmlattr>.uid", "objectUUID");
+    service_a.add_child("in", data_service_a);
+    config.add_child("service", service_a);
 
     // Object's service B
-    service::config_t serviceB;
-    serviceB.add("<xmlattr>.uid", "myTestService2");
-    serviceB.add("<xmlattr>.type", "sight::app::ut::STest1Image");
-    config.add_child("service", serviceB);
+    service::config_t service_b;
+    service_b.add("<xmlattr>.uid", "myTestService2");
+    service_b.add("<xmlattr>.type", "sight::app::ut::STest1Image");
+    config.add_child("service", service_b);
 
     // Start method from object's services
-    service::config_t startA;
-    startA.add("<xmlattr>.uid", "myTestService1");
-    config.add_child("start", startA);
-    service::config_t startB;
-    startB.add("<xmlattr>.uid", "myTestService2");
-    config.add_child("start", startB);
+    service::config_t start_a;
+    start_a.add("<xmlattr>.uid", "myTestService1");
+    config.add_child("start", start_a);
+    service::config_t start_b;
+    start_b.add("<xmlattr>.uid", "myTestService2");
+    config.add_child("start", start_b);
 
     // Update method from object's services
     service::config_t update1;

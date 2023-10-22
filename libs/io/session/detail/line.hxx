@@ -38,39 +38,39 @@ constexpr static auto s_Direction {"Direction"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto line = helper::safe_cast<data::line>(object);
+    const auto line = helper::safe_cast<data::line>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::line>(tree, 1);
+    helper::write_version<data::line>(_tree, 1);
 
-    children[s_Position]  = line->getPosition();
-    children[s_Direction] = line->getDirection();
+    _children[s_Position]  = line->getPosition();
+    _children[s_Direction] = line->getDirection();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::line::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto line = helper::cast_or_create<data::line>(object);
+    auto line = helper::cast_or_create<data::line>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::line>(tree, 0, 1);
+    helper::read_version<data::line>(_tree, 0, 1);
 
-    line->setPosition(std::dynamic_pointer_cast<data::point>(children.at(s_Position)));
-    line->setDirection(std::dynamic_pointer_cast<data::point>(children.at(s_Direction)));
+    line->setPosition(std::dynamic_pointer_cast<data::point>(_children.at(s_Position)));
+    line->setDirection(std::dynamic_pointer_cast<data::point>(_children.at(s_Direction)));
 
     return line;
 }

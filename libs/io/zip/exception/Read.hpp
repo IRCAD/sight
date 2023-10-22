@@ -32,9 +32,9 @@ namespace sight::io::zip::exception
 /// Read exception.
 struct Read : core::exception
 {
-    inline Read(const std::string& err, const std::int32_t error_code = -1) :
-        core::exception(err),
-        m_error_code(error_code)
+    inline Read(const std::string& _err, const std::int32_t _error_code = -1) :
+        core::exception(_err),
+        m_error_code(_error_code)
     {
     }
 
@@ -43,8 +43,8 @@ struct Read : core::exception
 
 struct BadPassword : Read
 {
-    inline BadPassword(const std::string& err, const std::int32_t error_code = -1) :
-        Read(err, error_code)
+    inline BadPassword(const std::string& _err, const std::int32_t _error_code = -1) :
+        Read(_err, _error_code)
     {
     }
 };

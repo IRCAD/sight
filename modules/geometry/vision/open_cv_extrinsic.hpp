@@ -70,7 +70,7 @@ public:
     SIGHT_DECLARE_SERVICE(open_cv_extrinsic, sight::geometry::vision::ICalibration);
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> error_computed_signal_t;
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API open_cv_extrinsic() noexcept;

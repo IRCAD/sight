@@ -53,24 +53,24 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setTitle(const std::string& title) override
+    void setTitle(const std::string& _title) override
     {
-        m_title = title;
+        m_title = _title;
     }
 
     //------------------------------------------------------------------------------
 
-    void setMessage(const std::string& message) override
+    void setMessage(const std::string& _message) override
     {
-        m_message = message;
+        m_message = _message;
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(float percentage, std::string message) override
+    void operator()(float _percentage, std::string _message) override
     {
-        m_percentage = percentage;
-        m_message    = message;
+        m_percentage = _percentage;
+        m_message    = _message;
     }
 
     //------------------------------------------------------------------------------
@@ -111,10 +111,10 @@ class DummyJob : public core::jobs::base
 {
 public:
 
-    explicit DummyJob(const std::string& name, std::uint64_t totalWorkUnit = 100) :
-        base(name)
+    explicit DummyJob(const std::string& _name, std::uint64_t _total_work_unit = 100) :
+        base(_name)
     {
-        m_total_work_units = totalWorkUnit;
+        m_total_work_units = _total_work_unit;
     }
 
     //------------------------------------------------------------------------------

@@ -76,32 +76,32 @@ struct Configuration
  * @param path to configFile
  * @return  a map
  */
-std::map<std::string, Configuration> initialize(std::string configFile)
+std::map<std::string, Configuration> initialize(std::string _config_file)
 {
     SIGHT_INFO("Reading parameters...");
 
-    std::vector<std::string> messageType;
-    std::vector<std::string> deviceInTab;
-    std::vector<std::string> deviceOutTab;
-    std::vector<std::uint16_t> portTab;
+    std::vector<std::string> message_type;
+    std::vector<std::string> device_in_tab;
+    std::vector<std::string> device_out_tab;
+    std::vector<std::uint16_t> port_tab;
     std::map<std::string, Configuration> association;
 
-    std::ifstream fileStream;
-    fileStream.open(configFile.c_str(), std::ios::in);
-    if(fileStream.is_open())
+    std::ifstream file_stream;
+    file_stream.open(_config_file.c_str(), std::ios::in);
+    if(file_stream.is_open())
     {
-        std::istringstream lineStream;
+        std::istringstream line_stream;
         std::string line;
         std::vector<std::string> words;
 
         unsigned int i = 0;
 
-        while(std::getline(fileStream, line))
+        while(std::getline(file_stream, line))
         {
-            lineStream.str(line);
+            line_stream.str(line);
             // iterate all word and push it in words vector
             std::copy(
-                std::istream_iterator<std::string>(lineStream),
+                std::istream_iterator<std::string>(line_stream),
                 std::istream_iterator<std::string>(),
                 std::back_inserter<std::vector<std::string> >(words)
             );
@@ -117,58 +117,58 @@ std::map<std::string, Configuration> initialize(std::string configFile)
                     << words[3]
                 );
 
-                messageType.push_back(words[0]);
-                deviceInTab.push_back(words[1]);
-                deviceOutTab.push_back(words[2]);
-                portTab.push_back(boost::lexical_cast<std::uint16_t>(words[3]));
+                message_type.push_back(words[0]);
+                device_in_tab.push_back(words[1]);
+                device_out_tab.push_back(words[2]);
+                port_tab.push_back(boost::lexical_cast<std::uint16_t>(words[3]));
             }
 
-            lineStream.clear();
+            line_stream.clear();
             words.clear();
             ++i;
         }
     }
 
-    for(unsigned int i = 0 ; i < messageType.size() ; i++)
+    for(unsigned int i = 0 ; i < message_type.size() ; i++)
     {
         //check if port num for this config isn't used
         std::map<std::string, Configuration>::iterator it;
-        auto server               = std::make_shared<sight::io::igtl::Server>();
-        auto worker               = sight::core::thread::worker::make();
-        bool serverAlreadyStarted = false;
+        auto server                 = std::make_shared<sight::io::igtl::Server>();
+        auto worker                 = sight::core::thread::worker::make();
+        bool server_already_started = false;
 
         for(it = association.begin() ; it != association.end() ; ++it)
         {
             //if port is already used we use the same server and worker
-            if(it->second.port == portTab[i])
+            if(it->second.port == port_tab[i])
             {
                 SIGHT_INFO(
-                    "Found that " << it->second.deviceIn << " and " << deviceInTab[i]
+                    "Found that " << it->second.deviceIn << " and " << device_in_tab[i]
                     << " have the same port (" << it->second.port << ")."
                 );
-                server               = it->second.server;
-                worker               = it->second.worker;
-                serverAlreadyStarted = true;
+                server                 = it->second.server;
+                worker                 = it->second.worker;
+                server_already_started = true;
             }
         }
 
         Configuration config;
-        config.deviceIn   = deviceInTab[i];
-        config.deviceOut  = deviceOutTab[i];
-        config.deviceType = messageType[i];
-        config.port       = portTab[i];
+        config.deviceIn   = device_in_tab[i];
+        config.deviceOut  = device_out_tab[i];
+        config.deviceType = message_type[i];
+        config.port       = port_tab[i];
         config.worker     = worker;
 
         config.server = server;
-        if(!serverAlreadyStarted)
+        if(!server_already_started)
         {
             config.server->start(config.port);
 
-            std::function<void()> task = [ObjectPtr = config.server](auto&& ...){ObjectPtr->runServer();};
+            std::function<void()> task = [object_ptr = config.server](auto&& ...){object_ptr->runServer();};
             config.worker->post(task);
         }
 
-        association[deviceInTab[i]] = config;
+        association[device_in_tab[i]] = config;
     }
 
     return association;
@@ -192,17 +192,17 @@ int main(int argc, char** argv)
     }
 
     auto port = boost::lexical_cast<std::uint16_t>(argv[1]);
-    std::string configFile(argv[2]);
+    std::string config_file(argv[2]);
 
     //Initialization of parameters
-    std::map<std::string, Configuration> associationDeviceServer = initialize(configFile);
+    std::map<std::string, Configuration> association_device_server = initialize(config_file);
 
-    auto receiveServer = std::make_shared<sight::io::igtl::Server>();
-    auto worker        = sight::core::thread::worker::make();
+    auto receive_server = std::make_shared<sight::io::igtl::Server>();
+    auto worker         = sight::core::thread::worker::make();
     try
     {
-        receiveServer->start(port);
-        std::function<void()> task = [receiveServer](auto&& ...){receiveServer->runServer();};
+        receive_server->start(port);
+        std::function<void()> task = [receive_server](auto&& ...){receive_server->runServer();};
         worker->post(task);
     }
     catch(std::exception const& err)
@@ -216,49 +216,49 @@ int main(int argc, char** argv)
     while(true)
     {
         // Create a message buffer to receive header
-        ::igtl::MessageHeader::Pointer headerMsg;
+        ::igtl::MessageHeader::Pointer header_msg;
         ::igtl::MessageBase::Pointer msg;
 
-        std::vector< ::igtl::MessageBase::Pointer> headerMsgs;
+        std::vector< ::igtl::MessageBase::Pointer> header_msgs;
         // Initialize receive buffer
-        headerMsgs = receiveServer->receiveHeaders();
+        header_msgs = receive_server->receiveHeaders();
 
-        for(unsigned int i = 0 ; i < headerMsgs.size() ; ++i)
+        for(unsigned int i = 0 ; i < header_msgs.size() ; ++i)
         {
-            headerMsg = headerMsgs[i];
+            header_msg = header_msgs[i];
 
-            if(headerMsg.IsNotNull())
+            if(header_msg.IsNotNull())
             {
                 // Deserialize the header
-                headerMsg->Unpack();
-                std::string deviceName = headerMsg->GetDeviceName();
-                std::string deviceType = headerMsg->GetDeviceType();
+                header_msg->Unpack();
+                std::string device_name = header_msg->GetDeviceName();
+                std::string device_type = header_msg->GetDeviceType();
 
-                sight::io::igtl::Server::sptr sendingServer;
+                sight::io::igtl::Server::sptr sending_server;
 
-                if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
+                if(association_device_server.find(device_name) != association_device_server.end())
                 {
-                    Configuration config = associationDeviceServer.find(deviceName)->second;
-                    SIGHT_INFO("Received a '" << deviceType << "' named '" << deviceName);
+                    Configuration config = association_device_server.find(device_name)->second;
+                    SIGHT_INFO("Received a '" << device_type << "' named '" << device_name);
 
-                    sendingServer = config.server;
+                    sending_server = config.server;
 
-                    if(config.deviceType == deviceType)
+                    if(config.deviceType == device_type)
                     {
-                        if(sendingServer)
+                        if(sending_server)
                         {
-                            msg = receiveServer->receiveBody(headerMsg, i);
+                            msg = receive_server->receiveBody(header_msg, i);
 
                             if(msg.IsNotNull())
                             {
                                 SIGHT_DEBUG(
-                                    "Resending the message '" << deviceName << "' with name '" << config.deviceOut
+                                    "Resending the message '" << device_name << "' with name '" << config.deviceOut
                                     << " to port : '" << config.port << "'."
                                 );
 
                                 //re-send the message with the correct server
-                                sendingServer->setMessageDeviceName(config.deviceOut);
-                                sendingServer->broadcast(msg);
+                                sending_server->setMessageDeviceName(config.deviceOut);
+                                sending_server->broadcast(msg);
                             }
                         }
                         else
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
                     else
                     {
                         SIGHT_WARN(
-                            "No corresponding between type " << deviceType << " and name " << deviceName << " message skipped"
+                            "No corresponding between type " << device_type << " and name " << device_name << " message skipped"
                         );
                     }
                 }
@@ -280,13 +280,13 @@ int main(int argc, char** argv)
             }
         }
 
-        headerMsgs.clear();
+        header_msgs.clear();
     }
 
-    receiveServer->stop();
+    receive_server->stop();
     worker->stop();
 
-    for(const auto& s : associationDeviceServer)
+    for(const auto& s : association_device_server)
     {
         s.second.server->stop();
         s.second.worker->stop();

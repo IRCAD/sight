@@ -30,15 +30,15 @@ namespace sight::data::timeline
 //-----------------------------------------------------------------------------
 
 buffer::buffer(
-    core::hires_clock::type timestamp,
-    BufferDataType buffer,
-    std::size_t size,
-    DeleterType d
+    core::hires_clock::type _timestamp,
+    buffer_data_t _buffer,
+    std::size_t _size,
+    deleter_t _d
 ) :
-    object(timestamp),
-    m_size(size),
-    m_buffer(buffer),
-    m_deleter(std::move(d))
+    object(_timestamp),
+    m_size(_size),
+    m_buffer(_buffer),
+    m_deleter(std::move(_d))
 {
 }
 
@@ -54,37 +54,37 @@ buffer::~buffer()
 
 //-----------------------------------------------------------------------------
 
-void buffer::deep_copy(const data::timeline::object& other)
+void buffer::deep_copy(const data::timeline::object& _other)
 {
-    object::deep_copy(other);
+    object::deep_copy(_other);
 
-    const auto& otherObject = static_cast<const buffer&>(other);
-    memcpy(m_buffer, otherObject.m_buffer, m_size);
+    const auto& other_object = static_cast<const buffer&>(_other);
+    memcpy(m_buffer, other_object.m_buffer, m_size);
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer::operator==(const buffer& other) const noexcept
+bool buffer::operator==(const buffer& _other) const noexcept
 {
-    if(m_size != other.m_size)
+    if(m_size != _other.m_size)
     {
         return false;
     }
 
-    if(m_buffer != other.m_buffer && std::memcmp(m_buffer, other.m_buffer, m_size) != 0)
+    if(m_buffer != _other.m_buffer && std::memcmp(m_buffer, _other.m_buffer, m_size) != 0)
     {
         return false;
     }
 
     // Super class last
-    return object::operator==(other);
+    return object::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer::operator!=(const buffer& other) const noexcept
+bool buffer::operator!=(const buffer& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data::timeline

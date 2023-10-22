@@ -61,7 +61,7 @@ public:
 protected:
 
     /// Register matrix slot
-    SERVICE_API virtual void computeRegistration(core::hires_clock::type timestamp) = 0;
+    SERVICE_API virtual void computeRegistration(core::hires_clock::type _timestamp) = 0;
 };
 
 } // namespace sight::service

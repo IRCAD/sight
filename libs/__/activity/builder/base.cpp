@@ -29,21 +29,21 @@ namespace sight::activity::builder
 
 //------------------------------------------------------------------------------
 
-data::vector::sptr base::getType(const data::vector::csptr& currentSelection, const std::string& type) const
+data::vector::sptr base::getType(const data::vector::csptr& _current_selection, const std::string& _type) const
 {
-    SIGHT_ASSERT("currentSelection not instanced", currentSelection);
+    SIGHT_ASSERT("currentSelection not instanced", _current_selection);
 
-    data::vector::sptr subSelection = std::make_shared<data::vector>();
-    for(const data::vector::value_type& obj : *currentSelection)
+    data::vector::sptr sub_selection = std::make_shared<data::vector>();
+    for(const data::vector::value_type& obj : *_current_selection)
     {
         SIGHT_ASSERT("Object not instanced in selection", obj);
-        if(obj->is_a(type))
+        if(obj->is_a(_type))
         {
-            subSelection->push_back(obj);
+            sub_selection->push_back(obj);
         }
     }
 
-    return subSelection;
+    return sub_selection;
 }
 
 //------------------------------------------------------------------------------

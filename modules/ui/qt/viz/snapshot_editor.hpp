@@ -104,10 +104,10 @@ private:
      */
 
     /// Type of signal to snap shot
-    typedef core::com::signal<void (std::string)> SnappedSignalType;
+    typedef core::com::signal<void (std::string)> snapped_signal_t;
     static const core::com::signals::key_t SNAPPED_SIG;
 
-    SnappedSignalType::sptr m_sigSnapped; ///< snap shot signal
+    snapped_signal_t::sptr m_sigSnapped; ///< snap shot signal
     /**
      * @}
      */

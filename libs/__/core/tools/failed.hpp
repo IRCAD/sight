@@ -41,7 +41,7 @@ struct CORE_CLASS_API failed : public core::exception
      *
      * @param[in]   message a string containing the failure message
      */
-    CORE_API failed(const std::string& message) noexcept;
+    CORE_API failed(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.

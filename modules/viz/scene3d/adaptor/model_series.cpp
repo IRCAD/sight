@@ -79,14 +79,14 @@ void model_series::configuring()
 
     if(config.count(s_QUERY_CONFIG) != 0U)
     {
-        const auto hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        const auto hexa_mask = config.get<std::string>(s_QUERY_CONFIG);
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
     if(config.get_optional<bool>("visible"))
@@ -123,14 +123,15 @@ service::connections_t model_series::auto_connections() const
 void model_series::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = m_model.lock();
+    const auto model_series = m_model.lock();
 
     this->stopping();
 
     // showRec indicates if we have to show the associated reconstructions or not
-    const bool showRec = modelSeries->getField("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
+    const bool show_rec =
+        model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
 
-    for(const auto& reconstruction : modelSeries->getReconstructionDB())
+    for(const auto& reconstruction : model_series->getReconstructionDB())
     {
         auto adaptor = this->registerService<module::viz::scene3d::adaptor::reconstruction>(
             "sight::module::viz::scene3d::adaptor::reconstruction"
@@ -156,12 +157,12 @@ void model_series::updating()
         }
         else
         {
-            adaptor->updateVisibility(!showRec);
+            adaptor->updateVisibility(!show_rec);
         }
 
-        module::viz::scene3d::adaptor::mesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
-        meshAdaptor->setDynamic(m_isDynamic);
-        meshAdaptor->setDynamicVertices(m_isDynamicVertices);
+        module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = adaptor->getMeshAdaptor();
+        mesh_adaptor->setDynamic(m_isDynamic);
+        mesh_adaptor->setDynamicVertices(m_isDynamicVertices);
     }
 }
 
@@ -179,8 +180,8 @@ void model_series::setVisible(bool _visible)
     auto adaptors = this->getRegisteredServices();
     for(const auto& adaptor : adaptors)
     {
-        auto recAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        recAdaptor->updateVisibility(!_visible);
+        auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
+        rec_adaptor->updateVisibility(!_visible);
     }
 }
 
@@ -188,15 +189,16 @@ void model_series::setVisible(bool _visible)
 
 void model_series::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = m_model.lock();
+    const auto model_series = m_model.lock();
 
-    const bool showRec = modelSeries->getField("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
+    const bool show_rec =
+        model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
 
     auto adaptors = this->getRegisteredServices();
     for(const auto& adaptor : adaptors)
     {
-        auto recAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        recAdaptor->updateVisibility(!showRec);
+        auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
+        rec_adaptor->updateVisibility(!show_rec);
     }
 }
 

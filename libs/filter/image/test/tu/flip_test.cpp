@@ -22,7 +22,7 @@
 
 #include "flip_test.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <filter/image/flipper.hpp>
@@ -43,16 +43,16 @@ void flip_test::flipAlongXAxisTest()
     const data::image::Origin origin      = {{0., 0., 0.}};
     const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
-    std::array<bool, 3> flipAxes {true, false, false};
+    std::array<bool, 3> flip_axes {true, false, false};
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-    const auto inDumpLock = imageIn->dump_lock();
-    filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto in_dump_lock = image_in->dump_lock();
+    filter::image::flipper::flip(image_in, image_out, flip_axes);
+    const auto out_dump_lock = image_out->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -60,11 +60,11 @@ void flip_test::flipAlongXAxisTest()
         {
             for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
-                const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, j, k);
+                const uint8_t value_in  = image_in->at<std::uint8_t>(i, j, k);
+                const uint8_t value_out = image_out->at<std::uint8_t>(size[0] - i - 1, j, k);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
-                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(value_in), static_cast<int>(value_out));
             }
         }
     }
@@ -79,16 +79,16 @@ void flip_test::flipAlongYAxisTest()
     const data::image::Origin origin      = {{8., 4., 2.}};
     const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
-    std::array<bool, 3> flipAxes {false, true, false};
+    std::array<bool, 3> flip_axes {false, true, false};
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-    const auto inDumpLock = imageIn->dump_lock();
-    filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto in_dump_lock = image_in->dump_lock();
+    filter::image::flipper::flip(image_in, image_out, flip_axes);
+    const auto out_dump_lock = image_out->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -96,11 +96,11 @@ void flip_test::flipAlongYAxisTest()
         {
             for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
-                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, size[1] - j - 1, k);
+                const uint8_t value_in  = image_in->at<std::uint8_t>(i, j, k);
+                const uint8_t value_out = image_out->at<std::uint8_t>(i, size[1] - j - 1, k);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
-                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(value_in), static_cast<int>(value_out));
             }
         }
     }
@@ -115,16 +115,16 @@ void flip_test::flipAlongZAxisTest()
     const data::image::Origin origin      = {{0., 0., 0.}};
     const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
-    std::array<bool, 3> flipAxes {false, false, true};
+    std::array<bool, 3> flip_axes {false, false, true};
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-    const auto inDumpLock = imageIn->dump_lock();
-    filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto in_dump_lock = image_in->dump_lock();
+    filter::image::flipper::flip(image_in, image_out, flip_axes);
+    const auto out_dump_lock = image_out->dump_lock();
 
     for(std::size_t i = 0 ; i < size[0] ; ++i)
     {
@@ -132,11 +132,11 @@ void flip_test::flipAlongZAxisTest()
         {
             for(std::size_t k = 0 ; k < size[2] ; ++k)
             {
-                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
-                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, size[2] - k - 1);
+                const uint8_t value_in  = image_in->at<std::uint8_t>(i, j, k);
+                const uint8_t value_out = image_out->at<std::uint8_t>(i, j, size[2] - k - 1);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
-                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(value_in), static_cast<int>(value_out));
             }
         }
     }
@@ -152,16 +152,16 @@ void flip_test::flipAlongMultipleAxesTest()
         const data::image::Origin origin      = {{0., 0., 0.}};
         const core::type type                 = core::type::UINT8;
         const data::image::PixelFormat format = data::image::GRAY_SCALE;
-        std::array<bool, 3> flipAxes {true, true, false};
+        std::array<bool, 3> flip_axes {true, true, false};
 
-        data::image::sptr imageIn  = std::make_shared<data::image>();
-        data::image::sptr imageOut = std::make_shared<data::image>();
+        data::image::sptr image_in  = std::make_shared<data::image>();
+        data::image::sptr image_out = std::make_shared<data::image>();
 
-        utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-        const auto inDumpLock = imageIn->dump_lock();
-        filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->dump_lock();
+        const auto in_dump_lock = image_in->dump_lock();
+        filter::image::flipper::flip(image_in, image_out, flip_axes);
+        const auto out_dump_lock = image_out->dump_lock();
 
         for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
@@ -169,11 +169,11 @@ void flip_test::flipAlongMultipleAxesTest()
             {
                 for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
-                    const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
-                    const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0] - i - 1, size[1] - j - 1, k);
+                    const uint8_t value_in  = image_in->at<std::uint8_t>(i, j, k);
+                    const uint8_t value_out = image_out->at<std::uint8_t>(size[0] - i - 1, size[1] - j - 1, k);
 
                     // Static cast to get proper printing of the value (in int and not char) on stdout
-                    CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
+                    CPPUNIT_ASSERT_EQUAL(static_cast<int>(value_in), static_cast<int>(value_out));
                 }
             }
         }
@@ -185,16 +185,16 @@ void flip_test::flipAlongMultipleAxesTest()
         const data::image::Origin origin      = {{0., 0., 0.}};
         const core::type type                 = core::type::UINT8;
         const data::image::PixelFormat format = data::image::GRAY_SCALE;
-        std::array<bool, 3> flipAxes {true, true, true};
+        std::array<bool, 3> flip_axes {true, true, true};
 
-        data::image::sptr imageIn  = std::make_shared<data::image>();
-        data::image::sptr imageOut = std::make_shared<data::image>();
+        data::image::sptr image_in  = std::make_shared<data::image>();
+        data::image::sptr image_out = std::make_shared<data::image>();
 
-        utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-        const auto inDumpLock = imageIn->dump_lock();
-        filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-        const auto outDumpLock = imageOut->dump_lock();
+        const auto in_dump_lock = image_in->dump_lock();
+        filter::image::flipper::flip(image_in, image_out, flip_axes);
+        const auto out_dump_lock = image_out->dump_lock();
 
         for(std::size_t i = 0 ; i < size[0] ; ++i)
         {
@@ -202,15 +202,15 @@ void flip_test::flipAlongMultipleAxesTest()
             {
                 for(std::size_t k = 0 ; k < size[2] ; ++k)
                 {
-                    const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
-                    const uint8_t valueOut = imageOut->at<std::uint8_t>(
+                    const uint8_t value_in  = image_in->at<std::uint8_t>(i, j, k);
+                    const uint8_t value_out = image_out->at<std::uint8_t>(
                         size[0] - i - 1,
                         size[1] - j - 1,
                         size[2] - k - 1
                     );
 
                     // Static cast to get proper printing of the value (in int and not char) on stdout
-                    CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
+                    CPPUNIT_ASSERT_EQUAL(static_cast<int>(value_in), static_cast<int>(value_out));
                 }
             }
         }
@@ -226,23 +226,23 @@ void flip_test::flipEmptyImageTest()
     const data::image::Origin origin      = {0., 0., 0.};
     const core::type type                 = core::type::UINT8;
     const data::image::PixelFormat format = data::image::GRAY_SCALE;
-    std::array<bool, 3> flipAxes {false, true, false};
+    std::array<bool, 3> flip_axes {false, true, false};
 
-    data::image::sptr imageIn  = std::make_shared<data::image>();
-    data::image::sptr imageOut = std::make_shared<data::image>();
+    data::image::sptr image_in  = std::make_shared<data::image>();
+    data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generateImage(imageIn, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generateImage(image_in, size, spacing, origin, type, format, 0);
 
-    const auto inDumpLock = imageIn->dump_lock();
-    filter::image::flipper::flip(imageIn, imageOut, flipAxes);
-    const auto outDumpLock = imageOut->dump_lock();
+    const auto in_dump_lock = image_in->dump_lock();
+    filter::image::flipper::flip(image_in, image_out, flip_axes);
+    const auto out_dump_lock = image_out->dump_lock();
 
-    const data::image::Size imageSize    = imageIn->size();
-    const data::image::Size imageOutSize = imageOut->size();
+    const data::image::Size image_size     = image_in->size();
+    const data::image::Size image_out_size = image_out->size();
 
-    CPPUNIT_ASSERT_EQUAL(imageSize[0], imageOutSize[0]);
-    CPPUNIT_ASSERT_EQUAL(imageSize[1], imageOutSize[1]);
-    CPPUNIT_ASSERT_EQUAL(imageSize[2], imageOutSize[2]);
+    CPPUNIT_ASSERT_EQUAL(image_size[0], image_out_size[0]);
+    CPPUNIT_ASSERT_EQUAL(image_size[1], image_out_size[1]);
+    CPPUNIT_ASSERT_EQUAL(image_size[2], image_out_size[2]);
 }
 
 //------------------------------------------------------------------------------

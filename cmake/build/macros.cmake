@@ -927,9 +927,25 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         ${SIGHT_TARGET} PROPERTIES SIGHT_MODULE_RC_DIR "\${_IMPORT_PREFIX}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}"
     )
 
+    # Create a property SIGHT_MODULE_ID that can be used to generate profile files
+    get_filename_component(SOURCE_DIR_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+    string(REPLACE "${SOURCE_DIR_NAME}" "" MODULE_NAME ${SIGHT_TARGET})
+    if(MODULE_NAME)
+        string(REPLACE "_" "::" MODULE_NAME ${MODULE_NAME})
+        # Strip trailing __ for anonymous modules such as sight::ui
+        string(REPLACE "__" "" SOURCE_DIR_NAME ${SOURCE_DIR_NAME})
+    endif()
+
+    set(MODULE_ID "${MODULE_NAME}${SOURCE_DIR_NAME}")
+    if(NOT "${TARGET_TYPE}" STREQUAL "APP")
+        set(MODULE_ID "${PROJECT_NAME}::${MODULE_ID}")
+    endif()
+    set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_MODULE_ID "${MODULE_ID}")
+
     set_target_properties(
-        ${SIGHT_TARGET} PROPERTIES EXPORT_PROPERTIES
-                                   "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES"
+        ${SIGHT_TARGET}
+        PROPERTIES EXPORT_PROPERTIES
+                   "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES;SIGHT_MODULE_ID"
     )
 endmacro()
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,18 +41,18 @@ Q_OBJECT;
 public:
 
     /// Constructor
-    QHexSpinBox(QWidget* parent = nullptr);
+    QHexSpinBox(QWidget* _parent = nullptr);
 
 protected:
 
     /// Override
-    QValidator::State validate(QString& text, int& pos) const override;
+    QValidator::State validate(QString& _text, int& _pos) const override;
 
     /// Override
-    [[nodiscard]] int valueFromText(const QString& text) const override;
+    [[nodiscard]] int valueFromText(const QString& _text) const override;
 
     /// Override
-    [[nodiscard]] QString textFromValue(int value) const override;
+    [[nodiscard]] QString textFromValue(int _value) const override;
 
     QRegExpValidator* m_validator;
 };

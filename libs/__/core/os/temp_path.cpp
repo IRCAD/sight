@@ -37,7 +37,7 @@ static std::recursive_mutex s_mutex;
 
 //------------------------------------------------------------------------------
 
-inline static std::string random_name(std::size_t length)
+inline static std::string random_name(std::size_t _length)
 {
     static constexpr std::string_view chars {
         "0123456789"
@@ -49,9 +49,9 @@ inline static std::string random_name(std::size_t length)
     static std::uniform_int_distribution<std::string_view::size_type> pick(0, chars.size() - 1);
 
     std::string s;
-    s.reserve(length);
+    s.reserve(_length);
 
-    for(std::size_t i = 0 ; i < length ; ++i)
+    for(std::size_t i = 0 ; i < _length ; ++i)
     {
         s += chars[pick(rg)];
     }
@@ -62,22 +62,22 @@ inline static std::string random_name(std::size_t length)
 //------------------------------------------------------------------------------
 
 inline static std::filesystem::path generate_temp_dir(
-    const std::filesystem::path& root,
-    const std::string& prefix = std::string()
+    const std::filesystem::path& _root,
+    const std::string& _prefix = std::string()
 )
 {
     // Protect the static variables
     std::unique_lock guard(s_mutex);
 
     // Create root, if needed
-    std::filesystem::create_directories(root);
+    std::filesystem::create_directories(_root);
 
     // Start with 4 random characters, ut we don't more than 64 characters
-    for(std::string name = prefix + random_name(4) ; name.size() < 64 ; name += random_name(2))
+    for(std::string name = _prefix + random_name(4) ; name.size() < 64 ; name += random_name(2))
     {
         try
         {
-            const auto& random_path = root / name;
+            const auto& random_path = _root / name;
 
             if(!std::filesystem::exists(random_path) && std::filesystem::create_directory(random_path))
             {
@@ -90,37 +90,37 @@ inline static std::filesystem::path generate_temp_dir(
         }
     }
 
-    SIGHT_THROW("Failed to create temporary directory in '" + root.string() + "'");
+    SIGHT_THROW("Failed to create temporary directory in '" + _root.string() + "'");
 }
 
 //------------------------------------------------------------------------------
 
 inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > open_temp_file(
-    const std::filesystem::path& path,
-    const std::optional<std::ios_base::openmode>& openmode = std::nullopt
+    const std::filesystem::path& _path,
+    const std::optional<std::ios_base::openmode>& _openmode = std::nullopt
 )
 {
     std::shared_ptr<std::ofstream> ofstream = std::make_shared<std::ofstream>();
-    ofstream->open(path.string(), openmode.value_or(std::ios_base::out | std::ios_base::trunc));
+    ofstream->open(_path.string(), _openmode.value_or(std::ios_base::out | std::ios_base::trunc));
 
     if(ofstream->is_open() && ofstream->good())
     {
-        return std::make_pair(path, openmode ? ofstream : nullptr);
+        return std::make_pair(_path, _openmode ? ofstream : nullptr);
     }
 
-    SIGHT_THROW("Failed to create a temporary file in '" + path.string() + "'");
+    SIGHT_THROW("Failed to create a temporary file in '" + _path.string() + "'");
 }
 
 //------------------------------------------------------------------------------
 
 inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > generate_temp_file(
-    const std::optional<std::ios_base::openmode>& openmode = std::nullopt,
-    const std::optional<std::filesystem::path>& path       = std::nullopt
+    const std::optional<std::ios_base::openmode>& _openmode = std::nullopt,
+    const std::optional<std::filesystem::path>& _path       = std::nullopt
 )
 {
-    if(path)
+    if(_path)
     {
-        return open_temp_file(*path, openmode);
+        return open_temp_file(*_path, _openmode);
     }
 
     // Protect the static variables
@@ -136,7 +136,7 @@ inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > 
         {
             try
             {
-                return open_temp_file(random_path, openmode);
+                return open_temp_file(random_path, _openmode);
             }
             catch(...)
             {
@@ -148,9 +148,9 @@ inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > 
     SIGHT_THROW("Failed to create a temporary file in '" + root.string() + "'");
 }
 
-temp_path::temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& path_and_stream) :
-    m_ofstream(path_and_stream.second),
-    m_path(path_and_stream.first)
+temp_path::temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream) :
+    m_ofstream(_path_and_stream.second),
+    M_PATH(_path_and_stream.first)
 {
 }
 
@@ -164,14 +164,14 @@ temp_path::~temp_path() noexcept
 
     // use std::error_code instead of exception
     std::error_code error;
-    std::filesystem::remove_all(m_path, error);
+    std::filesystem::remove_all(M_PATH, error);
 
-    SIGHT_WARN_IF("Failed to remove temporary directory '" + m_path.string() + "'", error);
+    SIGHT_WARN_IF("Failed to remove temporary directory '" + M_PATH.string() + "'", error);
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path temp_path::shared_directory(const std::string& subdirectory_prefix)
+std::filesystem::path temp_path::shared_directory(const std::string& _subdirectory_prefix)
 {
     // Protect the static variable
     std::unique_lock guard(s_mutex);
@@ -181,26 +181,26 @@ std::filesystem::path temp_path::shared_directory(const std::string& subdirector
         std::make_pair(generate_temp_dir(std::filesystem::temp_directory_path()), nullptr)
     );
 
-    if(subdirectory_prefix.empty())
+    if(_subdirectory_prefix.empty())
     {
         // Return the path without creating a subdirectory
         return s_root;
     }
 
     // Return the path with a subdirectory
-    return generate_temp_dir(s_root, subdirectory_prefix);
+    return generate_temp_dir(s_root, _subdirectory_prefix);
 }
 
-temp_dir::temp_dir(const std::optional<std::filesystem::path>& path) :
-    temp_path(std::make_pair(path ? *path : generate_temp_dir(temp_path::shared_directory()), nullptr))
+temp_dir::temp_dir(const std::optional<std::filesystem::path>& _path) :
+    temp_path(std::make_pair(_path ? *_path : generate_temp_dir(temp_path::shared_directory()), nullptr))
 {
 }
 
 temp_file::temp_file(
-    const std::optional<std::ios_base::openmode>& openmode,
-    const std::optional<std::filesystem::path>& path
+    const std::optional<std::ios_base::openmode>& _openmode,
+    const std::optional<std::filesystem::path>& _path
 ) :
-    temp_path(generate_temp_file(openmode, path))
+    temp_path(generate_temp_file(_openmode, _path))
 {
 }
 
@@ -214,10 +214,10 @@ std::filesystem::path temp_file::unique_path()
 //------------------------------------------------------------------------------
 
 std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > temp_file::unique_stream(
-    const std::optional<std::ios_base::openmode>& openmode
+    const std::optional<std::ios_base::openmode>& _openmode
 )
 {
-    return generate_temp_file(openmode);
+    return generate_temp_file(_openmode);
 }
 
 } // namespace sight::core::os

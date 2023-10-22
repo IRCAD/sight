@@ -36,7 +36,7 @@ namespace sight::viz::scene3d::vr
 
 /**
  * @brief Class used to compute the table for pre-integrated rendering.
- * @see Engel 2001 : High-Quality Pre-Integrated Volume Rendering Using Hardware-Accelerated Pixel Shading
+ * @see Engel 2001 : High-Quality Pre-Integrated Volume Rendering Using Hardware-Accelerated Pixel shading
  */
 class pre_integration_table
 {
@@ -49,7 +49,7 @@ public:
     VIZ_SCENE3D_API ~pre_integration_table();
 
     /// Initializes the texture resource.
-    VIZ_SCENE3D_API void createTexture(const std::string& _parentId);
+    VIZ_SCENE3D_API void createTexture(const std::string& _parent_id);
 
     /// Destroy the texture
     VIZ_SCENE3D_API void removeTexture();
@@ -58,17 +58,17 @@ public:
     VIZ_SCENE3D_API void imageUpdate(
         const data::image::csptr& _img,
         const data::transfer_function::csptr& _tf,
-        float _samplingRate
+        float _sampling_rate
     );
 
     /// Computes the table based on the given TF and slice distance.
-    VIZ_SCENE3D_API void tfUpdate(const data::transfer_function::csptr& _tf, float _sampleDistance);
+    VIZ_SCENE3D_API void tfUpdate(const data::transfer_function::csptr& _tf, float _sample_distance);
 
     /// Get the texture holding the pre-integration table.
     [[nodiscard]] VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;
 
     /// Returns the image value interval.
-    [[nodiscard]] VIZ_SCENE3D_API inline std::pair<int, int> getMinMax() const;
+    [[nodiscard]] VIZ_SCENE3D_API inline std::pair<int, int> get_min_max() const;
 
 private:
 
@@ -96,7 +96,7 @@ private:
     /// image value interval.
     std::pair<int, int> m_valueInterval;
 
-    /// Texture resolution.
+    /// texture resolution.
     unsigned m_textureSize {0};
 };
 
@@ -109,7 +109,7 @@ Ogre::TexturePtr pre_integration_table::getTexture() const
 
 //-----------------------------------------------------------------------------
 
-std::pair<int, int> pre_integration_table::getMinMax() const
+std::pair<int, int> pre_integration_table::get_min_max() const
 {
     return m_valueInterval;
 }

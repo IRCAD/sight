@@ -24,7 +24,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 #include <OGRE/OgreCamera.h>
 
@@ -59,31 +59,31 @@ void resize_viewport::configuring()
     static const std::string s_H_ALIGN_CONFIG  = s_CONFIG + "hAlign";
     static const std::string s_V_ALIGN_CONFIG  = s_CONFIG + "vAlign";
 
-    float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);
-    float yPos = config.get<float>(s_V_OFFSET_CONFIG, 0.F);
+    float x_pos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);
+    float y_pos = config.get<float>(s_V_OFFSET_CONFIG, 0.F);
 
     const float width  = config.get<float>(s_WIDTH_CONFIG, 1.F);
     const float height = config.get<float>(s_HEIGHT_CONFIG, 1.F);
 
-    const std::map<std::string, float> horizAlignToX {
-        {"left", xPos},
-        {"center", 0.5F - width * 0.5F + xPos},
-        {"right", 1.F - width - xPos}
+    const std::map<std::string, float> horiz_align_to_x {
+        {"left", x_pos},
+        {"center", 0.5F - width * 0.5F + x_pos},
+        {"right", 1.F - width - x_pos}
     };
 
-    const std::map<std::string, float> vertAlignToY {
-        {"bottom", 1.F - height - yPos},
-        {"center", 0.5F - height * 0.5F + yPos},
-        {"top", yPos}
+    const std::map<std::string, float> vert_align_to_y {
+        {"bottom", 1.F - height - y_pos},
+        {"center", 0.5F - height * 0.5F + y_pos},
+        {"top", y_pos}
     };
 
-    const std::string hAlign = config.get(s_H_ALIGN_CONFIG, "left");
-    const std::string vAlign = config.get(s_V_ALIGN_CONFIG, "top");
+    const std::string h_align = config.get(s_H_ALIGN_CONFIG, "left");
+    const std::string v_align = config.get(s_V_ALIGN_CONFIG, "top");
 
-    xPos = horizAlignToX.at(hAlign);
-    yPos = vertAlignToY.at(vAlign);
+    x_pos = horiz_align_to_x.at(h_align);
+    y_pos = vert_align_to_y.at(v_align);
 
-    m_newViewportDimensions = std::tie(xPos, yPos, width, height);
+    m_newViewportDimensions = std::tie(x_pos, y_pos, width, height);
 }
 
 //------------------------------------------------------------------------------
@@ -118,8 +118,8 @@ void resize_viewport::resizeViewport(bool _resize)
 
     this->getRenderService()->makeCurrent();
 
-    const auto& newDimensions = _resize ? m_newViewportDimensions : m_previousViewportDimensions;
-    const auto& [left, top, width, height] = newDimensions;
+    const auto& new_dimensions = _resize ? m_newViewportDimensions : m_previousViewportDimensions;
+    const auto& [left, top, width, height] = new_dimensions;
     vp->setDimensions(left, top, width, height);
 
     this->requestRender();

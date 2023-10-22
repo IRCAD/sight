@@ -47,47 +47,47 @@ point::point()
 
 //------------------------------------------------------------------------------
 
-point::point(float x, float y, float z)
+point::point(float _x, float _y, float _z)
 {
-    m_vCoord[0] = x;
-    m_vCoord[1] = y;
-    m_vCoord[2] = z;
+    m_vCoord[0] = _x;
+    m_vCoord[1] = _y;
+    m_vCoord[2] = _z;
 }
 
 //------------------------------------------------------------------------------
 
-point::point(double x, double y, double z)
+point::point(double _x, double _y, double _z)
 {
-    m_vCoord[0] = x;
-    m_vCoord[1] = y;
-    m_vCoord[2] = z;
+    m_vCoord[0] = _x;
+    m_vCoord[1] = _y;
+    m_vCoord[2] = _z;
 }
 
 //------------------------------------------------------------------------------
 
-point::point(const PointCoordArrayType& coord) :
-    m_vCoord(coord)
+point::point(const point_coord_array_t& _coord) :
+    m_vCoord(_coord)
 {
 }
 
 //------------------------------------------------------------------------------
 
-point::point(const point::sptr& p)
+point::point(const point::sptr& _p)
 {
-    m_vCoord[0] = p->m_vCoord[0];
-    m_vCoord[1] = p->m_vCoord[1];
-    m_vCoord[2] = p->m_vCoord[2];
+    m_vCoord[0] = _p->m_vCoord[0];
+    m_vCoord[1] = _p->m_vCoord[1];
+    m_vCoord[2] = _p->m_vCoord[2];
 }
 
 //------------------------------------------------------------------------------
 
-void point::shallow_copy(const object::csptr& source)
+void point::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const point>(source);
+    const auto& other = std::dynamic_pointer_cast<const point>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -100,13 +100,13 @@ void point::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void point::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void point::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const point>(source);
+    const auto& other = std::dynamic_pointer_cast<const point>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -114,7 +114,7 @@ void point::deep_copy(const object::csptr& source, const std::unique_ptr<deep_co
 
     m_vCoord = other->m_vCoord;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -123,9 +123,9 @@ std::string point::getLabel() const
 {
     //TODO: In the future label should be an attribute of point class, and should be serialized.
     std::string label;
-    if(this->getField(std::string(field_label_id)))
+    if(this->get_field(std::string(field_label_id)))
     {
-        label = this->getField<data::string>(std::string(field_label_id))->value();
+        label = this->get_field<data::string>(std::string(field_label_id))->value();
     }
 
     return label;
@@ -136,47 +136,47 @@ std::string point::getLabel() const
 void point::setLabel(const std::string& _label)
 {
     //TODO: In the future label should be an attribute of point class, and should be serialized.
-    this->setField(std::string(field_label_id), std::make_shared<data::string>(_label));
+    this->set_field(std::string(field_label_id), std::make_shared<data::string>(_label));
 }
 
 //------------------------------------------------------------------------------
 
-bool point::operator==(const point& other) const noexcept
+bool point::operator==(const point& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vCoord, other.m_vCoord))
+    if(!core::tools::is_equal(m_vCoord, _other.m_vCoord))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool point::operator!=(const point& other) const noexcept
+bool point::operator!=(const point& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& out, const point& p)
+std::ostream& operator<<(std::ostream& _out, const point& _p)
 {
-    out << "{";
+    _out << "{";
     bool first = true;
-    for(double e : p.getCoord())
+    for(double e : _p.getCoord())
     {
         if(!first)
         {
-            out << ", ";
+            _out << ", ";
         }
 
-        out << e;
+        _out << e;
         first = false;
     }
 
-    return out << "}";
+    return _out << "}";
 }
 
 } // namespace sight::data

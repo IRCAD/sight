@@ -25,7 +25,7 @@
 #include "ui/qt/container/widget.hpp"
 
 #include <ui/__/macros.hpp>
-#include <ui/qt/widget/SlideBar.hpp>
+#include <ui/qt/widget/slide_bar.hpp>
 
 #include <QWidget>
 
@@ -36,63 +36,63 @@ namespace sight::ui::qt::builder
 
 //-----------------------------------------------------------------------------
 
-void slideview::createContainer(ui::container::widget::sptr parent)
+void slideview::createContainer(ui::container::widget::sptr _parent)
 {
-    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(parent);
+    m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
 
-    QWidget* qtParent = m_parent->getQtContainer();
+    QWidget* qt_parent = m_parent->getQtContainer();
 
-    ui::qt::widget::SlideBar::HAlignment hAlign             = ui::qt::widget::SlideBar::LEFT;
-    ui::qt::widget::SlideBar::VAlignment vAlign             = ui::qt::widget::SlideBar::TOP;
-    ui::qt::widget::SlideBar::AnimatableAlignment animAlign = ui::qt::widget::SlideBar::TOP_ANIMATION;
+    ui::qt::widget::slide_bar::HAlignment h_align             = ui::qt::widget::slide_bar::LEFT;
+    ui::qt::widget::slide_bar::VAlignment v_align             = ui::qt::widget::slide_bar::TOP;
+    ui::qt::widget::slide_bar::AnimatableAlignment anim_align = ui::qt::widget::slide_bar::TOP_ANIMATION;
 
     switch(m_hAlignment)
     {
         case slideview::LEFT:
-            hAlign = ui::qt::widget::SlideBar::LEFT;
+            h_align = ui::qt::widget::slide_bar::LEFT;
             break;
 
         case slideview::RIGHT:
-            hAlign = ui::qt::widget::SlideBar::RIGHT;
+            h_align = ui::qt::widget::slide_bar::RIGHT;
             break;
     }
 
     switch(m_vAlignment)
     {
         case slideview::TOP:
-            vAlign = ui::qt::widget::SlideBar::TOP;
+            v_align = ui::qt::widget::slide_bar::TOP;
             break;
 
         case slideview::BOTTOM:
-            vAlign = ui::qt::widget::SlideBar::BOTTOM;
+            v_align = ui::qt::widget::slide_bar::BOTTOM;
             break;
     }
 
     switch(m_animatableAlignment)
     {
         case slideview::TOP_ANIMATION:
-            animAlign = ui::qt::widget::SlideBar::TOP_ANIMATION;
+            anim_align = ui::qt::widget::slide_bar::TOP_ANIMATION;
             break;
 
         case slideview::BOTTOM_ANIMATION:
-            animAlign = ui::qt::widget::SlideBar::BOTTOM_ANIMATION;
+            anim_align = ui::qt::widget::slide_bar::BOTTOM_ANIMATION;
             break;
 
         case slideview::LEFT_ANIMATION:
-            animAlign = ui::qt::widget::SlideBar::LEFT_ANIMATION;
+            anim_align = ui::qt::widget::slide_bar::LEFT_ANIMATION;
             break;
 
         case slideview::RIGHT_ANIMATION:
-            animAlign = ui::qt::widget::SlideBar::RIGHT_ANIMATION;
+            anim_align = ui::qt::widget::slide_bar::RIGHT_ANIMATION;
             break;
     }
 
-    auto* slideBar =
-        new ui::qt::widget::SlideBar(
-            qtParent,
-            hAlign,
-            vAlign,
+    auto* slide_bar =
+        new ui::qt::widget::slide_bar(
+            qt_parent,
+            h_align,
+            v_align,
             m_width,
             m_percentWidth,
             m_height,
@@ -103,18 +103,18 @@ void slideview::createContainer(ui::container::widget::sptr parent)
             m_percentVOffset,
             m_opacity,
             m_animatable,
-            animAlign
+            anim_align
         );
 
     if(!m_styleSheet.empty())
     {
-        slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));
+        slide_bar->setStyleSheet(QString::fromStdString(m_styleSheet));
     }
 
-    ui::qt::container::widget::sptr qtContainer = ui::qt::container::widget::make();
-    qtContainer->setQtContainer(slideBar);
+    ui::qt::container::widget::sptr qt_container = ui::qt::container::widget::make();
+    qt_container->setQtContainer(slide_bar);
 
-    m_container = qtContainer;
+    m_container = qt_container;
 }
 
 //-----------------------------------------------------------------------------

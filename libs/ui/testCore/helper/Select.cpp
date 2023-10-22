@@ -25,45 +25,47 @@
 
 #include <utility>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
-Select::Select(const char* objectName) :
-    Select(Type::FROM_MAIN, objectName)
-{
-}
-
-Select::Select(const std::string& objectName) :
-    Select(Type::FROM_MAIN, objectName)
+Select::Select(const char* _object_name) :
+    Select(Type::FROM_MAIN, _object_name)
 {
 }
 
-//------------------------------------------------------------------------------
-
-Select Select::fromMain(const std::string& objectName)
+Select::Select(const std::string& _object_name) :
+    Select(Type::FROM_MAIN, _object_name)
 {
-    return {Type::FROM_MAIN, objectName};
 }
 
 //------------------------------------------------------------------------------
 
-Select Select::fromDialog(const std::string& objectName)
+Select Select::fromMain(const std::string& _object_name)
 {
-    return {Type::FROM_DIALOG, objectName};
+    return {Type::FROM_MAIN, _object_name};
 }
 
 //------------------------------------------------------------------------------
 
-Select Select::fromParent(const std::string& parentName, const std::string& childName)
+Select Select::fromDialog(const std::string& _object_name)
 {
-    return {Type::FROM_PARENT, Data {std::in_place_type<std::pair<std::string, std::string> >, parentName, childName}};
+    return {Type::FROM_DIALOG, _object_name};
 }
 
 //------------------------------------------------------------------------------
 
-Select Select::fromCurrent(const std::string& objectName)
+Select Select::fromParent(const std::string& _parent_name, const std::string& _child_name)
 {
-    return {Type::FROM_CURRENT, objectName};
+    return {Type::FROM_PARENT, Data {std::in_place_type<std::pair<std::string, std::string> >, _parent_name, _child_name
+            }
+    };
+}
+
+//------------------------------------------------------------------------------
+
+Select Select::fromCurrent(const std::string& _object_name)
+{
+    return {Type::FROM_CURRENT, _object_name};
 }
 
 //------------------------------------------------------------------------------
@@ -82,72 +84,72 @@ Select Select::dialog()
 
 //------------------------------------------------------------------------------
 
-Select Select::withTimeout(int timeout) const
+Select Select::withTimeout(int _timeout) const
 {
     Select copy = *this;
-    copy.m_timeout = timeout;
+    copy.m_timeout = _timeout;
     return copy;
 }
 
 //------------------------------------------------------------------------------
 
-Select Select::withCondition(std::function<bool(QObject*)> condition) const
+Select Select::withCondition(std::function<bool(QObject*)> _condition) const
 {
     Select copy = *this;
-    copy.m_conditions.push_back(condition);
+    copy.m_conditions.push_back(_condition);
     return copy;
 }
 
 //------------------------------------------------------------------------------
 
-void Select::select(Tester& tester) const
+void Select::select(Tester& _tester) const
 {
-    static const auto verifyConditions = [*this](QObject* obj)
+    static const auto verifyConditions = [*this](QObject* _obj)
                                          {
                                              return std::ranges::all_of(
                                                  m_conditions,
-                                                 [obj](std::function<bool(QObject*)> condition)
+                                                 [_obj](std::function<bool(QObject*)> _condition)
             {
-                return condition(obj);
+                return _condition(_obj);
             });
                                          };
     switch(m_type)
     {
         case Type::FROM_MAIN:
-            tester.take(std::get<std::string>(m_data), std::get<std::string>(m_data), verifyConditions, m_timeout);
+            _tester.take(std::get<std::string>(m_data), std::get<std::string>(m_data), verifyConditions, m_timeout);
             break;
 
         case Type::FROM_DIALOG:
         {
-            std::string childName = std::get<std::string>(m_data);
-            Dialog::take(tester, "dialog", childName);
-            tester.yields(std::get<std::string>(m_data), childName, verifyConditions, m_timeout);
+            std::string child_name = std::get<std::string>(m_data);
+            Dialog::take(_tester, "dialog", child_name);
+            _tester.yields(std::get<std::string>(m_data), child_name, verifyConditions, m_timeout);
             break;
         }
 
         case Type::FROM_PARENT:
         {
             auto [parentName, childName] = std::get<std::pair<std::string, std::string> >(m_data);
-            tester.take(parentName, parentName, alwaysTrue, m_timeout);
-            tester.yields(childName, childName, verifyConditions, m_timeout);
+            _tester.take(parentName, parentName, always_true, m_timeout);
+            _tester.yields(childName, childName, verifyConditions, m_timeout);
             break;
         }
 
         case Type::FROM_CURRENT:
-            tester.yields(std::get<std::string>(m_data), std::get<std::string>(m_data), verifyConditions, m_timeout);
+            _tester.yields(std::get<std::string>(m_data), std::get<std::string>(m_data), verifyConditions, m_timeout);
             break;
 
         case Type::CURRENT:
             break;
 
         case Type::DIALOG:
-            Dialog::take(tester, "dialog");
+            Dialog::take(_tester, "dialog");
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string Select::getDescription(const Tester& tester) const
+std::string Select::getDescription(const Tester& _tester) const
 {
     switch(m_type)
     {
@@ -164,10 +166,10 @@ std::string Select::getDescription(const Tester& tester) const
         }
 
         case Type::FROM_CURRENT:
-            return std::get<std::string>(m_data) + " (from " + tester.getDescription() + ")";
+            return std::get<std::string>(m_data) + " (from " + _tester.getDescription() + ")";
 
         case Type::CURRENT:
-            return tester.getDescription();
+            return _tester.getDescription();
 
         case Type::DIALOG:
             return "dialog";
@@ -176,10 +178,10 @@ std::string Select::getDescription(const Tester& tester) const
     return "";
 }
 
-Select::Select(Type type, Data data) :
-    m_type(type),
-    m_data(std::move(data))
+Select::Select(Type _type, Data _data) :
+    m_type(_type),
+    m_data(std::move(_data))
 {
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

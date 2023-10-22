@@ -46,58 +46,58 @@ public:
     SIGHT_DECLARE_CLASS(never_dump, core::memory::policy::base);
 
     CORE_API void allocation_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) override;
 
     CORE_API void set_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) override;
 
     CORE_API void reallocate_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t new_size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _new_size
     ) override;
 
     CORE_API void destroy_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void lock_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
     CORE_API void unlock_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void dump_success(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
     CORE_API void restore_success(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void refresh() override;
 
     //------------------------------------------------------------------------------
 
-    bool set_param(const std::string& name, const std::string& value) override
+    bool set_param(const std::string& _name, const std::string& _value) override
     {
-        SIGHT_NOT_USED(name);
-        SIGHT_NOT_USED(value);
+        SIGHT_NOT_USED(_name);
+        SIGHT_NOT_USED(_value);
         return false;
     }
 
-    CORE_API std::string get_param(const std::string& name, bool* ok = nullptr) const override;
+    CORE_API std::string get_param(const std::string& _name, bool* _ok = nullptr) const override;
 
     //------------------------------------------------------------------------------
 

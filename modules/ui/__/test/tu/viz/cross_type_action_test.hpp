@@ -41,7 +41,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void test(const std::string& crossType, double expectedScale);
+    void test(const std::string& _cross_type, double _expected_scale);
 
     void fullTest();
     void halfTest();

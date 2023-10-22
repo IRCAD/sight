@@ -47,10 +47,10 @@ public:
 
     /// Called when an entry point scheme isn't found, creates the missing technique.
     VIZ_SCENE3D_API Ogre::Technique* handleSchemeNotFound(
-        std::uint16_t _schemeIndex,
-        const Ogre::String& _schemeName,
-        Ogre::Material* _originalMaterial,
-        std::uint16_t _lodIndex,
+        std::uint16_t _scheme_index,
+        const Ogre::String& _scheme_name,
+        Ogre::Material* _original_material,
+        std::uint16_t _lod_index,
         const Ogre::Renderable* _renderable
     ) final;
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DIMSE_API NegociateAssociationFailure(const std::string& message);
+    IO_DIMSE_API NegociateAssociationFailure(const std::string& _message);
 
     /// Destructor
     IO_DIMSE_API ~NegociateAssociationFailure() noexcept override;

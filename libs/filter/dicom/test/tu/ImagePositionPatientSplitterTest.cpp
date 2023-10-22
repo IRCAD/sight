@@ -74,29 +74,29 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Sort instances according to instance number
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::InstanceNumberSorter"
     );
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
 
     // Apply filter
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
-    data::dicom_series::sptr dicomSeriesA = dicomSeriesContainer[0];
-    data::dicom_series::sptr dicomSeriesB = dicomSeriesContainer[1];
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicom_series_container.size());
+    data::dicom_series::sptr dicom_series_a = dicom_series_container[0];
+    data::dicom_series::sptr dicom_series_b = dicom_series_container[1];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(std::size_t(233), dicomSeriesA->getDicomContainer().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicomSeriesB->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(233), dicom_series_a->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(275), dicom_series_b->getDicomContainer().size());
 }
 
 //-----------------------------------------------------------------------------
@@ -123,37 +123,37 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series_set->at(0));
-    CPPUNIT_ASSERT(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->at(0));
+    CPPUNIT_ASSERT(dicom_series);
 
     // On Unix, the correct series with 304 elements is placed first and the one with 196 elements is at last position,
     // which is the opposite on windows (???)... Assuming the Dicom is file based, the way the OS sorts files may
     // explain the different behaviors. We should investigate this ....
     // The test is written to assume the one of 304 elements is taken.
-    if(dicomSeries->numInstances() != 304)
+    if(dicom_series->numInstances() != 304)
     {
-        dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series_set->at(1));
-        CPPUNIT_ASSERT(dicomSeries);
+        dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->at(1));
+        CPPUNIT_ASSERT(dicom_series);
     }
 
     // Just in case we load the wrong series or the data is corrupted.
-    CPPUNIT_ASSERT_EQUAL(std::size_t(304), dicomSeries->numInstances());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(304), dicom_series->numInstances());
 
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Sort instances according to instance number
     sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::InstanceNumberSorter"
     );
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
 
     // Apply filter
     filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(37), dicomSeriesContainer.size());
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(37), dicom_series_container.size());
 }
 
 //------------------------------------------------------------------------------

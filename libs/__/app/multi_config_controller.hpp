@@ -125,7 +125,7 @@ protected:
     void info(std::ostream& _sstream) override;
 
     /// Allows changing the config to start
-    void setConfig(sight::ui::parameter_t val, std::string key);
+    void setConfig(sight::ui::parameter_t _val, std::string _key);
 
 private:
 

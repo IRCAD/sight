@@ -56,7 +56,7 @@ The present converters transform (forward and backward) various sight native dat
 - **RawMessage**: OpenIGTLink message in which raw data can be stored
 
 
-### Application configuration
+### application configuration
 
 ## How to use it
 
@@ -74,7 +74,7 @@ Here is a sample of forward and backward data conversion:
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_igtl  )
+target_link_library(my_target <PUBLIC|PRIVATE> io_igtl  )
 ```
 
 

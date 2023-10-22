@@ -24,14 +24,14 @@
 #include <QSlider>
 #include <QWidget>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-static std::string positionToString(Slider::Position pos)
+static std::string position_to_string(Slider::Position _pos)
 {
-    switch(pos)
+    switch(_pos)
     {
         case Slider::Position::TOP:
             return "top";
@@ -51,21 +51,21 @@ static std::string positionToString(Slider::Position pos)
 
 //------------------------------------------------------------------------------
 
-static QPoint positionOf(Slider::Position pos, const QWidget* widget)
+static QPoint position_of(Slider::Position _pos, const QWidget* _widget)
 {
-    switch(pos)
+    switch(_pos)
     {
         case Slider::Position::TOP:
-            return Tester::topOf(widget);
+            return Tester::topOf(_widget);
 
         case Slider::Position::RIGHT:
-            return Tester::rightOf(widget);
+            return Tester::rightOf(_widget);
 
         case Slider::Position::BOTTOM:
-            return Tester::bottomOf(widget);
+            return Tester::bottomOf(_widget);
 
         case Slider::Position::LEFT:
-            return Tester::leftOf(widget);
+            return Tester::leftOf(_widget);
     }
 
     return {};
@@ -73,57 +73,58 @@ static QPoint positionOf(Slider::Position pos, const QWidget* widget)
 
 //------------------------------------------------------------------------------
 
-static QSlider* take(Tester& tester, const Select& slider)
+static QSlider* take(Tester& _tester, const Select& _slider)
 {
-    slider.select(tester);
-    if(!tester.is_a<QSlider*>())
+    _slider.select(_tester);
+    if(!_tester.is_a<QSlider*>())
     {
-        tester.yields<QSlider*>('"' + slider.getDescription(tester) + "\" actual slider");
+        _tester.yields<QSlider*>('"' + _slider.getDescription(_tester) + "\" actual slider");
     }
 
-    return tester.get<QSlider*>();
+    return _tester.get<QSlider*>();
 }
 
 //------------------------------------------------------------------------------
 
-static void moveImpl(Tester& tester, const Select& slider, Slider::Position pos, int times = 1)
+static void move_impl(Tester& _tester, const Select& _slider, Slider::Position _pos, int _times = 1)
 {
-    QSlider* s      = take(tester, slider);
-    QPoint position = positionOf(pos, s);
-    for(int i = 0 ; i < times ; i++)
+    QSlider* s      = take(_tester, _slider);
+    QPoint position = position_of(_pos, s);
+    for(int i = 0 ; i < _times ; i++)
     {
-        tester.interact(std::make_unique<MouseClick>(Qt::LeftButton, Qt::NoModifier, position));
+        _tester.interact(std::make_unique<MouseClick>(Qt::LeftButton, Qt::NoModifier, position));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Slider::move(Tester& tester, const Select& slider, Slider::Position pos)
+void Slider::move(Tester& _tester, const Select& _slider, Slider::Position _pos)
 {
-    auto bt = tester.addInBacktrace(
-        "moving \"" + slider.getDescription(tester) + "\" slider to the " + positionToString(pos)
+    auto bt = _tester.addInBacktrace(
+        "moving \"" + _slider.getDescription(_tester) + "\" slider to the " + position_to_string(_pos)
     );
-    moveImpl(tester, slider, pos);
+    move_impl(_tester, _slider, _pos);
 }
 
 //------------------------------------------------------------------------------
 
-void Slider::move(Tester& tester, const Select& slider, Slider::Position pos, int times)
+void Slider::move(Tester& _tester, const Select& _slider, Slider::Position _pos, int _times)
 {
-    auto bt = tester.addInBacktrace(
-        "moving " + std::to_string(times) + " times \"" + slider.getDescription(tester) + "\" slider to the "
-        + positionToString(pos)
+    auto bt = _tester.addInBacktrace(
+        "moving " + std::to_string(_times) + " times \"" + _slider.getDescription(_tester) + "\" slider to the "
+        + position_to_string(_pos)
     );
-    moveImpl(tester, slider, pos, times);
+    move_impl(_tester, _slider, _pos, _times);
 }
 
 //------------------------------------------------------------------------------
 
-void Slider::set(Tester& tester, const Select& slider, int value)
+void Slider::set(Tester& _tester, const Select& _slider, int _value)
 {
-    auto bt = tester.addInBacktrace("setting \"" + slider.getDescription(tester) + "\" to " + std::to_string(value));
-    take(tester, slider);
-    tester.doSomething<QSlider*>([&value](QSlider* s){return s->setValue(value);});
+    auto bt =
+        _tester.addInBacktrace("setting \"" + _slider.getDescription(_tester) + "\" to " + std::to_string(_value));
+    take(_tester, _slider);
+    _tester.doSomething<QSlider*>([&_value](QSlider* _s){return _s->setValue(_value);});
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

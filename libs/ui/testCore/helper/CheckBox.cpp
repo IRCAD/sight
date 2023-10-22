@@ -23,45 +23,49 @@
 
 #include <QCheckBox>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void CheckBox::toggle(Tester& tester, const Select& checkBox)
+void CheckBox::toggle(Tester& _tester, const Select& _check_box)
 {
-    auto bt = tester.addInBacktrace("toggling " + checkBox.getDescription(tester) + "\" check box");
-    checkBox.select(tester);
-    tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+    auto bt = _tester.addInBacktrace("toggling " + _check_box.getDescription(_tester) + "\" check box");
+    _check_box.select(_tester);
+    _tester.interact(std::make_unique<sight::ui::test_core::MouseClick>());
 }
 
 //------------------------------------------------------------------------------
 
-void CheckBox::shouldBeChecked(Tester& tester, const Select& checkBox)
+void CheckBox::shouldBeChecked(Tester& _tester, const Select& _check_box)
 {
-    auto bt = tester.addInBacktrace("checking whether " + checkBox.getDescription(tester) + "\" check box is checked");
-    checkBox.select(tester);
-    tester.doubt<QCheckBox*>(
-        checkBox.getDescription(tester) + " check box should be checked",
-        [](QCheckBox* obj)
+    auto bt = _tester.addInBacktrace(
+        "checking whether " + _check_box.getDescription(
+            _tester
+        ) + "\" check box is checked"
+    );
+    _check_box.select(_tester);
+    _tester.doubt<QCheckBox*>(
+        _check_box.getDescription(_tester) + " check box should be checked",
+        [](QCheckBox* _obj)
         {
-            return obj->isChecked();
+            return _obj->isChecked();
         });
 }
 
 //------------------------------------------------------------------------------
 
-void CheckBox::shouldNotBeChecked(Tester& tester, const Select& checkBox)
+void CheckBox::shouldNotBeChecked(Tester& _tester, const Select& _check_box)
 {
     auto bt =
-        tester.addInBacktrace("checking whether " + checkBox.getDescription(tester) + "\" check box isn't checked");
-    checkBox.select(tester);
-    tester.doubt<QCheckBox*>(
-        checkBox.getDescription(tester) + " check box should be checked",
-        [](QCheckBox* obj)
+        _tester.addInBacktrace("checking whether " + _check_box.getDescription(_tester) + "\" check box isn't checked");
+    _check_box.select(_tester);
+    _tester.doubt<QCheckBox*>(
+        _check_box.getDescription(_tester) + " check box should be checked",
+        [](QCheckBox* _obj)
         {
-            return !obj->isChecked();
+            return !_obj->isChecked();
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

@@ -124,12 +124,12 @@ void exporter<C>::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::checkAddedObjects(typename C::container_type addedObjects)
+constexpr void exporter<C>::checkAddedObjects(typename C::container_type _added_objects)
 {
     auto data = m_data.lock();
 
-    if(const auto& it = std::find(addedObjects.cbegin(), addedObjects.cend(), data.get_shared());
-       it != addedObjects.cend())
+    if(const auto& it = std::find(_added_objects.cbegin(), _added_objects.cend(), data.get_shared());
+       it != _added_objects.cend())
     {
         setEnabled(false);
     }
@@ -138,12 +138,12 @@ constexpr void exporter<C>::checkAddedObjects(typename C::container_type addedOb
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::checkRemovedObjects(typename C::container_type removedObjects)
+constexpr void exporter<C>::checkRemovedObjects(typename C::container_type _removed_objects)
 {
     auto data = m_data.lock();
 
-    if(const auto& it = std::find(removedObjects.cbegin(), removedObjects.cend(), data.get_shared());
-       it != removedObjects.cend())
+    if(const auto& it = std::find(_removed_objects.cbegin(), _removed_objects.cend(), data.get_shared());
+       it != _removed_objects.cend())
     {
         setEnabled(true);
     }

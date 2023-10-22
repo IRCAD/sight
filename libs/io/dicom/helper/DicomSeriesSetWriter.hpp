@@ -81,13 +81,13 @@ public:
     IO_DICOM_API SPTR(core::jobs::aggregator) getAggregator();
 
     /// Set anonymizer (if anonymization required)
-    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
+    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& _anonymizer);
 
     /// Write the image series in DICOM format.
     IO_DICOM_API void write() override;
 
     /// Set Producer
-    IO_DICOM_API void setProducer(std::string producer);
+    IO_DICOM_API void setProducer(std::string _producer);
 
 private:
 

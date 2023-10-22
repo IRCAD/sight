@@ -37,8 +37,8 @@ namespace sight::io::http::ut
 
 void RequestTest::setUp()
 {
-    const std::string dummyUrl("http://localhost:8080");
-    m_request = sight::io::http::Request::New(dummyUrl);
+    const std::string dummy_url("http://localhost:8080");
+    m_request = sight::io::http::Request::New(dummy_url);
 }
 
 //------------------------------------------------------------------------------
@@ -55,25 +55,25 @@ void RequestTest::testRequest()
     const std::string value("application/json");
     m_request->addHeader(key, value);
 
-    sight::io::http::Request::HeadersType headers = m_request->getHeaders();
+    sight::io::http::Request::headers_t headers = m_request->getHeaders();
     CPPUNIT_ASSERT(headers.find(key) != headers.end());
     CPPUNIT_ASSERT_EQUAL(headers[key], value);
 
-    sight::io::http::Request::HeadersType newHeaders;
-    const std::string newValue("application/dicom");
-    newHeaders.insert(std::pair<std::string, std::string>(key, newValue));
+    sight::io::http::Request::headers_t new_headers;
+    const std::string new_value("application/dicom");
+    new_headers.insert(std::pair<std::string, std::string>(key, new_value));
 
-    m_request->setHeaders(newHeaders);
+    m_request->setHeaders(new_headers);
     headers = m_request->getHeaders();
 
-    CPPUNIT_ASSERT(headers == newHeaders);
+    CPPUNIT_ASSERT(headers == new_headers);
     CPPUNIT_ASSERT(headers.find(key) != headers.end());
-    CPPUNIT_ASSERT_EQUAL(headers[key], newValue);
+    CPPUNIT_ASSERT_EQUAL(headers[key], new_value);
 
-    const std::string newDummyUrl("http://localhost:8080/dummy");
-    m_request->setUrl(newDummyUrl);
+    const std::string new_dummy_url("http://localhost:8080/dummy");
+    m_request->setUrl(new_dummy_url);
     const std::string& url = m_request->getUrl();
-    CPPUNIT_ASSERT_EQUAL(newDummyUrl, url);
+    CPPUNIT_ASSERT_EQUAL(new_dummy_url, url);
 }
 
 //------------------------------------------------------------------------------

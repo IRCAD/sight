@@ -64,21 +64,21 @@ sight::io::service::IOPathType calibration_images_writer::getIOPathType() const
 
 void calibration_images_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::FOLDER);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
 
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -92,8 +92,8 @@ void calibration_images_writer::configuring()
 {
     sight::io::service::writer::configuring();
 
-    const auto configTree = this->get_config();
-    m_fileExtension = configTree.get("format", ".tiff");
+    const auto config_tree = this->get_config();
+    m_fileExtension = config_tree.get("format", ".tiff");
 }
 
 //------------------------------------------------------------------------------
@@ -108,40 +108,40 @@ void calibration_images_writer::updating()
 {
     if(!m_fileExtension.empty() && this->hasLocationDefined())
     {
-        const auto data      = m_data.lock();
-        const auto calibInfo = std::dynamic_pointer_cast<const data::calibration_info>(data.get_shared());
-        SIGHT_ASSERT("Missing calibration info input.", calibInfo);
+        const auto data       = m_data.lock();
+        const auto calib_info = std::dynamic_pointer_cast<const data::calibration_info>(data.get_shared());
+        SIGHT_ASSERT("Missing calibration info input.", calib_info);
 
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
 
         std::size_t count(0);
-        for(const auto& calibImg : calibInfo->getImageContainer())
+        for(const auto& calib_img : calib_info->getImageContainer())
         {
-            std::ostringstream imageNumber;
-            imageNumber << std::setw(4) << std::setfill('0') << count++;
+            std::ostringstream image_number;
+            image_number << std::setw(4) << std::setfill('0') << count++;
 
-            const std::string filename       = "img_" + imageNumber.str() + m_fileExtension;
+            const std::string filename       = "img_" + image_number.str() + m_fileExtension;
             const std::filesystem::path path = this->get_folder() / filename;
 
-            cv::Mat cvImg = sight::io::opencv::image::copyToCv(calibImg);
+            cv::Mat cv_img = sight::io::opencv::image::copyToCv(calib_img);
 
-            if(cvImg.dims == 3)
+            if(cv_img.dims == 3)
             {
                 // Ensure that we have a true depth-less 2D image.
-                cvImg = cvImg.reshape(0, 2, cvImg.size + 1);
+                cv_img = cv_img.reshape(0, 2, cv_img.size + 1);
             }
 
             try
             {
-                if(cvImg.type() == CV_8UC3 || cvImg.type() == CV_8UC4)
+                if(cv_img.type() == CV_8UC3 || cv_img.type() == CV_8UC4)
                 {
                     // convert the image from BGR to RGB
-                    const auto colConvType = cvImg.type() == CV_8UC3 ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA;
-                    cv::cvtColor(cvImg, cvImg, colConvType);
+                    const auto col_conv_type = cv_img.type() == CV_8UC3 ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA;
+                    cv::cvtColor(cv_img, cv_img, col_conv_type);
                 }
 
-                cv::imwrite(path.string(), cvImg);
+                cv::imwrite(path.string(), cv_img);
             }
             catch(const cv::Exception& e)
             {

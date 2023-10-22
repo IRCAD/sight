@@ -52,7 +52,7 @@ public:
     /// Does nothing.
     void tearDown() override;
 
-    /// Tests the getMinMax method.
+    /// Tests the get_min_max method.
     static void getMinMaxTest();
 
     /// Tests the getPixel method for several image pixel types
@@ -67,7 +67,7 @@ public:
     /// Tests helper method around landmarks (get/set).
     static void testLandmarks();
 
-    /// Tests checkImageValidity method.
+    /// Tests check_image_validity method.
     static void testImageValidity();
 
     /// Tests helper methods around slice count.

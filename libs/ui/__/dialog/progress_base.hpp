@@ -46,31 +46,31 @@ public:
 
     SIGHT_DECLARE_CLASS(progress_base, ui::object);
 
-    typedef std::string FactoryRegistryKeyType;
-    typedef boost::function<void ()> CancelCallbackType;
+    typedef std::string factory_registry_key_t;
+    typedef boost::function<void ()> cancel_callback_t;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
-    UI_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     UI_API ~progress_base() override;
     UI_API progress_base();
 
     ///set the title for the dialog
-    UI_API virtual void setTitle(const std::string& title) = 0;
+    UI_API virtual void setTitle(const std::string& _title) = 0;
 
     ///set the message for the dialog
-    UI_API virtual void setMessage(const std::string& msg) = 0;
+    UI_API virtual void setMessage(const std::string& _msg) = 0;
 
     /// action called by core::tools::progress_adviser
-    UI_API virtual void operator()(float percent, std::string msg) = 0;
+    UI_API virtual void operator()(float _percent, std::string _msg) = 0;
 
-    UI_API virtual void setCancelCallback(CancelCallbackType callback);
+    UI_API virtual void setCancelCallback(cancel_callback_t _callback);
 
     //------------------------------------------------------------------------------
 
-    virtual void setCancelRaiseException(bool raise)
+    virtual void setCancelRaiseException(bool _raise)
     {
-        m_raise = raise;
+        m_raise = _raise;
     }
 
     //------------------------------------------------------------------------------
@@ -88,16 +88,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void setProcessUserEvents(bool process)
+    virtual void setProcessUserEvents(bool _process)
     {
-        m_processUserEvents = process;
+        m_processUserEvents = _process;
     }
 
 protected:
 
     UI_API virtual void cancelPressed();
 
-    CancelCallbackType m_cancelCallback;
+    cancel_callback_t m_cancelCallback;
     bool m_canceled {false};
     bool m_raise {true};
 
@@ -111,12 +111,12 @@ protected:
 
     static sptr progressDialogFactory()
     {
-        ui::object::sptr guiObj = ui::factory::make(
+        ui::object::sptr gui_obj = ui::factory::make(
             ui::dialog::progress_base::REGISTRY_KEY
         );
-        ui::dialog::progress_base::sptr progressDlg =
-            std::dynamic_pointer_cast<ui::dialog::progress_base>(guiObj);
-        return progressDlg;
+        ui::dialog::progress_base::sptr progress_dlg =
+            std::dynamic_pointer_cast<ui::dialog::progress_base>(gui_obj);
+        return progress_dlg;
     }
 };
 

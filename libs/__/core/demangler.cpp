@@ -41,15 +41,15 @@ static const std::string LT     = "<";
 
 //------------------------------------------------------------------------------
 
-demangler::demangler(const std::type_info& t) :
-    m_name(t.name())
+demangler::demangler(const std::type_info& _t) :
+    M_NAME(_t.name())
 {
 }
 
 //------------------------------------------------------------------------------
 
-demangler::demangler(std::string s) :
-    m_name(std::move(s))
+demangler::demangler(std::string _s) :
+    M_NAME(std::move(_s))
 {
 }
 
@@ -83,7 +83,7 @@ std::string demangler::get_classname() const
 
 std::string demangler::demangle() const
 {
-    const char* mangled = m_name.c_str();
+    const char* mangled = M_NAME.c_str();
 #ifndef _WIN32
     const auto c_demangled =
         std::unique_ptr<char, decltype(std::free) *>(

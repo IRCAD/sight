@@ -33,45 +33,45 @@
 template<typename OUTPUT_PIXELTYPE>
 struct itk_image_caster
 {
-    using OutputImageType = itk::Image<OUTPUT_PIXELTYPE, 3>;
+    using output_image_t = itk::Image<OUTPUT_PIXELTYPE, 3>;
 
     struct Params
     {
         sight::data::image::csptr i_img;
-        typename OutputImageType::Pointer o_img;
+        typename output_image_t::Pointer o_img;
     };
 
     //------------------------------------------------------------------------------
 
     template<typename INPUT_PIXELTYPE>
-    void operator()(Params& p)
+    void operator()(Params& _p)
     {
-        using InputImageType = itk::Image<INPUT_PIXELTYPE, 3>;
+        using input_image_t = itk::Image<INPUT_PIXELTYPE, 3>;
 
         // Convert to ITK.
-        typename InputImageType::Pointer tmp = sight::io::itk::moveToItk<InputImageType>(p.i_img);
+        typename input_image_t::Pointer tmp = sight::io::itk::move_to_itk<input_image_t>(_p.i_img);
 
         // Cast to the desired pixel type.
-        auto castFilter = itk::CastImageFilter<InputImageType, OutputImageType>::New();
-        castFilter->SetInput(tmp);
-        castFilter->Update();
-        p.o_img = castFilter->GetOutput();
+        auto cast_filter = itk::CastImageFilter<input_image_t, output_image_t>::New();
+        cast_filter->SetInput(tmp);
+        cast_filter->Update();
+        _p.o_img = cast_filter->GetOutput();
     }
 };
 
 //------------------------------------------------------------------------------
 
 template<typename OUTPUT_PIXELTYPE>
-typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const sight::data::image::csptr& _img)
+typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer cast_to(const sight::data::image::csptr& _img)
 {
-    using CasterType = itk_image_caster<OUTPUT_PIXELTYPE>;
+    using caster_t = itk_image_caster<OUTPUT_PIXELTYPE>;
 
-    typename CasterType::Params p;
+    typename caster_t::Params p;
     p.i_img = _img;
 
-    const auto inType = _img->getType();
+    const auto in_type = _img->getType();
 
-    sight::core::tools::dispatcher<sight::core::tools::supported_dispatcher_types, CasterType>::invoke(inType, p);
+    sight::core::tools::dispatcher<sight::core::tools::supported_dispatcher_types, caster_t>::invoke(in_type, p);
 
     return p.o_img;
 }

@@ -117,13 +117,13 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_CREATED_SIG;
-    typedef core::com::signal<void (data::activity::sptr)> ActivityCreatedSignalType;
+    typedef core::com::signal<void (data::activity::sptr)> activity_created_signal_t;
 
     MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_UPDATED_SIG;
-    typedef core::com::signal<void (data::activity::sptr)> ActivityUpdatedSignalType;
+    typedef core::com::signal<void (data::activity::sptr)> activity_updated_signal_t;
 
     MODULE_UI_QT_API static const core::com::signals::key_t CANCELED_SIG;
-    typedef core::com::signal<void ()> CanceledSignalType;
+    typedef core::com::signal<void ()> canceled_signal_t;
     /// @}
 
 protected:
@@ -149,10 +149,10 @@ private:
     };
 
     /// SLOT: Displays the gui allowing to select the required data for the activity.
-    void createActivity(std::string activityID);
+    void createActivity(std::string _activity_id);
 
     /// SLOT: Displays the gui allowing to update the required data for the activity.
-    void updateActivity(data::activity::sptr activity);
+    void updateActivity(data::activity::sptr _activity);
 
     /**
      * @brief Called when the user click on the 'apply' Button.
@@ -163,7 +163,7 @@ private:
     void onBuildActivity();
 
     /// Called when the tab selection changed. It check if the current data are properly selected.
-    void onTabChanged(int index);
+    void onTabChanged(int _index);
 
     /// Called when the user click on the 'reset' Button.
     void onReset();
@@ -183,16 +183,16 @@ private:
     std::string m_ioSelectorConfig;    ///< configuration used to import data
     std::string m_sdbIoSelectorConfig; ///< configuration used to import data from e ActivitySet
 
-    DataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
+    DataView::object_icon_map_t m_objectIcons; ///< Map defining the icon associated to an object.
 
     Mode m_mode {Mode::CREATE}; ///< editor mode (CREATE or UPDATE)
 
     bool m_confirmUpdate {true}; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
     bool m_isCancelable {true};  /// true if the cancel button is proposed
 
-    ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activity is created
-    ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activity is updated
-    CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
+    activity_created_signal_t::sptr m_sigActivityCreated; ///< Signal emitted when the activity is created
+    activity_created_signal_t::sptr m_sigActivityUpdated; ///< Signal emitted when the activity is updated
+    canceled_signal_t::sptr m_sigCanceled;                /// Signal emitted when the creation is canceled.
 
     static constexpr std::string_view s_ACTIVITY_SET = "activitySet";
     data::ptr<data::activity_set, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET};

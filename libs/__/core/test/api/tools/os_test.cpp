@@ -96,9 +96,9 @@ void os::get_shared_library_path()
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path get_user_dir(const std::string& variable)
+inline static std::filesystem::path get_user_dir(const std::string& _variable)
 {
-    if(const char* const value = std::getenv(variable.c_str()); value != nullptr)
+    if(const char* const value = std::getenv(_variable.c_str()); value != nullptr)
     {
         return {value};
     }
@@ -108,17 +108,17 @@ inline static std::filesystem::path get_user_dir(const std::string& variable)
     {
         const std::filesystem::path home(home_value);
 
-        if(variable == "XDG_CONFIG_DIR")
+        if(_variable == "XDG_CONFIG_DIR")
         {
             return home / ".config";
         }
 
-        if(variable == "XDG_DATA_DIR")
+        if(_variable == "XDG_DATA_DIR")
         {
             return home / ".local" / "share";
         }
 
-        if(variable == "XDG_CACHE_DIR")
+        if(_variable == "XDG_CACHE_DIR")
         {
             return home / ".cache";
         }
@@ -132,8 +132,8 @@ class path_cleaner final
 {
 public:
 
-    explicit path_cleaner(std::filesystem::path to_be_cleaned) :
-        m_to_be_cleaned(std::move(to_be_cleaned))
+    explicit path_cleaner(std::filesystem::path _to_be_cleaned) :
+        m_to_be_cleaned(std::move(_to_be_cleaned))
     {
     }
 

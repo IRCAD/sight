@@ -30,17 +30,17 @@ namespace sight::io::dicom::writer::iod
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::InformationObjectDefinition(
-    SPTR(io::dicom::container::DicomInstance)instance,
-    std::filesystem::path destinationPath,
-    core::log::logger::sptr logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    std::filesystem::path _destination_path,
+    core::log::logger::sptr _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    m_instance(std::move(instance)),
-    m_destinationPath(std::move(destinationPath)),
-    m_logger(std::move(logger)),
-    m_progressCallback(std::move(progress)),
-    m_cancelRequestedCallback(std::move(cancel))
+    m_instance(std::move(_instance)),
+    m_destinationPath(std::move(_destination_path)),
+    m_logger(std::move(_logger)),
+    m_progressCallback(std::move(_progress)),
+    m_cancelRequestedCallback(std::move(_cancel))
 {
     SIGHT_ASSERT("Instance should not be null.", m_instance);
 }

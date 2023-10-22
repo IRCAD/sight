@@ -56,18 +56,18 @@ void DicomSeriesWriterTest::setUp()
     std::cout << std::endl << "Executing slow tests.." << std::endl;
 
     // Set up context before running a test.
-    auto src_series_set                 = std::make_shared<data::series_set>();
-    const std::filesystem::path srcPath = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
+    auto src_series_set                  = std::make_shared<data::series_set>();
+    const std::filesystem::path src_path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The dicom directory '" + srcPath.string() + "' does not exist",
-        std::filesystem::exists(srcPath)
+        "The dicom directory '" + src_path.string() + "' does not exist",
+        std::filesystem::exists(src_path)
     );
 
     // Read source Dicom
     auto reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(src_series_set);
-    reader->set_folder(srcPath);
+    reader->set_folder(src_path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), src_series_set->size());
 
@@ -83,7 +83,7 @@ void DicomSeriesWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, bool anonymized)
+void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& _p, bool _anonymized)
 {
     if(utest::Filter::ignoreSlowTests())
     {
@@ -94,24 +94,24 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
 
     auto reader = std::make_shared<io::dicom::reader::series_set>();
     reader->set_object(dest_series_set);
-    reader->set_folder(p);
+    reader->set_folder(_p);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), dest_series_set->size());
-    auto destDicomSeries = std::dynamic_pointer_cast<data::dicom_series>(dest_series_set->front());
+    auto dest_dicom_series = std::dynamic_pointer_cast<data::dicom_series>(dest_series_set->front());
 
     // Compare Source and Destination Series
-    if(anonymized)
+    if(_anonymized)
     {
-        destDicomSeries->setSeriesInstanceUID(m_srcDicomSeries->getSeriesInstanceUID());
-        destDicomSeries->copyPatientModule(m_srcDicomSeries);
-        destDicomSeries->copyGeneralStudyModule(m_srcDicomSeries);
-        destDicomSeries->copyPatientStudyModule(m_srcDicomSeries);
-        destDicomSeries->copyGeneralEquipmentModule(m_srcDicomSeries);
+        dest_dicom_series->setSeriesInstanceUID(m_srcDicomSeries->getSeriesInstanceUID());
+        dest_dicom_series->copyPatientModule(m_srcDicomSeries);
+        dest_dicom_series->copyGeneralStudyModule(m_srcDicomSeries);
+        dest_dicom_series->copyPatientStudyModule(m_srcDicomSeries);
+        dest_dicom_series->copyGeneralEquipmentModule(m_srcDicomSeries);
     }
 
-    destDicomSeries->setDicomContainer(m_srcDicomSeries->getDicomContainer());
+    dest_dicom_series->setDicomContainer(m_srcDicomSeries->getDicomContainer());
 
-    CPPUNIT_ASSERT_MESSAGE("Series not equal", *m_srcDicomSeries == *destDicomSeries);
+    CPPUNIT_ASSERT_MESSAGE("Series not equal", *m_srcDicomSeries == *dest_dicom_series);
 }
 
 // TODO: This test is disabled as DicomSeries doesn't store Binaries anymore.
@@ -124,16 +124,16 @@ void DicomSeriesWriterTest::writeReadTest()
 
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    core::os::temp_dir tmpDir;
-    std::filesystem::create_directories(tmpDir);
+    core::os::temp_dir tmp_dir;
+    std::filesystem::create_directories(tmp_dir);
 
     // Write Dicom
     io::dicom::helper::DicomSeriesWriter::sptr writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
     writer->set_object(m_srcDicomSeries);
-    writer->set_folder(tmpDir);
+    writer->set_folder(tmp_dir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(tmpDir);
+    this->checkDicomSeries(tmp_dir);
 }
 
 //------------------------------------------------------------------------------
@@ -151,16 +151,16 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
     auto anonymizer = std::make_shared<io::dicom::helper::DicomAnonymizer>();
     anonymizer->addExceptionTag(0x0010, 0x0010, "ANONYMIZED^ANONYMIZED "); // Patient's name
 
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
     // Write Dicom
     auto writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
     writer->set_object(m_srcDicomSeries);
-    writer->set_folder(tmpDir);
+    writer->set_folder(tmp_dir);
     writer->setAnonymizer(anonymizer);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(tmpDir, true);
+    this->checkDicomSeries(tmp_dir, true);
 }
 
 //------------------------------------------------------------------------------
@@ -174,16 +174,16 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
 
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    core::os::temp_dir tmpDir;
-    auto writeArchive = io::zip::WriteDirArchive::make(tmpDir);
+    core::os::temp_dir tmp_dir;
+    auto write_archive = io::zip::WriteDirArchive::make(tmp_dir);
 
     // Write Dicom
     auto writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
     writer->set_object(m_srcDicomSeries);
-    writer->setOutputArchive(writeArchive);
+    writer->setOutputArchive(write_archive);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(tmpDir);
+    this->checkDicomSeries(tmp_dir);
 }
 
 //------------------------------------------------------------------------------

@@ -53,10 +53,10 @@ public:
     UI_QML_API ~pulse_progress() override = default;
 
     /// override
-    UI_QML_API void setTitle(const std::string& title) override;
+    UI_QML_API void setTitle(const std::string& _title) override;
 
     /// override
-    UI_QML_API void setMessage(const std::string& message) override;
+    UI_QML_API void setMessage(const std::string& _message) override;
 
     UI_QML_API void show() override;
 
@@ -73,7 +73,7 @@ private:
     QString m_message;
 
     /// event filter to filter shortcut event
-    bool eventFilter(QObject* watched, QEvent* event) override;
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
 };
 
 } // namespace sight::ui::qml::dialog

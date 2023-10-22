@@ -35,22 +35,22 @@ class DATA_CLASS_API buffer : public object
 {
 public:
 
-    typedef uint8_t* BufferDataType;
-    typedef std::function<void (void*)> DeleterType;
+    typedef uint8_t* buffer_data_t;
+    typedef std::function<void (void*)> deleter_t;
 
     /// Constructor
     DATA_API buffer(
-        core::hires_clock::type timestamp = 0,
-        BufferDataType buffer             = nullptr,
-        std::size_t size                  = 0,
-        DeleterType d                     = nullptr
+        core::hires_clock::type _timestamp = 0,
+        buffer_data_t _buffer              = nullptr,
+        std::size_t _size                  = 0,
+        deleter_t _d                       = nullptr
     );
 
     /// Destructor
     DATA_API ~buffer() override;
 
     /// Makes a copy of this buffer
-    DATA_API void deep_copy(const object& other) override;
+    DATA_API void deep_copy(const object& _other) override;
 
     /// Returns size
     [[nodiscard]] std::size_t size() const
@@ -60,8 +60,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const buffer& other) const noexcept;
-    DATA_API bool operator!=(const buffer& other) const noexcept;
+    DATA_API bool operator==(const buffer& _other) const noexcept;
+    DATA_API bool operator!=(const buffer& _other) const noexcept;
     /// @}
 
 protected:
@@ -70,10 +70,10 @@ protected:
     std::size_t m_size;
 
     ///buffer
-    BufferDataType m_buffer;
+    buffer_data_t m_buffer;
 
     ///Deleter
-    DeleterType m_deleter;
+    deleter_t m_deleter;
 };
 
 } // namespace sight::data::timeline

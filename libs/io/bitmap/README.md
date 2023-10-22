@@ -11,7 +11,7 @@ To sum up:
   > Note: libTIFF signed and float image can be written and read back, but are rare and most third party software won't read them.
 - `openJPEG`: supports unsigned, signed 8, 16 bits RGB, RGBA or GRAYSCALE images.
 - `nvJPEG`: supports unsigned 8 bits RGB, BGR images.
-- `nvJPEG2K`: supports unsigned 8, 16 bits RGB, BGR or GRAYSCALE images.
+- `nv_jpeg_2k`: supports unsigned 8, 16 bits RGB, BGR or GRAYSCALE images.
 
 `detail` contains the real implementation with direct calls to image libraries.
 
@@ -73,7 +73,7 @@ To sum up:
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_bitmap)
+target_link_library(my_target <PUBLIC|PRIVATE> io_bitmap)
 ```
 
 

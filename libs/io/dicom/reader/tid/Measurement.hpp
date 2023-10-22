@@ -55,11 +55,11 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API Measurement(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::sptr& image,
-        const core::log::logger::sptr& logger
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::sptr& _image,
+        const core::log::logger::sptr& _logger
     );
 
     /// Destructor
@@ -69,7 +69,7 @@ public:
      * @brief Read a measurement node
      * @param[in] node Node that must be read
      */
-    IO_DICOM_API virtual void readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node);
+    IO_DICOM_API virtual void readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& _node);
 
 protected:
 
@@ -79,8 +79,8 @@ protected:
      * @param point2 Second point
      */
     void addDistance(
-        const SPTR(data::point)& point1,
-        const SPTR(data::point)& point2
+        const SPTR(data::point)& _point1,
+        const SPTR(data::point)& _point2
     );
 };
 

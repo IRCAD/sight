@@ -73,7 +73,7 @@ void model_series_test::modelTest()
     rec1->setMesh(mesh1);
     rec2->setMesh(mesh2);
 
-    model_series::ReconstructionVectorType recs;
+    model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     recs.push_back(rec2);
 
@@ -94,21 +94,21 @@ void model_series_test::deep_copyTest()
     utest_data::generator::mesh::generateQuadMesh(mesh1);
 
     rec1->setMesh(mesh1);
-    model_series::ReconstructionVectorType recs;
+    model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     m_series->setReconstructionDB(recs);
 
-    auto secondSeries = std::make_shared<data::model_series>();
+    auto second_series = std::make_shared<data::model_series>();
 
-    CPPUNIT_ASSERT(*m_series != *secondSeries);
+    CPPUNIT_ASSERT(*m_series != *second_series);
 
-    secondSeries->deep_copy(m_series);
+    second_series->deep_copy(m_series);
 
-    CPPUNIT_ASSERT(*m_series == *secondSeries);
+    CPPUNIT_ASSERT(*m_series == *second_series);
 
     CPPUNIT_ASSERT_EQUAL(1, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) secondSeries->getReconstructionDB().size());
-    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] != secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] != second_series->getReconstructionDB()[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -121,25 +121,25 @@ void model_series_test::shallow_copyTest()
     auto mesh1 = std::make_shared<data::mesh>();
     utest_data::generator::mesh::generateQuadMesh(mesh1);
     rec1->setMesh(mesh1);
-    model_series::ReconstructionVectorType recs;
+    model_series::reconstruction_vector_t recs;
     recs.push_back(rec1);
     m_series->setReconstructionDB(recs);
 
-    auto secondSeries = std::make_shared<data::model_series>();
+    auto second_series = std::make_shared<data::model_series>();
 
-    CPPUNIT_ASSERT(*m_series != *secondSeries);
+    CPPUNIT_ASSERT(*m_series != *second_series);
 
-    secondSeries->shallow_copy(m_series);
+    second_series->shallow_copy(m_series);
 
-    CPPUNIT_ASSERT(*m_series == *secondSeries);
+    CPPUNIT_ASSERT(*m_series == *second_series);
 
-    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == secondSeries->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == second_series->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], second_series->getReconstructionDB()[0]);
 
     CPPUNIT_ASSERT_EQUAL(recs[0], m_series->getReconstructionDB()[0]);
-    CPPUNIT_ASSERT_EQUAL(recs[0], secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(recs[0], second_series->getReconstructionDB()[0]);
     CPPUNIT_ASSERT_EQUAL(1, (int) m_series->getReconstructionDB().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) secondSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->getReconstructionDB().size());
 }
 
 //------------------------------------------------------------------------------

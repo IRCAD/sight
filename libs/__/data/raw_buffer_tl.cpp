@@ -43,13 +43,13 @@ void raw_buffer_tl::shallow_copy(const object::csptr& /*source*/)
 
 //------------------------------------------------------------------------------
 
-void raw_buffer_tl::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void raw_buffer_tl::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const raw_buffer_tl>(source);
+    const auto& other = std::dynamic_pointer_cast<const raw_buffer_tl>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -58,67 +58,67 @@ void raw_buffer_tl::deep_copy(const object::csptr& source, const std::unique_ptr
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
 
-    for(const TimelineType::value_type& elt : other->m_timeline)
+    for(const timeline_t::value_type& elt : other->m_timeline)
     {
-        SPTR(data::timeline::raw_buffer) tlObj = this->createBuffer(elt.first);
-        tlObj->deep_copy(*elt.second);
-        m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
+        SPTR(data::timeline::raw_buffer) tl_obj = this->createBuffer(elt.first);
+        tl_obj->deep_copy(*elt.second);
+        m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 CSPTR(data::timeline::raw_buffer) raw_buffer_tl::getClosestBuffer(
-    core::hires_clock::type timestamp,
-    timeline::direction_t direction
+    core::hires_clock::type _timestamp,
+    timeline::direction_t _direction
 ) const
 {
-    CSPTR(data::timeline::object) buffer = this->getClosestObject(timestamp, direction);
+    CSPTR(data::timeline::object) buffer = this->getClosestObject(_timestamp, _direction);
     return std::dynamic_pointer_cast<const data::timeline::raw_buffer>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_buffer(core::hires_clock::type timestamp) const
+CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_buffer(core::hires_clock::type _timestamp) const
 {
-    CSPTR(data::timeline::object) buffer = this->getObject(timestamp);
+    CSPTR(data::timeline::object) buffer = this->getObject(_timestamp);
     return std::dynamic_pointer_cast<const data::timeline::raw_buffer>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-void raw_buffer_tl::initPoolSize(std::size_t size)
+void raw_buffer_tl::initPoolSize(std::size_t _size)
 {
-    this->allocPoolSize(size);
+    this->allocPoolSize(_size);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::object) raw_buffer_tl::createObject(core::hires_clock::type timestamp)
+SPTR(data::timeline::object) raw_buffer_tl::createObject(core::hires_clock::type _timestamp)
 {
-    return this->createBuffer(timestamp);
+    return this->createBuffer(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::raw_buffer) raw_buffer_tl::createBuffer(core::hires_clock::type timestamp)
+SPTR(data::timeline::raw_buffer) raw_buffer_tl::createBuffer(core::hires_clock::type _timestamp)
 {
     return std::make_shared<data::timeline::raw_buffer>(
-        timestamp,
-        reinterpret_cast<data::timeline::buffer::BufferDataType>(m_pool->malloc()),
+        _timestamp,
+        reinterpret_cast<data::timeline::buffer::buffer_data_t>(m_pool->malloc()),
         m_pool->get_requested_size(),
-        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
+        [object_ptr = m_pool](auto&& _p_h1, auto&& ...){object_ptr->free(std::forward<decltype(_p_h1)>(_p_h1));});
 }
 
 //------------------------------------------------------------------------------
 
-bool raw_buffer_tl::isObjectValid(const CSPTR(data::timeline::object)& obj) const
+bool raw_buffer_tl::isObjectValid(const CSPTR(data::timeline::object)& _obj) const
 {
-    CSPTR(data::timeline::raw_buffer) srcObj =
-        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(obj);
-    return srcObj != nullptr;
+    CSPTR(data::timeline::raw_buffer) src_obj =
+        std::dynamic_pointer_cast<const data::timeline::raw_buffer>(_obj);
+    return src_obj != nullptr;
 }
 
 //------------------------------------------------------------------------------

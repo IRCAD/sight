@@ -32,15 +32,15 @@ namespace sight::io::dicom::writer::ie
 //------------------------------------------------------------------------------
 
 Equipment::Equipment(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::series::csptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(gdcm::Writer)& _writer,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const data::series::csptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(writer, instance, series,
-                                                           logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
+                                                           _logger, _progress, _cancel)
 {
 }
 
@@ -60,17 +60,17 @@ void Equipment::writeGeneralEquipmentModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0070>("Sight", dataset);
 
     // Institution Name - Type 3
-    const std::string& institutName = m_object->getInstitutionName();
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0080>(institutName, dataset);
+    const std::string& institut_name = m_object->getInstitutionName();
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0080>(institut_name, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    const auto profile                = core::runtime::get_current_profile();
-    const std::string softwareVersion = profile ? profile->name() + " " + profile->get_version() : "Unknown";
+    const auto profile                 = core::runtime::get_current_profile();
+    const std::string software_version = profile ? profile->name() + " " + profile->get_version() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one
     gdcm::Attribute<0x0018, 0x1020> attribute;
     attribute.SetNumberOfValues(1);
-    attribute.SetValue(softwareVersion);
+    attribute.SetValue(software_version);
     dataset.Insert(attribute.GetAsDataElement());
 }
 
@@ -85,8 +85,8 @@ void Equipment::writeEnhancedGeneralEquipmentModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1090>("Sight_FWGDCMIO", dataset);
 
     // Device Serial Number - Type 1
-    std::string deviceSerialNumber = std::string("0.1");
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1000>(deviceSerialNumber, dataset);
+    std::string device_serial_number = std::string("0.1");
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1000>(device_serial_number, dataset);
 }
 
 //------------------------------------------------------------------------------

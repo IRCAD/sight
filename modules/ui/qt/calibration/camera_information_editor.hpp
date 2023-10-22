@@ -66,7 +66,7 @@ public:
     SIGHT_DECLARE_SERVICE(camera_information_editor, sight::ui::editor);
 
     static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    typedef core::com::slot<void ()> UpdateInfosSlotType;
+    typedef core::com::slot<void ()> update_infos_slot_t;
 
     /**
      * @brief Constructor.
@@ -145,12 +145,12 @@ protected:
     QLabel* m_cy {};
 
     /**
-     * @brief Field of view x.
+     * @brief field of view x.
      */
     QLabel* m_fx {};
 
     /**
-     * @brief Field of view y.
+     * @brief field of view y.
      */
     QLabel* m_fy {};
 

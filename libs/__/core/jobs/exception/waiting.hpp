@@ -32,7 +32,7 @@ namespace sight::core::jobs::exception
 /// No worker exception.
 struct waiting : core::exception
 {
-    CORE_API waiting(const std::string& err);
+    CORE_API waiting(const std::string& _err);
 };
 
 } // namespace sight::core::jobs::exception

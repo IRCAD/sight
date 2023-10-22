@@ -43,7 +43,7 @@ public:
     UI_QT_API ~cursor() override = default;
 
     /// Set the cursor
-    UI_QT_API void setCursor(ui::cursor_base::state_t cursor, bool setOverridenAsDefault = true) override;
+    UI_QT_API void setCursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
 
     /// Set the default cursor
     UI_QT_API void setDefaultCursor() override;

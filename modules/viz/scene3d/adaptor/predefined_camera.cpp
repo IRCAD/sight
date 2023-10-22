@@ -25,7 +25,7 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -68,17 +68,17 @@ void predefined_camera::configuring()
 
     m_manualRotation = config.get<bool>(s_CONFIG + "mouseRotation", m_manualRotation);
 
-    const auto& defaultPosition = config.get_optional<std::string>(s_CONFIG + "defaultPosition");
-    m_defaultPosition = defaultPosition ? std::make_optional(*defaultPosition) : std::nullopt;
+    const auto& default_position = config.get_optional<std::string>(s_CONFIG + "defaultPosition");
+    m_defaultPosition = default_position ? std::make_optional(*default_position) : std::nullopt;
 
     m_animate = config.get<bool>(s_CONFIG + "animate", m_animate);
 
     const auto positions = config.get_child("positions");
 
-    const auto posCfg = positions.equal_range("position");
+    const auto pos_cfg = positions.equal_range("position");
 
     // Configure tracked tool
-    for(auto t = posCfg.first ; t != posCfg.second ; ++t)
+    for(auto t = pos_cfg.first ; t != pos_cfg.second ; ++t)
     {
         predefined_position_t position;
 
@@ -118,7 +118,7 @@ void predefined_camera::starting()
 
     if(const auto& transform = m_transform.const_lock(); transform)
     {
-        const auto ogre_mat = ::sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared());
+        const auto ogre_mat = ::sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared());
 
         m_interactor->setTransform(ogre_mat);
     }
@@ -143,11 +143,11 @@ void predefined_camera::stopping()
 
 //------------------------------------------------------------------------------
 
-void predefined_camera::setParameter(ui::parameter_t value, std::string key)
+void predefined_camera::setParameter(ui::parameter_t _value, std::string _key)
 {
     if(m_interactor)
     {
-        m_interactor->setParameter(value, key);
+        m_interactor->setParameter(_value, _key);
     }
 }
 
@@ -157,7 +157,7 @@ void predefined_camera::updateTransform()
 {
     if(const auto& transform = m_transform.const_lock(); transform)
     {
-        const auto ogre_mat = ::sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared());
+        const auto ogre_mat = ::sight::viz::scene3d::utils::convertTM3DToOgreMx(transform.get_shared());
 
         m_interactor->setTransform(ogre_mat);
     }

@@ -45,8 +45,8 @@ point_list_from_matrices::~point_list_from_matrices()
 
 void point_list_from_matrices::configuring()
 {
-    const config_t configTree = this->get_config();
-    const config_t config     = configTree.get_child("config.<xmlattr>");
+    const config_t config_tree = this->get_config();
+    const config_t config      = config_tree.get_child("config.<xmlattr>");
     if(!config.empty())
     {
         m_append = config.get<bool>("append", m_append);
@@ -69,16 +69,16 @@ void point_list_from_matrices::stopping()
 
 void point_list_from_matrices::updating()
 {
-    const std::size_t numMatrices = m_matrices.size();
-    SIGHT_ASSERT("no matrices found", numMatrices != 0);
+    const std::size_t num_matrices = m_matrices.size();
+    SIGHT_ASSERT("no matrices found", num_matrices != 0);
 
-    auto pointList = m_pointList.lock();
+    auto point_list = m_pointList.lock();
     if(!m_append)
     {
-        pointList->getPoints().clear();
+        point_list->getPoints().clear();
     }
 
-    for(std::size_t j = 0 ; j < numMatrices ; ++j)
+    for(std::size_t j = 0 ; j < num_matrices ; ++j)
     {
         const auto mat = m_matrices[j].lock();
 
@@ -88,7 +88,7 @@ void point_list_from_matrices::updating()
         std::string label;
         if(m_append)
         {
-            label = std::to_string(pointList->getPoints().size());
+            label = std::to_string(point_list->getPoints().size());
         }
         else
         {
@@ -96,10 +96,10 @@ void point_list_from_matrices::updating()
         }
 
         p->setLabel(label);
-        pointList->pushBack(p);
+        point_list->pushBack(p);
     }
 
-    auto sig = pointList->signal<data::point_list::ModifiedSignalType>(data::point_list::MODIFIED_SIG);
+    auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
     sig->async_emit();
 
     m_sigComputed->async_emit();

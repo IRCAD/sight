@@ -49,7 +49,7 @@ struct native
      *
      * @param[in]   name    libray name
      */
-    native(std::string name) noexcept;
+    native(std::string _name) noexcept;
 
     /**
      * @brief   Assignment operator.
@@ -77,7 +77,7 @@ struct native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    [[nodiscard]] virtual void* get_symbol(const std::string& name) const = 0;
+    [[nodiscard]] virtual void* get_symbol(const std::string& _name) const = 0;
 
     /**
      * @brief   Loads the module.
@@ -112,14 +112,14 @@ struct native
      *
      * @param[in]   path  search path
      */
-    void set_search_path(const std::filesystem::path& path) noexcept;
+    void set_search_path(const std::filesystem::path& _path) noexcept;
 
     private:
 
         /**
          * @brief   The path to the module to load.
          */
-        const std::string m_name;
+        const std::string M_NAME;
 
         /**
          * @brief   A pointer to the module the library is attached to.

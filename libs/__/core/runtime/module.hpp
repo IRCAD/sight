@@ -101,13 +101,13 @@ public:
      * @param[in]   identifier  a string containing a parameter identifier
      * @return      a string containing the parameter value
      */
-    [[nodiscard]] CORE_API virtual std::string get_parameter_value(const std::string& identifier) const = 0;
+    [[nodiscard]] CORE_API virtual std::string get_parameter_value(const std::string& _identifier) const = 0;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    [[nodiscard]] CORE_API virtual bool has_parameter(const std::string& name) const = 0;
+    [[nodiscard]] CORE_API virtual bool has_parameter(const std::string& _name) const = 0;
     /**
      * @brief   Returns the list of extensions contained in this module.
      */

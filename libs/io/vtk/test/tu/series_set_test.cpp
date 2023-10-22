@@ -64,16 +64,16 @@ void series_set_test::testImportSeriesSet()
 {
     auto series_set = std::make_shared<data::series_set>();
 
-    const std::filesystem::path imagePath(utest_data::Data::dir() / "sight/image/vtk/img.vtk");
-    const std::filesystem::path meshPath(utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk");
+    const std::filesystem::path image_path(utest_data::Data::dir() / "sight/image/vtk/img.vtk");
+    const std::filesystem::path mesh_path(utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk");
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + image_path.string(), std::filesystem::exists(image_path));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + mesh_path.string(), std::filesystem::exists(mesh_path));
 
     std::vector<std::filesystem::path> paths;
-    paths.push_back(imagePath);
-    paths.push_back(meshPath);
-    paths.push_back(meshPath);
+    paths.push_back(image_path);
+    paths.push_back(mesh_path);
+    paths.push_back(mesh_path);
 
     io::vtk::SeriesSetReader::sptr reader = std::make_shared<io::vtk::SeriesSetReader>();
     reader->set_object(series_set);
@@ -82,17 +82,17 @@ void series_set_test::testImportSeriesSet()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
-    data::image_series::sptr imgSeries = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
-    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
+    data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
+    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", img_series);
 
-    data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
-    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
+    data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
+    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
 
-    data::model_series::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), recVect.size());
+    data::model_series::reconstruction_vector_t rec_vect = model_series->getReconstructionDB();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), rec_vect.size());
 
-    data::reconstruction::sptr rec1 = recVect.at(0);
-    data::reconstruction::sptr rec2 = recVect.at(1);
+    data::reconstruction::sptr rec1 = rec_vect.at(0);
+    data::reconstruction::sptr rec2 = rec_vect.at(1);
 
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->getOrganName());
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->getOrganName());
@@ -108,13 +108,13 @@ void series_set_test::testImportSeriesSet()
 
 //------------------------------------------------------------------------------
 
-bool isLoaded(core::memory::buffer_object::sptr bo)
+bool is_loaded(core::memory::buffer_object::sptr _bo)
 {
-    core::memory::buffer_manager::csptr manager                    = core::memory::buffer_manager::get();
-    const core::memory::buffer_manager::buffer_info_map_t mapInfos = manager->get_buffer_infos().get();
+    core::memory::buffer_manager::csptr manager                     = core::memory::buffer_manager::get();
+    const core::memory::buffer_manager::buffer_info_map_t map_infos = manager->get_buffer_infos().get();
 
-    auto iter = mapInfos.find(bo->get_buffer_pointer());
-    CPPUNIT_ASSERT_MESSAGE("buffer_info not found.", iter != mapInfos.end());
+    auto iter = map_infos.find(_bo->get_buffer_pointer());
+    CPPUNIT_ASSERT_MESSAGE("buffer_info not found.", iter != map_infos.end());
     const core::memory::buffer_info& info = iter->second;
 
     return info.loaded;

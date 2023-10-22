@@ -23,7 +23,7 @@ Contains services used to deal with PACS through **DIMSE** protocol.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_dimse ...)
+add_dependencies(my_target module_io_dimse ...)
 ```
 
 ### XML

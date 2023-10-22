@@ -92,28 +92,28 @@ void colour_image_masking::configuring()
     m_lowerColor = cv::Scalar(0, 0, 0);
     m_upperColor = cv::Scalar(255, 255, 255);
 
-    const service::config_t hsvConfig = this->get_config().get_child("HSV");
-    std::string s_lowerValue          = hsvConfig.get<std::string>("lower", "");
-    std::string s_upperValue          = hsvConfig.get<std::string>("upper", "");
+    const service::config_t hsv_config = this->get_config().get_child("HSV");
+    std::string s_lower_value          = hsv_config.get<std::string>("lower", "");
+    std::string s_upper_value          = hsv_config.get<std::string>("upper", "");
 
     const boost::char_separator<char> sep {",", ";"};
 
-    if(!s_lowerValue.empty())
+    if(!s_lower_value.empty())
     {
-        const boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
+        const boost::tokenizer<boost::char_separator<char> > tok_lower {s_lower_value, sep};
         int i = 0;
-        for(const auto& it : tokLower)
+        for(const auto& it : tok_lower)
         {
             SIGHT_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
             m_lowerColor[i++] = boost::lexical_cast<double>(it);
         }
     }
 
-    if(!s_upperValue.empty())
+    if(!s_upper_value.empty())
     {
-        const boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
+        const boost::tokenizer<boost::char_separator<char> > tok_upper {s_upper_value, sep};
         int i = 0;
-        for(const auto& it : tokUpper)
+        for(const auto& it : tok_upper)
         {
             SIGHT_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
             m_upperColor[i++] = boost::lexical_cast<double>(it);
@@ -156,86 +156,84 @@ void colour_image_masking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        const auto mask    = m_mask.lock();
-        const auto videoTL = m_videoTL.lock();
-        auto videoMaskTL   = m_videoMaskTL.lock();
+        const auto mask     = m_mask.lock();
+        const auto video_tl = m_videoTL.lock();
+        auto video_mask_tl  = m_videoMaskTL.lock();
 
         // Sanity checks
         SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
-        SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
-        SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
-        const auto maskSize = mask->size();
-        if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
+        SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", video_tl);
+        SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", video_mask_tl);
+        const auto mask_size = mask->size();
+        if(mask_size[0] != video_tl->getWidth() || mask_size[1] != video_tl->getHeight())
         {
             SIGHT_ERROR(
-                "Reference mask (" << maskSize[0] << ", " << maskSize[1]
-                << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
-                << videoTL->getHeight() << ")."
+                "Reference mask (" << mask_size[0] << ", " << mask_size[1]
+                << ") has different size as the video timeline (" << video_tl->getWidth() << ", "
+                << video_tl->getHeight() << ")."
             );
         }
 
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
         // one
-        auto sig_ = videoTL->signal<data::timeline::signals::pushed_t>(
+        auto sig = video_tl->signal<data::timeline::signals::pushed_t>(
             data::timeline::signals::PUSHED
         );
-        core::com::connection::blocker blocker(sig_->get_connection(slot(service::slots::UPDATE)));
+        core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
 
         // Get the timestamp from the latest video frame
-        core::hires_clock::type currentTimestamp = videoTL->getNewerTimestamp();
+        core::hires_clock::type current_timestamp = video_tl->getNewerTimestamp();
 
         // Get image from the video timeline
-        CSPTR(data::frame_tl::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
+        CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
 
-        if(!videoBuffer)
+        if(!video_buffer)
         {
-            SIGHT_ERROR("Buffer not found with timestamp " << currentTimestamp);
+            SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
             return;
         }
 
-        const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
+        const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
 
-        core::hires_clock::type videoTimestamp = videoBuffer->getTimestamp();
-        if(videoTimestamp <= m_lastVideoTimestamp)
+        core::hires_clock::type video_timestamp = video_buffer->getTimestamp();
+        if(video_timestamp <= m_lastVideoTimestamp)
         {
             SIGHT_WARN(
-                "Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
+                "Dropping frame with timestamp " << video_timestamp << " (previous frame had timestamp "
                 << m_lastVideoTimestamp << ")"
             );
             return;
         }
 
-        m_lastVideoTimestamp = videoTimestamp;
+        m_lastVideoTimestamp = video_timestamp;
 
         // convert the ::fw::Data::image mask to an OpenCV image
-        cv::Mat maskCV = io::opencv::image::copyToCv(mask.get_shared());
+        cv::Mat mask_cv = io::opencv::image::copyToCv(mask.get_shared());
 
-        cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(mask_cv, mask_cv, cv::COLOR_BGR2GRAY);
 
-        maskCV = (maskCV > 0);
+        mask_cv = (mask_cv > 0);
 
         //convert the data::frame_tl videoTL to an OpenCV image
-        const cv::Mat videoCV = io::opencv::frame_tl::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+        const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
         // Create image mask to put inside the timeline
-        SPTR(data::frame_tl::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
-        std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
+        SPTR(data::frame_tl::buffer_t) mask_buffer = video_mask_tl->createBuffer(current_timestamp);
+        std::uint8_t* frame_buff_out_mask = mask_buffer->addElement(0);
 
-        cv::Mat videoMaskCV = io::opencv::frame_tl::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
+        cv::Mat video_mask_cv = io::opencv::frame_tl::move_to_cv(video_mask_tl.get_shared(), frame_buff_out_mask);
 
         // Get the foreground mask
-        cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
+        cv::Mat foreground_mask = m_masker->makeMask(video_cv, m_maskDownsize, mask_cv);
 
         // Create an openCV mat that aliases the buffer created from the output timeline
-        videoCV.copyTo(videoMaskCV, foregroundMask);
+        video_cv.copyTo(video_mask_cv, foreground_mask);
 
         // Push the mask object in the timeline
-        videoMaskTL->pushObject(maskBuffer);
+        video_mask_tl->pushObject(mask_buffer);
 
-        auto sig = videoMaskTL->signal<data::timeline::signals::pushed_t>(
-            data::timeline::signals::PUSHED
-        );
-        sig->async_emit(currentTimestamp);
+        auto sig_mask = video_mask_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+        sig_mask->async_emit(current_timestamp);
     }
 }
 
@@ -243,58 +241,58 @@ void colour_image_masking::updating()
 
 void colour_image_masking::setBackground()
 {
-    const auto mask    = m_mask.lock();
-    const auto videoTL = m_videoTL.lock();
+    const auto mask     = m_mask.lock();
+    const auto video_tl = m_videoTL.lock();
 
-    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
-    if(!videoBuffer)
+    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
+    if(!video_buffer)
     {
-        SIGHT_ERROR("Buffer not found with timestamp " << currentTimestamp);
+        SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
         return;
     }
 
-    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
+    const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
 
     //convert the data::frame_tl videoTL to an OpenCV image
-    const cv::Mat videoCV = io::opencv::frame_tl::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
     // convert the data::image mask to an OpenCV image
-    cv::Mat maskCV = io::opencv::image::copyToCv(mask.get_shared());
+    cv::Mat mask_cv = io::opencv::image::copyToCv(mask.get_shared());
 
     // Convert color mask to grayscale value
-    cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
+    cv::cvtColor(mask_cv, mask_cv, cv::COLOR_RGB2GRAY);
 
-    maskCV = (maskCV > 0);
+    mask_cv = (mask_cv > 0);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
     m_maskDownsize = cv::Size(
-        static_cast<int>(static_cast<float>(maskCV.size[1]) * m_scaleFactor),
-        static_cast<int>(static_cast<float>(maskCV.size[0]) * m_scaleFactor)
+        static_cast<int>(static_cast<float>(mask_cv.size[1]) * m_scaleFactor),
+        static_cast<int>(static_cast<float>(mask_cv.size[0]) * m_scaleFactor)
     );
 
     // Erode a little bit the mask to avoid the borders
     // Construct element type
-    int elementType = cv::MORPH_ELLIPSE;
+    int element_type = cv::MORPH_ELLIPSE;
     // Choose element size
-    int elementErodeSize(1);
+    int element_erode_size(1);
     // Construct erosion element
-    cv::Mat elementErode = cv::getStructuringElement(
-        elementType,
-        cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
-        cv::Point(elementErodeSize, elementErodeSize)
+    cv::Mat element_erode = cv::getStructuringElement(
+        element_type,
+        cv::Size(2 * element_erode_size + 1, 2 * element_erode_size + 1),
+        cv::Point(element_erode_size, element_erode_size)
     );
     // Perform erosion
-    cv::erode(maskCV, maskCV, elementErode);
+    cv::erode(mask_cv, mask_cv, element_erode);
 
     // Learn background color model
-    m_masker->trainBackgroundModel(videoCV, maskCV, unsigned(m_backgroundComponents));
+    m_masker->trainBackgroundModel(video_cv, mask_cv, unsigned(m_backgroundComponents));
 
     // Initialize the mask timeline
-    const auto videoMaskTL = m_videoMaskTL.lock();
-    videoMaskTL->initPoolSize(
-        videoTL->getWidth(),
-        videoTL->getHeight(),
+    const auto video_mask_tl = m_videoMaskTL.lock();
+    video_mask_tl->initPoolSize(
+        video_tl->getWidth(),
+        video_tl->getHeight(),
         core::type::UINT8,
         data::frame_tl::PixelFormat::RGBA
     );
@@ -304,89 +302,89 @@ void colour_image_masking::setBackground()
 
 void colour_image_masking::setForeground()
 {
-    const auto videoTL = m_videoTL.lock();
+    const auto video_tl = m_videoTL.lock();
 
-    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
-    if(!videoBuffer)
+    core::hires_clock::type current_timestamp = core::hires_clock::get_time_in_milli_sec();
+    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->getClosestBuffer(current_timestamp);
+    if(!video_buffer)
     {
-        SIGHT_ERROR("Buffer not found with timestamp " << currentTimestamp);
+        SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
         return;
     }
 
-    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
+    const std::uint8_t* frame_buff_out_video = &video_buffer->getElement(0);
 
     //convert mask to an OpenCV image:
-    cv::Mat videoCV = io::opencv::frame_tl::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
     // Convert RGB to HSV
-    cv::Mat videoBGR;
-    cv::Mat videoHSV;
-    cv::cvtColor(videoCV, videoBGR, cv::COLOR_RGBA2BGR);
-    cv::cvtColor(videoBGR, videoHSV, cv::COLOR_BGR2HSV);
+    cv::Mat video_bgr;
+    cv::Mat video_hsv;
+    cv::cvtColor(video_cv, video_bgr, cv::COLOR_RGBA2BGR);
+    cv::cvtColor(video_bgr, video_hsv, cv::COLOR_BGR2HSV);
 
     // Get the mask to learn the foreground model
-    cv::Mat foregroundMask;
-    cv::inRange(videoHSV, m_lowerColor, m_upperColor, foregroundMask);
+    cv::Mat foreground_mask;
+    cv::inRange(video_hsv, m_lowerColor, m_upperColor, foreground_mask);
 
     // Remove small objects by performing an opening
-    cv::Mat openForegroundMask;
+    cv::Mat open_foreground_mask;
     // Construct element type
-    int elementType = cv::MORPH_ELLIPSE;
+    int element_type = cv::MORPH_ELLIPSE;
     // Choose element size
-    int elementErodeSize(2);
+    int element_erode_size(2);
     // Construct erosion element
-    cv::Mat elementErode = cv::getStructuringElement(
-        elementType,
-        cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
-        cv::Point(elementErodeSize, elementErodeSize)
+    cv::Mat element_erode = cv::getStructuringElement(
+        element_type,
+        cv::Size(2 * element_erode_size + 1, 2 * element_erode_size + 1),
+        cv::Point(element_erode_size, element_erode_size)
     );
     // Perform erosion
-    cv::erode(foregroundMask, openForegroundMask, elementErode);
+    cv::erode(foreground_mask, open_foreground_mask, element_erode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(videoCV, openForegroundMask, unsigned(m_foregroundComponents), m_noise);
+    m_masker->trainForegroundModel(video_cv, open_foreground_mask, unsigned(m_foregroundComponents), m_noise);
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setThreshold(int threshold)
+void colour_image_masking::setThreshold(int _threshold)
 {
     if(m_masker)
     {
-        m_masker->setThreshold(threshold);
+        m_masker->setThreshold(_threshold);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setNoiseLevel(double noiseLevel)
+void colour_image_masking::setNoiseLevel(double _noise_level)
 {
-    m_noise = noiseLevel;
+    m_noise = _noise_level;
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setBackgroundComponents(int bgComponents)
+void colour_image_masking::setBackgroundComponents(int _bg_components)
 {
-    m_backgroundComponents = bgComponents;
+    m_backgroundComponents = _bg_components;
 }
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::setForegroundComponents(int fgComponents)
+void colour_image_masking::setForegroundComponents(int _fg_components)
 {
-    m_foregroundComponents = fgComponents;
+    m_foregroundComponents = _fg_components;
 }
 
 // ------------------------------------------------------------------------------
 
 void colour_image_masking::clearMaskTL()
 {
-    auto videoMaskTL = m_videoMaskTL.lock();
-    videoMaskTL->clearTimeline();
-    auto sigTLCleared = videoMaskTL->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
-    sigTLCleared->async_emit();
+    auto video_mask_tl = m_videoMaskTL.lock();
+    video_mask_tl->clearTimeline();
+    auto sig_tl_cleared = video_mask_tl->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
+    sig_tl_cleared->async_emit();
     m_lastVideoTimestamp = 0.;
 }
 

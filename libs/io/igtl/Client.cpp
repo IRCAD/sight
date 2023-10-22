@@ -35,7 +35,7 @@ namespace sight::io::igtl
 {
 
 /// To guaranty that connexion is thread-safe.
-static std::mutex s_connectLock;
+static std::mutex s_connect_lock;
 
 //------------------------------------------------------------------------------
 
@@ -46,11 +46,11 @@ Client::Client()
 
 //------------------------------------------------------------------------------
 
-Client::Client(::igtl::ClientSocket::Pointer socket)
+Client::Client(::igtl::ClientSocket::Pointer _socket)
 {
-    m_socket = socket;
-    SIGHT_ASSERT("socket is null", socket.IsNotNull());
-    SIGHT_ASSERT("socket is not connected", socket->GetConnected());
+    m_socket = _socket;
+    SIGHT_ASSERT("socket is null", _socket.IsNotNull());
+    SIGHT_ASSERT("socket is not connected", _socket->GetConnected());
 }
 
 //------------------------------------------------------------------------------
@@ -72,30 +72,30 @@ bool Client::isConnected() const
 
 //------------------------------------------------------------------------------
 
-void Client::throwExceptionIfFailed(const std::string& msg, bool result)
+void Client::throwExceptionIfFailed(const std::string& _msg, bool _result)
 {
-    if(result)
+    if(_result)
     {
         this->disconnect();
-        throw Exception(msg);
+        throw Exception(_msg);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Client::connect(const std::string& addr, std::uint16_t port)
+void Client::connect(const std::string& _addr, std::uint16_t _port)
 {
-    int result         = -1;
-    const auto portStr = std::to_string(port);
+    int result          = -1;
+    const auto port_str = std::to_string(_port);
 
     {
-        std::lock_guard lock(s_connectLock);
-        auto* clientSocket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
-        result = clientSocket->ConnectToServer(addr.c_str(), port);
+        std::lock_guard lock(s_connect_lock);
+        auto* client_socket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
+        result = client_socket->ConnectToServer(_addr.c_str(), _port);
     }
 
     this->throwExceptionIfFailed(
-        std::string("Cannot connect to the server at ") + addr + " : " + portStr,
+        std::string("Cannot connect to the server at ") + _addr + " : " + port_str,
         result == -1
     );
 }
@@ -104,7 +104,7 @@ void Client::connect(const std::string& addr, std::uint16_t port)
 
 void Client::disconnect()
 {
-    std::lock_guard lock(s_connectLock);
+    std::lock_guard lock(s_connect_lock);
     // HACK: Use the patched version of closeSocket
     sight::io::igtl::network::closeSocket(m_socket->m_SocketDescriptor);
     m_socket->m_SocketDescriptor = -1;

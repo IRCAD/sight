@@ -55,16 +55,16 @@ pulse_progress::~pulse_progress()
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setTitle(const std::string& title)
+void pulse_progress::setTitle(const std::string& _title)
 {
-    m_dialog->setWindowTitle(QString::fromStdString(title));
+    m_dialog->setWindowTitle(QString::fromStdString(_title));
 }
 
 //------------------------------------------------------------------------------
 
-void pulse_progress::setMessage(const std::string& msg)
+void pulse_progress::setMessage(const std::string& _msg)
 {
-    m_dialog->setLabelText(QString::fromStdString(msg));
+    m_dialog->setLabelText(QString::fromStdString(_msg));
 }
 
 //------------------------------------------------------------------------------
@@ -72,14 +72,14 @@ void pulse_progress::setMessage(const std::string& msg)
 void pulse_progress::show()
 {
     // Create a QFutureWatcher and connect signals and slots.
-    QFutureWatcher<void> futureWatcher;
-    QObject::connect(&futureWatcher, SIGNAL(finished()), m_dialog, SLOT(reset()));
-    QObject::connect(m_dialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
-    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_dialog, SLOT(setRange(int,int)));
-    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), m_dialog, SLOT(setValue(int)));
+    QFutureWatcher<void> future_watcher;
+    QObject::connect(&future_watcher, SIGNAL(finished()), m_dialog, SLOT(reset()));
+    QObject::connect(m_dialog, SIGNAL(canceled()), &future_watcher, SLOT(cancel()));
+    QObject::connect(&future_watcher, SIGNAL(progressRangeChanged(int,int)), m_dialog, SLOT(setRange(int,int)));
+    QObject::connect(&future_watcher, SIGNAL(progressValueChanged(int)), m_dialog, SLOT(setValue(int)));
 
     // Start the computation.
-    futureWatcher.setFuture(QtConcurrent::run(m_stuff));
+    future_watcher.setFuture(QtConcurrent::run(m_stuff));
 
     m_dialog->exec();
 }

@@ -35,55 +35,55 @@ namespace sight::sightviewer::test::ui
 
 void AddDistance::test()
 {
-    namespace helper = sight::ui::testCore::helper;
+    namespace helper = sight::ui::test_core::helper;
 
-    const std::string testName               = "sightViewerAddDistanceTest";
-    const std::string imageName              = testName + ".png";
-    const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
-    std::filesystem::remove(snapshotPath);
+    const std::string test_name               = "sightViewerAddDistanceTest";
+    const std::string image_name              = test_name + ".png";
+    const std::filesystem::path snapshot_path = sight::ui::test_core::Tester::getImageOutputPath() / image_name;
+    std::filesystem::remove(snapshot_path);
 
-    const std::filesystem::path referencePath = utest_data::Data::dir() / "sight/ui/SightViewer" / imageName;
+    const std::filesystem::path reference_path = utest_data::Data::dir() / "sight/ui/SightViewer" / image_name;
 
     start(
-        testName,
-        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&snapshot_path, &reference_path](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "Nifti or Inr images",
                 utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
-            resetNegatos(tester);
+            resetNegatos(_tester);
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::Button::push(tester, "toolBarView/Show/hide volume");
+            helper::Button::push(_tester, "toolBarView/Show/hide volume");
 
             // Activate the add distance mode
-            helper::Button::push(tester, "toolBarView/Add/Edit distance");
+            helper::Button::push(_tester, "toolBarView/Add/Edit distance");
 
             // Add distance
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(QPoint(150, 250), QPoint(300, 250)));
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseDrag>(QPoint(150, 250), QPoint(300, 250)));
 
             // Modify the distance by moving one extremity
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(QPoint(300, 250), QPoint(300, 300)));
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseDrag>(QPoint(300, 250), QPoint(300, 300)));
 
             // Modify the distance by moving one extremity
-            tester.take(
+            _tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(QPoint(150, 250), QPoint(310, 310)));
+                [&_tester]() -> QObject* {return _tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
+            _tester.interact(std::make_unique<sight::ui::test_core::MouseDrag>(QPoint(150, 250), QPoint(310, 310)));
 
             // The image appears small, zoom in with the mouse to make it bigger
-            helper::Scene3d::zoom(tester, "sceneSrv", 7);
+            helper::Scene3d::zoom(_tester, "sceneSrv", 7);
 
-            saveSnapshot(tester, snapshotPath);
-            compareImages(snapshotPath, referencePath);
+            saveSnapshot(_tester, snapshot_path);
+            compareImages(snapshot_path, reference_path);
         },
         true
     );

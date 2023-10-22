@@ -42,8 +42,8 @@ static const core::com::slots::key_t REMOVE_MATRIX_SLOT = "removeMatrix";
 
 matrix_list::matrix_list() noexcept
 {
-    new_signal<MatrixAddedSignalType>(MATRIX_ADDED_SIG);
-    new_signal<MatrixRemovedSignalType>(MATRIX_REMOVED_SIG);
+    new_signal<matrix_added_signal_t>(MATRIX_ADDED_SIG);
+    new_signal<matrix_removed_signal_t>(MATRIX_REMOVED_SIG);
 
     new_slot(SELECT_MATRIX_SLOT, &matrix_list::selectMatrix, this);
     new_slot(REMOVE_MATRIX_SLOT, &matrix_list::removeMatrix, this);
@@ -59,17 +59,17 @@ matrix_list::~matrix_list() noexcept =
 void matrix_list::starting()
 {
     // get inputs
-    [[maybe_unused]] const std::size_t numMatrices = m_inputVector.size();
-    [[maybe_unused]] const std::size_t numSelected = m_selectedVector.size();
-    [[maybe_unused]] const std::size_t numOutput   = m_outputVector.size();
+    [[maybe_unused]] const std::size_t num_matrices = m_inputVector.size();
+    [[maybe_unused]] const std::size_t num_selected = m_selectedVector.size();
+    [[maybe_unused]] const std::size_t num_output   = m_outputVector.size();
 
     SIGHT_ASSERT(
         "the numbers of matrices, vectors and selected matrices should be the same",
-        numMatrices == numOutput && numMatrices == numSelected
+        num_matrices == num_output && num_matrices == num_selected
     );
     SIGHT_ASSERT(
         "the numbers of matrices, vectors and selected matrices should be superior to one",
-        numMatrices > 0 && numOutput > 0 && numSelected > 0
+        num_matrices > 0 && num_output > 0 && num_selected > 0
     );
 }
 
@@ -90,41 +90,41 @@ void matrix_list::configuring()
 void matrix_list::updating()
 {
     // Get the computed matrix from input group vector
-    data::vector::sptr computedVector;
+    data::vector::sptr computed_vector;
     if(m_inputVector.size() > 0)
     {
         for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
-            data::matrix4::sptr computedMatrix = std::make_shared<data::matrix4>();
+            data::matrix4::sptr computed_matrix = std::make_shared<data::matrix4>();
 
             {
                 const auto input = m_inputVector[i].lock();
-                computedMatrix->deep_copy(input.get_shared());
+                computed_matrix->deep_copy(input.get_shared());
             }
 
             // Fill the output vector group with the matrix
-            auto computedVectorPtr = m_outputVector[i].lock();
-            computedVector = computedVectorPtr.get_shared();
+            auto computed_vector_ptr = m_outputVector[i].lock();
+            computed_vector = computed_vector_ptr.get_shared();
 
-            if(nullptr == computedVector)
+            if(nullptr == computed_vector)
             {
-                computedVector = std::make_shared<data::vector>();
+                computed_vector = std::make_shared<data::vector>();
             }
 
-            computedVector->push_back(computedMatrix);
-            this->set_output(s_VECTOR_INOUT, computedVector, i);
-            auto sig = computedVector->signal<data::vector::added_signal_t>
+            computed_vector->push_back(computed_matrix);
+            this->set_output(s_VECTOR_INOUT, computed_vector, i);
+            auto sig = computed_vector->signal<data::vector::added_signal_t>
                            (data::vector::ADDED_OBJECTS_SIG);
-            sig->async_emit(computedVector->get_content());
+            sig->async_emit(computed_vector->get_content());
         }
     }
 
     // create string containing matrix values
     std::string str;
-    data::matrix4::sptr computedMatrix = std::make_shared<data::matrix4>();
+    data::matrix4::sptr computed_matrix = std::make_shared<data::matrix4>();
     {
         const auto input = m_inputVector[0].lock();
-        computedMatrix->deep_copy(input.get_shared());
+        computed_matrix->deep_copy(input.get_shared());
     }
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
@@ -133,7 +133,7 @@ void matrix_list::updating()
         for(std::size_t j = 0 ; j < 4 ; j++)
         {
             std::ostringstream out;
-            out << std::setprecision(3) << (*computedMatrix)[i * 4 + j];
+            out << std::setprecision(3) << (*computed_matrix)[i * 4 + j];
             str += out.str();
             str += " ";
         }
@@ -146,25 +146,25 @@ void matrix_list::updating()
     }
 
     // notify
-    const int index = static_cast<int>(computedVector->size() - 1);
+    const int index = static_cast<int>(computed_vector->size() - 1);
 
     // push the selected matrix
     this->selectMatrix(index);
 
-    this->signal<MatrixAddedSignalType>(MATRIX_ADDED_SIG)->async_emit(index, str);
+    this->signal<matrix_added_signal_t>(MATRIX_ADDED_SIG)->async_emit(index, str);
 }
 
 //-----------------------------------------------------------------------------
 
-void matrix_list::selectMatrix(int index)
+void matrix_list::selectMatrix(int _index)
 {
     for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
     {
-        auto selectedMatrix = m_selectedVector[i].lock();
-        auto outputVector   = m_outputVector[i].lock();
-        selectedMatrix->deep_copy(std::dynamic_pointer_cast<data::matrix4>((*outputVector)[std::size_t(index)]));
+        auto selected_matrix = m_selectedVector[i].lock();
+        auto output_vector   = m_outputVector[i].lock();
+        selected_matrix->deep_copy(std::dynamic_pointer_cast<data::matrix4>((*output_vector)[std::size_t(_index)]));
 
-        auto sig = selectedMatrix->signal<data::matrix4::ModifiedSignalType>(data::matrix4::MODIFIED_SIG);
+        auto sig = selected_matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG);
         sig->async_emit();
     }
 }
@@ -177,15 +177,15 @@ void matrix_list::removeMatrix(int _index)
     {
         for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
-            auto outputVector = m_outputVector[i].lock();
-            outputVector->erase(outputVector->begin() + _index);
+            auto output_vector = m_outputVector[i].lock();
+            output_vector->erase(output_vector->begin() + _index);
 
-            auto sig = outputVector->signal<data::vector::removed_signal_t>
+            auto sig = output_vector->signal<data::vector::removed_signal_t>
                            (data::vector::REMOVED_OBJECTS_SIG);
-            sig->async_emit(outputVector->get_content());
+            sig->async_emit(output_vector->get_content());
         }
 
-        this->signal<MatrixRemovedSignalType>(MATRIX_REMOVED_SIG)->async_emit(_index);
+        this->signal<matrix_removed_signal_t>(MATRIX_REMOVED_SIG)->async_emit(_index);
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
      * @param[in] dataset Dataset from which the SR must be created
      */
     IO_DICOM_API static SPTR(io::dicom::container::sr::DicomSRContainerNode)
-    readSR(const gdcm::DataSet& dataset);
+    readSR(const gdcm::DataSet& _dataset);
 
     /**
      * @brief Dump the SR in graphviz format
@@ -52,8 +52,8 @@ public:
      * @param[in] out Destination stream
      */
     IO_DICOM_API static void dumpSR(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& root,
-        std::ostream& out = std::cout
+        const SPTR(io::dicom::container::sr::DicomSRNode)& _root,
+        std::ostream& _out = std::cout
     );
 
 protected:
@@ -63,16 +63,16 @@ protected:
      * @param[in] dataset Dataset from which the sub nodes must been read
      * @param[in] parent Parent node
      */
-    static void readSubNodeContainer(const gdcm::DataSet& dataset,
-                                     SPTR(io::dicom::container::sr::DicomSRNode) parent);
+    static void readSubNodeContainer(const gdcm::DataSet& _dataset,
+                                     SPTR(io::dicom::container::sr::DicomSRNode) _parent);
 
     /**
      * @brief Read a sub node and add it as a child to the parent node
      * @param[in] dataset Dataset from which the sub node must been read
      * @param[in] parent Parent node
      */
-    static void readSubNode(const gdcm::DataSet& dataset,
-                            SPTR(io::dicom::container::sr::DicomSRNode) parent);
+    static void readSubNode(const gdcm::DataSet& _dataset,
+                            SPTR(io::dicom::container::sr::DicomSRNode) _parent);
 
     /**
      * @brief Dump an SR node in graphviz format
@@ -81,9 +81,9 @@ protected:
      * @param[in] index Node index
      */
     IO_DICOM_API static void dumpSRNode(
-        const SPTR(io::dicom::container::sr::DicomSRNode)& node,
-        std::ostream& out,
-        int& index
+        const SPTR(io::dicom::container::sr::DicomSRNode)& _node,
+        std::ostream& _out,
+        int& _index
     );
 
     /**
@@ -94,39 +94,39 @@ protected:
      * @tparam ELEMENT Element group of the code sequence.
      */
     template<uint16_t GROUP, uint16_t ELEMENT>
-    static io::dicom::container::DicomCodedAttribute readCodeSequence(const gdcm::DataSet& dataset)
+    static io::dicom::container::DicomCodedAttribute readCodeSequence(const gdcm::DataSet& _dataset)
     {
-        io::dicom::container::DicomCodedAttribute codedAttributes;
+        io::dicom::container::DicomCodedAttribute coded_attributes;
 
-        if(!dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)))
+        if(!_dataset.FindDataElement(gdcm::Tag(GROUP, ELEMENT)))
         {
             // Return empty coded attributes
-            return codedAttributes;
+            return coded_attributes;
         }
 
         gdcm::SmartPointer<gdcm::SequenceOfItems> sequence =
-            dataset.GetDataElement(gdcm::Tag(GROUP, ELEMENT)).GetValueAsSQ();
+            _dataset.GetDataElement(gdcm::Tag(GROUP, ELEMENT)).GetValueAsSQ();
         if(sequence->GetNumberOfItems() == 0) // One Item shall be permitted
         {
             // Return empty coded attributes
-            return codedAttributes;
+            return coded_attributes;
         }
 
-        const gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
+        const gdcm::DataSet& item_dataset = sequence->GetItem(1).GetNestedDataSet();
 
         // Code value - Type 1
-        auto codeValue = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0100>(itemDataset);
+        auto code_value = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0100>(item_dataset);
 
         // Coding Scheme Designator - Type 1
-        auto codingSchemeDesignator = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0102>(itemDataset);
+        auto coding_scheme_designator = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0102>(item_dataset);
 
         // Coding Scheme Version - Type 1C
-        auto codingSchemeVersion = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0103>(itemDataset);
+        auto coding_scheme_version = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0103>(item_dataset);
 
         // Code Meaning - Type 1
-        auto codeMeaning = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0104>(itemDataset);
+        auto code_meaning = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0104>(item_dataset);
 
-        return {codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion};
+        return {code_value, coding_scheme_designator, code_meaning, coding_scheme_version};
     }
 };
 

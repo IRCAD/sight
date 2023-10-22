@@ -22,8 +22,8 @@
 
 #include "viz/scene3d/interactor/base.hpp"
 
-#include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
@@ -36,9 +36,9 @@ namespace sight::viz::scene3d::interactor
 
 // ----------------------------------------------------------------------------
 
-base::base(Layer::sptr _layer, bool _layerOrderDependant) :
+base::base(layer::sptr _layer, bool _layer_order_dependant) :
     m_layer(_layer),
-    m_layerOrderDependant(_layerOrderDependant)
+    m_layerOrderDependant(_layer_order_dependant)
 {
 }
 
@@ -146,39 +146,39 @@ void base::enterEvent()
 
 // ----------------------------------------------------------------------------
 
-bool base::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer, bool _layerOrderDependant)
+bool base::isInLayer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer_order_dependant)
 {
-    const auto* const layerVp = _layer->getViewport();
-    bool isInLayer            = isInViewport(_mouseX, _mouseY, layerVp);
+    const auto* const layer_vp = _layer->getViewport();
+    bool is_in_layer           = isInViewport(_mouse_x, _mouse_y, layer_vp);
 
     // Check if there's no layer above.
-    if(_layerOrderDependant)
+    if(_layer_order_dependant)
     {
-        auto* const renderWindow      = layerVp->getTarget();
-        const std::uint16_t numLayers = renderWindow->getNumViewports();
-        for(std::uint16_t i = 0 ; i < numLayers && isInLayer ; ++i)
+        auto* const render_window      = layer_vp->getTarget();
+        const std::uint16_t num_layers = render_window->getNumViewports();
+        for(std::uint16_t i = 0 ; i < num_layers && is_in_layer ; ++i)
         {
-            const auto* const vp = renderWindow->getViewport(i);
-            if(vp->getZOrder() > layerVp->getZOrder())
+            const auto* const vp = render_window->getViewport(i);
+            if(vp->getZOrder() > layer_vp->getZOrder())
             {
-                isInLayer = !isInViewport(_mouseX, _mouseY, vp);
+                is_in_layer = !isInViewport(_mouse_x, _mouse_y, vp);
             }
         }
     }
 
-    return isInLayer;
+    return is_in_layer;
 }
 
 // ----------------------------------------------------------------------------
 
-bool base::isInViewport(int _mouseX, int _mouseY, const Ogre::Viewport* const _vp)
+bool base::isInViewport(int _mouse_x, int _mouse_y, const Ogre::Viewport* const _vp)
 {
     const int top    = _vp->getActualTop();
     const int left   = _vp->getActualLeft();
     const int bottom = top + _vp->getActualHeight();
     const int right  = left + _vp->getActualWidth();
 
-    return _mouseX >= left && _mouseX <= right && _mouseY >= top && _mouseY <= bottom;
+    return _mouse_x >= left && _mouse_x <= right && _mouse_y >= top && _mouse_y <= bottom;
 }
 
 } // namespace sight::viz::scene3d::interactor

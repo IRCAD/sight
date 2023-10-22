@@ -56,7 +56,7 @@ public:
      * @param[in]   path    a path to an xml profile file
      */
     static std::shared_ptr<core::runtime::detail::profile::profile> create_profile(
-        const std::filesystem::path& path
+        const std::filesystem::path& _path
     );
 
     /**
@@ -66,8 +66,8 @@ public:
      *
      * @return      a shared pointer to the created profile
      */
-    static std::shared_ptr<core::runtime::detail::profile::profile> process_profile(xmlNodePtr node);
-    static std::string process_starter(xmlNodePtr node);
+    static std::shared_ptr<core::runtime::detail::profile::profile> process_profile(xmlNodePtr _node);
+    static std::string process_starter(xmlNodePtr _node);
 
     /**
      * @brief       Processes the given xml node as an activater.
@@ -76,7 +76,7 @@ public:
      *
      * @return      a shared pointer to the created activater
      */
-    static std::shared_ptr<core::runtime::detail::profile::activater> process_activater(xmlNodePtr node);
+    static std::shared_ptr<core::runtime::detail::profile::activater> process_activater(xmlNodePtr _node);
 
     /**
      * @brief       Processes the given xml node as an activater parameter and
@@ -86,8 +86,8 @@ public:
      * @param[out]  activater   a shared pointer to an activater
      */
     static void process_activater_param(
-        xmlNodePtr node,
-        std::shared_ptr<core::runtime::detail::profile::activater> activater
+        xmlNodePtr _node,
+        std::shared_ptr<core::runtime::detail::profile::activater> _activater
     );
 
     /**
@@ -98,8 +98,8 @@ public:
      * @param[out]  activater   a shared pointer to an activater
      */
     static void process_activater_disable_extension_point(
-        xmlNodePtr node,
-        std::shared_ptr<core::runtime::detail::profile::activater> activater
+        xmlNodePtr _node,
+        std::shared_ptr<core::runtime::detail::profile::activater> _activater
     );
 
     /**
@@ -110,8 +110,8 @@ public:
      * @param[out]  activater   a shared pointer to an activater
      */
     static void process_activater_disable_extension(
-        xmlNodePtr node,
-        std::shared_ptr<core::runtime::detail::profile::activater> activater
+        xmlNodePtr _node,
+        std::shared_ptr<core::runtime::detail::profile::activater> _activater
     );
 
 private:

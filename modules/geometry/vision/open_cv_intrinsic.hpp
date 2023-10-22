@@ -62,7 +62,7 @@ class MODULE_GEOMETRY_VISION_CLASS_API open_cv_intrinsic : public sight::geometr
 public:
 
     /// Double changed signal type
-    typedef core::com::signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> error_computed_signal_t;
 
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::ICalibration);
 

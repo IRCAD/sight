@@ -71,7 +71,7 @@ public:
     [[nodiscard]] DATA_API min_max_t windowMinMax() const;
 
     /// Sets the min/max of the window level.
-    DATA_API void setWindowMinMax(const min_max_t& _minMax);
+    DATA_API void setWindowMinMax(const min_max_t& _min_max);
 
     /// Gets the level.
     [[nodiscard]] value_t level() const;
@@ -264,26 +264,26 @@ public:
     /// @name Signals
     /// @{
     /// Defines the type of signal sent when points are modified.
-    typedef core::com::signal<void ()> PointsModifiedSignalType;
+    typedef core::com::signal<void ()> points_modified_signal_t;
     DATA_API static const core::com::signals::key_t POINTS_MODIFIED_SIG;
 
     /// Defines the type of signal sent when window-level is modified (window, level).
-    typedef core::com::signal<void (value_t, value_t)> WindowingModifiedSignalType;
+    typedef core::com::signal<void (value_t, value_t)> windowing_modified_signal_t;
     DATA_API static const core::com::signals::key_t WINDOWING_MODIFIED_SIG;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) final;
+    DATA_API void shallow_copy(const object::csptr& _source) final;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) final;
 
 private:

@@ -93,7 +93,7 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the slider moves
-    void changeOpacity(int value);
+    void changeOpacity(int _value);
 
 private:
 

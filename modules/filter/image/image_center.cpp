@@ -22,7 +22,7 @@
 
 #include "image_center.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -51,9 +51,9 @@ void image_center::updating()
 
     SIGHT_ASSERT("Missing image '" << s_IMAGE_IN << "'", image);
 
-    const bool imageValidity = data::helper::MedicalImage::checkImageValidity(image.get_shared());
+    const bool image_validity = data::helper::medical_image::check_image_validity(image.get_shared());
 
-    if(!imageValidity)
+    if(!image_validity)
     {
         SIGHT_WARN("Can not compute center of a invalid image.");
         return;
@@ -90,7 +90,7 @@ void image_center::updating()
 
     // output the translation matrix
 
-    auto sig = matrix->signal<data::matrix4::ModifiedSignalType>
+    auto sig = matrix->signal<data::matrix4::modified_signal_t>
                    (data::matrix4::MODIFIED_SIG);
 
     sig->async_emit();

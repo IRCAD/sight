@@ -55,19 +55,19 @@ void color_test::tearDown()
 void color_test::methode1()
 {
     //-----------test values
-    const float R = 0.2F;
-    const float G = 0.8F;
-    const float B = 0.5F;
-    const float A = 0.6F;
+    const float r = 0.2F;
+    const float g = 0.8F;
+    const float b = 0.5F;
+    const float a = 0.6F;
 
-    auto color = std::make_shared<data::color>(R, G, B, A);
+    auto color = std::make_shared<data::color>(r, g, b, a);
 
-    CPPUNIT_ASSERT_EQUAL(color->red(), R);
-    CPPUNIT_ASSERT_EQUAL(color->green(), G);
-    CPPUNIT_ASSERT_EQUAL(color->blue(), B);
-    CPPUNIT_ASSERT_EQUAL(color->alpha(), A);
+    CPPUNIT_ASSERT_EQUAL(color->red(), r);
+    CPPUNIT_ASSERT_EQUAL(color->green(), g);
+    CPPUNIT_ASSERT_EQUAL(color->blue(), b);
+    CPPUNIT_ASSERT_EQUAL(color->alpha(), a);
 
-    auto color2 = std::make_shared<data::color>(R, G, B, A);
+    auto color2 = std::make_shared<data::color>(r, g, b, a);
     CPPUNIT_ASSERT(*color == *color2);
 }
 
@@ -76,25 +76,25 @@ void color_test::methode1()
 void color_test::methode2()
 {
     //-----------test values
-    const float R = 0.2F;
-    const float G = 0.8F;
-    const float B = 0.5F;
-    const float A = 0.6F;
+    const float r = 0.2F;
+    const float g = 0.8F;
+    const float b = 0.5F;
+    const float a = 0.6F;
 
     auto color = std::make_shared<data::color>();
 
     data::color::ColorArray array;
-    array[0] = R;
-    array[1] = G;
-    array[2] = B;
-    array[3] = A;
+    array[0] = r;
+    array[1] = g;
+    array[2] = b;
+    array[3] = a;
 
     color->setRGBA(array);
 
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], r);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], g);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], b);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], a);
 
     auto color2 = std::make_shared<data::color>();
     CPPUNIT_ASSERT(*color != *color2);
@@ -110,19 +110,19 @@ void color_test::methode3()
     // fuchsia string value
     const std::string fuchsia = "#FF006E";
     // fuchsia float values
-    const float R = 1.F;
-    const float G = 0.F;
-    const float B = 110.F / 255.F;
-    const float A = 1.F;
+    const float r = 1.F;
+    const float g = 0.F;
+    const float b = 110.F / 255.F;
+    const float a = 1.F;
 
     data::color::sptr color = std::make_shared<data::color>();
 
     color->setRGBA(fuchsia);
 
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
-    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], r);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], g);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], b);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], a);
 
     auto color2 = std::make_shared<data::color>();
     CPPUNIT_ASSERT(*color != *color2);

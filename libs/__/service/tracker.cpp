@@ -61,23 +61,23 @@ void tracker::configuring()
     const service::config_t config = this->get_config();
     if(config.count("dropObj") != 0U)
     {
-        const auto dropStr = config.get<std::string>("dropObj");
-        SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
-        m_dropObj = (dropStr == "true");
+        const auto drop_str = config.get<std::string>("dropObj");
+        SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", drop_str == "true" || drop_str == "false");
+        m_dropObj = (drop_str == "true");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void tracker::track(core::hires_clock::type timestamp)
+void tracker::track(core::hires_clock::type _timestamp)
 {
     SIGHT_DEBUG_IF("[" + this->get_classname() + "] Tracking is not started: does nothing", !m_isTracking);
     SIGHT_DEBUG_IF(
-        "[" + this->get_classname() + "] Dropping object at " + std::to_string(timestamp),
-        m_isTracking && m_dropObj && timestamp <= m_lastTimestamp
+        "[" + this->get_classname() + "] Dropping object at " + std::to_string(_timestamp),
+        m_isTracking && m_dropObj && _timestamp <= m_lastTimestamp
     );
 
-    if(m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
+    if(m_isTracking && (!m_dropObj || _timestamp > m_lastTimestamp))
     {
         {
             const auto timeline = m_timeline.lock();
@@ -89,10 +89,10 @@ void tracker::track(core::hires_clock::type timestamp)
             {
                 if(m_dropObj)
                 {
-                    timestamp = timeline->getNewerTimestamp();
+                    _timestamp = timeline->getNewerTimestamp();
                 }
 
-                if(timeline->getClosestObject(timestamp) == nullptr)
+                if(timeline->getClosestObject(_timestamp) == nullptr)
                 {
                     SIGHT_WARN("[" + this->get_classname() + "] No buffer found for the timeline.");
                     return;
@@ -100,9 +100,9 @@ void tracker::track(core::hires_clock::type timestamp)
             }
         }
 
-        SIGHT_DEBUG("[" + this->get_classname() + "] Tracking at " + std::to_string(timestamp) + "...");
-        this->tracking(timestamp);
-        m_lastTimestamp = timestamp;
+        SIGHT_DEBUG("[" + this->get_classname() + "] Tracking at " + std::to_string(_timestamp) + "...");
+        this->tracking(_timestamp);
+        m_lastTimestamp = _timestamp;
     }
 }
 

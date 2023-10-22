@@ -60,7 +60,7 @@ void MetaImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::sptr pImage = this->getConcreteObject();
+    data::image::sptr p_image = this->getConcreteObject();
 
     vtkSmartPointer<vtkMetaImageReader> reader = vtkSmartPointer<vtkMetaImageReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
@@ -69,9 +69,9 @@ void MetaImageReader::read()
 
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [&](vtkObject* caller, std::uint64_t, void*)
+        [&](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* filter = static_cast<vtkMetaImageReader*>(caller);
+            auto* filter = static_cast<vtkMetaImageReader*>(_caller);
             m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
@@ -90,7 +90,7 @@ void MetaImageReader::read()
     SIGHT_THROW_IF("MetaImageReader cannot read mhd image file :" << this->get_file().string(), !img);
     try
     {
-        io::vtk::fromVTKImage(img, pImage);
+        io::vtk::from_vtk_image(img, p_image);
     }
     catch(std::exception& e)
     {

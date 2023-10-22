@@ -28,7 +28,7 @@
 #include "io/dicom/writer/iod/SpatialFiducialsIOD.hpp"
 #include "io/dicom/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
@@ -51,58 +51,59 @@ void series::write()
     SIGHT_ASSERT("sight::data::series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
-    bool multiFiles = true;
+    bool multi_files = true;
 
     // Initialization shared object
     SPTR(io::dicom::container::DicomInstance) instance =
-        std::make_shared<io::dicom::container::DicomInstance>(series, nullptr, multiFiles);
+        std::make_shared<io::dicom::container::DicomInstance>(series, nullptr, multi_files);
 
     // Retrieve series sop_classUID
-    const std::string& sopClassUID = instance->getSOPClassUID();
+    const std::string& sop_class_uid = instance->getSOPClassUID();
 
-    if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
-       || sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
+    if(sop_class_uid == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
+       || sop_class_uid == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
-        const auto imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
-        SIGHT_ASSERT("sight::data::image_series not instanced", imageSeries);
+        const auto image_series = std::dynamic_pointer_cast<const data::image_series>(series);
+        SIGHT_ASSERT("sight::data::image_series not instanced", image_series);
 
         // Write image
-        io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->get_folder() / "im");
-        imageIOD.write(series);
+        io::dicom::writer::iod::CTMRImageIOD image_iod(instance, this->get_folder() / "im");
+        image_iod.write(series);
 
-        data::point_list::sptr landmarks = data::helper::MedicalImage::getLandmarks(*imageSeries);
-        data::vector::sptr distances     = data::helper::MedicalImage::getDistances(*imageSeries);
+        data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image_series);
+        data::vector::sptr distances     = data::helper::medical_image::get_distances(*image_series);
 
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
             if(m_fiducialsExportMode == SPATIAL_FIDUCIALS)
             {
-                io::dicom::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->get_folder() / "imSF");
-                spatialFiducialsIOD.write(series);
+                io::dicom::writer::iod::SpatialFiducialsIOD spatial_fiducials_iod(instance,
+                                                                                  this->get_folder() / "imSF");
+                spatial_fiducials_iod.write(series);
             }
             else
             {
-                io::dicom::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->get_folder() / "imSR",
-                                                                       m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
-                documentIOD.write(series);
+                io::dicom::writer::iod::ComprehensiveSRIOD document_iod(instance, this->get_folder() / "imSR",
+                                                                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
+                document_iod.write(series);
             }
         }
     }
-    else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::EnhancedUSVolumeStorage))
+    else if(sop_class_uid == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::EnhancedUSVolumeStorage))
     {
-        auto seriesSet = std::make_shared<data::series_set>();
-        seriesSet->push_back(std::const_pointer_cast<data::series>(series));
+        auto series_set = std::make_shared<data::series_set>();
+        series_set->push_back(std::const_pointer_cast<data::series>(series));
 
         auto writer = std::make_shared<io::dicom::Writer>();
-        writer->set_object(seriesSet);
+        writer->set_object(series_set);
         writer->set_folder(get_folder());
         writer->write();
     }
-    else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
+    else if(sop_class_uid == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
-        SPTR(io::dicom::container::DicomInstance) imageInstance = this->getImageInstance();
-        io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->get_folder() / "imSeg");
+        SPTR(io::dicom::container::DicomInstance) image_instance = this->getImageInstance();
+        io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, image_instance, this->get_folder() / "imSeg");
         iod.write(series);
     }
     else
@@ -116,10 +117,10 @@ void series::write()
 
 //------------------------------------------------------------------------------
 
-bool series::hasDocumentSR(const data::image_series::csptr& imageSeries)
+bool series::hasDocumentSR(const data::image_series::csptr& _image_series)
 {
-    data::point_list::sptr pl = data::helper::MedicalImage::getLandmarks(*imageSeries);
-    const auto distances      = data::helper::MedicalImage::getDistances(*imageSeries);
+    data::point_list::sptr pl = data::helper::medical_image::get_landmarks(*_image_series);
+    const auto distances      = data::helper::medical_image::get_distances(*_image_series);
 
     // Check if image has landmark and distance
     return (pl && !pl->getPoints().empty()) || distances;

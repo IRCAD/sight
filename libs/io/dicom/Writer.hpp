@@ -69,12 +69,12 @@ public:
 
     /// Set/get the current job
     IO_DICOM_API core::jobs::base::sptr getJob() const override;
-    IO_DICOM_API void setJob(core::jobs::job::sptr job);
+    IO_DICOM_API void setJob(core::jobs::job::sptr _job);
 
     /// Allow to force the use of a cpu backend, even if SIGHT_ENABLE_NVJPEG2K is set.
     /// This can be useful in case of an unit test executed on a machine without GPU.
     /// @arg force: true to force CPU backend, false to use GPU and throw an exception if not available
-    IO_DICOM_API void forceCPU(bool force);
+    IO_DICOM_API void forceCPU(bool _force);
 
     /// Allowed transfer syntax. The default will depends of the SOP classes.
     /// @note All transfer syntaxes are not supported by all SOP classes.
@@ -92,12 +92,12 @@ public:
         JPEG2000_LOSSLESS
     };
 
-    static constexpr std::string_view transferSyntaxToString(TransferSyntax transferSyntax);
-    static constexpr TransferSyntax stringToTransferSyntax(const std::string_view& string);
+    static constexpr std::string_view transferSyntaxToString(TransferSyntax _transfer_syntax);
+    static constexpr TransferSyntax stringToTransferSyntax(const std::string_view& _string);
 
     /// Set the transfer syntax to use when writing the DICOM file
     /// @param transferSyntax the transfer syntax
-    IO_DICOM_API void setTransferSyntax(TransferSyntax transferSyntax);
+    IO_DICOM_API void setTransferSyntax(TransferSyntax _transfer_syntax);
 
 private:
 
@@ -115,9 +115,9 @@ inline std::string Writer::extension() const
 
 //------------------------------------------------------------------------------
 
-constexpr std::string_view Writer::transferSyntaxToString(Writer::TransferSyntax transferSyntax)
+constexpr std::string_view Writer::transferSyntaxToString(Writer::TransferSyntax _transfer_syntax)
 {
-    switch(transferSyntax)
+    switch(_transfer_syntax)
     {
         case TransferSyntax::RAW:
             return "RAW";
@@ -150,44 +150,44 @@ constexpr std::string_view Writer::transferSyntaxToString(Writer::TransferSyntax
 
 //------------------------------------------------------------------------------
 
-constexpr Writer::TransferSyntax Writer::stringToTransferSyntax(const std::string_view& string)
+constexpr Writer::TransferSyntax Writer::stringToTransferSyntax(const std::string_view& _string)
 {
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::RAW); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::RAW); _string == ts)
     {
         return TransferSyntax::RAW;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::RLE); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::RLE); _string == ts)
     {
         return TransferSyntax::RLE;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG); _string == ts)
     {
         return TransferSyntax::JPEG;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LOSSLESS); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LOSSLESS); _string == ts)
     {
         return TransferSyntax::JPEG_LOSSLESS;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LS_LOSSLESS); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LS_LOSSLESS); _string == ts)
     {
         return TransferSyntax::JPEG_LS_LOSSLESS;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LS_NEARLOSSLESS); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG_LS_NEARLOSSLESS); _string == ts)
     {
         return TransferSyntax::JPEG_LS_NEARLOSSLESS;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG2000); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG2000); _string == ts)
     {
         return TransferSyntax::JPEG2000;
     }
 
-    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG2000_LOSSLESS); string == ts)
+    if(constexpr auto ts = transferSyntaxToString(TransferSyntax::JPEG2000_LOSSLESS); _string == ts)
     {
         return TransferSyntax::JPEG2000_LOSSLESS;
     }

@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 void shader_parameter::configuring()
 {
-    this->IParameter::configuring();
+    this->parameter_adaptor::configuring();
 
     const config_t config = this->get_config();
 
@@ -68,14 +68,14 @@ void shader_parameter::updating()
     // This is typically called when the data has changed through autoconnect
     // So set the parameter as dirty and perform the update
     this->setDirty();
-    this->IParameter::updating();
+    this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
 
 void shader_parameter::stopping()
 {
-    this->IParameter::stopping();
+    this->parameter_adaptor::stopping();
 }
 
 //------------------------------------------------------------------------------

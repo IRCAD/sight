@@ -48,7 +48,7 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> progress_callback_slot_t;
 
     /// Constructor
     IO_DIMSE_API SeriesRetriever();
@@ -65,10 +65,10 @@ public:
      * @param[in] progress_callback Progress callback
      */
     IO_DIMSE_API void initialize(
-        const std::string& applicationTitle,
-        std::uint16_t applicationport,
-        int timeout                                      = 3,
-        ProgressCallbackSlotType::sptr progress_callback = ProgressCallbackSlotType::sptr()
+        const std::string& _application_title,
+        std::uint16_t _applicationport,
+        int _timeout                                      = 3,
+        progress_callback_slot_t::sptr _progress_callback = progress_callback_slot_t::sptr()
     );
 
     /// Start the server
@@ -81,8 +81,8 @@ protected:
 
     /// Handle Incoming Command (Override)
     OFCondition handleIncomingCommand(
-        T_DIMSE_Message* incomingMsg,
-        const DcmPresentationContextInfo& presContextInfo
+        T_DIMSE_Message* _incoming_msg,
+        const DcmPresentationContextInfo& _pres_context_info
     ) override;
 
     /**
@@ -91,13 +91,13 @@ protected:
      * @param[in] presID Presentation context ID
      * @return OFTrue on success
      */
-    virtual OFCondition handleSTORERequest(T_DIMSE_Message* incomingMsg, T_ASC_PresentationContextID presID);
+    virtual OFCondition handleSTORERequest(T_DIMSE_Message* _incoming_msg, T_ASC_PresentationContextID _pres_id);
 
     /// Path where the files must be saved
     std::filesystem::path m_path;
 
     /// Progress callback slot
-    ProgressCallbackSlotType::sptr m_progressCallback;
+    progress_callback_slot_t::sptr m_progressCallback;
 
     /// Dowloaded instance index
     unsigned int m_instanceIndex {};

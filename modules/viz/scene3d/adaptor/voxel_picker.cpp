@@ -26,10 +26,10 @@
 #include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -152,20 +152,20 @@ void voxel_picker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
         }
 
         // Get the scene manager.
-        const auto* const sceneManager = this->getSceneManager();
+        const auto* const scene_manager = this->getSceneManager();
 
         // Create the ray from picking positions.
-        const auto* const camera = sceneManager->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-        const auto vpPos         =
+        const auto* const camera = scene_manager->getCamera(sight::viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
+        const auto vp_pos        =
             sight::viz::scene3d::helper::camera::convertFromWindowToViewportSpace(*camera, _x, _y);
-        const Ogre::Ray vpRay = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
+        const Ogre::Ray vp_ray = camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
         // Get image information.
         const auto image = m_image.lock();
-        const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+        const auto [spacing, origin] = sight::viz::scene3d::utils::convertSpacingAndOrigin(image.get_shared());
 
         const std::pair<bool, Ogre::Vector3> result =
-            this->computeRayImageIntersection(vpRay, image.get_shared(), origin, spacing);
+            this->computeRayImageIntersection(vp_ray, image.get_shared(), origin, spacing);
 
         if(result.first)
         {
@@ -178,19 +178,19 @@ void voxel_picker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
             info.m_worldPos[1] = static_cast<double>(intersection.y);
             info.m_worldPos[2] = static_cast<double>(intersection.z);
 
-            using PickingEventType = data::tools::picking_info::Event;
+            using picking_event_t = data::tools::picking_info::Event;
             switch(_button)
             {
                 case MouseButton::LEFT:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_LEFT_DOWN : PickingEventType::MOUSE_LEFT_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_LEFT_DOWN : picking_event_t::MOUSE_LEFT_UP;
                     break;
 
                 case MouseButton::RIGHT:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_RIGHT_DOWN : PickingEventType::MOUSE_RIGHT_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_RIGHT_DOWN : picking_event_t::MOUSE_RIGHT_UP;
                     break;
 
                 case MouseButton::MIDDLE:
-                    info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
+                    info.m_eventId = _pressed ? picking_event_t::MOUSE_MIDDLE_DOWN : picking_event_t::MOUSE_MIDDLE_UP;
                     break;
 
                 default:
@@ -205,13 +205,13 @@ void voxel_picker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
                 if(m_moveOnPick && info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_UP)
                 {
                     // Emit slices positions
-                    const int sagittalIdx = static_cast<int>((info.m_worldPos[0] - origin[0]) / spacing[0]);
-                    const int frontalIdx  = static_cast<int>((info.m_worldPos[1] - origin[1]) / spacing[1]);
-                    const int axialIdx    = static_cast<int>((info.m_worldPos[2] - origin[2]) / spacing[2]);
-                    const auto sig        = image->signal<data::image::SliceIndexModifiedSignalType>(
+                    const int sagittal_idx = static_cast<int>((info.m_worldPos[0] - origin[0]) / spacing[0]);
+                    const int frontal_idx  = static_cast<int>((info.m_worldPos[1] - origin[1]) / spacing[1]);
+                    const int axial_idx    = static_cast<int>((info.m_worldPos[2] - origin[2]) / spacing[2]);
+                    const auto sig         = image->signal<data::image::SliceIndexModifiedSignalType>(
                         data::image::SLICE_INDEX_MODIFIED_SIG
                     );
-                    sig->async_emit(axialIdx, frontalIdx, sagittalIdx);
+                    sig->async_emit(axial_idx, frontal_idx, sagittal_idx);
                 }
             }
 
@@ -233,11 +233,12 @@ void voxel_picker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
 
 void voxel_picker::changeSliceType(int _from, int _to)
 {
-    const auto toOrientation   = static_cast<OrientationMode>(_to);
-    const auto fromOrientation = static_cast<OrientationMode>(_from);
+    const auto to_orientation   = static_cast<OrientationMode>(_to);
+    const auto from_orientation = static_cast<OrientationMode>(_from);
 
-    m_orientation = m_orientation == toOrientation ? fromOrientation
-                                                   : m_orientation == fromOrientation ? toOrientation : m_orientation;
+    m_orientation = m_orientation == to_orientation ? from_orientation
+                                                    : m_orientation
+                    == from_orientation ? to_orientation : m_orientation;
 }
 
 //-----------------------------------------------------------------------------
@@ -249,19 +250,19 @@ std::pair<bool, Ogre::Vector3> voxel_picker::computeRayImageIntersection(
     const Ogre::Vector3& _spacing
 )
 {
-    namespace imHelper = data::helper::MedicalImage;
-    const auto axialIdx    = imHelper::getSliceIndex(*_image, imHelper::orientation_t::AXIAL).value_or(0);
-    const auto frontalIdx  = imHelper::getSliceIndex(*_image, imHelper::orientation_t::FRONTAL).value_or(0);
-    const auto sagittalIdx = imHelper::getSliceIndex(*_image, imHelper::orientation_t::SAGITTAL).value_or(0);
+    namespace imHelper = data::helper::medical_image;
+    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::orientation_t::AXIAL).value_or(0);
+    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::orientation_t::FRONTAL).value_or(0);
+    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::orientation_t::SAGITTAL).value_or(0);
 
-    const auto axialIndex    = static_cast<Ogre::Real>(axialIdx);
-    const auto frontalIndex  = static_cast<Ogre::Real>(frontalIdx);
-    const auto sagittalIndex = static_cast<Ogre::Real>(sagittalIdx);
+    const auto axial_index    = static_cast<Ogre::Real>(axial_idx);
+    const auto frontal_index  = static_cast<Ogre::Real>(frontal_idx);
+    const auto sagittal_index = static_cast<Ogre::Real>(sagittal_idx);
 
     const auto size = _image->size();
 
     // Function to check if an intersection is inside an image.
-    std::function<bool(OrientationMode, Ogre::Vector3)> isInsideImage =
+    std::function<bool(OrientationMode, Ogre::Vector3)> is_inside_image =
         [&](OrientationMode _orientation, const Ogre::Vector3 _inter) -> bool
         {
             switch(_orientation)
@@ -291,35 +292,35 @@ std::pair<bool, Ogre::Vector3> voxel_picker::computeRayImageIntersection(
         };
 
     // Function to cast the non depth coordinate into image spacing.
-    std::function<Ogre::Vector3(OrientationMode, Ogre::Vector3)> castToVoxel =
+    std::function<Ogre::Vector3(OrientationMode, Ogre::Vector3)> cast_to_voxel =
         [&](OrientationMode _orientation, Ogre::Vector3 _inter) -> Ogre::Vector3
         {
             switch(_orientation)
             {
                 case OrientationMode::X_AXIS:
                 {
-                    const int yIdx = static_cast<int>(_inter.y / _spacing.y);
-                    const int zIdx = static_cast<int>(_inter.z / _spacing.z);
-                    _inter.y = static_cast<float>(yIdx) * _spacing.y;
-                    _inter.z = static_cast<float>(zIdx) * _spacing.z;
+                    const int y_idx = static_cast<int>(_inter.y / _spacing.y);
+                    const int z_idx = static_cast<int>(_inter.z / _spacing.z);
+                    _inter.y = static_cast<float>(y_idx) * _spacing.y;
+                    _inter.z = static_cast<float>(z_idx) * _spacing.z;
                     break;
                 }
 
                 case OrientationMode::Y_AXIS:
                 {
-                    const int xIdx = static_cast<int>(_inter.x / _spacing.x);
-                    const int zIdx = static_cast<int>(_inter.z / _spacing.z);
-                    _inter.x = static_cast<float>(xIdx) * _spacing.x;
-                    _inter.z = static_cast<float>(zIdx) * _spacing.z;
+                    const int x_idx = static_cast<int>(_inter.x / _spacing.x);
+                    const int z_idx = static_cast<int>(_inter.z / _spacing.z);
+                    _inter.x = static_cast<float>(x_idx) * _spacing.x;
+                    _inter.z = static_cast<float>(z_idx) * _spacing.z;
                     break;
                 }
 
                 case OrientationMode::Z_AXIS:
                 {
-                    const int xIdx = static_cast<int>(_inter.x / _spacing.x);
-                    const int yIdx = static_cast<int>(_inter.y / _spacing.y);
-                    _inter.x = static_cast<float>(xIdx) * _spacing.x;
-                    _inter.y = static_cast<float>(yIdx) * _spacing.y;
+                    const int x_idx = static_cast<int>(_inter.x / _spacing.x);
+                    const int y_idx = static_cast<int>(_inter.y / _spacing.y);
+                    _inter.x = static_cast<float>(x_idx) * _spacing.x;
+                    _inter.y = static_cast<float>(y_idx) * _spacing.y;
                     break;
                 }
 
@@ -339,15 +340,15 @@ std::pair<bool, Ogre::Vector3> voxel_picker::computeRayImageIntersection(
         switch(m_orientation)
         {
             case OrientationMode::X_AXIS:
-                plane = Ogre::Plane(Ogre::Vector3::UNIT_X, _origin.x + sagittalIndex * _spacing.x);
+                plane = Ogre::Plane(Ogre::Vector3::UNIT_X, _origin.x + sagittal_index * _spacing.x);
                 break;
 
             case OrientationMode::Y_AXIS:
-                plane = Ogre::Plane(Ogre::Vector3::UNIT_Y, _origin.y + frontalIndex * _spacing.y);
+                plane = Ogre::Plane(Ogre::Vector3::UNIT_Y, _origin.y + frontal_index * _spacing.y);
                 break;
 
             case OrientationMode::Z_AXIS:
-                plane = Ogre::Plane(Ogre::Vector3::UNIT_Z, _origin.z + axialIndex * _spacing.z);
+                plane = Ogre::Plane(Ogre::Vector3::UNIT_Z, _origin.z + axial_index * _spacing.z);
                 break;
 
             default:
@@ -361,67 +362,70 @@ std::pair<bool, Ogre::Vector3> voxel_picker::computeRayImageIntersection(
         if(result.first)
         {
             Ogre::Vector3 intersection = _ray.getPoint(result.second);
-            return std::make_pair(isInsideImage(m_orientation, intersection), castToVoxel(m_orientation, intersection));
+            return std::make_pair(
+                is_inside_image(m_orientation, intersection),
+                cast_to_voxel(m_orientation, intersection)
+            );
         }
     }
     // Else, the intersection is computed between each slice. The nearest one is returned.
     else
     {
-        const Ogre::Plane sagittalPlane =
-            Ogre::Plane(Ogre::Vector3::UNIT_X, _origin.x + sagittalIndex * _spacing.x);
-        const Ogre::Plane frontalPlane =
-            Ogre::Plane(Ogre::Vector3::UNIT_Y, _origin.y + frontalIndex * _spacing.y);
-        const Ogre::Plane axialPlane = Ogre::Plane(Ogre::Vector3::UNIT_Z, _origin.z + axialIndex * _spacing.z);
+        const Ogre::Plane sagittal_plane =
+            Ogre::Plane(Ogre::Vector3::UNIT_X, _origin.x + sagittal_index * _spacing.x);
+        const Ogre::Plane frontal_plane =
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, _origin.y + frontal_index * _spacing.y);
+        const Ogre::Plane axial_plane = Ogre::Plane(Ogre::Vector3::UNIT_Z, _origin.z + axial_index * _spacing.z);
 
-        Ogre::RayTestResult sagittalInter = _ray.intersects(sagittalPlane);
-        Ogre::RayTestResult frontalInter  = _ray.intersects(frontalPlane);
-        Ogre::RayTestResult axialInter    = _ray.intersects(axialPlane);
+        Ogre::RayTestResult sagittal_inter = _ray.intersects(sagittal_plane);
+        Ogre::RayTestResult frontal_inter  = _ray.intersects(frontal_plane);
+        Ogre::RayTestResult axial_inter    = _ray.intersects(axial_plane);
 
-        if(sagittalInter.first)
+        if(sagittal_inter.first)
         {
-            Ogre::Vector3 intersection = _ray.getPoint(sagittalInter.second);
-            sagittalInter.first = isInsideImage(OrientationMode::X_AXIS, intersection);
+            Ogre::Vector3 intersection = _ray.getPoint(sagittal_inter.second);
+            sagittal_inter.first = is_inside_image(OrientationMode::X_AXIS, intersection);
         }
 
-        if(frontalInter.first)
+        if(frontal_inter.first)
         {
-            Ogre::Vector3 intersection = _ray.getPoint(frontalInter.second);
-            frontalInter.first = isInsideImage(OrientationMode::Y_AXIS, intersection);
+            Ogre::Vector3 intersection = _ray.getPoint(frontal_inter.second);
+            frontal_inter.first = is_inside_image(OrientationMode::Y_AXIS, intersection);
         }
 
-        if(axialInter.first)
+        if(axial_inter.first)
         {
-            Ogre::Vector3 intersection = _ray.getPoint(axialInter.second);
-            axialInter.first = isInsideImage(OrientationMode::Z_AXIS, intersection);
+            Ogre::Vector3 intersection = _ray.getPoint(axial_inter.second);
+            axial_inter.first = is_inside_image(OrientationMode::Z_AXIS, intersection);
         }
 
         OrientationMode orientation = OrientationMode::X_AXIS;
         Ogre::RayTestResult result  = std::make_pair(false, std::numeric_limits<Ogre::Real>::max());
-        if(sagittalInter.first)
+        if(sagittal_inter.first)
         {
             orientation   = OrientationMode::X_AXIS;
-            result.second = sagittalInter.second;
+            result.second = sagittal_inter.second;
             result.first  = true;
         }
 
-        if(frontalInter.first && frontalInter.second < result.second)
+        if(frontal_inter.first && frontal_inter.second < result.second)
         {
             orientation   = OrientationMode::Y_AXIS;
-            result.second = frontalInter.second;
+            result.second = frontal_inter.second;
             result.first  = true;
         }
 
-        if(axialInter.first && axialInter.second < result.second)
+        if(axial_inter.first && axial_inter.second < result.second)
         {
             orientation   = OrientationMode::Z_AXIS;
-            result.second = axialInter.second;
+            result.second = axial_inter.second;
             result.first  = true;
         }
 
         if(result.first)
         {
             const Ogre::Vector3 intersection = _ray.getPoint(result.second);
-            return std::make_pair(true, castToVoxel(orientation, intersection));
+            return std::make_pair(true, cast_to_voxel(orientation, intersection));
         }
     }
 

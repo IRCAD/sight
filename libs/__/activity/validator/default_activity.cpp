@@ -35,9 +35,9 @@ SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::default_activity);
 
 //-----------------------------------------------------------------------------
 
-validator::return_t default_activity::validate(const data::activity::csptr& activity) const
+validator::return_t default_activity::validate(const data::activity::csptr& _activity) const
 {
-    return validator::activity::checkRequirements(activity);
+    return validator::activity::checkRequirements(_activity);
 }
 
 //-----------------------------------------------------------------------------

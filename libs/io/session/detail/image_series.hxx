@@ -37,50 +37,50 @@ constexpr static auto s_DicomReference {"DicomReference"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
+    const core::crypto::secure_string& _password = ""
 )
 {
-    const auto imageSeries = helper::safe_cast<data::image_series>(object);
+    const auto image_series = helper::safe_cast<data::image_series>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::image_series>(tree, 1);
+    helper::write_version<data::image_series>(_tree, 1);
 
     // Since image_series inherits from Series, we could use SeriesSerializer
-    series::write(archive, tree, imageSeries, children, password);
-    image::write(archive, tree, imageSeries, children, password);
+    series::write(_archive, _tree, image_series, _children, _password);
+    image::write(_archive, _tree, image_series, _children, _password);
 
     // Serialize other attributes
-    children[s_DicomReference] = imageSeries->getDicomReference();
+    _children[s_DicomReference] = image_series->getDicomReference();
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::image_series::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto imageSeries = helper::cast_or_create<data::image_series>(object);
+    auto image_series = helper::cast_or_create<data::image_series>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::image_series>(tree, 0, 1);
+    helper::read_version<data::image_series>(_tree, 0, 1);
 
-    image::read(archive, tree, children, imageSeries, password);
+    image::read(_archive, _tree, _children, image_series, _password);
     // Deserialize series last since it overwrites some attributes of image.
-    series::read(archive, tree, children, imageSeries, password);
+    series::read(_archive, _tree, _children, image_series, _password);
 
     // Deserialize other attributes
-    imageSeries->setDicomReference(std::dynamic_pointer_cast<data::dicom_series>(children.at(s_DicomReference)));
+    image_series->setDicomReference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(s_DicomReference)));
 
-    return imageSeries;
+    return image_series;
 }
 
 SIGHT_REGISTER_SERIALIZER(data::image_series, write, read);

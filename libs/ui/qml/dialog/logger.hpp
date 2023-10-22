@@ -59,19 +59,19 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_QML_API void setTitle(const std::string& title) override;
+    UI_QML_API void setTitle(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_QML_API void setMessage(const std::string& message) override;
+    UI_QML_API void setMessage(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_QML_API void setLogger(const core::log::logger::sptr& logger) override;
+    UI_QML_API void setLogger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
@@ -89,7 +89,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(bool isOk);
+    void resultDialog(bool _is_ok);
 
 private:
 

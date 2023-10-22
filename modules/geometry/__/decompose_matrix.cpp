@@ -69,26 +69,26 @@ void decompose_matrix::updating()
     auto matrix = m_source.lock();
     SIGHT_ASSERT("input matrix '" << s_SOURCE_INPUT << "' is not defined", matrix);
 
-    glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(*matrix);
-    glm::dvec3 glmScale {};
+    glm::dmat4 glm_matrix = sight::geometry::data::to_glm_mat(*matrix);
+    glm::dvec3 glm_scale {};
     glm::dquat orientation {};
-    glm::dvec3 glmTranslation {};
+    glm::dvec3 glm_translation {};
     glm::dvec3 skew;
     glm::dvec4 perspective;
 
     /// Matrix decomposition
-    glm::decompose(glmMatrix, glmScale, orientation, glmTranslation, skew, perspective);
-    glm::dmat4 orientationMat = glm::toMat4(orientation);
+    glm::decompose(glm_matrix, glm_scale, orientation, glm_translation, skew, perspective);
+    glm::dmat4 orientation_mat = glm::toMat4(orientation);
 
     {
         auto rotation = m_rotation.lock();
         if(rotation)
         {
             sight::geometry::data::identity(*rotation);
-            sight::geometry::data::setTF3DFromMatrix(*rotation, orientationMat);
+            sight::geometry::data::from_glm_mat(*rotation, orientation_mat);
 
-            auto rotSig = rotation->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-            rotSig->async_emit();
+            auto rot_sig = rotation->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            rot_sig->async_emit();
         }
     }
     {
@@ -98,12 +98,12 @@ void decompose_matrix::updating()
             sight::geometry::data::identity(*translation);
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
-                (*translation)(i, 3) = glmTranslation[int(i)];
+                (*translation)(i, 3) = glm_translation[int(i)];
             }
 
-            auto transSig =
-                translation->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-            transSig->async_emit();
+            auto trans_sig =
+                translation->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            trans_sig->async_emit();
         }
     }
 
@@ -118,13 +118,13 @@ void decompose_matrix::updating()
                 {
                     if(i == j)
                     {
-                        (*scale)(i, j) = glmScale[int(i)];
+                        (*scale)(i, j) = glm_scale[int(i)];
                     }
                 }
             }
 
-            auto scaleSig = scale->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
-            scaleSig->async_emit();
+            auto scale_sig = scale->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            scale_sig->async_emit();
         }
     }
 

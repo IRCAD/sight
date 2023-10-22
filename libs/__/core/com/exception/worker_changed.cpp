@@ -29,8 +29,8 @@
 namespace sight::core::com::exception
 {
 
-worker_changed::worker_changed(const std::string& err) :
-    core::exception(err)
+worker_changed::worker_changed(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

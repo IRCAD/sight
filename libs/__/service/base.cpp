@@ -39,10 +39,10 @@ namespace sight::service
 {
 
 connections_t::connections_t(
-    std::initializer_list<std::tuple<const std::string_view, core::com::signals::key_t, core::com::slots::key_t> > init
+    std::initializer_list<std::tuple<const std::string_view, core::com::signals::key_t, core::com::slots::key_t> > _init
 )
 {
-    for(const auto& [key, sig, slot] : init)
+    for(const auto& [key, sig, slot] : _init)
     {
         m_keyConnectionsMap[key].emplace_back(sig, slot);
     }
@@ -51,21 +51,21 @@ connections_t::connections_t(
 //------------------------------------------------------------------------------
 
 void connections_t::push(
-    std::string_view key,
-    const core::com::signals::key_t& sig,
-    const core::com::slots::key_t& slot
+    std::string_view _key,
+    const core::com::signals::key_t& _sig,
+    const core::com::slots::key_t& _slot
 )
 {
-    m_keyConnectionsMap[key].emplace_back(sig, slot);
+    m_keyConnectionsMap[_key].emplace_back(_sig, _slot);
 }
 
 //------------------------------------------------------------------------------
 
 connections_t::key_connections_map_t::const_iterator connections_t::find(
-    std::string_view key
+    std::string_view _key
 ) const
 {
-    return m_keyConnectionsMap.find(key);
+    return m_keyConnectionsMap.find(_key);
 }
 
 //------------------------------------------------------------------------------
@@ -116,9 +116,9 @@ base::~base() = default;
 
 //-----------------------------------------------------------------------------
 
-void base::set_worker(core::thread::worker::sptr worker)
+void base::set_worker(core::thread::worker::sptr _worker)
 {
-    m_pimpl->m_worker = worker;
+    m_pimpl->m_worker = _worker;
     core::com::has_slots::m_slots.set_worker(m_pimpl->m_worker);
 }
 
@@ -152,9 +152,9 @@ void base::configure()
 
 //-----------------------------------------------------------------------------
 
-void base::configure(const config_t& service_config)
+void base::configure(const config_t& _service_config)
 {
-    this->set_config(service_config);
+    this->set_config(_service_config);
     this->configure();
 }
 

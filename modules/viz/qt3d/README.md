@@ -20,7 +20,7 @@ Module that allows to visualize a 3D scene using Qt3D. This module is not mature
 
 ```cmake
 
-target_link_libraries(myTarget <PUBLIC|PRIVATE> module_viz_qt3d)
+target_link_libraries(my_target <PUBLIC|PRIVATE> module_viz_qt3d)
 
 ```
 

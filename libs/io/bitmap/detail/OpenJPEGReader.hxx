@@ -80,7 +80,7 @@ public:
     inline ~OpenJPEGReader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& image, std::istream& istream, Flag flag)
+    inline void read(data::image& _image, std::istream& _istream, Flag _flag)
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
@@ -116,7 +116,7 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_decompress(
-                flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
@@ -129,12 +129,12 @@ public:
         CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_TRUE));
 
         // Get input size
-        istream.seekg(0, std::ios::end);
-        const auto stream_size = istream.tellg();
-        istream.seekg(0, std::ios::beg);
+        _istream.seekg(0, std::ios::end);
+        const auto stream_size = _istream.tellg();
+        _istream.seekg(0, std::ios::beg);
 
         // Setup OPJ user stream
-        opj_stream_set_user_data(keeper.m_stream, &istream, freeCallback);
+        opj_stream_set_user_data(keeper.m_stream, &_istream, freeCallback);
         opj_stream_set_user_data_length(keeper.m_stream, OPJ_UINT64(stream_size));
 
         // Setup stream callback
@@ -143,7 +143,7 @@ public:
         opj_stream_set_seek_function(keeper.m_stream, seekCallback);
 
         // Format can .jp2 or .j2k
-        m_parameters.decod_format = flag == Flag::J2K_STREAM ? 0 : 1;
+        m_parameters.decod_format = _flag == Flag::J2K_STREAM ? 0 : 1;
 
         // Setup the decoder
         CHECK_OPJ(opj_setup_decoder(keeper.m_codec, &m_parameters));
@@ -254,7 +254,7 @@ public:
             }();
 
         // Allocate destination image
-        image.resize(
+        _image.resize(
             {width, height, 0},
             type,
             pixel_format
@@ -264,27 +264,27 @@ public:
         switch(type)
         {
             case core::type::INT8:
-                toSight<std::int8_t>(*keeper.m_image, image);
+                toSight<std::int8_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT8:
-                toSight<std::uint8_t>(*keeper.m_image, image);
+                toSight<std::uint8_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::INT16:
-                toSight<std::int16_t>(*keeper.m_image, image);
+                toSight<std::int16_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT16:
-                toSight<std::uint16_t>(*keeper.m_image, image);
+                toSight<std::uint16_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::INT32:
-                toSight<std::int32_t>(*keeper.m_image, image);
+                toSight<std::int32_t>(*keeper.m_image, _image);
                 break;
 
             case core::type::UINT32:
-                toSight<std::uint32_t>(*keeper.m_image, image);
+                toSight<std::uint32_t>(*keeper.m_image, _image);
                 break;
 
             default:
@@ -304,29 +304,29 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(const char* msg, void*)
+    inline static void warningCallback(const char* _msg, void*)
     {
-        SIGHT_WARN(msg);
+        SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(const char* msg, void*)
+    inline static void errorCallback(const char* _msg, void*)
     {
-        SIGHT_THROW(msg);
+        SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T readCallback(void* p_buffer, OPJ_SIZE_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_SIZE_T readCallback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data == nullptr || p_nb_bytes == 0)
+        if(_p_user_data == nullptr || _p_nb_bytes == 0)
         {
             return OPJ_SIZE_T(-1);
         }
 
-        auto* istream = reinterpret_cast<std::istream*>(p_user_data);
-        istream->read(reinterpret_cast<char*>(p_buffer), std::streamsize(p_nb_bytes));
+        auto* istream = reinterpret_cast<std::istream*>(_p_user_data);
+        istream->read(reinterpret_cast<char*>(_p_buffer), std::streamsize(_p_nb_bytes));
         const auto count = istream->gcount();
 
         if(count <= 0)
@@ -342,35 +342,35 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_OFF_T skipCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data == nullptr)
+        if(_p_user_data == nullptr)
         {
             return -1;
         }
 
-        auto* istream = reinterpret_cast<std::istream*>(p_user_data);
-        istream->seekg(p_nb_bytes, std::ios_base::cur);
+        auto* istream = reinterpret_cast<std::istream*>(_p_user_data);
+        istream->seekg(_p_nb_bytes, std::ios_base::cur);
 
         if(istream->fail())
         {
             return -1;
         }
 
-        return p_nb_bytes;
+        return _p_nb_bytes;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seekCallback(OPJ_OFF_T p_nb_bytes, void* p_user_data)
+    inline static OPJ_BOOL seekCallback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
-        if(p_user_data == nullptr)
+        if(_p_user_data == nullptr)
         {
             return OPJ_FALSE;
         }
 
-        auto* istream = reinterpret_cast<std::istream*>(p_user_data);
-        istream->seekg(p_nb_bytes, std::ios_base::beg);
+        auto* istream = reinterpret_cast<std::istream*>(_p_user_data);
+        istream->seekg(_p_nb_bytes, std::ios_base::beg);
 
         if(istream->fail())
         {
@@ -390,9 +390,9 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toSight(const opj_image_t& opj_image, data::image& image)
+    inline static void toSight(const opj_image_t& _opj_image, data::image& _image)
     {
-        switch(image.getPixelFormat())
+        switch(_image.getPixelFormat())
         {
             case data::image::GRAY_SCALE:
             {
@@ -401,7 +401,7 @@ private:
                     T a;
                 };
 
-                toSightPixels<Pixel>(opj_image, image);
+                toSightPixels<Pixel>(_opj_image, _image);
                 break;
             }
 
@@ -414,7 +414,7 @@ private:
                     T b;
                 };
 
-                toSightPixels<Pixel>(opj_image, image);
+                toSightPixels<Pixel>(_opj_image, _image);
                 break;
             }
 
@@ -428,7 +428,7 @@ private:
                     T a;
                 };
 
-                toSightPixels<Pixel>(opj_image, image);
+                toSightPixels<Pixel>(_opj_image, _image);
                 break;
             }
 
@@ -441,7 +441,7 @@ private:
                     T r;
                 };
 
-                toSightPixels<Pixel>(opj_image, image);
+                toSightPixels<Pixel>(_opj_image, _image);
                 break;
             }
 
@@ -455,7 +455,7 @@ private:
                     T a;
                 };
 
-                toSightPixels<Pixel>(opj_image, image);
+                toSightPixels<Pixel>(_opj_image, _image);
                 break;
             }
 
@@ -467,12 +467,12 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toSightPixels(const opj_image_t& opj_image, data::image& image)
+    inline static void toSightPixels(const opj_image_t& _opj_image, data::image& _image)
     {
-        const auto& sizes = image.size();
+        const auto& sizes = _image.size();
 
-        auto pixel_it        = image.begin<P>();
-        const auto pixel_end = image.end<P>();
+        auto pixel_it        = _image.begin<P>();
+        const auto pixel_end = _image.end<P>();
 
         for(std::size_t i = 0, end = sizes[0] * sizes[1] ; i < end && pixel_it != pixel_end ; ++pixel_it)
         {
@@ -480,22 +480,22 @@ private:
 
             if constexpr(has_r<P>::value)
             {
-                pixel_it->r = decltype(pixel_it->r)(opj_image.comps[c++].data[i]);
+                pixel_it->r = decltype(pixel_it->r)(_opj_image.comps[c++].data[i]);
             }
 
             if constexpr(has_g<P>::value)
             {
-                pixel_it->g = decltype(pixel_it->g)(opj_image.comps[c++].data[i]);
+                pixel_it->g = decltype(pixel_it->g)(_opj_image.comps[c++].data[i]);
             }
 
             if constexpr(has_b<P>::value)
             {
-                pixel_it->b = decltype(pixel_it->b)(opj_image.comps[c++].data[i]);
+                pixel_it->b = decltype(pixel_it->b)(_opj_image.comps[c++].data[i]);
             }
 
             if constexpr(has_alpha<P>::value)
             {
-                pixel_it->a = decltype(pixel_it->a)(opj_image.comps[c].data[i]);
+                pixel_it->a = decltype(pixel_it->a)(_opj_image.comps[c].data[i]);
             }
 
             ++i;

@@ -55,7 +55,7 @@ frame::frame() :
 
     m_closePolicy("exit")
 {
-    m_sigClosed = new_signal<ClosedSignalType>(CLOSED_SIG);
+    m_sigClosed = new_signal<closed_signal_t>(CLOSED_SIG);
 
     new_slot(SET_VISIBLE_SLOT, &frame::setVisible, this);
     new_slot(SHOW_SLOT, &frame::show, this);
@@ -66,7 +66,7 @@ frame::frame() :
 
 void frame::initialize()
 {
-    m_viewRegistry = ui::detail::registry::View::make(this->get_id());
+    m_viewRegistry = ui::detail::registry::view::make(this->get_id());
 
     const auto config = this->get_config();
     const auto gui    = config.get_child_optional("gui");
@@ -75,16 +75,16 @@ void frame::initialize()
     {
         this->initializeLayoutManager(gui->get_child("frame"));
 
-        if(const auto menuBar = gui->get_child_optional("menuBar"); menuBar.has_value())
+        if(const auto menu_bar = gui->get_child_optional("menuBar"); menu_bar.has_value())
         {
-            this->initializeMenuBarBuilder(menuBar.value());
+            this->initializeMenuBarBuilder(menu_bar.value());
 
             m_hasMenuBar = true;
         }
 
-        if(const auto toolBar = gui->get_child_optional("toolBar"); toolBar.has_value())
+        if(const auto tool_bar = gui->get_child_optional("toolBar"); tool_bar.has_value())
         {
-            this->initializeToolBarBuilder(toolBar.value());
+            this->initializeToolBarBuilder(tool_bar.value());
 
             m_hasToolBar = true;
         }
@@ -133,9 +133,9 @@ void frame::create()
     }
 
     ui::container::widget::sptr container = m_frameLayoutManager->getContainer();
-    std::vector<ui::container::widget::sptr> subViews;
-    subViews.push_back(container);
-    m_viewRegistry->manage(subViews);
+    std::vector<ui::container::widget::sptr> sub_views;
+    sub_views.push_back(container);
+    m_viewRegistry->manage(sub_views);
 
     ui::layout::frame_manager::CloseCallback fct;
 
@@ -187,7 +187,7 @@ void frame::create()
 
 void frame::destroy()
 {
-    SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
+    SIGHT_ASSERT("view must be initialized.", m_viewRegistry);
 
     if(m_hasToolBar)
     {
@@ -231,46 +231,46 @@ void frame::destroy()
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeLayoutManager(const ui::config_t& layoutConfig)
+void frame::initializeLayoutManager(const ui::config_t& _layout_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(
+    ui::object::sptr gui_obj = ui::factory::make(
         ui::layout::frame_manager::REGISTRY_KEY
     );
-    m_frameLayoutManager = std::dynamic_pointer_cast<ui::layout::frame_manager>(guiObj);
+    m_frameLayoutManager = std::dynamic_pointer_cast<ui::layout::frame_manager>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::layout::frame_manager::REGISTRY_KEY,
         m_frameLayoutManager
     );
 
-    m_frameLayoutManager->initialize(layoutConfig);
+    m_frameLayoutManager->initialize(_layout_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeMenuBarBuilder(const ui::config_t& menuBarConfig)
+void frame::initializeMenuBarBuilder(const ui::config_t& _menu_bar_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(ui::builder::menubar::REGISTRY_KEY);
-    m_menuBarBuilder = std::dynamic_pointer_cast<ui::builder::menubar>(guiObj);
+    ui::object::sptr gui_obj = ui::factory::make(ui::builder::menubar::REGISTRY_KEY);
+    m_menuBarBuilder = std::dynamic_pointer_cast<ui::builder::menubar>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::builder::menubar::REGISTRY_KEY,
         m_menuBarBuilder
     );
 
-    m_menuBarBuilder->initialize(menuBarConfig);
+    m_menuBarBuilder->initialize(_menu_bar_config);
 }
 
 //-----------------------------------------------------------------------------
 
-void frame::initializeToolBarBuilder(const ui::config_t& toolBarConfig)
+void frame::initializeToolBarBuilder(const ui::config_t& _tool_bar_config)
 {
-    ui::object::sptr guiObj = ui::factory::make(ui::builder::toolbar::REGISTRY_KEY);
-    m_toolBarBuilder = std::dynamic_pointer_cast<ui::builder::toolbar>(guiObj);
+    ui::object::sptr gui_obj = ui::factory::make(ui::builder::toolbar::REGISTRY_KEY);
+    m_toolBarBuilder = std::dynamic_pointer_cast<ui::builder::toolbar>(gui_obj);
     SIGHT_ASSERT(
         "ClassFactoryRegistry failed for class " << ui::builder::toolbar::REGISTRY_KEY,
         m_toolBarBuilder
     );
 
-    m_toolBarBuilder->initialize(toolBarConfig);
+    m_toolBarBuilder->initialize(_tool_bar_config);
 }
 
 //-----------------------------------------------------------------------------
@@ -304,10 +304,10 @@ ui::container::widget::sptr frame::getProgressWidget()
 
 //-----------------------------------------------------------------------------
 
-void frame::setVisible(bool isVisible)
+void frame::setVisible(bool _is_visible)
 {
     ui::container::widget::sptr container = m_frameLayoutManager->getFrame();
-    container->setVisible(isVisible);
+    container->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------

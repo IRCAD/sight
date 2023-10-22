@@ -39,24 +39,24 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 message::message(
-    const data::activity::sptr& activity,
-    const activity::extension::activity_info& info,
-    const ParametersType& parameters
+    const data::activity::sptr& _activity,
+    const activity::extension::activity_info& _info,
+    const parameters_t& _parameters
 ) :
-    m_title(info.title),
+    m_title(_info.title),
     m_tabID("TABID_" + core::tools::UUID::generate()),
-    m_appConfigID(info.appConfig.id),
-    m_tabInfo(info.tabInfo.empty() ? info.title : info.tabInfo),
-    m_iconPath(info.icon),
+    m_appConfigID(_info.appConfig.id),
+    m_tabInfo(_info.tabInfo.empty() ? _info.title : _info.tabInfo),
+    m_iconPath(_info.icon),
     m_tooltip(m_tabInfo),
-    m_activity(activity)
+    m_activity(_activity)
 {
-    SIGHT_ASSERT("Activity instantiation failed", activity);
+    SIGHT_ASSERT("Activity instantiation failed", _activity);
 
     m_replacementMap = sight::activity::extension::activity::getDefault()->getReplacementMap(
-        *activity,
-        info,
-        parameters
+        *_activity,
+        _info,
+        _parameters
     );
 }
 

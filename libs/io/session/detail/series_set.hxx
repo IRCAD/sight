@@ -34,20 +34,20 @@ namespace sight::io::session::detail::series_set
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto series_set = helper::safe_cast<data::series_set>(object);
+    const auto series_set = helper::safe_cast<data::series_set>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::series_set>(tree, 1);
+    helper::write_version<data::series_set>(_tree, 1);
 
     for(std::size_t index = 0, end = series_set->size() ; index < end ; ++index)
     {
-        children[data::series::classname() + std::to_string(index)] = series_set->at(index);
+        _children[data::series::classname() + std::to_string(index)] = series_set->at(index);
     }
 }
 
@@ -55,27 +55,27 @@ inline static void write(
 
 inline static data::series_set::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto series_set = helper::cast_or_create<data::series_set>(object);
+    auto series_set = helper::cast_or_create<data::series_set>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::series_set>(tree, 0, 1);
+    helper::read_version<data::series_set>(_tree, 0, 1);
 
     // Deserialize vector
     // Clearing is required in case the object is reused
     series_set->clear();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::series::classname() + std::to_string(index));
+        const auto& it = _children.find(data::series::classname() + std::to_string(index));
 
-        if(it == children.cend())
+        if(it == _children.cend())
         {
             break;
         }

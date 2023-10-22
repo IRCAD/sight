@@ -80,16 +80,16 @@ const std::filesystem::path& reader::get_file() const
 
 //-----------------------------------------------------------------------------
 
-void reader::set_file(const std::filesystem::path& file)
+void reader::set_file(const std::filesystem::path& _file)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILE));
     m_locations.clear();
-    m_locations.push_back(file);
+    m_locations.push_back(_file);
 }
 
 //-----------------------------------------------------------------------------
 
-const io::service::LocationsType& reader::get_files() const
+const io::service::locations_t& reader::get_files() const
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
     SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty());
@@ -98,10 +98,10 @@ const io::service::LocationsType& reader::get_files() const
 
 //-----------------------------------------------------------------------------
 
-void reader::set_files(const io::service::LocationsType& files)
+void reader::set_files(const io::service::locations_t& _files)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
-    m_locations = files;
+    m_locations = _files;
 }
 
 //-----------------------------------------------------------------------------
@@ -115,16 +115,16 @@ const std::filesystem::path& reader::get_folder() const
 
 //-----------------------------------------------------------------------------
 
-void reader::set_folder(const std::filesystem::path& folder)
+void reader::set_folder(const std::filesystem::path& _folder)
 {
     SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::service::FOLDER));
     m_locations.clear();
-    m_locations.push_back(folder);
+    m_locations.push_back(_folder);
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::setFileFolder(std::filesystem::path folder)
+void reader::setFileFolder(std::filesystem::path _folder)
 {
     SIGHT_THROW_IF(
         "This reader doesn't manage file or files",
@@ -135,13 +135,13 @@ void reader::setFileFolder(std::filesystem::path folder)
     for(auto& file : m_locations)
     {
         file = file.filename();
-        file = folder / file;
+        file = _folder / file;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-const io::service::LocationsType& reader::getLocations() const
+const io::service::locations_t& reader::getLocations() const
 {
     SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty());
     return m_locations;
@@ -199,19 +199,19 @@ void reader::configuring()
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::service::FILE);
 
-        io::service::LocationsType locations;
+        io::service::locations_t locations;
 
-        const auto filesCfg = config.equal_range("file");
-        for(auto fileCfg = filesCfg.first ; fileCfg != filesCfg.second ; ++fileCfg)
+        const auto files_cfg = config.equal_range("file");
+        for(auto file_cfg = files_cfg.first ; file_cfg != files_cfg.second ; ++file_cfg)
         {
-            const auto location = fileCfg->second.get_value<std::string>();
+            const auto location = file_cfg->second.get_value<std::string>();
             locations.emplace_back(location);
         }
 
-        const auto resourcesCfg = config.equal_range("resource");
-        for(auto resourceCfg = resourcesCfg.first ; resourceCfg != resourcesCfg.second ; ++resourceCfg)
+        const auto resources_cfg = config.equal_range("resource");
+        for(auto resource_cfg = resources_cfg.first ; resource_cfg != resources_cfg.second ; ++resource_cfg)
         {
-            const auto resource = resourceCfg->second.get_value<std::string>();
+            const auto resource = resource_cfg->second.get_value<std::string>();
             const auto file     = core::runtime::get_resource_file_path(resource);
             locations.push_back(file);
         }
@@ -269,25 +269,25 @@ bool reader::hasFailed() const
 
 //-----------------------------------------------------------------------------
 
-void reader::readFolder(std::filesystem::path folder)
+void reader::readFolder(std::filesystem::path _folder)
 {
-    this->set_folder(folder);
+    this->set_folder(_folder);
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::readFile(std::filesystem::path file)
+void reader::readFile(std::filesystem::path _file)
 {
-    this->set_file(file);
+    this->set_file(_file);
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void reader::readFiles(io::service::LocationsType files)
+void reader::readFiles(io::service::locations_t _files)
 {
-    this->set_files(files);
+    this->set_files(_files);
     this->updating();
 }
 

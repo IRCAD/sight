@@ -101,10 +101,10 @@ public:
      * @note This method is thread safe
      */
     SERVICE_API void addServiceConfigInfo(
-        const std::string& configId,
-        const std::string& service,
-        const std::string& desc,
-        const boost::property_tree::ptree& config
+        const std::string& _config_id,
+        const std::string& _service,
+        const std::string& _desc,
+        const boost::property_tree::ptree& _config
     );
 
     /**
@@ -112,8 +112,8 @@ public:
      * @note This method is thread safe
      */
     SERVICE_API boost::property_tree::ptree get_service_config(
-        const std::string& configId,
-        const std::string& serviceImpl =
+        const std::string& _config_id,
+        const std::string& _service_impl =
         ""
     ) const;
 
@@ -121,7 +121,7 @@ public:
      * @brief Returns the description of the given configuration name.
      * @note This method is thread safe
      */
-    SERVICE_API const std::string& getConfigDesc(const std::string& configId) const;
+    SERVICE_API const std::string& getConfigDesc(const std::string& _config_id) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
@@ -129,8 +129,8 @@ public:
      * @note This method is thread safe
      */
     SERVICE_API std::vector<std::string> getAllConfigForService(
-        std::string serviceImpl,
-        bool matchingOnly = false
+        std::string _service_impl,
+        bool _matching_only = false
     ) const;
 
     /**

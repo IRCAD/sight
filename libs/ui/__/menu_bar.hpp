@@ -34,7 +34,7 @@ namespace sight::ui
 namespace detail::registry
 {
 
-class MenuBar;
+class menu_bar;
 
 }
 /**
@@ -47,10 +47,10 @@ public:
     SIGHT_DECLARE_SERVICE(menu_bar, service::base);
 
     /// Method called when a menu service is stopping
-    UI_API void menuServiceStopping(std::string menuSrvSID);
+    UI_API void menuServiceStopping(std::string _menu_srv_sid);
 
     /// Method called when a menu service is starting
-    UI_API void menuServiceStarting(std::string menuSrvSID);
+    UI_API void menuServiceStarting(std::string _menu_srv_sid);
 
 protected:
 
@@ -67,8 +67,8 @@ protected:
      *>
           <gui>
               <layout>
-                  <menu name="My Menu"/>
-                  <menu name="My Menu 2"/>
+                  <menu name="My menu"/>
+                  <menu name="My menu 2"/>
               </layout>
           </gui>
           <registry>
@@ -83,10 +83,10 @@ protected:
      * @warning
      * - The number of item in the gui section must be equal or greater than in the registry section.
      * - The order of the menu in each section (gui and registry) must be the same.\n
-     *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     *   For example: the menu named "My menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see ui::registry::MenuBar::initialize(),
+     *  @see ui::registry::menu_bar::initialize(),
      *::ui::layout::menubar_manager::initialize()
      */
     UI_API void initialize();
@@ -99,10 +99,10 @@ protected:
 
 private:
 
-    void initializeLayoutManager(const ui::config_t& layoutConfig);
+    void initializeLayoutManager(const ui::config_t& _layout_config);
 
     ui::layout::menubar_manager::sptr m_layoutManager;
-    SPTR(ui::detail::registry::MenuBar) m_registry;
+    SPTR(ui::detail::registry::menu_bar) m_registry;
 
     /// Flag to hide or disable the menu if the service is stopped
     bool m_hideMenus {false};

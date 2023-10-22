@@ -85,7 +85,7 @@ protected:
     MODULE_NAVIGATION_CALIBRATION_API void stopping() override;
 
     /// Registers matrix slot
-    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::hires_clock::type timestamp)
+    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::hires_clock::type _timestamp)
     override;
 
 private:

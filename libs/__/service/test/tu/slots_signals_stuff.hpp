@@ -103,7 +103,7 @@ protected:
 
     void starting() override;
     void stopping() override;
-    void swapping(std::string_view key) override;
+    void swapping(std::string_view _key) override;
     void updating() override;
 };
 
@@ -149,7 +149,7 @@ class reader2Test : public basic_srv
 {
 public:
 
-    typedef core::com::signal<void ()> ChangedSignalType;
+    typedef core::com::signal<void ()> changed_signal_t;
 
     SIGHT_DECLARE_SERVICE(reader2Test, basic_srv);
 
@@ -181,7 +181,7 @@ protected:
 
     void updating() override;
 
-    ChangedSignalType::sptr m_sigChanged;
+    changed_signal_t::sptr m_sigChanged;
 };
 
 //------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ public:
     void change();
 
     static const core::com::slots::key_t CHANGE_SLOT;
-    typedef core::com::slot<void ()> ChangeSlotType;
+    typedef core::com::slot<void ()> change_slot_t;
 
 protected:
 
@@ -229,7 +229,7 @@ protected:
 
     connections_t auto_connections() const override;
 
-    ChangeSlotType::sptr m_slotChange;
+    change_slot_t::sptr m_slotChange;
 
     core::mt::mutex m_mutex;
 };

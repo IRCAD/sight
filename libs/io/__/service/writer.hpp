@@ -88,7 +88,7 @@ public:
 
     IO_API static const core::com::signals::key_t PREFIX_SET_SIG;
     IO_API static const core::com::signals::key_t BASE_FOLDER_SET_SIG;
-    typedef core::com::signal<void ()> VoidSignalType;
+    typedef core::com::signal<void ()> void_signal_t;
 
     /**
      * @name Slots API
@@ -127,20 +127,20 @@ public:
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    IO_API void set_file(const std::filesystem::path& file);
+    IO_API void set_file(const std::filesystem::path& _file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FILES mode
      */
-    IO_API const io::service::LocationsType& get_files() const;
+    IO_API const io::service::locations_t& get_files() const;
 
     /**
      * @brief Sets file paths
      * @pre exception if service does not support FILES mode
      */
-    IO_API void set_files(const io::service::LocationsType& files);
+    IO_API void set_files(const io::service::locations_t& _files);
 
     /**
      * @brief Returns folder path set by the user or set during service configuration
@@ -158,25 +158,25 @@ public:
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const io::service::LocationsType& getLocations() const;
+    IO_API const io::service::locations_t& getLocations() const;
 
     /**
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API void set_folder(const std::filesystem::path& folder);
+    IO_API void set_folder(const std::filesystem::path& _folder);
 
     /**
      * @brief Slot: Inserts a path prefix generated via a signal sent to the service.
      *
      */
-    IO_API void setPrefix(std::string prefix);
+    IO_API void setPrefix(std::string _prefix);
 
     /**
      * @brief Slot: Sets the output base folder.
      *
      */
-    IO_API void setBaseFolder(std::string path);
+    IO_API void setBaseFolder(std::string _path);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_API bool hasLocationDefined() const;
@@ -185,9 +185,9 @@ public:
     IO_API bool hasFailed() const;
 
     /// Convenience function to convert from DialogPolicy enum value to string
-    constexpr static std::string_view dialogPolicyToString(DialogPolicy policy) noexcept
+    constexpr static std::string_view dialogPolicyToString(DialogPolicy _policy) noexcept
     {
-        switch(policy)
+        switch(_policy)
         {
             case DialogPolicy::ONCE:
                 return "once";
@@ -201,20 +201,20 @@ public:
     }
 
     /// Convenience function to convert from string to DialogPolicy enum value
-    constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
+    constexpr static DialogPolicy stringToDialogPolicy(std::string_view _policy) noexcept
     {
-        if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER);
-           policy == NEVER || policy.empty() || policy == "default")
+        if(constexpr auto never = dialogPolicyToString(DialogPolicy::NEVER);
+           _policy == never || _policy.empty() || _policy == "default")
         {
             return DialogPolicy::NEVER;
         }
 
-        if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
+        if(constexpr auto once = dialogPolicyToString(DialogPolicy::ONCE); _policy == once)
         {
             return DialogPolicy::ONCE;
         }
 
-        if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
+        if(constexpr auto always = dialogPolicyToString(DialogPolicy::ALWAYS); _policy == always)
         {
             return DialogPolicy::ALWAYS;
         }
@@ -285,7 +285,7 @@ private:
     void updateBaseFolder(std::string& /*outBaseFolder*/) const;
 
     /// Value to store file or folder paths
-    io::service::LocationsType m_locations;
+    io::service::locations_t m_locations;
 
     /// Prefix to be inserted
     std::string m_currentPrefix;

@@ -55,12 +55,15 @@ public:
     MODULE_UI_QML_API ~OrganListModel() noexcept override;
 
     /// Return the number of rows under the given parent.
-    [[nodiscard]] MODULE_UI_QML_API int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    [[nodiscard]] MODULE_UI_QML_API int rowCount(const QModelIndex& _parent = QModelIndex()) const override;
 
     /// Return the data stored under the given role for the item referred to by the index.
-    [[nodiscard]] MODULE_UI_QML_API QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    [[nodiscard]] MODULE_UI_QML_API QVariant data(
+        const QModelIndex& _index,
+        int _role = Qt::DisplayRole
+    ) const override;
 
-    MODULE_UI_QML_API void updateModelSeries(const data::model_series::sptr& modelSeries);
+    MODULE_UI_QML_API void updateModelSeries(const data::model_series::sptr& _model_series);
 
 protected:
 

@@ -66,14 +66,14 @@ void folder_selector_test::basicTest()
     CPPUNIT_ASSERT_NO_THROW(m_folderSelector->start().get());
 
     std::filesystem::path path;
-    auto folderSelectedSlot = core::com::new_slot(
+    auto folder_selected_slot = core::com::new_slot(
         [&path](std::filesystem::path _path)
         {
             path = _path;
         });
     m_worker = core::thread::worker::make();
-    folderSelectedSlot->set_worker(m_worker);
-    m_folderSelector->signal("folderSelected")->connect(folderSelectedSlot);
+    folder_selected_slot->set_worker(m_worker);
+    m_folderSelector->signal("folderSelected")->connect(folder_selected_slot);
 
     sight::ui::dialog::location_dummy::setPaths({std::filesystem::temp_directory_path()});
 

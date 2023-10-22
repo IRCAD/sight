@@ -97,7 +97,7 @@ void targeting::updating()
         SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
         if(!landmark->getGroup(m_label).m_points.empty())
         {
-            const data::landmarks::PointType point = landmark->getPoint(m_label, m_index);
+            const data::landmarks::point_t point = landmark->getPoint(m_label, m_index);
             m_targetLandmark = glm::dvec3(point[0], point[1], point[2]);
         }
         else
@@ -110,93 +110,93 @@ void targeting::updating()
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("Input \"matrix\" is missing.", matrix);
 
-    const glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(*matrix);
+    const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
 
     const glm::dvec4 origin(0.0, 0.0, 0.0, 1.0);
 
-    const glm::dvec4 axisX(1.0, 0.0, 0.0, 0.0);
-    const glm::dvec4 axisZ(0.0, 0.0, 1.0, 0.0);
+    const glm::dvec4 axis_x(1.0, 0.0, 0.0, 0.0);
+    const glm::dvec4 axis_z(0.0, 0.0, 1.0, 0.0);
 
     // Compute the needle tip position
-    const glm::dvec3 needleTip = glm::dvec3(mat * origin);
+    const glm::dvec3 needle_tip = glm::dvec3(mat * origin);
 
     // Compute the needle orientation vectors
-    const glm::dvec3 needleTipX = glm::dvec3(mat * axisX);
-    const glm::dvec3 needleTipZ = glm::dvec3(mat * axisZ);
+    const glm::dvec3 needle_tip_x = glm::dvec3(mat * axis_x);
+    const glm::dvec3 needle_tip_z = glm::dvec3(mat * axis_z);
 
     // WARNING: this axis must be consistent with the orientation of the input matrix
     // For example:
     // - If you use a camera matrix, this must be the Z axis
     // - If you use an EM sensor from the trakSTAR, this must be the X axis
-    const glm::dvec3 needleDirection = glm::normalize(needleTipZ);
+    const glm::dvec3 needle_direction = glm::normalize(needle_tip_z);
 
-    const glm::dvec3 needleTipToLandmark = glm::normalize(m_targetLandmark - needleTip);
+    const glm::dvec3 needle_tip_to_landmark = glm::normalize(m_targetLandmark - needle_tip);
 
     // Compute the intersection between the needle (from the tip) and the landmark plane
-    double distance  = 0.0;
-    double distanceX = 0.0;
+    double distance   = 0.0;
+    double distance_x = 0.0;
 
     /* Project the needle tip origin and the associated X axis of the matrices on the landmark plane */
     /* To get a coordinate system on this plane (the Y axis will be obtained via a cross product) */
-    if(glm::intersectRayPlane(needleTip, needleDirection, m_targetLandmark, -needleTipToLandmark, distance)
+    if(glm::intersectRayPlane(needle_tip, needle_direction, m_targetLandmark, -needle_tip_to_landmark, distance)
        && glm::intersectRayPlane(
-           needleTip + needleTipX,
-           needleDirection,
+           needle_tip + needle_tip_x,
+           needle_direction,
            m_targetLandmark,
-           -needleTipToLandmark,
-           distanceX
+           -needle_tip_to_landmark,
+           distance_x
        )
        && !m_label.empty())
     {
         // Compute the 3D position of the intersection between the needle and the landmark plane
-        const glm::dvec3 projectedNeedleOrigin = needleTip + needleDirection * distance;
+        const glm::dvec3 projected_needle_origin = needle_tip + needle_direction * distance;
         // Shift the needleTip with the axis vector
-        const glm::dvec3 projectedNeedleX = needleTip + needleTipX + needleDirection * distanceX;
+        const glm::dvec3 projected_needle_x = needle_tip + needle_tip_x + needle_direction * distance_x;
 
-        const glm::dvec3 projectedXAxis = glm::normalize(projectedNeedleX - projectedNeedleOrigin);
-        const glm::dvec3 projectedYAxis = glm::cross(needleTipToLandmark, projectedXAxis);
+        const glm::dvec3 projected_x_axis = glm::normalize(projected_needle_x - projected_needle_origin);
+        const glm::dvec3 projected_y_axis = glm::cross(needle_tip_to_landmark, projected_x_axis);
 
         // Compute the matrix from the world coordinates to the landmark plane coordinates
-        glm::dmat4x4 worldToPlaneMatrix;
-        worldToPlaneMatrix[0] = glm::dvec4(projectedXAxis, 0.0);
-        worldToPlaneMatrix[1] = glm::dvec4(projectedYAxis, 0.0);
-        worldToPlaneMatrix[2] = glm::dvec4(needleTipToLandmark, 0.0);
-        worldToPlaneMatrix[3] = glm::dvec4(m_targetLandmark, 1.0);
+        glm::dmat4x4 world_to_plane_matrix;
+        world_to_plane_matrix[0] = glm::dvec4(projected_x_axis, 0.0);
+        world_to_plane_matrix[1] = glm::dvec4(projected_y_axis, 0.0);
+        world_to_plane_matrix[2] = glm::dvec4(needle_tip_to_landmark, 0.0);
+        world_to_plane_matrix[3] = glm::dvec4(m_targetLandmark, 1.0);
 
         // Invert the world to landmark plane matrix
-        const glm::dmat4x4 planeToWorldMatrix = glm::affineInverse(worldToPlaneMatrix);
+        const glm::dmat4x4 plane_to_world_matrix = glm::affineInverse(world_to_plane_matrix);
 
         // Transform in the 2D landmark plane the needle intersection
-        glm::dvec3 transformedNeedleIntersection =
-            glm::dvec3(planeToWorldMatrix * glm::dvec4(projectedNeedleOrigin, 1.0));
-        transformedNeedleIntersection = glm::normalize(transformedNeedleIntersection);
+        glm::dvec3 transformed_needle_intersection =
+            glm::dvec3(plane_to_world_matrix * glm::dvec4(projected_needle_origin, 1.0));
+        transformed_needle_intersection = glm::normalize(transformed_needle_intersection);
 
         // Get the distance between the projected needle point and the landmark position
-        const double projectedNeedleToLandmarkdistance = glm::distance(projectedNeedleOrigin, m_targetLandmark);
+        const double projected_needle_to_landmarkdistance = glm::distance(projected_needle_origin, m_targetLandmark);
 
         // Compute a scale value so that the vector will represent the correct distance value on the view
-        const double maxDistance = 50.0;
-        double scale             = projectedNeedleToLandmarkdistance / maxDistance * m_width / 2.0;
-        scale = (projectedNeedleToLandmarkdistance > maxDistance ? m_width / 2.0 : scale);
+        const double max_distance = 50.0;
+        double scale              = projected_needle_to_landmarkdistance / max_distance * m_width / 2.0;
+        scale = (projected_needle_to_landmarkdistance > max_distance ? m_width / 2.0 : scale);
 
-        transformedNeedleIntersection = transformedNeedleIntersection * scale;
+        transformed_needle_intersection = transformed_needle_intersection * scale;
 
-        auto pointList = m_pointList.lock();
-        SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
-        if(!pointList->getPoints().empty())
+        auto point_list = m_pointList.lock();
+        SIGHT_ASSERT("InOut \"pointList\" is missing.", point_list);
+        if(!point_list->getPoints().empty())
         {
-            pointList->clear();
+            point_list->clear();
         }
 
         const data::point::sptr point = std::make_shared<data::point>(
-            transformedNeedleIntersection[0],
-            -transformedNeedleIntersection[1],
+            transformed_needle_intersection[0],
+            -transformed_needle_intersection[1],
             0.
         );
 
-        pointList->pushBack(point);
+        point_list->pushBack(point);
 
-        auto sig = pointList->signal<data::point_list::PointAddedSignalType>(
+        auto sig = point_list->signal<data::point_list::point_added_signal_t>(
             data::point_list::POINT_ADDED_SIG
         );
         sig->async_emit(point);
@@ -212,19 +212,19 @@ service::connections_t targeting::auto_connections() const
 
 // -----------------------------------------------------------------------------
 
-void targeting::updateSelectedPoint(std::string name, std::size_t index)
+void targeting::updateSelectedPoint(std::string _name, std::size_t _index)
 {
-    m_label            = name;
+    m_label            = _name;
     m_landmarkSelected = true;
-    m_index            = index;
+    m_index            = _index;
     this->update();
 }
 
 // -----------------------------------------------------------------------------
 
-void targeting::updatePoint(std::string name)
+void targeting::updatePoint(std::string _name)
 {
-    m_label            = name;
+    m_label            = _name;
     m_landmarkSelected = true;
     {
         const auto landmark = m_landmark.lock();
@@ -243,14 +243,14 @@ void targeting::removePoint()
     // When a point is removed, it's not selected anymore
     m_landmarkSelected = false;
 
-    auto pointList = m_pointList.lock();
-    SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
-    auto points = pointList->getPoints(); // copy the points.
-    pointList->clear();
+    auto point_list = m_pointList.lock();
+    SIGHT_ASSERT("InOut \"pointList\" is missing.", point_list);
+    auto points = point_list->getPoints(); // copy the points.
+    point_list->clear();
     for(const auto& pt : points)
     {
         // Send signals.
-        auto sig = pointList->signal<data::point_list::PointRemovedSignalType>(
+        auto sig = point_list->signal<data::point_list::point_removed_signal_t>(
             data::point_list::POINT_REMOVED_SIG
         );
         sig->async_emit(pt);

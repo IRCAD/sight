@@ -352,7 +352,7 @@ DATA_API const std::uint16_t Attribute<Keyword::QueryRetrieveView>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::QueryRetrieveView>::s_element = 0x0053;
 template<>
-DATA_API const std::string_view Attribute<Keyword::QueryRetrieveView>::s_name = "Query/Retrieve View";
+DATA_API const std::string_view Attribute<Keyword::QueryRetrieveView>::s_name = "Query/Retrieve view";
 template<>
 DATA_API const VR Attribute<Keyword::QueryRetrieveView>::s_vr = VR::CS;
 template<>
@@ -930,7 +930,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::DeidentificationActionSequence>::s_element = 0x0305;
 template<>
 DATA_API const std::string_view Attribute<Keyword::DeidentificationActionSequence>::s_name =
-    "Deidentification Action Sequence";
+    "Deidentification action Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::DeidentificationActionSequence>::s_vr = VR::SQ;
 template<>
@@ -1538,7 +1538,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ViewName>::s_group = 0x0008;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewName>::s_element = 0x2127;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ViewName>::s_name = "View Name";
+DATA_API const std::string_view Attribute<Keyword::ViewName>::s_name = "view Name";
 template<>
 DATA_API const VR Attribute<Keyword::ViewName>::s_vr = VR::SH;
 template<>
@@ -1550,7 +1550,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ViewNumber>::s_group = 0x0008;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewNumber>::s_element = 0x2128;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ViewNumber>::s_name = "View Number";
+DATA_API const std::string_view Attribute<Keyword::ViewNumber>::s_name = "view Number";
 template<>
 DATA_API const VR Attribute<Keyword::ViewNumber>::s_vr = VR::IS;
 template<>
@@ -1868,7 +1868,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::VolumeBasedCalculationTechnique>::s_element = 0x9207;
 template<>
 DATA_API const std::string_view Attribute<Keyword::VolumeBasedCalculationTechnique>::s_name =
-    "Volume Based Calculation Technique";
+    "Volume Based Calculation technique";
 template<>
 DATA_API const VR Attribute<Keyword::VolumeBasedCalculationTechnique>::s_vr = VR::CS;
 template<>
@@ -3679,7 +3679,7 @@ DATA_API const std::uint16_t Attribute<Keyword::SceneType>::s_group = 0x0016;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::SceneType>::s_element = 0x003B;
 template<>
-DATA_API const std::string_view Attribute<Keyword::SceneType>::s_name = "Scene Type";
+DATA_API const std::string_view Attribute<Keyword::SceneType>::s_name = "scene Type";
 template<>
 DATA_API const VR Attribute<Keyword::SceneType>::s_vr = VR::US;
 template<>
@@ -3751,7 +3751,7 @@ DATA_API const std::uint16_t Attribute<Keyword::SceneCaptureType>::s_group = 0x0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::SceneCaptureType>::s_element = 0x0046;
 template<>
-DATA_API const std::string_view Attribute<Keyword::SceneCaptureType>::s_name = "Scene Capture Type";
+DATA_API const std::string_view Attribute<Keyword::SceneCaptureType>::s_name = "scene Capture Type";
 template<>
 DATA_API const VR Attribute<Keyword::SceneCaptureType>::s_vr = VR::US;
 template<>
@@ -4832,7 +4832,7 @@ DATA_API const std::uint16_t Attribute<Keyword::MagneticFieldStrength>::s_group 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::MagneticFieldStrength>::s_element = 0x0087;
 template<>
-DATA_API const std::string_view Attribute<Keyword::MagneticFieldStrength>::s_name = "Magnetic Field Strength";
+DATA_API const std::string_view Attribute<Keyword::MagneticFieldStrength>::s_name = "Magnetic field Strength";
 template<>
 DATA_API const VR Attribute<Keyword::MagneticFieldStrength>::s_vr = VR::DS;
 template<>
@@ -4905,7 +4905,7 @@ DATA_API const std::uint16_t Attribute<Keyword::PercentPhaseFieldOfView>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::PercentPhaseFieldOfView>::s_element = 0x0094;
 template<>
-DATA_API const std::string_view Attribute<Keyword::PercentPhaseFieldOfView>::s_name = "Percent Phase Field of View";
+DATA_API const std::string_view Attribute<Keyword::PercentPhaseFieldOfView>::s_name = "Percent Phase field of view";
 template<>
 DATA_API const VR Attribute<Keyword::PercentPhaseFieldOfView>::s_vr = VR::DS;
 template<>
@@ -5913,7 +5913,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewShape>::s_group = 0x0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewShape>::s_element = 0x1147;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewShape>::s_name = "Field of View Shape";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewShape>::s_name = "field of view Shape";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewShape>::s_vr = VR::CS;
 template<>
@@ -5925,7 +5925,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewDimensions>::s_group 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewDimensions>::s_element = 0x1149;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewDimensions>::s_name = "Field of View Dimension(s)";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewDimensions>::s_name = "field of view Dimension(s)";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewDimensions>::s_vr = VR::IS;
 template<>
@@ -6448,7 +6448,7 @@ DATA_API const std::uint16_t Attribute<Keyword::WholeBodyTechnique>::s_group = 0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::WholeBodyTechnique>::s_element = 0x1301;
 template<>
-DATA_API const std::string_view Attribute<Keyword::WholeBodyTechnique>::s_name = "Whole Body Technique";
+DATA_API const std::string_view Attribute<Keyword::WholeBodyTechnique>::s_name = "Whole Body technique";
 template<>
 DATA_API const VR Attribute<Keyword::WholeBodyTechnique>::s_vr = VR::CS;
 template<>
@@ -7660,7 +7660,7 @@ DATA_API const std::uint16_t Attribute<Keyword::DepthOfScanField>::s_group = 0x0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::DepthOfScanField>::s_element = 0x5050;
 template<>
-DATA_API const std::string_view Attribute<Keyword::DepthOfScanField>::s_name = "Depth of Scan Field";
+DATA_API const std::string_view Attribute<Keyword::DepthOfScanField>::s_name = "Depth of Scan field";
 template<>
 DATA_API const VR Attribute<Keyword::DepthOfScanField>::s_vr = VR::IS;
 template<>
@@ -7684,7 +7684,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ViewPosition>::s_group = 0x0018;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewPosition>::s_element = 0x5101;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ViewPosition>::s_name = "View Position";
+DATA_API const std::string_view Attribute<Keyword::ViewPosition>::s_name = "view Position";
 template<>
 DATA_API const VR Attribute<Keyword::ViewPosition>::s_vr = VR::CS;
 template<>
@@ -8510,7 +8510,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewOrigin>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewOrigin>::s_element = 0x7030;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewOrigin>::s_name = "Field of View Origin";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewOrigin>::s_name = "field of view Origin";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewOrigin>::s_vr = VR::DS;
 template<>
@@ -8522,7 +8522,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewRotation>::s_group = 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewRotation>::s_element = 0x7032;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewRotation>::s_name = "Field of View Rotation";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewRotation>::s_name = "field of view Rotation";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewRotation>::s_vr = VR::DS;
 template<>
@@ -8534,7 +8534,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewHorizontalFlip>::s_gr
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewHorizontalFlip>::s_element = 0x7034;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewHorizontalFlip>::s_name = "Field of View Horizontal Flip";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewHorizontalFlip>::s_name = "field of view Horizontal Flip";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewHorizontalFlip>::s_vr = VR::CS;
 template<>
@@ -9152,7 +9152,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::CardiacSynchronizationTechnique>::s_element = 0x9037;
 template<>
 DATA_API const std::string_view Attribute<Keyword::CardiacSynchronizationTechnique>::s_name =
-    "Cardiac Synchronization Technique";
+    "Cardiac Synchronization technique";
 template<>
 DATA_API const VR Attribute<Keyword::CardiacSynchronizationTechnique>::s_vr = VR::CS;
 template<>
@@ -9395,7 +9395,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ParallelAcquisitionTechnique>::s_element = 0x9078;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ParallelAcquisitionTechnique>::s_name =
-    "Parallel Acquisition Technique";
+    "Parallel Acquisition technique";
 template<>
 DATA_API const VR Attribute<Keyword::ParallelAcquisitionTechnique>::s_vr = VR::CS;
 template<>
@@ -9796,7 +9796,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::CardiacBeatRejectionTechnique>::s_element = 0x9169;
 template<>
 DATA_API const std::string_view Attribute<Keyword::CardiacBeatRejectionTechnique>::s_name =
-    "Cardiac Beat Rejection Technique";
+    "Cardiac Beat Rejection technique";
 template<>
 DATA_API const VR Attribute<Keyword::CardiacBeatRejectionTechnique>::s_vr = VR::CS;
 template<>
@@ -9810,7 +9810,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::RespiratoryMotionCompensationTechnique>::s_element = 0x9170;
 template<>
 DATA_API const std::string_view Attribute<Keyword::RespiratoryMotionCompensationTechnique>::s_name =
-    "Respiratory Motion Compensation Technique";
+    "Respiratory Motion Compensation technique";
 template<>
 DATA_API const VR Attribute<Keyword::RespiratoryMotionCompensationTechnique>::s_vr = VR::CS;
 template<>
@@ -9836,7 +9836,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::BulkMotionCompensationTechnique>::s_element = 0x9172;
 template<>
 DATA_API const std::string_view Attribute<Keyword::BulkMotionCompensationTechnique>::s_name =
-    "Bulk Motion Compensation Technique";
+    "Bulk Motion Compensation technique";
 template<>
 DATA_API const VR Attribute<Keyword::BulkMotionCompensationTechnique>::s_vr = VR::CS;
 template<>
@@ -10141,7 +10141,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ASLTechniqueDescription>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ASLTechniqueDescription>::s_element = 0x9252;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ASLTechniqueDescription>::s_name = "ASL Technique Description";
+DATA_API const std::string_view Attribute<Keyword::ASLTechniqueDescription>::s_name = "ASL technique Description";
 template<>
 DATA_API const VR Attribute<Keyword::ASLTechniqueDescription>::s_vr = VR::LO;
 template<>
@@ -10435,7 +10435,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ReconstructionFieldOfView>::s_gr
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ReconstructionFieldOfView>::s_element = 0x9317;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ReconstructionFieldOfView>::s_name = "Reconstruction Field of View";
+DATA_API const std::string_view Attribute<Keyword::ReconstructionFieldOfView>::s_name = "Reconstruction field of view";
 template<>
 DATA_API const VR Attribute<Keyword::ReconstructionFieldOfView>::s_vr = VR::FD;
 template<>
@@ -10908,7 +10908,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::MultienergySourceTechnique>::s_element = 0x9368;
 template<>
 DATA_API const std::string_view Attribute<Keyword::MultienergySourceTechnique>::s_name =
-    "Multi-energy Source Technique";
+    "Multi-energy Source technique";
 template<>
 DATA_API const VR Attribute<Keyword::MultienergySourceTechnique>::s_vr = VR::CS;
 template<>
@@ -11468,7 +11468,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewSequence>::s_group = 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewSequence>::s_element = 0x9432;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewSequence>::s_name = "Field of View Sequence";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewSequence>::s_name = "field of view Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewSequence>::s_vr = VR::SQ;
 template<>
@@ -11480,7 +11480,7 @@ DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewDescription>::s_group
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewDescription>::s_element = 0x9433;
 template<>
-DATA_API const std::string_view Attribute<Keyword::FieldOfViewDescription>::s_name = "Field of View Description";
+DATA_API const std::string_view Attribute<Keyword::FieldOfViewDescription>::s_name = "field of view Description";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewDescription>::s_vr = VR::LO;
 template<>
@@ -11706,7 +11706,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::FieldOfViewDimensionsInFloat>::s_element = 0x9461;
 template<>
 DATA_API const std::string_view Attribute<Keyword::FieldOfViewDimensionsInFloat>::s_name =
-    "Field of View Dimension(s) in Float";
+    "field of view Dimension(s) in Float";
 template<>
 DATA_API const VR Attribute<Keyword::FieldOfViewDimensionsInFloat>::s_vr = VR::FL;
 template<>
@@ -12085,7 +12085,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ApplicationName>::s_group = 0x00
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ApplicationName>::s_element = 0x9524;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ApplicationName>::s_name = "Application Name";
+DATA_API const std::string_view Attribute<Keyword::ApplicationName>::s_name = "application Name";
 template<>
 DATA_API const VR Attribute<Keyword::ApplicationName>::s_vr = VR::LO;
 template<>
@@ -12097,7 +12097,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ApplicationVersion>::s_group = 0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ApplicationVersion>::s_element = 0x9525;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ApplicationVersion>::s_name = "Application Version";
+DATA_API const std::string_view Attribute<Keyword::ApplicationVersion>::s_name = "application Version";
 template<>
 DATA_API const VR Attribute<Keyword::ApplicationVersion>::s_vr = VR::LO;
 template<>
@@ -12109,7 +12109,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ApplicationManufacturer>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ApplicationManufacturer>::s_element = 0x9526;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ApplicationManufacturer>::s_name = "Application Manufacturer";
+DATA_API const std::string_view Attribute<Keyword::ApplicationManufacturer>::s_name = "application Manufacturer";
 template<>
 DATA_API const VR Attribute<Keyword::ApplicationManufacturer>::s_vr = VR::LO;
 template<>
@@ -13222,7 +13222,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::TransducerApplicationCodeSequence>::s_element = 0x980F;
 template<>
 DATA_API const std::string_view Attribute<Keyword::TransducerApplicationCodeSequence>::s_name =
-    "Transducer Application Code Sequence";
+    "Transducer application Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::TransducerApplicationCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -14844,7 +14844,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HorizontalFieldOfView>::s_group 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HorizontalFieldOfView>::s_element = 0x000C;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HorizontalFieldOfView>::s_name = "Horizontal Field of View";
+DATA_API const std::string_view Attribute<Keyword::HorizontalFieldOfView>::s_name = "Horizontal field of view";
 template<>
 DATA_API const VR Attribute<Keyword::HorizontalFieldOfView>::s_vr = VR::FL;
 template<>
@@ -15001,7 +15001,7 @@ DATA_API const std::uint16_t Attribute<Keyword::CameraAngleOfView>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::CameraAngleOfView>::s_element = 0x001E;
 template<>
-DATA_API const std::string_view Attribute<Keyword::CameraAngleOfView>::s_name = "Camera Angle of View";
+DATA_API const std::string_view Attribute<Keyword::CameraAngleOfView>::s_name = "Camera Angle of view";
 template<>
 DATA_API const VR Attribute<Keyword::CameraAngleOfView>::s_vr = VR::FL;
 template<>
@@ -15582,7 +15582,7 @@ DATA_API const std::uint16_t Attribute<Keyword::WideFieldOphthalmicPhotographyQu
     0x1525;
 template<>
 DATA_API const std::string_view Attribute<Keyword::WideFieldOphthalmicPhotographyQualityRatingSequence>::s_name =
-    "Wide Field Ophthalmic Photography Quality Rating Sequence";
+    "Wide field Ophthalmic Photography Quality Rating Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::WideFieldOphthalmicPhotographyQualityRatingSequence>::s_vr = VR::SQ;
 template<>
@@ -15598,7 +15598,7 @@ DATA_API const std::uint16_t Attribute<Keyword::WideFieldOphthalmicPhotographyQu
     0x1526;
 template<>
 DATA_API const std::string_view Attribute<Keyword::WideFieldOphthalmicPhotographyQualityThresholdSequence>::s_name =
-    "Wide Field Ophthalmic Photography Quality Threshold Sequence";
+    "Wide field Ophthalmic Photography Quality Threshold Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::WideFieldOphthalmicPhotographyQualityThresholdSequence>::s_vr = VR::SQ;
 template<>
@@ -15612,7 +15612,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::XCoordinatesCenterPixelViewAngle>::s_element = 0x1528;
 template<>
 DATA_API const std::string_view Attribute<Keyword::XCoordinatesCenterPixelViewAngle>::s_name =
-    "X Coordinates Center Pixel View Angle";
+    "X Coordinates Center Pixel view Angle";
 template<>
 DATA_API const VR Attribute<Keyword::XCoordinatesCenterPixelViewAngle>::s_vr = VR::FL;
 template<>
@@ -15626,7 +15626,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::YCoordinatesCenterPixelViewAngle>::s_element = 0x1529;
 template<>
 DATA_API const std::string_view Attribute<Keyword::YCoordinatesCenterPixelViewAngle>::s_name =
-    "Y Coordinates Center Pixel View Angle";
+    "Y Coordinates Center Pixel view Angle";
 template<>
 DATA_API const VR Attribute<Keyword::YCoordinatesCenterPixelViewAngle>::s_vr = VR::FL;
 template<>
@@ -16761,7 +16761,7 @@ DATA_API const std::uint16_t Attribute<Keyword::PartialView>::s_group = 0x0028;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::PartialView>::s_element = 0x1350;
 template<>
-DATA_API const std::string_view Attribute<Keyword::PartialView>::s_name = "Partial View";
+DATA_API const std::string_view Attribute<Keyword::PartialView>::s_name = "Partial view";
 template<>
 DATA_API const VR Attribute<Keyword::PartialView>::s_vr = VR::CS;
 template<>
@@ -16773,7 +16773,7 @@ DATA_API const std::uint16_t Attribute<Keyword::PartialViewDescription>::s_group
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::PartialViewDescription>::s_element = 0x1351;
 template<>
-DATA_API const std::string_view Attribute<Keyword::PartialViewDescription>::s_name = "Partial View Description";
+DATA_API const std::string_view Attribute<Keyword::PartialViewDescription>::s_name = "Partial view Description";
 template<>
 DATA_API const VR Attribute<Keyword::PartialViewDescription>::s_vr = VR::ST;
 template<>
@@ -16785,7 +16785,7 @@ DATA_API const std::uint16_t Attribute<Keyword::PartialViewCodeSequence>::s_grou
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::PartialViewCodeSequence>::s_element = 0x1352;
 template<>
-DATA_API const std::string_view Attribute<Keyword::PartialViewCodeSequence>::s_name = "Partial View Code Sequence";
+DATA_API const std::string_view Attribute<Keyword::PartialViewCodeSequence>::s_name = "Partial view Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::PartialViewCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -20313,7 +20313,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ExtendedDepthOfField>::s_group =
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ExtendedDepthOfField>::s_element = 0x0012;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ExtendedDepthOfField>::s_name = "Extended Depth of Field";
+DATA_API const std::string_view Attribute<Keyword::ExtendedDepthOfField>::s_name = "Extended Depth of field";
 template<>
 DATA_API const VR Attribute<Keyword::ExtendedDepthOfField>::s_vr = VR::CS;
 template<>
@@ -21502,7 +21502,7 @@ DATA_API const std::uint16_t Attribute<Keyword::AngularViewVector>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::AngularViewVector>::s_element = 0x0090;
 template<>
-DATA_API const std::string_view Attribute<Keyword::AngularViewVector>::s_name = "Angular View Vector";
+DATA_API const std::string_view Attribute<Keyword::AngularViewVector>::s_name = "Angular view Vector";
 template<>
 DATA_API const VR Attribute<Keyword::AngularViewVector>::s_vr = VR::US;
 template<>
@@ -21586,7 +21586,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ViewCodeSequence>::s_group = 0x0
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewCodeSequence>::s_element = 0x0220;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ViewCodeSequence>::s_name = "View Code Sequence";
+DATA_API const std::string_view Attribute<Keyword::ViewCodeSequence>::s_name = "view Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ViewCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -21598,7 +21598,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ViewModifierCodeSequence>::s_gro
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewModifierCodeSequence>::s_element = 0x0222;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ViewModifierCodeSequence>::s_name = "View Modifier Code Sequence";
+DATA_API const std::string_view Attribute<Keyword::ViewModifierCodeSequence>::s_name = "view Modifier Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ViewModifierCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -22058,7 +22058,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramSequence>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramSequence>::s_element = 0x3000;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramSequence>::s_name = "Histogram Sequence";
+DATA_API const std::string_view Attribute<Keyword::HistogramSequence>::s_name = "histogram Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramSequence>::s_vr = VR::SQ;
 template<>
@@ -22070,7 +22070,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramNumberOfBins>::s_group 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramNumberOfBins>::s_element = 0x3002;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramNumberOfBins>::s_name = "Histogram Number of Bins";
+DATA_API const std::string_view Attribute<Keyword::HistogramNumberOfBins>::s_name = "histogram Number of Bins";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramNumberOfBins>::s_vr = VR::US;
 template<>
@@ -22082,7 +22082,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramFirstBinValue>::s_group
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramFirstBinValue>::s_element = 0x3004;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramFirstBinValue>::s_name = "Histogram First Bin Value";
+DATA_API const std::string_view Attribute<Keyword::HistogramFirstBinValue>::s_name = "histogram First Bin Value";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramFirstBinValue>::s_vr = VR::SS_US;
 template<>
@@ -22094,7 +22094,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramLastBinValue>::s_group 
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramLastBinValue>::s_element = 0x3006;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramLastBinValue>::s_name = "Histogram Last Bin Value";
+DATA_API const std::string_view Attribute<Keyword::HistogramLastBinValue>::s_name = "histogram Last Bin Value";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramLastBinValue>::s_vr = VR::SS_US;
 template<>
@@ -22106,7 +22106,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramBinWidth>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramBinWidth>::s_element = 0x3008;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramBinWidth>::s_name = "Histogram Bin Width";
+DATA_API const std::string_view Attribute<Keyword::HistogramBinWidth>::s_name = "histogram Bin Width";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramBinWidth>::s_vr = VR::US;
 template<>
@@ -22118,7 +22118,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramExplanation>::s_group =
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramExplanation>::s_element = 0x3010;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramExplanation>::s_name = "Histogram Explanation";
+DATA_API const std::string_view Attribute<Keyword::HistogramExplanation>::s_name = "histogram Explanation";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramExplanation>::s_vr = VR::LO;
 template<>
@@ -22130,7 +22130,7 @@ DATA_API const std::uint16_t Attribute<Keyword::HistogramData>::s_group = 0x0060
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::HistogramData>::s_element = 0x3020;
 template<>
-DATA_API const std::string_view Attribute<Keyword::HistogramData>::s_name = "Histogram Data";
+DATA_API const std::string_view Attribute<Keyword::HistogramData>::s_name = "histogram Data";
 template<>
 DATA_API const VR Attribute<Keyword::HistogramData>::s_vr = VR::UL;
 template<>
@@ -23030,7 +23030,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewOrientationCodeSequence>::s_element = 0x62E0;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ViewOrientationCodeSequence>::s_name =
-    "View Orientation Code Sequence";
+    "view Orientation Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ViewOrientationCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -23044,7 +23044,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ViewOrientationModifierCodeSequence>::s_element = 0x62F0;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ViewOrientationModifierCodeSequence>::s_name =
-    "View Orientation Modifier Code Sequence";
+    "view Orientation Modifier Code Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ViewOrientationModifierCodeSequence>::s_vr = VR::SQ;
 template<>
@@ -23811,7 +23811,7 @@ DATA_API const std::uint16_t Attribute<Keyword::RenderFieldOfView>::s_group = 0x
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::RenderFieldOfView>::s_element = 0x1606;
 template<>
-DATA_API const std::string_view Attribute<Keyword::RenderFieldOfView>::s_name = "Render Field of View";
+DATA_API const std::string_view Attribute<Keyword::RenderFieldOfView>::s_name = "Render field of view";
 template<>
 DATA_API const VR Attribute<Keyword::RenderFieldOfView>::s_vr = VR::FD;
 template<>
@@ -23940,7 +23940,7 @@ template<>
 DATA_API const std::uint16_t Attribute<Keyword::ApplicationMaximumRepaintTime>::s_element = 0x010E;
 template<>
 DATA_API const std::string_view Attribute<Keyword::ApplicationMaximumRepaintTime>::s_name =
-    "Application Maximum Repaint Time";
+    "application Maximum Repaint Time";
 template<>
 DATA_API const VR Attribute<Keyword::ApplicationMaximumRepaintTime>::s_vr = VR::US;
 template<>
@@ -24282,7 +24282,7 @@ DATA_API const std::uint16_t Attribute<Keyword::TextureLabel>::s_group = 0x0080;
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::TextureLabel>::s_element = 0x0009;
 template<>
-DATA_API const std::string_view Attribute<Keyword::TextureLabel>::s_name = "Texture Label";
+DATA_API const std::string_view Attribute<Keyword::TextureLabel>::s_name = "texture Label";
 template<>
 DATA_API const VR Attribute<Keyword::TextureLabel>::s_vr = VR::SH;
 template<>
@@ -24318,7 +24318,7 @@ DATA_API const std::uint16_t Attribute<Keyword::ReferencedTextureSequence>::s_gr
 template<>
 DATA_API const std::uint16_t Attribute<Keyword::ReferencedTextureSequence>::s_element = 0x0012;
 template<>
-DATA_API const std::string_view Attribute<Keyword::ReferencedTextureSequence>::s_name = "Referenced Texture Sequence";
+DATA_API const std::string_view Attribute<Keyword::ReferencedTextureSequence>::s_name = "Referenced texture Sequence";
 template<>
 DATA_API const VR Attribute<Keyword::ReferencedTextureSequence>::s_vr = VR::SQ;
 template<>

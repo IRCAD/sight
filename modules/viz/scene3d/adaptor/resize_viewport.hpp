@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -91,10 +91,10 @@ private:
     void revert();
 
     /// Defines the initial viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_previousViewportDimensions {0.F, 0.F, 1.F, 1.F};
+    sight::viz::scene3d::layer::viewport_config_t m_previousViewportDimensions {0.F, 0.F, 1.F, 1.F};
 
     /// Defines the configured viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_newViewportDimensions {0.F, 0.F, 1.F, 1.F};
+    sight::viz::scene3d::layer::viewport_config_t m_newViewportDimensions {0.F, 0.F, 1.F, 1.F};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

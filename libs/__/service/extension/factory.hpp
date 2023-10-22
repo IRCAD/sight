@@ -51,11 +51,11 @@ class SERVICE_CLASS_API factory : public core::base_object // NOLINT(bugprone-fo
 public:
 
     typedef std::string key_t;
-    typedef std::vector<key_t> KeyVectorType;
+    typedef std::vector<key_t> key_vector_t;
     typedef std::pair<std::string, std::string> StringPair;
 
     /// We keep boost here because std implementation does not support a pair of std::string as key
-    typedef boost::unordered_map<StringPair, bool> SupportMapType;
+    typedef boost::unordered_map<StringPair, bool> support_map_t;
     typedef std::function<SPTR(service::base)()> factoryType;
 
     SIGHT_DECLARE_CLASS(factory, core::base_object);
@@ -68,17 +68,17 @@ public:
 
     SERVICE_API void add_service_factory(
         factoryType _factory,
-        const std::string& simpl,
-        const std::string& stype
+        const std::string& _simpl,
+        const std::string& _stype
     );
 
     SERVICE_API void add_object_factory(
-        const std::string& simpl,
-        const std::string& oimpl
+        const std::string& _simpl,
+        const std::string& _oimpl
     );
 
     /// Create a service from a factory type
-    SERVICE_API SPTR(base) create(const std::string& _srvImpl) const;
+    SERVICE_API SPTR(base) create(const std::string& _srv_impl) const;
 
     SERVICE_API void clear_factory();
 
@@ -95,22 +95,22 @@ public:
     ) const;
 
     /// return the objects registered for a given service.
-    SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& _srvImpl) const;
+    SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& _srv_impl) const;
 
     /// return the service description.
-    SERVICE_API std::string getServiceDescription(const std::string& _srvImpl) const;
+    SERVICE_API std::string getServiceDescription(const std::string& _srv_impl) const;
 
     /// return the service capabilities.
-    SERVICE_API std::string getServiceTags(const std::string& _srvImpl) const;
+    SERVICE_API std::string getServiceTags(const std::string& _srv_impl) const;
 
     /// Check if the service with given object and implementation is valid
-    SERVICE_API bool checkServiceValidity(const std::string& _object, const std::string& _srvImpl) const;
+    SERVICE_API bool checkServiceValidity(const std::string& _object, const std::string& _srv_impl) const;
 
     /**
      * @brief Check whether an object (object) supports service of type srvType
      * @return true if service type supported
      */
-    SERVICE_API bool support(const std::string& _object, const std::string& _srvType);
+    SERVICE_API bool support(const std::string& _object, const std::string& _srv_type);
 
     /**
      * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
@@ -118,14 +118,14 @@ public:
      */
     SERVICE_API bool support(
         const std::string& _object,
-        const std::string& _srvType,
-        const std::string& _srvImpl
+        const std::string& _srv_type,
+        const std::string& _srv_impl
     ) const;
 
     /**
      * @brief returns the registered factory keys.
      */
-    SERVICE_API virtual KeyVectorType get_factory_keys() const;
+    SERVICE_API virtual key_vector_t get_factory_keys() const;
 
 private:
 
@@ -145,7 +145,7 @@ private:
      * @brief print services informations
      * @warning not thread-safe
      */
-    static void printInfoMap(const SrvRegContainer& src);
+    static void printInfoMap(const SrvRegContainer& _src);
 
     /**
      * @brief Trace services not declared in plugin.xml
@@ -155,7 +155,7 @@ private:
 
     /// Container of service information
     SrvRegContainer m_srvImplToSrvInfo;
-    SupportMapType m_supportMap;
+    support_map_t m_supportMap;
 
     mutable core::mt::read_write_mutex m_srvImplToSrvInfoMutex;
     mutable core::mt::read_write_mutex m_supportMapMutex;

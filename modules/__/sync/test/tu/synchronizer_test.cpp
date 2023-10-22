@@ -101,12 +101,12 @@ public:
         srv->update().wait();
     }
 
-    explicit SynchronizerTester(std::stringstream& config_string)
+    explicit SynchronizerTester(std::stringstream& _config_string)
     {
         srv = service::add("sight::module::sync::synchronizer");
         CPPUNIT_ASSERT(srv != nullptr);
         service::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        boost::property_tree::read_xml(_config_string, config);
         srv->set_config(config);
 
         srv->configure();
@@ -130,15 +130,15 @@ public:
         // create and set the input TL
         frameTL1 = std::make_shared<data::frame_tl>();
         frameTL1->initPoolSize(
-            frameSize[0],
-            frameSize[1],
+            FRAME_SIZE[0],
+            FRAME_SIZE[1],
             core::type::UINT8,
             sight::data::frame_tl::PixelFormat::GRAY_SCALE
         );
         frameTL2 = std::make_shared<data::frame_tl>();
         frameTL2->initPoolSize(
-            frameSize[0],
-            frameSize[1],
+            FRAME_SIZE[0],
+            FRAME_SIZE[1],
             core::type::UINT8,
             sight::data::frame_tl::PixelFormat::GRAY_SCALE
         );
@@ -152,7 +152,7 @@ public:
         // create and set the inout which will be filled in the synchronization process
         frame1 = std::make_shared<data::image>();
         frame1->resize(
-            frameSize,
+            FRAME_SIZE,
             core::type::UINT8,
             data::image::PixelFormat::GRAY_SCALE
         );
@@ -163,7 +163,7 @@ public:
 
         frame2 = std::make_shared<data::image>();
         frame2->resize(
-            frameSize,
+            FRAME_SIZE,
             core::type::UINT8,
             data::image::PixelFormat::GRAY_SCALE
         );
@@ -182,45 +182,49 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void addFrameToFrameTL(data::frame_tl::sptr& _frameTL, const std::uint8_t timestamp)
+    void addFrameToFrameTL(data::frame_tl::sptr& _frame_tl, const std::uint8_t _timestamp)
     {
-        const SPTR(data::frame_tl::BufferType) data = _frameTL->createBuffer(timestamp);
-        std::uint8_t* eltBuffer = data->addElement(0);
-        memset(eltBuffer, timestamp, frameSize[0] * frameSize[1]);
+        const SPTR(data::frame_tl::buffer_t) data = _frame_tl->createBuffer(_timestamp);
+        std::uint8_t* elt_buffer = data->addElement(0);
+        memset(elt_buffer, _timestamp, FRAME_SIZE[0] * FRAME_SIZE[1]);
 
-        _frameTL->pushObject(data);
+        _frame_tl->pushObject(data);
         srv->update().wait();
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addMatrixToMatrixTL(data::matrix_tl::sptr& _matrixTL, unsigned int elementIndex, const std::uint8_t timestamp)
-    {
-        const SPTR(data::matrix_tl::BufferType) data = _matrixTL->createBuffer(timestamp);
-        std::array<float, 16> matrix {1., 0., 0., 0.,
-                                      0., 1., 0., 0.,
-                                      0., 0., 1., 0.,
-                                      0., 0., 0., 1.
-        };
-        matrix[0] = float(timestamp);
-        data->setElement(matrix, elementIndex);
-        _matrixTL->pushObject(data);
-        srv->update().wait();
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addMatrixToMatrixTL(data::matrix_tl::sptr& _matrixTL, const std::uint8_t timestamp)
-    {
-        addMatrixToMatrixTL(_matrixTL, 0, timestamp);
     }
 
     //------------------------------------------------------------------------------
 
     void addMatrixToMatrixTL(
-        data::matrix_tl::sptr& _matrixTL,
-        std::vector<unsigned int> elementIndexList,
-        const std::uint8_t timestamp
+        data::matrix_tl::sptr& _matrix_tl,
+        unsigned int _element_index,
+        const std::uint8_t _timestamp
+)
+    {
+        const SPTR(data::matrix_tl::buffer_t) data = _matrix_tl->createBuffer(_timestamp);
+        std::array<float, 16> matrix {1., 0., 0., 0.,
+                                      0., 1., 0., 0.,
+                                      0., 0., 1., 0.,
+                                      0., 0., 0., 1.
+        };
+        matrix[0] = float(_timestamp);
+        data->setElement(matrix, _element_index);
+        _matrix_tl->pushObject(data);
+        srv->update().wait();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void addMatrixToMatrixTL(data::matrix_tl::sptr& _matrix_tl, const std::uint8_t _timestamp)
+    {
+        addMatrixToMatrixTL(_matrix_tl, 0, _timestamp);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void addMatrixToMatrixTL(
+        data::matrix_tl::sptr& _matrix_tl,
+        std::vector<unsigned int> _element_index_list,
+        const std::uint8_t _timestamp
 )
     {
         // The purpose here is to fill a matrix TL with a new matrix, which needs to store
@@ -230,20 +234,20 @@ public:
         // by testing the first value of the matrix, it  is possible to verify that the
         // appropriate matrix has be put to a given output.
 
-        const SPTR(data::matrix_tl::BufferType) data = _matrixTL->createBuffer(timestamp);
+        const SPTR(data::matrix_tl::buffer_t) data = _matrix_tl->createBuffer(_timestamp);
 
-        for(const auto elementIndex : elementIndexList)
+        for(const auto element_index : _element_index_list)
         {
             std::array<float, 16> matrix {1., 0., 0., 0.,
                                           0., 1., 0., 0.,
                                           0., 0., 1., 0.,
                                           0., 0., 0., 1.
             };
-            matrix[0] = float(timestamp * 10 + elementIndex);
-            data->setElement(matrix, elementIndex);
+            matrix[0] = float(_timestamp * 10 + element_index);
+            data->setElement(matrix, element_index);
         }
 
-        _matrixTL->pushObject(data);
+        _matrix_tl->pushObject(data);
         srv->update().wait();
     }
 
@@ -263,13 +267,13 @@ public:
         // timestamp.
         for(std::size_t i = 1 ; i < 16 ; ++i)
         {
-            const double matrixValue   = (*_matrix)[i];
-            const double expectedValue = i % 5 == 0 ? 1. : 0.;
-            CPPUNIT_ASSERT_EQUAL(expectedValue, matrixValue);
+            const double matrix_value   = (*_matrix)[i];
+            const double expected_value = i % 5 == 0 ? 1. : 0.;
+            CPPUNIT_ASSERT_EQUAL(expected_value, matrix_value);
         }
 
-        const double matrixValue = (*_matrix)(0, 0);
-        CPPUNIT_ASSERT_EQUAL(_value, matrixValue);
+        const double matrix_value = (*_matrix)(0, 0);
+        CPPUNIT_ASSERT_EQUAL(_value, matrix_value);
     }
 
     //------------------------------------------------------------------------------
@@ -289,9 +293,9 @@ public:
         std::for_each(
             begin,
             end,
-            [&_value](const auto& x)
+            [&_value](const auto& _x)
             {
-                CPPUNIT_ASSERT_EQUAL(_value, x);
+                CPPUNIT_ASSERT_EQUAL(_value, _x);
             });
     }
 
@@ -304,8 +308,8 @@ public:
     data::image::sptr frame2;
     data::matrix4::sptr matrix1;
 
-    const data::image::Size frameSize {2, 2, 1};
-    const int synchWaitDurationMs {60};
+    const data::image::Size FRAME_SIZE {2, 2, 1};
+    const int SYNCH_WAIT_DURATION_MS {60};
 };
 
 //------------------------------------------------------------------------------
@@ -313,15 +317,15 @@ public:
 void synchronizer_test::singleFrameTLPopulation()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection = tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     // populate the TLs
     tester.addFrameToFrameTL(tester.frameTL1, 1);
@@ -335,7 +339,7 @@ void synchronizer_test::singleFrameTLPopulation()
     // populate the TL
     tester.addFrameToFrameTL(tester.frameTL1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     //test the output
     SynchronizerTester::checkFrame(tester.frame1, 3);
     SynchronizerTester::checkFrame(tester.frame2, 0);
@@ -347,15 +351,15 @@ void synchronizer_test::singleFrameTLPopulation()
 void synchronizer_test::singleMatrixTLPopulation()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection = tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
@@ -366,7 +370,7 @@ void synchronizer_test::singleMatrixTLPopulation()
 
     tester.addMatrixToMatrixTL(tester.matrixTL1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     SynchronizerTester::checkFrame(tester.frame1, 0);
     SynchronizerTester::checkFrame(tester.frame2, 0);
     SynchronizerTester::checkMatrix(tester.matrix1, 3);
@@ -406,25 +410,25 @@ void synchronizer_test::basicSynchronisation()
     SynchronizerTester tester;
 
     //signal - slot connections for tests
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
     // This is done just to handle automatic synch at first data push
@@ -435,7 +439,7 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -445,7 +449,7 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 2);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     SynchronizerTester::checkFrame(tester.frame1, 2);
     SynchronizerTester::checkFrame(tester.frame2, 2);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -455,7 +459,7 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 6);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 6);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -464,8 +468,8 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 8);
     tester.addFrameToFrameTL(tester.frameTL2, 8);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -473,7 +477,7 @@ void synchronizer_test::basicSynchronisation()
     //time 5: synch, with timestamp  min(9,8,9)=8 => take frame/matrix closest to 8
     tester.addFrameToFrameTL(tester.frameTL1, 9);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 9);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 8);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     SynchronizerTester::checkFrame(tester.frame1, 8);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -481,8 +485,8 @@ void synchronizer_test::basicSynchronisation()
     //time 6: no synch, as new timestamp is min (10, 8, 9) = 8 = last_timestamp
     tester.addFrameToFrameTL(tester.frameTL1, 10);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 8);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -490,15 +494,15 @@ void synchronizer_test::basicSynchronisation()
     //time 7: no synch, as new timestamp is min (11, 8, 11) = 8 = last_timestamp
     tester.addFrameToFrameTL(tester.frameTL1, 11);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 11);
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
 
     //time 8: synch, with timestamp  min(12,12,11)=11 => take frame/matrix closest to 11
     tester.addFrameToFrameTL(tester.frameTL1, 12);
     tester.addFrameToFrameTL(tester.frameTL2, 12);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 11);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 11);
     SynchronizerTester::checkFrame(tester.frame1, 11);
     SynchronizerTester::checkFrame(tester.frame2, 12);
     SynchronizerTester::checkMatrix(tester.matrix1, 11);
@@ -507,8 +511,8 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 13);
     tester.addFrameToFrameTL(tester.frameTL2, 13);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 11);
     SynchronizerTester::checkFrame(tester.frame2, 12);
     SynchronizerTester::checkMatrix(tester.matrix1, 11);
@@ -516,7 +520,7 @@ void synchronizer_test::basicSynchronisation()
     //time 10: synch, with timestamp  min(14,13,14)=13 => take frame/matrix closest to 13
     tester.addFrameToFrameTL(tester.frameTL1, 14);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 14);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 13);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 13);
     SynchronizerTester::checkFrame(tester.frame1, 13);
     SynchronizerTester::checkFrame(tester.frame2, 13);
     SynchronizerTester::checkMatrix(tester.matrix1, 14);
@@ -526,7 +530,7 @@ void synchronizer_test::basicSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 15);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 15);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 15);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 15);
     SynchronizerTester::checkFrame(tester.frame1, 15);
     SynchronizerTester::checkFrame(tester.frame2, 15);
     SynchronizerTester::checkMatrix(tester.matrix1, 15);
@@ -548,25 +552,25 @@ void synchronizer_test::basicSynchronisation()
 void synchronizer_test::timeGapSynchronisation()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
     // This is done just to handle automatic synch at first data push
@@ -577,7 +581,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -587,7 +591,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 2);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     SynchronizerTester::checkFrame(tester.frame1, 2);
     SynchronizerTester::checkFrame(tester.frame2, 2);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -597,7 +601,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 49);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 49);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 49);
     SynchronizerTester::checkFrame(tester.frame1, 50);
     SynchronizerTester::checkFrame(tester.frame2, 49);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -607,8 +611,8 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 50);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 49);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 49);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 49);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 50);
     SynchronizerTester::checkFrame(tester.frame2, 49);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -617,7 +621,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 52);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 50);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 50);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
     SynchronizerTester::checkFrame(tester.frame1, 50);
     SynchronizerTester::checkFrame(tester.frame2, 50);
     SynchronizerTester::checkMatrix(tester.matrix1, 50);
@@ -626,8 +630,8 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 53);
     tester.addFrameToFrameTL(tester.frameTL2, 51);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 50);
     SynchronizerTester::checkFrame(tester.frame2, 50);
     SynchronizerTester::checkMatrix(tester.matrix1, 50);
@@ -636,7 +640,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 54);
     tester.addFrameToFrameTL(tester.frameTL2, 52);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 52);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 52);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 52);
     SynchronizerTester::checkFrame(tester.frame1, 52);
     SynchronizerTester::checkFrame(tester.frame2, 52);
     SynchronizerTester::checkMatrix(tester.matrix1, 52);
@@ -646,7 +650,7 @@ void synchronizer_test::timeGapSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 55);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 55);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 55);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 55);
     SynchronizerTester::checkFrame(tester.frame1, 55);
     SynchronizerTester::checkFrame(tester.frame2, 55);
     SynchronizerTester::checkMatrix(tester.matrix1, 55);
@@ -668,25 +672,25 @@ void synchronizer_test::timeGapSynchronisation()
 void synchronizer_test::resetTimelineSynchronisation()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
     // This is done just to handle automatic synch at first data push
@@ -697,7 +701,7 @@ void synchronizer_test::resetTimelineSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -707,7 +711,7 @@ void synchronizer_test::resetTimelineSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 2);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     SynchronizerTester::checkFrame(tester.frame1, 2);
     SynchronizerTester::checkFrame(tester.frame2, 2);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -717,8 +721,8 @@ void synchronizer_test::resetTimelineSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 6);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 6);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
-    lastTimestampSynch = 0;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
+    last_timestamp_synch = 0;
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -730,7 +734,7 @@ void synchronizer_test::resetTimelineSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 8);
     tester.addFrameToFrameTL(tester.frameTL2, 8);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -739,7 +743,7 @@ void synchronizer_test::resetTimelineSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 9);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 9);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 8);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     SynchronizerTester::checkFrame(tester.frame1, 8);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -747,8 +751,8 @@ void synchronizer_test::resetTimelineSynchronisation()
     //time 6: no synch, timestamp  min(10,8,9)= 8 = last_timestamp
     tester.addFrameToFrameTL(tester.frameTL1, 10);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 8);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -756,7 +760,7 @@ void synchronizer_test::resetTimelineSynchronisation()
     //time 7: sync, with, timestamp  min(11,11,9)= 9 => take frame/matrix closest to 9
     tester.addFrameToFrameTL(tester.frameTL1, 11);
     tester.addFrameToFrameTL(tester.frameTL2, 11);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 9);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 9);
     SynchronizerTester::checkFrame(tester.frame1, 9);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -778,25 +782,25 @@ void synchronizer_test::resetTimelineSynchronisation()
 void synchronizer_test::resetAndLoopSynchronisation()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
     // This is done just to handle automatic synch at first data push
@@ -807,7 +811,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -817,7 +821,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 3);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     SynchronizerTester::checkFrame(tester.frame1, 3);
     SynchronizerTester::checkFrame(tester.frame2, 3);
     SynchronizerTester::checkMatrix(tester.matrix1, 3);
@@ -827,8 +831,8 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 3);
     SynchronizerTester::checkFrame(tester.frame2, 3);
     SynchronizerTester::checkMatrix(tester.matrix1, 3);
@@ -837,7 +841,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 6);
     tester.addFrameToFrameTL(tester.frameTL2, 6);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -846,8 +850,8 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL1, 8);
     tester.addFrameToFrameTL(tester.frameTL2, 8);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
     SynchronizerTester::checkFrame(tester.frame1, 6);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 6);
@@ -855,7 +859,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     //time 5: synch, with timestamp  min(9,8,9)=8 => take frame/matrix closest to 8
     tester.addFrameToFrameTL(tester.frameTL1, 9);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 9);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 8);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 8);
     SynchronizerTester::checkFrame(tester.frame1, 8);
     SynchronizerTester::checkFrame(tester.frame2, 8);
     SynchronizerTester::checkMatrix(tester.matrix1, 9);
@@ -873,7 +877,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -883,7 +887,7 @@ void synchronizer_test::resetAndLoopSynchronisation()
     tester.addFrameToFrameTL(tester.frameTL2, 2);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     SynchronizerTester::checkFrame(tester.frame1, 2);
     SynchronizerTester::checkFrame(tester.frame2, 2);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -916,9 +920,9 @@ void synchronizer_test::singleMatrixTLConfigTest()
     SynchronizerTester tester(config_string);
 
     // create input TLs
-    data::matrix_tl::sptr matrixTL1 = std::make_shared<data::matrix_tl>();
-    matrixTL1->initPoolSize(4);
-    tester.srv->set_input(matrixTL1, "matrixTL", true, false, 0);
+    data::matrix_tl::sptr matrix_t_l1 = std::make_shared<data::matrix_tl>();
+    matrix_t_l1->initPoolSize(4);
+    tester.srv->set_input(matrix_t_l1, "matrixTL", true, false, 0);
 
     // create output vars
     auto matrix0 = std::make_shared<data::matrix4>();
@@ -932,25 +936,25 @@ void synchronizer_test::singleMatrixTLConfigTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 1);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 2);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 4);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 4);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 4);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
 
     //The value in the matrix is  timestamp*10 + element_Index
     SynchronizerTester::checkMatrix(matrix0, 61);
@@ -981,12 +985,12 @@ void synchronizer_test::mixtMatrixTLConfigTest()
     SynchronizerTester tester(config_string);
 
     // create input TLs
-    data::matrix_tl::sptr matrixTL1 = std::make_shared<data::matrix_tl>();
-    data::matrix_tl::sptr matrixTL2 = std::make_shared<data::matrix_tl>();
-    matrixTL1->initPoolSize(4);
-    matrixTL2->initPoolSize(4);
-    tester.srv->set_input(matrixTL1, "matrixTL", true, false, 0);
-    tester.srv->set_input(matrixTL2, "matrixTL", true, false, 1);
+    data::matrix_tl::sptr matrix_t_l1 = std::make_shared<data::matrix_tl>();
+    data::matrix_tl::sptr matrix_t_l2 = std::make_shared<data::matrix_tl>();
+    matrix_t_l1->initPoolSize(4);
+    matrix_t_l2->initPoolSize(4);
+    tester.srv->set_input(matrix_t_l1, "matrixTL", true, false, 0);
+    tester.srv->set_input(matrix_t_l2, "matrixTL", true, false, 1);
 
     // create output vars
     auto matrix0 = std::make_shared<data::matrix4>();
@@ -1008,35 +1012,35 @@ void synchronizer_test::mixtMatrixTLConfigTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 1);
-    tester.addMatrixToMatrixTL(matrixTL2, {0, 1, 2}, 1);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 3);
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
-    tester.addMatrixToMatrixTL(matrixTL2, {0, 1, 2}, 2);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 1);
+    tester.addMatrixToMatrixTL(matrix_t_l2, {0, 1, 2}, 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 3);
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
+    tester.addMatrixToMatrixTL(matrix_t_l2, {0, 1, 2}, 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
 
     //The value in the matrix is  timestamp*10 + element_Index
     SynchronizerTester::checkMatrix(matrix0, 31);
@@ -1065,20 +1069,20 @@ void synchronizer_test::singleFrameTLConfigTest()
     SynchronizerTester tester(config_string);
 
     // create input TL
-    auto frameTL = std::make_shared<data::frame_tl>();
-    frameTL->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_tl = std::make_shared<data::frame_tl>();
+    frame_tl->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    tester.srv->set_input(frameTL, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_tl, "frameTL", true, false, 0);
 
     // create output vars
     auto frame = std::make_shared<data::image>();
     frame->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1092,28 +1096,28 @@ void synchronizer_test::singleFrameTLConfigTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
-    tester.addFrameToFrameTL(frameTL, 1);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    tester.addFrameToFrameTL(frame_tl, 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(frame, 1);
 
-    tester.addFrameToFrameTL(frameTL, 2);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    tester.addFrameToFrameTL(frame_tl, 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     SynchronizerTester::checkFrame(frame, 2);
 
-    tester.addFrameToFrameTL(frameTL, 4);
-    tester.addFrameToFrameTL(frameTL, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    tester.addFrameToFrameTL(frame_tl, 4);
+    tester.addFrameToFrameTL(frame_tl, 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     SynchronizerTester::checkFrame(frame, 6);
 
     tester.srv->stop().wait();
@@ -1141,38 +1145,38 @@ void synchronizer_test::mixtFrameTLConfigTest()
     SynchronizerTester tester(config_string);
 
     // create input TL
-    auto frameTL1 = std::make_shared<data::frame_tl>();
-    frameTL1->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l1 = std::make_shared<data::frame_tl>();
+    frame_t_l1->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    auto frameTL4 = std::make_shared<data::frame_tl>();
-    frameTL4->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l4 = std::make_shared<data::frame_tl>();
+    frame_t_l4->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    auto frameTL6 = std::make_shared<data::frame_tl>();
-    frameTL6->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l6 = std::make_shared<data::frame_tl>();
+    frame_t_l6->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    tester.srv->set_input(frameTL1, "frameTL", true, false, 0);
-    tester.srv->set_input(frameTL4, "frameTL", true, false, 1);
-    tester.srv->set_input(frameTL6, "frameTL", true, false, 2);
+    tester.srv->set_input(frame_t_l1, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_t_l4, "frameTL", true, false, 1);
+    tester.srv->set_input(frame_t_l6, "frameTL", true, false, 2);
 
     // create output vars
     auto frame1 = std::make_shared<data::image>();
     frame1->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1182,7 +1186,7 @@ void synchronizer_test::mixtFrameTLConfigTest()
     }
     auto frame4 = std::make_shared<data::image>();
     frame4->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1192,7 +1196,7 @@ void synchronizer_test::mixtFrameTLConfigTest()
     }
     auto frame6 = std::make_shared<data::image>();
     frame6->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1202,7 +1206,7 @@ void synchronizer_test::mixtFrameTLConfigTest()
     }
     auto frame11 = std::make_shared<data::image>();
     frame11->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1219,26 +1223,26 @@ void synchronizer_test::mixtFrameTLConfigTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
-    tester.addFrameToFrameTL(frameTL1, 1);
-    tester.addFrameToFrameTL(frameTL4, 1);
-    tester.addFrameToFrameTL(frameTL6, 1);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    tester.addFrameToFrameTL(frame_t_l1, 1);
+    tester.addFrameToFrameTL(frame_t_l4, 1);
+    tester.addFrameToFrameTL(frame_t_l6, 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
 
-    tester.addFrameToFrameTL(frameTL1, 4);
-    tester.addFrameToFrameTL(frameTL4, 5);
-    tester.addFrameToFrameTL(frameTL6, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 4);
+    tester.addFrameToFrameTL(frame_t_l1, 4);
+    tester.addFrameToFrameTL(frame_t_l4, 5);
+    tester.addFrameToFrameTL(frame_t_l6, 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
 
     SynchronizerTester::checkFrame(frame1, 4);
     SynchronizerTester::checkFrame(frame4, 5);
@@ -1280,45 +1284,45 @@ void synchronizer_test::fullConfigTest()
        "<legacyAutoSync>true</legacyAutoSync>";
 
     SynchronizerTester tester(config_string);
-    auto frameTL1 = std::make_shared<data::frame_tl>();
-    frameTL1->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l1 = std::make_shared<data::frame_tl>();
+    frame_t_l1->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    auto frameTL4 = std::make_shared<data::frame_tl>();
-    frameTL4->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l4 = std::make_shared<data::frame_tl>();
+    frame_t_l4->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    auto frameTL6 = std::make_shared<data::frame_tl>();
-    frameTL6->initPoolSize(
-        tester.frameSize[0],
-        tester.frameSize[1],
+    auto frame_t_l6 = std::make_shared<data::frame_tl>();
+    frame_t_l6->initPoolSize(
+        tester.FRAME_SIZE[0],
+        tester.FRAME_SIZE[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    tester.srv->set_input(frameTL1, "frameTL", true, false, 0);
-    tester.srv->set_input(frameTL4, "frameTL", true, false, 1);
-    tester.srv->set_input(frameTL6, "frameTL", true, false, 2);
+    tester.srv->set_input(frame_t_l1, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_t_l4, "frameTL", true, false, 1);
+    tester.srv->set_input(frame_t_l6, "frameTL", true, false, 2);
 
-    data::matrix_tl::sptr matrixTL1 = std::make_shared<data::matrix_tl>();
-    data::matrix_tl::sptr matrixTL2 = std::make_shared<data::matrix_tl>();
-    matrixTL1->initPoolSize(4);
-    matrixTL2->initPoolSize(4);
-    tester.srv->set_input(matrixTL1, "matrixTL", true, false, 0);
-    tester.srv->set_input(matrixTL2, "matrixTL", true, false, 1);
+    data::matrix_tl::sptr matrix_t_l1 = std::make_shared<data::matrix_tl>();
+    data::matrix_tl::sptr matrix_t_l2 = std::make_shared<data::matrix_tl>();
+    matrix_t_l1->initPoolSize(4);
+    matrix_t_l2->initPoolSize(4);
+    tester.srv->set_input(matrix_t_l1, "matrixTL", true, false, 0);
+    tester.srv->set_input(matrix_t_l2, "matrixTL", true, false, 1);
 
     // create output vars
     auto frame1 = std::make_shared<data::image>();
     frame1->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1328,7 +1332,7 @@ void synchronizer_test::fullConfigTest()
     }
     auto frame4 = std::make_shared<data::image>();
     frame4->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1338,7 +1342,7 @@ void synchronizer_test::fullConfigTest()
     }
     auto frame6 = std::make_shared<data::image>();
     frame6->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1348,7 +1352,7 @@ void synchronizer_test::fullConfigTest()
     }
     auto frame11 = std::make_shared<data::image>();
     frame11->resize(
-        tester.frameSize,
+        tester.FRAME_SIZE,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1381,34 +1385,34 @@ void synchronizer_test::fullConfigTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    bool synchronizationSkippedReceived        = false;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    bool synchronization_skipped_received        = false;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
-    auto slotSynchronizationSkippedReceived = sight::core::com::new_slot(
-        [&synchronizationSkippedReceived]()
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
+    auto slot_synchronization_skipped_received = sight::core::com::new_slot(
+        [&synchronization_skipped_received]()
         {
-            synchronizationSkippedReceived = true;
+            synchronization_skipped_received = true;
         });
-    slotSynchronizationSkippedReceived->set_worker(sight::core::thread::get_default_worker());
-    auto synchSkippedConnection = tester.srv->signal("synchronizationSkipped")->connect(
-        slotSynchronizationSkippedReceived
+    slot_synchronization_skipped_received->set_worker(sight::core::thread::get_default_worker());
+    auto synch_skipped_connection = tester.srv->signal("synchronizationSkipped")->connect(
+        slot_synchronization_skipped_received
     );
 
-    tester.addFrameToFrameTL(frameTL1, 1);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 1);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    tester.addFrameToFrameTL(frame_t_l1, 1);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
 
-    tester.addFrameToFrameTL(frameTL1, 2);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 2);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    tester.addFrameToFrameTL(frame_t_l1, 2);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
 
     SynchronizerTester::checkFrame(frame1, 2);
     SynchronizerTester::checkFrame(frame4, 0);
@@ -1422,11 +1426,11 @@ void synchronizer_test::fullConfigTest()
 
     // populate the remaining TLs.
     // no synch as timestamp is min (2, 3, 4) = 2 == last_timestamp
-    tester.addFrameToFrameTL(frameTL4, 3);
-    tester.addFrameToFrameTL(frameTL6, 4);
-    tester.addMatrixToMatrixTL(matrixTL2, {0, 1, 2}, 4);
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    tester.addFrameToFrameTL(frame_t_l4, 3);
+    tester.addFrameToFrameTL(frame_t_l6, 4);
+    tester.addMatrixToMatrixTL(matrix_t_l2, {0, 1, 2}, 4);
+    SIGHT_TEST_FAIL_WAIT(synchronization_skipped_received == true);
+    synchronization_skipped_received = false;
 
     SynchronizerTester::checkFrame(frame1, 2);
     SynchronizerTester::checkFrame(frame4, 0);
@@ -1438,9 +1442,9 @@ void synchronizer_test::fullConfigTest()
     SynchronizerTester::checkMatrix(matrix3, 0);
     SynchronizerTester::checkMatrix(matrix4, 22);
 
-    tester.addFrameToFrameTL(frameTL1, 5);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 5);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    tester.addFrameToFrameTL(frame_t_l1, 5);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 5);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
 
     SynchronizerTester::checkFrame(frame1, 2);
     SynchronizerTester::checkFrame(frame4, 3);
@@ -1452,12 +1456,12 @@ void synchronizer_test::fullConfigTest()
     SynchronizerTester::checkMatrix(matrix3, 41);
     SynchronizerTester::checkMatrix(matrix4, 22);
 
-    tester.addFrameToFrameTL(frameTL1, 6);
-    tester.addFrameToFrameTL(frameTL4, 6);
-    tester.addFrameToFrameTL(frameTL6, 6);
-    tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 6);
-    tester.addMatrixToMatrixTL(matrixTL2, {0, 1, 2}, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    tester.addFrameToFrameTL(frame_t_l1, 6);
+    tester.addFrameToFrameTL(frame_t_l4, 6);
+    tester.addFrameToFrameTL(frame_t_l6, 6);
+    tester.addMatrixToMatrixTL(matrix_t_l1, {0, 1, 2}, 6);
+    tester.addMatrixToMatrixTL(matrix_t_l2, {0, 1, 2}, 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
 
     SynchronizerTester::checkFrame(frame1, 6);
     SynchronizerTester::checkFrame(frame4, 6);
@@ -1477,16 +1481,16 @@ void synchronizer_test::fullConfigTest()
 void synchronizer_test::updateConfigTest()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     tester.addFrameToFrameTL(tester.frameTL1, 1);
@@ -1496,7 +1500,7 @@ void synchronizer_test::updateConfigTest()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -1506,7 +1510,7 @@ void synchronizer_test::updateConfigTest()
     tester.addFrameToFrameTL(tester.frameTL2, 5);
     tester.addMatrixToMatrixTL(tester.matrixTL1, {0, 1, 2}, 6);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 4);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     SynchronizerTester::checkFrame(tester.frame1, 4);
     SynchronizerTester::checkFrame(tester.frame2, 5);
     SynchronizerTester::checkMatrix(tester.matrix1, 60);
@@ -1518,7 +1522,7 @@ void synchronizer_test::updateConfigTest()
     tester.addFrameToFrameTL(tester.frameTL2, 11);
     tester.addMatrixToMatrixTL(tester.matrixTL1, {0, 1, 2}, 12);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 10);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 10);
     SynchronizerTester::checkFrame(tester.frame1, 11);
     SynchronizerTester::checkFrame(tester.frame2, 11);
     SynchronizerTester::checkMatrix(tester.matrix1, 121);
@@ -1530,7 +1534,7 @@ void synchronizer_test::updateConfigTest()
     tester.addFrameToFrameTL(tester.frameTL2, 21);
     tester.addMatrixToMatrixTL(tester.matrixTL1, {0, 1, 2}, 22);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 20);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 20);
     SynchronizerTester::checkFrame(tester.frame1, 21);
     SynchronizerTester::checkFrame(tester.frame2, 20);
     SynchronizerTester::checkMatrix(tester.matrix1, 221);
@@ -1574,60 +1578,60 @@ void synchronizer_test::sendStatusTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
-    std::vector<bool> frameVarIndexSynchSignal = {false, false};
-    auto slotFrameSynchronized                 =
+    std::vector<bool> frame_var_index_synch_signal = {false, false};
+    auto slot_frame_synchronized                   =
         sight::core::com::new_slot(
-            [&frameVarIndexSynchSignal](int _frameVarIndex)
+            [&frame_var_index_synch_signal](int _frame_var_index)
         {
-            frameVarIndexSynchSignal[static_cast<std::size_t>(_frameVarIndex)] = true;
+            frame_var_index_synch_signal[static_cast<std::size_t>(_frame_var_index)] = true;
         });
-    slotFrameSynchronized->set_worker(sight::core::thread::get_default_worker());
-    auto frameSynchronizedConnection =
-        tester.srv->signal("frameSynchronized")->connect(slotFrameSynchronized);
+    slot_frame_synchronized->set_worker(sight::core::thread::get_default_worker());
+    auto frame_synchronized_connection =
+        tester.srv->signal("frameSynchronized")->connect(slot_frame_synchronized);
 
-    std::vector<bool> frameVarIndexUnSynchSignal = {false, false};
-    auto slotFrameUnsynchronized                 =
+    std::vector<bool> frame_var_index_un_synch_signal = {false, false};
+    auto slot_frame_unsynchronized                    =
         sight::core::com::new_slot(
-            [&frameVarIndexUnSynchSignal](int _frameVarIndex)
+            [&frame_var_index_un_synch_signal](int _frame_var_index)
         {
-            frameVarIndexUnSynchSignal[static_cast<std::size_t>(_frameVarIndex)] = true;
+            frame_var_index_un_synch_signal[static_cast<std::size_t>(_frame_var_index)] = true;
         });
-    slotFrameUnsynchronized->set_worker(sight::core::thread::get_default_worker());
-    auto frameUnsynchronizedConnection =
-        tester.srv->signal("frameUnsynchronized")->connect(slotFrameUnsynchronized);
+    slot_frame_unsynchronized->set_worker(sight::core::thread::get_default_worker());
+    auto frame_unsynchronized_connection =
+        tester.srv->signal("frameUnsynchronized")->connect(slot_frame_unsynchronized);
 
-    int matrixVarIndexSynchSignal = -1;
-    auto slotMatrixSynchronized   =
+    int matrix_var_index_synch_signal = -1;
+    auto slot_matrix_synchronized     =
         sight::core::com::new_slot(
-            [&matrixVarIndexSynchSignal](int _matrixVarIndex)
+            [&matrix_var_index_synch_signal](int _matrix_var_index)
         {
-            matrixVarIndexSynchSignal = _matrixVarIndex;
+            matrix_var_index_synch_signal = _matrix_var_index;
         });
-    slotMatrixSynchronized->set_worker(sight::core::thread::get_default_worker());
-    auto matrixSynchronizedConnection =
-        tester.srv->signal("matrixSynchronized")->connect(slotMatrixSynchronized);
+    slot_matrix_synchronized->set_worker(sight::core::thread::get_default_worker());
+    auto matrix_synchronized_connection =
+        tester.srv->signal("matrixSynchronized")->connect(slot_matrix_synchronized);
 
-    int matrixVarIndexUnSynchSignal = -1;
-    auto slotMatrixUnsynchronized   =
+    int matrix_var_index_un_synch_signal = -1;
+    auto slot_matrix_unsynchronized      =
         sight::core::com::new_slot(
-            [&matrixVarIndexUnSynchSignal](int _matrixVarIndex)
+            [&matrix_var_index_un_synch_signal](int _matrix_var_index)
         {
-            matrixVarIndexUnSynchSignal = _matrixVarIndex;
+            matrix_var_index_un_synch_signal = _matrix_var_index;
         });
-    slotMatrixUnsynchronized->set_worker(sight::core::thread::get_default_worker());
-    auto matrixUnsynchronizedConnection =
-        tester.srv->signal("matrixUnsynchronized")->connect(slotMatrixUnsynchronized);
+    slot_matrix_unsynchronized->set_worker(sight::core::thread::get_default_worker());
+    auto matrix_unsynchronized_connection =
+        tester.srv->signal("matrixUnsynchronized")->connect(slot_matrix_unsynchronized);
 
     // This is done just to handle automatic synch at first data push
     tester.addFrameToFrameTL(tester.frameTL1, 1);
@@ -1638,86 +1642,86 @@ void synchronizer_test::sendStatusTest()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
-    fwTestWithFailWaitMacro(matrixVarIndexSynchSignal == 0);
-    fwTestWithFailWaitMacro(frameVarIndexSynchSignal[0]);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == -1);
-    frameVarIndexSynchSignal[0] = false;
-    matrixVarIndexSynchSignal   = -1;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
+    SIGHT_TEST_FAIL_WAIT(matrix_var_index_synch_signal == 0);
+    SIGHT_TEST_FAIL_WAIT(frame_var_index_synch_signal[0]);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == -1);
+    frame_var_index_synch_signal[0] = false;
+    matrix_var_index_synch_signal   = -1;
 
     //time 2
     tester.addFrameToFrameTL(tester.frameTL1, 2);
     tester.addFrameToFrameTL(tester.frameTL2, 2);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexSynchSignal == -1);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == -1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_synch_signal == -1);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == -1);
 
     //time 3
     tester.addFrameToFrameTL(tester.frameTL1, 50);
     tester.addFrameToFrameTL(tester.frameTL2, 50);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 50);
-    fwTestWithFailWaitMacro(matrixVarIndexUnSynchSignal == 0);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexSynchSignal == -1);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == 0);
-    matrixVarIndexUnSynchSignal = -1;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
+    SIGHT_TEST_FAIL_WAIT(matrix_var_index_un_synch_signal == 0);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_synch_signal == -1);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == 0);
+    matrix_var_index_un_synch_signal = -1;
 
     //time 4
     tester.addFrameToFrameTL(tester.frameTL1, 51);
     tester.addFrameToFrameTL(tester.frameTL2, 51);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 51);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 51);
-    fwTestWithFailWaitMacro(matrixVarIndexSynchSignal == 0);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexSynchSignal == 0);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == -1);
-    matrixVarIndexSynchSignal = -1;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 51);
+    SIGHT_TEST_FAIL_WAIT(matrix_var_index_synch_signal == 0);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_synch_signal == 0);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == -1);
+    matrix_var_index_synch_signal = -1;
 
     //time 5
     tester.addFrameToFrameTL(tester.frameTL1, 53);
     tester.addFrameToFrameTL(tester.frameTL2, 100);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 100);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 100);
-    fwTestWithFailWaitMacro(frameVarIndexUnSynchSignal[0]);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexSynchSignal == -1);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == -1);
-    frameVarIndexUnSynchSignal[0] = false;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 100);
+    SIGHT_TEST_FAIL_WAIT(frame_var_index_un_synch_signal[0]);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_synch_signal == -1);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == -1);
+    frame_var_index_un_synch_signal[0] = false;
 
     //time 6
     tester.addFrameToFrameTL(tester.frameTL1, 101);
     tester.addFrameToFrameTL(tester.frameTL2, 101);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 101);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 101);
-    fwTestWithFailWaitMacro(frameVarIndexSynchSignal[0]);
-    CPPUNIT_ASSERT(frameVarIndexSynchSignal[1] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[0] == false);
-    CPPUNIT_ASSERT(frameVarIndexUnSynchSignal[1] == false);
-    CPPUNIT_ASSERT(matrixVarIndexSynchSignal == -1);
-    CPPUNIT_ASSERT(matrixVarIndexUnSynchSignal == -1);
-    frameVarIndexSynchSignal[0] = false;
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 101);
+    SIGHT_TEST_FAIL_WAIT(frame_var_index_synch_signal[0]);
+    CPPUNIT_ASSERT(frame_var_index_synch_signal[1] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[0] == false);
+    CPPUNIT_ASSERT(frame_var_index_un_synch_signal[1] == false);
+    CPPUNIT_ASSERT(matrix_var_index_synch_signal == -1);
+    CPPUNIT_ASSERT(matrix_var_index_un_synch_signal == -1);
+    frame_var_index_synch_signal[0] = false;
 }
 
 //------------------------------------------------------------------------------
@@ -1748,16 +1752,16 @@ void synchronizer_test::delayTest()
     tester.srv->start().wait();
     tester.srv->update().wait();
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     //time 1: synch on timestamp 4, expected (2,4,1)
     tester.addFrameToFrameTL(tester.frameTL1, 1);
@@ -1772,7 +1776,7 @@ void synchronizer_test::delayTest()
     tester.addFrameToFrameTL(tester.frameTL1, 4);
     tester.addFrameToFrameTL(tester.frameTL2, 4);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 4);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 4);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     SynchronizerTester::checkFrame(tester.frame1, 2);
     SynchronizerTester::checkFrame(tester.frame2, 4);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -1781,7 +1785,7 @@ void synchronizer_test::delayTest()
     tester.addFrameToFrameTL(tester.frameTL1, 5);
     tester.addFrameToFrameTL(tester.frameTL2, 5);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 5);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 5);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 5);
     SynchronizerTester::checkFrame(tester.frame1, 3);
     SynchronizerTester::checkFrame(tester.frame2, 5);
     SynchronizerTester::checkMatrix(tester.matrix1, 2);
@@ -1797,7 +1801,7 @@ void synchronizer_test::delayTest()
     tester.addFrameToFrameTL(tester.frameTL1, 6);
     tester.addFrameToFrameTL(tester.frameTL2, 6);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 6);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 6);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
     SynchronizerTester::checkFrame(tester.frame1, 5);
     SynchronizerTester::checkFrame(tester.frame2, 6);
     SynchronizerTester::checkMatrix(tester.matrix1, 4);
@@ -1809,7 +1813,7 @@ void synchronizer_test::delayTest()
     tester.addFrameToFrameTL(tester.frameTL1, 7);
     tester.addFrameToFrameTL(tester.frameTL2, 7);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 7);
-    fwTestWithFailWaitMacro(lastTimestampSynch == 7);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 7);
     SynchronizerTester::checkFrame(tester.frame1, 7);
     SynchronizerTester::checkFrame(tester.frame2, 7);
     SynchronizerTester::checkMatrix(tester.matrix1, 7);
@@ -1830,16 +1834,16 @@ void synchronizer_test::delayTest()
 void synchronizer_test::toleranceTest()
 {
     SynchronizerTester tester;
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     tester.addFrameToFrameTL(tester.frameTL1, 1);
@@ -1849,7 +1853,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL2, 1);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 1);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 1);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
     SynchronizerTester::checkFrame(tester.frame1, 1);
     SynchronizerTester::checkFrame(tester.frame2, 1);
     SynchronizerTester::checkMatrix(tester.matrix1, 1);
@@ -1859,7 +1863,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL2, 5);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 4);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 4);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
     SynchronizerTester::checkFrame(tester.frame1, 5);
     SynchronizerTester::checkFrame(tester.frame2, 5);
     SynchronizerTester::checkMatrix(tester.matrix1, 4);
@@ -1868,7 +1872,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL1, 50);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 50);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 50);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 50);
     SynchronizerTester::checkFrame(tester.frame1, 50);
     SynchronizerTester::checkFrame(tester.frame2, 5);
     SynchronizerTester::checkMatrix(tester.matrix1, 50);
@@ -1878,7 +1882,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL2, 54);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 53);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 53);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 53);
     SynchronizerTester::checkFrame(tester.frame1, 53);
     SynchronizerTester::checkFrame(tester.frame2, 54);
     SynchronizerTester::checkMatrix(tester.matrix1, 53);
@@ -1888,7 +1892,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL2, 100);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 55);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 100);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 100);
     SynchronizerTester::checkFrame(tester.frame1, 100);
     SynchronizerTester::checkFrame(tester.frame2, 100);
     SynchronizerTester::checkMatrix(tester.matrix1, 53);
@@ -1898,7 +1902,7 @@ void synchronizer_test::toleranceTest()
     tester.addFrameToFrameTL(tester.frameTL2, 110);
     tester.addMatrixToMatrixTL(tester.matrixTL1, 111);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 110);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 110);
     SynchronizerTester::checkFrame(tester.frame1, 110);
     SynchronizerTester::checkFrame(tester.frame2, 110);
     SynchronizerTester::checkMatrix(tester.matrix1, 111);
@@ -1908,7 +1912,7 @@ void synchronizer_test::toleranceTest()
 
 void synchronizer_test::imageSeriesTimeTaggingTest()
 {
-    const data::image::Size frameSize {2, 2, 1};
+    const data::image::Size frame_size {2, 2, 1};
 
     std::stringstream config_string;
     config_string
@@ -1927,22 +1931,22 @@ void synchronizer_test::imageSeriesTimeTaggingTest()
     tester.srv->update().wait();
 
     // create and set the input TL
-    data::frame_tl::sptr frameTL1 = std::make_shared<data::frame_tl>();
-    frameTL1->initPoolSize(
-        frameSize[0],
-        frameSize[1],
+    data::frame_tl::sptr frame_t_l1 = std::make_shared<data::frame_tl>();
+    frame_t_l1->initPoolSize(
+        frame_size[0],
+        frame_size[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    tester.srv->set_input(frameTL1, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_t_l1, "frameTL", true, false, 0);
 
     // create and set the inout which will be filled in the synchronization process
     sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();
 
     frame1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
     frame1->resize(
-        frameSize,
+        frame_size,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -1953,37 +1957,37 @@ void synchronizer_test::imageSeriesTimeTaggingTest()
 
     tester.srv->set_inout(frame1, "frames", false, false, 0);
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection =
-        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection =
+        tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     // This is done just to handle automatic synch at first data push
     const std::uint64_t timestamp = 13;
 
-    const SPTR(data::frame_tl::BufferType) data = frameTL1->createBuffer(timestamp);
-    std::uint8_t* eltBuffer = data->addElement(0);
-    memset(eltBuffer, timestamp, frameSize[0] * frameSize[1]);
+    const SPTR(data::frame_tl::buffer_t) data = frame_t_l1->createBuffer(timestamp);
+    std::uint8_t* elt_buffer = data->addElement(0);
+    memset(elt_buffer, timestamp, frame_size[0] * frame_size[1]);
 
-    frameTL1->pushObject(data);
+    frame_t_l1->pushObject(data);
 
     tester.srv->update().wait();
 
-    fwTestWithFailWaitMacro(lastTimestampSynch == timestamp);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == timestamp);
 
     const auto dt = frame1->getFrameAcquisitionDateTime();
     CPPUNIT_ASSERT(dt.has_value());
 
-    const auto timePoint = frame1->getFrameAcquisitionTimePoint();
-    CPPUNIT_ASSERT(timePoint.has_value());
+    const auto time_point = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(time_point.has_value());
 
-    std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == timestamp);
 
     tester.srv->stop().wait();
@@ -1993,7 +1997,7 @@ void synchronizer_test::imageSeriesTimeTaggingTest()
 
 void synchronizer_test::singleImageSeriesTLPopulation()
 {
-    const data::image::Size frameSize {2, 2, 1};
+    const data::image::Size frame_size {2, 2, 1};
 
     /// Service setup
     std::stringstream config_string;
@@ -2021,34 +2025,34 @@ void synchronizer_test::singleImageSeriesTLPopulation()
 
     /// Input/output setup
     // create and set the input TL
-    data::frame_tl::sptr frameTL1 = std::make_shared<data::frame_tl>();
-    frameTL1->initPoolSize(
-        frameSize[0],
-        frameSize[1],
+    data::frame_tl::sptr frame_t_l1 = std::make_shared<data::frame_tl>();
+    frame_t_l1->initPoolSize(
+        frame_size[0],
+        frame_size[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
-    data::frame_tl::sptr frameTL2 = std::make_shared<data::frame_tl>();
-    frameTL2->initPoolSize(
-        frameSize[0],
-        frameSize[1],
+    data::frame_tl::sptr frame_t_l2 = std::make_shared<data::frame_tl>();
+    frame_t_l2->initPoolSize(
+        frame_size[0],
+        frame_size[1],
         core::type::UINT8,
         sight::data::frame_tl::PixelFormat::GRAY_SCALE
     );
 
-    data::matrix_tl::sptr matrixTL1 = std::make_shared<data::matrix_tl>();
-    matrixTL1->initPoolSize(4);
+    data::matrix_tl::sptr matrix_t_l1 = std::make_shared<data::matrix_tl>();
+    matrix_t_l1->initPoolSize(4);
 
-    tester.srv->set_input(frameTL1, "frameTL", true, false, 0);
-    tester.srv->set_input(frameTL2, "frameTL", true, false, 1);
-    tester.srv->set_input(matrixTL1, "matrixTL", true, false, 0);
+    tester.srv->set_input(frame_t_l1, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_t_l2, "frameTL", true, false, 1);
+    tester.srv->set_input(matrix_t_l1, "matrixTL", true, false, 0);
 
     // create and set the inout which will be filled in the synchronization process
     sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();
 
     frame1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
     frame1->resize(
-        frameSize,
+        frame_size,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -2059,7 +2063,7 @@ void synchronizer_test::singleImageSeriesTLPopulation()
 
     data::image::sptr frame2 = std::make_shared<data::image>();
     frame2->resize(
-        frameSize,
+        frame_size,
         core::type::UINT8,
         data::image::PixelFormat::GRAY_SCALE
     );
@@ -2076,42 +2080,42 @@ void synchronizer_test::singleImageSeriesTLPopulation()
     tester.srv->set_inout(frame2, "frames", false, false, 1);
     tester.srv->set_inout(matrix1, "matrix", false, false, 0);
 
-    core::hires_clock::type lastTimestampSynch = 0;
-    auto slotSynchronizationDone               =
+    core::hires_clock::type last_timestamp_synch = 0;
+    auto slot_synchronization_done               =
         sight::core::com::new_slot(
-            [&lastTimestampSynch](core::hires_clock::type timestamp)
+            [&last_timestamp_synch](core::hires_clock::type _timestamp)
         {
-            lastTimestampSynch = timestamp;
+            last_timestamp_synch = _timestamp;
         });
-    slotSynchronizationDone->set_worker(sight::core::thread::get_default_worker());
-    auto synchDoneConnection = tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+    slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+    auto synch_done_connection = tester.srv->signal("synchronizationDone")->connect(slot_synchronization_done);
 
     // populate the TLs
-    tester.addFrameToFrameTL(frameTL1, 1);
-    tester.addFrameToFrameTL(frameTL1, 2);
+    tester.addFrameToFrameTL(frame_t_l1, 1);
+    tester.addFrameToFrameTL(frame_t_l1, 2);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
     //test the output
     SynchronizerTester::checkFrame(frame1, 2);
     SynchronizerTester::checkFrame(frame2, 0);
     SynchronizerTester::checkMatrix(matrix1, 0);
 
     std::optional<std::string> dt;
-    std::optional<std::chrono::system_clock::time_point> timePoint;
+    std::optional<std::chrono::system_clock::time_point> time_point;
     std::int64_t ts = 0;
 
     // Check that the ImageSeries timestamp was written
     dt = frame1->getFrameAcquisitionDateTime();
     CPPUNIT_ASSERT(dt.has_value());
-    timePoint = frame1->getFrameAcquisitionTimePoint();
-    CPPUNIT_ASSERT(timePoint.has_value());
-    ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    time_point = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(time_point.has_value());
+    ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 2);
 
     // populate the TL
-    tester.addFrameToFrameTL(frameTL1, 3);
+    tester.addFrameToFrameTL(frame_t_l1, 3);
     tester.srv->slot("synchronize")->run();
-    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
     //test the output
     SynchronizerTester::checkFrame(frame1, 3);
     SynchronizerTester::checkFrame(frame2, 0);
@@ -2120,9 +2124,9 @@ void synchronizer_test::singleImageSeriesTLPopulation()
     // Check that the ImageSeries timestamp was written
     dt = frame1->getFrameAcquisitionDateTime();
     CPPUNIT_ASSERT(dt.has_value());
-    timePoint = frame1->getFrameAcquisitionTimePoint();
-    CPPUNIT_ASSERT(timePoint.has_value());
-    ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    time_point = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(time_point.has_value());
+    ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 3);
 
     tester.srv->stop().wait();

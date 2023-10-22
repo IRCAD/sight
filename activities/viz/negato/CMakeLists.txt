@@ -12,5 +12,5 @@ add_dependencies(
     module_io_bitmap
     module_ui_icons
     module_viz_scene3d
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
 )

@@ -51,17 +51,17 @@ void window_interactor::createContainer(ui::container::widget::sptr _parent)
     SIGHT_ASSERT("Invalid parent.", _parent);
     m_parentContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
 
-    auto* view3D = new Qt3DExtras::Qt3DWindow();
-    this->set3DView(view3D);
+    auto* view3_d = new Qt3DExtras::Qt3DWindow();
+    this->set3DView(view3_d);
 }
 
 //-----------------------------------------------------------------------------
 
-void window_interactor::set3DView(Qt3DExtras::Qt3DWindow* _3dView)
+void window_interactor::set3DView(Qt3DExtras::Qt3DWindow* _3d_view)
 {
     m_parentContainer->clean();
 
-    m_windowContainer = QWidget::createWindowContainer(_3dView);
+    m_windowContainer = QWidget::createWindowContainer(_3d_view);
     QPointer<QVBoxLayout> layout = new QVBoxLayout;
     layout->addWidget(m_windowContainer);
     layout->setContentsMargins(0, 0, 0, 0);

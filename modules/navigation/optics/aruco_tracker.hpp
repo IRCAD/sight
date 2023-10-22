@@ -96,8 +96,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker);
 
-    typedef core::com::signal<void (core::hires_clock::type timestamp)> DetectionDoneSignalType;
-    typedef core::com::signal<void (bool)> MarkerDetectedSignalType;
+    typedef core::com::signal<void (core::hires_clock::type _timestamp)> detection_done_signal_t;
+    typedef core::com::signal<void (bool)> marker_detected_signal_t;
 
     /**
      * @name Signal API
@@ -117,8 +117,8 @@ public:
     MODULE_NAVIGATION_OPTICS_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
     /** @} */
 
-    typedef std::vector<int> MarkerIDType;
-    typedef std::vector<MarkerIDType> MarkerIDVectorType;
+    typedef std::vector<int> marker_id_t;
+    typedef std::vector<marker_id_t> MarkerIDVectorType;
 
     /**
      * @brief Constructor.
@@ -158,7 +158,7 @@ protected:
     MODULE_NAVIGATION_OPTICS_API void stopping() override;
 
     /// Detect marker
-    MODULE_NAVIGATION_OPTICS_API void tracking(core::hires_clock::type& timestamp) override;
+    MODULE_NAVIGATION_OPTICS_API void tracking(core::hires_clock::type& _timestamp) override;
 
 private:
 
@@ -192,7 +192,7 @@ private:
     cv::Ptr<cv::aruco::Dictionary> m_dictionary;
 
     /// Signal to emit when
-    DetectionDoneSignalType::sptr m_sigDetectionDone;
+    detection_done_signal_t::sptr m_sigDetectionDone;
 
     static constexpr std::string_view s_CAMERA_INPUT           = "camera";
     static constexpr std::string_view s_MARKER_MAP_INOUT_GROUP = "markerMap";

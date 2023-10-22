@@ -37,7 +37,7 @@ class FILTER_DICOM_CLASS_API Filter
 {
 public:
 
-    typedef std::vector<data::dicom_series::sptr> DicomSeriesContainerType;
+    typedef std::vector<data::dicom_series::sptr> dicom_series_container_t;
 
     /**
      * @brief Apply a filter to the DicomSeries
@@ -46,10 +46,10 @@ public:
      * @return Return true if errors have been ignored
      */
     FILTER_DICOM_API static bool applyFilter(
-        DicomSeriesContainerType& dicomSeriesContainer,
-        sight::filter::dicom::filter::sptr filter,
-        bool forcedApply                      = false,
-        const core::log::logger::sptr& logger = std::make_shared<core::log::logger>()
+        dicom_series_container_t& _dicom_series_container,
+        sight::filter::dicom::filter::sptr _filter,
+        bool _forced_apply                     = false,
+        const core::log::logger::sptr& _logger = std::make_shared<core::log::logger>()
     );
 };
 

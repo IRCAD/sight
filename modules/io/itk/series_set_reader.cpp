@@ -64,25 +64,25 @@ void series_set_reader::configuring()
 
 void series_set_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setType(ui::dialog::location::MULTI_FILES);
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose an image file" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.setType(ui::dialog::location::MULTI_FILES);
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
     if(result)
     {
         const std::vector<std::filesystem::path> paths = result->get_files();
         if(!paths.empty())
         {
-            defaultDirectory->set_folder(paths[0].parent_path());
-            dialogFile.saveDefaultLocation(defaultDirectory);
+            default_directory->set_folder(paths[0].parent_path());
+            dialog_file.saveDefaultLocation(default_directory);
         }
 
         this->set_files(paths);
@@ -110,48 +110,48 @@ void series_set_reader::updating()
         // Set cursor busy
         sight::ui::BusyCursor cursor;
 
-        bool readFailed               = false;
-        auto localSet                 = std::make_shared<data::series_set>();
-        const std::string instanceUID = core::tools::UUID::generate();
+        bool read_failed               = false;
+        auto local_set                 = std::make_shared<data::series_set>();
+        const std::string instance_uid = core::tools::UUID::generate();
 
         for(const std::filesystem::path& path : this->get_files())
         {
-            auto imgSeries = std::make_shared<data::image_series>();
-            series_set_reader::initSeries(imgSeries, instanceUID);
+            auto img_series = std::make_shared<data::image_series>();
+            series_set_reader::initSeries(img_series, instance_uid);
 
-            if(!image_reader::loadImage(path, imgSeries))
+            if(!image_reader::loadImage(path, img_series))
             {
-                readFailed = true;
+                read_failed = true;
             }
 
-            localSet->push_back(imgSeries);
+            local_set->push_back(img_series);
         }
 
-        if(!localSet->empty())
+        if(!local_set->empty())
         {
             const auto scoped_emitter = series_set->scoped_emit();
             series_set->clear();
-            series_set->insert(series_set->begin(), localSet->cbegin(), localSet->cend());
+            series_set->insert(series_set->begin(), local_set->cbegin(), local_set->cend());
         }
 
-        m_readFailed = readFailed;
+        m_readFailed = read_failed;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::initSeries(data::series::sptr series, const std::string& instanceUID)
+void series_set_reader::initSeries(data::series::sptr _series, const std::string& _instance_uid)
 {
-    series->setModality("OT");
+    _series->setModality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     const std::string date       = core::tools::get_date(now);
     const std::string time       = core::tools::get_time(now);
-    series->setSeriesDate(date);
-    series->setSeriesTime(time);
+    _series->setSeriesDate(date);
+    _series->setSeriesTime(time);
 
-    series->setStudyInstanceUID(instanceUID);
-    series->setStudyDate(date);
-    series->setStudyTime(time);
+    _series->setStudyInstanceUID(_instance_uid);
+    _series->setStudyDate(date);
+    _series->setStudyTime(time);
 }
 
 //------------------------------------------------------------------------------

@@ -42,23 +42,23 @@ config::sptr config::getDefault()
 
 void config::parse_plugin_infos()
 {
-    using ExtensionType = std::shared_ptr<core::runtime::extension>;
+    using extension_t = std::shared_ptr<core::runtime::extension>;
 
-    std::vector<ExtensionType> extElements;
-    extElements = core::runtime::get_all_extensions_for_point(CONFIG_EXT_POINT);
-    for(const ExtensionType& ext : extElements)
+    std::vector<extension_t> ext_elements;
+    ext_elements = core::runtime::get_all_extensions_for_point(CONFIG_EXT_POINT);
+    for(const extension_t& ext : ext_elements)
     {
         const auto& cfg = ext->get_config();
 
-        const auto configId = cfg.get<std::string>("id");
-        const auto desc     = cfg.get<std::string>("desc", "No description available");
-        const auto service  = cfg.get<std::string>("service", "");
+        const auto config_id = cfg.get<std::string>("id");
+        const auto desc      = cfg.get<std::string>("desc", "No description available");
+        const auto service   = cfg.get<std::string>("service", "");
 
         // Get config
         const auto config = cfg.get_child("config");
 
         // Add service config info
-        this->addServiceConfigInfo(configId, service, desc, config);
+        this->addServiceConfigInfo(config_id, service, desc, config);
     }
 }
 
@@ -66,31 +66,31 @@ void config::parse_plugin_infos()
 
 void config::addServiceConfigInfo
 (
-    const std::string& configId,
-    const std::string& service,
-    const std::string& desc,
-    const boost::property_tree::ptree& config
+    const std::string& _config_id,
+    const std::string& _service,
+    const std::string& _desc,
+    const boost::property_tree::ptree& _config
 )
 {
     core::mt::write_lock lock(m_registryMutex);
 
     SIGHT_DEBUG(
         "New service config registering : "
-        << " configId = " << configId
-        << " service = " << service
-        << " desc = " << desc
+        << " configId = " << _config_id
+        << " service = " << _service
+        << " desc = " << _desc
     );
 
     SIGHT_ASSERT(
-        "The service config with the id " << configId << " already exists.",
-        m_reg.find(configId) == m_reg.end()
+        "The service config with the id " << _config_id << " already exists.",
+        m_reg.find(_config_id) == m_reg.end()
     );
 
     ServiceConfigInfo::sptr info = std::make_shared<ServiceConfigInfo>();
-    info->service   = sight::core::runtime::filter_id(service);
-    info->desc      = desc;
-    info->config    = config;
-    m_reg[configId] = info;
+    info->service     = sight::core::runtime::filter_id(_service);
+    info->desc        = _desc;
+    info->config      = _config;
+    m_reg[_config_id] = info;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,36 +104,36 @@ void config::clear_registry()
 //-----------------------------------------------------------------------------
 
 boost::property_tree::ptree config::get_service_config(
-    const std::string& configId,
-    const std::string& _serviceImpl
+    const std::string& _config_id,
+    const std::string& _service_impl
 ) const
 {
 #ifndef _DEBUG
-    SIGHT_NOT_USED(_serviceImpl);
+    SIGHT_NOT_USED(_service_impl);
 #else
-    const std::string serviceImpl = core::runtime::filter_id(_serviceImpl);
+    const std::string service_impl = core::runtime::filter_id(_service_impl);
 #endif
     core::mt::read_lock lock(m_registryMutex);
-    auto iter = m_reg.find(configId);
+    auto iter = m_reg.find(_config_id);
     SIGHT_ASSERT(
-        "The id " << configId << " is not found in the application configuration registry",
+        "The id " << _config_id << " is not found in the application configuration registry",
         iter != m_reg.end()
     );
     SIGHT_ASSERT(
-        "The id " << configId << " is not allowed for this service " << serviceImpl,
-        serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl
+        "The id " << _config_id << " is not allowed for this service " << service_impl,
+        service_impl.empty() || iter->second->service.empty() || iter->second->service == service_impl
     );
     return iter->second->config;
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& config::getConfigDesc(const std::string& configId) const
+const std::string& config::getConfigDesc(const std::string& _config_id) const
 {
     core::mt::read_lock lock(m_registryMutex);
-    auto iter = m_reg.find(configId);
+    auto iter = m_reg.find(_config_id);
     SIGHT_ASSERT(
-        "The id " << configId << " is not found in the application configuration registry",
+        "The id " << _config_id << " is not found in the application configuration registry",
         iter != m_reg.end()
     );
     return iter->second->desc;
@@ -141,18 +141,18 @@ const std::string& config::getConfigDesc(const std::string& configId) const
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> config::getAllConfigForService(std::string _serviceImpl, bool matchingOnly) const
+std::vector<std::string> config::getAllConfigForService(std::string _service_impl, bool _matching_only) const
 {
-    const std::string serviceImpl = core::runtime::filter_id(_serviceImpl);
+    const std::string service_impl = core::runtime::filter_id(_service_impl);
     core::mt::read_lock lock(m_registryMutex);
     std::vector<std::string> configs;
 
-    for(const Registry::value_type& srvCfg : m_reg)
+    for(const Registry::value_type& srv_cfg : m_reg)
     {
-        ServiceConfigInfo::sptr info = srvCfg.second;
-        if((info->service.empty() && !matchingOnly) || info->service == serviceImpl)
+        ServiceConfigInfo::sptr info = srv_cfg.second;
+        if((info->service.empty() && !_matching_only) || info->service == service_impl)
         {
-            configs.push_back(srvCfg.first);
+            configs.push_back(srv_cfg.first);
         }
     }
 

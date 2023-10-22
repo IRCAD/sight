@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class ColorParameter
@@ -38,7 +38,7 @@ public:
      * @param colorParam How to get the color parameter to modify
      * @param color The color to be selected
      */
-    GUITEST_API static void select(Tester& tester, const Select& colorParam, const QColor& color);
+    GUITEST_API static void select(Tester& _tester, const Select& _color_param, const QColor& _color);
 
     /**
      * Check whether the color parameter has the good color
@@ -46,7 +46,7 @@ public:
      * @param colorParam How to get the color parameter to check
      * @param color The color it should have
      */
-    GUITEST_API static void colorEquals(Tester& tester, const Select& colorParam, const QColor& color);
+    GUITEST_API static void colorEquals(Tester& _tester, const Select& _color_param, const QColor& _color);
 };
 
 } // namespace sight::ui::testCore::helper

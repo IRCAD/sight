@@ -61,24 +61,24 @@ void series_test::tearDown()
 
 void series_test::attrPatientTest()
 {
-    const std::string patientName      = "John DOE";
-    const std::string patientId        = "42";
-    const std::string patientBirthDate = "02-14-2015 11:28";
-    const std::string patientSex       = "M";
+    const std::string patient_name       = "John DOE";
+    const std::string patient_id         = "42";
+    const std::string patient_birth_date = "02-14-2015 11:28";
+    const std::string patient_sex        = "M";
 
     for(const auto& series : m_series)
     {
-        series->setPatientName(patientName);
-        CPPUNIT_ASSERT(series->getPatientName() == patientName);
+        series->setPatientName(patient_name);
+        CPPUNIT_ASSERT(series->getPatientName() == patient_name);
 
-        series->setPatientID(patientId);
-        CPPUNIT_ASSERT(series->getPatientID() == patientId);
+        series->setPatientID(patient_id);
+        CPPUNIT_ASSERT(series->getPatientID() == patient_id);
 
-        series->setPatientBirthDate(patientBirthDate);
-        CPPUNIT_ASSERT(series->getPatientBirthDate() == patientBirthDate);
+        series->setPatientBirthDate(patient_birth_date);
+        CPPUNIT_ASSERT(series->getPatientBirthDate() == patient_birth_date);
 
-        series->setPatientSex(patientSex);
-        CPPUNIT_ASSERT(series->getPatientSex() == patientSex);
+        series->setPatientSex(patient_sex);
+        CPPUNIT_ASSERT(series->getPatientSex() == patient_sex);
     }
 }
 
@@ -86,17 +86,17 @@ void series_test::attrPatientTest()
 
 void series_test::attrStudyTest()
 {
-    const std::string instanceUID = "1346357.1664.643101.421337.4123403";
-    const std::string date        = "02-14-2015";
-    const std::string time        = "11:59";
-    const std::string rpn         = "Dr^Jekyl";
-    const std::string desc        = "Say 33.";
-    const std::string age         = "42";
+    const std::string instance_uid = "1346357.1664.643101.421337.4123403";
+    const std::string date         = "02-14-2015";
+    const std::string time         = "11:59";
+    const std::string rpn          = "Dr^Jekyl";
+    const std::string desc         = "Say 33.";
+    const std::string age          = "42";
 
     for(const auto& series : m_series)
     {
-        series->setStudyInstanceUID(instanceUID);
-        CPPUNIT_ASSERT(series->getStudyInstanceUID() == instanceUID);
+        series->setStudyInstanceUID(instance_uid);
+        CPPUNIT_ASSERT(series->getStudyInstanceUID() == instance_uid);
 
         series->setStudyDate(date);
         CPPUNIT_ASSERT(series->getStudyDate() == date);
@@ -131,12 +131,12 @@ void series_test::attrEquipmentTest()
 
 void series_test::attrInstanceUIDTest()
 {
-    const std::string instanceUID = "1337.1664.42";
+    const std::string instance_uid = "1337.1664.42";
 
     for(const auto& series : m_series)
     {
-        series->setSeriesInstanceUID(instanceUID);
-        CPPUNIT_ASSERT_EQUAL(instanceUID, series->getSeriesInstanceUID());
+        series->setSeriesInstanceUID(instance_uid);
+        CPPUNIT_ASSERT_EQUAL(instance_uid, series->getSeriesInstanceUID());
     }
 }
 
@@ -184,13 +184,13 @@ void series_test::attrTimeTest()
 
 void series_test::attrPerformingPhysicianNameTest()
 {
-    const std::string performingPhysicianName =
+    const std::string performing_physician_name =
         "Adams^John Robert Quincy^^Rev.^B.A. M.Div.\\Morrison-Jones^Susan^^^Ph.D., Chief Executive Officer\\Doe^John";
 
     for(const auto& series : m_series)
     {
-        series->setPerformingPhysicianName(performingPhysicianName);
-        CPPUNIT_ASSERT(performingPhysicianName == series->getPerformingPhysicianName());
+        series->setPerformingPhysicianName(performing_physician_name);
+        CPPUNIT_ASSERT(performing_physician_name == series->getPerformingPhysicianName());
     }
 }
 
@@ -271,9 +271,9 @@ void series_test::equalityTest()
     series2->setPatientPosition(series1->getPatientPosition());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setAnatomicalOrientationType("14");
+    series1->set_anatomical_orientation_type("14");
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setAnatomicalOrientationType(series1->getAnatomicalOrientationType());
+    series2->set_anatomical_orientation_type(series1->get_anatomical_orientation_type());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->setPerformedProcedureStepID("15");
@@ -751,8 +751,8 @@ void series_test::anatomicalOrientationTypeTest()
 
     {
         auto series = std::make_shared<data::series>();
-        series->setAnatomicalOrientationType(anatomicalOrientationType);
-        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getAnatomicalOrientationType());
+        series->set_anatomical_orientation_type(anatomicalOrientationType);
+        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->get_anatomical_orientation_type());
         CPPUNIT_ASSERT_EQUAL(
             anatomicalOrientationType,
             series->getByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType)
@@ -762,7 +762,7 @@ void series_test::anatomicalOrientationTypeTest()
     {
         auto series = std::make_shared<data::series>();
         series->setByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType, anatomicalOrientationType);
-        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getAnatomicalOrientationType());
+        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->get_anatomical_orientation_type());
         CPPUNIT_ASSERT_EQUAL(
             anatomicalOrientationType,
             series->getByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType)
@@ -2255,13 +2255,13 @@ void series_test::frameAcquisitionDateTimeTest()
         series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime1, 1);
         series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime2, 2);
 
-        const std::string actual_frameAcquisitionDateTime0(*(series->getFrameAcquisitionDateTime(0)));
-        const std::string actual_frameAcquisitionDateTime1(*(series->getFrameAcquisitionDateTime(1)));
-        const std::string actual_frameAcquisitionDateTime2(*(series->getFrameAcquisitionDateTime(2)));
+        const std::string actual_frame_acquisition_date_time0(*(series->getFrameAcquisitionDateTime(0)));
+        const std::string actual_frame_acquisition_date_time1(*(series->getFrameAcquisitionDateTime(1)));
+        const std::string actual_frame_acquisition_date_time2(*(series->getFrameAcquisitionDateTime(2)));
 
-        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime0, actual_frameAcquisitionDateTime0);
-        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime1, actual_frameAcquisitionDateTime1);
-        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime2, actual_frameAcquisitionDateTime2);
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime0, actual_frame_acquisition_date_time0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime1, actual_frame_acquisition_date_time1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime2, actual_frame_acquisition_date_time2);
     }
 }
 
@@ -2280,13 +2280,13 @@ void series_test::frameCommentsTest()
         series->setFrameComments(expected_frameComments1, 1);
         series->setFrameComments(expected_frameComments2, 2);
 
-        const std::string actual_frameComments0(*(series->getFrameComments(0)));
-        const std::string actual_frameComments1(*(series->getFrameComments(1)));
-        const std::string actual_frameComments2(*(series->getFrameComments(2)));
+        const std::string actual_frame_comments0(*(series->getFrameComments(0)));
+        const std::string actual_frame_comments1(*(series->getFrameComments(1)));
+        const std::string actual_frame_comments2(*(series->getFrameComments(2)));
 
-        CPPUNIT_ASSERT_EQUAL(expected_frameComments0, actual_frameComments0);
-        CPPUNIT_ASSERT_EQUAL(expected_frameComments1, actual_frameComments1);
-        CPPUNIT_ASSERT_EQUAL(expected_frameComments2, actual_frameComments2);
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments0, actual_frame_comments0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments1, actual_frame_comments1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments2, actual_frame_comments2);
     }
 }
 
@@ -2305,13 +2305,13 @@ void series_test::frameLabelTest()
         series->setFrameLabel(expected_frameLabel1, 1);
         series->setFrameLabel(expected_frameLabel2, 2);
 
-        const std::string actual_frameLabel0(*(series->getFrameLabel(0)));
-        const std::string actual_frameLabel1(*(series->getFrameLabel(1)));
-        const std::string actual_frameLabel2(*(series->getFrameLabel(2)));
+        const std::string actual_frame_label0(*(series->getFrameLabel(0)));
+        const std::string actual_frame_label1(*(series->getFrameLabel(1)));
+        const std::string actual_frame_label2(*(series->getFrameLabel(2)));
 
-        CPPUNIT_ASSERT_EQUAL(expected_frameLabel0, actual_frameLabel0);
-        CPPUNIT_ASSERT_EQUAL(expected_frameLabel1, actual_frameLabel1);
-        CPPUNIT_ASSERT_EQUAL(expected_frameLabel2, actual_frameLabel2);
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel0, actual_frame_label0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel1, actual_frame_label1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel2, actual_frame_label2);
     }
 }
 
@@ -2338,29 +2338,29 @@ void series_test::frameAcquisitionTimePointTest()
     series->setFrameAcquisitionDateTime(expected_4, 4);
     series->setFrameAcquisitionDateTime(expected_5, 5);
 
-    const auto timePoint0 = *series->getFrameAcquisitionTimePoint(0);
-    const auto timePoint1 = *series->getFrameAcquisitionTimePoint(1);
-    const auto timePoint2 = *series->getFrameAcquisitionTimePoint(2);
-    const auto timePoint3 = *series->getFrameAcquisitionTimePoint(3);
-    const auto timePoint4 = *series->getFrameAcquisitionTimePoint(4);
-    const auto timePoint5 = *series->getFrameAcquisitionTimePoint(5);
+    const auto time_point0 = *series->getFrameAcquisitionTimePoint(0);
+    const auto time_point1 = *series->getFrameAcquisitionTimePoint(1);
+    const auto time_point2 = *series->getFrameAcquisitionTimePoint(2);
+    const auto time_point3 = *series->getFrameAcquisitionTimePoint(3);
+    const auto time_point4 = *series->getFrameAcquisitionTimePoint(4);
+    const auto time_point5 = *series->getFrameAcquisitionTimePoint(5);
 
-    CPPUNIT_ASSERT_EQUAL(expected_0, data::series::timePointToDateTime(timePoint0));
-    CPPUNIT_ASSERT_EQUAL(expected_1, data::series::timePointToDateTime(timePoint1));
-    CPPUNIT_ASSERT_EQUAL(expected_2, data::series::timePointToDateTime(timePoint2));
-    CPPUNIT_ASSERT_EQUAL(expected_4, data::series::timePointToDateTime(timePoint4));
+    CPPUNIT_ASSERT_EQUAL(expected_0, data::series::timePointToDateTime(time_point0));
+    CPPUNIT_ASSERT_EQUAL(expected_1, data::series::timePointToDateTime(time_point1));
+    CPPUNIT_ASSERT_EQUAL(expected_2, data::series::timePointToDateTime(time_point2));
+    CPPUNIT_ASSERT_EQUAL(expected_4, data::series::timePointToDateTime(time_point4));
 
     // Using time point API will force "YYYYMMDDHHMMSS.FFFFFF" format
-    CPPUNIT_ASSERT_EQUAL(expected_3b, data::series::timePointToDateTime(timePoint3));
-    CPPUNIT_ASSERT_EQUAL(expected_5b, data::series::timePointToDateTime(timePoint5));
+    CPPUNIT_ASSERT_EQUAL(expected_3b, data::series::timePointToDateTime(time_point3));
+    CPPUNIT_ASSERT_EQUAL(expected_5b, data::series::timePointToDateTime(time_point5));
 
     // Test setting time point directly, with overwrite
-    series->setFrameAcquisitionTimePoint(timePoint1, 0);
-    series->setFrameAcquisitionTimePoint(timePoint2, 1);
-    series->setFrameAcquisitionTimePoint(timePoint3, 2);
-    series->setFrameAcquisitionTimePoint(timePoint4, 3);
-    series->setFrameAcquisitionTimePoint(timePoint5, 4);
-    series->setFrameAcquisitionTimePoint(timePoint0, 5);
+    series->setFrameAcquisitionTimePoint(time_point1, 0);
+    series->setFrameAcquisitionTimePoint(time_point2, 1);
+    series->setFrameAcquisitionTimePoint(time_point3, 2);
+    series->setFrameAcquisitionTimePoint(time_point4, 3);
+    series->setFrameAcquisitionTimePoint(time_point5, 4);
+    series->setFrameAcquisitionTimePoint(time_point0, 5);
 
     const std::string actual_1(*(series->getFrameAcquisitionDateTime(0)));
     const std::string actual_2(*(series->getFrameAcquisitionDateTime(1)));
@@ -2508,8 +2508,8 @@ void series_test::multiFramePrivateTagTest()
         auto series = std::make_shared<data::image_series>();
 
         // test first if nonexisting value is handled
-        const auto& noValue = series->getMultiFramePrivateValue(0x11, 0);
-        CPPUNIT_ASSERT(!noValue.has_value());
+        const auto& no_value = series->getMultiFramePrivateValue(0x11, 0);
+        CPPUNIT_ASSERT(!no_value.has_value());
 
         series->setMultiFramePrivateValue(expected1, 0x11, 0);
         const auto& actual1 = series->getMultiFramePrivateValue(0x11, 0);
@@ -2610,7 +2610,7 @@ void series_test::copyGeneralSeriesModuleTest()
     series1->setPerformedProcedureStepEndTime("25");
     series1->setPerformedProcedureStepDescription("26");
     series1->setCommentsOnThePerformedProcedureStep("28");
-    series1->setAnatomicalOrientationType("29");
+    series1->set_anatomical_orientation_type("29");
 
     auto series2 = std::make_shared<data::series>();
     series2->copyGeneralSeriesModule(series1);

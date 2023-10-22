@@ -39,44 +39,44 @@ constexpr static auto s_Alpha {"Alpha"};
 
 inline static void write(
     zip::ArchiveWriter& /*unused*/,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto color = helper::safe_cast<data::color>(object);
+    const auto color = helper::safe_cast<data::color>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::color>(tree, 1);
+    helper::write_version<data::color>(_tree, 1);
 
-    tree.put(s_Red, color->red());
-    tree.put(s_Green, color->green());
-    tree.put(s_Blue, color->blue());
-    tree.put(s_Alpha, color->alpha());
+    _tree.put(s_Red, color->red());
+    _tree.put(s_Green, color->green());
+    _tree.put(s_Blue, color->blue());
+    _tree.put(s_Alpha, color->alpha());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::color::sptr read(
     zip::ArchiveReader& /*unused*/,
-    const boost::property_tree::ptree& tree,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
+    data::object::sptr _object,
     const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto color = helper::cast_or_create<data::color>(object);
+    auto color = helper::cast_or_create<data::color>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::color>(tree, 0, 1);
+    helper::read_version<data::color>(_tree, 0, 1);
 
     color->setRGBA(
-        tree.get<float>(s_Red),
-        tree.get<float>(s_Green),
-        tree.get<float>(s_Blue),
-        tree.get<float>(s_Alpha)
+        _tree.get<float>(s_Red),
+        _tree.get<float>(s_Green),
+        _tree.get<float>(s_Blue),
+        _tree.get<float>(s_Alpha)
     );
 
     return color;

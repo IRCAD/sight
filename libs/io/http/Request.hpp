@@ -42,7 +42,7 @@ public:
     SIGHT_DECLARE_CLASS(Request, core::base_object);
 
     /// Maps header name to its value.
-    typedef std::map<std::string, std::string> HeadersType;
+    typedef std::map<std::string, std::string> headers_t;
 
     /**
      * @name Constructor/Destructor
@@ -52,7 +52,7 @@ public:
     /**
      * @brief Construct a new Request with given url.
      */
-    IO_HTTP_API Request(std::string url);
+    IO_HTTP_API Request(std::string _url);
 
     ~Request() override
     = default;
@@ -66,22 +66,22 @@ public:
      *
      * @return  the newly created Request object
      */
-    IO_HTTP_API static Request::sptr New(const std::string& url);
+    IO_HTTP_API static Request::sptr New(const std::string& _url);
 
     /**
      * @brief add element in the request header
      */
-    IO_HTTP_API void addHeader(const std::string& key, const std::string& value);
+    IO_HTTP_API void addHeader(const std::string& _key, const std::string& _value);
 
     /**
      *@brief headers setter.
      */
-    IO_HTTP_API void setHeaders(const HeadersType& headers);
+    IO_HTTP_API void setHeaders(const headers_t& _headers);
 
     /**
      *@brief headers getter.
      */
-    IO_HTTP_API const HeadersType& getHeaders() const;
+    IO_HTTP_API const headers_t& getHeaders() const;
 
     /**
      * @brief return current url
@@ -91,11 +91,11 @@ public:
     /**
      * @brief set current url
      */
-    IO_HTTP_API void setUrl(const std::string& url);
+    IO_HTTP_API void setUrl(const std::string& _url);
 
 private:
 
-    HeadersType m_headers;
+    headers_t m_headers;
 
     std::string m_url;
 };

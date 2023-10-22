@@ -59,7 +59,7 @@ void stereo_selector::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -70,7 +70,7 @@ void stereo_selector::starting()
     layout->addWidget(m_layersBox);
     layout->addWidget(m_modeBox);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->refreshRenderers();
 
@@ -110,21 +110,21 @@ void stereo_selector::updating()
 
 //--------------------------------------------------------------------------C---
 
-void stereo_selector::onSelectedLayerItem(int index)
+void stereo_selector::onSelectedLayerItem(int _index)
 {
     // Update the current layer
-    m_currentLayer = m_layers[static_cast<std::size_t>(index)];
+    m_currentLayer = m_layers[static_cast<std::size_t>(_index)];
 }
 
 //------------------------------------------------------------------------------
 
-void stereo_selector::onSelectedModeItem(int index)
+void stereo_selector::onSelectedModeItem(int _index)
 {
     using sight::viz::scene3d::compositor::core;
     m_currentLayer.lock()->setStereoMode(
-        index == 1 ? core::StereoModeType::AUTOSTEREO_5
-                   : index == 2 ? core::StereoModeType::AUTOSTEREO_8
-                                : core::StereoModeType::NONE
+        _index == 1 ? core::stereo_mode_t::AUTOSTEREO_5
+                    : _index == 2 ? core::stereo_mode_t::AUTOSTEREO_8
+                                  : core::stereo_mode_t::NONE
     );
 }
 
@@ -135,19 +135,19 @@ void stereo_selector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = sight::service::getServices("sight::viz::scene3d::render");
+    const auto renderers = sight::service::get_services("sight::viz::scene3d::render");
 
     for(const auto& srv : renderers)
     {
         auto render = std::dynamic_pointer_cast<sight::viz::scene3d::render>(srv);
 
-        for(auto& layerMap : render->getLayers())
+        for(auto& layer_map : render->getLayers())
         {
-            const std::string& id = layerMap.first;
+            const std::string& id = layer_map.first;
             if(id != sight::viz::scene3d::render::s_OGREBACKGROUNDID)
             {
                 m_layersBox->addItem(QString::fromStdString(id));
-                m_layers.push_back(layerMap.second);
+                m_layers.push_back(layer_map.second);
             }
         }
     }

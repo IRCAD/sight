@@ -66,10 +66,10 @@ public:
     UI_QML_API selections_t show() override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& msg) override;
+    UI_QML_API void setMessage(const std::string& _msg) override;
 
     /// unimplemented
-    UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_QML_API void addCustomButton(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 Q_SIGNALS:
 
@@ -79,7 +79,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(QVariant selection);
+    void resultDialog(QVariant _selection);
 
 private:
 

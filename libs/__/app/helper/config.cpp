@@ -47,46 +47,46 @@ namespace sight::app::helper
 /// container for the data keywords for a service configuration
 const std::array<std::string, 3> s_DATA_KEYWORDS = {{"in", "out", "inout"}};
 
-static std::map<std::string, service::base::sptr> s_servicesProps;
-static std::mutex s_servicesPropsMutex;
+static std::map<std::string, service::base::sptr> s_services_props;
+static std::mutex s_services_props_mutex;
 
 //-----------------------------------------------------------------------------
 
 void config::createConnections(
-    const core::runtime::config_t& connectionCfg,
-    core::com::helper::sig_slot_connection& connections,
-    const CSPTR(core::tools::object)& obj
+    const core::runtime::config_t& _connection_cfg,
+    core::com::helper::sig_slot_connection& _connections,
+    const CSPTR(core::tools::object)& _obj
 )
 {
-    ConnectionInfo info = parseConnections(connectionCfg, obj);
+    ConnectionInfo info = parseConnections(_connection_cfg, _obj);
 
-    core::tools::object::sptr sigSource     = core::tools::id::get_object(info.m_signal.first);
-    core::com::has_signals::sptr hasSignals = std::dynamic_pointer_cast<core::com::has_signals>(sigSource);
+    core::tools::object::sptr sig_source     = core::tools::id::get_object(info.m_signal.first);
+    core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(sig_source);
 
-    SIGHT_ASSERT("Signal source not found '" + info.m_signal.first + "'", sigSource);
-    SIGHT_ASSERT("invalid signal source '" + info.m_signal.first + "'", hasSignals);
+    SIGHT_ASSERT("Signal source not found '" + info.m_signal.first + "'", sig_source);
+    SIGHT_ASSERT("invalid signal source '" + info.m_signal.first + "'", has_signals);
 
-    for(const SlotInfoType& slotInfo : info.m_slots)
+    for(const slot_info_t& slot_info : info.m_slots)
     {
-        core::tools::object::sptr slotObj = core::tools::id::get_object(slotInfo.first);
-        SIGHT_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", slotObj);
-        core::com::has_slots::sptr hasSlots = std::dynamic_pointer_cast<core::com::has_slots>(slotObj);
-        SIGHT_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
+        core::tools::object::sptr slot_obj = core::tools::id::get_object(slot_info.first);
+        SIGHT_ASSERT("Failed to retrieve object '" + slot_info.first + "'", slot_obj);
+        core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(slot_obj);
+        SIGHT_ASSERT("invalid slot owner " << slot_info.first, has_slots);
 
-        connections.connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
+        _connections.connect(has_signals, info.m_signal.second, has_slots, slot_info.second);
     }
 }
 
 //-----------------------------------------------------------------------------
 
 config::ConnectionInfo config::parseConnections(
-    const core::runtime::config_t& connectionCfg,
-    const CSPTR(core::tools::object)& obj
+    const core::runtime::config_t& _connection_cfg,
+    const CSPTR(core::tools::object)& _obj
 )
 {
     ConnectionInfo info;
 
-    for(const auto& elem : connectionCfg)
+    for(const auto& elem : _connection_cfg)
     {
         const auto src = elem.second.get_value<std::string>();
         static const std::regex re("(.*)/(.*)");
@@ -120,8 +120,8 @@ config::ConnectionInfo config::parseConnections(
         }
         else
         {
-            SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", obj);
-            uid = obj->get_id();
+            SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", _obj);
+            uid = _obj->get_id();
             key = src;
             SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem.first == "signal");
             SIGHT_ASSERT(
@@ -139,19 +139,19 @@ config::ConnectionInfo config::parseConnections(
 //-----------------------------------------------------------------------------
 
 core::com::helper::proxy_connections config::parseConnections2(
-    const core::runtime::config_t& connectionCfg,
-    const std::string& errMsgHead,
-    std::function<std::string()> generateChannelNameFn
+    const core::runtime::config_t& _connection_cfg,
+    const std::string& _err_msg_head,
+    std::function<std::string()> _generate_channel_name_fn
 )
 {
 #ifndef _DEBUG
-    SIGHT_NOT_USED(errMsgHead);
+    SIGHT_NOT_USED(_err_msg_head);
 #endif
-    const std::string channel = connectionCfg.get<std::string>("<xmlattr>.channel", generateChannelNameFn());
+    const std::string channel = _connection_cfg.get<std::string>("<xmlattr>.channel", _generate_channel_name_fn());
 
-    core::com::helper::proxy_connections proxyCnt(channel);
+    core::com::helper::proxy_connections proxy_cnt(channel);
 
-    for(const auto& elem : connectionCfg)
+    for(const auto& elem : _connection_cfg)
     {
         const static std::regex re("(.*)/(.*)");
         std::smatch match;
@@ -166,39 +166,39 @@ core::com::helper::proxy_connections config::parseConnections2(
             key.assign(match[2].first, match[2].second);
 
             SIGHT_ASSERT(
-                errMsgHead + src << " configuration is not correct for " << elem.first,
+                _err_msg_head + src << " configuration is not correct for " << elem.first,
                 !uid.empty() && !key.empty()
             );
 
             if(elem.first == "signal")
             {
-                proxyCnt.addSignalConnection(uid, key);
+                proxy_cnt.addSignalConnection(uid, key);
             }
             else if(elem.first == "slot")
             {
-                proxyCnt.addSlotConnection(uid, key);
+                proxy_cnt.addSlotConnection(uid, key);
             }
         }
         else if(elem.first != "<xmlattr>")
         {
             SIGHT_ASSERT(
-                errMsgHead + "Signal or slot must be written as <signal>fwID/Key</signal> or "
-                             "<slot>fwID/Key</slot>",
+                _err_msg_head + "Signal or slot must be written as <signal>fwID/Key</signal> or "
+                                "<slot>fwID/Key</slot>",
                 false
             );
         }
     }
 
     // This is ok to return like this, thanks to C++11 rvalue there will be no copy of the vectors inside the struct
-    return proxyCnt;
+    return proxy_cnt;
 }
 
 //-----------------------------------------------------------------------------
 
-void config::disconnectProxies(const std::string& objectKey, config::proxy_connections_map_t& proxyMap)
+void config::disconnectProxies(const std::string& _object_key, config::proxy_connections_map_t& _proxy_map)
 {
-    auto iter = proxyMap.find(objectKey);
-    if(iter != proxyMap.end())
+    auto iter = _proxy_map.find(_object_key);
+    if(iter != _proxy_map.end())
     {
         core::com::proxy::sptr proxy = core::com::proxy::get();
 
@@ -206,103 +206,103 @@ void config::disconnectProxies(const std::string& objectKey, config::proxy_conne
 
         for(const auto& proxy_connection : proxy_connections)
         {
-            for(const auto& signalElt : proxy_connection.m_signals)
+            for(const auto& signal_elt : proxy_connection.m_signals)
             {
-                core::tools::object::sptr obj           = core::tools::id::get_object(signalElt.first);
-                core::com::has_signals::sptr hasSignals = std::dynamic_pointer_cast<core::com::has_signals>(obj);
-                core::com::signal_base::sptr sig        = hasSignals->signal(signalElt.second);
+                core::tools::object::sptr obj            = core::tools::id::get_object(signal_elt.first);
+                core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(obj);
+                core::com::signal_base::sptr sig         = has_signals->signal(signal_elt.second);
                 proxy->disconnect(proxy_connection.m_channel, sig);
             }
 
-            for(const auto& slotElt : proxy_connection.m_slots)
+            for(const auto& slot_elt : proxy_connection.m_slots)
             {
-                core::tools::object::sptr obj       = core::tools::id::get_object(slotElt.first);
-                core::com::has_slots::sptr hasSlots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
-                core::com::slot_base::sptr slot     = hasSlots->slot(slotElt.second);
+                core::tools::object::sptr obj        = core::tools::id::get_object(slot_elt.first);
+                core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
+                core::com::slot_base::sptr slot      = has_slots->slot(slot_elt.second);
                 proxy->disconnect(proxy_connection.m_channel, slot);
             }
         }
 
         proxy_connections.clear();
-        proxyMap.erase(objectKey);
+        _proxy_map.erase(_object_key);
     }
 }
 
 //-----------------------------------------------------------------------------
 
 app::detail::service_config config::parseService(
-    const boost::property_tree::ptree& srvElem,
-    const std::string& errMsgHead
+    const boost::property_tree::ptree& _srv_elem,
+    const std::string& _err_msg_head
 )
 {
 #ifndef _DEBUG
-    SIGHT_NOT_USED(errMsgHead);
+    SIGHT_NOT_USED(_err_msg_head);
 #endif
 
     // Get attributes
     app::detail::service_config srvconfig;
 
-    srvconfig.m_uid = srvElem.get<std::string>("<xmlattr>.uid");
-    SIGHT_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvconfig.m_uid.empty());
+    srvconfig.m_uid = _srv_elem.get<std::string>("<xmlattr>.uid");
+    SIGHT_ASSERT(_err_msg_head + "'uid' attribute is empty.", !srvconfig.m_uid.empty());
 
-    std::string errMsgTail = " when parsing service '" + srvconfig.m_uid + "'.";
+    std::string err_msg_tail = " when parsing service '" + srvconfig.m_uid + "'.";
 
     // config
-    std::string config = srvElem.get<std::string>("<xmlattr>.config", "");
-    SIGHT_ASSERT(errMsgHead + "'config' attribute is empty.", !srvconfig.m_uid.empty());
+    std::string config = _srv_elem.get<std::string>("<xmlattr>.config", "");
+    SIGHT_ASSERT(_err_msg_head + "'config' attribute is empty.", !srvconfig.m_uid.empty());
 
     // Type
-    srvconfig.m_type = srvElem.get<std::string>("<xmlattr>.type", "");
+    srvconfig.m_type = _srv_elem.get<std::string>("<xmlattr>.type", "");
     SIGHT_ASSERT(
-        std::string(errMsgHead) + "Attribute \"type\" is required " + errMsgTail,
+        std::string(_err_msg_head) + "Attribute \"type\" is required " + err_msg_tail,
         !srvconfig.m_type.empty()
     );
 
     // AutoConnect
-    srvconfig.m_globalAutoConnect = core::runtime::get_ptree_value(srvElem, "<xmlattr>.auto_connect", false);
+    srvconfig.m_globalAutoConnect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", false);
 
     // Worker key
-    srvconfig.m_worker = srvElem.get<std::string>("<xmlattr>.worker", "");
+    srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
 
     // Get service configuration
     if(!config.empty())
     {
-        const auto srvCfgFactory = service::extension::config::getDefault();
-        srvconfig.m_config = srvCfgFactory->get_service_config(config, srvconfig.m_type);
+        const auto srv_cfg_factory = service::extension::config::getDefault();
+        srvconfig.m_config = srv_cfg_factory->get_service_config(config, srvconfig.m_type);
     }
     else
     {
-        srvconfig.m_config = srvElem;
+        srvconfig.m_config = _srv_elem;
     }
 
     // Check if user did not bind a service to another service
-    auto serviceCfg = srvElem.equal_range("service");
+    auto service_cfg = _srv_elem.equal_range("service");
     SIGHT_ASSERT(
-        std::string(errMsgHead) + "Cannot bind a service to another service" + errMsgTail,
-        serviceCfg.first == serviceCfg.second
+        std::string(_err_msg_head) + "Cannot bind a service to another service" + err_msg_tail,
+        service_cfg.first == service_cfg.second
     );
-    serviceCfg = srvElem.equal_range("serviceList");
+    service_cfg = _srv_elem.equal_range("serviceList");
     SIGHT_ASSERT(
-        std::string(errMsgHead) + "Cannot bind a service to another service" + errMsgTail,
-        serviceCfg.first == serviceCfg.second
+        std::string(_err_msg_head) + "Cannot bind a service to another service" + err_msg_tail,
+        service_cfg.first == service_cfg.second
     );
 
     // Check first if we can create this service
     // If there is a missing object in its data list, then it is not possible
 
     // Collect all input/output configurations
-    std::vector<std::pair<std::string, boost::property_tree::ptree> > objectCfgs;
-    for(const auto& dataKeyword : s_DATA_KEYWORDS)
+    std::vector<std::pair<std::string, boost::property_tree::ptree> > object_cfgs;
+    for(const auto& data_keyword : s_DATA_KEYWORDS)
     {
-        auto objCfgs = srvElem.equal_range(dataKeyword);
-        for(auto objCfg = objCfgs.first ; objCfg != objCfgs.second ; ++objCfg)
+        auto obj_cfgs = _srv_elem.equal_range(data_keyword);
+        for(auto obj_cfg = obj_cfgs.first ; obj_cfg != obj_cfgs.second ; ++obj_cfg)
         {
-            objectCfgs.emplace_back(objCfg->first, objCfg->second);
+            object_cfgs.emplace_back(obj_cfg->first, obj_cfg->second);
         }
     }
 
     // Parse input/output configurations
-    for(const auto& cfg : objectCfgs)
+    for(const auto& cfg : object_cfgs)
     {
         // Access type
         app::detail::ObjectServiceconfig objconfig;
@@ -327,14 +327,14 @@ app::detail::service_config config::parseService(
         const auto group = cfg.second.get_optional<std::string>("<xmlattr>.group");
         if(group)
         {
-            auto keyCfgs           = cfg.second.equal_range("key");
+            auto key_cfgs          = cfg.second.equal_range("key");
             const std::string& key = group.value();
-            const auto defaultCfg  = get_object_key_attrs(srvconfig.m_type, key);
+            const auto default_cfg = get_object_key_attrs(srvconfig.m_type, key);
 
             objconfig.m_autoConnect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.auto_connect",
-                defaultCfg.first
+                default_cfg.first
             );
 
             // Optional is global to all keys in the group
@@ -343,7 +343,7 @@ app::detail::service_config config::parseService(
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    defaultCfg.second
+                    default_cfg.second
                 );
             }
             else
@@ -352,42 +352,42 @@ app::detail::service_config config::parseService(
             }
 
             std::size_t count = 0;
-            for(auto groupCfg = keyCfgs.first ; groupCfg != keyCfgs.second ; ++groupCfg)
+            for(auto group_cfg = key_cfgs.first ; group_cfg != key_cfgs.second ; ++group_cfg)
             {
-                app::detail::ObjectServiceconfig groupObjconfig = objconfig;
+                app::detail::ObjectServiceconfig group_objconfig = objconfig;
 
                 // Identifier
-                groupObjconfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
+                group_objconfig.m_uid = group_cfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(
-                    std::string(errMsgHead) + "\"uid\" attribute is empty" + errMsgTail,
-                    !groupObjconfig.m_uid.empty()
+                    std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
+                    !group_objconfig.m_uid.empty()
                 );
 
-                groupObjconfig.m_key = key;
+                group_objconfig.m_key = key;
 
                 // AutoConnect can be overriden by element in the group
-                groupObjconfig.m_autoConnect = core::runtime::get_ptree_value(
-                    groupCfg->second,
+                group_objconfig.m_autoConnect = core::runtime::get_ptree_value(
+                    group_cfg->second,
                     "<xmlattr>.auto_connect",
-                    groupObjconfig.m_autoConnect
+                    group_objconfig.m_autoConnect
                 );
 
                 // Optional can be overriden by element in the group
-                if(groupObjconfig.m_access != data::Access::out)
+                if(group_objconfig.m_access != data::Access::out)
                 {
-                    groupObjconfig.m_optional = core::runtime::get_ptree_value(
-                        groupCfg->second,
+                    group_objconfig.m_optional = core::runtime::get_ptree_value(
+                        group_cfg->second,
                         "<xmlattr>.optional",
-                        groupObjconfig.m_optional
+                        group_objconfig.m_optional
                     );
                 }
                 else
                 {
-                    groupObjconfig.m_optional = true;
+                    group_objconfig.m_optional = true;
                 }
 
                 // Assign the current object config in the service config
-                srvconfig.m_objects[{key, count++}] = groupObjconfig;
+                srvconfig.m_objects[{key, count++}] = group_objconfig;
             }
         }
         else
@@ -395,24 +395,24 @@ app::detail::service_config config::parseService(
             // Identifier
             objconfig.m_uid = cfg.second.get<std::string>("<xmlattr>.uid", "");
             SIGHT_ASSERT(
-                std::string(errMsgHead) + "\"uid\" attribute is empty" + errMsgTail,
+                std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
                 !objconfig.m_uid.empty()
             );
 
             // Key inside the service
             objconfig.m_key = cfg.second.get<std::string>("<xmlattr>.key", "");
             SIGHT_ASSERT(
-                std::string(errMsgHead) + "Missing object attribute 'key'" + errMsgTail,
+                std::string(_err_msg_head) + "Missing object attribute 'key'" + err_msg_tail,
                 !objconfig.m_key.empty()
             );
 
-            const auto defaultCfg = get_object_key_attrs(srvconfig.m_type, objconfig.m_key);
+            const auto default_cfg = get_object_key_attrs(srvconfig.m_type, objconfig.m_key);
 
             // AutoConnect
             objconfig.m_autoConnect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.auto_connect",
-                defaultCfg.first
+                default_cfg.first
             );
 
             // Optional
@@ -421,7 +421,7 @@ app::detail::service_config config::parseService(
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    defaultCfg.second
+                    default_cfg.second
                 );
             }
             else
@@ -440,34 +440,34 @@ app::detail::service_config config::parseService(
 //------------------------------------------------------------------------------
 
 std::pair<bool, bool> config::get_object_key_attrs(
-    const std::string& serviceType,
-    const std::string& key
+    const std::string& _service_type,
+    const std::string& _key
 )
 {
-    std::lock_guard guard(s_servicesPropsMutex);
+    std::lock_guard guard(s_services_props_mutex);
 
     service::base::sptr srv;
-    auto it = s_servicesProps.find(serviceType);
-    if(it == s_servicesProps.end())
+    auto it = s_services_props.find(_service_type);
+    if(it == s_services_props.end())
     {
-        auto srvFactory = service::extension::factory::get();
-        srv                          = srvFactory->create(serviceType);
-        s_servicesProps[serviceType] = srv;
+        auto srv_factory = service::extension::factory::get();
+        srv                             = srv_factory->create(_service_type);
+        s_services_props[_service_type] = srv;
     }
     else
     {
         srv = it->second;
     }
 
-    return service::manager::get_object_key_attrs(srv, key);
+    return service::manager::get_object_key_attrs(srv, _key);
 }
 
 // ----------------------------------------------------------------------------
 
 void config::clearProps()
 {
-    std::lock_guard guard(s_servicesPropsMutex);
-    s_servicesProps.clear();
+    std::lock_guard guard(s_services_props_mutex);
+    s_services_props.clear();
 }
 
 // ----------------------------------------------------------------------------

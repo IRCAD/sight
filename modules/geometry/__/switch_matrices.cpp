@@ -73,10 +73,10 @@ void switch_matrices::updating()
 {
     auto matrix = m_output.lock();
 
-    auto desiredMatrix = m_matrix[m_indexOfDesiredMatrix].lock();
-    matrix->shallow_copy(desiredMatrix.get_shared());
+    auto desired_matrix = m_matrix[m_indexOfDesiredMatrix].lock();
+    matrix->shallow_copy(desired_matrix.get_shared());
 
-    auto sig = matrix->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();
@@ -98,11 +98,11 @@ void switch_matrices::switchMatrix()
 
 // ----------------------------------------------------------------------------
 
-void switch_matrices::switchToMatrix(int index)
+void switch_matrices::switchToMatrix(int _index)
 {
-    if(index >= 0 && static_cast<std::size_t>(index) < m_matrix.size())
+    if(_index >= 0 && static_cast<std::size_t>(_index) < m_matrix.size())
     {
-        m_indexOfDesiredMatrix = static_cast<std::size_t>(index);
+        m_indexOfDesiredMatrix = static_cast<std::size_t>(_index);
     }
     else
     {

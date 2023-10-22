@@ -48,11 +48,11 @@ void equipment_test::tearDown()
 
 void equipment_test::institutionNameTest()
 {
-    const std::string institutionName = "IRCAD";
+    const std::string institution_name = "IRCAD";
     CPPUNIT_ASSERT(m_equipment);
-    m_equipment->setInstitutionName(institutionName);
+    m_equipment->setInstitutionName(institution_name);
 
-    CPPUNIT_ASSERT_EQUAL(institutionName, m_equipment->getInstitutionName());
+    CPPUNIT_ASSERT_EQUAL(institution_name, m_equipment->getInstitutionName());
 }
 
 //------------------------------------------------------------------------------
@@ -70,9 +70,9 @@ void equipment_test::equalityTest()
     CPPUNIT_ASSERT(*equipment1 == *equipment2);
 
     // Test also deepcopy, just for fun
-    auto dicomSeries3 = std::make_shared<data::series>();
-    dicomSeries3->deep_copy(equipment1);
-    CPPUNIT_ASSERT(*equipment1 == *dicomSeries3);
+    auto dicom_series3 = std::make_shared<data::series>();
+    dicom_series3->deep_copy(equipment1);
+    CPPUNIT_ASSERT(*equipment1 == *dicom_series3);
 }
 
 //------------------------------------------------------------------------------

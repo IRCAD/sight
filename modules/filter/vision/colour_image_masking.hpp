@@ -122,16 +122,16 @@ private:
     void setForeground();
 
     /// SLOT: Sets the threshold value to compute final binary image.
-    void setThreshold(int threshold);
+    void setThreshold(int _threshold);
 
     /// SLOT: Sets the noise level added in the learning steps.
-    void setNoiseLevel(double noiseLevel);
+    void setNoiseLevel(double _noise_level);
 
     /// SLOT: Sets the number of background components learned.
-    void setBackgroundComponents(int bgComponents);
+    void setBackgroundComponents(int _bg_components);
 
     /// SLOT: Sets the number of foreground components learned.
-    void setForegroundComponents(int fgComponents);
+    void setForegroundComponents(int _fg_components);
 
     /// SLOT: Clears the output mask timeline and reset the last timestamp.
     void clearMaskTL();

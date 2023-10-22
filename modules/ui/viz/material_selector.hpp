@@ -79,7 +79,7 @@ public:
      * @{
      */
     MODULE_UI_VIZ_API static const core::com::signals::key_t SELECTED_SIG;
-    typedef core::com::signal<void (std::string)> SelectedSignalType;
+    typedef core::com::signal<void (std::string)> selected_signal_t;
 /** @} */
 
 protected:
@@ -105,7 +105,7 @@ protected:
 protected Q_SLOTS:
 
     /// SLOT: Called when a material is selected
-    void onSelectedModeItem(const QString& text);
+    void onSelectedModeItem(const QString& _text);
 
     /// SLOT: Called when the reload button is pushed
     void onReloadMaterial();

@@ -64,10 +64,10 @@ public:
      * @param[in] handler can be either  a function or functor or boost::signal with a signature( float, std::string )
      * and returning nothing
      */
-    CORE_API void add_handler(const progress_handler& handler);
+    CORE_API void add_handler(const progress_handler& _handler);
 
     /// notify modification for all handler
-    CORE_API void notify_progress(float percent, const std::string& msg = "") const;
+    CORE_API void notify_progress(float _percent, const std::string& _msg = "") const;
 
 protected:
 

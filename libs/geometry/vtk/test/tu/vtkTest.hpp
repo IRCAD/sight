@@ -51,9 +51,9 @@ public:
     //------------------------------------------------------------------------------
 
     template<class T>
-    static T random(const T& a, const T& b)
+    static T random(const T& _a, const T& _b)
     {
-        return static_cast<T>(core::tools::random::safe_rand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
+        return static_cast<T>(core::tools::random::safe_rand()) / static_cast<T>(RAND_MAX) * (_b - _a) + _a;
     }
 };
 

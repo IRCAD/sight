@@ -19,5 +19,5 @@ Contains services that implement some computer vision algorithms, notably to cal
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_geometry_vision ... )
+add_dependencies(my_target module_geometry_vision ... )
 ```

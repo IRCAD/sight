@@ -38,119 +38,119 @@ byte_size::byte_size()
 
 //------------------------------------------------------------------------------
 
-byte_size::byte_size(size_t size, unit_t unit)
+byte_size::byte_size(size_t _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (unit == bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == ki_b) || (unit == mi_b) || (unit == gi_b) || (unit == ti_b) || (unit == pi_b)
+        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
     );
-    this->set_size(size, unit);
+    this->set_size(_size, _unit);
 }
 
 //------------------------------------------------------------------------------
 
-byte_size::byte_size(double size, unit_t unit)
+byte_size::byte_size(double _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (unit == bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == ki_b) || (unit == mi_b) || (unit == gi_b) || (unit == ti_b) || (unit == pi_b)
+        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
     );
-    if(size < 0)
+    if(_size < 0)
     {
-        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << _size << " < 0");
     }
 
-    this->set_size(size, unit);
+    this->set_size(_size, _unit);
 }
 
 //------------------------------------------------------------------------------
 
-byte_size::byte_size(const std::string& size)
+byte_size::byte_size(const std::string& _size)
 {
-    this->set_size(size);
+    this->set_size(_size);
 }
 
 //------------------------------------------------------------------------------
 
-byte_size& byte_size::operator=(size_t size)
+byte_size& byte_size::operator=(size_t _size)
 {
-    this->set_size(size);
+    this->set_size(_size);
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-byte_size& byte_size::operator=(double size)
+byte_size& byte_size::operator=(double _size)
 {
-    if(size < 0)
+    if(_size < 0)
     {
-        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << _size << " < 0");
     }
 
-    this->set_size(size);
+    this->set_size(_size);
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-byte_size& byte_size::operator=(const std::string& size)
+byte_size& byte_size::operator=(const std::string& _size)
 {
-    this->set_size(size);
+    this->set_size(_size);
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-void byte_size::set_size(size_t size, unit_t unit)
+void byte_size::set_size(size_t _size, unit_t _unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (unit == bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == ki_b) || (unit == mi_b) || (unit == gi_b) || (unit == ti_b) || (unit == pi_b)
+        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
     );
-    m_size = size * unit;
+    m_size = _size * _unit;
 }
 
 //------------------------------------------------------------------------------
 
-void byte_size::set_size(double size, unit_t unit)
+void byte_size::set_size(double _size, unit_t _unit)
 {
-    if(size < 0)
+    if(_size < 0)
     {
-        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << _size << " < 0");
     }
 
     SIGHT_ASSERT(
         "Bad Unit",
-        (unit == bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == ki_b) || (unit == mi_b) || (unit == gi_b) || (unit == ti_b) || (unit == pi_b)
+        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
     );
-    m_size = static_cast<size_t>(size * static_cast<double>(unit));
+    m_size = static_cast<size_t>(_size * static_cast<double>(_unit));
 }
 
 //------------------------------------------------------------------------------
 
-void byte_size::set_size(const std::string& size)
+void byte_size::set_size(const std::string& _size)
 {
     size_t new_size = 0;
-    bool r          = parse_size(size, new_size);
+    bool r          = parse_size(_size, new_size);
     if(r)
     {
         m_size = new_size;
     }
     else
     {
-        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << size);
+        SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << _size);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string byte_size::unit_to_string(byte_size::unit_t unit)
+std::string byte_size::unit_to_string(byte_size::unit_t _unit)
 {
-    switch(unit)
+    switch(_unit)
     {
         case bytes:
             return "Bytes";
@@ -193,7 +193,7 @@ std::string byte_size::unit_to_string(byte_size::unit_t unit)
 
 //------------------------------------------------------------------------------
 
-bool byte_size::parse_size(const std::string& s, size_t& size)
+bool byte_size::parse_size(const std::string& _s, size_t& _size)
 {
     using boost::phoenix::ref;
     using boost::spirit::ascii::no_case;
@@ -206,8 +206,8 @@ bool byte_size::parse_size(const std::string& s, size_t& size)
     using boost::spirit::qi::symbols;
     using boost::spirit::qi::ulong_long;
 
-    std::string::const_iterator first = s.begin();
-    std::string::const_iterator last  = s.end();
+    std::string::const_iterator first = _s.begin();
+    std::string::const_iterator last  = _s.end();
 
     byte_size::size_t int_size   = 0;
     double float_size            = 0;
@@ -255,7 +255,7 @@ bool byte_size::parse_size(const std::string& s, size_t& size)
 
     if(int_size != 0)
     {
-        size = int_size * multiplier;
+        _size = int_size * multiplier;
     }
     else if(float_size != 0)
     {
@@ -264,7 +264,7 @@ bool byte_size::parse_size(const std::string& s, size_t& size)
             SIGHT_THROW_EXCEPTION_MSG(core::memory::exception::bad_cast, "Bad size : " << float_size << " < 0");
         }
 
-        size = static_cast<byte_size::size_t>(float_size * static_cast<double>(multiplier));
+        _size = static_cast<byte_size::size_t>(float_size * static_cast<double>(multiplier));
     }
     else
     {
@@ -276,33 +276,33 @@ bool byte_size::parse_size(const std::string& s, size_t& size)
 
 //------------------------------------------------------------------------------
 
-std::string byte_size::get_size_as_string(unit_t unit) const
+std::string byte_size::get_size_as_string(unit_t _unit) const
 {
     SIGHT_ASSERT(
         "Bad Unit",
-        (unit == bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == ki_b) || (unit == mi_b) || (unit == gi_b) || (unit == ti_b) || (unit == pi_b)
+        (_unit == bytes) || (_unit == KB) || (_unit == MB) || (_unit == GB) || (_unit == TB) || (_unit == PB)
+        || (_unit == ki_b) || (_unit == mi_b) || (_unit == gi_b) || (_unit == ti_b) || (_unit == pi_b)
     );
     std::stringstream sstr;
     sstr << std::noshowpoint;
 
-    if(unit == bytes)
+    if(_unit == bytes)
     {
         sstr << m_size;
     }
     else
     {
-        sstr << (static_cast<double>(m_size) / static_cast<double>(unit));
+        sstr << (static_cast<double>(m_size) / static_cast<double>(_unit));
     }
 
-    sstr << " " << unit_to_string(unit);
+    sstr << " " << unit_to_string(_unit);
 
     return sstr.str();
 }
 
 //------------------------------------------------------------------------------
 
-std::string byte_size::get_human_readable_size(standard_type standard) const
+std::string byte_size::get_human_readable_size(standard_type _standard) const
 {
     static const std::array si {bytes, KB, MB, GB, TB, PB};
     static const std::array iec {bytes, ki_b, mi_b, gi_b, ti_b, pi_b};
@@ -310,7 +310,7 @@ std::string byte_size::get_human_readable_size(standard_type standard) const
     const std::size_t size_of_standard_set = si.size();
 
     const auto* unit_set = &iec;
-    if(standard == SI)
+    if(_standard == SI)
     {
         unit_set = &si;
     }

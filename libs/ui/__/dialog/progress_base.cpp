@@ -27,7 +27,7 @@
 namespace sight::ui::dialog
 {
 
-const progress_base::FactoryRegistryKeyType progress_base::REGISTRY_KEY = "::ui::dialog::progress";
+const progress_base::factory_registry_key_t progress_base::REGISTRY_KEY = "::ui::dialog::progress";
 
 progress_base::progress_base()
 = default;
@@ -39,9 +39,9 @@ progress_base::~progress_base()
 
 //-----------------------------------------------------------------------------
 
-void progress_base::setCancelCallback(CancelCallbackType callback)
+void progress_base::setCancelCallback(cancel_callback_t _callback)
 {
-    m_cancelCallback = callback;
+    m_cancelCallback = _callback;
 }
 
 //-----------------------------------------------------------------------------

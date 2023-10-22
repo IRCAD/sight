@@ -86,33 +86,33 @@ public:
 
     /// Sets the password
     /// @param password the new password
-    IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
+    IO_SESSION_API void setPassword(const core::crypto::secure_string& _password);
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    IO_SESSION_API void setEncryptionPolicy(core::crypto::password_keeper::encryption_policy policy);
+    IO_SESSION_API void setEncryptionPolicy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// Set archive format
     /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::Archive::ArchiveFormat
-    IO_SESSION_API void setArchiveFormat(zip::Archive::ArchiveFormat archiveFormat);
+    IO_SESSION_API void setArchiveFormat(zip::Archive::ArchiveFormat _archive_format);
 
     /// Set a deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    IO_SESSION_API void setCustomDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+    IO_SESSION_API void setCustomDeserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
 
     /// Set a default deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
     IO_SESSION_API static void setDeserializer(
-        const std::string& className,
-        deserializer_t deserializer = nullptr
+        const std::string& _class_name,
+        deserializer_t _deserializer = nullptr
     );
 
     /// Return the registered deserialization function for an object
     /// @param className the name of the object to deserialize
     /// @return the function pointer to the deserialization function
-    IO_SESSION_API static deserializer_t deserializer(const std::string& className);
+    IO_SESSION_API static deserializer_t deserializer(const std::string& _class_name);
 
 private:
 

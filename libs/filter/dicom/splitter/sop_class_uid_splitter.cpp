@@ -77,57 +77,57 @@ bool sop_class_uid_splitter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-sop_class_uid_splitter::DicomSeriesContainerType sop_class_uid_splitter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+sop_class_uid_splitter::dicom_series_container_t sop_class_uid_splitter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 ) const
 {
-    DicomSeriesContainerType result = sight::filter::dicom::splitter::TagValueSplitter::apply(series, logger);
+    dicom_series_container_t result = sight::filter::dicom::splitter::TagValueSplitter::apply(_series, _logger);
 
-    for(const data::dicom_series::sptr& dicomSeries : result)
+    for(const data::dicom_series::sptr& dicom_series : result)
     {
-        DcmFileFormat fileFormat;
+        DcmFileFormat file_format;
         OFCondition status;
         DcmDataset* dataset = nullptr;
         OFString data;
 
         // Open first instance
-        const auto firstItem                              = dicomSeries->getDicomContainer().begin();
-        const core::memory::buffer_object::sptr bufferObj = firstItem->second;
-        const std::size_t buffSize                        = bufferObj->size();
-        const std::string dicomPath                       = bufferObj->get_stream_info().fs_file.string();
-        core::memory::buffer_object::lock_t lock(bufferObj);
+        const auto first_item                              = dicom_series->getDicomContainer().begin();
+        const core::memory::buffer_object::sptr buffer_obj = first_item->second;
+        const std::size_t buff_size                        = buffer_obj->size();
+        const std::string dicom_path                       = buffer_obj->get_stream_info().fs_file.string();
+        core::memory::buffer_object::lock_t lock(buffer_obj);
         char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
-        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setBuffer(buffer, offile_off_t(buff_size));
         is.setEos();
 
-        fileFormat.transferInit();
-        if(!fileFormat.read(is).good())
+        file_format.transferInit();
+        if(!file_format.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << dicomPath << "' "
-                << "(slice: '" << firstItem->first << "')"
+                "Unable to read Dicom file '" << dicom_path << "' "
+                << "(slice: '" << first_item->first << "')"
             );
         }
 
-        fileFormat.loadAllDataIntoMemory();
-        fileFormat.transferEnd();
+        file_format.loadAllDataIntoMemory();
+        file_format.transferEnd();
 
         // Read sop_classUID
-        dataset = fileFormat.getDataset();
+        dataset = file_format.getDataset();
         status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
-        SIGHT_THROW_IF("Unable to read tags: \"" + dicomPath + "\"", status.bad());
+        SIGHT_THROW_IF("Unable to read tags: \"" + dicom_path + "\"", status.bad());
 
-        data::dicom_series::sop_classUIDContainerType sopClassUIDContainer;
-        sopClassUIDContainer.insert(data.c_str());
-        dicomSeries->setSOPClassUIDs(sopClassUIDContainer);
+        data::dicom_series::sop_classUIDContainerType sop_class_uid_container;
+        sop_class_uid_container.insert(data.c_str());
+        dicom_series->setSOPClassUIDs(sop_class_uid_container);
     }
 
     if(result.size() > 1)
     {
-        logger->warning(
+        _logger->warning(
             "The same series instance UID has been used for several instances "
             "with different SOP class UID. The series has been split."
         );

@@ -36,7 +36,7 @@ class IO_DICOM_CLASS_API series
 {
 public:
 
-    typedef std::map<SPTR(io::dicom::container::DicomInstance), data::series::sptr> SeriesContainerMapType;
+    typedef std::map<SPTR(io::dicom::container::DicomInstance), data::series::sptr> series_container_map_t;
 
     typedef std::function<void (std::uint64_t)> ProgressCallback;
     typedef std::function<bool ()> CancelRequestedCallback;
@@ -52,7 +52,7 @@ public:
      * @param[in] dicomSeries DICOM series that shall be read
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& dicomSeries);
+    IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& _dicom_series);
 
     /// Get Logger
     [[nodiscard]] const core::log::logger::sptr& getLogger() const
@@ -61,49 +61,49 @@ public:
     }
 
     /// Set Logger
-    void setLogger(const core::log::logger::sptr& logger)
+    void setLogger(const core::log::logger::sptr& _logger)
     {
-        m_logger = logger;
+        m_logger = _logger;
     }
 
     /**
      * @brief Set progress callback
      * @param[in] callback Progress callback
      */
-    void setProgressCallback(ProgressCallback callback)
+    void setProgressCallback(ProgressCallback _callback)
     {
-        m_progressCallback = callback;
+        m_progressCallback = _callback;
     }
 
     /**
      * @brief Set cancel callback
      * @param[in] callback Cancel callback
      */
-    void setCancelRequestedCallback(CancelRequestedCallback callback)
+    void setCancelRequestedCallback(CancelRequestedCallback _callback)
     {
-        m_cancelRequestedCallback = callback;
+        m_cancelRequestedCallback = _callback;
     }
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool enabled)
+    void setBufferRotationEnabled(bool _enabled)
     {
-        m_enableBufferRotation = enabled;
+        m_enableBufferRotation = _enabled;
     }
 
 protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(io::dicom::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-        const data::dicom_series::csptr& dicomSeries
+        const data::dicom_series::csptr& _dicom_series
     );
 
     /// Get referenced series when dealing with Structured Report
     SPTR(io::dicom::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-        const data::dicom_series::csptr& dicomSeries
+        const data::dicom_series::csptr& _dicom_series
     );
 
     /// series Container Map
-    SeriesContainerMapType m_seriesContainerMap;
+    series_container_map_t m_seriesContainerMap;
 
     /// Logger
     core::log::logger::sptr m_logger;

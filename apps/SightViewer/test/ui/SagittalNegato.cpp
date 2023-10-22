@@ -36,47 +36,47 @@ namespace sight::sightviewer::test::ui
 
 void SagittalNegato::test()
 {
-    namespace helper = sight::ui::testCore::helper;
+    namespace helper = sight::ui::test_core::helper;
 
-    const std::string testName               = "sightViewerSagittalNegatoTest";
-    const std::string imageName              = testName + ".png";
-    const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
-    std::filesystem::remove(snapshotPath);
+    const std::string test_name               = "sightViewerSagittalNegatoTest";
+    const std::string image_name              = test_name + ".png";
+    const std::filesystem::path snapshot_path = sight::ui::test_core::Tester::getImageOutputPath() / image_name;
+    std::filesystem::remove(snapshot_path);
 
-    const std::filesystem::path referencePath = utest_data::Data::dir() / "sight/ui/SightViewer" / imageName;
+    const std::filesystem::path reference_path = utest_data::Data::dir() / "sight/ui/SightViewer" / image_name;
 
     start(
-        testName,
-        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
+        test_name,
+        [&snapshot_path, &reference_path](sight::ui::test_core::Tester& _tester)
         {
             openFile(
-                tester,
+                _tester,
                 "Nifti or Inr images",
                 utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
             // Firstly, we must drag the mouse in the 3D scene so that the camera is "next to" the image
-            helper::Scene3d::rotate(tester, "sceneSrv", {1 / 2., 0});
+            helper::Scene3d::rotate(_tester, "sceneSrv", {1 / 2., 0});
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::Button::push(tester, "toolBarView/Show/hide volume");
+            helper::Button::push(_tester, "toolBarView/Show/hide volume");
 
             // Then we want to display the negato view, we must click on the Negato view button to achieve this
-            helper::Button::push(tester, "toolBarView/Negato view");
+            helper::Button::push(_tester, "toolBarView/Negato view");
 
             // For the test to work, we must first reset all negatos to 0
-            resetNegatos(tester);
+            resetNegatos(_tester);
 
             // We want to move the negato, we must click in the negato slider to do that
             helper::Slider::set(
-                tester,
+                _tester,
                 helper::Select::fromParent("bottomScenesView/0", "negatoSlicerSrv"),
                 250
             );
 
-            saveSnapshot(tester, snapshotPath);
+            saveSnapshot(_tester, snapshot_path);
 
-            compareImages(snapshotPath, referencePath);
+            compareImages(snapshot_path, reference_path);
         },
         true
     );

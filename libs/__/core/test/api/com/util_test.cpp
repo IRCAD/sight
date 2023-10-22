@@ -52,16 +52,16 @@ void util_test::tearDown()
 
 //-----------------------------------------------------------------------------
 
-int f(int a, int b)
+int f(int _a, int _b)
 {
-    return a + b;
+    return _a + _b;
 }
 
 //------------------------------------------------------------------------------
 
-std::string g(const std::string& a, const std::string& b, const std::string& c)
+std::string g(const std::string& _a, const std::string& _b, const std::string& _c)
 {
-    return std::string(a) + b + c;
+    return std::string(_a) + _b + _c;
 }
 
 //------------------------------------------------------------------------------

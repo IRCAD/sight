@@ -32,9 +32,9 @@ namespace sight::io::zip::exception
 /// Write exception.
 struct Write : core::exception
 {
-    inline Write(const std::string& err, const std::int32_t error_code = -1) :
-        core::exception(err),
-        m_error_code(error_code)
+    inline Write(const std::string& _err, const std::int32_t _error_code = -1) :
+        core::exception(_err),
+        m_error_code(_error_code)
     {
     }
 

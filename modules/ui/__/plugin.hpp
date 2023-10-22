@@ -45,7 +45,7 @@ public:
      *
      * @exception core::runtime::RuntimeException
      *
-     * Register first basic services of type action, editor and IView.
+     * Register first basic services of type action, editor and view.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
     MODULE_UI_API void start() override;

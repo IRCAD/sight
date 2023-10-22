@@ -200,7 +200,7 @@ private:
         Ogre::Vector2 b;
     };
 
-    enum class Action
+    enum class action
     {
         ADD,
         REMOVE
@@ -240,7 +240,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void modifyLasso(Action _action, int _x = -1, int _y = -1);
+    void modifyLasso(action _action, int _x = -1, int _y = -1);
 
     /**
      * @brief Cancels further interactions.
@@ -297,7 +297,7 @@ private:
      */
     void generateDelaunayTriangulation(
         const std::vector<Ogre::Vector3>& _points,
-        std::vector<Triangle3D>& _wordTriangulation
+        std::vector<Triangle3D>& _word_triangulation
     ) const;
 
     /// Adds a point to the triangulation with the delaunay constraints.
@@ -367,7 +367,7 @@ private:
     std::vector<Ogre::Vector3> m_lassoEdgePositions;
 
     /// Defines the radius of each point drawn at edges positions.
-    const float m_lassoEdgeSize {0.005F};
+    const float M_LASSO_EDGE_SIZE {0.005F};
 
     /// Contains the node where all manual objects that represent the lasso are attached.
     Ogre::SceneNode* m_lassoNode {nullptr};

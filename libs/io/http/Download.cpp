@@ -30,16 +30,16 @@ namespace sight::io::http
 {
 
 // Private write method used by CURL to write the content of the downloaded file on the disk.
-size_t writeData(void* ptr, size_t size, size_t nmemb, FILE* stream)
+size_t write_data(void* _ptr, size_t _size, size_t _nmemb, FILE* _stream)
 {
     size_t written = 0;
-    written = fwrite(ptr, size, nmemb, stream);
+    written = fwrite(_ptr, _size, _nmemb, _stream);
     return written;
 }
 
 //------------------------------------------------------------------------------
 
-void downloadFile(const std::string& _url, const std::filesystem::path& _file_location, bool _verbose)
+void download_file(const std::string& _url, const std::filesystem::path& _file_location, bool _verbose)
 {
     // Basic checks.
     if(_url.empty() || _file_location.empty())
@@ -67,7 +67,7 @@ void downloadFile(const std::string& _url, const std::filesystem::path& _file_lo
     {
         fp = fopen(_file_location.string().c_str(), "wb");
         curl_easy_setopt(curl, CURLOPT_URL, _url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         if(_verbose)
         {

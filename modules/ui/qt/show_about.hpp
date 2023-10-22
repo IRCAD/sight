@@ -90,7 +90,7 @@ protected Q_SLOTS:
      *
      * @param url clicked URL
      */
-    static void onUrlClicked(const QUrl& url);
+    static void onUrlClicked(const QUrl& _url);
 
 private:
 

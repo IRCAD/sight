@@ -109,23 +109,23 @@ void grid2d::draw()
     m_layer = new QGraphicsItemGroup();
 
     // Calculate the start, end and step on x for the lines
-    const float xStartVal = getXStartVal(); // Allows to start drawing the grid from 0 with the correct step
-    const float xEndVal   = getXEndVal();   // Allows to start drawing the grid from 0 with the correct step
+    const float x_start_val = getXStartVal(); // Allows to start drawing the grid from 0 with the correct step
+    const float x_end_val   = getXEndVal();   // Allows to start drawing the grid from 0 with the correct step
 
     // Calculate the start, end and step on y for the lines
-    const float yStartVal = getYStartVal(); // Allows to start drawing the grid from 0 with the correct step
-    const float yEndVal   = getYEndVal();   // Allows to start drawing the grid from 0 with the correct step
+    const float y_start_val = getYStartVal(); // Allows to start drawing the grid from 0 with the correct step
+    const float y_end_val   = getYEndVal();   // Allows to start drawing the grid from 0 with the correct step
 
     // Holds the current computed coordinates:
     vec2d_t coord1;
     vec2d_t coord2;
 
     // Draw the horizontal lines
-    float yVal = yStartVal;
-    for(std::size_t i = 0 ; i < static_cast<std::size_t>((yEndVal - yStartVal) / m_ySpacing) ; i++)
+    float y_val = y_start_val;
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((y_end_val - y_start_val) / m_ySpacing) ; i++)
     {
-        coord1 = this->mapAdaptorToScene((vec2d_t(xStartVal, yVal)));
-        coord2 = this->mapAdaptorToScene((vec2d_t(xEndVal, yVal)));
+        coord1 = this->mapAdaptorToScene((vec2d_t(x_start_val, y_val)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(x_end_val, y_val)));
 
         auto* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
@@ -133,15 +133,15 @@ void grid2d::draw()
         line->setPen(m_pen);
         m_lines.push_back(line);
 
-        yVal += m_ySpacing;
+        y_val += m_ySpacing;
     }
 
     // Draw the vertical lines
-    float xVal = xStartVal;
-    for(std::size_t i = 0 ; i < static_cast<std::size_t>((xEndVal - xStartVal) / m_xSpacing) ; i++)
+    float x_val = x_start_val;
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((x_end_val - x_start_val) / m_xSpacing) ; i++)
     {
-        coord1 = this->mapAdaptorToScene((vec2d_t(xVal, yStartVal)));
-        coord2 = this->mapAdaptorToScene((vec2d_t(xVal, yEndVal)));
+        coord1 = this->mapAdaptorToScene((vec2d_t(x_val, y_start_val)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(x_val, y_end_val)));
 
         auto* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
@@ -149,7 +149,7 @@ void grid2d::draw()
         line->setPen(m_pen);
         m_lines.push_back(line);
 
-        xVal += m_xSpacing;
+        x_val += m_xSpacing;
     }
 
     // Add the lines contained in the lines vector to the layer

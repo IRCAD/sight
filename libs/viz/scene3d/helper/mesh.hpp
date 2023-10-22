@@ -45,8 +45,8 @@ public:
     VIZ_SCENE3D_API static void copyColors(
         Ogre::RGBA* _dest,
         const std::uint8_t* _src,
-        std::size_t _numPoints,
-        std::size_t _numComponents
+        std::size_t _num_points,
+        std::size_t _num_components
     );
 };
 

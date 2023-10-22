@@ -31,9 +31,9 @@ namespace sight::utest
 
 //------------------------------------------------------------------------------
 
-inline static bool getIgnoreTestsEnv(const char* const env)
+inline static bool get_ignore_tests_env(const char* const _env)
 {
-    const char* const value = std::getenv(env);
+    const char* const value = std::getenv(_env);
     if(value == nullptr)
     {
         return false;
@@ -46,7 +46,7 @@ inline static bool getIgnoreTestsEnv(const char* const env)
         /// Print something on console, usefull for CI console output
         std::cerr << std::endl
         << "Some tests will be ignored, environment variable '"
-        << env
+        << _env
         << "' has been set."
         << std::endl;
     }
@@ -58,7 +58,7 @@ inline static bool getIgnoreTestsEnv(const char* const env)
 
 bool Filter::ignoreSlowTests()
 {
-    static const bool IGNORE_SLOW_TESTS = getIgnoreTestsEnv("SIGHT_IGNORE_SLOW_TESTS");
+    static const bool IGNORE_SLOW_TESTS = get_ignore_tests_env("SIGHT_IGNORE_SLOW_TESTS");
     return IGNORE_SLOW_TESTS;
 }
 
@@ -66,7 +66,7 @@ bool Filter::ignoreSlowTests()
 
 bool Filter::ignoreUnstableTests()
 {
-    static const bool IGNORE_UNSTABLE_TESTS = getIgnoreTestsEnv("SIGHT_IGNORE_UNSTABLE_TESTS");
+    static const bool IGNORE_UNSTABLE_TESTS = get_ignore_tests_env("SIGHT_IGNORE_UNSTABLE_TESTS");
     return IGNORE_UNSTABLE_TESTS;
 }
 

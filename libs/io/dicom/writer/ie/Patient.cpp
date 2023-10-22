@@ -30,15 +30,15 @@ namespace sight::io::dicom::writer::ie
 //------------------------------------------------------------------------------
 
 Patient::Patient(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::series::csptr& series,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const SPTR(gdcm::Writer)& _writer,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const data::series::csptr& _series,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::series>(writer, instance, series,
-                                                           logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::series>(_writer, _instance, _series,
+                                                           _logger, _progress, _cancel)
 {
 }
 

@@ -32,10 +32,10 @@ namespace sight::ui::history
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const data::image::sptr& img, filter::image::image_diff diff) :
-    m_img(img),
-    m_modifiedSig(img->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG)),
-    m_diff(std::move(diff))
+ImageDiffCommand::ImageDiffCommand(const data::image::sptr& _img, filter::image::image_diff _diff) :
+    m_img(_img),
+    m_modifiedSig(_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)),
+    m_diff(std::move(_diff))
 {
     m_diff.shrink();
 }

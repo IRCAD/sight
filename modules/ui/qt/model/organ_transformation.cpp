@@ -26,7 +26,7 @@
 #include <core/com/slot.hxx>
 #include <core/tools/id.hpp>
 
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
@@ -79,18 +79,18 @@ void organ_transformation::configuring()
 void organ_transformation::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QVBoxLayout();
 
-    auto* groupBox = new QGroupBox(tr("Organs"));
-    layout->addWidget(groupBox);
+    auto* group_box = new QGroupBox(tr("Organs"));
+    layout->addWidget(group_box);
 
-    auto* layoutGroupBox = new QVBoxLayout();
-    groupBox->setLayout(layoutGroupBox);
+    auto* layout_group_box = new QVBoxLayout();
+    group_box->setLayout(layout_group_box);
 
     m_selectAllCheckBox     = new QCheckBox(tr("Select All"));
-    m_reconstructionListBox = new QListWidget(groupBox);
+    m_reconstructionListBox = new QListWidget(group_box);
     m_resetButton           = new QPushButton(tr("Reset"));
     m_saveButton            = new QPushButton(tr("Save"));
     m_loadButton            = new QPushButton(tr("Load"));
@@ -107,14 +107,14 @@ void organ_transformation::starting()
     QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadClick()));
     QObject::connect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
-    layoutGroupBox->addWidget(m_selectAllCheckBox, 0);
-    layoutGroupBox->addWidget(m_reconstructionListBox, 1);
-    layoutGroupBox->addWidget(m_resetButton, 0);
-    layoutGroupBox->addWidget(m_saveButton, 0);
-    layoutGroupBox->addWidget(m_saveSelectionComboBox, 0);
-    layoutGroupBox->addWidget(m_loadButton, 0);
+    layout_group_box->addWidget(m_selectAllCheckBox, 0);
+    layout_group_box->addWidget(m_reconstructionListBox, 1);
+    layout_group_box->addWidget(m_resetButton, 0);
+    layout_group_box->addWidget(m_saveButton, 0);
+    layout_group_box->addWidget(m_saveSelectionComboBox, 0);
+    layout_group_box->addWidget(m_loadButton, 0);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->updating();
 }
@@ -160,16 +160,16 @@ void organ_transformation::refresh()
 
     const auto series = m_modelSeries.lock();
 
-    auto qtContainer         = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
+    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    QWidget* const container = qt_container->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
-    bool hasReconstructions = !series->getReconstructionDB().empty();
-    container->setEnabled(hasReconstructions);
+    bool has_reconstructions = !series->getReconstructionDB().empty();
+    container->setEnabled(has_reconstructions);
 
-    if(hasReconstructions)
+    if(has_reconstructions)
     {
-        const auto pComposite = m_composite.lock();
+        const auto p_composite = m_composite.lock();
 
         for(const data::reconstruction::sptr& rec : series->getReconstructionDB())
         {
@@ -178,9 +178,9 @@ void organ_transformation::refresh()
 
         for(auto& it : m_reconstructionMap)
         {
-            std::string organName = it.first;
-            auto* item            = new QListWidgetItem(QString::fromStdString(organName), m_reconstructionListBox);
-            if(pComposite && pComposite->find(organName) != pComposite->end())
+            std::string organ_name = it.first;
+            auto* item             = new QListWidgetItem(QString::fromStdString(organ_name), m_reconstructionListBox);
+            if(p_composite && p_composite->find(organ_name) != p_composite->end())
             {
                 item->setCheckState(Qt::Checked);
             }
@@ -196,31 +196,31 @@ void organ_transformation::refresh()
 
 //------------------------------------------------------------------------------
 
-void organ_transformation::notifyTransformationMatrix(data::matrix4::sptr aTransMat)
+void organ_transformation::notifyTransformationMatrix(data::matrix4::sptr _a_trans_mat)
 {
-    auto sig = aTransMat->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = _a_trans_mat->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void organ_transformation::onReconstructionCheck(QListWidgetItem* currentItem)
+void organ_transformation::onReconstructionCheck(QListWidgetItem* _current_item)
 {
-    const auto pComposite = m_composite.lock();
-    if(pComposite)
+    const auto p_composite = m_composite.lock();
+    if(p_composite)
     {
-        std::string item_name                      = currentItem->text().toStdString();
-        data::reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
-        data::mesh::sptr pMesh                     = pReconstruction->getMesh();
+        std::string item_name                       = _current_item->text().toStdString();
+        data::reconstruction::sptr p_reconstruction = m_reconstructionMap[item_name];
+        data::mesh::sptr p_mesh                     = p_reconstruction->getMesh();
 
-        const auto scoped_emitter = pComposite->scoped_emit();
-        if((currentItem->checkState()) == Qt::Checked)
+        const auto scoped_emitter = p_composite->scoped_emit();
+        if((_current_item->checkState()) == Qt::Checked)
         {
-            pComposite->insert_or_assign(item_name, pMesh);
+            p_composite->insert_or_assign(item_name, p_mesh);
         }
         else
         {
-            pComposite->erase(item_name);
+            p_composite->erase(item_name);
         }
     }
 }
@@ -234,14 +234,14 @@ void organ_transformation::onResetClick()
     //search the corresponding triangular mesh
     for(const data::reconstruction::sptr& rec : series->getReconstructionDB())
     {
-        data::mesh::sptr pTmpTrMesh = rec->getMesh();
+        data::mesh::sptr p_tmp_tr_mesh = rec->getMesh();
 
-        data::matrix4::sptr pTmpMat =
-            pTmpTrMesh->getField<data::matrix4>(s_MATRIX_FIELD_NAME);
-        if(pTmpMat)
+        data::matrix4::sptr p_tmp_mat =
+            p_tmp_tr_mesh->get_field<data::matrix4>(s_MATRIX_FIELD_NAME);
+        if(p_tmp_mat)
         {
-            geometry::data::identity(*pTmpMat);
-            this->notifyTransformationMatrix(pTmpMat);
+            geometry::data::identity(*p_tmp_mat);
+            this->notifyTransformationMatrix(p_tmp_mat);
         }
     }
 }
@@ -250,7 +250,7 @@ void organ_transformation::onResetClick()
 
 void organ_transformation::onSaveClick()
 {
-    InnerMatMappingType matMap;
+    inner_mat_mapping_t mat_map;
 
     const auto series = m_modelSeries.lock();
 
@@ -258,21 +258,21 @@ void organ_transformation::onSaveClick()
     {
         for(const data::reconstruction::sptr& rec : series->getReconstructionDB())
         {
-            data::mesh::sptr pTmpTrMesh = rec->getMesh();
-            data::matrix4::sptr pTmpMat =
-                pTmpTrMesh->getField<data::matrix4>(s_MATRIX_FIELD_NAME);
-            if(pTmpMat)
+            data::mesh::sptr p_tmp_tr_mesh = rec->getMesh();
+            data::matrix4::sptr p_tmp_mat  =
+                p_tmp_tr_mesh->get_field<data::matrix4>(s_MATRIX_FIELD_NAME);
+            if(p_tmp_mat)
             {
-                data::matrix4::sptr pCpyTmpMat;
-                pCpyTmpMat                   = data::object::copy(pTmpMat);
-                matMap[pTmpTrMesh->get_id()] = pCpyTmpMat;
+                data::matrix4::sptr p_cpy_tmp_mat;
+                p_cpy_tmp_mat                    = data::object::copy(p_tmp_mat);
+                mat_map[p_tmp_tr_mesh->get_id()] = p_cpy_tmp_mat;
             }
         }
 
-        std::stringstream tmpSaveName;
-        tmpSaveName << "save_" << m_saveCount;
-        m_saveListing[tmpSaveName.str()] = matMap;
-        m_saveSelectionComboBox->addItem(QString::fromStdString(tmpSaveName.str()));
+        std::stringstream tmp_save_name;
+        tmp_save_name << "save_" << m_saveCount;
+        m_saveListing[tmp_save_name.str()] = mat_map;
+        m_saveSelectionComboBox->addItem(QString::fromStdString(tmp_save_name.str()));
         m_saveCount++;
     }
 }
@@ -283,22 +283,22 @@ void organ_transformation::onLoadClick()
 {
     if(m_saveSelectionComboBox->count() != 0)
     {
-        InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
+        inner_mat_mapping_t mat_map = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
         const auto series = m_modelSeries.lock();
 
         //search the corresponding triangular mesh
         for(const data::reconstruction::sptr& rec : series->getReconstructionDB())
         {
-            data::mesh::sptr pTmpTrMesh = rec->getMesh();
-            if(matMap.find(pTmpTrMesh->get_id()) != matMap.end())
+            data::mesh::sptr p_tmp_tr_mesh = rec->getMesh();
+            if(mat_map.find(p_tmp_tr_mesh->get_id()) != mat_map.end())
             {
-                data::matrix4::sptr pTmpMat =
-                    pTmpTrMesh->getField<data::matrix4>(s_MATRIX_FIELD_NAME);
-                if(pTmpMat)
+                data::matrix4::sptr p_tmp_mat =
+                    p_tmp_tr_mesh->get_field<data::matrix4>(s_MATRIX_FIELD_NAME);
+                if(p_tmp_mat)
                 {
-                    pTmpMat->shallow_copy(matMap[pTmpTrMesh->get_id()]);
-                    this->notifyTransformationMatrix(pTmpMat);
+                    p_tmp_mat->shallow_copy(mat_map[p_tmp_tr_mesh->get_id()]);
+                    this->notifyTransformationMatrix(p_tmp_mat);
                 }
             }
         }
@@ -307,12 +307,12 @@ void organ_transformation::onLoadClick()
 
 //------------------------------------------------------------------------------
 
-void organ_transformation::onSelectAllChanged(int state)
+void organ_transformation::onSelectAllChanged(int _state)
 {
-    const auto pComposite     = m_composite.lock();
-    const auto scoped_emitter = pComposite->scoped_emit();
+    const auto p_composite    = m_composite.lock();
+    const auto scoped_emitter = p_composite->scoped_emit();
 
-    if(state == Qt::Checked)
+    if(_state == Qt::Checked)
     {
         m_reconstructionListBox->setEnabled(false);
 
@@ -320,19 +320,19 @@ void organ_transformation::onSelectAllChanged(int state)
 
         for(const data::reconstruction::sptr& rec : series->getReconstructionDB())
         {
-            pComposite->insert({rec->getOrganName(), rec->getMesh()});
+            p_composite->insert({rec->getOrganName(), rec->getMesh()});
         }
     }
-    else if(state == Qt::Unchecked)
+    else if(_state == Qt::Unchecked)
     {
         m_reconstructionListBox->setEnabled(true);
 
-        QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
-        for(QListWidgetItem* item : itemList)
+        QList<QListWidgetItem*> item_list = m_reconstructionListBox->findItems("", Qt::MatchContains);
+        for(QListWidgetItem* item : item_list)
         {
             if(item->checkState() == Qt::Unchecked)
             {
-                pComposite->erase(item->text().toStdString());
+                p_composite->erase(item->text().toStdString());
             }
         }
 
@@ -350,11 +350,11 @@ void organ_transformation::addMeshTransform()
     {
         data::mesh::sptr mesh = rec->getMesh();
 
-        if(!mesh->getField(s_MATRIX_FIELD_NAME))
+        if(!mesh->get_field(s_MATRIX_FIELD_NAME))
         {
-            data::helper::Field fieldHelper(mesh);
-            fieldHelper.setField(s_MATRIX_FIELD_NAME, std::make_shared<data::matrix4>());
-            fieldHelper.notify();
+            data::helper::field field_helper(mesh);
+            field_helper.set_field(s_MATRIX_FIELD_NAME, std::make_shared<data::matrix4>());
+            field_helper.notify();
         }
     }
 }

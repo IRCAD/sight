@@ -70,15 +70,15 @@ public:
     typedef std::map<std::string, std::string> UIDMap;
 
     /// Map used to store exception value
-    typedef std::map<gdcm::Tag, std::string> ExceptionTagMapType;
+    typedef std::map<gdcm::Tag, std::string> exception_tag_map_t;
 
     /// Anonymize a folder containing Dicom files
-    IO_DICOM_API void anonymize(const std::filesystem::path& dirPath);
+    IO_DICOM_API void anonymize(const std::filesystem::path& _dir_path);
 
-    IO_DICOM_API void anonymize(std::istream& inputStream, std::ostream& outputStream);
+    IO_DICOM_API void anonymize(std::istream& _input_stream, std::ostream& _output_stream);
 
     /// Add an exceptional value for a tag
-    IO_DICOM_API void addExceptionTag(uint16_t group, uint16_t element, const std::string& value = "");
+    IO_DICOM_API void addExceptionTag(uint16_t _group, uint16_t _element, const std::string& _value = "");
 
     /**
      * @brief Copy a directory recursively.
@@ -86,8 +86,8 @@ public:
      * @param output Output file
      */
     IO_DICOM_API static void copyDirectory(
-        const std::filesystem::path& input,
-        const std::filesystem::path& output
+        const std::filesystem::path& _input,
+        const std::filesystem::path& _output
     );
 
     /// Get job observer
@@ -100,10 +100,10 @@ public:
     IO_DICOM_API void resetIndex();
 
     /// The removed tag will not be process by anonymization tag
-    IO_DICOM_API void removeAnonymizeTag(const gdcm::Tag& tag);
+    IO_DICOM_API void removeAnonymizeTag(const gdcm::Tag& _tag);
 
     /// Set Reference date for shifting
-    IO_DICOM_API void setReferenceDate(const boost::gregorian::date& referenceDate);
+    IO_DICOM_API void setReferenceDate(const boost::gregorian::date& _reference_date);
 
     /**
      * @brief Add a date tag that must be shifted.
@@ -112,33 +112,33 @@ public:
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    IO_DICOM_API void addShiftDateTag(const gdcm::Tag& tag);
+    IO_DICOM_API void addShiftDateTag(const gdcm::Tag& _tag);
 
     /**
      * @brief Tells the anonymizer to do not anonymize the given private tag.
      *
      * @param tag private tag to be preserved from anonymisation
      */
-    IO_DICOM_API void preservePrivateTag(const gdcm::Tag& tag);
+    IO_DICOM_API void preservePrivateTag(const gdcm::Tag& _tag);
 
     /**
      * @name Access tags according to their associated action code
      * @{ */
-    typedef std::set<gdcm::Tag> TagContainerType;
-    IO_DICOM_API const TagContainerType& getActionCodeDTags();
-    IO_DICOM_API const TagContainerType& getActionCodeZTags();
-    IO_DICOM_API const TagContainerType& getActionCodeXTags();
-    IO_DICOM_API const TagContainerType& getActionCodeKTags();
-    IO_DICOM_API const TagContainerType& getActionCodeCTags();
-    IO_DICOM_API const TagContainerType& getActionCodeUTags();
+    typedef std::set<gdcm::Tag> tag_container_t;
+    IO_DICOM_API const tag_container_t& getActionCodeDTags();
+    IO_DICOM_API const tag_container_t& getActionCodeZTags();
+    IO_DICOM_API const tag_container_t& getActionCodeXTags();
+    IO_DICOM_API const tag_container_t& getActionCodeKTags();
+    IO_DICOM_API const tag_container_t& getActionCodeCTags();
+    IO_DICOM_API const tag_container_t& getActionCodeUTags();
 /**  @} */
 
 private:
 
-    void anonymizationProcess(const std::filesystem::path& dirPath);
+    void anonymizationProcess(const std::filesystem::path& _dir_path);
 
     ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
-    void applyActionCodeD(const gdcm::Tag& tag);
+    void applyActionCodeD(const gdcm::Tag& _tag);
 
     /**
      * Z: replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
@@ -148,7 +148,7 @@ private:
      *
      * @note This method applies action code D only.
      */
-    void applyActionCodeZ(const gdcm::Tag& tag);
+    void applyActionCodeZ(const gdcm::Tag& _tag);
 
     /**
      * X: remove tag
@@ -161,30 +161,30 @@ private:
      *
      * @note This method applies action code X only.
      */
-    void applyActionCodeX(const gdcm::Tag& tag);
+    void applyActionCodeX(const gdcm::Tag& _tag);
 
     /// K: keep (unchanged for non-sequence attributes, cleaned for sequences)
-    void applyActionCodeK(const gdcm::Tag& tag);
+    void applyActionCodeK(const gdcm::Tag& _tag);
 
     /**
      * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
-    static void applyActionCodeC(const gdcm::Tag& tag);
+    static void applyActionCodeC(const gdcm::Tag& _tag);
 
     /// U: if UID is not empty, replace with a non-zero length UID
     /// that is internally consistent within a set of Instances
-    void applyActionCodeU(const gdcm::Tag& tag);
+    void applyActionCodeU(const gdcm::Tag& _tag);
 
     /**
      * Shift date according to the interval between the date and the reference date.
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    void applyActionShiftDate(const gdcm::Tag& tag);
+    void applyActionShiftDate(const gdcm::Tag& _tag);
 
     /// Generate a value consistent with the VR
-    void generateDummyValue(const gdcm::Tag& tag);
+    void generateDummyValue(const gdcm::Tag& _tag);
 
     /// Anonymizer
     gdcm::Anonymizer m_anonymizer;
@@ -199,7 +199,7 @@ private:
     UIDMap m_uidMap;
 
     /// Exception tag map
-    ExceptionTagMapType m_exceptionTagMap;
+    exception_tag_map_t m_exceptionTagMap;
 
     /// Number of Tags processed (Without Curve Data, Overlay Comments, Overlay Data and Private attributes)
     static const unsigned int s_NUMBER_OF_TAGS;
@@ -221,19 +221,19 @@ private:
      * Exception tags added through addExceptionTag will be removed.
      * @see addExceptionTag
      * @{ */
-    TagContainerType m_actionCodeDTags;
-    TagContainerType m_actionCodeZTags;
-    TagContainerType m_actionCodeXTags;
-    TagContainerType m_actionCodeKTags;
-    TagContainerType m_actionCodeCTags;
-    TagContainerType m_actionCodeUTags;
+    tag_container_t m_actionCodeDTags;
+    tag_container_t m_actionCodeZTags;
+    tag_container_t m_actionCodeXTags;
+    tag_container_t m_actionCodeKTags;
+    tag_container_t m_actionCodeCTags;
+    tag_container_t m_actionCodeUTags;
     /**  @} */
 
     /// List of date tags that must be shifted
-    TagContainerType m_actionShiftDateTags;
+    tag_container_t m_actionShiftDateTags;
 
     /// List of private tags to be preserved from anonymisation
-    io::dicom::helper::PrivateTagVecType m_privateTags;
+    io::dicom::helper::private_tag_vec_t m_privateTags;
 };
 
 } // namespace sight::io::dicom::helper

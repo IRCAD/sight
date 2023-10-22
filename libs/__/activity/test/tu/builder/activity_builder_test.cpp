@@ -65,11 +65,11 @@ void activity_builder_test::tearDown()
 
 void activity_builder_test::buildDataTest()
 {
-    data::vector::sptr selection                 = std::make_shared<data::vector>();
-    data::image_series::sptr imgSeriesSelected   = std::make_shared<data::image_series>();
-    data::model_series::sptr modelSeriesSelected = std::make_shared<data::model_series>();
-    selection->push_back(imgSeriesSelected);
-    selection->push_back(modelSeriesSelected);
+    data::vector::sptr selection                   = std::make_shared<data::vector>();
+    data::image_series::sptr img_series_selected   = std::make_shared<data::image_series>();
+    data::model_series::sptr model_series_selected = std::make_shared<data::model_series>();
+    selection->push_back(img_series_selected);
+    selection->push_back(model_series_selected);
 
     activity::extension::activity::infos_t activities;
     activities = m_activity->getInfos(selection);
@@ -86,21 +86,21 @@ void activity_builder_test::buildDataTest()
     CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->getActivityConfigId());
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activity->size());
 
-    const std::string imageKey = "imageSeries";
-    const std::string modelKey = "modelSeries";
-    CPPUNIT_ASSERT_MESSAGE(imageKey + " key is missing", activity->find(imageKey) != activity->end());
-    CPPUNIT_ASSERT_MESSAGE(modelKey + " key is missing", activity->find(modelKey) != activity->end());
+    const std::string image_key = "imageSeries";
+    const std::string model_key = "modelSeries";
+    CPPUNIT_ASSERT_MESSAGE(image_key + " key is missing", activity->find(image_key) != activity->end());
+    CPPUNIT_ASSERT_MESSAGE(model_key + " key is missing", activity->find(model_key) != activity->end());
 
     //single param [1;1]
-    data::object::sptr obj = (*activity)[imageKey];
-    CPPUNIT_ASSERT(obj == imgSeriesSelected);
+    data::object::sptr obj = (*activity)[image_key];
+    CPPUNIT_ASSERT(obj == img_series_selected);
 
     //set of param [0;2]
-    obj = (*activity)[modelKey];
+    obj = (*activity)[model_key];
     data::composite::sptr composite = std::dynamic_pointer_cast<data::composite>(obj);
-    CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to data::composite failed", composite);
+    CPPUNIT_ASSERT_MESSAGE(model_key + " param dynamicCast to data::composite failed", composite);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), composite->size());
-    CPPUNIT_ASSERT(modelSeriesSelected == (*composite)["key1"]);
+    CPPUNIT_ASSERT(model_series_selected == (*composite)["key1"]);
 }
 
 //------------------------------------------------------------------------------
@@ -124,14 +124,14 @@ void activity_builder_test::objectParserTest()
     CPPUNIT_ASSERT_EQUAL(activity_info.id, activity->getActivityConfigId());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), activity->size());
 
-    const std::string stringKey = "string";
-    CPPUNIT_ASSERT_MESSAGE(stringKey + " key is missing", activity->find(stringKey) != activity->end());
+    const std::string string_key = "string";
+    CPPUNIT_ASSERT_MESSAGE(string_key + " key is missing", activity->find(string_key) != activity->end());
 
     // Check that the string parser is well executed
     // This implicitly test the function sight::activity::detail::data::create()
-    const auto obj            = (*activity)[stringKey];
+    const auto obj            = (*activity)[string_key];
     data::string::sptr string = std::dynamic_pointer_cast<data::string>(obj);
-    CPPUNIT_ASSERT_MESSAGE(stringKey + " param dynamicCast to data::composite failed", string);
+    CPPUNIT_ASSERT_MESSAGE(string_key + " param dynamicCast to data::composite failed", string);
     CPPUNIT_ASSERT_EQUAL(std::string("dummy string"), string->value());
 
     core::runtime::unload_module("sight::module::app");

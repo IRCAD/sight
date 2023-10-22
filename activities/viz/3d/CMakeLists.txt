@@ -9,7 +9,7 @@ add_dependencies(
     module_memory
     module_data
     module_service
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
     module_viz_scene3d
     module_ui_icons
     data

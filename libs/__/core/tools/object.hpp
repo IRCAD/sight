@@ -60,11 +60,11 @@ public:
 
     /// Sets the uuid of the current instance
     /// @param force force use of new uuid even if already used.
-    CORE_API void set_uuid(const std::string& uuid, bool force = false);
+    CORE_API void set_uuid(const std::string& _uuid, bool _force = false);
 
     /// Retrieves the object associated with an uuid
     /// @param uuid the uuid of the object to retrieve
-    CORE_API static object::sptr from_uuid(const std::string& uuid);
+    CORE_API static object::sptr from_uuid(const std::string& _uuid);
 };
 
 } // namespace sight::core::tools

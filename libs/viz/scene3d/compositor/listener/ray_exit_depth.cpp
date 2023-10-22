@@ -22,8 +22,8 @@
 
 #include "viz/scene3d/compositor/listener/ray_exit_depth.hpp"
 
-#include "viz/scene3d/helper/Shading.hpp"
-#include "viz/scene3d/helper/Technique.hpp"
+#include "viz/scene3d/helper/shading.hpp"
+#include "viz/scene3d/helper/technique.hpp"
 #include "viz/scene3d/ogre.hpp"
 
 #include <core/spy_log.hpp>
@@ -38,45 +38,45 @@ namespace sight::viz::scene3d::compositor::listener
 
 Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
     std::uint16_t /*_schemeIndex*/,
-    const Ogre::String& _schemeName,
-    Ogre::Material* _originalMaterial,
+    const Ogre::String& _scheme_name,
+    Ogre::Material* _original_material,
     std::uint16_t /*_lodIndex*/,
     const Ogre::Renderable* /*_renderable*/
 )
 {
-    Ogre::Technique* newTechnique = nullptr;
-    const auto mtlName            = _originalMaterial->getName();
+    Ogre::Technique* new_technique = nullptr;
+    const auto mtl_name            = _original_material->getName();
 
-    if(_schemeName == "VolumeEntries_FrontFacesMin" && !Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
+    if(_scheme_name == "VolumeEntries_FrontFacesMin" && !Ogre::StringUtil::startsWith(mtl_name, "RTV_Mat"))
     {
         // Copy the first technique, set appropriate raster ops and add a RAY_EXIT_POINTS define in the fragment program
         // That should be sufficient for most materials that render with Transparency.inc.glsl
         static const std::string techName = "FrontFacesMin";
-        auto* colorTech                   = _originalMaterial->getTechnique("");
+        auto* color_tech                  = _original_material->getTechnique("");
 
-        newTechnique = viz::scene3d::helper::Technique::copyToMaterial(
-            colorTech,
-            _schemeName,
-            _originalMaterial
+        new_technique = viz::scene3d::helper::technique::copyToMaterial(
+            color_tech,
+            _scheme_name,
+            _original_material
         );
 
-        const Ogre::Technique::Passes& passes = newTechnique->getPasses();
+        const Ogre::Technique::Passes& passes = new_technique->getPasses();
         for(auto* const pass : passes)
         {
-            const auto fpName       = pass->getFragmentProgramName();
-            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
-            auto newName            = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, techName);
+            const auto fp_base_name = pass->getFragmentProgramName();
+            const auto fp_src_name  = pass->getFragmentProgram()->getSourceFile();
+            auto new_name           = viz::scene3d::helper::shading::setTechniqueInProgramName(fp_base_name, techName);
 
-            viz::scene3d::helper::Shading::GpuProgramParametersType parameters {
+            viz::scene3d::helper::shading::gpu_program_parameters_t parameters {
                 {"preprocessor_defines", "RAY_EXIT_POINTS=1"}
             };
 
-            auto program = viz::scene3d::helper::Shading::createProgramFrom(
-                newName,
-                fpSourceName,
+            auto program = viz::scene3d::helper::shading::createProgramFrom(
+                new_name,
+                fp_src_name,
                 parameters,
                 Ogre::GPT_FRAGMENT_PROGRAM,
-                fpName
+                fp_base_name
             );
             pass->setGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM, program);
 
@@ -89,17 +89,17 @@ Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
             }
         }
 
-        newTechnique->setDepthCheckEnabled(true);
-        newTechnique->setDepthWriteEnabled(true);
-        newTechnique->setDepthFunction(Ogre::CMPF_LESS);
-        newTechnique->setCullingMode(Ogre::CULL_NONE);
-        newTechnique->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
-        newTechnique->setDepthBias(1, 1);
-        newTechnique->setColourWriteEnabled(false, true, false, false);
-        newTechnique->setSceneBlending(Ogre::SBF_SOURCE_COLOUR, Ogre::SBF_DEST_COLOUR);
+        new_technique->setDepthCheckEnabled(true);
+        new_technique->setDepthWriteEnabled(true);
+        new_technique->setDepthFunction(Ogre::CMPF_LESS);
+        new_technique->setCullingMode(Ogre::CULL_NONE);
+        new_technique->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
+        new_technique->setDepthBias(1, 1);
+        new_technique->setColourWriteEnabled(false, true, false, false);
+        new_technique->setSceneBlending(Ogre::SBF_SOURCE_COLOUR, Ogre::SBF_DEST_COLOUR);
     }
 
-    return newTechnique;
+    return new_technique;
 }
 
 //------------------------------------------------------------------------------

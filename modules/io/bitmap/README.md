@@ -12,7 +12,7 @@ This module contains services for writing bitmap related data.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget
+add_dependencies(my_target
     ...
     module_io_bitmap
 )

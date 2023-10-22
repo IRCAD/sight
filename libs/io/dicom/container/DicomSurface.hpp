@@ -43,21 +43,21 @@ public:
      * Typedef for cell index in DICOM world (32 bits see VR OL).
      * Sight uses uint64_t (see data::mesh::CellId).
      */
-    typedef std::uint32_t DicomCellValueType;
+    typedef std::uint32_t dicom_cell_value_t;
 
     /**
      * @brief Container types to store points, cells and normals.
      * @{ */
-    typedef std::vector<float> DicomPointBufferType;
-    typedef std::vector<DicomCellValueType> DicomCellBufferType;
-    typedef std::vector<float> DicomNormalBufferType;
+    typedef std::vector<float> dicom_point_buffer_t;
+    typedef std::vector<dicom_cell_value_t> dicom_cell_buffer_t;
+    typedef std::vector<float> dicom_normal_buffer_t;
     /**  @} */
 
     /**
      * @brief Constructor
      * @param[in] reconstruction Source reconstruction
      */
-    IO_DICOM_API DicomSurface(const data::reconstruction::csptr& reconstruction);
+    IO_DICOM_API DicomSurface(const data::reconstruction::csptr& _reconstruction);
 
     /**
      * @brief Constructor
@@ -68,11 +68,11 @@ public:
      * @param[in] normalBuffer Normals buffer
      */
     IO_DICOM_API DicomSurface(
-        const data::mesh::position_t* pointBuffer,
-        data::mesh::size_t pointBufferSize,
-        const DicomCellValueType* cellBuffer,
-        data::mesh::size_t cellBufferSize,
-        const data::mesh::normal_t* normalBuffer
+        const data::mesh::position_t* _point_buffer,
+        data::mesh::size_t _point_buffer_size,
+        const dicom_cell_value_t* _cell_buffer,
+        data::mesh::size_t _cell_buffer_size,
+        const data::mesh::normal_t* _normal_buffer
     );
 
     /// Destructor
@@ -82,12 +82,12 @@ public:
     IO_DICOM_API data::mesh::sptr convertToData();
 
     /// Return point coordinates buffer
-    [[nodiscard]] IO_DICOM_API const DicomPointBufferType& getPointBuffer() const;
+    [[nodiscard]] IO_DICOM_API const dicom_point_buffer_t& getPointBuffer() const;
     /// Return cell buffer
-    [[nodiscard]] IO_DICOM_API const DicomCellBufferType& getCellBuffer() const;
+    [[nodiscard]] IO_DICOM_API const dicom_cell_buffer_t& getCellBuffer() const;
 
     /// Return normal buffer
-    [[nodiscard]] IO_DICOM_API const DicomNormalBufferType& getNormalBuffer() const;
+    [[nodiscard]] IO_DICOM_API const dicom_normal_buffer_t& getNormalBuffer() const;
 
     /// Return point coordinates buffer size
     [[nodiscard]] IO_DICOM_API std::size_t getPointBufferSize() const;
@@ -104,7 +104,7 @@ private:
      * @brief Surface Points Coordinates
      * (List of points coordinates for one surface) (eg : x1,y1,z1, x2,y2,z2, ...)
      */
-    DicomPointBufferType m_pointBuffer;
+    dicom_point_buffer_t m_pointBuffer;
 
     /**
      * @brief Surface Mesh Primitives
@@ -113,13 +113,13 @@ private:
      * Primitives will be written in Long Triangle Point Index List (0066,0041)
      * which has a VR equal to OL. VR::OL is a string of 32-bit words.
      */
-    DicomCellBufferType m_cellBuffer;
+    dicom_cell_buffer_t m_cellBuffer;
 
     /**
      * @brief Surface Point Normal Coordinates
      * (List of point normal coordinates for one surface) (eg : x1,y1,z1, x2,y2,z2, ...).
      */
-    DicomNormalBufferType m_normalBuffer;
+    dicom_normal_buffer_t m_normalBuffer;
 };
 
 } // namespace sight::io::dicom::container

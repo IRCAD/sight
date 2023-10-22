@@ -78,9 +78,9 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
-    const data::dicom_series::sptr& series,
-    const core::log::logger::sptr& logger
+TagValueInstanceRemoveSplitter::dicom_series_container_t TagValueInstanceRemoveSplitter::apply(
+    const data::dicom_series::sptr& _series,
+    const core::log::logger::sptr& _logger
 )
 const
 {
@@ -90,41 +90,41 @@ const
         throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
-    using InstanceContainerType = std::vector<core::memory::buffer_object::sptr>;
+    using instance_container_t = std::vector<core::memory::buffer_object::sptr>;
 
     // Create a container to store the instances
-    InstanceContainerType instances;
+    instance_container_t instances;
 
     OFCondition status;
     OFString data;
 
-    for(const auto& item : series->getDicomContainer())
+    for(const auto& item : _series->getDicomContainer())
     {
-        const core::memory::buffer_object::sptr bufferObj = item.second;
-        const std::size_t buffSize                        = bufferObj->size();
-        core::memory::buffer_object::lock_t lock(bufferObj);
+        const core::memory::buffer_object::sptr buffer_obj = item.second;
+        const std::size_t buff_size                        = buffer_obj->size();
+        core::memory::buffer_object::lock_t lock(buffer_obj);
         char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
-        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setBuffer(buffer, offile_off_t(buff_size));
         is.setEos();
 
-        DcmFileFormat fileFormat;
-        fileFormat.transferInit();
-        if(!fileFormat.read(is).good())
+        DcmFileFormat file_format;
+        file_format.transferInit();
+        if(!file_format.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
+                "Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
 
-        fileFormat.loadAllDataIntoMemory();
-        fileFormat.transferEnd();
+        file_format.loadAllDataIntoMemory();
+        file_format.transferEnd();
 
-        DcmDataset* dataset = fileFormat.getDataset();
+        DcmDataset* dataset = file_format.getDataset();
 
         // Get the value of the instance
         dataset->findAndGetOFStringArray(m_tag, data);
@@ -132,24 +132,24 @@ const
 
         if(value != m_tagValue)
         {
-            instances.push_back(bufferObj);
+            instances.push_back(buffer_obj);
         }
         else
         {
-            logger->warning("An instance has been removed from the series.");
+            _logger->warning("An instance has been removed from the series.");
         }
     }
 
     // Update series
-    series->clearDicomContainer();
+    _series->clearDicomContainer();
     std::size_t index = 0;
     for(const auto& buffer : instances)
     {
-        series->addBinary(index++, buffer);
+        _series->addBinary(index++, buffer);
     }
 
-    series->setNumberOfInstances(series->getDicomContainer().size());
-    result.push_back(series);
+    _series->setNumberOfInstances(_series->getDicomContainer().size());
+    result.push_back(_series);
 
     return result;
 }

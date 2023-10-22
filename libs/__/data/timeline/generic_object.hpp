@@ -46,7 +46,7 @@ public:
     [[nodiscard]] DATA_API unsigned int getPresentElementNum() const;
 
     /// Tell if an element is present at the given index
-    [[nodiscard]] DATA_API bool isPresent(unsigned int index) const;
+    [[nodiscard]] DATA_API bool isPresent(unsigned int _index) const;
 
     /// Return the raw presence mask
     [[nodiscard]] DATA_API uint64_t getMask() const;
@@ -58,17 +58,17 @@ public:
     [[nodiscard]] DATA_API std::size_t getElementSize() const;
 
     /// Make a copy of this buffer
-    DATA_API void deep_copy(const data::timeline::object& other) override;
+    DATA_API void deep_copy(const data::timeline::object& _other) override;
 
 protected:
 
     /// Constructor
     DATA_API generic_object_base(
-        unsigned int maxElementNum,
-        core::hires_clock::type timestamp = 0,
-        BufferDataType buffer             = nullptr,
-        std::size_t size                  = 0,
-        DeleterType d                     = nullptr
+        unsigned int _max_element_num,
+        core::hires_clock::type _timestamp = 0,
+        buffer_data_t _buffer              = nullptr,
+        std::size_t _size                  = 0,
+        deleter_t _d                       = nullptr
     );
 
     /// Number of elements that are actually set
@@ -90,7 +90,7 @@ class generic_object : public generic_object_base
 public:
 
     /// Type of the elements inside the buffer
-    typedef TYPE ElementType;
+    typedef TYPE element_t;
 
     class iterator
     {
@@ -106,12 +106,12 @@ public:
         }
 
         /// Get the current element
-        const ElementType& operator*() const;
+        const element_t& operator*() const;
 
     private:
 
         /// Constructor
-        iterator(const generic_object_base& object);
+        iterator(const generic_object_base& _object);
 
         /// Pointer on the buffer object
         const generic_object_base* m_object;
@@ -122,32 +122,32 @@ public:
         /// Maximum number of elements in the buffer
         unsigned int m_maxElement;
 
-        friend class generic_object<ElementType>;
+        friend class generic_object<element_t>;
     };
 
     friend class iterator;
 
     /// Constructor
     generic_object(
-        unsigned int m_maxElementNum,
-        core::hires_clock::type timestamp = 0,
-        BufferDataType buffer             = nullptr,
-        std::size_t size                  = 0,
-        DeleterType d                     = nullptr
+        unsigned int _m_max_element_num,
+        core::hires_clock::type _timestamp = 0,
+        buffer_data_t _buffer              = nullptr,
+        std::size_t _size                  = 0,
+        deleter_t _d                       = nullptr
     );
 
     /// Destructor
     ~generic_object() override;
 
     /// Return the nth element in the buffer
-    [[nodiscard]] const TYPE& getElement(unsigned int index) const;
+    [[nodiscard]] const TYPE& getElement(unsigned int _index) const;
 
     /// Set the nth element in the buffer. Element in parameter will be copied at the given index. The method is
     /// disabled if TYPE isn't TriviallyCopyable because setElement internally uses memcpy.
-    void setElement(const ElementType& element, unsigned int index);
+    void setElement(const element_t& _element, unsigned int _index);
 
     /// Add an element and return a pointer on the newly added element
-    TYPE* addElement(unsigned int index);
+    TYPE* addElement(unsigned int _index);
 
     /// Return an iterator on the elements present in the object
     [[nodiscard]] iterator getPresenceIterator() const;

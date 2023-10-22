@@ -67,26 +67,26 @@ namespace sight::module::debug
 #ifndef WIN32
 //------------------------------------------------------------------------------
 
-std::string demangle(const std::string& mangled)
+std::string demangle(const std::string& _mangled)
 {
-    return core::demangler(mangled).get_classname();
+    return core::demangler(_mangled).get_classname();
 }
 
 //------------------------------------------------------------------------------
 
-std::string decode(char* message)
+std::string decode(char* _message)
 {
-    std::string msg(message);
-    std::string res(message);
+    std::string msg(_message);
+    std::string res(_message);
 
     std::string::size_type popen = msg.find('(');
     if(popen != std::string::npos)
     {
         std::string::size_type plus = msg.find('+');
-        res = std::string(message, popen + 1) + " ";
-        std::string mangled(message, popen + 1, plus - popen - 1);
+        res = std::string(_message, popen + 1) + " ";
+        std::string mangled(_message, popen + 1, plus - popen - 1);
         res += demangle(mangled) + " ";
-        res += std::string(message + plus, message + strlen(message));
+        res += std::string(_message + plus, _message + strlen(_message));
     }
 
     return res;
@@ -94,24 +94,24 @@ std::string decode(char* message)
 
 //------------------------------------------------------------------------------
 
-void btSighandler(
-    int sig,
-    siginfo_t* info,
-    void* secret
+void bt_sighandler(
+    int _sig,
+    siginfo_t* _info,
+    void* _secret
 )
 {
     std::array<void*, 16> trace {};
     int i          = 0;
     int trace_size = 0;
-    const auto* uc = reinterpret_cast<const ucontext_t*>(secret);
+    const auto* uc = reinterpret_cast<const ucontext_t*>(_secret);
 
     std::stringstream ss;
-    ss << "Got signal " << sig;
+    ss << "Got signal " << _sig;
 
     /* Do something useful with siginfo_t */
-    if(sig == SIGSEGV)
+    if(_sig == SIGSEGV)
     {
-        ss << " faulty address is " << info->si_addr;
+        ss << " faulty address is " << _info->si_addr;
         ss << " from " << uc->uc_mcontext.gregs[debugReg];
     }
 
@@ -129,7 +129,7 @@ void btSighandler(
         ss << "    [bt] " << decode(messages[i]) << std::endl;
     }
 
-    if(sig == SIGSEGV)
+    if(_sig == SIGSEGV)
     {
         SIGHT_FATAL("SIGSEV signal " + ss.str());
         exit(0);
@@ -142,11 +142,11 @@ void btSighandler(
 
 //------------------------------------------------------------------------------
 
-void installSIGSEVBacktrace()
+void install_sigsev_backtrace()
 {
     struct sigaction sa {};
 
-    sa.sa_sigaction = btSighandler;
+    sa.sa_sigaction = bt_sighandler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART | SA_SIGINFO;
 
@@ -336,7 +336,7 @@ static LONG WINAPI UnhandledExpFilter(PEXCEPTION_POINTERS pExceptionInfo)
 
 //------------------------------------------------------------------------------
 
-void installSIGSEVBacktrace()
+void install_sigsev_backtrace()
 {
     SetUnhandledExceptionFilter(UnhandledExpFilter);
 }

@@ -45,22 +45,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const activity_set& other) const noexcept;
-    DATA_API bool operator!=(const activity_set& other) const noexcept;
+    DATA_API bool operator==(const activity_set& _other) const noexcept;
+    DATA_API bool operator!=(const activity_set& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:

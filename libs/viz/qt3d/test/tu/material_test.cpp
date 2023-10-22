@@ -35,9 +35,9 @@
 #include <Qt3DRender/QTechnique>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::material_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3d_test::ut::material_test);
 
-namespace sight::viz::qt3dTest::ut
+namespace sight::viz::qt3d_test::ut
 {
 
 //------------------------------------------------------------------------------
@@ -68,86 +68,86 @@ void material_test::initializeMaterial()
 {
     test_application app;
 
-    auto sightMaterial = std::make_shared<data::material>();
-    auto* qt3dMaterial = new viz::qt3d::data::material();
+    auto sight_material = std::make_shared<data::material>();
+    auto* qt3d_material = new viz::qt3d::data::material();
 
     // Initializes qt3dMaterial according to sightMaterial.
-    qt3dMaterial->updatePolygonMode(sightMaterial->getRepresentationMode());
-    qt3dMaterial->updateOptionsMode(sightMaterial->getOptionsMode());
-    qt3dMaterial->updateShadingMode(sightMaterial->getShadingMode());
-    qt3dMaterial->updateRGBAMode(sightMaterial);
+    qt3d_material->updatePolygonMode(sight_material->getRepresentationMode());
+    qt3d_material->updateOptionsMode(sight_material->getOptionsMode());
+    qt3d_material->updateShadingMode(sight_material->getShadingMode());
+    qt3d_material->updateRGBAMode(sight_material);
 
     // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->ambient()->red()),
-        qt3dMaterial->getAmbient().redF(),
+        static_cast<float>(sight_material->ambient()->red()),
+        qt3d_material->getAmbient().redF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->ambient()->green()),
-        qt3dMaterial->getAmbient().greenF(),
+        static_cast<float>(sight_material->ambient()->green()),
+        qt3d_material->getAmbient().greenF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->ambient()->blue()),
-        qt3dMaterial->getAmbient().blueF(),
+        static_cast<float>(sight_material->ambient()->blue()),
+        qt3d_material->getAmbient().blueF(),
         0.01F
     );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->diffuse()->red()),
-        qt3dMaterial->getDiffuse().redF(),
+        static_cast<float>(sight_material->diffuse()->red()),
+        qt3d_material->getDiffuse().redF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->diffuse()->green()),
-        qt3dMaterial->getDiffuse().greenF(),
+        static_cast<float>(sight_material->diffuse()->green()),
+        qt3d_material->getDiffuse().greenF(),
         0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast<float>(sightMaterial->diffuse()->blue()),
-        qt3dMaterial->getDiffuse().blueF(),
+        static_cast<float>(sight_material->diffuse()->blue()),
+        qt3d_material->getDiffuse().blueF(),
         0.01F
     );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().x(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().y(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().z(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().x(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().y(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3d_material->getSpecular().z(), 0.00001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0F, qt3dMaterial->getShininess(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0F, qt3d_material->getShininess(), 0.00001);
 
-    CPPUNIT_ASSERT_EQUAL(1, qt3dMaterial->effect()->techniques().size());
-    auto* tech = qt3dMaterial->effect()->techniques()[0];
+    CPPUNIT_ASSERT_EQUAL(1, qt3d_material->effect()->techniques().size());
+    auto* tech = qt3d_material->effect()->techniques()[0];
 
     CPPUNIT_ASSERT_EQUAL(4, tech->renderPasses().size());
     CPPUNIT_ASSERT_EQUAL(3, tech->parameters().size());
 
     // Asserts qt3dMaterial and sightMaterial rendering options are equals.
-    auto* normalPass     = tech->renderPasses()[0];
-    auto* cellNormalPass = tech->renderPasses()[1];
-    auto* renderPass     = tech->renderPasses()[2];
-    auto* edgeRenderPass = tech->renderPasses()[3];
+    auto* normal_pass      = tech->renderPasses()[0];
+    auto* cell_normal_pass = tech->renderPasses()[1];
+    auto* render_pass      = tech->renderPasses()[2];
+    auto* edge_render_pass = tech->renderPasses()[3];
 
     // Default polygonMode must be set to SURFACE.
     CPPUNIT_ASSERT_EQUAL(
         Qt3DRender::QRasterMode::Fill,
-        qobject_cast<Qt3DRender::QRasterMode*>(renderPass->renderStates()[0])->rasterMode()
+        qobject_cast<Qt3DRender::QRasterMode*>(render_pass->renderStates()[0])->rasterMode()
     );
-    CPPUNIT_ASSERT_EQUAL(false, edgeRenderPass->isEnabled());
+    CPPUNIT_ASSERT_EQUAL(false, edge_render_pass->isEnabled());
 
     // Default optionMode must be set to STANDARD.
-    CPPUNIT_ASSERT_EQUAL(false, normalPass->isEnabled());
-    CPPUNIT_ASSERT_EQUAL(false, cellNormalPass->isEnabled());
+    CPPUNIT_ASSERT_EQUAL(false, normal_pass->isEnabled());
+    CPPUNIT_ASSERT_EQUAL(false, cell_normal_pass->isEnabled());
 
     //Default lightingMode must be set to PHONG.
     CPPUNIT_ASSERT_EQUAL(
-        static_cast<int>(sightMaterial->getShadingMode()),
+        static_cast<int>(sight_material->getShadingMode()),
         qvariant_cast<int>(tech->parameters()[2]->value())
     );
 
-    delete qt3dMaterial;
+    delete qt3d_material;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::qt3dTest::ut
+} // namespace sight::viz::qt3d_test::ut

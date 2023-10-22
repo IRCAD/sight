@@ -122,7 +122,7 @@ private Q_SLOTS:
 private:
 
     /// SLOT: checks or unchecks the button.
-    void setChecked(bool checked);
+    void setChecked(bool _checked);
 
     /// SLOT: checks the button.
     void check();
@@ -131,7 +131,7 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void setEnabled(bool _isEnabled) override;
+    void setEnabled(bool _is_enabled) override;
 
     /// SLOT: sets the button executable.
     void enable() override;
@@ -140,7 +140,7 @@ private:
     void disable() override;
 
     /// SLOT: sets the button visibility.
-    void setVisible(bool _isVisible) override;
+    void setVisible(bool _is_visible) override;
 
     /// SLOT: shows the button.
     void show() override;
@@ -148,13 +148,13 @@ private:
     /// SLOT: hides he button.
     void hide() override;
 
-    typedef core::com::signal<void ()> ClickedSignalType;
+    typedef core::com::signal<void ()> clicked_signal_t;
     /// Contains the signal emitted when button is clicked.
-    ClickedSignalType::sptr m_sigClicked {nullptr};
+    clicked_signal_t::sptr m_sigClicked {nullptr};
 
-    typedef core::com::signal<void (bool)> ToggledSignalType;
+    typedef core::com::signal<void (bool)> toggled_signal_t;
     /// Contains the signal emitted when button is checked/unchecked
-    ToggledSignalType::sptr m_sigToggled {nullptr};
+    toggled_signal_t::sptr m_sigToggled {nullptr};
 
     /// Contains the button
     QPointer<QPushButton> m_button {nullptr};

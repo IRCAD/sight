@@ -82,13 +82,13 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::slots::key_t ADD_SLOT;
-    typedef core::com::slot<void (core::hires_clock::type)> AddSlotType;
+    typedef core::com::slot<void (core::hires_clock::type)> add_slot_t;
 
     MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
-    typedef core::com::slot<void ()> RemoveSlotType;
+    typedef core::com::slot<void ()> remove_slot_t;
 
     MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
-    typedef core::com::slot<void ()> ResetSlotType;
+    typedef core::com::slot<void ()> Reset_slot_type;
     ///@}
 
 protected:
@@ -114,7 +114,7 @@ protected:
     MODULE_UI_QT_API void reset();
 
     /// Slot: to add an image in the vector.
-    MODULE_UI_QT_API void add(core::hires_clock::type timestamp);
+    MODULE_UI_QT_API void add(core::hires_clock::type _timestamp);
 
 private:
 

@@ -30,14 +30,14 @@ namespace sight::ui::dialog
 //-----------------------------------------------------------------------------
 
 std::pair<std::string, bool> input::showInputDialog(
-    const std::string& title,
-    const std::string& message,
-    const std::string& text,
-    EchoMode echoMode
+    const std::string& _title,
+    const std::string& _message,
+    const std::string& _text,
+    EchoMode _echo_mode
 )
 {
-    ui::dialog::input inputBox(title, message, text, echoMode);
-    return inputBox.getInput();
+    ui::dialog::input input_box(_title, _message, _text, _echo_mode);
+    return input_box.getInput();
 }
 
 //-----------------------------------------------------------------------------
@@ -48,8 +48,8 @@ input::input()
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(input_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::input_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(input_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::input_base>(gui_obj);
         })
     );
 }
@@ -57,22 +57,22 @@ input::input()
 //-----------------------------------------------------------------------------
 
 input::input(
-    const std::string& title,
-    const std::string& message,
-    const std::string& text,
-    EchoMode echoMode
+    const std::string& _title,
+    const std::string& _message,
+    const std::string& _text,
+    EchoMode _echo_mode
 )
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            ui::object::sptr guiObj = ui::factory::make(input_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::input_base>(guiObj);
-            m_implementation->setTitle(title);
-            m_implementation->setMessage(message);
-            m_implementation->set_input(text);
-            m_implementation->setEchoMode(echoMode);
+            ui::object::sptr gui_obj = ui::factory::make(input_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::input_base>(gui_obj);
+            m_implementation->setTitle(_title);
+            m_implementation->setMessage(_message);
+            m_implementation->set_input(_text);
+            m_implementation->setEchoMode(_echo_mode);
         })
     );
 }
@@ -84,52 +84,52 @@ input::~input()
 
 //-----------------------------------------------------------------------------
 
-void input::setTitle(const std::string& title)
+void input::setTitle(const std::string& _title)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setTitle(title);
+            m_implementation->setTitle(_title);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void input::setMessage(const std::string& msg)
+void input::setMessage(const std::string& _msg)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setMessage(msg);
+            m_implementation->setMessage(_msg);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void input::set_input(const std::string& text)
+void input::set_input(const std::string& _text)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->set_input(text);
+            m_implementation->set_input(_text);
         })
     ).wait();
 }
 
 //------------------------------------------------------------------------------
 
-void input::setEchoMode(EchoMode echoMode)
+void input::setEchoMode(EchoMode _echo_mode)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setEchoMode(echoMode);
+            m_implementation->setEchoMode(_echo_mode);
         })
     ).wait();
 }

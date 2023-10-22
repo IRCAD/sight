@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] message Exception message
      */
-    IO_DICOM_API InvalidTag(const std::string& message);
+    IO_DICOM_API InvalidTag(const std::string& _message);
 
     /// Destructor
     IO_DICOM_API ~InvalidTag() noexcept override;

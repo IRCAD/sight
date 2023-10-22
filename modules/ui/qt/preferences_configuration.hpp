@@ -157,14 +157,14 @@ protected:
 private:
 
     /// Type of signal when parameters are updated.
-    typedef core::com::signal<void ()> ParametersModifiedSignalType;
+    typedef core::com::signal<void ()> parameters_modified_signal_t;
     static const core::com::signals::key_t PARAMETERS_MODIFIED_SIG;
 
     /// Generic changed signal type
-    typedef core::com::signal<void (sight::ui::parameter_t, std::string)> ChangedSignalType;
+    typedef core::com::signal<void (sight::ui::parameter_t, std::string)> changed_signal_t;
     static const core::com::signals::key_t PREFERENCE_CHANGED_SIG;
 
-    enum class PreferenceType : std::int8_t
+    enum class preference_t : std::int8_t
     {
         TEXT,
         CHECKBOX,
@@ -178,7 +178,7 @@ private:
 
     struct PreferenceElt
     {
-        PreferenceType m_type {PreferenceType::TEXT};
+        preference_t m_type {preference_t::TEXT};
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
         QPointer<QComboBox> m_comboBox;
@@ -196,12 +196,12 @@ private:
     /// @return std::variant as defined by parameter_t.
     static sight::ui::parameter_t convertValue(const PreferenceElt& _elt);
 
-    static void onSelectDir(QPointer<QLineEdit> _lineEdit);
+    static void onSelectDir(QPointer<QLineEdit> _line_edit);
 
-    static void onSelectFile(QPointer<QLineEdit> _lineEdit);
+    static void onSelectFile(QPointer<QLineEdit> _line_edit);
 
-    ParametersModifiedSignalType::sptr m_sigParametersModified;
-    ChangedSignalType::sptr m_sigPreferenceChanged;
+    parameters_modified_signal_t::sptr m_sigParametersModified;
+    changed_signal_t::sptr m_sigPreferenceChanged;
 
     std::vector<PreferenceElt> m_preferences;
 };

@@ -518,10 +518,10 @@ QGroupBox::title
 }
 
 /************************************************************************/
-/***************************** SlideBar *********************************/
+/***************************** slide_bar *********************************/
 /************************************************************************/
 
-QGroupBox#SlideBar
+QGroupBox#slide_bar
 {
     margin: 0px;
     background: transparent;
@@ -1344,7 +1344,7 @@ QProgressBar::chunk
 
 /************************** Custom class *****************************/
 
-.AccordionMenu[folded="false"]
+.accordion_menu[folded="false"]
 {
     background: rgba(255, 255, 255, 20%);
     padding: 10%;
@@ -1393,7 +1393,7 @@ QProgressBar::chunk
     font-size: 160pt;
 }
 
-.SliceSelector
+.slice_selector
 {
     background: rgb(255,255,255);
 }

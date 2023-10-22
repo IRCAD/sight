@@ -40,7 +40,7 @@ const std::string s_statusKey                                  = "Status";
 const std::string s_resolutionKey                              = "Resolution";
 const std::string s_coordinateNameKey                          = "CoordinateName";
 
-converterRegisterMacro(io::igtl::detail::converter::TrackingStartConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::TrackingStartConverter);
 
 TrackingStartConverter::TrackingStartConverter()
 = default;
@@ -54,21 +54,21 @@ TrackingStartConverter::~TrackingStartConverter()
 
 ::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::object::csptr /*src*/) const
 {
-    ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::New();
+    ::igtl::StartTrackingDataMessage::Pointer tracking_msg = ::igtl::StartTrackingDataMessage::New();
 
-    trackingMsg->SetResolution(0);
-    trackingMsg->SetCoordinateName("Undefined");
+    tracking_msg->SetResolution(0);
+    tracking_msg->SetCoordinateName("Undefined");
 
-    return {trackingMsg.GetPointer()};
+    return {tracking_msg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
-    auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
+    auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(_src.GetPointer());
 
-    ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
+    ::igtl::StartTrackingDataMessage::Pointer tracking_msg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
     data::composite::sptr composite = std::make_shared<data::composite>();
     {
@@ -81,13 +81,13 @@ data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
         data::integer::sptr resolution = std::make_shared<data::integer>();
         (*composite)[s_resolutionKey] = resolution;
 
-        resolution->setValue(trackingMsg->GetResolution());
+        resolution->setValue(tracking_msg->GetResolution());
     }
     {
-        data::string::sptr coordinateName = std::make_shared<data::string>();
-        (*composite)[s_coordinateNameKey] = coordinateName;
+        data::string::sptr coordinate_name = std::make_shared<data::string>();
+        (*composite)[s_coordinateNameKey] = coordinate_name;
 
-        coordinateName->setValue(trackingMsg->GetCoordinateName());
+        coordinate_name->setValue(tracking_msg->GetCoordinateName());
     }
 
     return composite;
@@ -102,7 +102,7 @@ base::sptr TrackingStartConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& TrackingStartConverter::getIgtlType() const
+std::string const& TrackingStartConverter::get_igtl_type() const
 {
     return TrackingStartConverter::s_IGTL_TYPE;
 }

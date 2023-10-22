@@ -51,11 +51,11 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API TemplateID(
-        CSPTR(data::dicom_series)dicomSeries,
-        SPTR(gdcm::Reader)reader,
-        SPTR(io::dicom::container::DicomInstance)instance,
-        SPTR(DATATYPE)object,
-        core::log::logger::sptr logger
+        CSPTR(data::dicom_series)_dicom_series,
+        SPTR(gdcm::Reader)_reader,
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        SPTR(DATATYPE)_object,
+        core::log::logger::sptr _logger
     );
 
     /// Destructor
@@ -83,17 +83,17 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    CSPTR(data::dicom_series)dicomSeries,
-    SPTR(gdcm::Reader)reader,
-    SPTR(io::dicom::container::DicomInstance)instance,
-    SPTR(DATATYPE)object,
-    core::log::logger::sptr logger
+    CSPTR(data::dicom_series)_dicom_series,
+    SPTR(gdcm::Reader)_reader,
+    SPTR(io::dicom::container::DicomInstance)_instance,
+    SPTR(DATATYPE)_object,
+    core::log::logger::sptr _logger
 ) :
-    m_dicomSeries(std::move(dicomSeries)),
-    m_reader(std::move(reader)),
-    m_instance(std::move(instance)),
-    m_object(std::move(object)),
-    m_logger(std::move(logger))
+    m_dicomSeries(std::move(_dicom_series)),
+    m_reader(std::move(_reader)),
+    m_instance(std::move(_instance)),
+    m_object(std::move(_object)),
+    m_logger(std::move(_logger))
 {
     SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
     SIGHT_ASSERT("Reader should not be null.", m_reader);

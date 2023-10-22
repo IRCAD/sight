@@ -107,33 +107,33 @@ protected:
     connections_t auto_connections() const override;
 
     static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG;
-    typedef core::com::signal<void (data::object::sptr)> ReconstructionSelectedSignalType;
+    typedef core::com::signal<void (data::object::sptr)> reconstruction_selected_signal_t;
 
     static const core::com::signals::key_t EMPTIED_SELECTION_SIG;
-    typedef core::com::signal<void ()> EmptiedSelectionSignalType;
+    typedef core::com::signal<void ()> emptied_selection_signal_t;
 
 protected Q_SLOTS:
 
     /// Called when an organ is selected, the index represents the index of the selected reconstruction into the
     // modelSeries
-    void onOrganSelected(int index);
+    void onOrganSelected(int _index);
 
     /// Called when the reconstruction should be shown/hidden
-    void onShowReconstructions(int state);
+    void onShowReconstructions(int _state);
 
     /// Called when the visibility of an organ should change
-    void onOrganVisibilityChanged(int index, bool visible);
+    void onOrganVisibilityChanged(int _index, bool _visible);
 
     /// Called when all the reconstruction are checked/unchecked, and
-    void onCheckAllBoxes(bool checked);
+    void onCheckAllBoxes(bool _checked);
 
 private:
 
     /// Signal emitted when a reconstruction is selected
-    ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
+    reconstruction_selected_signal_t::sptr m_sigReconstructionSelected;
 
     /// Signal emitted when we clean the list
-    EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
+    emptied_selection_signal_t::sptr m_sigEmptiedSelection;
 
     OrganListModel* m_listModel {nullptr};
 

@@ -39,9 +39,9 @@ public:
 
     SIGHT_DECLARE_CLASS(toolbar, ui::object);
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     typedef enum
     {
@@ -77,14 +77,14 @@ public:
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent toolBar.
      * @pre layout must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    UI_API virtual void createToolBar(ui::container::widget::sptr parent) = 0;
+    UI_API virtual void createToolBar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -94,7 +94,7 @@ public:
 
 protected:
 
-    /// ToolBar.
+    /// tool_bar.
     ui::container::toolbar::sptr m_toolBar;
 
     std::pair<int, int> m_toolBitmapSize;

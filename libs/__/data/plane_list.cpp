@@ -42,20 +42,20 @@ const core::com::signals::key_t plane_list::VISIBILITY_MODIFIED_SIG = "visibilit
 
 plane_list::plane_list()
 {
-    new_signal<PlaneAddedSignalType>(PLANE_ADDED_SIG);
-    new_signal<PlaneRemovedSignalType>(PLANE_REMOVED_SIG);
-    new_signal<VisibilityModifiedSignalType>(VISIBILITY_MODIFIED_SIG);
+    new_signal<plane_added_signal_t>(PLANE_ADDED_SIG);
+    new_signal<plane_removed_signal_t>(PLANE_REMOVED_SIG);
+    new_signal<visibility_modified_signal_t>(VISIBILITY_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void plane_list::shallow_copy(const object::csptr& source)
+void plane_list::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const plane_list>(source);
+    const auto& other = std::dynamic_pointer_cast<const plane_list>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !other
@@ -68,13 +68,13 @@ void plane_list::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void plane_list::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void plane_list::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const plane_list>(source);
+    const auto& other = std::dynamic_pointer_cast<const plane_list>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !other
@@ -83,30 +83,30 @@ void plane_list::deep_copy(const object::csptr& source, const std::unique_ptr<de
     this->m_vPlanes.clear();
     for(const auto& plane : other->m_vPlanes)
     {
-        this->m_vPlanes.push_back(data::object::copy(plane, cache));
+        this->m_vPlanes.push_back(data::object::copy(plane, _cache));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool plane_list::operator==(const plane_list& other) const noexcept
+bool plane_list::operator==(const plane_list& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_vPlanes, other.m_vPlanes))
+    if(!core::tools::is_equal(m_vPlanes, _other.m_vPlanes))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool plane_list::operator!=(const plane_list& other) const noexcept
+bool plane_list::operator!=(const plane_list& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

@@ -61,9 +61,9 @@ public:
      *
      * @param ts TimeStamp to compare to
      */
-    CORE_API bool operator>(const time_stamp& ts) const
+    CORE_API bool operator>(const time_stamp& _ts) const
     {
-        return this->m_modified_time > ts.m_modified_time;
+        return this->m_modified_time > _ts.m_modified_time;
     }
 
     /**
@@ -71,9 +71,9 @@ public:
      *
      * @param ts TimeStamp to compare to
      */
-    CORE_API bool operator<(const time_stamp& ts) const
+    CORE_API bool operator<(const time_stamp& _ts) const
     {
-        return this->m_modified_time < ts.m_modified_time;
+        return this->m_modified_time < _ts.m_modified_time;
     }
 
     /**
@@ -89,9 +89,9 @@ public:
      *
      * @param period Period in milliseconds
      */
-    CORE_API void set_life_period(time_stamp_type period)
+    CORE_API void set_life_period(time_stamp_type _period)
     {
-        m_life_period = period;
+        m_life_period = _period;
     }
 
     /**

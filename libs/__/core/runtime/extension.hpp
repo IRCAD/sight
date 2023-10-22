@@ -53,9 +53,9 @@ public:
      * @todo        test parameters validity
      */
     extension(
-        std::shared_ptr<module> module,
-        const std::string& id,
-        const std::string& point
+        std::shared_ptr<module> _module,
+        const std::string& _id,
+        const std::string& _point
     );
 
     /**
@@ -82,9 +82,9 @@ public:
 private:
 
     /// A string containing the extension identifier
-    const std::string m_id;
+    const std::string M_ID;
     /// A string containing the extension point identifier the extension will be connected to
-    const std::string m_point;
+    const std::string M_POINT;
     /// The configuration of the extension
     config_t m_config;
 };

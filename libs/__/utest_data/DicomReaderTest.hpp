@@ -41,12 +41,12 @@ public:
      * This file is located here in the test database : "sight/Patient/Dicom/JMSGenou",
      * it represents a CT image of a knee ( 400 slices ).
      */
-    UTEST_DATA_API static bool checkSeriesJMSGenou(const SPTR(data::image_series)& series);
+    UTEST_DATA_API static bool checkSeriesJMSGenou(const SPTR(data::image_series)& _series);
 
     /**
      * @brief This method is the same as checkSeriesJMSGenou but it checks trimmed strings instead of even sized strings
      */
-    UTEST_DATA_API static bool checkSeriesJMSGenouTrimmed(const SPTR(data::image_series)& series);
+    UTEST_DATA_API static bool checkSeriesJMSGenouTrimmed(const SPTR(data::image_series)& _series);
 };
 
 } // namespace sight::utest_data

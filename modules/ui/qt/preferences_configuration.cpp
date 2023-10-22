@@ -27,7 +27,7 @@
 #include <core/location/single_folder.hpp>
 
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
@@ -53,30 +53,30 @@ sight::ui::parameter_t preferences_configuration::convertValue(const PreferenceE
 {
     switch(_elt.m_type)
     {
-        case PreferenceType::TEXT:
-        case PreferenceType::PATH:
-        case PreferenceType::COMBOBOX:
-        case PreferenceType::FILE:
+        case preference_t::TEXT:
+        case preference_t::PATH:
+        case preference_t::COMBOBOX:
+        case preference_t::FILE:
         {
             return _elt.m_preferenceValue;
         }
 
-        case PreferenceType::U_INT:
+        case preference_t::U_INT:
         {
             return std::stoi(_elt.m_preferenceValue);
         }
 
-        case PreferenceType::DOUBLE:
+        case preference_t::DOUBLE:
         {
             return std::stod(_elt.m_preferenceValue);
         }
 
-        case PreferenceType::CHECKBOX:
+        case preference_t::CHECKBOX:
         {
             return _elt.m_preferenceValue == "true";
         }
 
-        case PreferenceType::LIST:
+        case preference_t::LIST:
         {
             std::vector<std::string> list;
             boost::split(list, _elt.m_preferenceValue, boost::is_any_of(_elt.m_separator));
@@ -95,8 +95,8 @@ sight::ui::parameter_t preferences_configuration::convertValue(const PreferenceE
 
 preferences_configuration::preferences_configuration() noexcept
 {
-    m_sigParametersModified = new_signal<ParametersModifiedSignalType>(PARAMETERS_MODIFIED_SIG);
-    m_sigPreferenceChanged  = new_signal<ChangedSignalType>(PREFERENCE_CHANGED_SIG);
+    m_sigParametersModified = new_signal<parameters_modified_signal_t>(PARAMETERS_MODIFIED_SIG);
+    m_sigPreferenceChanged  = new_signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -119,41 +119,41 @@ void preferences_configuration::configuring()
         auto type = cfg.second.get<std::string>("type");
         if(type == "checkbox")
         {
-            pref.m_type = PreferenceType::CHECKBOX;
+            pref.m_type = preference_t::CHECKBOX;
         }
         else if(type == "text")
         {
-            pref.m_type = PreferenceType::TEXT;
+            pref.m_type = preference_t::TEXT;
         }
         else if(type == "path")
         {
-            pref.m_type = PreferenceType::PATH;
+            pref.m_type = preference_t::PATH;
         }
         else if(type == "file")
         {
-            pref.m_type = PreferenceType::FILE;
+            pref.m_type = preference_t::FILE;
         }
         else if(type == "combobox")
         {
-            pref.m_type = PreferenceType::COMBOBOX;
+            pref.m_type = preference_t::COMBOBOX;
         }
         else if(type == "double")
         {
-            pref.m_type = PreferenceType::DOUBLE;
+            pref.m_type = preference_t::DOUBLE;
 
             pref.m_dMinMax.first  = cfg.second.get<double>("min", pref.m_dMinMax.first);
             pref.m_dMinMax.second = cfg.second.get<double>("max", pref.m_dMinMax.second);
         }
         else if(type == "int")
         {
-            pref.m_type = PreferenceType::U_INT;
+            pref.m_type = preference_t::U_INT;
 
             pref.m_iMinMax.first  = cfg.second.get<int>("min", pref.m_iMinMax.first);
             pref.m_iMinMax.second = cfg.second.get<int>("max", pref.m_iMinMax.second);
         }
         else if(type == "list")
         {
-            pref.m_type = PreferenceType::LIST;
+            pref.m_type = preference_t::LIST;
 
             pref.m_separator = cfg.second.get("separator", ",");
         }
@@ -166,36 +166,36 @@ void preferences_configuration::configuring()
         pref.m_preferenceKey = cfg.second.get<std::string>("key");
         pref.m_defaultValue  = cfg.second.get<std::string>("default_value");
 
-        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
-           || pref.m_type == PreferenceType::FILE || pref.m_type == PreferenceType::LIST)
+        if(pref.m_type == preference_t::TEXT || pref.m_type == preference_t::PATH
+           || pref.m_type == preference_t::FILE || pref.m_type == preference_t::LIST)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
-        else if(pref.m_type == PreferenceType::CHECKBOX)
+        else if(pref.m_type == preference_t::CHECKBOX)
         {
             pref.m_checkBox = new QCheckBox();
             pref.m_checkBox->setChecked(pref.m_defaultValue == "true");
             pref.m_checkBox->setObjectName(pref.m_preferenceKey.c_str());
         }
-        else if(pref.m_type == PreferenceType::U_INT)
+        else if(pref.m_type == preference_t::U_INT)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QIntValidator(pref.m_iMinMax.first, pref.m_iMinMax.second));
             pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
-        else if(pref.m_type == PreferenceType::DOUBLE)
+        else if(pref.m_type == preference_t::DOUBLE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QDoubleValidator(pref.m_dMinMax.first, pref.m_dMinMax.second, 6));
             pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
-        else if(pref.m_type == PreferenceType::COMBOBOX)
+        else if(pref.m_type == preference_t::COMBOBOX)
         {
-            const auto valuesCfg = cfg.second.get<std::string>("values");
+            const auto values_cfg = cfg.second.get<std::string>("values");
 
             const boost::char_separator<char> sep(", ;");
-            const boost::tokenizer<boost::char_separator<char> > tokens {valuesCfg, sep};
+            const boost::tokenizer<boost::char_separator<char> > tokens {values_cfg, sep};
 
             pref.m_comboBox = new QComboBox();
             pref.m_comboBox->setObjectName(pref.m_preferenceKey.c_str());
@@ -217,7 +217,7 @@ void preferences_configuration::starting()
 
     try
     {
-        sight::ui::Preferences preferences;
+        sight::ui::preferences preferences;
 
         for(auto& preference : m_preferences)
         {
@@ -232,7 +232,7 @@ void preferences_configuration::starting()
             }
         }
     }
-    catch(const sight::ui::PreferencesDisabled& /*e*/)
+    catch(const sight::ui::preferences_disabled& /*e*/)
     {
         // Nothing to do..
     }
@@ -242,7 +242,7 @@ void preferences_configuration::starting()
 
 void preferences_configuration::updating()
 {
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     QPointer<QDialog> dialog = new QDialog();
     dialog->setObjectName("preferences_configuration");
@@ -254,17 +254,17 @@ void preferences_configuration::updating()
         QPointer<QLabel> label = new QLabel(QString::fromStdString(pref.m_name));
         layout->addWidget(label, index, 0);
 
-        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::LIST)
+        if(pref.m_type == preference_t::TEXT || pref.m_type == preference_t::LIST)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
         }
-        else if(pref.m_type == PreferenceType::CHECKBOX)
+        else if(pref.m_type == preference_t::CHECKBOX)
         {
             pref.m_checkBox->setChecked(pref.m_preferenceValue == "true");
             layout->addWidget(pref.m_checkBox, index, 1);
         }
-        else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
+        else if(pref.m_type == preference_t::U_INT || pref.m_type == preference_t::DOUBLE)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
@@ -276,57 +276,57 @@ void preferences_configuration::updating()
                     int pos               = 0;
                     QLineEdit* const edit = pref.m_lineEdit;
                     QString text          = edit->text();
-                    const bool isValid    = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
+                    const bool is_valid   = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
 
                     if(qApp->styleSheet().isEmpty())
                     {
                         static const QColor defaultTextColor = QLineEdit().palette().color(QPalette::Text);
 
                         QPalette palette   = edit->palette();
-                        const QColor color = isValid ? defaultTextColor : QColorConstants::Red;
+                        const QColor color = is_valid ? defaultTextColor : QColorConstants::Red;
                         palette.setColor(QPalette::Text, color);
                         edit->setPalette(palette);
                     }
                     else
                     {
-                        edit->setProperty("type", isValid ? "" : "error");
+                        edit->setProperty("type", is_valid ? "" : "error");
                         edit->style()->unpolish(edit);
                         edit->style()->polish(edit);
                     }
                 });
         }
-        else if(pref.m_type == PreferenceType::PATH)
+        else if(pref.m_type == preference_t::PATH)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
-            QPointer<QPushButton> directorySelector = new QPushButton("...");
-            layout->addWidget(directorySelector, index, 2);
+            QPointer<QPushButton> directory_selector = new QPushButton("...");
+            layout->addWidget(directory_selector, index, 2);
             QObject::connect(
-                directorySelector.data(),
+                directory_selector.data(),
                 &QPushButton::clicked,
                 [pref]()
                 {
                     sight::module::ui::qt::preferences_configuration::onSelectDir(pref.m_lineEdit);
                 });
         }
-        else if(pref.m_type == PreferenceType::FILE)
+        else if(pref.m_type == preference_t::FILE)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
-            QPointer<QPushButton> directorySelector = new QPushButton("...");
-            layout->addWidget(directorySelector, index, 2);
+            QPointer<QPushButton> directory_selector = new QPushButton("...");
+            layout->addWidget(directory_selector, index, 2);
             QObject::connect(
-                directorySelector.data(),
+                directory_selector.data(),
                 &QPushButton::clicked,
                 [pref]()
                 {
                     sight::module::ui::qt::preferences_configuration::onSelectFile(pref.m_lineEdit);
                 });
         }
-        else if(pref.m_type == PreferenceType::COMBOBOX)
+        else if(pref.m_type == preference_t::COMBOBOX)
         {
-            const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_preferenceValue));
-            if(currentIndex < 0)
+            const int current_index = pref.m_comboBox->findText(QString::fromStdString(pref.m_preferenceValue));
+            if(current_index < 0)
             {
                 SIGHT_WARN(
                     "Preference '" + pref.m_preferenceValue
@@ -336,7 +336,7 @@ void preferences_configuration::updating()
             }
             else
             {
-                pref.m_comboBox->setCurrentIndex(currentIndex);
+                pref.m_comboBox->setCurrentIndex(current_index);
             }
 
             layout->addWidget(pref.m_comboBox, index, 1);
@@ -345,55 +345,55 @@ void preferences_configuration::updating()
         ++index;
     }
 
-    QPointer<QPushButton> cancelButton = new QPushButton("Cancel");
-    cancelButton->setObjectName(cancelButton->text());
-    QPointer<QPushButton> okButton = new QPushButton("OK");
-    okButton->setObjectName(okButton->text());
-    okButton->setDefault(true);
+    QPointer<QPushButton> cancel_button = new QPushButton("Cancel");
+    cancel_button->setObjectName(cancel_button->text());
+    QPointer<QPushButton> ok_button = new QPushButton("OK");
+    ok_button->setObjectName(ok_button->text());
+    ok_button->setDefault(true);
 
-    QPointer<QHBoxLayout> buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(cancelButton);
-    buttonLayout->addWidget(okButton);
+    QPointer<QHBoxLayout> button_layout = new QHBoxLayout();
+    button_layout->addWidget(cancel_button);
+    button_layout->addWidget(ok_button);
 
-    layout->addLayout(buttonLayout, index, 1, 4, 2);
+    layout->addLayout(button_layout, index, 1, 4, 2);
 
-    QObject::connect(cancelButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::reject);
-    QObject::connect(okButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::accept);
+    QObject::connect(cancel_button.data(), &QPushButton::clicked, dialog.data(), &QDialog::reject);
+    QObject::connect(ok_button.data(), &QPushButton::clicked, dialog.data(), &QDialog::accept);
 
     dialog->setLayout(layout);
 
     if(dialog->exec() == QDialog::Accepted)
     {
-        sight::ui::Preferences preferences;
+        sight::ui::preferences preferences;
 
         for(PreferenceElt& pref : m_preferences)
         {
-            bool preferenceUpdate = false; // only emit signal for preference that has changed.
+            bool preference_update = false; // only emit signal for preference that has changed.
 
-            if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
-                || pref.m_type == PreferenceType::FILE || pref.m_type == PreferenceType::LIST)
+            if((pref.m_type == preference_t::TEXT || pref.m_type == preference_t::PATH
+                || pref.m_type == preference_t::FILE || pref.m_type == preference_t::LIST)
                && !pref.m_lineEdit->text().isEmpty())
             {
-                preferenceUpdate =
+                preference_update =
                     pref.m_preferenceValue != pref.m_lineEdit->text().toStdString();
                 pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
             }
-            else if(pref.m_type == PreferenceType::CHECKBOX)
+            else if(pref.m_type == preference_t::CHECKBOX)
             {
                 const std::string checked = pref.m_checkBox->isChecked() ? "true" : "false";
-                preferenceUpdate       = pref.m_preferenceValue != checked;
+                preference_update      = pref.m_preferenceValue != checked;
                 pref.m_preferenceValue = checked;
             }
-            else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
+            else if(pref.m_type == preference_t::U_INT || pref.m_type == preference_t::DOUBLE)
             {
                 int pos               = 0;
                 QLineEdit* const edit = pref.m_lineEdit;
                 QString text          = edit->text();
-                const bool isValid    = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
+                const bool is_valid   = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
 
-                if(isValid)
+                if(is_valid)
                 {
-                    preferenceUpdate =
+                    preference_update =
                         pref.m_preferenceValue != pref.m_lineEdit->text().toStdString();
                     pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
                 }
@@ -412,9 +412,9 @@ void preferences_configuration::updating()
                     edit->style()->polish(edit);
                 }
             }
-            else if(pref.m_type == PreferenceType::COMBOBOX)
+            else if(pref.m_type == preference_t::COMBOBOX)
             {
-                preferenceUpdate =
+                preference_update =
                     pref.m_preferenceValue != pref.m_comboBox->currentText().toStdString();
                 pref.m_preferenceValue = pref.m_comboBox->currentText().toStdString();
             }
@@ -422,7 +422,7 @@ void preferences_configuration::updating()
             preferences.put(pref.m_preferenceKey, pref.m_preferenceValue);
 
             // Emit preferenceChanged signal with new value and preference key.
-            if(preferenceUpdate)
+            if(preference_update)
             {
                 const auto value = this->convertValue(pref);
                 m_sigPreferenceChanged->async_emit(value, pref.m_preferenceKey);
@@ -442,43 +442,43 @@ void preferences_configuration::stopping()
 
 //------------------------------------------------------------------------------
 
-void preferences_configuration::onSelectDir(QPointer<QLineEdit> lineEdit)
+void preferences_configuration::onSelectDir(QPointer<QLineEdit> _line_edit)
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle("Select Storage directory");
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(sight::ui::dialog::location::WRITE);
-    dialogFile.setType(sight::ui::dialog::location::FOLDER);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle("Select Storage directory");
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(sight::ui::dialog::location::WRITE);
+    dialog_file.setType(sight::ui::dialog::location::FOLDER);
 
-    const auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_folder());
-        lineEdit->setText(QString::fromStdString(result->get_folder().string()));
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder());
+        _line_edit->setText(QString::fromStdString(result->get_folder().string()));
+        dialog_file.saveDefaultLocation(default_directory);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void preferences_configuration::onSelectFile(QPointer<QLineEdit> lineEdit)
+void preferences_configuration::onSelectFile(QPointer<QLineEdit> _line_edit)
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle("Select File");
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(sight::ui::dialog::location::READ);
-    dialogFile.setType(sight::ui::dialog::location::SINGLE_FILE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle("Select File");
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(sight::ui::dialog::location::READ);
+    dialog_file.setType(sight::ui::dialog::location::SINGLE_FILE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        lineEdit->setText(QString::fromStdString(result->get_file().string()));
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        _line_edit->setText(QString::fromStdString(result->get_file().string()));
+        dialog_file.saveDefaultLocation(default_directory);
     }
 }
 

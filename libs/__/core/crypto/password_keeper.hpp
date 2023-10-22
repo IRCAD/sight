@@ -76,11 +76,11 @@ public:
 
     /// Sets the global password
     /// @param password the new global password
-    CORE_API static void set_global_password(const core::crypto::secure_string& password, bool restart_logger = true);
+    CORE_API static void set_global_password(const core::crypto::secure_string& _password, bool _restart_logger = true);
 
     /// Returns true if the password matches
     /// @param password the password to verify against global stored password
-    CORE_API static bool check_global_password(const core::crypto::secure_string& password);
+    CORE_API static bool check_global_password(const core::crypto::secure_string& _password);
 
     /// Reset the global password
     CORE_API static void reset_global_password();
@@ -96,16 +96,16 @@ public:
 
     /// Sets the password
     /// @param password the new password
-    CORE_API void set_password(const core::crypto::secure_string& password);
+    CORE_API void set_password(const core::crypto::secure_string& _password);
 
     /// Returns true if the password matches
     /// @param password the password to verify against stored password
-    [[nodiscard]] CORE_API bool check_password(const core::crypto::secure_string& password) const;
+    [[nodiscard]] CORE_API bool check_password(const core::crypto::secure_string& _password) const;
 
     /// Convenience function to convert from password_policy enum value to string
-    constexpr static std::string_view password_policy_to_string(password_policy policy) noexcept
+    constexpr static std::string_view password_policy_to_string(password_policy _policy) noexcept
     {
-        switch(policy)
+        switch(_policy)
         {
             case password_policy::GLOBAL:
                 return "global";
@@ -119,21 +119,21 @@ public:
     }
 
     /// Convenience function to convert from string to password_policy enum value
-    constexpr static password_policy string_to_password_policy(std::string_view policy) noexcept
+    constexpr static password_policy string_to_password_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto NEVER = password_policy_to_string(password_policy::NEVER);
-           policy == NEVER || policy.empty() || policy == "default")
+        if(constexpr auto never = password_policy_to_string(password_policy::NEVER);
+           _policy == never || _policy.empty() || _policy == "default")
         {
             return password_policy::NEVER;
         }
 
-        if(constexpr auto GLOBAL = password_policy_to_string(password_policy::GLOBAL);
-           policy == GLOBAL || policy == "once")
+        if(constexpr auto global = password_policy_to_string(password_policy::GLOBAL);
+           _policy == global || _policy == "once")
         {
             return password_policy::GLOBAL;
         }
 
-        if(constexpr auto ALWAYS = password_policy_to_string(password_policy::ALWAYS); policy == ALWAYS)
+        if(constexpr auto always = password_policy_to_string(password_policy::ALWAYS); _policy == always)
         {
             return password_policy::ALWAYS;
         }
@@ -143,9 +143,9 @@ public:
     }
 
     /// Convenience function to convert from encryption_policy enum value to string
-    constexpr static std::string_view encryption_policy_to_string(encryption_policy policy) noexcept
+    constexpr static std::string_view encryption_policy_to_string(encryption_policy _policy) noexcept
     {
-        switch(policy)
+        switch(_policy)
         {
             case encryption_policy::SALTED:
                 return "salted";
@@ -159,20 +159,20 @@ public:
     }
 
     /// Convenience function to convert from string to encryption_policy enum value
-    constexpr static encryption_policy string_to_encryption_policy(std::string_view policy) noexcept
+    constexpr static encryption_policy string_to_encryption_policy(std::string_view _policy) noexcept
     {
-        if(constexpr auto PASSWORD = encryption_policy_to_string(encryption_policy::PASSWORD);
-           policy == PASSWORD || policy.empty() || policy == "default")
+        if(constexpr auto password = encryption_policy_to_string(encryption_policy::PASSWORD);
+           _policy == password || _policy.empty() || _policy == "default")
         {
             return encryption_policy::PASSWORD;
         }
 
-        if(constexpr auto SALTED = encryption_policy_to_string(encryption_policy::SALTED); policy == SALTED)
+        if(constexpr auto salted = encryption_policy_to_string(encryption_policy::SALTED); _policy == salted)
         {
             return encryption_policy::SALTED;
         }
 
-        if(constexpr auto FORCED = encryption_policy_to_string(encryption_policy::FORCED); policy == FORCED)
+        if(constexpr auto forced = encryption_policy_to_string(encryption_policy::FORCED); _policy == forced)
         {
             return encryption_policy::FORCED;
         }
@@ -214,7 +214,7 @@ public:
     }
 
     /// Returns a pseudo-random password
-    CORE_API static secure_string get_pseudo_password_hash(const secure_string& salt) noexcept;
+    CORE_API static secure_string get_pseudo_password_hash(const secure_string& _salt) noexcept;
 
 private:
 

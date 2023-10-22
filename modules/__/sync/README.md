@@ -16,7 +16,7 @@ Contains services that control execution flow to synchronize various data stream
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_sync ... )
+add_dependencies(my_target module_sync ... )
 ```
 
 ### XML

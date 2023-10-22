@@ -142,7 +142,7 @@ private:
     void updateReconstructions();
 
     /// Fills the editor tree.
-    void fillTree(const data::mt::locked_ptr<data::model_series>& _modelSeries);
+    void fillTree(const data::mt::locked_ptr<data::model_series>& _model_series);
 
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);
@@ -167,7 +167,7 @@ private Q_SLOTS:
     static void onCurrentItemChanged(QTreeWidgetItem* _current, int _column);
 
     /// Shows reconstructions, called when m_showCheckBox is clicked.
-    void onShowReconstructions(int state);
+    void onShowReconstructions(int _state);
 
     /// Shows a reconstruction, called when new current item is setted in m_organChoice.
     static void onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/);
@@ -211,16 +211,16 @@ private:
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef core::com::signal<void (data::object::sptr)> ReconstructionSelectedSignalType;
-    ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
+    typedef core::com::signal<void (data::object::sptr)> reconstruction_selected_signal_t;
+    reconstruction_selected_signal_t::sptr m_sigReconstructionSelected;
 
     /// Contains the signal emitted when we clean the list.
-    typedef core::com::signal<void ()> EmptiedSelectionSignalType;
-    EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
+    typedef core::com::signal<void ()> emptied_selection_signal_t;
+    emptied_selection_signal_t::sptr m_sigEmptiedSelection;
 
     /// Contains the slot to show (or hide) reconstructions.
-    typedef core::com::slot<void (bool)> ShowReconstructionsSlotType;
-    ShowReconstructionsSlotType::sptr m_slotShowReconstructions;
+    typedef core::com::slot<void (bool)> show_reconstructions_slot_t;
+    show_reconstructions_slot_t::sptr m_slotShowReconstructions;
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
     data::ptr<data::model_series, data::Access::inout> m_modelSeries {this, "modelSeries", true};

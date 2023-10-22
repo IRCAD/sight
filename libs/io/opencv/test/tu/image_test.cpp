@@ -37,34 +37,34 @@ namespace sight::io::opencv::ut
 //------------------------------------------------------------------------------
 
 template<typename T>
-static data::image::sptr genImage(
-    const std::vector<T>& _imageBuffer,
+static data::image::sptr gen_image(
+    const std::vector<T>& _image_buffer,
     std::size_t _w,
     std::size_t _h,
     std::size_t _d,
-    std::uint8_t _numChannels
+    std::uint8_t _num_channels
 )
 {
     data::image::sptr image = std::make_shared<data::image>();
-    const auto dumpLock     = image->dump_lock();
+    const auto dump_lock    = image->dump_lock();
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
 
-    const core::type imageType  = core::type::get<T>();
-    data::image::Size imageSize = {0, 0, 0};
-    imageSize[0] = _w;
+    const core::type image_type  = core::type::get<T>();
+    data::image::Size image_size = {0, 0, 0};
+    image_size[0] = _w;
     if(_h > 0)
     {
-        imageSize[1] = _h;
+        image_size[1] = _h;
     }
 
     if(_d > 0)
     {
-        imageSize[2] = _d;
+        image_size[2] = _d;
     }
 
     data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
-    switch(_numChannels)
+    switch(_num_channels)
     {
         case 1:
             format = data::image::PixelFormat::GRAY_SCALE;
@@ -86,11 +86,11 @@ static data::image::sptr genImage(
             SIGHT_FATAL("Unhandled OpenCV format");
     }
 
-    image->resize(imageSize, imageType, format);
+    image->resize(image_size, image_type, format);
 
-    auto dstBuffer        = image->begin<std::uint8_t>();
-    const auto* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());
-    std::copy(srcBuffer, srcBuffer + image->getSizeInBytes(), dstBuffer);
+    auto dst_buffer        = image->begin<std::uint8_t>();
+    const auto* src_buffer = reinterpret_cast<const std::uint8_t*>(_image_buffer.data());
+    std::copy(src_buffer, src_buffer + image->getSizeInBytes(), dst_buffer);
 
     return image;
 }
@@ -98,42 +98,42 @@ static data::image::sptr genImage(
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void compareImages(
-    const cv::Mat& _cvImage,
+static void compare_images(
+    const cv::Mat& _cv_image,
     const data::image::csptr& _image,
     std::size_t _w,
     std::size_t _h,
     std::size_t _d,
-    std::uint8_t _numChannels
+    std::uint8_t _num_channels
 )
 {
-    const auto dumpLock  = _image->dump_lock();
-    const T* imageBuffer = reinterpret_cast<const T*>(_image->buffer());
+    const auto dump_lock  = _image->dump_lock();
+    const T* image_buffer = reinterpret_cast<const T*>(_image->buffer());
 
-    std::vector<cv::Mat> channels(_numChannels);
-    cv::split(_cvImage, channels);
+    std::vector<cv::Mat> channels(_num_channels);
+    cv::split(_cv_image, channels);
 
     if(_d > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cvImage.dims));
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[2]));
-        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cvImage.size[1]));
-        CPPUNIT_ASSERT_EQUAL(_d, static_cast<std::size_t>(_cvImage.size[0]));
-        for(int k = 0 ; k < _cvImage.size[0] ; ++k)
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cv_image.dims));
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cv_image.size[2]));
+        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cv_image.size[1]));
+        CPPUNIT_ASSERT_EQUAL(_d, static_cast<std::size_t>(_cv_image.size[0]));
+        for(int k = 0 ; k < _cv_image.size[0] ; ++k)
         {
-            for(int j = 0 ; j < _cvImage.size[1] ; ++j)
+            for(int j = 0 ; j < _cv_image.size[1] ; ++j)
             {
-                for(int i = 0 ; i < _cvImage.size[2] ; ++i)
+                for(int i = 0 ; i < _cv_image.size[2] ; ++i)
                 {
-                    for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
+                    for(std::uint8_t c = 0 ; c < _num_channels ; ++c)
                     {
                         const auto index = static_cast<std::size_t>(c
-                                                                    + static_cast<std::size_t>(i) * _numChannels
+                                                                    + static_cast<std::size_t>(i) * _num_channels
                                                                     + static_cast<std::size_t>(j)
-                                                                    * _numChannels * _w
+                                                                    * _num_channels * _w
                                                                     + static_cast<std::size_t>(k)
-                                                                    * _numChannels * _w * _h);
-                        CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(k, j, i));
+                                                                    * _num_channels * _w * _h);
+                        CPPUNIT_ASSERT_EQUAL(image_buffer[index], channels[c].at<T>(k, j, i));
                     }
                 }
             }
@@ -141,36 +141,36 @@ static void compareImages(
     }
     else if(_h > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cvImage.dims));
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
-        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cvImage.size[0]));
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<std::size_t>(_cv_image.dims));
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cv_image.size[1]));
+        CPPUNIT_ASSERT_EQUAL(_h, static_cast<std::size_t>(_cv_image.size[0]));
 
-        for(int j = 0 ; j < _cvImage.size[0] ; ++j)
+        for(int j = 0 ; j < _cv_image.size[0] ; ++j)
         {
-            for(int i = 0 ; i < _cvImage.size[1] ; ++i)
+            for(int i = 0 ; i < _cv_image.size[1] ; ++i)
             {
-                for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
+                for(std::uint8_t c = 0 ; c < _num_channels ; ++c)
                 {
                     const std::size_t index = c
-                                              + static_cast<std::size_t>(i) * _numChannels
-                                              + static_cast<std::size_t>(j) * _numChannels * _w;
-                    CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(j, i));
+                                              + static_cast<std::size_t>(i) * _num_channels
+                                              + static_cast<std::size_t>(j) * _num_channels * _w;
+                    CPPUNIT_ASSERT_EQUAL(image_buffer[index], channels[c].at<T>(j, i));
                 }
             }
         }
     }
     else
     {
-        CPPUNIT_ASSERT_EQUAL(2, _cvImage.dims);
-        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cvImage.size[1]));
-        CPPUNIT_ASSERT_EQUAL(1, _cvImage.size[0]);
+        CPPUNIT_ASSERT_EQUAL(2, _cv_image.dims);
+        CPPUNIT_ASSERT_EQUAL(_w, static_cast<std::size_t>(_cv_image.size[1]));
+        CPPUNIT_ASSERT_EQUAL(1, _cv_image.size[0]);
 
-        for(std::size_t i = 0 ; i < static_cast<std::size_t>(_cvImage.size[1]) ; ++i)
+        for(std::size_t i = 0 ; i < static_cast<std::size_t>(_cv_image.size[1]) ; ++i)
         {
-            for(std::uint8_t c = 0 ; c < _numChannels ; ++c)
+            for(std::uint8_t c = 0 ; c < _num_channels ; ++c)
             {
-                const auto index = c + i * _numChannels;
-                CPPUNIT_ASSERT_EQUAL(imageBuffer[index], channels[c].at<T>(static_cast<int>(i)));
+                const auto index = c + i * _num_channels;
+                CPPUNIT_ASSERT_EQUAL(image_buffer[index], channels[c].at<T>(static_cast<int>(i)));
             }
         }
     }
@@ -179,53 +179,53 @@ static void compareImages(
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testMoveToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+static void test_move_to_cv(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
 {
-    const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    data::image::sptr image          = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const std::vector<T> image_buffer = gen_image_buffer<T>(_w, _h, _d, _num_channels);
+    data::image::sptr image           = gen_image<T>(image_buffer, _w, _h, _d, _num_channels);
 
-    cv::Mat cvImage = io::opencv::image::moveToCv(image);
+    cv::Mat cv_image = io::opencv::image::move_to_cv(image);
 
     // Since we share the same buffer, compare the pointers
-    const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(image->buffer(), static_cast<void*>(cvImage.data));
+    const auto dump_lock = image->dump_lock();
+    CPPUNIT_ASSERT_EQUAL(image->buffer(), static_cast<void*>(cv_image.data));
 
-    compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
+    compare_images<T>(cv_image, image, _w, _h, _d, _num_channels);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyFromCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+static void test_copy_from_cv(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
 {
-    const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const std::vector<T> image_buffer = gen_image_buffer<T>(_w, _h, _d, _num_channels);
+    const cv::Mat cv_image            = gen_cv_image<T>(image_buffer, _w, _h, _d, _num_channels);
 
     data::image::sptr image = std::make_shared<data::image>();
-    io::opencv::image::copyFromCv(*image.get(), cvImage);
+    io::opencv::image::copy_from_cv(*image.get(), cv_image);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cvImage.data));
+    const auto dump_lock = image->dump_lock();
+    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cv_image.data));
 
-    compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
+    compare_images<T>(cv_image, image, _w, _h, _d, _num_channels);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-static void testCopyToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _numChannels)
+static void test_copy_to_cv(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
 {
-    const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    data::image::csptr image         = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const std::vector<T> image_buffer = gen_image_buffer<T>(_w, _h, _d, _num_channels);
+    data::image::csptr image          = gen_image<T>(image_buffer, _w, _h, _d, _num_channels);
 
-    cv::Mat cvImage = io::opencv::image::copyToCv(image);
+    cv::Mat cv_image = io::opencv::image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
-    const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cvImage.data));
+    const auto dump_lock = image->dump_lock();
+    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cv_image.data));
 
-    compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
+    compare_images<T>(cv_image, image, _w, _h, _d, _num_channels);
 }
 
 //------------------------------------------------------------------------------
@@ -242,124 +242,124 @@ void image_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void image_test::moveToCv()
+void image_test::move_to_cv()
 {
-    testMoveToCV<std::uint8_t>(10, 2, 30, 1);
-    testMoveToCV<std::uint8_t>(1, 20, 5, 2);
-    testMoveToCV<std::uint8_t>(6, 12, 0, 3);
-    testMoveToCV<std::uint8_t>(10, 7, 30, 4);
+    test_move_to_cv<std::uint8_t>(10, 2, 30, 1);
+    test_move_to_cv<std::uint8_t>(1, 20, 5, 2);
+    test_move_to_cv<std::uint8_t>(6, 12, 0, 3);
+    test_move_to_cv<std::uint8_t>(10, 7, 30, 4);
 
-    testMoveToCV<std::int8_t>(10, 0, 0, 1);
-    testMoveToCV<std::int8_t>(10, 20, 0, 2);
-    testMoveToCV<std::int8_t>(23, 20, 30, 3);
-    testMoveToCV<std::int8_t>(76, 2, 0, 4);
+    test_move_to_cv<std::int8_t>(10, 0, 0, 1);
+    test_move_to_cv<std::int8_t>(10, 20, 0, 2);
+    test_move_to_cv<std::int8_t>(23, 20, 30, 3);
+    test_move_to_cv<std::int8_t>(76, 2, 0, 4);
 
-    testMoveToCV<std::uint16_t>(10, 2, 30, 1);
-    testMoveToCV<std::uint16_t>(10, 20, 5, 2);
-    testMoveToCV<std::uint16_t>(6, 20, 0, 3);
-    testMoveToCV<std::uint16_t>(10, 7, 30, 4);
+    test_move_to_cv<std::uint16_t>(10, 2, 30, 1);
+    test_move_to_cv<std::uint16_t>(10, 20, 5, 2);
+    test_move_to_cv<std::uint16_t>(6, 20, 0, 3);
+    test_move_to_cv<std::uint16_t>(10, 7, 30, 4);
 
-    testMoveToCV<std::int16_t>(10, 0, 0, 1);
-    testMoveToCV<std::int16_t>(10, 20, 0, 2);
-    testMoveToCV<std::int16_t>(23, 20, 30, 3);
-    testMoveToCV<std::int16_t>(76, 2, 1, 4);
+    test_move_to_cv<std::int16_t>(10, 0, 0, 1);
+    test_move_to_cv<std::int16_t>(10, 20, 0, 2);
+    test_move_to_cv<std::int16_t>(23, 20, 30, 3);
+    test_move_to_cv<std::int16_t>(76, 2, 1, 4);
 
-    testMoveToCV<std::int32_t>(10, 32, 0, 1);
-    testMoveToCV<std::int32_t>(10, 20, 3, 2);
-    testMoveToCV<std::int32_t>(23, 20, 0, 3);
-    testMoveToCV<std::int32_t>(76, 2, 1, 4);
+    test_move_to_cv<std::int32_t>(10, 32, 0, 1);
+    test_move_to_cv<std::int32_t>(10, 20, 3, 2);
+    test_move_to_cv<std::int32_t>(23, 20, 0, 3);
+    test_move_to_cv<std::int32_t>(76, 2, 1, 4);
 
-    testMoveToCV<float>(10, 32, 0, 1);
-    testMoveToCV<float>(10, 20, 3, 2);
-    testMoveToCV<float>(90, 20, 1, 3);
-    testMoveToCV<float>(76, 2, 4, 4);
+    test_move_to_cv<float>(10, 32, 0, 1);
+    test_move_to_cv<float>(10, 20, 3, 2);
+    test_move_to_cv<float>(90, 20, 1, 3);
+    test_move_to_cv<float>(76, 2, 4, 4);
 
-    testMoveToCV<double>(12, 32, 0, 1);
-    testMoveToCV<double>(10, 1, 3, 2);
-    testMoveToCV<double>(23, 8, 0, 3);
-    testMoveToCV<double>(76, 2, 4, 4);
+    test_move_to_cv<double>(12, 32, 0, 1);
+    test_move_to_cv<double>(10, 1, 3, 2);
+    test_move_to_cv<double>(23, 8, 0, 3);
+    test_move_to_cv<double>(76, 2, 4, 4);
 }
 
 //------------------------------------------------------------------------------
 
-void image_test::copyFromCv()
+void image_test::copy_from_cv()
 {
-    testCopyFromCV<std::int16_t>(10, 0, 0, 1);
-    testCopyFromCV<std::uint8_t>(10, 2, 30, 1);
-    testCopyFromCV<std::uint8_t>(1, 20, 5, 2);
-    testCopyFromCV<std::uint8_t>(6, 12, 0, 3);
-    testCopyFromCV<std::uint8_t>(10, 7, 30, 4);
+    test_copy_from_cv<std::int16_t>(10, 0, 0, 1);
+    test_copy_from_cv<std::uint8_t>(10, 2, 30, 1);
+    test_copy_from_cv<std::uint8_t>(1, 20, 5, 2);
+    test_copy_from_cv<std::uint8_t>(6, 12, 0, 3);
+    test_copy_from_cv<std::uint8_t>(10, 7, 30, 4);
 
-    testCopyFromCV<std::int8_t>(10, 0, 0, 1);
-    testCopyFromCV<std::int8_t>(10, 20, 0, 2);
-    testCopyFromCV<std::int8_t>(23, 20, 30, 3);
-    testCopyFromCV<std::int8_t>(76, 2, 0, 4);
+    test_copy_from_cv<std::int8_t>(10, 0, 0, 1);
+    test_copy_from_cv<std::int8_t>(10, 20, 0, 2);
+    test_copy_from_cv<std::int8_t>(23, 20, 30, 3);
+    test_copy_from_cv<std::int8_t>(76, 2, 0, 4);
 
-    testCopyFromCV<std::uint16_t>(10, 1, 1, 1);
-    testCopyFromCV<std::uint16_t>(10, 2, 30, 1);
-    testCopyFromCV<std::uint16_t>(10, 20, 5, 2);
-    testCopyFromCV<std::uint16_t>(6, 20, 0, 3);
-    testCopyFromCV<std::uint16_t>(10, 7, 30, 4);
+    test_copy_from_cv<std::uint16_t>(10, 1, 1, 1);
+    test_copy_from_cv<std::uint16_t>(10, 2, 30, 1);
+    test_copy_from_cv<std::uint16_t>(10, 20, 5, 2);
+    test_copy_from_cv<std::uint16_t>(6, 20, 0, 3);
+    test_copy_from_cv<std::uint16_t>(10, 7, 30, 4);
 
-    testCopyFromCV<std::int16_t>(10, 0, 0, 1);
-    testCopyFromCV<std::int16_t>(10, 20, 0, 2);
-    testCopyFromCV<std::int16_t>(23, 20, 30, 3);
-    testCopyFromCV<std::int16_t>(76, 2, 0, 4);
+    test_copy_from_cv<std::int16_t>(10, 0, 0, 1);
+    test_copy_from_cv<std::int16_t>(10, 20, 0, 2);
+    test_copy_from_cv<std::int16_t>(23, 20, 30, 3);
+    test_copy_from_cv<std::int16_t>(76, 2, 0, 4);
 
-    testCopyFromCV<std::int32_t>(10, 32, 0, 1);
-    testCopyFromCV<std::int32_t>(10, 20, 3, 2);
-    testCopyFromCV<std::int32_t>(23, 20, 0, 3);
-    testCopyFromCV<std::int32_t>(76, 2, 4, 4);
+    test_copy_from_cv<std::int32_t>(10, 32, 0, 1);
+    test_copy_from_cv<std::int32_t>(10, 20, 3, 2);
+    test_copy_from_cv<std::int32_t>(23, 20, 0, 3);
+    test_copy_from_cv<std::int32_t>(76, 2, 4, 4);
 
-    testCopyFromCV<float>(10, 32, 0, 1);
-    testCopyFromCV<float>(10, 20, 3, 2);
-    testCopyFromCV<float>(90, 20, 1, 3);
-    testCopyFromCV<float>(76, 2, 4, 4);
+    test_copy_from_cv<float>(10, 32, 0, 1);
+    test_copy_from_cv<float>(10, 20, 3, 2);
+    test_copy_from_cv<float>(90, 20, 1, 3);
+    test_copy_from_cv<float>(76, 2, 4, 4);
 
-    testCopyFromCV<double>(12, 32, 0, 1);
-    testCopyFromCV<double>(10, 1, 3, 2);
-    testCopyFromCV<double>(23, 8, 0, 3);
-    testCopyFromCV<double>(76, 2, 4, 4);
+    test_copy_from_cv<double>(12, 32, 0, 1);
+    test_copy_from_cv<double>(10, 1, 3, 2);
+    test_copy_from_cv<double>(23, 8, 0, 3);
+    test_copy_from_cv<double>(76, 2, 4, 4);
 }
 
 //------------------------------------------------------------------------------
 
 void image_test::copyToCv()
 {
-    testCopyToCV<std::uint8_t>(10, 2, 30, 1);
-    testCopyToCV<std::uint8_t>(1, 20, 5, 2);
-    testCopyToCV<std::uint8_t>(6, 12, 0, 3);
-    testCopyToCV<std::uint8_t>(10, 7, 30, 4);
+    test_copy_to_cv<std::uint8_t>(10, 2, 30, 1);
+    test_copy_to_cv<std::uint8_t>(1, 20, 5, 2);
+    test_copy_to_cv<std::uint8_t>(6, 12, 0, 3);
+    test_copy_to_cv<std::uint8_t>(10, 7, 30, 4);
 
-    testCopyToCV<std::int8_t>(10, 0, 0, 1);
-    testCopyToCV<std::int8_t>(10, 20, 0, 2);
-    testCopyToCV<std::int8_t>(23, 20, 30, 3);
-    testCopyToCV<std::int8_t>(76, 2, 0, 4);
+    test_copy_to_cv<std::int8_t>(10, 0, 0, 1);
+    test_copy_to_cv<std::int8_t>(10, 20, 0, 2);
+    test_copy_to_cv<std::int8_t>(23, 20, 30, 3);
+    test_copy_to_cv<std::int8_t>(76, 2, 0, 4);
 
-    testCopyToCV<std::uint16_t>(10, 2, 30, 1);
-    testCopyToCV<std::uint16_t>(10, 20, 5, 2);
-    testCopyToCV<std::uint16_t>(6, 20, 0, 3);
-    testCopyToCV<std::uint16_t>(10, 7, 30, 4);
+    test_copy_to_cv<std::uint16_t>(10, 2, 30, 1);
+    test_copy_to_cv<std::uint16_t>(10, 20, 5, 2);
+    test_copy_to_cv<std::uint16_t>(6, 20, 0, 3);
+    test_copy_to_cv<std::uint16_t>(10, 7, 30, 4);
 
-    testCopyToCV<std::int16_t>(10, 0, 0, 1);
-    testCopyToCV<std::int16_t>(10, 20, 0, 2);
-    testCopyToCV<std::int16_t>(23, 20, 30, 3);
-    testCopyToCV<std::int16_t>(76, 2, 0, 4);
+    test_copy_to_cv<std::int16_t>(10, 0, 0, 1);
+    test_copy_to_cv<std::int16_t>(10, 20, 0, 2);
+    test_copy_to_cv<std::int16_t>(23, 20, 30, 3);
+    test_copy_to_cv<std::int16_t>(76, 2, 0, 4);
 
-    testCopyToCV<std::int32_t>(10, 32, 0, 1);
-    testCopyToCV<std::int32_t>(10, 20, 3, 2);
-    testCopyToCV<std::int32_t>(23, 20, 0, 3);
-    testCopyToCV<std::int32_t>(76, 2, 4, 4);
+    test_copy_to_cv<std::int32_t>(10, 32, 0, 1);
+    test_copy_to_cv<std::int32_t>(10, 20, 3, 2);
+    test_copy_to_cv<std::int32_t>(23, 20, 0, 3);
+    test_copy_to_cv<std::int32_t>(76, 2, 4, 4);
 
-    testCopyToCV<float>(10, 32, 0, 1);
-    testCopyToCV<float>(10, 20, 3, 2);
-    testCopyToCV<float>(90, 20, 1, 3);
-    testCopyToCV<float>(76, 2, 4, 4);
+    test_copy_to_cv<float>(10, 32, 0, 1);
+    test_copy_to_cv<float>(10, 20, 3, 2);
+    test_copy_to_cv<float>(90, 20, 1, 3);
+    test_copy_to_cv<float>(76, 2, 4, 4);
 
-    testCopyToCV<double>(12, 32, 0, 1);
-    testCopyToCV<double>(10, 1, 3, 2);
-    testCopyToCV<double>(23, 8, 0, 3);
-    testCopyToCV<double>(76, 2, 4, 4);
+    test_copy_to_cv<double>(12, 32, 0, 1);
+    test_copy_to_cv<double>(10, 1, 3, 2);
+    test_copy_to_cv<double>(23, 8, 0, 3);
+    test_copy_to_cv<double>(76, 2, 4, 4);
 }
 
 //------------------------------------------------------------------------------

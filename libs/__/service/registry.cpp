@@ -65,14 +65,14 @@ public:
      *
      * @param service Service to add to the OSR
      */
-    SERVICE_API void registerService(service::base::sptr service);
+    SERVICE_API void registerService(service::base::sptr _service);
 
     /**
      * @brief Remove the service (service) from the m_container
      *
      * @param service Service whose key should be removed
      */
-    SERVICE_API void unregisterService(service::base::sptr service);
+    SERVICE_API void unregisterService(service::base::sptr _service);
 
     /**
      * @name Some useful getters
@@ -81,19 +81,19 @@ public:
     //@{
 
     /// @brief Returns all services
-    const service_vector_t& getServices() const;
+    const service_vector_t& get_services() const;
     /**
      * @brief Return a container with all services of type SERVICE registered in m_container
      * @note Services may be associated to different object
      */
     template<class SERVICE>
-    std::set<SPTR(SERVICE)> getServices() const;
+    std::set<SPTR(SERVICE)> get_services() const;
 
     /**
      * @brief Return registered services matching serviceType
-     * @note Invoke getServices( data::object::sptr , const std::string & ) for each registered object
+     * @note Invoke get_services( data::object::sptr , const std::string & ) for each registered object
      */
-    SERVICE_API service_vector_t getServices(const std::string& serviceType) const;
+    SERVICE_API service_vector_t get_services(const std::string& _service_type) const;
 
     //@}
 
@@ -110,7 +110,7 @@ private:
 std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
-    data::object::csptr previousObj;
+    data::object::csptr previous_obj;
     core::mt::read_lock lock(m_containerMutex);
 
     for(const auto& service : m_services)
@@ -124,39 +124,39 @@ std::string ObjectService::getRegistryInformation() const
 
 //------------------------------------------------------------------------------
 
-void ObjectService::registerService(service::base::sptr service)
+void ObjectService::registerService(service::base::sptr _service)
 {
-    core::mt::write_lock writeLock(m_containerMutex);
-    m_services.insert(service);
+    core::mt::write_lock write_lock(m_containerMutex);
+    m_services.insert(_service);
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectService::unregisterService(service::base::sptr service)
+void ObjectService::unregisterService(service::base::sptr _service)
 {
-    core::mt::write_lock writeLock(m_containerMutex);
+    core::mt::write_lock write_lock(m_containerMutex);
 
     SIGHT_ASSERT(
-        "The service ( " + service->get_id() + " ) must be stopped before being unregistered.",
-        service->stopped()
+        "The service ( " + _service->get_id() + " ) must be stopped before being unregistered.",
+        _service->stopped()
     );
 
-    auto it = m_services.find(service);
-    SIGHT_THROW_IF("service '" + service->get_id() + "' is not found in the OSR", it == m_services.end());
+    auto it = m_services.find(_service);
+    SIGHT_THROW_IF("service '" + _service->get_id() + "' is not found in the OSR", it == m_services.end());
     m_services.erase(it);
 }
 
 //------------------------------------------------------------------------------
 
-ObjectService::service_vector_t ObjectService::getServices(const std::string& _serviceType) const
+ObjectService::service_vector_t ObjectService::get_services(const std::string& _service_type) const
 {
-    const std::string serviceType = core::runtime::filter_id(_serviceType);
+    const std::string service_type = core::runtime::filter_id(_service_type);
     service_vector_t services;
     core::mt::read_lock lock(m_containerMutex);
 
     for(const auto& srv : m_services)
     {
-        if(srv->is_a(serviceType))
+        if(srv->is_a(service_type))
         {
             services.insert(srv);
         }
@@ -167,7 +167,7 @@ ObjectService::service_vector_t ObjectService::getServices(const std::string& _s
 
 //------------------------------------------------------------------------------
 
-const service::service_vector_t& ObjectService::getServices() const
+const service::service_vector_t& ObjectService::get_services() const
 {
     return m_services;
 }
@@ -181,37 +181,37 @@ service::ObjectService::sptr get()
 
 //------------------------------------------------------------------------------
 
-std::string getRegistryInformation()
+std::string get_registry_information()
 {
     return service::get()->getRegistryInformation();
 }
 
 //------------------------------------------------------------------------------
 
-const service::service_vector_t& getServices()
+const service::service_vector_t& get_services()
 {
-    return service::get()->getServices();
+    return service::get()->get_services();
 }
 
 //------------------------------------------------------------------------------
 
-service::ObjectService::service_vector_t getServices(const std::string& serviceType)
+service::ObjectService::service_vector_t get_services(const std::string& _service_type)
 {
-    return service::get()->getServices(serviceType);
+    return service::get()->get_services(_service_type);
 }
 
 //------------------------------------------------------------------------------
 
-void registerService(service::base::sptr service)
+void register_service(service::base::sptr _service)
 {
-    service::get()->registerService(service);
+    service::get()->registerService(_service);
 }
 
 //------------------------------------------------------------------------------
 
-void unregisterService(service::base::sptr service)
+void unregister_service(service::base::sptr _service)
 {
-    service::get()->unregisterService(service);
+    service::get()->unregisterService(_service);
 }
 
 //------------------------------------------------------------------------------

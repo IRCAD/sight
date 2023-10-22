@@ -39,18 +39,18 @@ constexpr int CELLDATA_REALLOC_STEP = 1000;
 
 SIGHT_REGISTER_DATA(sight::data::mesh);
 
-static constexpr auto cellSizeToType = [](std::size_t size)
+static constexpr auto cellSizeToType = [](std::size_t _size)
                                        {
-                                           static constexpr std::array<mesh::CellType, 5> s_cellSizeToType =
+                                           static constexpr std::array<mesh::cell_type_t, 5> s_cellSizeToType =
                                            {
-                                               mesh::CellType::_SIZE, // 0 point, unused
-                                               mesh::CellType::POINT,
-                                               mesh::CellType::LINE,
-                                               mesh::CellType::TRIANGLE,
-                                               mesh::CellType::QUAD // Assume 4 points means a quad. Pushing tetras
-                                                                    // would require a reserve() first
+                                               mesh::cell_type_t::_SIZE, // 0 point, unused
+                                               mesh::cell_type_t::POINT,
+                                               mesh::cell_type_t::LINE,
+                                               mesh::cell_type_t::TRIANGLE,
+                                               mesh::cell_type_t::QUAD // Assume 4 points means a quad. Pushing tetras
+                                                                       // would require a reserve() first
                                            };
-                                           return s_cellSizeToType[size];
+                                           return s_cellSizeToType[_size];
                                        };
 
 //------------------------------------------------------------------------------
@@ -75,19 +75,19 @@ mesh::mesh()
     new_signal<signal_t>(POINT_TEX_COORDS_MODIFIED_SIG);
     new_signal<signal_t>(CELL_TEX_COORDS_MODIFIED_SIG);
 
-    std::ranges::for_each(m_points, [](auto& array){array = std::make_shared<data::array>();});
-    std::ranges::for_each(m_cells, [](auto& array){array = std::make_shared<data::array>();});
+    std::ranges::for_each(m_points, [](auto& _array){_array = std::make_shared<data::array>();});
+    std::ranges::for_each(m_cells, [](auto& _array){_array = std::make_shared<data::array>();});
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::shallow_copy(const object::csptr& source)
+void mesh::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const mesh>(source);
+    const auto& other = std::dynamic_pointer_cast<const mesh>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -106,13 +106,13 @@ void mesh::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void mesh::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void mesh::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const mesh>(source);
+    const auto& other = std::dynamic_pointer_cast<const mesh>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !other
@@ -125,82 +125,82 @@ void mesh::deep_copy(const object::csptr& source, const std::unique_ptr<deep_cop
 
     for(std::size_t i = 0 ; i < static_cast<std::size_t>(PointAttribute::_SIZE) ; ++i)
     {
-        m_points[i] = data::object::copy(other->m_points[i], cache);
+        m_points[i] = data::object::copy(other->m_points[i], _cache);
     }
 
     for(std::size_t i = 0 ; i < static_cast<std::size_t>(CellAttribute::_SIZE) ; ++i)
     {
-        m_cells[i] = data::object::copy(other->m_cells[i], cache);
+        m_cells[i] = data::object::copy(other->m_cells[i], _cache);
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t mesh::reserve(mesh::size_t nbPts, mesh::size_t nbCells, CellType cellType, Attributes arrayMask)
+std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_type_t _cell_type, Attributes _array_mask)
 {
-    m_cellType = cellType;
+    m_cellType = _cell_type;
 
-    SIGHT_THROW_EXCEPTION_IF(data::exception("Cannot not allocate empty size"), nbPts == 0 || nbCells == 0);
+    SIGHT_THROW_EXCEPTION_IF(data::exception("Cannot not allocate empty size"), _nb_pts == 0 || _nb_cells == 0);
 
     m_points[static_cast<std::size_t>(PointAttribute::POSITION)]->resize(
-        {3, nbPts},
+        {3, _nb_pts},
         core::type::get<position_t>()
     );
 
-    m_attributes = m_attributes | arrayMask;
+    m_attributes = m_attributes | _array_mask;
 
     // Test attributes mask, if present resize corresponding array, if not check if array needs to be cleared.
-    if(static_cast<int>(arrayMask & Attributes::POINT_COLORS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::POINT_COLORS) != 0)
     {
         m_points[static_cast<std::size_t>(PointAttribute::COLORS)]->resize(
-            {4, nbPts},
+            {4, _nb_pts},
             core::type(core::type::UINT8)
         );
     }
 
-    if(static_cast<int>(arrayMask & Attributes::POINT_NORMALS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::POINT_NORMALS) != 0)
     {
         m_points[static_cast<std::size_t>(PointAttribute::NORMALS)]->resize(
-            {3, nbPts},
+            {3, _nb_pts},
             core::type(core::type::FLOAT)
         );
     }
 
-    if(static_cast<int>(arrayMask & Attributes::POINT_TEX_COORDS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::POINT_TEX_COORDS) != 0)
     {
         m_points[static_cast<std::size_t>(PointAttribute::TEX_COORDS)]->resize(
-            {2, nbPts},
+            {2, _nb_pts},
             core::type(core::type::FLOAT)
         );
     }
 
     m_cells[static_cast<std::size_t>(CellAttribute::INDEX)]->resize(
-        {getCellSize(), nbCells},
+        {getCellSize(), _nb_cells},
         core::type::get<cell_t>()
     );
 
-    if(static_cast<int>(arrayMask & Attributes::CELL_COLORS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::CELL_COLORS) != 0)
     {
         m_cells[static_cast<std::size_t>(CellAttribute::COLORS)]->resize(
-            {4, nbCells},
+            {4, _nb_cells},
             core::type(core::type::UINT8)
         );
     }
 
-    if(static_cast<int>(arrayMask & Attributes::CELL_NORMALS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::CELL_NORMALS) != 0)
     {
         m_cells[static_cast<std::size_t>(CellAttribute::NORMALS)]->resize(
-            {3, nbCells},
+            {3, _nb_cells},
             core::type(core::type::FLOAT)
         );
     }
 
-    if(static_cast<int>(arrayMask & Attributes::CELL_TEX_COORDS) != 0)
+    if(static_cast<int>(_array_mask & Attributes::CELL_TEX_COORDS) != 0)
     {
         m_cells[static_cast<std::size_t>(CellAttribute::TEX_COORDS)]->resize(
-            {2, nbCells},
+            {2, _nb_cells},
             core::type(core::type::FLOAT)
         );
     }
@@ -209,13 +209,13 @@ std::size_t mesh::reserve(mesh::size_t nbPts, mesh::size_t nbCells, CellType cel
 }
 
 //------------------------------------------------------------------------------
-std::size_t mesh::resize(mesh::size_t nbPts, mesh::size_t nbCells, CellType cellType, Attributes arrayMask)
+std::size_t mesh::resize(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_type_t _cell_type, Attributes _array_mask)
 {
-    m_cellType = cellType;
+    m_cellType = _cell_type;
 
-    const auto size = this->reserve(nbPts, nbCells, cellType, arrayMask);
-    m_numPoints = nbPts;
-    m_numCells  = nbCells;
+    const auto size = this->reserve(_nb_pts, _nb_cells, _cell_type, _array_mask);
+    m_numPoints = _nb_pts;
+    m_numCells  = _nb_cells;
     return size;
 }
 
@@ -223,7 +223,7 @@ std::size_t mesh::resize(mesh::size_t nbPts, mesh::size_t nbCells, CellType cell
 
 bool mesh::shrinkToFit()
 {
-    const auto oldAllocatedSize = this->getAllocatedSizeInBytes();
+    const auto old_allocated_size = this->getAllocatedSizeInBytes();
 
     m_points[static_cast<std::size_t>(PointAttribute::POSITION)]->resize({3, m_numPoints});
     m_cells[static_cast<std::size_t>(CellAttribute::INDEX)]->resize({getCellSize(), m_numCells});
@@ -258,37 +258,37 @@ bool mesh::shrinkToFit()
         m_cells[static_cast<std::size_t>(CellAttribute::TEX_COORDS)]->resize({2, std::size_t(m_numCells)});
     }
 
-    const auto newAllocatedSize = this->getAllocatedSizeInBytes();
+    const auto new_allocated_size = this->getAllocatedSizeInBytes();
     SIGHT_ASSERT(
-        "Error adjusting memory : allocated size: " << newAllocatedSize
+        "Error adjusting memory : allocated size: " << new_allocated_size
         << " != data size : " << this->getDataSizeInBytes(),
-        newAllocatedSize == this->getDataSizeInBytes()
+        new_allocated_size == this->getDataSizeInBytes()
     );
-    return oldAllocatedSize != newAllocatedSize;
+    return old_allocated_size != new_allocated_size;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::truncate(mesh::size_t nbPts, mesh::size_t nbCells)
+void mesh::truncate(mesh::size_t _nb_pts, mesh::size_t _nb_cells)
 {
     SIGHT_THROW_IF(
         "Can not truncate with a number of points higher than the allocated size",
-        nbPts > m_points[0]->size().at(1)
+        _nb_pts > m_points[0]->size().at(1)
     );
     SIGHT_THROW_IF(
         "Can not truncate with a number of cells higher than the allocated size",
-        nbCells > m_cells[0]->size().at(1)
+        _nb_cells > m_cells[0]->size().at(1)
     );
-    m_numPoints = nbPts;
-    m_numCells  = nbCells;
+    m_numPoints = _nb_pts;
+    m_numCells  = _nb_cells;
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::clear()
 {
-    std::ranges::for_each(m_points, [](auto& array){array->clear();});
-    std::ranges::for_each(m_cells, [](auto& array){array->clear();});
+    std::ranges::for_each(m_points, [](auto& _array){_array->clear();});
+    std::ranges::for_each(m_cells, [](auto& _array){_array->clear();});
 
     // Reset nbPoints, nbCells & cellsDataSize.
     m_numPoints = 0;
@@ -305,20 +305,20 @@ std::size_t mesh::getDataSizeInBytes() const
 
     std::ranges::for_each(
         m_points,
-        [&](auto& array)
+        [&](auto& _array)
         {
-            const auto numComponents = array->empty() ? 1 : array->size()[0];
-            size                    += array->getElementSizeInBytes() * numComponents
-                                       * static_cast<std::size_t>(m_numPoints);
+            const auto num_components = _array->empty() ? 1 : _array->size()[0];
+            size                     += _array->getElementSizeInBytes() * num_components
+                                        * static_cast<std::size_t>(m_numPoints);
         });
 
     std::ranges::for_each(
         m_cells,
-        [&](auto& array)
+        [&](auto& _array)
         {
-            const auto numComponents = array->empty() ? 1 : array->size()[0];
-            size                    += array->getElementSizeInBytes() * numComponents
-                                       * static_cast<std::size_t>(m_numCells);
+            const auto num_components = _array->empty() ? 1 : _array->size()[0];
+            size                     += _array->getElementSizeInBytes() * num_components
+                                        * static_cast<std::size_t>(m_numCells);
         });
 
     return size;
@@ -330,28 +330,28 @@ std::size_t mesh::getAllocatedSizeInBytes() const
 {
     std::size_t size = 0;
 
-    std::ranges::for_each(m_points, [&](auto& array){size += array->getSizeInBytes();});
-    std::ranges::for_each(m_cells, [&](auto& array){size += array->getSizeInBytes();});
+    std::ranges::for_each(m_points, [&](auto& _array){size += _array->getSizeInBytes();});
+    std::ranges::for_each(m_cells, [&](auto& _array){size += _array->getSizeInBytes();});
 
     return size;
 }
 
 //------------------------------------------------------------------------------
 
-mesh::point_t mesh::pushPoint(const std::array<position_t, 3>& p)
+mesh::point_t mesh::pushPoint(const std::array<position_t, 3>& _p)
 {
-    const auto nbPoints = m_numPoints;
+    const auto nb_points = m_numPoints;
 
-    auto positions          = m_points[static_cast<std::size_t>(PointAttribute::POSITION)];
-    const auto allocatedPts = positions->empty() ? 0 : positions->size().at(1);
+    auto positions           = m_points[static_cast<std::size_t>(PointAttribute::POSITION)];
+    const auto allocated_pts = positions->empty() ? 0 : positions->size().at(1);
 
-    if(allocatedPts <= nbPoints)
+    if(allocated_pts <= nb_points)
     {
-        positions->resize({3, allocatedPts + POINT_REALLOC_STEP}, core::type::get<position_t>(), true);
+        positions->resize({3, allocated_pts + POINT_REALLOC_STEP}, core::type::get<position_t>(), true);
         if(this->has<data::mesh::Attributes::POINT_COLORS>())
         {
             m_points[static_cast<std::size_t>(PointAttribute::COLORS)]->resize(
-                {4, allocatedPts + POINT_REALLOC_STEP},
+                {4, allocated_pts + POINT_REALLOC_STEP},
                 core::type::get<color_t>(),
                 true
             );
@@ -360,7 +360,7 @@ mesh::point_t mesh::pushPoint(const std::array<position_t, 3>& p)
         if(this->has<data::mesh::Attributes::POINT_NORMALS>())
         {
             m_points[static_cast<std::size_t>(PointAttribute::NORMALS)]->resize(
-                {3, allocatedPts + POINT_REALLOC_STEP},
+                {3, allocated_pts + POINT_REALLOC_STEP},
                 core::type::get<normal_t>(),
                 true
             );
@@ -369,92 +369,95 @@ mesh::point_t mesh::pushPoint(const std::array<position_t, 3>& p)
         if(this->has<data::mesh::Attributes::POINT_TEX_COORDS>())
         {
             m_points[static_cast<std::size_t>(PointAttribute::TEX_COORDS)]->resize(
-                {2, allocatedPts + POINT_REALLOC_STEP},
+                {2, allocated_pts + POINT_REALLOC_STEP},
                 core::type::get<texcoord_t>(),
                 true
             );
         }
     }
 
-    this->setPoint(nbPoints, p);
+    this->setPoint(nb_points, _p);
 
     ++m_numPoints;
-    return nbPoints;
+    return nb_points;
 }
 
 //------------------------------------------------------------------------------
 
-mesh::point_t mesh::pushPoint(position_t x, position_t y, position_t z)
+mesh::point_t mesh::pushPoint(position_t _x, position_t _y, position_t _z)
 {
-    return this->pushPoint({x, y, z});
+    return this->pushPoint({_x, _y, _z});
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(point_t idPt)
+mesh::cell_t mesh::pushCell(point_t _id_pt)
 {
-    std::vector pointIds = {idPt};
-    return this->pushCell(pointIds);
+    std::vector point_ids = {_id_pt};
+    return this->pushCell(point_ids);
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(point_t idP1, point_t idP2)
+mesh::cell_t mesh::pushCell(point_t _id_p1, point_t _id_p2)
 {
-    return this->pushCell({idP1, idP2});
+    return this->pushCell({_id_p1, _id_p2});
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(point_t idP1, point_t idP2, point_t idP3)
+mesh::cell_t mesh::pushCell(point_t _id_p1, point_t _id_p2, point_t _id_p3)
 {
-    return this->pushCell({idP1, idP2, idP3});
+    return this->pushCell({_id_p1, _id_p2, _id_p3});
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(point_t idP1, point_t idP2, point_t idP3, point_t idP4)
+mesh::cell_t mesh::pushCell(point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4)
 {
-    return this->pushCell({idP1, idP2, idP3, idP4});
+    return this->pushCell({_id_p1, _id_p2, _id_p3, _id_p4});
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(const std::vector<point_t> pointIds)
+mesh::cell_t mesh::pushCell(const std::vector<point_t> _point_ids)
 {
-    return this->pushCell(pointIds.data(), static_cast<point_t>(pointIds.size()));
+    return this->pushCell(_point_ids.data(), static_cast<point_t>(_point_ids.size()));
 }
 
 //------------------------------------------------------------------------------
 
-mesh::cell_t mesh::pushCell(const point_t* pointIds, std::size_t nbPoints)
+mesh::cell_t mesh::pushCell(const point_t* _point_ids, std::size_t _nb_points)
 {
-    m_cellType = (m_cellType == CellType::_SIZE) ? cellSizeToType(nbPoints) : m_cellType;
+    m_cellType = (m_cellType == cell_type_t::_SIZE) ? cellSizeToType(_nb_points) : m_cellType;
 
-    SIGHT_THROW_IF("Can not push a point cell before setting the cell type", m_cellType == CellType::_SIZE);
-    SIGHT_THROW_IF("Can not push a point cell with this cell type", m_cellType == CellType::POINT && nbPoints != 1);
-    SIGHT_THROW_IF("Can not push a line cell with this cell type", m_cellType == CellType::LINE && nbPoints != 2);
+    SIGHT_THROW_IF("Can not push a point cell before setting the cell type", m_cellType == cell_type_t::_SIZE);
+    SIGHT_THROW_IF(
+        "Can not push a point cell with this cell type",
+        m_cellType == cell_type_t::POINT && _nb_points != 1
+    );
+    SIGHT_THROW_IF("Can not push a line cell with this cell type", m_cellType == cell_type_t::LINE && _nb_points != 2);
     SIGHT_THROW_IF(
         "Can not push a triangle cell with this cell type",
-        m_cellType == CellType::TRIANGLE && nbPoints != 3
+        m_cellType == cell_type_t::TRIANGLE && _nb_points != 3
     );
     SIGHT_THROW_IF(
         "Can not push a quad or tetra cell with this cell type",
-        (m_cellType == CellType::QUAD || m_cellType == CellType::TETRA) && nbPoints != 4
+        (m_cellType == cell_type_t::QUAD || m_cellType == cell_type_t::TETRA) && _nb_points != 4
     );
 
-    const auto nbCells = m_numCells;
+    const auto nb_cells = m_numCells;
 
-    auto& cells                  = m_cells[static_cast<std::size_t>(CellAttribute::INDEX)];
-    const auto allocatedCellData = cells->empty() ? 0 : cells->size().at(1);
-    const auto cellSize          = getCellSize();
-    if(allocatedCellData <= m_numCells)
+    auto& cells                    = m_cells[static_cast<std::size_t>(CellAttribute::INDEX)];
+    const auto allocated_cell_data = cells->empty() ? 0 : cells->size().at(1);
+    const auto cell_size           = getCellSize();
+    if(allocated_cell_data <= m_numCells)
     {
-        cells->resize({cellSize, allocatedCellData + CELLDATA_REALLOC_STEP}, core::type::get<cell_t>());
+        cells->resize({cell_size, allocated_cell_data + CELLDATA_REALLOC_STEP}, core::type::get<cell_t>());
         if(this->has<data::mesh::Attributes::CELL_COLORS>())
         {
             m_cells[static_cast<std::size_t>(CellAttribute::COLORS)]->resize(
-                {4, allocatedCellData + CELLDATA_REALLOC_STEP},
+                {4, allocated_cell_data + CELLDATA_REALLOC_STEP},
                 core::type::get<color_t>(),
                 true
             );
@@ -463,7 +466,7 @@ mesh::cell_t mesh::pushCell(const point_t* pointIds, std::size_t nbPoints)
         if(this->has<data::mesh::Attributes::CELL_NORMALS>())
         {
             m_cells[static_cast<std::size_t>(CellAttribute::NORMALS)]->resize(
-                {3, allocatedCellData + CELLDATA_REALLOC_STEP},
+                {3, allocated_cell_data + CELLDATA_REALLOC_STEP},
                 core::type::get<normal_t>(),
                 true
             );
@@ -472,283 +475,286 @@ mesh::cell_t mesh::pushCell(const point_t* pointIds, std::size_t nbPoints)
         if(this->has<data::mesh::Attributes::CELL_TEX_COORDS>())
         {
             m_cells[static_cast<std::size_t>(CellAttribute::TEX_COORDS)]->resize(
-                {2, allocatedCellData + CELLDATA_REALLOC_STEP},
+                {2, allocated_cell_data + CELLDATA_REALLOC_STEP},
                 core::type::get<texcoord_t>(),
                 true
             );
         }
     }
 
-    for(std::size_t i = 0 ; i < nbPoints ; ++i)
+    for(std::size_t i = 0 ; i < _nb_points ; ++i)
     {
-        const point_t cellValue = pointIds[i];
-        cells->at<cell_t>(static_cast<std::size_t>(m_numCells) * cellSize + i) = cellValue;
+        const point_t cell_value = _point_ids[i];
+        cells->at<cell_t>(static_cast<std::size_t>(m_numCells) * cell_size + i) = cell_value;
     }
 
     ++m_numCells;
-    return nbCells;
+    return nb_cells;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setPoint(point_t id, const std::array<position_t, 3>& p)
+void mesh::setPoint(point_t _id, const std::array<position_t, 3>& _p)
 {
     auto& points = m_points[static_cast<std::size_t>(PointAttribute::POSITION)];
-    points->at<position_t>(3LL * id)     = p[0];
-    points->at<position_t>(3LL * id + 1) = p[1];
-    points->at<position_t>(3LL * id + 2) = p[2];
+    points->at<position_t>(3LL * _id)     = _p[0];
+    points->at<position_t>(3LL * _id + 1) = _p[1];
+    points->at<position_t>(3LL * _id + 2) = _p[2];
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setPoint(
-    point_t id,
-    data::mesh::position_t x,
-    data::mesh::position_t y,
-    data::mesh::position_t z
+    point_t _id,
+    data::mesh::position_t _x,
+    data::mesh::position_t _y,
+    data::mesh::position_t _z
 )
 {
-    this->setPoint(id, {x, y, z});
+    this->setPoint(_id, {_x, _y, _z});
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCell(cell_t id, point_t idPt)
+void mesh::setCell(cell_t _id, point_t _id_pt)
 {
-    std::vector pointIds = {idPt};
-    this->setCell(id, pointIds);
+    std::vector point_ids = {_id_pt};
+    this->setCell(_id, point_ids);
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCell(cell_t id, point_t idP1, point_t idP2)
+void mesh::setCell(cell_t _id, point_t _id_p1, point_t _id_p2)
 {
-    this->setCell(id, {idP1, idP2});
+    this->setCell(_id, {_id_p1, _id_p2});
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCell(cell_t id, point_t idP1, point_t idP2, point_t idP3)
+void mesh::setCell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3)
 {
-    this->setCell(id, {idP1, idP2, idP3});
+    this->setCell(_id, {_id_p1, _id_p2, _id_p3});
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setCell(
-    cell_t id,
-    point_t idP1,
-    point_t idP2,
-    point_t idP3,
-    point_t idP4
+    cell_t _id,
+    point_t _id_p1,
+    point_t _id_p2,
+    point_t _id_p3,
+    point_t _id_p4
 )
 {
-    this->setCell(id, {idP1, idP2, idP3, idP4});
+    this->setCell(_id, {_id_p1, _id_p2, _id_p3, _id_p4});
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCell(cell_t id, const std::vector<point_t>& pointIds)
+void mesh::setCell(cell_t _id, const std::vector<point_t>& _point_ids)
 {
-    this->setCell(id, pointIds.data(), static_cast<std::size_t>(pointIds.size()));
+    this->setCell(_id, _point_ids.data(), static_cast<std::size_t>(_point_ids.size()));
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCell(cell_t id, const point_t* pointIds, std::size_t nbPoints)
+void mesh::setCell(cell_t _id, const point_t* _point_ids, std::size_t _nb_points)
 {
-    SIGHT_THROW_IF("Can not push a point cell before setting the cell type", m_cellType == CellType::_SIZE);
-    SIGHT_THROW_IF("Can not push a point cell with this cell type", m_cellType == CellType::POINT && nbPoints != 1);
-    SIGHT_THROW_IF("Can not push a line cell with this cell type", m_cellType == CellType::LINE && nbPoints != 2);
+    SIGHT_THROW_IF("Can not push a point cell before setting the cell type", m_cellType == cell_type_t::_SIZE);
+    SIGHT_THROW_IF(
+        "Can not push a point cell with this cell type",
+        m_cellType == cell_type_t::POINT && _nb_points != 1
+    );
+    SIGHT_THROW_IF("Can not push a line cell with this cell type", m_cellType == cell_type_t::LINE && _nb_points != 2);
     SIGHT_THROW_IF(
         "Can not push a triangle cell with this cell type",
-        m_cellType == CellType::TRIANGLE && nbPoints != 3
+        m_cellType == cell_type_t::TRIANGLE && _nb_points != 3
     );
     SIGHT_THROW_IF(
         "Can not push a quad or tetra cell with this cell type",
-        (m_cellType == CellType::QUAD || m_cellType == CellType::TETRA) && nbPoints != 4
+        (m_cellType == cell_type_t::QUAD || m_cellType == cell_type_t::TETRA) && _nb_points != 4
     );
 
     auto& cells = m_cells[static_cast<std::size_t>(CellAttribute::INDEX)];
-    for(std::size_t i = 0 ; i < nbPoints ; ++i)
+    for(std::size_t i = 0 ; i < _nb_points ; ++i)
     {
-        const cell_t cellValue = pointIds[i];
-        cells->at<cell_t>(static_cast<std::size_t>(getCellSize()) * id + i) = cellValue;
+        const cell_t cell_value = _point_ids[i];
+        cells->at<cell_t>(static_cast<std::size_t>(getCellSize()) * _id + i) = cell_value;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setPointColor(point_t id, const std::array<data::mesh::color_t, 4>& c)
+void mesh::setPointColor(point_t _id, const std::array<data::mesh::color_t, 4>& _c)
 {
-    this->setPointColor(id, c[0], c[1], c[2], c[3]);
+    this->setPointColor(_id, _c[0], _c[1], _c[2], _c[3]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setPointColor(
-    point_t id,
-    data::mesh::color_t r,
-    data::mesh::color_t g,
-    data::mesh::color_t b,
-    data::mesh::color_t a
+    point_t _id,
+    data::mesh::color_t _r,
+    data::mesh::color_t _g,
+    data::mesh::color_t _b,
+    data::mesh::color_t _a
 )
 {
     auto& colors = m_points[static_cast<std::size_t>(PointAttribute::COLORS)];
-    colors->at<color_t>(4LL * id)     = r;
-    colors->at<color_t>(4LL * id + 1) = g;
-    colors->at<color_t>(4LL * id + 2) = b;
-    colors->at<color_t>(4LL * id + 3) = a;
+    colors->at<color_t>(4LL * _id)     = _r;
+    colors->at<color_t>(4LL * _id + 1) = _g;
+    colors->at<color_t>(4LL * _id + 2) = _b;
+    colors->at<color_t>(4LL * _id + 3) = _a;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCellColor(cell_t id, const std::array<data::mesh::color_t, 4>& c)
+void mesh::setCellColor(cell_t _id, const std::array<data::mesh::color_t, 4>& _c)
 {
-    this->setCellColor(id, c[0], c[1], c[2], c[3]);
+    this->setCellColor(_id, _c[0], _c[1], _c[2], _c[3]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setCellColor(
-    cell_t id,
-    data::mesh::color_t r,
-    data::mesh::color_t g,
-    data::mesh::color_t b,
-    data::mesh::color_t a
+    cell_t _id,
+    data::mesh::color_t _r,
+    data::mesh::color_t _g,
+    data::mesh::color_t _b,
+    data::mesh::color_t _a
 )
 {
     auto& colors = m_cells[static_cast<std::size_t>(CellAttribute::COLORS)];
-    colors->at<color_t>(4LL * id)     = r;
-    colors->at<color_t>(4LL * id + 1) = g;
-    colors->at<color_t>(4LL * id + 2) = b;
-    colors->at<color_t>(4LL * id + 3) = a;
+    colors->at<color_t>(4LL * _id)     = _r;
+    colors->at<color_t>(4LL * _id + 1) = _g;
+    colors->at<color_t>(4LL * _id + 2) = _b;
+    colors->at<color_t>(4LL * _id + 3) = _a;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setPointNormal(point_t id, const std::array<data::mesh::normal_t, 3>& n)
+void mesh::setPointNormal(point_t _id, const std::array<data::mesh::normal_t, 3>& _n)
 {
-    this->setPointNormal(id, n[0], n[1], n[2]);
+    this->setPointNormal(_id, _n[0], _n[1], _n[2]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setPointNormal(
-    point_t id,
-    data::mesh::normal_t nx,
-    data::mesh::normal_t ny,
-    data::mesh::normal_t nz
+    point_t _id,
+    data::mesh::normal_t _nx,
+    data::mesh::normal_t _ny,
+    data::mesh::normal_t _nz
 )
 {
     auto& normals = m_points[static_cast<std::size_t>(PointAttribute::NORMALS)];
-    normals->at<normal_t>(3LL * id)     = nx;
-    normals->at<normal_t>(3LL * id + 1) = ny;
-    normals->at<normal_t>(3LL * id + 2) = nz;
+    normals->at<normal_t>(3LL * _id)     = _nx;
+    normals->at<normal_t>(3LL * _id + 1) = _ny;
+    normals->at<normal_t>(3LL * _id + 2) = _nz;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCellNormal(cell_t id, const std::array<data::mesh::normal_t, 3>& n)
+void mesh::setCellNormal(cell_t _id, const std::array<data::mesh::normal_t, 3>& _n)
 {
-    this->setCellNormal(id, n[0], n[1], n[2]);
+    this->setCellNormal(_id, _n[0], _n[1], _n[2]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setCellNormal(
-    cell_t id,
-    data::mesh::normal_t nx,
-    data::mesh::normal_t ny,
-    data::mesh::normal_t nz
+    cell_t _id,
+    data::mesh::normal_t _nx,
+    data::mesh::normal_t _ny,
+    data::mesh::normal_t _nz
 )
 {
     auto& normals = m_cells[static_cast<std::size_t>(CellAttribute::NORMALS)];
-    normals->at<normal_t>(3LL * id)     = nx;
-    normals->at<normal_t>(3LL * id + 1) = ny;
-    normals->at<normal_t>(3LL * id + 2) = nz;
+    normals->at<normal_t>(3LL * _id)     = _nx;
+    normals->at<normal_t>(3LL * _id + 1) = _ny;
+    normals->at<normal_t>(3LL * _id + 2) = _nz;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setPointTexCoord(point_t id, const std::array<data::mesh::texcoord_t, 2>& t)
+void mesh::setPointTexCoord(point_t _id, const std::array<data::mesh::texcoord_t, 2>& _t)
 {
-    this->setPointTexCoord(id, t[0], t[1]);
+    this->setPointTexCoord(_id, _t[0], _t[1]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setPointTexCoord(
-    point_t id,
-    data::mesh::texcoord_t u,
-    data::mesh::texcoord_t v
+    point_t _id,
+    data::mesh::texcoord_t _u,
+    data::mesh::texcoord_t _v
 )
 {
-    auto& texCoords = m_points[static_cast<std::size_t>(PointAttribute::TEX_COORDS)];
-    texCoords->at<texcoord_t>(2LL * id)     = u;
-    texCoords->at<texcoord_t>(2LL * id + 1) = v;
+    auto& tex_coords = m_points[static_cast<std::size_t>(PointAttribute::TEX_COORDS)];
+    tex_coords->at<texcoord_t>(2LL * _id)     = _u;
+    tex_coords->at<texcoord_t>(2LL * _id + 1) = _v;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::setCellTexCoord(cell_t id, const std::array<data::mesh::texcoord_t, 2>& t)
+void mesh::setCellTexCoord(cell_t _id, const std::array<data::mesh::texcoord_t, 2>& _t)
 {
-    this->setCellTexCoord(id, t[0], t[1]);
+    this->setCellTexCoord(_id, _t[0], _t[1]);
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::setCellTexCoord(
-    cell_t id,
-    data::mesh::texcoord_t u,
-    data::mesh::texcoord_t v
+    cell_t _id,
+    data::mesh::texcoord_t _u,
+    data::mesh::texcoord_t _v
 )
 {
-    auto& texCoords = m_cells[static_cast<std::size_t>(CellAttribute::TEX_COORDS)];
-    texCoords->at<texcoord_t>(2LL * id)     = u;
-    texCoords->at<texcoord_t>(2LL * id + 1) = v;
+    auto& tex_coords = m_cells[static_cast<std::size_t>(CellAttribute::TEX_COORDS)];
+    tex_coords->at<texcoord_t>(2LL * _id)     = _u;
+    tex_coords->at<texcoord_t>(2LL * _id + 1) = _v;
 }
 
 //------------------------------------------------------------------------------
 
-void mesh::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const
+void mesh::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const
 {
     for(const auto& point : m_points)
     {
         const auto& point_locks = point->dump_lock();
-        locks.insert(locks.end(), point_locks.cbegin(), point_locks.cend());
+        _locks.insert(_locks.end(), point_locks.cbegin(), point_locks.cend());
     }
 
     for(const auto& cell : m_cells)
     {
         const auto& cell_locks = cell->dump_lock();
-        locks.insert(locks.end(), cell_locks.cbegin(), cell_locks.cend());
+        _locks.insert(_locks.end(), cell_locks.cbegin(), cell_locks.cend());
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool mesh::operator==(const mesh& other) const noexcept
+bool mesh::operator==(const mesh& _other) const noexcept
 {
-    if(m_numPoints != other.m_numPoints
-       || m_numCells != other.m_numCells
-       || m_cellType != other.m_cellType
-       || m_attributes != other.m_attributes
-       || !core::tools::is_equal(m_points, other.m_points)
-       || !core::tools::is_equal(m_cells, other.m_cells))
+    if(m_numPoints != _other.m_numPoints
+       || m_numCells != _other.m_numCells
+       || m_cellType != _other.m_cellType
+       || m_attributes != _other.m_attributes
+       || !core::tools::is_equal(m_points, _other.m_points)
+       || !core::tools::is_equal(m_cells, _other.m_cells))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool mesh::operator!=(const mesh& other) const noexcept
+bool mesh::operator!=(const mesh& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------

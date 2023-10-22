@@ -71,7 +71,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_reader, sight::io::service::reader);
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Constructor. Do nothing.
@@ -138,7 +138,7 @@ private:
      */
     void loadMesh(const std::filesystem::path& _file, data::mesh::sptr _mesh);
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 };
 
 } // namespace sight::module::io::vtk

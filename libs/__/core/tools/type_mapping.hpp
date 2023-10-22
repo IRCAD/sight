@@ -46,7 +46,7 @@ struct is_mapping_single_mplhelper;
 
 //
 /**
- * @brief   Create a type (T) binding/mapping with a key_t ( std::string, PixelType etc...
+ * @brief   Create a type (T) binding/mapping with a key_t ( std::string, pixel_t etc...
  * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
  * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
  * @return  true iff the value of the key_t can deal with the specified type T
@@ -68,7 +68,7 @@ struct is_mapping_single_mplhelper;
  * @endcode
  */
 template<class single_or_seq, class key_type_or_key_type_container>
-bool is_mapping(const key_type_or_key_type_container& type)
+bool is_mapping(const key_type_or_key_type_container& _type)
 {
     namespace mpl = boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
@@ -76,12 +76,12 @@ bool is_mapping(const key_type_or_key_type_container& type)
             is_mapping_multi_mplhelper<single_or_seq, key_type_or_key_type_container>,
             is_mapping_single_mplhelper<single_or_seq, key_type_or_key_type_container>
     >::type type_x;
-    return type_x::evaluate(type);
+    return type_x::evaluate(_type);
 }
 
 /**
  * @brief   an isMapping() helper : This function is called iff TSingle_or_TSEQ is not a sequence and
- * isMapping<SingleType> is not specialized
+ * isMapping<single_t> is not specialized
  * This class is intended to avoid developer to forgive the specialization of isMapping<TYPE>
  * @tparam  T the type to test
  * @tparam  key_t the type to match
@@ -89,13 +89,13 @@ bool is_mapping(const key_type_or_key_type_container& type)
 template<class T, class key_type>
 struct is_mapping_single_mplhelper
 {
-    /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
-    static bool evaluate(const key_type& key)
+    /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<single_t>
+    static bool evaluate(const key_type& _key)
     {
-        SIGHT_NOT_USED(key);
+        SIGHT_NOT_USED(_key);
         static_assert(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
-        // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
+        // ** isMapping<my_single_t,my_corresponding_key_t>(keytypevalue)
         std::string msg("isMapping<type>(const key_t &key) not specialized for TYPE and/or key_t!!!");
         throw std::invalid_argument(msg);
         return false;
@@ -108,9 +108,9 @@ struct is_mapping_single_mplhelper
  * @return  true if same size & each element of type list mappes a single element of key_t
  */
 template<class TSEQ, class key_type_container>
-bool is_mapping_multi(const key_type_container& keys)
+bool is_mapping_multi(const key_type_container& _keys)
 {
-    return is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(keys);
+    return is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(_keys);
 }
 
 /**
@@ -122,12 +122,12 @@ struct empty_list_mapping
     //------------------------------------------------------------------------------
 
     static bool evaluate(
-        [[maybe_unused]] typename key_type_container::const_iterator& begin,
-        [[maybe_unused]] typename key_type_container::const_iterator& end
+        [[maybe_unused]] typename key_type_container::const_iterator& _begin,
+        [[maybe_unused]] typename key_type_container::const_iterator& _end
 )
     {
-        assert(begin == end); // assertion fails iff TypeList & key_t container does not have the same size
-        return true;          // an empty typelist with an empty key_t matches
+        assert(_begin == _end); // assertion fails iff TypeList & key_t container does not have the same size
+        return true;            // an empty typelist with an empty key_t matches
     }
 };
 
@@ -141,25 +141,25 @@ struct
 is_mapping_multi_mplhelper
 {
     static bool evaluate(
-        typename key_type_container::const_iterator& begin,
-        typename key_type_container::const_iterator& end
+        typename key_type_container::const_iterator& _begin,
+        typename key_type_container::const_iterator& _end
     );
 
     //------------------------------------------------------------------------------
 
-    static bool evaluate(const key_type_container& keys)
+    static bool evaluate(const key_type_container& _keys)
     {
         namespace mpl = boost::mpl;
 
-        if(keys.size() != static_cast<std::uint64_t>(mpl::size<TSEQ>::value))
+        if(_keys.size() != static_cast<std::uint64_t>(mpl::size<TSEQ>::value))
         {
             std::string msg("isMappingMulti TypeList & key_t container does not have the same size !!!");
             throw std::invalid_argument(msg);
             return false;
         }
 
-        typename key_type_container::const_iterator begin = keys.begin(); // needed to have const ptr
-        typename key_type_container::const_iterator end   = keys.end();
+        typename key_type_container::const_iterator begin = _keys.begin(); // needed to have const ptr
+        typename key_type_container::const_iterator end   = _keys.end();
         return is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(begin, end);
     }
 };
@@ -168,8 +168,8 @@ is_mapping_multi_mplhelper
 
 template<class TSEQ, class key_type_container>
 bool is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(
-    typename key_type_container::const_iterator& begin,
-    typename key_type_container::const_iterator& end
+    typename key_type_container::const_iterator& _begin,
+    typename key_type_container::const_iterator& _end
 )
 {
     namespace mpl = boost::mpl;
@@ -183,14 +183,14 @@ bool is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(
             is_mapping_multi_mplhelper<tail, key_type_container>
     >::type type_x;
 
-    bool first_key_is_ok = is_mapping<head>(*begin); // call a isMapping with a single key
+    bool first_key_is_ok = is_mapping<head>(*_begin); // call a isMapping with a single key
 
     if(!first_key_is_ok) // OPTIMISATION
     {
         return false; // the first key doesn't match : do not try to test other
     }
 
-    bool other_keys = type_x::evaluate(++begin, end);
+    bool other_keys = type_x::evaluate(++_begin, _end);
     return first_key_is_ok && other_keys;
 }
 

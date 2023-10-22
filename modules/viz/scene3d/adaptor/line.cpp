@@ -30,7 +30,7 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <Ogre.h>
@@ -95,9 +95,9 @@ void line::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
 
-    m_line = sceneMgr->createManualObject(this->get_id() + "_line");
+    m_line = scene_mgr->createManualObject(this->get_id() + "_line");
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
@@ -124,9 +124,9 @@ void line::starting()
     this->drawLine(false);
 
     // Set the bounding box of your Manual Object
-    Ogre::Vector3 bbMin(-0.1F, -0.1F, 0.F);
-    Ogre::Vector3 bbMax(0.1F, 0.1F, m_length);
-    Ogre::AxisAlignedBox box(bbMin, bbMax);
+    Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
+    Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+    Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 
     this->attachNode(m_line);
@@ -145,9 +145,9 @@ void line::updating()
         this->drawLine(true);
 
         // Set the bounding box of your Manual Object
-        Ogre::Vector3 bbMin(-0.1F, -0.1F, 0.F);
-        Ogre::Vector3 bbMax(0.1F, 0.1F, m_length);
-        Ogre::AxisAlignedBox box(bbMin, bbMax);
+        Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
+        Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+        Ogre::AxisAlignedBox box(bb_min, bb_max);
         m_line->setBoundingBox(box);
     }
 
@@ -171,21 +171,21 @@ void line::stopping()
 
 //-----------------------------------------------------------------------------
 
-void line::attachNode(Ogre::MovableObject* object)
+void line::attachNode(Ogre::MovableObject* _object)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    SIGHT_ASSERT("Transform node shouldn't be null", transNode);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    transNode->setVisible(m_isVisible);
-    transNode->attachObject(object);
+    trans_node->setVisible(m_isVisible);
+    trans_node->attachObject(_object);
 }
 
 //-----------------------------------------------------------------------------
 
-void line::drawLine(bool _existingLine)
+void line::drawLine(bool _existing_line)
 {
-    if(!_existingLine)
+    if(!_existing_line)
     {
         m_line->begin(
             m_materialAdaptor->getMaterialName(),
@@ -224,9 +224,9 @@ void line::drawLine(bool _existingLine)
 
 void line::setVisible(bool /*_visible*/)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    transNode->setVisible(m_isVisible);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    trans_node->setVisible(m_isVisible);
     this->updating();
 }
 

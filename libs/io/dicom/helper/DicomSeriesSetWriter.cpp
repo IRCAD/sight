@@ -61,24 +61,24 @@ core::jobs::aggregator::sptr DicomSeriesSetWriter::getAggregator()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesSetWriter::setAnonymizer(const DicomAnonymizer::sptr& anonymizer)
+void DicomSeriesSetWriter::setAnonymizer(const DicomAnonymizer::sptr& _anonymizer)
 {
-    m_anonymizer = anonymizer;
+    m_anonymizer = _anonymizer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesSetWriter::setProducer(std::string producer)
+void DicomSeriesSetWriter::setProducer(std::string _producer)
 {
-    m_producer = producer;
+    m_producer = _producer;
 }
 
 //------------------------------------------------------------------------------
 
-std::string getSubPath(int index)
+std::string get_sub_path(int _index)
 {
     std::stringstream ss;
-    ss << std::setfill('0') << std::setw(3) << index;
+    ss << std::setfill('0') << std::setw(3) << _index;
     return ss.str();
 }
 
@@ -89,39 +89,39 @@ void DicomSeriesSetWriter::write()
     auto series_set = getConcreteObject();
     SIGHT_ASSERT("Unable to retrieve associated series_set", series_set);
 
-    io::zip::write_archive::sptr writeArchive = io::zip::WriteDirArchive::make(this->get_folder());
+    io::zip::write_archive::sptr write_archive = io::zip::WriteDirArchive::make(this->get_folder());
 
-    const auto nbSeries = series_set->size();
-    int processedSeries = 0;
+    const auto nb_series = series_set->size();
+    int processed_series = 0;
 
     for(const auto& series : *series_set)
     {
-        const auto& dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
+        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
 
         core::jobs::job::sptr job =
             std::make_shared<core::jobs::job>(
                 "Write Dicom series",
-                [&, dicomSeries](core::jobs::job& runningJob)
+                [&, dicom_series](core::jobs::job& _running_job)
             {
-                if(!runningJob.cancel_requested())
+                if(!_running_job.cancel_requested())
                 {
                     m_anonymizer->resetIndex();
 
                     io::dicom::helper::DicomSeriesWriter::sptr writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
-                    writer->set_object(dicomSeries);
+                    writer->set_object(dicom_series);
                     writer->setAnonymizer(m_anonymizer);
-                    writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
+                    writer->setOutputArchive(write_archive, nb_series > 1 ? get_sub_path(processed_series++) : "");
 
-                    runningJob.add_cancel_hook(
+                    _running_job.add_cancel_hook(
                         [&](core::jobs::base&)
                     {
                         writer->getJob()->cancel();
                     });
 
                     writer->getJob()->add_done_work_hook(
-                        [&](core::jobs::base& subJob, std::uint64_t)
+                        [&](core::jobs::base& _sub_job, std::uint64_t)
                     {
-                        runningJob.done_work(subJob.get_done_work_units());
+                        _running_job.done_work(_sub_job.get_done_work_units());
                     });
 
                     try
@@ -130,11 +130,11 @@ void DicomSeriesSetWriter::write()
                     }
                     catch(std::exception& e)
                     {
-                        runningJob.log(std::string("Failed to write series :\n") + e.what());
+                        _running_job.log(std::string("Failed to write series :\n") + e.what());
                     }
                     catch(...)
                     {
-                        runningJob.log("An unexpected error occurred while writing series");
+                        _running_job.log("An unexpected error occurred while writing series");
                     }
                 }
             },
@@ -149,9 +149,9 @@ void DicomSeriesSetWriter::write()
         m_aggregator->add(job);
     }
 
-    auto futureAG = m_aggregator->run();
+    auto future_ag = m_aggregator->run();
 
-    futureAG.wait();
+    future_ag.wait();
 }
 
 } // namespace sight::io::dicom::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,20 +37,20 @@ Q_OBJECT
 public:
 
     /// Constructor
-    explicit RoleTableModel(QObject* parent = nullptr);
+    explicit RoleTableModel(QObject* _parent = nullptr);
 
     /**
      * @brief Add data to the TableModel and call the reset function to emit changes to Qml.
      * @param[in] data One data row with role name as key inside the QHash
      */
-    void addData(const QHash<QByteArray, QVariant>& data);
+    void addData(const QHash<QByteArray, QVariant>& _data);
 
     /**
      * @brief Add role to the TableModel that can only be called before any data added
      * @param[in] enumNb the key of the QHash that carry the roles that need to be at least Qt::UserRole +1
      * @param[in] role the value of the string role in qml
      */
-    void addRole(const int& enumNb, const QByteArray& role);
+    void addRole(const int& _enum_nb, const QByteArray& _role);
 
     /**
      * @brief Return if data isEmpty
@@ -58,13 +58,13 @@ public:
     bool isEmpty() noexcept;
 
     /// override
-    [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    [[nodiscard]] int rowCount(const QModelIndex& _parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     /// override
-    [[nodiscard]] int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    [[nodiscard]] int columnCount(const QModelIndex& _parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     /// override
-    [[nodiscard]] QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    [[nodiscard]] QVariant data(const QModelIndex& _index, int _role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     /// override
     [[nodiscard]] QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;

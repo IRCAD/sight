@@ -63,35 +63,35 @@ void matrix4_test::identityMatrixTest()
     auto p1 = std::make_shared<sight::data::point>(1.0F, 2.3F, 5.1F);
     auto p2 = std::make_shared<sight::data::point>();
 
-    bool shouldBeTrue = geometry::data::isIdentity(tm1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
+    bool should_be_true = geometry::data::is_identity(tm1);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, should_be_true);
     // dummy precision
-    shouldBeTrue = geometry::data::isIdentity(tm1, 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
+    should_be_true = geometry::data::is_identity(tm1, 1);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, should_be_true);
     // high precision
-    shouldBeTrue = geometry::data::isIdentity(tm1, 1e-17);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
+    should_be_true = geometry::data::is_identity(tm1, 1e-17);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, should_be_true);
 
     tm1(0, 2) = 3.4;
     tm1(1, 3) = 18;
 
-    bool shouldBeFalse = geometry::data::isIdentity(tm1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
+    bool should_be_false = geometry::data::is_identity(tm1);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, should_be_false);
     //Test with dummy precision
-    shouldBeTrue = geometry::data::isIdentity(tm1, 20);
+    should_be_true = geometry::data::is_identity(tm1, 20);
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
         "Matrix4 should be identity with a precision of 20",
         true,
-        shouldBeTrue
+        should_be_true
     );
     //Test with nice precision
-    shouldBeFalse = geometry::data::isIdentity(tm1, 1e-14);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
+    should_be_false = geometry::data::is_identity(tm1, 1e-14);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, should_be_false);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm1));
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm2));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm1));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm2));
 
 #ifndef FW_PROFILING_DISABLED
     {
@@ -104,7 +104,7 @@ void matrix4_test::identityMatrixTest()
 #else
     geometry::data::multiply(tm1, tm2, tm3);
 #endif
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm3));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm3));
 
 #ifndef FW_PROFILING_DISABLED
     {
@@ -117,7 +117,7 @@ void matrix4_test::identityMatrixTest()
 #else
     geometry::data::invert(tm1, tm4);
 #endif
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm4));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm4));
 
 #ifndef FW_PROFILING_DISABLED
     {
@@ -146,10 +146,10 @@ void matrix4_test::matrixTest()
 
     geometry::data::identity(tm2);
 
-    sight::data::matrix4::container_type tm1Coefs;
+    sight::data::matrix4::container_type tm1_coefs;
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        tm1Coefs[i] = double(i + 1);
+        tm1_coefs[i] = double(i + 1);
     }
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
@@ -160,8 +160,8 @@ void matrix4_test::matrixTest()
         }
     }
 
-    tm1 = tm1Coefs;
-    tm4 = tm1Coefs;
+    tm1 = tm1_coefs;
+    tm4 = tm1_coefs;
 
     // Test matrix-matrix multiplication
     geometry::data::multiply(tm1, tm2, tm3);
@@ -198,12 +198,12 @@ void matrix4_test::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(3, 2), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4(3, 3), 0.00001);
 
-    sight::data::matrix4::container_type tm2Coefs = {3.1, 1., -7.9689, 4.9,
-                                                     5., -21., -1.3646, 14.4,
-                                                     9., -7.2, -23.36, 79.04,
-                                                     0.1, -3., -1.234, -49.94
+    sight::data::matrix4::container_type tm2_coefs = {3.1, 1., -7.9689, 4.9,
+                                                      5., -21., -1.3646, 14.4,
+                                                      9., -7.2, -23.36, 79.04,
+                                                      0.1, -3., -1.234, -49.94
     };
-    tm2 = tm2Coefs;
+    tm2 = tm2_coefs;
     geometry::data::invert(tm2, tm4);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.885131908604589, tm4(0, 0), 0.0001);
@@ -237,8 +237,8 @@ void matrix4_test::matrixTest()
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm1));
-    CPPUNIT_ASSERT(geometry::data::isIdentity(tm2));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm1));
+    CPPUNIT_ASSERT(geometry::data::is_identity(tm2));
 }
 
 //------------------------------------------------------------------------------
@@ -255,18 +255,18 @@ void matrix4_test::glmGetterSetterTest()
     mat = coefs;
 
     // Test getter
-    glm::dmat4x4 glmMat;
+    glm::dmat4x4 glm_mat;
 
 #ifndef FW_PROFILING_DISABLED
     {
-        FW_PROFILE("::geometry::data::getMatrixFromTF3D");
+        FW_PROFILE("::geometry::data::to_glm_mat");
         for(int i = 0 ; i < 1000000 ; ++i)
         {
-            glmMat = geometry::data::getMatrixFromTF3D(mat);
+            glmMat = geometry::data::to_glm_mat(mat);
         }
     }
 #else
-    glmMat = geometry::data::getMatrixFromTF3D(mat);
+    glm_mat = geometry::data::to_glm_mat(mat);
 #endif
 
     // Matrix4 is stored row-major
@@ -275,7 +275,7 @@ void matrix4_test::glmGetterSetterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_EQUAL(glmMat[int(i)][int(j)], coefs[i + j * 4]);
+            CPPUNIT_ASSERT_EQUAL(glm_mat[int(i)][int(j)], coefs[i + j * 4]);
         }
     }
 
@@ -286,17 +286,17 @@ void matrix4_test::glmGetterSetterTest()
                          .13, 0.1, -0.1, 0.2
     };
 
-    glmMat = glm::make_mat4<double>(coefs2.data());
+    glm_mat = glm::make_mat4<double>(coefs2.data());
 #ifndef FW_PROFILING_DISABLED
     {
-        FW_PROFILE("::geometry::data::setTF3DFromMatrix");
+        FW_PROFILE("::geometry::data::from_glm_mat");
         for(int i = 0 ; i < 1000000 ; ++i)
         {
-            geometry::data::setTF3DFromMatrix(mat, glmMat);
+            geometry::data::from_glm_mat(mat, glmMat);
         }
     }
 #else
-    geometry::data::setTF3DFromMatrix(mat, glmMat);
+    geometry::data::from_glm_mat(mat, glm_mat);
 #endif
 
     for(std::size_t i = 0 ; i < 4 ; ++i)

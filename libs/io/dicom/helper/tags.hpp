@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace sight::io::dicom::helper
  *
  * @return a gdcm::Tag instance
  */
-IO_DICOM_API gdcm::Tag getGdcmTag(const std::string& group, const std::string& element);
+IO_DICOM_API gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element);
 
 /**
  * @brief List of private GDCM tags type
@@ -50,7 +50,7 @@ IO_DICOM_API gdcm::Tag getGdcmTag(const std::string& group, const std::string& e
  * and we may have uint16_t (for instance Philips tag 0x00E1,0x1022).
  * See part 05 of Dicom Standard, section 7.8.1.
  */
-typedef std::vector<gdcm::Tag> PrivateTagVecType;
+typedef std::vector<gdcm::Tag> private_tag_vec_t;
 
 /**
  * @brief Load a set of private tags from given CSV file.
@@ -65,6 +65,6 @@ typedef std::vector<gdcm::Tag> PrivateTagVecType;
  *
  * @return a list of gdcm::PrivateTag instances
  */
-IO_DICOM_API PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath);
+IO_DICOM_API private_tag_vec_t load_private_tags(const std::filesystem::path& _tags_path);
 
 } // namespace sight::io::dicom::helper

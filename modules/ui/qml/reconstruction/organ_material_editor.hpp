@@ -86,7 +86,7 @@ public:
 
 Q_SIGNALS:
 
-    void materialChanged(QColor color, int opacity);
+    void materialChanged(QColor _color, int _opacity);
 
 protected:
 
@@ -113,10 +113,10 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the opacity changed, it will update the reconstruction Material
-    void onOpacitySlider(int value);
+    void onOpacitySlider(int _value);
 
     /// Called when the color changed, it will update the reconstruction Material
-    void onColor(QColor color);
+    void onColor(QColor _color);
 
 private:
 

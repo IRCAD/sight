@@ -28,7 +28,7 @@
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <utility>
 
@@ -55,17 +55,17 @@ pacs_configuration_initializer::~pacs_configuration_initializer() noexcept =
 
 //------------------------------------------------------------------------------
 
-std::string pacs_configuration_initializer::getKey(const std::string& subKey) const noexcept
+std::string pacs_configuration_initializer::getKey(const std::string& _sub_key) const noexcept
 {
-    return m_preferenceKey + "." + subKey;
+    return m_preferenceKey + "." + _sub_key;
 }
 
 //------------------------------------------------------------------------------
 
 void pacs_configuration_initializer::configuring()
 {
-    const config_t configTree = this->get_config();
-    const auto config         = configTree.get_child("config.<xmlattr>");
+    const config_t config_tree = this->get_config();
+    const auto config          = config_tree.get_child("config.<xmlattr>");
 
     // Local application title.
     m_SCUAppEntityTitle = config.get<std::string>(s_LocalApplicationTitle);
@@ -77,12 +77,12 @@ void pacs_configuration_initializer::configuring()
     m_SCPAppEntityTitle = config.get<std::string>(s_PacsApplicationTitle);
 
     // Pacs port.
-    const auto pacsApplicationPort = config.get<std::string>(s_PacsApplicationPort);
-    m_SCPPort = static_cast<decltype(m_SCPPort)>(std::stoi(pacsApplicationPort));
+    const auto pacs_application_port = config.get<std::string>(s_PacsApplicationPort);
+    m_SCPPort = static_cast<decltype(m_SCPPort)>(std::stoi(pacs_application_port));
 
     // Retrieve Method.
-    const auto retrieveMethod = config.get<std::string>(s_RetrieveMethod);
-    m_retrieveMethod = (retrieveMethod == "MOVE")
+    const auto retrieve_method = config.get<std::string>(s_RetrieveMethod);
+    m_retrieveMethod = (retrieve_method == "MOVE")
                        ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
                        : (sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD);
 
@@ -90,8 +90,8 @@ void pacs_configuration_initializer::configuring()
     m_moveAppEntityTitle = config.get<std::string>(s_MoveApplicationTitle);
 
     // Move application port.
-    const auto moveApplicationPort = config.get<std::string>(s_MoveApplicationPort);
-    m_movePort = static_cast<decltype(m_movePort)>(std::stoi(moveApplicationPort));
+    const auto move_application_port = config.get<std::string>(s_MoveApplicationPort);
+    m_movePort = static_cast<decltype(m_movePort)>(std::stoi(move_application_port));
 
     // Preference Key.
     m_preferenceKey = config.get<std::string>("preferenceKey", m_preferenceKey);
@@ -101,15 +101,15 @@ void pacs_configuration_initializer::configuring()
 
 void pacs_configuration_initializer::starting()
 {
-    const auto pacsConfiguration = m_config.lock();
-    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacsConfiguration);
+    const auto pacs_configuration = m_config.lock();
+    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacs_configuration);
 
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
     {
         try
         {
-            ui::Preferences preferences;
+            ui::preferences preferences;
 
             m_SCUAppEntityTitle  = preferences.get(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
             m_SCPHostName        = preferences.get(getKey(s_PacsHostName), m_SCPHostName);
@@ -121,19 +121,19 @@ void pacs_configuration_initializer::starting()
                 preferences.get(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod))
             );
         }
-        catch(const ui::PreferencesDisabled& /*e*/)
+        catch(const ui::preferences_disabled& /*e*/)
         {
             // Nothing to do..
         }
     }
 
-    pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitle);
-    pacsConfiguration->setPacsHostName(m_SCPHostName);
-    pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitle);
-    pacsConfiguration->setPacsApplicationPort(m_SCPPort);
-    pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitle);
-    pacsConfiguration->setMoveApplicationPort(m_movePort);
-    pacsConfiguration->setRetrieveMethod(m_retrieveMethod);
+    pacs_configuration->setLocalApplicationTitle(m_SCUAppEntityTitle);
+    pacs_configuration->setPacsHostName(m_SCPHostName);
+    pacs_configuration->setPacsApplicationTitle(m_SCPAppEntityTitle);
+    pacs_configuration->setPacsApplicationPort(m_SCPPort);
+    pacs_configuration->setMoveApplicationTitle(m_moveAppEntityTitle);
+    pacs_configuration->setMoveApplicationPort(m_movePort);
+    pacs_configuration->setRetrieveMethod(m_retrieveMethod);
 }
 
 //------------------------------------------------------------------------------
@@ -155,25 +155,25 @@ service::connections_t pacs_configuration_initializer::auto_connections() const
 
 void pacs_configuration_initializer::updating()
 {
-    const auto pacsConfiguration = m_config.lock();
-    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacsConfiguration);
+    const auto pacs_configuration = m_config.lock();
+    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacs_configuration);
 
     // Check if the user has changed the Pacs configuration and update the local var
-    if(pacsConfiguration->getLocalApplicationTitle() != m_SCUAppEntityTitle
-       || pacsConfiguration->getPacsHostName() != m_SCPHostName
-       || pacsConfiguration->getPacsApplicationTitle() != m_SCPAppEntityTitle
-       || pacsConfiguration->getPacsApplicationPort() != m_SCPPort
-       || pacsConfiguration->getMoveApplicationTitle() != m_moveAppEntityTitle
-       || pacsConfiguration->getMoveApplicationPort() != m_movePort
-       || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod)
+    if(pacs_configuration->getLocalApplicationTitle() != m_SCUAppEntityTitle
+       || pacs_configuration->getPacsHostName() != m_SCPHostName
+       || pacs_configuration->getPacsApplicationTitle() != m_SCPAppEntityTitle
+       || pacs_configuration->getPacsApplicationPort() != m_SCPPort
+       || pacs_configuration->getMoveApplicationTitle() != m_moveAppEntityTitle
+       || pacs_configuration->getMoveApplicationPort() != m_movePort
+       || pacs_configuration->getRetrieveMethod() != m_retrieveMethod)
     {
-        m_SCUAppEntityTitle  = pacsConfiguration->getLocalApplicationTitle();
-        m_SCPHostName        = pacsConfiguration->getPacsHostName();
-        m_SCPAppEntityTitle  = pacsConfiguration->getPacsApplicationTitle();
-        m_SCPPort            = pacsConfiguration->getPacsApplicationPort();
-        m_moveAppEntityTitle = pacsConfiguration->getMoveApplicationTitle();
-        m_movePort           = pacsConfiguration->getMoveApplicationPort();
-        m_retrieveMethod     = pacsConfiguration->getRetrieveMethod();
+        m_SCUAppEntityTitle  = pacs_configuration->getLocalApplicationTitle();
+        m_SCPHostName        = pacs_configuration->getPacsHostName();
+        m_SCPAppEntityTitle  = pacs_configuration->getPacsApplicationTitle();
+        m_SCPPort            = pacs_configuration->getPacsApplicationPort();
+        m_moveAppEntityTitle = pacs_configuration->getMoveApplicationTitle();
+        m_movePort           = pacs_configuration->getMoveApplicationPort();
+        m_retrieveMethod     = pacs_configuration->getRetrieveMethod();
     }
 
     // If a preference key is set, save the local var to the preferences
@@ -181,7 +181,7 @@ void pacs_configuration_initializer::updating()
     {
         try
         {
-            ui::Preferences preferences;
+            ui::preferences preferences;
 
             preferences.put(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
             preferences.put(getKey(s_PacsHostName), m_SCPHostName);
@@ -191,7 +191,7 @@ void pacs_configuration_initializer::updating()
             preferences.put(getKey(s_MoveApplicationPort), m_movePort);
             preferences.put(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod));
         }
-        catch(const ui::PreferencesDisabled& /*e*/)
+        catch(const ui::preferences_disabled& /*e*/)
         {
             // Nothing to do..
         }

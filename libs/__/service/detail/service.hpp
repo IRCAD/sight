@@ -46,10 +46,10 @@ class service final
 {
 public:
 
-    using config_t         = sight::service::config_t;
-    using PackagedTaskType = std::packaged_task<void ()>;
+    using config_t        = sight::service::config_t;
+    using packaged_task_t = std::packaged_task<void ()>;
 
-    service(sight::service::base& service);
+    service(sight::service::base& _service);
     ~service();
 
     /**
@@ -57,7 +57,7 @@ public:
      * @param[in] config property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    void set_config(const config_t& config);
+    void set_config(const config_t& _config);
 
     /// Returns the service configuration
     const sight::service::config_t& get_config() const;

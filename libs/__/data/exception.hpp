@@ -44,7 +44,7 @@ public:
      *
      * @param[in]   message a string containing the failure message
      */
-    DATA_API exception(const std::string& message) noexcept;
+    DATA_API exception(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.

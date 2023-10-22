@@ -60,8 +60,8 @@ void get_vector_test::extractsElementFromVector()
 {
     auto vector = std::make_shared<sight::data::vector>();
 
-    sight::service::base::sptr getVector = sight::service::add("sight::module::data::get_vector");
-    CPPUNIT_ASSERT(getVector);
+    sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
+    CPPUNIT_ASSERT(get_vector);
 
     // create different series
     sight::data::series::sptr series1 = std::make_shared<sight::data::model_series>();
@@ -80,12 +80,12 @@ void get_vector_test::extractsElementFromVector()
     vector->push_back(series5);
     vector->push_back(series6);
     CPPUNIT_ASSERT(!vector->empty());
-    const std::string index_0ID = "series1";
-    const std::string index_3ID = "series4";
-    series1->set_id(index_0ID);
-    series4->set_id(index_3ID);
+    const std::string index_0_id = "series1";
+    const std::string index_3_id = "series4";
+    series1->set_id(index_0_id);
+    series4->set_id(index_3_id);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(6), vector->size());
-    CPPUNIT_ASSERT_EQUAL(index_0ID, series1->get_id());
+    CPPUNIT_ASSERT_EQUAL(index_0_id, series1->get_id());
 
     service::config_t config;
     std::stringstream config_string;
@@ -95,31 +95,31 @@ void get_vector_test::extractsElementFromVector()
        "<key index=\"3\" uid=\"modelSeries1\"/>"
        "</out>";
     boost::property_tree::read_xml(config_string, config);
-    getVector->set_config(config);
-    getVector->set_input(vector, "vector");
-    getVector->configure();
-    getVector->start().wait();
-    getVector->update().wait();
+    get_vector->set_config(config);
+    get_vector->set_input(vector, "vector");
+    get_vector->configure();
+    get_vector->start().wait();
+    get_vector->update().wait();
 
-    CPPUNIT_ASSERT_EQUAL(getVector->output("objects", 0).lock()->get_id(), index_0ID);
-    CPPUNIT_ASSERT_EQUAL(getVector->output("objects", 1).lock()->get_id(), index_3ID);
+    CPPUNIT_ASSERT_EQUAL(get_vector->output("objects", 0).lock()->get_id(), index_0_id);
+    CPPUNIT_ASSERT_EQUAL(get_vector->output("objects", 1).lock()->get_id(), index_3_id);
 
     vector->clear();
 
-    getVector->update().wait();
+    get_vector->update().wait();
 
-    CPPUNIT_ASSERT(getVector->output("objects", 0).lock() == nullptr);
-    CPPUNIT_ASSERT(getVector->output("objects", 1).lock() == nullptr);
+    CPPUNIT_ASSERT(get_vector->output("objects", 0).lock() == nullptr);
+    CPPUNIT_ASSERT(get_vector->output("objects", 1).lock() == nullptr);
 
-    getVector->stop().wait();
-    sight::service::remove(getVector);
+    get_vector->stop().wait();
+    sight::service::remove(get_vector);
 }
 
 //------------------------------------------------------------------------------
 
 void get_vector_test::invalidVector()
 {
-    sight::service::base::sptr getVector = sight::service::add("sight::module::data::get_vector");
+    sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
 
     service::config_t config;
     std::stringstream config_string;
@@ -129,13 +129,13 @@ void get_vector_test::invalidVector()
        "<key index=\"3\" uid=\"modelSeries1\"/>"
        "</out>";
     boost::property_tree::read_xml(config_string, config);
-    getVector->set_config(config);
-    getVector->set_input(nullptr, "vector");
-    getVector->start().wait();
-    CPPUNIT_ASSERT_THROW(getVector->update().get(), sight::data::exception);
+    get_vector->set_config(config);
+    get_vector->set_input(nullptr, "vector");
+    get_vector->start().wait();
+    CPPUNIT_ASSERT_THROW(get_vector->update().get(), sight::data::exception);
 
-    getVector->stop().wait();
-    sight::service::remove(getVector);
+    get_vector->stop().wait();
+    sight::service::remove(get_vector);
 }
 
 //------------------------------------------------------------------------------

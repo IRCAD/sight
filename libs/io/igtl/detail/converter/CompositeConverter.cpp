@@ -35,7 +35,7 @@ namespace sight::io::igtl::detail::converter
 const std::string CompositeConverter::s_IGTL_TYPE          = "TDATA";
 const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
 
-converterRegisterMacro(io::igtl::detail::converter::CompositeConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::CompositeConverter);
 
 CompositeConverter::CompositeConverter()
 = default;
@@ -47,66 +47,66 @@ CompositeConverter::~CompositeConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer CompositeConverter::fromFwDataObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer CompositeConverter::fromFwDataObject(data::object::csptr _src) const
 {
-    ::igtl::TrackingDataMessage::Pointer trackingMsg = ::igtl::TrackingDataMessage::New();
+    ::igtl::TrackingDataMessage::Pointer tracking_msg = ::igtl::TrackingDataMessage::New();
 
-    data::composite::csptr composite = std::dynamic_pointer_cast<const data::composite>(src);
+    data::composite::csptr composite = std::dynamic_pointer_cast<const data::composite>(_src);
     for(const auto& elt : *composite)
     {
-        data::matrix4::csptr transfoMatrix =
+        data::matrix4::csptr transfo_matrix =
             std::dynamic_pointer_cast<const data::matrix4>(elt.second);
-        if(transfoMatrix)
+        if(transfo_matrix)
         {
-            ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
+            ::igtl::TrackingDataElement::Pointer track_element = ::igtl::TrackingDataElement::New();
             const std::string name(elt.first);
-            trackElement->SetName(name.c_str());
-            trackElement->SetType(::igtl::TrackingDataElement::TYPE_TRACKER);
+            track_element->SetName(name.c_str());
+            track_element->SetType(::igtl::TrackingDataElement::TYPE_TRACKER);
 
             ::igtl::Matrix4x4 matrix;
             for(std::size_t i = 0 ; i < 4 ; ++i)
             {
                 for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
-                    matrix[i][j] = float((*transfoMatrix)(i, j));
+                    matrix[i][j] = float((*transfo_matrix)(i, j));
                 }
             }
 
-            trackElement->SetMatrix(matrix);
-            trackingMsg->AddTrackingDataElement(trackElement);
+            track_element->SetMatrix(matrix);
+            tracking_msg->AddTrackingDataElement(track_element);
         }
     }
 
-    return {trackingMsg.GetPointer()};
+    return {tracking_msg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
-    ::igtl::TrackingDataMessage::Pointer trackingMsg;
-    trackingMsg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(src.GetPointer()));
-    const int nbTrackingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    ::igtl::TrackingDataMessage::Pointer tracking_msg;
+    tracking_msg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(_src.GetPointer()));
+    const int nb_tracking_element = tracking_msg->GetNumberOfTrackingDataElements();
 
-    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nbTrackingElement < 0);
+    SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nb_tracking_element < 0);
 
     data::composite::sptr composite = std::make_shared<data::composite>();
-    for(int i = 0 ; i < nbTrackingElement ; ++i)
+    for(int i = 0 ; i < nb_tracking_element ; ++i)
     {
-        ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
-        trackingMsg->GetTrackingDataElement(i, trackElement);
-        const std::string name = trackElement->GetName();
+        ::igtl::TrackingDataElement::Pointer track_element = ::igtl::TrackingDataElement::New();
+        tracking_msg->GetTrackingDataElement(i, track_element);
+        const std::string name = track_element->GetName();
 
-        data::matrix4::sptr transfoMatrix = std::make_shared<data::matrix4>();
-        (*composite)[name] = transfoMatrix;
+        data::matrix4::sptr transfo_matrix = std::make_shared<data::matrix4>();
+        (*composite)[name] = transfo_matrix;
 
         ::igtl::Matrix4x4 matrix;
-        trackElement->GetMatrix(matrix);
+        track_element->GetMatrix(matrix);
         for(std::size_t i2 = 0 ; i2 < 4 ; ++i2)
         {
             for(std::size_t j = 0 ; j < 4 ; ++j)
             {
-                (*transfoMatrix)(i2, j) = matrix[i2][j];
+                (*transfo_matrix)(i2, j) = matrix[i2][j];
             }
         }
     }
@@ -123,7 +123,7 @@ base::sptr CompositeConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& CompositeConverter::getIgtlType() const
+std::string const& CompositeConverter::get_igtl_type() const
 {
     return CompositeConverter::s_IGTL_TYPE;
 }

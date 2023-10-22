@@ -75,7 +75,7 @@ class MODULE_IO_VTK_CLASS_API model_series_obj_writer : public sight::io::servic
 {
 public:
 
-    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> job_created_signal_t;
 
     /**
      * @brief Constructor. Do nothing.
@@ -142,7 +142,7 @@ private:
      */
     std::filesystem::path m_fsMeshPath;
 
-    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(job_created_signal_t) m_sigJobCreated;
 };
 
 } // namespace sight::module::io::vtk

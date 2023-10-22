@@ -66,7 +66,7 @@ public:
      * @param initial_value Initial value in microseconds from which the timer
      * will start to count.
      */
-    CORE_API void reset(hires_clock::type initial_value = 0.);
+    CORE_API void reset(hires_clock::type _initial_value = 0.);
 
     /**
      * @name Elapsed time

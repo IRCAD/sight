@@ -34,6 +34,6 @@ class image;
 namespace sight::io::itk::ut::helper
 {
 
-void roundSpacing(SPTR(data::image) image);
+void round_spacing(SPTR(data::image) _image);
 
 } // namespace sight::io::itk::ut::helper

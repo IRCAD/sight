@@ -66,7 +66,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& currentData) const = 0;
+    ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& _current_data) const = 0;
 };
 
 } // namespace sight::activity::validator

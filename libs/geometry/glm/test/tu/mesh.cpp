@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,14 +87,14 @@ void MeshFunctionsTest::computeBarycenterABC2D()
     // With the same Z it correspond to a 2d case
 
     // Creating triangle points A, B, C.
-    const ::glm::dvec3 A {9., 6., 1.};
-    const ::glm::dvec3 B {9., 12., 1.};
-    const ::glm::dvec3 C {2., 9., 1.};
+    const ::glm::dvec3 a {9., 6., 1.};
+    const ::glm::dvec3 b {9., 12., 1.};
+    const ::glm::dvec3 c {2., 9., 1.};
 
     // Creating intersection Point P.
-    const ::glm::dvec3 P {7., 9., 1.};
+    const ::glm::dvec3 p {7., 9., 1.};
 
-    const ::glm::dvec3 barycentric = geometry::glm::toBarycentricCoord(P, A, B, C);
+    const ::glm::dvec3 barycentric = geometry::glm::to_barycentric_coord(p, a, b, c);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -122,9 +122,9 @@ void MeshFunctionsTest::computeBarycenterABC2D()
 
     // Convert back to world coordinates.
 
-    const ::glm::dvec3 P2 = geometry::glm::fromBarycentricCoord(barycentric, A, B, C);
+    const ::glm::dvec3 p2 = geometry::glm::from_barycentric_coord(barycentric, a, b, c);
 
-    this->compare(P, P2);
+    this->compare(p, p2);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,14 +132,14 @@ void MeshFunctionsTest::computeBarycenterABC2D()
 void MeshFunctionsTest::computeBarycenterABC3D()
 {
     // Second test in 3d.
-    const ::glm::dvec3 A {1., 0., 0.};
-    const ::glm::dvec3 B {0., 1., 0.};
-    const ::glm::dvec3 C {0., 0., 1.};
+    const ::glm::dvec3 a {1., 0., 0.};
+    const ::glm::dvec3 b {0., 1., 0.};
+    const ::glm::dvec3 c {0., 0., 1.};
 
     // Should be at the center of ABC
-    const ::glm::dvec3 P {1. / 3., 1. / 3., 1. / 3.};
+    const ::glm::dvec3 p {1. / 3., 1. / 3., 1. / 3.};
 
-    const ::glm::dvec3 barycentric = geometry::glm::toBarycentricCoord(P, A, B, C);
+    const ::glm::dvec3 barycentric = geometry::glm::to_barycentric_coord(p, a, b, c);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -167,9 +167,9 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 
     // Convert back to world coordinates.
 
-    const ::glm::dvec3 P2 = geometry::glm::fromBarycentricCoord(barycentric, A, B, C);
+    const ::glm::dvec3 p2 = geometry::glm::from_barycentric_coord(barycentric, a, b, c);
 
-    this->compare(P, P2);
+    this->compare(p, p2);
 }
 
 //-----------------------------------------------------------------------------
@@ -177,14 +177,14 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 void MeshFunctionsTest::computeBarycenterABCRealCoords()
 {
     // Second test in 3d.
-    const ::glm::dvec3 A {-0.5, 0., 3.};
-    const ::glm::dvec3 B {0.5, -0.7071, 3.7071};
-    const ::glm::dvec3 C {-0.5, -0.7071, 3.7071};
+    const ::glm::dvec3 a {-0.5, 0., 3.};
+    const ::glm::dvec3 b {0.5, -0.7071, 3.7071};
+    const ::glm::dvec3 c {-0.5, -0.7071, 3.7071};
 
     // Should be at the center of ABC
-    const ::glm::dvec3 P {-0.39, -0.30, 3.30};
+    const ::glm::dvec3 p {-0.39, -0.30, 3.30};
 
-    const ::glm::dvec3 barycentric = geometry::glm::toBarycentricCoord(P, A, B, C);
+    const ::glm::dvec3 barycentric = geometry::glm::to_barycentric_coord(p, a, b, c);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -212,9 +212,9 @@ void MeshFunctionsTest::computeBarycenterABCRealCoords()
 
     // Convert back to world coordinates.
 
-    const ::glm::dvec3 P2 = geometry::glm::fromBarycentricCoord(barycentric, A, B, C);
+    const ::glm::dvec3 p2 = geometry::glm::from_barycentric_coord(barycentric, a, b, c);
 
-    this->compare(P, P2);
+    this->compare(p, p2);
 }
 
 //-----------------------------------------------------------------------------
@@ -224,13 +224,13 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
     // Test with a point outside of the triangle.
 
     // Second test in 3d.
-    const ::glm::dvec3 A {0., 0., 0.};
-    const ::glm::dvec3 B {0., 1., 0.};
-    const ::glm::dvec3 C {1., 0., 1.};
+    const ::glm::dvec3 a {0., 0., 0.};
+    const ::glm::dvec3 b {0., 1., 0.};
+    const ::glm::dvec3 c {1., 0., 1.};
 
-    const ::glm::dvec3 P {10., 20., 30.};
+    const ::glm::dvec3 p {10., 20., 30.};
 
-    const ::glm::dvec3 barycentric = geometry::glm::toBarycentricCoord(P, A, B, C);
+    const ::glm::dvec3 barycentric = geometry::glm::to_barycentric_coord(p, a, b, c);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -247,15 +247,15 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
 void MeshFunctionsTest::computeBarycenterTetrahedron()
 {
     // First test in 3d.
-    const ::glm::dvec3 A {0., 0., 0.};
-    const ::glm::dvec3 B {1., 0., 0.};
-    const ::glm::dvec3 C {0., 1., 0.};
-    const ::glm::dvec3 D {0., 0., 1.};
+    const ::glm::dvec3 a {0., 0., 0.};
+    const ::glm::dvec3 b {1., 0., 0.};
+    const ::glm::dvec3 c {0., 1., 0.};
+    const ::glm::dvec3 d {0., 0., 1.};
 
     // Should be at the center of ABC
-    const ::glm::dvec3 P {0.25, 0.25, 0.25};
+    const ::glm::dvec3 p {0.25, 0.25, 0.25};
 
-    const ::glm::dvec4 barycentric = geometry::glm::toBarycentricCoord(P, A, B, C, D);
+    const ::glm::dvec4 barycentric = geometry::glm::to_barycentric_coord(p, a, b, c, d);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -272,19 +272,19 @@ void MeshFunctionsTest::computeBarycenterTetrahedron()
 
     // Convert back to world coordinates.
 
-    const ::glm::dvec3 P2 = geometry::glm::fromBarycentricCoord(barycentric, A, B, C, D);
+    const ::glm::dvec3 p2 = geometry::glm::from_barycentric_coord(barycentric, a, b, c, d);
 
-    this->compare(P, P2);
+    this->compare(p, p2);
 
     CPPUNIT_ASSERT_MESSAGE(
         "The two methods verifying if a point is inside a tetrahedron don't provide the same results",
-        geometry::glm::isInsideTetrahedron(
-            P,
-            A,
-            B,
-            C,
-            D
-        ) == geometry::glm::isInsideTetrahedron(barycentric)
+        geometry::glm::is_inside_tetrahedron(
+            p,
+            a,
+            b,
+            c,
+            d
+        ) == geometry::glm::is_inside_tetrahedron(barycentric)
     );
 }
 
@@ -295,20 +295,20 @@ void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
     // Test with a point outside of the tetrahedron.
 
     // Second test in 3d.
-    const ::glm::dvec3 A {0., 0., 0.};
-    const ::glm::dvec3 B {1., 0., 0.};
-    const ::glm::dvec3 C {0., 1., 0.};
-    const ::glm::dvec3 D {0., 0., 1.};
+    const ::glm::dvec3 a {0., 0., 0.};
+    const ::glm::dvec3 b {1., 0., 0.};
+    const ::glm::dvec3 c {0., 1., 0.};
+    const ::glm::dvec3 d {0., 0., 1.};
 
     const ::glm::dvec3 p_in {0.25, 0.25, 0.25};
     const ::glm::dvec3 p_out {1., 2., 3.};
     const ::glm::dvec3 p_edge {0.5, 0., 0.};
     const ::glm::dvec3 p_vertex {0., 0., 0.};
 
-    const bool is_inside_p_in     = geometry::glm::isInsideTetrahedron(p_in, A, B, C, D);
-    const bool is_inside_p_out    = geometry::glm::isInsideTetrahedron(p_out, A, B, C, D);
-    const bool is_inside_p_edge   = geometry::glm::isInsideTetrahedron(p_edge, A, B, C, D);
-    const bool is_inside_p_vertex = geometry::glm::isInsideTetrahedron(p_vertex, A, B, C, D);
+    const bool is_inside_p_in     = geometry::glm::is_inside_tetrahedron(p_in, a, b, c, d);
+    const bool is_inside_p_out    = geometry::glm::is_inside_tetrahedron(p_out, a, b, c, d);
+    const bool is_inside_p_edge   = geometry::glm::is_inside_tetrahedron(p_edge, a, b, c, d);
+    const bool is_inside_p_vertex = geometry::glm::is_inside_tetrahedron(p_vertex, a, b, c, d);
 
     CPPUNIT_ASSERT_MESSAGE("p_in should be inside though is compute outside", is_inside_p_in);
     CPPUNIT_ASSERT_MESSAGE("p_out should be outside though is compute inside", !is_inside_p_out);

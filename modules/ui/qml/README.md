@@ -51,7 +51,7 @@ The rc directory contains the QML resources allowing to create an application.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_qml ... )
+add_dependencies(my_target module_ui_qml ... )
 ```
 
 ### XML

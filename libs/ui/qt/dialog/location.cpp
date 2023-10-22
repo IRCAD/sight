@@ -95,23 +95,23 @@ core::location::base::sptr location::show()
 
     if(dialog.exec() == QFileDialog::Accepted)
     {
-        const auto& selectedFiles = dialog.selectedFiles();
-        if(!selectedFiles.isEmpty())
+        const auto& selected_files = dialog.selectedFiles();
+        if(!selected_files.isEmpty())
         {
             m_wildcard = dialog.selectedNameFilter().toStdString();
 
             if(m_type == ui::dialog::location::SINGLE_FILE)
             {
-                const auto& selectedFile = selectedFiles.constFirst();
-                auto file                = std::make_shared<core::location::single_file>();
-                file->set_file(selectedFile.toStdString());
+                const auto& selected_file = selected_files.constFirst();
+                auto file                 = std::make_shared<core::location::single_file>();
+                file->set_file(selected_file.toStdString());
                 location = file;
             }
             else if(m_type == ui::dialog::location::MULTI_FILES)
             {
                 std::vector<std::filesystem::path> paths;
-                paths.reserve(size_t(selectedFiles.size()));
-                for(const QString& file : selectedFiles)
+                paths.reserve(size_t(selected_files.size()));
+                for(const QString& file : selected_files)
                 {
                     paths.emplace_back(file.toStdString());
                 }
@@ -122,9 +122,9 @@ core::location::base::sptr location::show()
             }
             else if(m_type == ui::dialog::location::FOLDER)
             {
-                const auto& selectedDirectory = selectedFiles.constFirst();
-                auto folder                   = std::make_shared<core::location::single_folder>();
-                folder->set_folder(selectedDirectory.toStdString());
+                const auto& selected_directory = selected_files.constFirst();
+                auto folder                    = std::make_shared<core::location::single_folder>();
+                folder->set_folder(selected_directory.toStdString());
                 location = folder;
             }
         }
@@ -135,26 +135,26 @@ core::location::base::sptr location::show()
 
 //------------------------------------------------------------------------------
 
-void location::setType(location::Types type)
+void location::setType(location::Types _type)
 {
-    m_type = type;
+    m_type = _type;
 }
 
 //------------------------------------------------------------------------------
 
-void location::setOption(location::Options option)
+void location::setOption(location::Options _option)
 {
-    if(option == location::WRITE)
+    if(_option == location::WRITE)
     {
         m_style = static_cast<location::Options>(m_style & ~location::READ);
         m_style = static_cast<location::Options>(m_style | location::WRITE);
     }
-    else if(option == location::READ)
+    else if(_option == location::READ)
     {
         m_style = static_cast<location::Options>(m_style & ~location::WRITE);
         m_style = static_cast<location::Options>(m_style | location::READ);
     }
-    else if(option == location::FILE_MUST_EXIST)
+    else if(_option == location::FILE_MUST_EXIST)
     {
         m_style = static_cast<location::Options>(m_style | location::FILE_MUST_EXIST);
     }
@@ -163,9 +163,9 @@ void location::setOption(location::Options option)
 //------------------------------------------------------------------------------
 
 // example ( addFilter("images","*.png *.jpg");
-void location::addFilter(const std::string& filterName, const std::string& wildcardList)
+void location::addFilter(const std::string& _filter_name, const std::string& _wildcard_list)
 {
-    m_filters.emplace_back(filterName, wildcardList);
+    m_filters.emplace_back(_filter_name, _wildcard_list);
 }
 
 //------------------------------------------------------------------------------
@@ -176,15 +176,15 @@ QString location::fileFilters()
     std::string result;
     for(auto iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
     {
-        std::string filterName   = iter->first;
-        std::string rawWildcards = iter->second;
+        std::string filter_name   = iter->first;
+        std::string raw_wildcards = iter->second;
 
         if(iter != m_filters.begin())
         {
             result += ";;";
         }
 
-        result += filterName + " (" + rawWildcards + ")";
+        result += filter_name + " (" + raw_wildcards + ")";
     }
 
     return QString::fromStdString(result);
@@ -196,8 +196,8 @@ std::string location::getCurrentSelection() const
 {
     for(auto&& [filterName, rawWildcards] : m_filters)
     {
-        const std::string& availableFilters = filterName + " (" + rawWildcards + ")";
-        if(m_wildcard == availableFilters)
+        const std::string& available_filters = filterName + " (" + rawWildcards + ")";
+        if(m_wildcard == available_filters)
         {
             return rawWildcards;
         }

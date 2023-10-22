@@ -31,13 +31,13 @@ namespace sight::viz::scene2d::data
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallow_copy(const sight::data::object::csptr& source)
+void Viewport::shallow_copy(const sight::data::object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
+    const auto& other = std::dynamic_pointer_cast<const Viewport>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -54,15 +54,15 @@ void Viewport::shallow_copy(const sight::data::object::csptr& source)
 //------------------------------------------------------------------------------
 
 void Viewport::deep_copy(
-    const sight::data::object::csptr& source,
-    const std::unique_ptr<sight::data::object::deep_copy_cache_t>& cache
+    const sight::data::object::csptr& _source,
+    const std::unique_ptr<sight::data::object::deep_copy_cache_t>& _cache
 )
 {
-    const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
+    const auto& other = std::dynamic_pointer_cast<const Viewport>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -73,7 +73,7 @@ void Viewport::deep_copy(
     m_width  = other->m_width;
     m_height = other->m_height;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 } // namespace sight::viz::scene2d::data

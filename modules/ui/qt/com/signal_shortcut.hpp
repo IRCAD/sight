@@ -57,7 +57,7 @@ public:
     SIGHT_DECLARE_SERVICE(signal_shortcut, service::base);
 
     /// Signal emitted when the shortcut is received.
-    typedef core::com::signal<void ()> ActivatedShortcutSignalType;
+    typedef core::com::signal<void ()> activated_shortcut_signal_t;
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API signal_shortcut() noexcept;

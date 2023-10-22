@@ -41,7 +41,7 @@ namespace sight::io::igtl::detail::converter
 const std::string MeshConverter::s_IGTL_TYPE          = "POLYDATA";
 const std::string MeshConverter::s_FWDATA_OBJECT_TYPE = data::mesh::classname();
 
-converterRegisterMacro(io::igtl::detail::converter::MeshConverter);
+CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::MeshConverter);
 
 MeshConverter::MeshConverter()
 = default;
@@ -53,270 +53,270 @@ MeshConverter::~MeshConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MeshConverter::fromFwDataObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer MeshConverter::fromFwDataObject(data::object::csptr _src) const
 {
-    data::mesh::csptr meshSrc = std::dynamic_pointer_cast<const data::mesh>(src);
+    data::mesh::csptr mesh_src = std::dynamic_pointer_cast<const data::mesh>(_src);
 
     ::igtl::PolyDataMessage::Pointer dest = ::igtl::PolyDataMessage::New();
-    sight::io::igtl::detail::converter::MeshConverter::copyCellsFromFwMesh(meshSrc, dest);
-    sight::io::igtl::detail::converter::MeshConverter::copyPointsFromFwMesh(meshSrc, dest);
-    sight::io::igtl::detail::converter::MeshConverter::copyAttributesFromFwMesh(meshSrc, dest);
+    sight::io::igtl::detail::converter::MeshConverter::copyCellsFromFwMesh(mesh_src, dest);
+    sight::io::igtl::detail::converter::MeshConverter::copyPointsFromFwMesh(mesh_src, dest);
+    sight::io::igtl::detail::converter::MeshConverter::copyAttributesFromFwMesh(mesh_src, dest);
     return ::igtl::MessageBase::Pointer(dest); // NOLINT(modernize-return-braced-init-list)
 }
 
 //-----------------------------------------------------------------------------
 
 void MeshConverter::copyCellsFromFwMesh(
-    data::mesh::csptr meshSrc,
-    ::igtl::PolyDataMessage::Pointer dest
+    data::mesh::csptr _mesh_src,
+    ::igtl::PolyDataMessage::Pointer _dest
 )
 {
-    const auto dumpLock = meshSrc->dump_lock();
+    const auto dump_lock = _mesh_src->dump_lock();
 
-    dest->SetLines(::igtl::PolyDataCellArray::New());
-    dest->SetTriangleStrips(::igtl::PolyDataCellArray::New());
-    dest->SetVertices(::igtl::PolyDataCellArray::New());
+    _dest->SetLines(::igtl::PolyDataCellArray::New());
+    _dest->SetTriangleStrips(::igtl::PolyDataCellArray::New());
+    _dest->SetVertices(::igtl::PolyDataCellArray::New());
 
     std::array<igtlUint32, 5> cell {};
 
-    const data::mesh::CellType cellType = meshSrc->getCellType();
+    const data::mesh::cell_type_t cell_type = _mesh_src->get_cell_type();
 
-    switch(cellType)
+    switch(cell_type)
     {
-        case data::mesh::CellType::LINE:
+        case data::mesh::cell_type_t::LINE:
 
-            for(const auto& cellItr : meshSrc->crange<data::iterator::cell::line>())
+            for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::line>())
             {
-                cell[0] = cellItr.pt[0];
-                cell[1] = cellItr.pt[1];
-                dest->GetLines()->AddCell(2, cell.data());
+                cell[0] = cell_itr.pt[0];
+                cell[1] = cell_itr.pt[1];
+                _dest->GetLines()->AddCell(2, cell.data());
             }
 
             break;
 
-        case data::mesh::CellType::TRIANGLE:
-            for(const auto& cellItr : meshSrc->crange<data::iterator::cell::triangle>())
+        case data::mesh::cell_type_t::TRIANGLE:
+            for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::triangle>())
             {
-                cell[0] = cellItr.pt[0];
-                cell[1] = cellItr.pt[1];
-                cell[2] = cellItr.pt[2];
-                dest->GetTriangleStrips()->AddCell(3, cell.data());
+                cell[0] = cell_itr.pt[0];
+                cell[1] = cell_itr.pt[1];
+                cell[2] = cell_itr.pt[2];
+                _dest->GetTriangleStrips()->AddCell(3, cell.data());
             }
 
             break;
 
-        case data::mesh::CellType::QUAD:
+        case data::mesh::cell_type_t::QUAD:
 
-            for(const auto& cellItr : meshSrc->crange<data::iterator::cell::quad>())
+            for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::quad>())
             {
-                cell[0] = cellItr.pt[0];
-                cell[1] = cellItr.pt[1];
-                cell[2] = cellItr.pt[2];
-                cell[3] = cellItr.pt[3];
-                dest->GetVertices()->AddCell(4, cell.data());
+                cell[0] = cell_itr.pt[0];
+                cell[1] = cell_itr.pt[1];
+                cell[2] = cell_itr.pt[2];
+                cell[3] = cell_itr.pt[3];
+                _dest->GetVertices()->AddCell(4, cell.data());
             }
 
             break;
 
-        case data::mesh::CellType::TETRA:
-            for(const auto& cellItr : meshSrc->crange<data::iterator::cell::tetra>())
+        case data::mesh::cell_type_t::TETRA:
+            for(const auto& cell_itr : _mesh_src->crange<data::iterator::cell::tetra>())
             {
-                cell[0] = cellItr.pt[0];
-                cell[1] = cellItr.pt[1];
-                cell[2] = cellItr.pt[2];
-                cell[3] = cellItr.pt[3];
-                dest->GetVertices()->AddCell(4, cell.data());
+                cell[0] = cell_itr.pt[0];
+                cell[1] = cell_itr.pt[1];
+                cell[2] = cell_itr.pt[2];
+                cell[3] = cell_itr.pt[3];
+                _dest->GetVertices()->AddCell(4, cell.data());
             }
 
             break;
 
         default:
-            SIGHT_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
+            SIGHT_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cell_type));
     }
 }
 
 //-----------------------------------------------------------------------------
 
 void MeshConverter::copyPointsFromFwMesh(
-    data::mesh::csptr meshSrc,
-    ::igtl::PolyDataMessage::Pointer dest
+    data::mesh::csptr _mesh_src,
+    ::igtl::PolyDataMessage::Pointer _dest
 )
 {
-    const auto dumpLock = meshSrc->dump_lock();
+    const auto dump_lock = _mesh_src->dump_lock();
 
-    dest->SetPoints(::igtl::PolyDataPointArray::New().GetPointer());
-    for(const auto& p : meshSrc->crange<data::iterator::point::xyz>())
+    _dest->SetPoints(::igtl::PolyDataPointArray::New().GetPointer());
+    for(const auto& p : _mesh_src->crange<data::iterator::point::xyz>())
     {
-        dest->GetPoints()->AddPoint(p.x, p.y, p.z);
+        _dest->GetPoints()->AddPoint(p.x, p.y, p.z);
     }
 }
 
 //-----------------------------------------------------------------------------
 
 void MeshConverter::copyAttributesFromFwMesh(
-    data::mesh::csptr meshSrc,
-    ::igtl::PolyDataMessage::Pointer dest
+    data::mesh::csptr _mesh_src,
+    ::igtl::PolyDataMessage::Pointer _dest
 )
 {
-    const auto dumpLock = meshSrc->dump_lock();
+    const auto dump_lock = _mesh_src->dump_lock();
 
-    const std::size_t numberOfPoints = meshSrc->numPoints();
-    const std::size_t numberOfCells  = meshSrc->numCells();
+    const std::size_t number_of_points = _mesh_src->numPoints();
+    const std::size_t number_of_cells  = _mesh_src->numCells();
 
-    dest->ClearAttributes();
+    _dest->ClearAttributes();
 
     // point attributes
-    if(meshSrc->has<data::mesh::Attributes::POINT_COLORS>())
+    if(_mesh_src->has<data::mesh::Attributes::POINT_COLORS>())
     {
-        auto* igtlDataPointColor = new igtlFloat32[4 * numberOfPoints];
+        auto* igtl_data_point_color = new igtlFloat32[4 * number_of_points];
 
         std::size_t i = 0;
-        for(const auto& color : meshSrc->crange<data::iterator::point::rgba>())
+        for(const auto& color : _mesh_src->crange<data::iterator::point::rgba>())
         {
-            igtlDataPointColor[4 * i]     = static_cast<float>(color.r) / 255.F;
-            igtlDataPointColor[4 * i + 1] = static_cast<float>(color.g) / 255.F;
-            igtlDataPointColor[4 * i + 2] = static_cast<float>(color.b) / 255.F;
-            igtlDataPointColor[4 * i + 3] = static_cast<float>(color.a) / 255.F;
+            igtl_data_point_color[4 * i]     = static_cast<float>(color.r) / 255.F;
+            igtl_data_point_color[4 * i + 1] = static_cast<float>(color.g) / 255.F;
+            igtl_data_point_color[4 * i + 2] = static_cast<float>(color.b) / 255.F;
+            igtl_data_point_color[4 * i + 3] = static_cast<float>(color.a) / 255.F;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::POINT_RGBA);
         attr->SetName("PointColors");
-        attr->SetSize(static_cast<igtlUint32>(numberOfPoints));
-        attr->SetData(igtlDataPointColor);
-        dest->AddAttribute(attr);
-        delete[] igtlDataPointColor;
+        attr->SetSize(static_cast<igtlUint32>(number_of_points));
+        attr->SetData(igtl_data_point_color);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_point_color;
     }
 
-    if(meshSrc->has<data::mesh::Attributes::POINT_NORMALS>())
+    if(_mesh_src->has<data::mesh::Attributes::POINT_NORMALS>())
     {
-        auto* igtlDataPointNormal = new igtlFloat32[3 * numberOfPoints];
+        auto* igtl_data_point_normal = new igtlFloat32[3 * number_of_points];
 
         std::size_t i = 0;
-        for(const auto& normal : meshSrc->crange<data::iterator::point::nxyz>())
+        for(const auto& normal : _mesh_src->crange<data::iterator::point::nxyz>())
         {
-            igtlDataPointNormal[3 * i]     = normal.nx;
-            igtlDataPointNormal[3 * i + 1] = normal.ny;
-            igtlDataPointNormal[3 * i + 2] = normal.nz;
+            igtl_data_point_normal[3 * i]     = normal.nx;
+            igtl_data_point_normal[3 * i + 1] = normal.ny;
+            igtl_data_point_normal[3 * i + 2] = normal.nz;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::POINT_NORMAL);
         attr->SetName("PointNormals");
-        attr->SetSize(static_cast<igtlUint32>(numberOfPoints));
-        attr->SetData(igtlDataPointNormal);
-        dest->AddAttribute(attr);
-        delete[] igtlDataPointNormal;
+        attr->SetSize(static_cast<igtlUint32>(number_of_points));
+        attr->SetData(igtl_data_point_normal);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_point_normal;
     }
 
-    if(meshSrc->has<data::mesh::Attributes::POINT_TEX_COORDS>())
+    if(_mesh_src->has<data::mesh::Attributes::POINT_TEX_COORDS>())
     {
-        auto* igtlDataPointTex = new igtlFloat32[2 * numberOfPoints];
+        auto* igtl_data_point_tex = new igtlFloat32[2 * number_of_points];
 
         std::size_t i = 0;
-        for(const auto& tex : meshSrc->crange<data::iterator::point::uv>())
+        for(const auto& tex : _mesh_src->crange<data::iterator::point::uv>())
         {
-            igtlDataPointTex[2 * i]     = tex.u;
-            igtlDataPointTex[2 * i + 1] = tex.v;
+            igtl_data_point_tex[2 * i]     = tex.u;
+            igtl_data_point_tex[2 * i + 1] = tex.v;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("PointTexCoord");
         attr->SetType(::igtl::PolyDataAttribute::POINT_VECTOR);
-        attr->SetSize(igtlUint32(numberOfPoints));
-        attr->SetData(igtlDataPointTex);
-        dest->AddAttribute(attr);
-        delete[] igtlDataPointTex;
+        attr->SetSize(igtlUint32(number_of_points));
+        attr->SetData(igtl_data_point_tex);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_point_tex;
     }
 
     // cell attributes
-    if(meshSrc->has<data::mesh::Attributes::CELL_COLORS>())
+    if(_mesh_src->has<data::mesh::Attributes::CELL_COLORS>())
     {
-        auto* igtlDataCellColor = new igtlFloat32[4 * numberOfCells];
+        auto* igtl_data_cell_color = new igtlFloat32[4 * number_of_cells];
 
         std::size_t i = 0;
-        for(const auto& color : meshSrc->crange<data::iterator::cell::rgba>())
+        for(const auto& color : _mesh_src->crange<data::iterator::cell::rgba>())
         {
-            igtlDataCellColor[4 * i]     = static_cast<float>(color.r) / 255.F;
-            igtlDataCellColor[4 * i + 1] = static_cast<float>(color.g) / 255.F;
-            igtlDataCellColor[4 * i + 2] = static_cast<float>(color.b) / 255.F;
-            igtlDataCellColor[4 * i + 3] = static_cast<float>(color.a) / 255.F;
+            igtl_data_cell_color[4 * i]     = static_cast<float>(color.r) / 255.F;
+            igtl_data_cell_color[4 * i + 1] = static_cast<float>(color.g) / 255.F;
+            igtl_data_cell_color[4 * i + 2] = static_cast<float>(color.b) / 255.F;
+            igtl_data_cell_color[4 * i + 3] = static_cast<float>(color.a) / 255.F;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::CELL_RGBA);
         attr->SetName("CellColors");
-        attr->SetSize(static_cast<igtlUint32>(numberOfCells));
-        attr->SetData(igtlDataCellColor);
-        dest->AddAttribute(attr);
-        delete[] igtlDataCellColor;
+        attr->SetSize(static_cast<igtlUint32>(number_of_cells));
+        attr->SetData(igtl_data_cell_color);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_cell_color;
     }
 
-    if(meshSrc->has<data::mesh::Attributes::CELL_NORMALS>())
+    if(_mesh_src->has<data::mesh::Attributes::CELL_NORMALS>())
     {
-        auto* igtlDataCellNormal = new igtlFloat32[3 * numberOfCells];
+        auto* igtl_data_cell_normal = new igtlFloat32[3 * number_of_cells];
 
         std::size_t i = 0;
-        for(const auto& normal : meshSrc->crange<data::iterator::cell::nxyz>())
+        for(const auto& normal : _mesh_src->crange<data::iterator::cell::nxyz>())
         {
-            igtlDataCellNormal[3 * i]     = normal.nx;
-            igtlDataCellNormal[3 * i + 1] = normal.ny;
-            igtlDataCellNormal[3 * i + 2] = normal.nz;
+            igtl_data_cell_normal[3 * i]     = normal.nx;
+            igtl_data_cell_normal[3 * i + 1] = normal.ny;
+            igtl_data_cell_normal[3 * i + 2] = normal.nz;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::CELL_NORMAL);
         attr->SetName("CellNormals");
-        attr->SetSize(static_cast<igtlUint32>(numberOfCells));
-        attr->SetData(igtlDataCellNormal);
-        dest->AddAttribute(attr);
-        delete[] igtlDataCellNormal;
+        attr->SetSize(static_cast<igtlUint32>(number_of_cells));
+        attr->SetData(igtl_data_cell_normal);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_cell_normal;
     }
 
-    if(meshSrc->has<data::mesh::Attributes::CELL_TEX_COORDS>())
+    if(_mesh_src->has<data::mesh::Attributes::CELL_TEX_COORDS>())
     {
-        auto* igtlDataCellTex = new igtlFloat32[2 * numberOfCells];
+        auto* igtl_data_cell_tex = new igtlFloat32[2 * number_of_cells];
 
         std::size_t i = 0;
-        for(const auto& tex : meshSrc->crange<data::iterator::cell::uv>())
+        for(const auto& tex : _mesh_src->crange<data::iterator::cell::uv>())
         {
-            igtlDataCellTex[2 * i]     = tex.u;
-            igtlDataCellTex[2 * i + 1] = tex.v;
+            igtl_data_cell_tex[2 * i]     = tex.u;
+            igtl_data_cell_tex[2 * i + 1] = tex.v;
             ++i;
         }
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("CellTexCoord");
         attr->SetType(::igtl::PolyDataAttribute::CELL_VECTOR);
-        attr->SetSize(igtlUint32(numberOfCells));
-        attr->SetData(igtlDataCellTex);
-        dest->AddAttribute(attr);
-        delete[] igtlDataCellTex;
+        attr->SetSize(igtlUint32(number_of_cells));
+        attr->SetData(igtl_data_cell_tex);
+        _dest->AddAttribute(attr);
+        delete[] igtl_data_cell_tex;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
     std::array<igtlFloat32, 3> point {};
     std::array<igtlUint32, 5> cell {};
 
-    auto* msg                                = dynamic_cast< ::igtl::PolyDataMessage*>(src.GetPointer());
-    ::igtl::PolyDataMessage::Pointer meshMsg = ::igtl::PolyDataMessage::Pointer(msg);
-    data::mesh::sptr mesh                    = std::make_shared<data::mesh>();
+    auto* msg                                 = dynamic_cast< ::igtl::PolyDataMessage*>(_src.GetPointer());
+    ::igtl::PolyDataMessage::Pointer mesh_msg = ::igtl::PolyDataMessage::Pointer(msg);
+    data::mesh::sptr mesh                     = std::make_shared<data::mesh>();
 
-    const int numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
+    const int number_of_points = mesh_msg->GetPoints()->GetNumberOfPoints();
 
     data::mesh::Attributes attributes = data::mesh::Attributes::NONE;
-    for(unsigned int i = 0 ; int(i) < meshMsg->GetNumberOfAttributes() ; ++i)
+    for(unsigned int i = 0 ; int(i) < mesh_msg->GetNumberOfAttributes() ; ++i)
     {
-        const ::igtl::PolyDataAttribute::Pointer attr = meshMsg->GetAttribute(i);
+        const ::igtl::PolyDataAttribute::Pointer attr = mesh_msg->GetAttribute(i);
         switch(attr->GetType())
         {
             case ::igtl::PolyDataAttribute::POINT_RGBA:
@@ -348,68 +348,68 @@ data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         }
     }
 
-    data::mesh::CellType cellType = data::mesh::CellType::_SIZE;
-    igtlUint32 numberOfCells      = 0;
-    if(meshMsg->GetLines()->GetNumberOfCells() > 0)
+    data::mesh::cell_type_t cell_type = data::mesh::cell_type_t::_SIZE;
+    igtlUint32 number_of_cells        = 0;
+    if(mesh_msg->GetLines()->GetNumberOfCells() > 0)
     {
-        cellType      = data::mesh::CellType::LINE;
-        numberOfCells = meshMsg->GetLines()->GetNumberOfCells();
+        cell_type       = data::mesh::cell_type_t::LINE;
+        number_of_cells = mesh_msg->GetLines()->GetNumberOfCells();
     }
-    else if(meshMsg->GetTriangleStrips()->GetNumberOfCells() > 0)
+    else if(mesh_msg->GetTriangleStrips()->GetNumberOfCells() > 0)
     {
-        cellType      = data::mesh::CellType::TRIANGLE;
-        numberOfCells = meshMsg->GetTriangleStrips()->GetNumberOfCells();
+        cell_type       = data::mesh::cell_type_t::TRIANGLE;
+        number_of_cells = mesh_msg->GetTriangleStrips()->GetNumberOfCells();
     }
-    else if(meshMsg->GetVertices()->GetNumberOfCells() > 0)
+    else if(mesh_msg->GetVertices()->GetNumberOfCells() > 0)
     {
-        cellType      = data::mesh::CellType::QUAD;
-        numberOfCells = meshMsg->GetVertices()->GetNumberOfCells();
-    }
-
-    if(numberOfCells == 0)
-    {
-        numberOfCells = igtlUint32(numberOfPoints);
+        cell_type       = data::mesh::cell_type_t::QUAD;
+        number_of_cells = mesh_msg->GetVertices()->GetNumberOfCells();
     }
 
-    mesh->reserve(data::mesh::size_t(numberOfPoints), numberOfCells, cellType, attributes);
-    const auto dumpLock = mesh->dump_lock();
+    if(number_of_cells == 0)
+    {
+        number_of_cells = igtlUint32(number_of_points);
+    }
 
-    ::igtl::PolyDataPointArray* points = meshMsg->GetPoints();
-    auto nbPoints                      = static_cast<unsigned int>(points->GetNumberOfPoints());
-    for(unsigned int i = 0 ; i < nbPoints ; ++i)
+    mesh->reserve(data::mesh::size_t(number_of_points), number_of_cells, cell_type, attributes);
+    const auto dump_lock = mesh->dump_lock();
+
+    ::igtl::PolyDataPointArray* points = mesh_msg->GetPoints();
+    auto nb_points                     = static_cast<unsigned int>(points->GetNumberOfPoints());
+    for(unsigned int i = 0 ; i < nb_points ; ++i)
     {
         points->GetPoint(i, point.data());
         mesh->pushPoint(point[0], point[1], point[2]);
     }
 
-    if(cellType == data::mesh::CellType::LINE)
+    if(cell_type == data::mesh::cell_type_t::LINE)
     {
-        for(unsigned int i = 0 ; i < meshMsg->GetLines()->GetNumberOfCells() ; ++i)
+        for(unsigned int i = 0 ; i < mesh_msg->GetLines()->GetNumberOfCells() ; ++i)
         {
-            meshMsg->GetLines()->GetCell(i, cell.data());
+            mesh_msg->GetLines()->GetCell(i, cell.data());
             mesh->pushCell(cell[0], cell[1]);
         }
     }
-    else if(cellType == data::mesh::CellType::TRIANGLE)
+    else if(cell_type == data::mesh::cell_type_t::TRIANGLE)
     {
-        for(unsigned int i = 0 ; i < meshMsg->GetTriangleStrips()->GetNumberOfCells() ; ++i)
+        for(unsigned int i = 0 ; i < mesh_msg->GetTriangleStrips()->GetNumberOfCells() ; ++i)
         {
-            meshMsg->GetTriangleStrips()->GetCell(i, cell.data());
+            mesh_msg->GetTriangleStrips()->GetCell(i, cell.data());
             mesh->pushCell(cell[0], cell[1], cell[2]);
         }
     }
-    else if(cellType == data::mesh::CellType::QUAD)
+    else if(cell_type == data::mesh::cell_type_t::QUAD)
     {
-        for(unsigned int i = 0 ; i < meshMsg->GetVertices()->GetNumberOfCells() ; ++i)
+        for(unsigned int i = 0 ; i < mesh_msg->GetVertices()->GetNumberOfCells() ; ++i)
         {
-            meshMsg->GetVertices()->GetCell(i, cell.data());
+            mesh_msg->GetVertices()->GetCell(i, cell.data());
             mesh->pushCell(cell[0], cell[1], cell[2], cell[3]);
         }
     }
 
     mesh->shrinkToFit();
 
-    sight::io::igtl::detail::converter::MeshConverter::copyAttributeFromPolyData(meshMsg, mesh);
+    sight::io::igtl::detail::converter::MeshConverter::copyAttributeFromPolyData(mesh_msg, mesh);
 
     return mesh;
 }
@@ -417,15 +417,15 @@ data::object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 //-----------------------------------------------------------------------------
 
 void MeshConverter::copyAttributeFromPolyData(
-    ::igtl::PolyDataMessage::Pointer src,
-    data::mesh::sptr dest
+    ::igtl::PolyDataMessage::Pointer _src,
+    data::mesh::sptr _dest
 )
 {
     ::igtl::PolyDataAttribute::Pointer attr;
 
-    for(unsigned int i = 0 ; int(i) < src->GetNumberOfAttributes() ; ++i)
+    for(unsigned int i = 0 ; int(i) < _src->GetNumberOfAttributes() ; ++i)
     {
-        attr = src->GetAttribute(i);
+        attr = _src->GetAttribute(i);
         switch(attr->GetType())
         {
             case ::igtl::PolyDataAttribute::POINT_RGBA:
@@ -436,7 +436,7 @@ void MeshConverter::copyAttributeFromPolyData(
                 std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
-                    dest->setPointColor(
+                    _dest->setPointColor(
                         j,
                         static_cast<data::mesh::color_t>(data[k] * 255.F),
                         static_cast<data::mesh::color_t>(data[k + 1] * 255.F),
@@ -459,7 +459,7 @@ void MeshConverter::copyAttributeFromPolyData(
                 std::size_t k = 0;
                 for(unsigned int j = 0 ; j < attr->GetSize() ; ++j)
                 {
-                    dest->setCellColor(
+                    _dest->setCellColor(
                         j,
                         static_cast<data::mesh::color_t>(data[k] * 255.F),
                         static_cast<data::mesh::color_t>(data[k + 1] * 255.F),
@@ -478,9 +478,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->numPoints() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->numPoints() ; ++j)
                 {
-                    dest->setPointNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
+                    _dest->setPointNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
                 }
 
                 attr->Clear();
@@ -492,9 +492,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->numCells() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->numCells() ; ++j)
                 {
-                    dest->setCellNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
+                    _dest->setCellNormal(j, data[j * 3LL], data[j * 3 + 1], data[j * 3 + 2]);
                 }
 
                 attr->Clear();
@@ -506,9 +506,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->numPoints() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->numPoints() ; ++j)
                 {
-                    dest->setPointTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
+                    _dest->setPointTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
                 }
 
                 attr->Clear();
@@ -520,9 +520,9 @@ void MeshConverter::copyAttributeFromPolyData(
             {
                 auto* data = new igtlFloat32[static_cast<std::size_t>(attr->GetSize()) * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->numCells() ; ++j)
+                for(unsigned int j = 0 ; j < _dest->numCells() ; ++j)
                 {
-                    dest->setCellTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
+                    _dest->setCellTexCoord(j, data[j * 2LL], data[j * 2 + 1]);
                 }
 
                 attr->Clear();
@@ -545,7 +545,7 @@ base::sptr MeshConverter::New()
 
 //-----------------------------------------------------------------------------
 
-std::string const& MeshConverter::getIgtlType() const
+std::string const& MeshConverter::get_igtl_type() const
 {
     return MeshConverter::s_IGTL_TYPE;
 }

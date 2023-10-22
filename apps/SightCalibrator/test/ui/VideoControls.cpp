@@ -52,40 +52,40 @@ std::filesystem::path VideoControls::getProfilePath()
 
 void VideoControls::test()
 {
-    namespace helper = sight::ui::testCore::helper;
+    namespace helper = sight::ui::test_core::helper;
 
-    const std::filesystem::path videoPath = utest_data::Data::dir()
-                                            / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
+    const std::filesystem::path video_path = utest_data::Data::dir()
+                                             / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
 
     start(
         "VideoControls",
-        [&videoPath](sight::ui::testCore::Tester& tester)
+        [&video_path](sight::ui::test_core::Tester& _tester)
         {
-            helper::Button::push(tester, "activityCreatorSrv/Calibration");
+            helper::Button::push(_tester, "activityCreatorSrv/Calibration");
 
-            helper::VideoControls::load(tester, "videoToolbarView", videoPath);
+            helper::VideoControls::load(_tester, "videoToolbarView", video_path);
 
             // The video lasts 5 seconds
-            helper::Label::exactlyMatch(tester, "videoSliderSrv/totalDuration", "00:00:05");
+            helper::Label::exactlyMatch(_tester, "videoSliderSrv/totalDuration", "00:00:05");
 
             // The file should play automatically upon loading, after 5 seconds, the file reaches the end.
             QTest::qWait(5000);
-            helper::Label::exactlyMatch(tester, "videoSliderSrv/currentPosition", "00:00:00");
+            helper::Label::exactlyMatch(_tester, "videoSliderSrv/currentPosition", "00:00:00");
 
             // The current position shouldn't move while the player is paused
-            helper::VideoControls::stop(tester, "videoToolbarView");
-            helper::VideoControls::start(tester, "videoToolbarView");
+            helper::VideoControls::stop(_tester, "videoToolbarView");
+            helper::VideoControls::start(_tester, "videoToolbarView");
             QTest::qWait(1000);
-            helper::VideoControls::pause(tester, "videoToolbarView");
-            std::string currentPosition = helper::Label::get(tester, "videoSliderSrv/currentPosition");
+            helper::VideoControls::pause(_tester, "videoToolbarView");
+            std::string current_position = helper::Label::get(_tester, "videoSliderSrv/currentPosition");
             QTest::qWait(1000);
-            helper::Label::exactlyMatch(tester, "videoSliderSrv/currentPosition", currentPosition);
+            helper::Label::exactlyMatch(_tester, "videoSliderSrv/currentPosition", current_position);
 
             // When enabling loop, we should return to the current position after 5 seconds.
-            helper::VideoControls::loop(tester, "videoToolbarView");
-            helper::VideoControls::play(tester, "videoToolbarView");
+            helper::VideoControls::loop(_tester, "videoToolbarView");
+            helper::VideoControls::play(_tester, "videoToolbarView");
             QTest::qWait(5000);
-            helper::Label::exactlyMatch(tester, "videoSliderSrv/currentPosition", currentPosition);
+            helper::Label::exactlyMatch(_tester, "videoSliderSrv/currentPosition", current_position);
         },
         true
     );

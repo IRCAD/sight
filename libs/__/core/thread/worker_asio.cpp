@@ -37,9 +37,9 @@ namespace sight::core::thread
 
 //------------------------------------------------------------------------------
 
-std::size_t worker_thread(SPTR(boost::asio::io_service)io_service)
+std::size_t worker_thread(SPTR(boost::asio::io_service)_io_service)
 {
-    std::size_t res = io_service->run();
+    std::size_t res = _io_service->run();
     return res;
 }
 
@@ -61,7 +61,7 @@ public:
 
     void stop() override;
 
-    void post(task_t handler) override;
+    void post(task_t _handler) override;
 
     thread_id_t get_thread_id() const override;
 
@@ -69,7 +69,7 @@ public:
 
     void process_tasks() override;
 
-    void process_tasks(period_t maxtime) override;
+    void process_tasks(period_t _maxtime) override;
 
 protected:
 
@@ -109,7 +109,7 @@ public:
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
-    explicit timer_asio(boost::asio::io_service& io_srv);
+    explicit timer_asio(boost::asio::io_service& _io_srv);
 
     ~timer_asio() override;
 
@@ -120,7 +120,7 @@ public:
     void stop() override;
 
     /// Sets time duration.
-    void set_duration(time_duration_t duration) override;
+    void set_duration(time_duration_t _duration) override;
 
     /// Returns if the timer mode is 'one shot'.
     bool is_one_shot() const override
@@ -130,10 +130,10 @@ public:
     }
 
     /// Sets timer mode.
-    void set_one_shot(bool one_shot) override
+    void set_one_shot(bool _one_shot) override
     {
         core::mt::scoped_lock lock(m_mutex);
-        m_one_shot = one_shot;
+        m_one_shot = _one_shot;
     }
 
     /// Returns true if the timer is currently running.
@@ -146,7 +146,7 @@ public:
 protected:
 
     void cancel_no_lock();
-    void rearm_no_lock(time_duration_t duration);
+    void rearm_no_lock(time_duration_t _duration);
 
     /// Copy constructor forbidden.
     timer_asio(const timer_asio&);
@@ -228,9 +228,9 @@ SPTR(core::thread::timer) worker_asio::create_timer()
 
 //------------------------------------------------------------------------------
 
-void worker_asio::post(task_t handler)
+void worker_asio::post(task_t _handler)
 {
-    m_io_service->post(handler);
+    m_io_service->post(_handler);
 }
 
 //------------------------------------------------------------------------------
@@ -249,10 +249,10 @@ void worker_asio::process_tasks()
 
 //------------------------------------------------------------------------------
 
-void worker_asio::process_tasks(period_t maxtime)
+void worker_asio::process_tasks(period_t _maxtime)
 {
     core::time_stamp time_stamp;
-    time_stamp.set_life_period(maxtime);
+    time_stamp.set_life_period(_maxtime);
     time_stamp.modified();
     while(time_stamp.period_expired())
     {
@@ -268,8 +268,8 @@ SPTR(worker) worker::make()
 
 // ---------- Timer private implementation ----------
 
-timer_asio::timer_asio(boost::asio::io_service& io_srv) :
-    m_timer(io_srv),
+timer_asio::timer_asio(boost::asio::io_service& _io_srv) :
+    m_timer(_io_srv),
     m_duration(std::chrono::seconds(1))
 {
 }
@@ -279,10 +279,10 @@ timer_asio::~timer_asio()
 
 //------------------------------------------------------------------------------
 
-void timer_asio::set_duration(time_duration_t duration)
+void timer_asio::set_duration(time_duration_t _duration)
 {
     core::mt::scoped_lock lock(m_mutex);
-    m_duration = duration;
+    m_duration = _duration;
 }
 
 //------------------------------------------------------------------------------
@@ -312,9 +312,9 @@ struct timer_callback
 {
     //------------------------------------------------------------------------------
 
-    static void call(const boost::system::error_code& error, timer_asio::sptr _timer)
+    static void call(const boost::system::error_code& _error, timer_asio::sptr _timer)
     {
-        if(!error)
+        if(!_error)
         {
             timer_asio::time_duration_t duration;
             bool one_shot = false;
@@ -347,11 +347,11 @@ struct timer_callback
 
 //------------------------------------------------------------------------------
 
-void timer_asio::rearm_no_lock(time_duration_t duration)
+void timer_asio::rearm_no_lock(time_duration_t _duration)
 {
     this->cancel_no_lock();
     boost::posix_time::time_duration d =
-        boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
+        boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(_duration).count());
     m_timer.expires_from_now(d);
     // NOLINTNEXTLINE(modernize-avoid-bind)
     m_timer.async_wait(boost::bind(timer_callback::call, boost::asio::placeholders::error, this->get_sptr()));

@@ -84,7 +84,7 @@ public:
     MODULE_UI_API ~config_launcher() noexcept override;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_API void setChecked(bool isChecked) override;
+    MODULE_UI_API void setChecked(bool _is_checked) override;
 
     // Launched signal key
     MODULE_UI_API static const core::com::signals::key_t LAUNCHED_SIG;
@@ -94,8 +94,8 @@ protected:
     /**
      * @name Defines signal triggered when config is started
      * @{ */
-    typedef core::com::signal<void ()> LaunchedSignalType;
-    LaunchedSignalType::sptr m_sigLaunched;
+    typedef core::com::signal<void ()> launched_signal_t;
+    launched_signal_t::sptr m_sigLaunched;
     /**  @} */
 
     ///This method launches the action::starting method.

@@ -15,7 +15,7 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::IParameter</type>
+         <type>sight::viz::scene3d::parameter_adaptor</type>
          <service>sight::module::viz::scene3d::adaptor::compositor_parameter</service>
          <object key="parameter">sight::data::object</object>
          <desc>This adaptor binds a Sight data to a shader uniform from a specific compositor.</desc>
@@ -63,7 +63,7 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::ILight</type>
+         <type>sight::viz::scene3d::light_adaptor</type>
          <service>sight::module::viz::scene3d::adaptor::light</service>
          <object key="diffuseColor">sight::data::color</object>
          <object key="specularColor">sight::data::color</object>
@@ -177,7 +177,7 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::IParameter</type>
+         <type>sight::viz::scene3d::parameter_adaptor</type>
          <service>sight::module::viz::scene3d::adaptor::shader_parameter</service>
          <object key="parameter">sight::data::object</object>
          <desc>This adaptor sends a Sight data as a shader parameter.</desc>

@@ -43,7 +43,7 @@ public:
     SIGHT_DECLARE_SERVICE(filter, service::base);
 
     SERVICE_API static const core::com::signals::key_t COMPUTED_SIG;
-    typedef core::com::signal<void ()> ComputedSignalType;
+    typedef core::com::signal<void ()> computed_signal_t;
 
 protected:
 
@@ -53,7 +53,7 @@ protected:
     /// filter destructor.
     SERVICE_API ~filter() override;
 
-    ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
+    computed_signal_t::sptr m_sigComputed; ///< Signal emitted when operator is computed.
 };
 
 } // namespace sight::service

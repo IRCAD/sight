@@ -118,22 +118,22 @@ private:
     {
         TOP_LEFT = 0,
         CENTER
-    } VideoReferenceType;
+    } video_reference_t;
 
     /// Adds a point in both pointlists.
-    void addPoint(const std::array<double, 3>& currentPoint);
+    void addPoint(const std::array<double, 3>& _current_point);
 
     /// Removes the last point in both pointlists.
     void removeLastPoint();
 
     /// Slot: retrieves the 2d coordinates from the interaction point.
-    void getInteraction(data::tools::picking_info info);
+    void getInteraction(data::tools::picking_info _info);
 
-    /// Map that handles conversion between xml configuration string and VideoReferenceType
-    std::map<std::string, VideoReferenceType> m_videoRefMap;
+    /// Map that handles conversion between xml configuration string and video_reference_t
+    std::map<std::string, video_reference_t> m_videoRefMap;
 
     /// Manages video coordinate system
-    VideoReferenceType m_videoRef {VideoReferenceType::CENTER};
+    video_reference_t m_videoRef {video_reference_t::CENTER};
 
     // Whether to require or not the use of the control modifier when clicking.
     bool m_useCtrlModifier {true};

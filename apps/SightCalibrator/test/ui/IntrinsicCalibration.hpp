@@ -26,7 +26,7 @@
 namespace sight::sightcalibrator::test::ui
 {
 
-class IntrinsicCalibration : public sight::ui::testCore::test
+class IntrinsicCalibration : public sight::ui::test_core::test
 {
 CPPUNIT_TEST_SUITE(IntrinsicCalibration);
 CPPUNIT_TEST(test);

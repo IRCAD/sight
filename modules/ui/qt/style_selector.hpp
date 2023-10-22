@@ -34,7 +34,7 @@ namespace sight::module::ui::qt
 {
 
 /**
- * @brief Selector of theme/style.
+ * @brief selector of theme/style.
  * Theme should be stored in the rc/ folder of this module.
  *
  * When a new theme is applied on an application, it will be saved in preference file with "THEME" key.
@@ -107,7 +107,7 @@ protected:
 private:
 
     /// Applies the style _stylename.
-    void changeStyle(const std::string& _styleName);
+    void changeStyle(const std::string& _style_name);
 
     ///Slot: check preference key THEME, and update theme accordingly.
     void updateFromPrefs();

@@ -45,7 +45,7 @@ public:
 
     SIGHT_DECLARE_CLASS(dicom_series, series);
 
-    typedef std::map<std::size_t, core::memory::buffer_object::sptr> DicomContainerType;
+    typedef std::map<std::size_t, core::memory::buffer_object::sptr> dicom_container_t;
 
     typedef std::set<std::string> sop_classUIDContainerType;
 
@@ -59,41 +59,41 @@ public:
      * @param _instanceIndex index of the instance.
      * @param _path the path.
      */
-    DATA_API void addDicomPath(std::size_t instanceIndex, const std::filesystem::path& _path);
+    DATA_API void addDicomPath(std::size_t _instance_index, const std::filesystem::path& _path);
 
     /**
      * @brief Adds a binary buffer.
      * @param _instanceIndex index of the instance.
      * @param _buffer the buffer.
      */
-    DATA_API void addBinary(std::size_t _instanceIndex, const core::memory::buffer_object::sptr& _buffer);
+    DATA_API void addBinary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
 
     /**
      * @brief Gets if the instance is available on the local computer
      * @param _instanceIndex the instance to check.
      * @return True if the instance is available on the local computer
      */
-    DATA_API bool isInstanceAvailable(std::size_t _instanceIndex) const;
+    DATA_API bool isInstanceAvailable(std::size_t _instance_index) const;
 
     /**
      * @brief Adds a sop_classUID that is used by this series.
      * @param _sopClassUID sop_classUID that must be added.
      */
-    DATA_API void addsop_classUID(const std::string& _sopClassUID);
+    DATA_API void addsop_classUID(const std::string& _sop_class_uid);
 
     /**
      * @brief Adds a computed value to the specified tag.
      * @param _tagName Name of the tag.
      * @param _value Computed value.
      */
-    DATA_API void addComputedTagValue(const std::string& _tagName, const std::string& _value);
+    DATA_API void addComputedTagValue(const std::string& _tag_name, const std::string& _value);
 
     /**
      * @brief Gets if there is a computed value for the specified tag.
      * @param _tagName Name of the tag.
      * @return True if there is a computed value for the tag.
      */
-    DATA_API bool hasComputedValues(const std::string& _tagName) const;
+    DATA_API bool hasComputedValues(const std::string& _tag_name) const;
 
     /**
      * @brief Gets the number of instances in the series.
@@ -111,15 +111,15 @@ public:
     }
 
     /// Gets the DICOM container.
-    const DicomContainerType& getDicomContainer() const
+    const dicom_container_t& getDicomContainer() const
     {
         return m_dicomContainer;
     }
 
     /// Sets the DICOM container.
-    void setDicomContainer(const DicomContainerType& _dicomContainer)
+    void setDicomContainer(const dicom_container_t& _dicom_container)
     {
-        m_dicomContainer = _dicomContainer;
+        m_dicomContainer = _dicom_container;
     }
 
     /// Clears the DICOM container.
@@ -166,29 +166,29 @@ public:
     }
 
     /// Sets the first instance number (0 or 1) - Used for PACS preview.
-    void setFirstInstanceNumber(std::size_t _firstInstanceNumber)
+    void setFirstInstanceNumber(std::size_t _first_instance_number)
     {
-        m_firstInstanceNumber = _firstInstanceNumber;
+        m_firstInstanceNumber = _first_instance_number;
     }
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const dicom_series& other) const noexcept;
-    DATA_API bool operator!=(const dicom_series& other) const noexcept;
+    DATA_API bool operator==(const dicom_series& _other) const noexcept;
+    DATA_API bool operator!=(const dicom_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -197,7 +197,7 @@ protected:
     std::size_t m_numberOfInstances {0};
 
     /// Stores DICOM.
-    DicomContainerType m_dicomContainer;
+    dicom_container_t m_dicomContainer;
 
     /// Stores SOP Class UIDs.
     sop_classUIDContainerType m_sop_classUIDs;

@@ -52,33 +52,33 @@ struct InrSaverFunctor
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(const Parameter& param)
+    void operator()(const Parameter& _param)
     {
         SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
-        typename ::itk::ImageIOBase::Pointer imageIOWrite = ::itk::ImageIOFactory::CreateImageIO(
-            param.m_filename.c_str(),
+        typename ::itk::ImageIOBase::Pointer image_io_write = ::itk::ImageIOFactory::CreateImageIO(
+            _param.m_filename.c_str(),
             ::itk::ImageIOFactory::WriteMode
         );
-        assert(imageIOWrite.IsNotNull());
+        assert(image_io_write.IsNotNull());
 
         // create writer
         using itkImageType = ::itk::Image<PIXELTYPE, 3>;
-        using WriterType   = typename ::itk::ImageFileWriter<itkImageType>;
-        typename WriterType::Pointer writer = WriterType::New();
+        using writer_t     = typename ::itk::ImageFileWriter<itkImageType>;
+        typename writer_t::Pointer writer = writer_t::New();
 
         // set observation (*2*)
-        ::itk::LightProcessObject::Pointer castHelper = (::itk::LightProcessObject*) (imageIOWrite.GetPointer());
-        assert(castHelper.IsNotNull());
-        Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
+        ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
+        assert(cast_helper.IsNotNull());
+        Progressor progress(cast_helper, _param.m_fwWriter, _param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(param.m_dataImage);
+        typename itkImageType::Pointer itk_image = io::itk::move_to_itk<itkImageType>(_param.m_dataImage);
 
-        writer->SetFileName(param.m_filename.c_str());
-        writer->SetInput(itkImage);
-        writer->SetImageIO(imageIOWrite); // (*3*)
+        writer->SetFileName(_param.m_filename.c_str());
+        writer->SetInput(itk_image);
+        writer->SetImageIO(image_io_write); // (*3*)
 
         // save image;
         writer->Update();
@@ -92,15 +92,15 @@ void InrImageWriter::write()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    InrSaverFunctor::Parameter saverParam;
-    saverParam.m_filename  = this->get_file().string();
-    saverParam.m_dataImage = getConcreteObject();
-    saverParam.m_fwWriter  = this->get_sptr();
-    assert(saverParam.m_dataImage);
+    InrSaverFunctor::Parameter saver_param;
+    saver_param.m_filename  = this->get_file().string();
+    saver_param.m_dataImage = getConcreteObject();
+    saver_param.m_fwWriter  = this->get_sptr();
+    assert(saver_param.m_dataImage);
 
     core::tools::dispatcher<core::tools::supported_dispatcher_types, InrSaverFunctor>::invoke(
-        saverParam.m_dataImage->getType(),
-        saverParam
+        saver_param.m_dataImage->getType(),
+        saver_param
     );
 }
 

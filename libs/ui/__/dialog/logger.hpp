@@ -50,9 +50,9 @@ public:
      * @return Returns true or false whether the user has selected the OK or CANCEL button
      */
     UI_API static bool showLoggerDialog(
-        const std::string& title,
-        const std::string& message,
-        const core::log::logger::sptr& logger
+        const std::string& _title,
+        const std::string& _message,
+        const core::log::logger::sptr& _logger
     );
 
     /// Constructor that will instantiate the concrete implementation
@@ -68,28 +68,28 @@ public:
      * @param[in] logger Logger of the dialog
      */
     UI_API logger(
-        const std::string& title,
-        const std::string& message,
-        const core::log::logger::sptr& logger
+        const std::string& _title,
+        const std::string& _message,
+        const core::log::logger::sptr& _logger
     );
 
     /**
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_API void setMessage(const std::string& message) override;
+    UI_API void setMessage(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_API void setLogger(const core::log::logger::sptr& logger) override;
+    UI_API void setLogger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button

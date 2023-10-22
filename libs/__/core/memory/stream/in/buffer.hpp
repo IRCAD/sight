@@ -39,8 +39,8 @@ public:
     typedef SPTR(void) lock_type;
     typedef std::function<lock_type()> counter_factory_type;
 
-    buffer(void* buf, std::size_t size);
-    buffer(void* buf, std::size_t size, counter_factory_type counter_factory);
+    buffer(void* _buf, std::size_t _size);
+    buffer(void* _buf, std::size_t _size, counter_factory_type _counter_factory);
 
 protected:
 

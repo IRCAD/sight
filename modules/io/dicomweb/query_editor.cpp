@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 #include <ui/qt/container/widget.hpp>
 
 #include <QGridLayout>
@@ -59,12 +59,12 @@ void query_editor::configuring()
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {
-        const std::string serverInfo               = configuration.get("server", "");
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string server_info               = configuration.get("server", "");
+        const std::string::size_type split_position = server_info.find(':');
+        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = serverInfo.substr(0, splitPosition);
-        m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+        m_serverHostnameKey = server_info.substr(0, split_position);
+        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -79,7 +79,7 @@ void query_editor::configuring()
 void query_editor::starting()
 {
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     // Main Widget
     auto* layout = new QGridLayout();
@@ -97,15 +97,15 @@ void query_editor::starting()
     m_endStudyDateEdit->setDate(QDate::currentDate());
     m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
     m_studyDateQueryButton = new QPushButton("Send");
-    auto* dateLayout = new QHBoxLayout();
+    auto* date_layout = new QHBoxLayout();
     layout->addWidget(new QLabel("Study date:"), 1, 0);
-    layout->addLayout(dateLayout, 1, 1);
+    layout->addLayout(date_layout, 1, 1);
     layout->addWidget(m_studyDateQueryButton, 1, 2);
-    dateLayout->addWidget(m_beginStudyDateEdit);
-    dateLayout->addWidget(m_endStudyDateEdit);
+    date_layout->addWidget(m_beginStudyDateEdit);
+    date_layout->addWidget(m_endStudyDateEdit);
 
     //Set layout
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     // Connect the signals
     QObject::connect(m_patientNameLineEdit, SIGNAL(returnPressed()), this, SLOT(queryPatientName()));
@@ -141,7 +141,7 @@ void query_editor::queryPatientName()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -153,7 +153,7 @@ void query_editor::queryPatientName()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::series_set::container_type allSeries;
+        data::series_set::container_type all_series;
 
         // Find series according to patient's name
         QJsonObject query;
@@ -165,37 +165,37 @@ void query_editor::queryPatientName()
         body.insert("Limit", 0);
 
         /// Url PACS
-        const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+        const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-        auto request                   = sight::io::http::Request::New(pacsServer + "/tools/find");
-        const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
-        QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
-        QJsonArray seriesArray         = jsonResponse.array();
-        const int seriesArraySize      = seriesArray.count();
+        auto request                    = sight::io::http::Request::New(pacs_server + "/tools/find");
+        const QByteArray& series_answer = m_clientQt.post(request, QJsonDocument(body).toJson());
+        QJsonDocument json_response     = QJsonDocument::fromJson(series_answer);
+        QJsonArray series_array         = json_response.array();
+        const int series_array_size     = series_array.count();
 
-        for(int i = 0 ; i < seriesArraySize ; ++i)
+        for(int i = 0 ; i < series_array_size ; ++i)
         {
-            const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
-            const std::string instancesListUrl(pacsServer + "/series/" + seriesUID);
-            const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesListUrl));
-            jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-            const QJsonObject& jsonObj      = jsonResponse.object();
-            const QJsonArray& instanceArray = jsonObj["Instances"].toArray();
+            const std::string& series_uid = series_array.at(i).toString().toStdString();
+            const std::string instances_list_url(pacs_server + "/series/" + series_uid);
+            const QByteArray& instances_answer = m_clientQt.get(sight::io::http::Request::New(instances_list_url));
+            json_response = QJsonDocument::fromJson(instances_answer);
+            const QJsonObject& json_obj      = json_response.object();
+            const QJsonArray& instance_array = json_obj["Instances"].toArray();
 
             // Retrieve the first instance for the needed information
-            const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-            const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-            const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
+            const std::string& instance_uid = instance_array.at(0).toString().toStdString();
+            const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/simplified-tags");
+            const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instance_url));
 
-            QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
-            seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
+            QJsonObject series_json = QJsonDocument::fromJson(instance).object();
+            series_json.insert("NumberOfSeriesRelatedInstances", instance_array.count());
 
             // Convert response to DicomSeries
-            data::series_set::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+            data::series_set::container_type series = sight::io::http::helper::Series::toFwMedData(series_json);
 
-            allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-            this->updateSeriesSet(allSeries);
+            all_series.insert(std::end(all_series), std::begin(series), std::end(series));
+            this->updateSeriesSet(all_series);
         }
     }
     catch(sight::io::http::exceptions::Base& exception)
@@ -210,7 +210,7 @@ void query_editor::queryStudyDate()
 {
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -222,14 +222,14 @@ void query_editor::queryStudyDate()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::series_set::container_type allSeries;
+        data::series_set::container_type all_series;
 
         // Find Studies according to their StudyDate
         QJsonObject query;
-        const std::string& beginDate = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-        const std::string& endDate   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-        const std::string& dateRange = beginDate + "-" + endDate;
-        query.insert("StudyDate", dateRange.c_str());
+        const std::string& begin_date = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+        const std::string& end_date   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+        const std::string& date_range = begin_date + "-" + end_date;
+        query.insert("StudyDate", date_range.c_str());
 
         QJsonObject body;
         body.insert("Level", "Studies");
@@ -237,14 +237,14 @@ void query_editor::queryStudyDate()
         body.insert("Limit", 0);
 
         /// Url PACS
-        const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+        const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Studies corresponding to StudyDate range.
-        sight::io::http::Request::sptr request = sight::io::http::Request::New(pacsServer + "/tools/find");
-        QByteArray studiesListAnswer;
+        sight::io::http::Request::sptr request = sight::io::http::Request::New(pacs_server + "/tools/find");
+        QByteArray studies_list_answer;
         try
         {
-            studiesListAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+            studies_list_answer = m_clientQt.post(request, QJsonDocument(body).toJson());
         }
         catch(sight::io::http::exceptions::HostNotFound& exception)
         {
@@ -257,43 +257,43 @@ void query_editor::queryStudyDate()
             sight::module::io::dicomweb::query_editor::displayErrorMessage(ss.str());
             SIGHT_WARN(exception.what());
         }
-        QJsonDocument jsonResponse         = QJsonDocument::fromJson(studiesListAnswer);
-        const QJsonArray& studiesListArray = jsonResponse.array();
-        const int studiesListArraySize     = studiesListArray.count();
+        QJsonDocument json_response          = QJsonDocument::fromJson(studies_list_answer);
+        const QJsonArray& studies_list_array = json_response.array();
+        const int studies_list_array_size    = studies_list_array.count();
 
-        for(int i = 0 ; i < studiesListArraySize ; ++i)
+        for(int i = 0 ; i < studies_list_array_size ; ++i)
         {
-            const std::string& studiesUID = studiesListArray.at(i).toString().toStdString();
-            const std::string studiesUrl(pacsServer + "/studies/" + studiesUID);
-            const QByteArray& studiesAnswer = m_clientQt.get(sight::io::http::Request::New(studiesUrl));
+            const std::string& studies_uid = studies_list_array.at(i).toString().toStdString();
+            const std::string studies_url(pacs_server + "/studies/" + studies_uid);
+            const QByteArray& studies_answer = m_clientQt.get(sight::io::http::Request::New(studies_url));
 
-            jsonResponse = QJsonDocument::fromJson(studiesAnswer);
-            const QJsonObject& jsonObj    = jsonResponse.object();
-            const QJsonArray& seriesArray = jsonObj["Series"].toArray();
-            const int seriesArraySize     = seriesArray.count();
+            json_response = QJsonDocument::fromJson(studies_answer);
+            const QJsonObject& json_obj    = json_response.object();
+            const QJsonArray& series_array = json_obj["Series"].toArray();
+            const int series_array_size    = series_array.count();
 
-            for(int j = 0 ; j < seriesArraySize ; ++j)
+            for(int j = 0 ; j < series_array_size ; ++j)
             {
-                const std::string& seriesUID = seriesArray.at(j).toString().toStdString();
-                const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
-                const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
-                jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-                const QJsonObject& anotherJsonObj = jsonResponse.object();
-                const QJsonArray& instanceArray   = anotherJsonObj["Instances"].toArray();
+                const std::string& series_uid = series_array.at(j).toString().toStdString();
+                const std::string instances_url(pacs_server + "/series/" + series_uid);
+                const QByteArray& instances_answer = m_clientQt.get(sight::io::http::Request::New(instances_url));
+                json_response = QJsonDocument::fromJson(instances_answer);
+                const QJsonObject& another_json_obj = json_response.object();
+                const QJsonArray& instance_array    = another_json_obj["Instances"].toArray();
 
                 // Retrieve the first instance for the needed information
-                const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
-                const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-                const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instanceUrl));
+                const std::string& instance_uid = instance_array.at(0).toString().toStdString();
+                const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/simplified-tags");
+                const QByteArray& instance = m_clientQt.get(sight::io::http::Request::New(instance_url));
 
-                QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
-                seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
+                QJsonObject series_json = QJsonDocument::fromJson(instance).object();
+                series_json.insert("NumberOfSeriesRelatedInstances", instance_array.count());
 
                 // Convert response to DicomSeries
-                data::series_set::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+                data::series_set::container_type series = sight::io::http::helper::Series::toFwMedData(series_json);
 
-                allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-                this->updateSeriesSet(allSeries);
+                all_series.insert(std::end(all_series), std::begin(series), std::end(series));
+                this->updateSeriesSet(all_series);
             }
         }
     }
@@ -308,7 +308,7 @@ void query_editor::queryStudyDate()
 
 //------------------------------------------------------------------------------
 
-void query_editor::updateSeriesSet(const data::series_set::container_type& series)
+void query_editor::updateSeriesSet(const data::series_set::container_type& _series)
 {
     const auto series_set     = m_series_set.lock();
     const auto scoped_emitter = series_set->scoped_emit();
@@ -317,23 +317,23 @@ void query_editor::updateSeriesSet(const data::series_set::container_type& serie
     series_set->clear();
 
     // Push new series in the series_set
-    for(const auto& s : series)
+    for(const auto& s : _series)
     {
-        const auto& dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(s);
-        series_set->push_back(dicomSeries);
+        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(s);
+        series_set->push_back(dicom_series);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void query_editor::displayErrorMessage(const std::string& message)
+void query_editor::displayErrorMessage(const std::string& _message)
 {
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle("Error");
-    messageBox.setMessage(message);
-    messageBox.setIcon(ui::dialog::message::CRITICAL);
-    messageBox.addButton(ui::dialog::message::OK);
-    messageBox.show();
+    sight::ui::dialog::message message_box;
+    message_box.setTitle("Error");
+    message_box.setMessage(_message);
+    message_box.setIcon(ui::dialog::message::CRITICAL);
+    message_box.addButton(ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

@@ -33,14 +33,14 @@ namespace sight::activity::validator
 
 //------------------------------------------------------------------------------
 
-validator::return_t activity::checkRequirements(const data::activity::csptr& activity)
+validator::return_t activity::checkRequirements(const data::activity::csptr& _activity)
 {
     validator::return_t validation;
     validation.first  = true;
     validation.second = "";
 
     extension::activity_info info;
-    info = extension::activity::getDefault()->getInfo(activity->getActivityConfigId());
+    info = extension::activity::getDefault()->getInfo(_activity->getActivityConfigId());
 
     for(const extension::activity_requirement& req : info.requirements)
     {
@@ -48,7 +48,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::object::csptr obj = activity->get(req.name);
+            data::object::csptr obj = _activity->get(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -71,7 +71,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
         }
         else if(req.container == "vector")
         {
-            data::vector::csptr vector = std::dynamic_pointer_cast<const data::vector>(activity->get(req.name));
+            data::vector::csptr vector = std::dynamic_pointer_cast<const data::vector>(_activity->get(req.name));
             if(!vector)
             {
                 validation.first   = false;
@@ -79,14 +79,14 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
             }
             else
             {
-                auto nbObj = static_cast<unsigned int>(vector->size());
-                if(nbObj < req.minOccurs)
+                auto nb_obj = static_cast<unsigned int>(vector->size());
+                if(nb_obj < req.minOccurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at least "
                                          + std::to_string(req.minOccurs) + " objects.";
                 }
-                else if(nbObj > req.maxOccurs)
+                else if(nb_obj > req.maxOccurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at most "
@@ -94,7 +94,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
                 }
                 else
                 {
-                    bool isValid = true;
+                    bool is_valid = true;
                     for(data::object::csptr obj : *vector)
                     {
                         if(!obj)
@@ -102,7 +102,7 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
                                                  + "' must contain valid objects of type '" + req.type + "'.";
-                            isValid = false;
+                            is_valid = false;
                         }
 
                         if(obj->get_classname() != req.type)
@@ -110,11 +110,11 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
                                                  + "' must contain only objects of type '" + req.type + "'.";
-                            isValid = false;
+                            is_valid = false;
                         }
                     }
 
-                    if(isValid)
+                    if(is_valid)
                     {
                         validator::return_t val = sight::activity::validator::activity::checkObject(
                             vector,
@@ -131,8 +131,8 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
         }
         else // container == composite
         {
-            auto currentComposite = std::dynamic_pointer_cast<const data::composite>(activity->get(req.name));
-            if(!currentComposite)
+            auto current_composite = std::dynamic_pointer_cast<const data::composite>(_activity->get(req.name));
+            if(!current_composite)
             {
                 validation.first   = false;
                 validation.second += "\n - The parameter '" + req.name + "' must be a Composite of '"
@@ -140,14 +140,14 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
             }
             else
             {
-                auto nbObj = static_cast<unsigned int>(currentComposite->size());
-                if(nbObj < req.minOccurs)
+                auto nb_obj = static_cast<unsigned int>(current_composite->size());
+                if(nb_obj < req.minOccurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at least "
                                          + std::to_string(req.minOccurs) + " objects.";
                 }
-                else if(nbObj > req.maxOccurs)
+                else if(nb_obj > req.maxOccurs)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' must contain at most "
@@ -155,50 +155,50 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
                 }
                 else
                 {
-                    bool isValid = true;
+                    bool is_valid = true;
 
-                    for(const auto& elt : *currentComposite)
+                    for(const auto& elt : *current_composite)
                     {
                         std::string key        = elt.first;
                         data::object::sptr obj = elt.second;
-                        extension::activity_requirement_key reqKey;
-                        bool keyIsFound = false;
-                        for(const extension::activity_requirement_key& keyElt : req.keys)
+                        extension::activity_requirement_key req_key;
+                        bool key_is_found = false;
+                        for(const extension::activity_requirement_key& key_elt : req.keys)
                         {
-                            if(key == keyElt.key)
+                            if(key == key_elt.key)
                             {
-                                reqKey     = keyElt;
-                                keyIsFound = true;
+                                req_key      = key_elt;
+                                key_is_found = true;
                             }
                         }
 
-                        if(!keyIsFound)
+                        if(!key_is_found)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
                                                  + "' has an invalid key : '" + key + "'.";
-                            isValid = false;
+                            is_valid = false;
                         }
                         else if(!obj)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
                                                  + "' must contain valid objects of type '" + req.type + "'.";
-                            isValid = false;
+                            is_valid = false;
                         }
                         else if(obj->get_classname() != req.type)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name
                                                  + "' must contain only objects of type '" + req.type + "'.";
-                            isValid = false;
+                            is_valid = false;
                         }
                     }
 
-                    if(isValid)
+                    if(is_valid)
                     {
                         validator::return_t val = sight::activity::validator::activity::checkObject(
-                            currentComposite,
+                            current_composite,
                             req.validator
                         );
                         if(!val.first)
@@ -218,15 +218,15 @@ validator::return_t activity::checkRequirements(const data::activity::csptr& act
 //------------------------------------------------------------------------------
 
 validator::return_t activity::checkObject(
-    const data::object::csptr& object,
-    const std::string& validatorImpl
+    const data::object::csptr& _object,
+    const std::string& _validator_impl
 )
 {
     sight::activity::validator::return_t validation;
     validation.first  = true;
     validation.second = "";
 
-    if(validatorImpl.empty())
+    if(_validator_impl.empty())
     {
         validation.first  = true;
         validation.second = "Validator implementation is empty, assuming it is valid.";
@@ -234,17 +234,17 @@ validator::return_t activity::checkObject(
     else
     {
         /// Process object validator
-        auto validator     = sight::activity::validator::factory::make(validatorImpl);
-        auto dataValidator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
+        auto validator      = sight::activity::validator::factory::make(_validator_impl);
+        auto data_validator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
 
-        if(!dataValidator)
+        if(!data_validator)
         {
             validation.first  = false;
-            validation.second = "Validator '" + validatorImpl + "' cannot be instantiated";
+            validation.second = "Validator '" + _validator_impl + "' cannot be instantiated";
         }
         else
         {
-            validation = dataValidator->validate(object);
+            validation = data_validator->validate(_object);
         }
     }
 

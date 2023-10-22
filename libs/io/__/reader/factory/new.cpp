@@ -29,9 +29,9 @@ namespace sight::io::reader::factory
 
 //------------------------------------------------------------------------------
 
-io::reader::object_reader::sptr make(const io::reader::registry::key_t& classname)
+io::reader::object_reader::sptr make(const io::reader::registry::key_t& _classname)
 {
-    return io::reader::registry::get()->create(classname);
+    return io::reader::registry::get()->create(_classname);
 }
 
 } // namespace sight::io::reader::factory

@@ -1,7 +1,7 @@
 <plugin id="sight::module::viz::sample" library="true" autostart="true">
     <requirement id="sight::module::ui::qt"/>
     <requirement id="sight::module::viz::scene3d"/>
-    <requirement id="sight::module::viz::scene3dQt"/>
+    <requirement id="sight::module::viz::scene3d_qt"/>
     <extension implements="sight::service::extension::factory">
          <type>sight::ui::container</type>
          <service>sight::module::viz::sample::image</service>

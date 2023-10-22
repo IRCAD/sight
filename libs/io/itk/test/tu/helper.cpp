@@ -29,18 +29,18 @@ namespace sight::io::itk::ut::helper
 
 //------------------------------------------------------------------------------
 
-double tolerance(double num)
+double tolerance(double _num)
 {
-    return std::floor(num * 100. + .5) / 100;
+    return std::floor(_num * 100. + .5) / 100;
 }
 
 //------------------------------------------------------------------------------
 
-void roundSpacing(data::image::sptr image)
+void round_spacing(data::image::sptr _image)
 {
-    data::image::Spacing spacing = image->getSpacing();
+    data::image::Spacing spacing = _image->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image->setSpacing(spacing);
+    _image->setSpacing(spacing);
 }
 
 //------------------------------------------------------------------------------

@@ -65,22 +65,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    VIZ_SCENE2D_API bool operator==(const Viewport& other) const noexcept;
-    VIZ_SCENE2D_API bool operator!=(const Viewport& other) const noexcept;
+    VIZ_SCENE2D_API bool operator==(const Viewport& _other) const noexcept;
+    VIZ_SCENE2D_API bool operator!=(const Viewport& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    VIZ_SCENE2D_API void shallow_copy(const sight::data::object::csptr& source) override;
+    VIZ_SCENE2D_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     VIZ_SCENE2D_API void deep_copy(
-        const sight::data::object::csptr& source,
-        const std::unique_ptr<sight::data::object::deep_copy_cache_t>& cache = std::make_unique<sight::data::object::deep_copy_cache_t>()
+        const sight::data::object::csptr& _source,
+        const std::unique_ptr<sight::data::object::deep_copy_cache_t>& _cache = std::make_unique<sight::data::object::deep_copy_cache_t>()
     )
     override;
 
@@ -108,16 +108,16 @@ inline double Viewport::y() const
 
 //------------------------------------------------------------------------------
 
-inline double Viewport::x_or(double x) const
+inline double Viewport::x_or(double _x) const
 {
-    return m_x.value_or(x);
+    return m_x.value_or(_x);
 }
 
 //------------------------------------------------------------------------------
 
-inline double Viewport::y_or(double y) const
+inline double Viewport::y_or(double _y) const
 {
-    return m_y.value_or(y);
+    return m_y.value_or(_y);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,16 +136,16 @@ inline double Viewport::height() const
 
 //-----------------------------------------------------------------------------
 
-inline double Viewport::width_or(double width) const
+inline double Viewport::width_or(double _width) const
 {
-    return m_width.value_or(width);
+    return m_width.value_or(_width);
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Viewport::height_or(double height) const
+inline double Viewport::height_or(double _height) const
 {
-    return m_height.value_or(height);
+    return m_height.value_or(_height);
 }
 
 //------------------------------------------------------------------------------

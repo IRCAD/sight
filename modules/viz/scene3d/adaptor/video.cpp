@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCommon.h>
@@ -95,9 +95,9 @@ void video::starting()
 {
     this->initialize();
 
-    const auto plW = m_pl.lock();
+    const auto pl_w = m_pl.lock();
 
-    if(plW)
+    if(pl_w)
     {
         m_pointList = std::make_shared<data::point_list>();
 
@@ -174,7 +174,7 @@ void video::starting()
 
     {
         const auto image = m_image.lock();
-        m_texture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+        m_texture = std::make_shared<sight::viz::scene3d::texture>(image.get_shared());
     }
 }
 
@@ -203,13 +203,13 @@ void video::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto&& typeAndSize = [this]
-                               {
-                                   const auto image = m_image.lock();
-                                   return std::make_pair(image->getType(), image->size());
-                               }();
-    const auto type = typeAndSize.first;
-    const auto size = typeAndSize.second;
+    const auto&& type_and_size = [this]
+                                 {
+                                     const auto image = m_image.lock();
+                                     return std::make_pair(image->getType(), image->size());
+                                 }();
+    const auto type = type_and_size.first;
+    const auto size = type_and_size.second;
     if(size[0] == 0 || size[1] == 0)
     {
         return;
@@ -217,24 +217,24 @@ void video::updating()
 
     if(!m_isTextureInit || type != m_previousType)
     {
-        auto& mtlMgr  = Ogre::MaterialManager::getSingleton();
+        auto& mtl_mgr = Ogre::MaterialManager::getSingleton();
         const auto tf = m_tf.lock();
 
-        Ogre::MaterialPtr defaultMat;
+        Ogre::MaterialPtr default_mat;
         if(tf)
         {
             if(type == core::type::FLOAT || type == core::type::DOUBLE)
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                default_mat = mtl_mgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
             else
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                default_mat = mtl_mgr.getByName(s_VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
         }
         else
         {
-            defaultMat = mtlMgr.getByName(s_VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+            default_mat = mtl_mgr.getByName(s_VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
         }
 
         // Duplicate the template material to create our own material
@@ -245,7 +245,7 @@ void video::updating()
         ).first;
         m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material);
 
-        defaultMat->copyDetailsTo(m_material);
+        default_mat->copyDetailsTo(m_material);
 
         // Set the texture to the main material pass
         this->updateTextureFiltering();
@@ -282,32 +282,32 @@ void video::updating()
         // /////////////////////////////////////////////////////////////////////
         // Create the plane entity
         // /////////////////////////////////////////////////////////////////////
-        const std::string thisID        = this->get_id();
-        const std::string videoMeshName = thisID + "_VideoMesh";
-        const std::string entityName    = thisID + "_VideoEntity";
-        const std::string nodeName      = thisID + "_VideoSceneNode";
+        const std::string this_id         = this->get_id();
+        const std::string video_mesh_name = this_id + "_VideoMesh";
+        const std::string entity_name     = this_id + "_VideoEntity";
+        const std::string node_name       = this_id + "_VideoSceneNode";
 
         Ogre::MovablePlane plane(Ogre::Vector3::UNIT_Z, 0);
 
-        Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
+        Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
 
-        m_mesh = meshManager.createPlane(
-            videoMeshName,
+        m_mesh = mesh_manager.createPlane(
+            video_mesh_name,
             sight::viz::scene3d::RESOURCE_GROUP,
             plane,
             static_cast<Ogre::Real>(size[0]),
             static_cast<Ogre::Real>(size[1])
         );
 
-        Ogre::SceneManager* sceneManager = this->getSceneManager();
-        SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
+        Ogre::SceneManager* scene_manager = this->getSceneManager();
+        SIGHT_ASSERT("The current scene manager cannot be retrieved.", scene_manager);
 
         // Create Ogre Entity
-        m_entity = sceneManager->createEntity(entityName, videoMeshName);
+        m_entity = scene_manager->createEntity(entity_name, video_mesh_name);
         m_entity->setMaterial(m_material);
 
         // Add the entity to the scene
-        m_sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
+        m_sceneNode = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
         m_sceneNode->attachObject(m_entity);
 
         // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
@@ -384,8 +384,8 @@ void video::updateTF()
     {
         m_gpuTF->update();
 
-        Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-        m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
+        Ogre::Pass* ogre_pass = m_material->getTechnique(0)->getPass(0);
+        m_gpuTF->bind(ogre_pass, "tf", ogre_pass->getFragmentProgramParameters());
 
         this->requestRender();
     }
@@ -398,15 +398,15 @@ void video::updatePL()
     const auto image = m_image.lock();
     const auto pl    = m_pl.lock();
 
-    const data::point_list::PointListContainer& inPoints = pl->getPoints();
+    const data::point_list::PointListContainer& in_points = pl->getPoints();
 
-    data::point_list::PointListContainer& outPoints = m_pointList->getPoints();
-    outPoints.clear();
+    data::point_list::PointListContainer& out_points = m_pointList->getPoints();
+    out_points.clear();
 
-    for(const auto& inPoint : inPoints)
+    for(const auto& in_point : in_points)
     {
-        const data::point::PointCoordArrayType& point = inPoint->getCoord();
-        outPoints.push_back(
+        const data::point::point_coord_array_t& point = in_point->getCoord();
+        out_points.push_back(
             std::make_shared<data::point>(
                 point[0] - static_cast<double>(image->size()[0]) * 0.5,
                 -(point[1] - static_cast<double>(image->size()[1]) * 0.5),
@@ -416,10 +416,10 @@ void video::updatePL()
     }
 
     // Send the signal:
-    auto modifiedSig = m_pointList->signal<data::point_list::ModifiedSignalType>(
+    auto modified_sig = m_pointList->signal<data::point_list::modified_signal_t>(
         data::point_list::MODIFIED_SIG
     );
-    modifiedSig->async_emit();
+    modified_sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -442,17 +442,17 @@ void video::clearEntity()
 
     if(m_mesh)
     {
-        Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
-        meshManager.remove(m_mesh->getName(), sight::viz::scene3d::RESOURCE_GROUP);
+        Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
+        mesh_manager.remove(m_mesh->getName(), sight::viz::scene3d::RESOURCE_GROUP);
         m_mesh.reset();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void video::setFiltering(bool filtering)
+void video::setFiltering(bool _filtering)
 {
-    m_filtering = filtering;
+    m_filtering = _filtering;
 
     // Only allow updating when the texture has been initialized
     // Otherwise, we might end up in cases where the slot is called before the
@@ -478,9 +478,9 @@ void video::updateTextureFiltering()
 
 //------------------------------------------------------------------------------
 
-void video::scale(bool value)
+void video::scale(bool _value)
 {
-    m_scaling          = value;
+    m_scaling          = _value;
     m_forcePlaneUpdate = true;
 
     // Only allow updating when the texture has been initialized

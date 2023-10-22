@@ -29,7 +29,7 @@ namespace sight::filter::dicom::splitter
 {
 
 /**
- * @brief Filter that uses the ImageType tag to split the instances.
+ * @brief Filter that uses the image_t tag to split the instances.
  */
 class FILTER_DICOM_CLASS_API ImageTypeSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {

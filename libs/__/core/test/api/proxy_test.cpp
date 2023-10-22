@@ -59,20 +59,20 @@ struct proxy_test_class
 
     //------------------------------------------------------------------------------
 
-    int sum(int a, int b)
+    int sum(int _a, int _b)
     {
-        SIGHT_INFO("SUM " << a << " + " << b);
+        SIGHT_INFO("SUM " << _a << " + " << _b);
         ++m_method_sum;
-        return a + b;
+        return _a + _b;
     }
 
     //------------------------------------------------------------------------------
 
-    int square(int a)
+    int square(int _a)
     {
-        SIGHT_INFO("SQUARE " << a);
+        SIGHT_INFO("SQUARE " << _a);
         ++m_method_square;
-        return a * a;
+        return _a * _a;
     }
 
     //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ struct proxy_test_class
 
 void proxy_test::basic_test()
 {
-    const std::string CHANNEL = "channel";
+    const std::string channel = "channel";
 
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
@@ -108,11 +108,11 @@ void proxy_test::basic_test()
     slot2->set_worker(worker);
     slot3->set_worker(worker);
 
-    proxy->connect(CHANNEL, sig);
-    proxy->connect(CHANNEL, sig2);
-    proxy->connect(CHANNEL, slot);
-    proxy->connect(CHANNEL, slot2);
-    proxy->connect(CHANNEL, slot3);
+    proxy->connect(channel, sig);
+    proxy->connect(channel, sig2);
+    proxy->connect(channel, slot);
+    proxy->connect(channel, slot2);
+    proxy->connect(channel, slot3);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig->num_connections());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig2->num_connections());
@@ -139,11 +139,11 @@ void proxy_test::basic_test()
     CPPUNIT_ASSERT_EQUAL(2, test_object.m_method_square);
     CPPUNIT_ASSERT_EQUAL(2, test_object.m_method_do_nothing);
 
-    proxy->disconnect(CHANNEL, sig);
-    proxy->disconnect(CHANNEL, sig2);
-    proxy->disconnect(CHANNEL, slot);
-    proxy->disconnect(CHANNEL, slot2);
-    proxy->disconnect(CHANNEL, slot3);
+    proxy->disconnect(channel, sig);
+    proxy->disconnect(channel, sig2);
+    proxy->disconnect(channel, slot);
+    proxy->disconnect(channel, slot2);
+    proxy->disconnect(channel, slot3);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig->num_connections());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig2->num_connections());

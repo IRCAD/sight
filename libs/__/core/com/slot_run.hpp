@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SLOTRUN_HPP__
+#define FWCOM_SLOTRUN_HPP
 
 #include "core/com/slot_base.hpp"
 
@@ -67,7 +67,7 @@ struct CORE_CLASS_API slot_run<void(A ...)>: slot_base
     /**
      * @brief Run the Slot with the given parameters.
      */
-    virtual void run(A ... a) const = 0;
+    virtual void run(A ... _a) const = 0;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -78,7 +78,7 @@ struct CORE_CLASS_API slot_run<void(A ...)>: slot_base
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual slot_base::void_shared_future_type async_run(const SPTR(core::thread::worker)& worker, A ... args) const;
+    virtual slot_base::void_shared_future_type async_run(const SPTR(core::thread::worker)& _worker, A ... _args) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -88,19 +88,19 @@ struct CORE_CLASS_API slot_run<void(A ...)>: slot_base
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if slot has no worker set.
      */
-    virtual slot_base::void_shared_future_type async_run(A ... args) const;
+    virtual slot_base::void_shared_future_type async_run(A ... _args) const;
 
     protected:
 
         template<typename R, typename WEAKCALL>
-        static std::shared_future<R> post_weak_call(const SPTR(core::thread::worker)& worker, WEAKCALL f);
+        static std::shared_future<R> post_weak_call(const SPTR(core::thread::worker)& _worker, WEAKCALL _f);
 
         /**
          * @brief Binds the given parameters to the run method within a void() function.
          *
          * @return a void() function.
          */
-        virtual std::function<void()> bind_run(A ... args) const;
+        virtual std::function<void()> bind_run(A ... _args) const;
 };
 
 } // namespace sight::core::com

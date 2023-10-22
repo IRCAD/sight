@@ -26,7 +26,7 @@
 
 #include <ui/__/editor.hpp>
 
-#include <viz/scene3d/ILight.hpp>
+#include <viz/scene3d/light_adaptor.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -45,7 +45,7 @@ namespace sight::module::ui::viz
  * @brief This service creates a user interface to manage a light adaptor.
  *
  * @section Slots Slots
- * - \b editLight(viz::scene3d::ILight::sptr): loads the editor with the parameters from the selected light.
+ * - \b editLight(viz::scene3d::light_adaptor::sptr): loads the editor with the parameters from the selected light.
  *
  * @section XML XML Configuration
  *
@@ -91,14 +91,14 @@ private:
      * @brief SLOT: sets the current light adaptor to edit.
      * @param _lightAdaptor The light adaptor to edit.
      */
-    void editLight(sight::viz::scene3d::ILight::sptr _lightAdaptor);
+    void editLight(sight::viz::scene3d::light_adaptor::sptr _light_adaptor);
 
     /**
      * @brief Opens a QColorDialog to pick a new color that is returned.
      * @param _currentColor the curent light color.
      * @param _title the title of the dialog.
      */
-    Ogre::ColourValue editColor(const Ogre::ColourValue& _currentColor, const std::string& _title);
+    Ogre::ColourValue editColor(const Ogre::ColourValue& _current_color, const std::string& _title);
 
     /// Contains the name of the light.
     QPointer<QLabel> m_lightNameLabel;
@@ -137,7 +137,7 @@ private:
     QPointer<QPushButton> m_zReset;
 
     /// Contains the current selected light.
-    sight::viz::scene3d::ILight::sptr m_currentLight;
+    sight::viz::scene3d::light_adaptor::sptr m_currentLight;
 
 private Q_SLOTS:
 

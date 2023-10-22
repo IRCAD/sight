@@ -24,7 +24,7 @@
 
 #include <data/matrix4.hpp>
 
-#include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/material.hpp>
 
 #include <glm/glm.hpp>
@@ -59,32 +59,32 @@ void orientation_marker::starting()
 
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = rootSceneNode->createChildSceneNode(this->get_id() + "_mainNode");
+    Ogre::SceneNode* const root_scene_node = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode = root_scene_node->createChildSceneNode(this->get_id() + "_mainNode");
 
-    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const scene_mgr = this->getSceneManager();
 
     // Sets the material
     m_material = std::make_shared<data::material>();
 
     // Creates the material for the marker
-    const sight::module::viz::scene3d::adaptor::material::sptr materialAdaptor =
+    const sight::module::viz::scene3d::adaptor::material::sptr material_adaptor =
         this->registerService<sight::module::viz::scene3d::adaptor::material>(
             "sight::module::viz::scene3d::adaptor::material"
         );
-    materialAdaptor->set_inout(m_material, sight::module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
-    materialAdaptor->configure(
-        this->get_id() + materialAdaptor->get_id(),
-        this->get_id() + materialAdaptor->get_id(),
+    material_adaptor->set_inout(m_material, sight::module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
+    material_adaptor->configure(
+        this->get_id() + material_adaptor->get_id(),
+        this->get_id() + material_adaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
-    materialAdaptor->start();
-    materialAdaptor->update();
+    material_adaptor->start();
+    material_adaptor->update();
 
     // Loads and attaches the marker
-    m_patientMesh = sceneMgr->createEntity(m_patientMeshRc);
-    m_patientMesh->setMaterialName(materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
+    m_patientMesh = scene_mgr->createEntity(m_patientMeshRc);
+    m_patientMesh->setMaterialName(material_adaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
     m_sceneNode->attachObject(m_patientMesh);
 
     this->updateVisibility(m_isVisible);
@@ -105,7 +105,7 @@ void orientation_marker::updating()
 void orientation_marker::updateCameraMatrix()
 {
     // Copy orientation matrix to Ogre.
-    Ogre::Matrix3 ogreMatrix;
+    Ogre::Matrix3 ogre_matrix;
     {
         const auto transform = m_matrix.lock();
 
@@ -114,20 +114,20 @@ void orientation_marker::updateCameraMatrix()
         {
             for(std::size_t ct = 0 ; ct < 3 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+                ogre_matrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
             }
         }
     }
 
     // Convert to quaterion.
-    Ogre::Quaternion orientation(ogreMatrix);
+    Ogre::Quaternion orientation(ogre_matrix);
 
-    const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotate_x(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
 
     // Reset the camera position & orientation, since s_MATRIX_IN is a global transform.
     m_sceneNode->setPosition(0, 0, 0);
     // Reverse X axis.
-    m_sceneNode->setOrientation(rotateX);
+    m_sceneNode->setOrientation(rotate_x);
 
     // Update the camera position
     // Inverse camera matrix (since we move the mesh)

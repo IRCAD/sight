@@ -28,7 +28,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 namespace sight::io::service
 {
@@ -48,8 +48,8 @@ static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "openLocationDialog"
 
 writer::writer() noexcept
 {
-    new_signal<VoidSignalType>(PREFIX_SET_SIG);
-    new_signal<VoidSignalType>(BASE_FOLDER_SET_SIG);
+    new_signal<void_signal_t>(PREFIX_SET_SIG);
+    new_signal<void_signal_t>(BASE_FOLDER_SET_SIG);
 
     new_slot(OPEN_LOCATION_DIALOG, &writer::openLocationDialog, this);
     new_slot(SET_PREFIX, &writer::setPrefix, this);
@@ -71,16 +71,16 @@ std::filesystem::path writer::get_file() const
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILE));
 
     // Make sure the base folder is in sync (also re-reads file/folder entries to respect the developer choices)
-    std::string baseFolder;
-    this->updateBaseFolder(baseFolder);
+    std::string base_folder;
+    this->updateBaseFolder(base_folder);
 
     // Pre-pend the base folder by default, whether it is unset and empty
     // Or pre-filled by the user
-    std::filesystem::path location = std::filesystem::path(baseFolder);
+    std::filesystem::path location = std::filesystem::path(base_folder);
 
     // Only use the prefix if we have a base folder,
     // We don't want to modify an user defined path (set through the GUI)
-    if(!baseFolder.empty() && !m_currentPrefix.empty())
+    if(!base_folder.empty() && !m_currentPrefix.empty())
     {
         location /= std::filesystem::path(m_currentPrefix);
     }
@@ -94,16 +94,16 @@ std::filesystem::path writer::get_file() const
 
 //-----------------------------------------------------------------------------
 
-void writer::set_file(const std::filesystem::path& file)
+void writer::set_file(const std::filesystem::path& _file)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILE));
     m_locations.clear();
-    m_locations.push_back(file);
+    m_locations.push_back(_file);
 }
 
 //-----------------------------------------------------------------------------
 
-const io::service::LocationsType& writer::get_files() const
+const io::service::locations_t& writer::get_files() const
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
     SIGHT_THROW_IF("At least one file must be defined in location", m_locations.empty());
@@ -112,10 +112,10 @@ const io::service::LocationsType& writer::get_files() const
 
 //-----------------------------------------------------------------------------
 
-void writer::set_files(const io::service::LocationsType& files)
+void writer::set_files(const io::service::locations_t& _files)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::service::FILES));
-    m_locations = files;
+    m_locations = _files;
 }
 
 //-----------------------------------------------------------------------------
@@ -128,14 +128,14 @@ std::filesystem::path writer::get_folder() const
     SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::service::FOLDER));
 
     // Make sure the base folder is in sync (also re-reads file/folder entries to respect the developer choices)
-    std::string baseFolder;
-    this->updateBaseFolder(baseFolder);
+    std::string base_folder;
+    this->updateBaseFolder(base_folder);
 
-    std::filesystem::path location = std::filesystem::path(baseFolder);
+    std::filesystem::path location = std::filesystem::path(base_folder);
 
     // Only use the prefix if we have a base folder,
     // We don't want to modify an user defined path (set through the GUI)
-    if(!baseFolder.empty() && !m_currentPrefix.empty())
+    if(!base_folder.empty() && !m_currentPrefix.empty())
     {
         location /= std::filesystem::path(m_currentPrefix);
     }
@@ -147,38 +147,38 @@ std::filesystem::path writer::get_folder() const
 
 //-----------------------------------------------------------------------------
 
-void writer::set_folder(const std::filesystem::path& folder)
+void writer::set_folder(const std::filesystem::path& _folder)
 {
     SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::service::FOLDER));
     m_locations.clear();
-    m_locations.push_back(folder);
+    m_locations.push_back(_folder);
 }
 
 //------------------------------------------------------------------------------
 
-void writer::setPrefix(std::string prefix)
+void writer::setPrefix(std::string _prefix)
 {
     // Record the current prefix
-    m_currentPrefix = prefix;
+    m_currentPrefix = _prefix;
 
-    auto sig = this->signal<VoidSignalType>(PREFIX_SET_SIG);
+    auto sig = this->signal<void_signal_t>(PREFIX_SET_SIG);
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void writer::setBaseFolder(std::string path)
+void writer::setBaseFolder(std::string _path)
 {
     // Record the current prefix
-    m_baseFolder = path;
+    m_baseFolder = _path;
 
-    auto sig = this->signal<VoidSignalType>(BASE_FOLDER_SET_SIG);
+    auto sig = this->signal<void_signal_t>(BASE_FOLDER_SET_SIG);
     sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
 
-const io::service::LocationsType& writer::getLocations() const
+const io::service::locations_t& writer::getLocations() const
 {
     SIGHT_THROW_IF("At least one path must be defined in location", m_locations.empty());
     return m_locations;
@@ -236,7 +236,7 @@ void writer::configuring()
     if((this->getIOPathType() & io::service::FILES) != 0)
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::service::FILE);
-        io::service::LocationsType locations;
+        io::service::locations_t locations;
         for(const auto& elt : boost::make_iterator_range(config.equal_range("file")))
         {
             const auto location = elt.second.get_value<std::string>();
@@ -256,49 +256,49 @@ void writer::configuring()
 
 //------------------------------------------------------------------------------
 
-void writer::updateBaseFolder(std::string& outBaseFolder) const
+void writer::updateBaseFolder(std::string& _out_base_folder) const
 {
     const sight::service::config_t config = this->get_config();
 
-    std::string baseFolderCfg = m_baseFolder;
+    std::string base_folder_cfg = m_baseFolder;
 
-    if(baseFolderCfg.empty())
+    if(base_folder_cfg.empty())
     {
-        baseFolderCfg = config.get<std::string>("baseFolder", m_baseFolder);
+        base_folder_cfg = config.get<std::string>("baseFolder", m_baseFolder);
     }
 
-    if(!baseFolderCfg.empty())
+    if(!base_folder_cfg.empty())
     {
         // We need to check for potential updates to the base folder
         // In case the user updates an associated preference during runtime
         // We also re-read the xml configuration for file and folder if baseFolder was set
 
-        sight::ui::Preferences preferences;
+        sight::ui::preferences preferences;
 
         // We need to provide the separator, otherwise the 2-args method will be selected
-        auto [key, baseFolder] = preferences.parsed_get<std::string>(baseFolderCfg);
+        auto [key, baseFolder] = preferences.parsed_get<std::string>(base_folder_cfg);
 
         // If the returned value is indeed a preference
         if(!key.empty())
         {
             if(!baseFolder.empty())
             {
-                outBaseFolder = baseFolder;
+                _out_base_folder = baseFolder;
             }
             else
             {
-                SIGHT_INFO("No location defined for the preference " << baseFolderCfg);
+                SIGHT_INFO("No location defined for the preference " << base_folder_cfg);
             }
         }
         else
         {
-            if(std::filesystem::exists(baseFolderCfg))
+            if(std::filesystem::exists(base_folder_cfg))
             {
-                outBaseFolder = baseFolderCfg;
+                _out_base_folder = base_folder_cfg;
             }
             else
             {
-                SIGHT_ERROR(baseFolderCfg << " is invalid. Reverting to classical selection.");
+                SIGHT_ERROR(base_folder_cfg << " is invalid. Reverting to classical selection.");
             }
         }
     }
@@ -315,15 +315,15 @@ io::service::IOPathType writer::getIOPathType() const
 
 bool writer::hasLocationDefined() const
 {
-    std::string baseFolder;
-    updateBaseFolder(baseFolder);
+    std::string base_folder;
+    updateBaseFolder(base_folder);
 
     // Either we have an absolution location set by the user
     // Or we are using the baseFolder value from the xml configuration
-    return ((baseFolder.empty()) && !m_locations.empty() && m_locations.front().is_absolute())
-           || (!baseFolder.empty() && ((this->getIOPathType() & io::service::FILE) != 0)
+    return ((base_folder.empty()) && !m_locations.empty() && m_locations.front().is_absolute())
+           || (!base_folder.empty() && ((this->getIOPathType() & io::service::FILE) != 0)
                && !m_locations.empty())
-           || (!baseFolder.empty() && ((this->getIOPathType() & io::service::FOLDER) != 0));
+           || (!base_folder.empty() && ((this->getIOPathType() & io::service::FOLDER) != 0));
 }
 
 //-----------------------------------------------------------------------------

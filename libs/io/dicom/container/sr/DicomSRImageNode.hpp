@@ -40,11 +40,11 @@ public:
 
     /// Constructor
     IO_DICOM_API DicomSRImageNode(
-        const DicomCodedAttribute& codedAttribute,
-        const std::string& relationship,
-        std::string sopClassUID,
-        std::string sopInstanceUID,
-        int frameNumber
+        const DicomCodedAttribute& _coded_attribute,
+        const std::string& _relationship,
+        std::string _sop_class_uid,
+        std::string _sop_instance_uid,
+        int _frame_number
     );
 
     /// Destructor
@@ -54,7 +54,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
+    IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get SOP Class UID
     [[nodiscard]] const std::string& getSOPClassUID() const
@@ -63,9 +63,9 @@ public:
     }
 
     /// Set SOP Class UID
-    void setSOPClassUID(const std::string& sopClassUID)
+    void setSOPClassUID(const std::string& _sop_class_uid)
     {
-        m_sopClassUID = sopClassUID;
+        m_sopClassUID = _sop_class_uid;
     }
 
     /// Get SOP Instance UID
@@ -75,9 +75,9 @@ public:
     }
 
     /// Set SOP Instance UID
-    void setSOPInstanceUID(const std::string& sopInstanceUID)
+    void setSOPInstanceUID(const std::string& _sop_instance_uid)
     {
-        m_sopInstanceUID = sopInstanceUID;
+        m_sopInstanceUID = _sop_instance_uid;
     }
 
     /// Get Frame number
@@ -87,22 +87,22 @@ public:
     }
 
     /// Set Frame number
-    void setFrameNumber(const int& frameNumber)
+    void setFrameNumber(const int& _frame_number)
     {
-        m_frameNumber = frameNumber;
+        m_frameNumber = _frame_number;
     }
 
 protected:
 
     /// Dump function
-    void print(std::ostream& os) const override;
+    void print(std::ostream& _os) const override;
 
     /**
      * @brief Write a referenced SOP sequence
      * @see PS 3.3  Table C.18.3
      * @param[in] dataset Destination dataset
      */
-    void writeReferencedSOPSequence(gdcm::DataSet& dataset) const;
+    void writeReferencedSOPSequence(gdcm::DataSet& _dataset) const;
 
     /// Referenced SOP Class UID (0008,1150)
     std::string m_sopClassUID;

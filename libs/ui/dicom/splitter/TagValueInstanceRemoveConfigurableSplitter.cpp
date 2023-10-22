@@ -81,40 +81,40 @@ void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
 {
     auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Configure"));
-    auto* mainLayout = new QVBoxLayout();
-    dialog->setLayout(mainLayout);
+    auto* main_layout = new QVBoxLayout();
+    dialog->setLayout(main_layout);
     dialog->setMinimumWidth(500);
 
     // Create tag selectors
-    auto* tagSelector =
+    auto* tag_selector =
         new ui::dicom::widget::QTagSelectorWidget();
-    tagSelector->setTagValue(m_tag);
-    mainLayout->addWidget(tagSelector);
+    tag_selector->setTagValue(m_tag);
+    main_layout->addWidget(tag_selector);
 
     // Create tag value field
-    auto* tagValueWidget = new QWidget();
-    mainLayout->addWidget(tagValueWidget);
-    auto* tagValueLayout = new QHBoxLayout();
-    tagValueWidget->setLayout(tagValueLayout);
-    tagValueLayout->addWidget(new QLabel("<b>Value:</b> "));
-    auto* tagValuelineEdit = new QLineEdit(m_tagValue.c_str());
-    tagValueLayout->addWidget(tagValuelineEdit, 1);
-    tagValueLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    auto* tag_value_widget = new QWidget();
+    main_layout->addWidget(tag_value_widget);
+    auto* tag_value_layout = new QHBoxLayout();
+    tag_value_widget->setLayout(tag_value_layout);
+    tag_value_layout->addWidget(new QLabel("<b>Value:</b> "));
+    auto* tag_valueline_edit = new QLineEdit(m_tagValue.c_str());
+    tag_value_layout->addWidget(tag_valueline_edit, 1);
+    tag_value_layout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Create buttons
-    auto* buttonBox = new QDialogButtonBox(dialog);
-    mainLayout->addWidget(buttonBox);
-    QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
-    QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
+    auto* button_box = new QDialogButtonBox(dialog);
+    main_layout->addWidget(button_box);
+    QPushButton* ok_button     = button_box->addButton(QDialogButtonBox::Ok);
+    QPushButton* cancel_button = button_box->addButton(QDialogButtonBox::Cancel);
 
-    QObject::connect(okButton, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));
-    QObject::connect(cancelButton, SIGNAL(clicked(void)), dialog, SLOT(reject(void)));
+    QObject::connect(ok_button, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));
+    QObject::connect(cancel_button, SIGNAL(clicked(void)), dialog, SLOT(reject(void)));
 
     int result = dialog->exec();
     if(result == QDialog::Accepted)
     {
-        m_tag      = tagSelector->getTag();
-        m_tagValue = tagValuelineEdit->text().toStdString();
+        m_tag      = tag_selector->getTag();
+        m_tagValue = tag_valueline_edit->text().toStdString();
     }
 }
 

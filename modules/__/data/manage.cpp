@@ -29,7 +29,7 @@
 
 #include <data/composite.hpp>
 #include <data/exception.hpp>
-#include <data/helper/Field.hpp>
+#include <data/helper/field.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
@@ -120,7 +120,7 @@ void manage::addOrSwap()
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         helper.addOrSwap(m_fieldName, obj.get_shared());
         helper.notify();
     }
@@ -179,7 +179,7 @@ void manage::swap()
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         helper.swap(m_fieldName, obj.get_shared());
         helper.notify();
     }
@@ -206,7 +206,7 @@ void manage::remove()
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         helper.remove(m_fieldName);
         helper.notify();
     }
@@ -254,7 +254,7 @@ void manage::removeIfPresent()
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         try
         {
             helper.remove(m_fieldName);
@@ -317,7 +317,7 @@ void manage::clear()
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         helper.clear();
         helper.notify();
     }
@@ -365,7 +365,7 @@ void manage::internalAdd(bool _copy)
 
     if(!m_fieldName.empty())
     {
-        sight::data::helper::Field helper(container.get_shared());
+        sight::data::helper::field helper(container.get_shared());
         helper.add(m_fieldName, obj);
         helper.notify();
     }

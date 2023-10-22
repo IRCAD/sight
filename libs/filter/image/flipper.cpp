@@ -24,7 +24,7 @@
 
 #include <core/tools/dispatcher.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -42,31 +42,31 @@ struct Parameters
 
 //------------------------------------------------------------------------------
 
-template<typename PixelType, int dimension>
+template<typename pixel_t, int dimension>
 struct Flipping
 {
     //------------------------------------------------------------------------------
 
-    void operator()(Parameters& params)
+    void operator()(Parameters& _params)
     {
-        using ImageType = typename itk::Image<PixelType, dimension>;
-        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
+        using image_t = typename itk::Image<pixel_t, dimension>;
+        const typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(_params.i_image);
 
-        typename itk::FlipImageFilter<ImageType>::Pointer flipFilter =
-            itk::FlipImageFilter<ImageType>::New();
+        typename itk::FlipImageFilter<image_t>::Pointer flip_filter =
+            itk::FlipImageFilter<image_t>::New();
 
-        flipFilter->SetInput(itkImage);
-        typename itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
-        for(std::size_t i = 0 ; i < axes.Size() && i < params.i_flipAxes.size() ; i++)
+        flip_filter->SetInput(itk_image);
+        typename itk::FlipImageFilter<image_t>::FlipAxesArrayType axes;
+        for(std::size_t i = 0 ; i < axes.Size() && i < _params.i_flipAxes.size() ; i++)
         {
-            axes[i] = params.i_flipAxes[i];
+            axes[i] = _params.i_flipAxes[i];
         }
 
-        flipFilter->SetFlipAxes(axes);
-        flipFilter->Update();
+        flip_filter->SetFlipAxes(axes);
+        flip_filter->Update();
 
-        typename ImageType::Pointer outputImage = flipFilter->GetOutput();
-        io::itk::moveFromItk(outputImage, params.o_image);
+        typename image_t::Pointer output_image = flip_filter->GetOutput();
+        io::itk::move_from_itk(output_image, _params.o_image);
     }
 };
 
@@ -74,25 +74,25 @@ struct FlippingDimensionExtractor
 {
     //------------------------------------------------------------------------------
 
-    template<class PixelType>
-    void operator()(Parameters& params)
+    template<class pixel_t>
+    void operator()(Parameters& _params)
     {
-        const data::image::Size size = params.i_image->size();
+        const data::image::Size size = _params.i_image->size();
         switch(size.size())
         {
             case 1:
-                Flipping<PixelType, 1> d1;
-                d1(params);
+                Flipping<pixel_t, 1> d1;
+                d1(_params);
                 break;
 
             case 2:
-                Flipping<PixelType, 2> d2;
-                d2(params);
+                Flipping<pixel_t, 2> d2;
+                d2(_params);
                 break;
 
             case 3:
-                Flipping<PixelType, 3> d3;
-                d3(params);
+                Flipping<pixel_t, 3> d3;
+                d3(_params);
                 break;
 
             default:
@@ -101,7 +101,7 @@ struct FlippingDimensionExtractor
                     + std::to_string(size.size()) + ")."
                 );
                 // In this case, we just deep copy the input image in the output
-                params.o_image->deep_copy(params.i_image);
+                _params.o_image->deep_copy(_params.i_image);
                 break;
         }
     }
@@ -110,20 +110,20 @@ struct FlippingDimensionExtractor
 //-----------------------------------------------------------------------------
 
 void flipper::flip(
-    const data::image::csptr& _inImage,
-    const data::image::sptr& _outImage,
-    const std::array<bool, 3>& _inFlipAxes
+    const data::image::csptr& _in_image,
+    const data::image::sptr& _out_image,
+    const std::array<bool, 3>& _in_flip_axes
 )
 {
     // If the image is valid, process it, otherwise copy it in the output image
-    if(data::helper::MedicalImage::checkImageValidity(_inImage))
+    if(data::helper::medical_image::check_image_validity(_in_image))
     {
         Parameters params;
-        params.i_image    = _inImage;
-        params.i_flipAxes = _inFlipAxes;
-        params.o_image    = _outImage;
+        params.i_image    = _in_image;
+        params.i_flipAxes = _in_flip_axes;
+        params.o_image    = _out_image;
 
-        const core::type type = _inImage->getType();
+        const core::type type = _in_image->getType();
         core::tools::dispatcher<core::tools::supported_dispatcher_types, FlippingDimensionExtractor>::invoke(
             type,
             params
@@ -131,7 +131,7 @@ void flipper::flip(
     }
     else
     {
-        _outImage->deep_copy(_inImage);
+        _out_image->deep_copy(_in_image);
     }
 }
 

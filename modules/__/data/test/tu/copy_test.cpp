@@ -61,8 +61,8 @@ void copy_test::onStartTest()
     CPPUNIT_ASSERT_NO_THROW(m_copy->configure());
 
     CPPUNIT_ASSERT_NO_THROW(m_copy->start().get());
-    auto outTarget = m_copy->output<sight::data::string>("outTarget");
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, outTarget.lock()->getValue());
+    auto out_target = m_copy->output<sight::data::string>("outTarget");
+    CPPUNIT_ASSERT_EQUAL("Hello world"s, out_target.lock()->getValue());
 }
 
 //------------------------------------------------------------------------------

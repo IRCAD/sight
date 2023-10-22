@@ -42,14 +42,14 @@ struct CORE_CLASS_API runtime_exception : public core::exception
      *
      * @param[in]   exception   an exception instance to copy
      */
-    CORE_API runtime_exception(const runtime_exception& exception) noexcept;
+    CORE_API runtime_exception(const runtime_exception& _exception) noexcept;
 
     /**
      * @brief       Constructor.
      *
      * @param[in]   message a string containing the exception message
      */
-    CORE_API runtime_exception(const std::string& message) noexcept;
+    CORE_API runtime_exception(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : does nothing.

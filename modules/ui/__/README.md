@@ -66,7 +66,7 @@ and are, therefore, contained in sub-folders according to their specificity.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui ... )
+add_dependencies(my_target module_ui ... )
 ```
 
 ### XML

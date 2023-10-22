@@ -1,2 +1,2 @@
-add_subdirectory(Tuto01BasicQml)
+add_subdirectory(tuto01_basic_qml)
 add_subdirectory(Tuto06GuiQml)

@@ -56,25 +56,25 @@ public:
     /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
     /// @param format the format of the archive. @see sight::io::zip::Archive::ArchiveFormat
     IO_ZIP_API static ArchiveReader::uptr get(
-        const std::filesystem::path& archive_path,
-        ArchiveFormat format = ArchiveFormat::DEFAULT
+        const std::filesystem::path& _archive_path,
+        ArchiveFormat _format = ArchiveFormat::DEFAULT
     );
 
     /// Returns an std::istream to read an archived file
     /// @param file_path path of an archived file.
     /// @param password the password needed to decrypt the file.
     IO_ZIP_API virtual std::unique_ptr<std::istream> openFile(
-        const std::filesystem::path& file_path,
-        const core::crypto::secure_string& password = ""
-    )                                               = 0;
+        const std::filesystem::path& _file_path,
+        const core::crypto::secure_string& _password = ""
+    )                                                = 0;
 
     /// Extracts all the content of the archive in the specified folder
     /// @param outputPath the output folder
     /// @param password the password needed to decrypt the file.
     IO_ZIP_API virtual void extractAllTo(
-        const std::filesystem::path& outputPath,
-        const core::crypto::secure_string& password = ""
-    )                                               = 0;
+        const std::filesystem::path& _output_path,
+        const core::crypto::secure_string& _password = ""
+    )                                                = 0;
 
     /// Returns true for raw archive
     [[nodiscard]] IO_ZIP_API virtual bool isRaw() const = 0;
@@ -82,7 +82,7 @@ public:
 protected:
 
     /// Constructor
-    IO_ZIP_API ArchiveReader(const std::filesystem::path& archive_path);
+    IO_ZIP_API ArchiveReader(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

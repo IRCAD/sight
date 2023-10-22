@@ -226,7 +226,7 @@
             </registry>
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericScenePreviewSrv" type="sight::viz::scene3d::render">
             <scene>
@@ -251,7 +251,7 @@
             <config priority="0" orientation="axial" />
         </service>
 
-        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneLocalSrv" type="sight::viz::scene3d::render">
             <scene>

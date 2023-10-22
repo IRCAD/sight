@@ -41,7 +41,7 @@ const core::com::signals::key_t resection_db::SAFE_PART_ADDED_SIG = "safePartAdd
 
 resection_db::resection_db() :
     m_sigSafePartAdded(std::make_shared<SafePartAddedSignalType>()),
-    m_sigResectionAdded(std::make_shared<ResectionAddedSignalType>())
+    m_sigResectionAdded(std::make_shared<resection_added_signal_t>())
 {
     m_signals(RESECTION_ADDED_SIG, m_sigResectionAdded)
         (SAFE_PART_ADDED_SIG, m_sigSafePartAdded);
@@ -49,13 +49,13 @@ resection_db::resection_db() :
 
 //------------------------------------------------------------------------------
 
-void resection_db::shallow_copy(const object::csptr& source)
+void resection_db::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const resection_db>(source);
+    const auto& other = std::dynamic_pointer_cast<const resection_db>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -69,62 +69,62 @@ void resection_db::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void resection_db::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void resection_db::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const resection_db>(source);
+    const auto& other = std::dynamic_pointer_cast<const resection_db>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
-    m_safeResection = data::object::copy(other->m_safeResection, cache);
+    m_safeResection = data::object::copy(other->m_safeResection, _cache);
 
     m_resections.clear();
     for(const auto& resection : other->m_resections)
     {
-        m_resections.push_back(data::object::copy(resection, cache));
+        m_resections.push_back(data::object::copy(resection, _cache));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-resection_db::ResectionContainerType::size_type resection_db::numResections() const
+resection_db::resection_container_t::size_type resection_db::numResections() const
 {
     return m_resections.size();
 }
 
 //------------------------------------------------------------------------------
 
-void resection_db::addResection(const data::resection::sptr& resection)
+void resection_db::addResection(const data::resection::sptr& _resection)
 {
-    m_resections.push_back(resection);
+    m_resections.push_back(_resection);
 }
 
 //------------------------------------------------------------------------------
 
-bool resection_db::operator==(const resection_db& other) const noexcept
+bool resection_db::operator==(const resection_db& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_safeResection, other.m_safeResection)
-       || !core::tools::is_equal(m_resections, other.m_resections))
+    if(!core::tools::is_equal(m_safeResection, _other.m_safeResection)
+       || !core::tools::is_equal(m_resections, _other.m_resections))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool resection_db::operator!=(const resection_db& other) const noexcept
+bool resection_db::operator!=(const resection_db& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // end namespace sight::data

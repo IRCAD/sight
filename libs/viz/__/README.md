@@ -13,5 +13,5 @@ Contains the base interface for rendering services.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> viz)
+target_link_libraries( my_target <PUBLIC|PRIVATE> viz)
 ```

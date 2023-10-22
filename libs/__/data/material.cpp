@@ -45,19 +45,19 @@ material::material() :
     m_ambient(std::make_shared<color>(0.05F, 0.05F, 0.05F, 1.F)),
     m_diffuse(std::make_shared<color>())
 {
-    new_signal<AddedTextureSignalType>(ADDED_TEXTURE_SIG);
-    new_signal<RemovedTextureSignalType>(REMOVED_TEXTURE_SIG);
+    new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);
+    new_signal<removed_texture_signal_t>(REMOVED_TEXTURE_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void material::shallow_copy(const object::csptr& source)
+void material::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const material>(source);
+    const auto& other = std::dynamic_pointer_cast<const material>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -78,21 +78,21 @@ void material::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void material::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void material::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const material>(source);
+    const auto& other = std::dynamic_pointer_cast<const material>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
-    m_ambient        = data::object::copy(other->m_ambient, cache);
-    m_diffuse        = data::object::copy(other->m_diffuse, cache);
-    m_diffuseTexture = data::object::copy(other->m_diffuseTexture, cache);
+    m_ambient        = data::object::copy(other->m_ambient, _cache);
+    m_diffuse        = data::object::copy(other->m_diffuse, _cache);
+    m_diffuseTexture = data::object::copy(other->m_diffuseTexture, _cache);
 
     m_shadingMode             = other->m_shadingMode;
     m_representationMode      = other->m_representationMode;
@@ -100,7 +100,7 @@ void material::deep_copy(const object::csptr& source, const std::unique_ptr<deep
     m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
     m_diffuseTextureWrapping  = other->m_diffuseTextureWrapping;
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -133,51 +133,51 @@ image::csptr material::getDiffuseTexture() const
 
 //------------------------------------------------------------------------------
 
-void material::setAmbient(const color::sptr& ambient)
+void material::setAmbient(const color::sptr& _ambient)
 {
-    m_ambient = ambient;
+    m_ambient = _ambient;
 }
 
 //------------------------------------------------------------------------------
 
-void material::setDiffuse(const color::sptr& diffuse)
+void material::setDiffuse(const color::sptr& _diffuse)
 {
-    m_diffuse = diffuse;
+    m_diffuse = _diffuse;
 }
 
 //------------------------------------------------------------------------------
 
-void material::setDiffuseTexture(const image::sptr& diffuseTexture)
+void material::setDiffuseTexture(const image::sptr& _diffuse_texture)
 {
-    m_diffuseTexture = diffuseTexture;
+    m_diffuseTexture = _diffuse_texture;
 }
 
 //------------------------------------------------------------------------------
 
-bool material::operator==(const material& other) const noexcept
+bool material::operator==(const material& _other) const noexcept
 {
     // If the attributes are different, then it is not equal
-    if(m_shadingMode != other.m_shadingMode
-       || m_representationMode != other.m_representationMode
-       || m_optionsMode != other.m_optionsMode
-       || !core::tools::is_equal(m_ambient, other.m_ambient)
-       || !core::tools::is_equal(m_diffuse, other.m_diffuse)
-       || !core::tools::is_equal(m_diffuseTexture, other.m_diffuseTexture)
-       || m_diffuseTextureFiltering != other.m_diffuseTextureFiltering
-       || m_diffuseTextureWrapping != other.m_diffuseTextureWrapping)
+    if(m_shadingMode != _other.m_shadingMode
+       || m_representationMode != _other.m_representationMode
+       || m_optionsMode != _other.m_optionsMode
+       || !core::tools::is_equal(m_ambient, _other.m_ambient)
+       || !core::tools::is_equal(m_diffuse, _other.m_diffuse)
+       || !core::tools::is_equal(m_diffuseTexture, _other.m_diffuseTexture)
+       || m_diffuseTextureFiltering != _other.m_diffuseTextureFiltering
+       || m_diffuseTextureWrapping != _other.m_diffuseTextureWrapping)
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool material::operator!=(const material& other) const noexcept
+bool material::operator!=(const material& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } //namespace sight::data

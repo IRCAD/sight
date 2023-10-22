@@ -51,16 +51,16 @@ void slots_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-int slots_test_sum(int a, int b)
+int slots_test_sum(int _a, int _b)
 {
-    return a + b;
+    return _a + _b;
 }
 
 //------------------------------------------------------------------------------
 
-void slots_test_print(const std::string& str)
+void slots_test_print(const std::string& _str)
 {
-    SIGHT_DEBUG(str);
+    SIGHT_DEBUG(_str);
 }
 
 struct slots_test_basic
@@ -70,9 +70,9 @@ struct slots_test_basic
 
     //------------------------------------------------------------------------------
 
-    static int sum(int a, int b)
+    static int sum(int _a, int _b)
     {
-        return a + b;
+        return _a + _b;
     }
 };
 
@@ -131,9 +131,9 @@ struct slots_test_has_slot : public has_slots
 
     //------------------------------------------------------------------------------
 
-    static int sum(int a, int b)
+    static int sum(int _a, int _b)
     {
-        return a + b;
+        return _a + _b;
     }
 
     //------------------------------------------------------------------------------
@@ -160,9 +160,9 @@ struct slots_test_has_slot2 : public has_slots
 
     //------------------------------------------------------------------------------
 
-    static int sum(int a, int b)
+    static int sum(int _a, int _b)
     {
-        return a + b;
+        return _a + _b;
     }
 
     //------------------------------------------------------------------------------

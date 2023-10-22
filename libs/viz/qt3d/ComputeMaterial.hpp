@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,7 @@ public:
     VIZ_QT3D_API Qt3DRender::QBuffer* getIndexBuffer();
 
     /// Adds the material to the given frame graph and sets the work group of the compute shader.
-    VIZ_QT3D_API void updateFrameGraph(viz::qt3d::core::FrameGraph* _frameGraph, int _numberOfCells);
+    VIZ_QT3D_API void updateFrameGraph(viz::qt3d::core::FrameGraph* _frame_graph, int _number_of_cells);
 
 Q_SIGNALS:
 

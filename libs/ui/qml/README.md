@@ -7,7 +7,7 @@ _Definition from : https://en.wikipedia.org/wiki/QML_
 
 ## Files
 
-- **App**: defines a QML application.
+- **app**: defines a QML application.
 - **IQmlAppManager**: defines the base class for AppManager managing Qml services.
 - **editor**: defines the base class for service editing an object associated to a qml UI.
 - **QmlEngine**: allows to manage the QQmlEngine.
@@ -35,7 +35,7 @@ _Definition from : https://en.wikipedia.org/wiki/QML_
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                        ui_qml
 )
 ```

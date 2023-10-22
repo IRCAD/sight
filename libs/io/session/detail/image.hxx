@@ -58,7 +58,7 @@ constexpr static auto s_Depth {"Depth"};
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path get_file_path(const std::string& uuid)
+inline static std::filesystem::path get_file_path(const std::string& _uuid)
 {
 #if defined(USE_VTK)
     constexpr auto ext = ".vti";
@@ -66,73 +66,73 @@ inline static std::filesystem::path get_file_path(const std::string& uuid)
     constexpr auto ext = ".raw";
 #endif
 
-    return std::filesystem::path(uuid + "/" + data::image::leaf_classname() + ext);
+    return std::filesystem::path(_uuid + "/" + data::image::leaf_classname() + ext);
 }
 
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>& /*unused*/,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& _password = ""
 )
 {
-    auto image = helper::safe_cast<data::image>(object);
+    auto image = helper::safe_cast<data::image>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::image>(tree, 1);
+    helper::write_version<data::image>(_tree, 1);
 
     // Serialize image
     const auto& size = image->size();
-    boost::property_tree::ptree sizeTree;
-    sizeTree.add(s_Width, size[0]);
-    sizeTree.add(s_Height, size[1]);
-    sizeTree.add(s_Depth, size[2]);
-    tree.add_child(s_Size, sizeTree);
+    boost::property_tree::ptree size_tree;
+    size_tree.add(s_Width, size[0]);
+    size_tree.add(s_Height, size[1]);
+    size_tree.add(s_Depth, size[2]);
+    _tree.add_child(s_Size, size_tree);
 
     const auto& type = image->getType();
-    tree.put(s_Type, type.name());
+    _tree.put(s_Type, type.name());
 
     const auto& format = image->getPixelFormat();
-    tree.put(s_PixelFormat, format);
+    _tree.put(s_PixelFormat, format);
 
     // Write image metadata
     const auto& spacing = image->getSpacing();
-    boost::property_tree::ptree spacingTree;
-    spacingTree.add(s_X, spacing[0]);
-    spacingTree.add(s_Y, spacing[1]);
-    spacingTree.add(s_Z, spacing[2]);
-    tree.add_child(s_Spacing, spacingTree);
+    boost::property_tree::ptree spacing_tree;
+    spacing_tree.add(s_X, spacing[0]);
+    spacing_tree.add(s_Y, spacing[1]);
+    spacing_tree.add(s_Z, spacing[2]);
+    _tree.add_child(s_Spacing, spacing_tree);
 
     const auto& origin = image->getOrigin();
-    boost::property_tree::ptree originTree;
-    originTree.add(s_X, origin[0]);
-    originTree.add(s_Y, origin[1]);
-    originTree.add(s_Z, origin[2]);
-    tree.add_child(s_Origin, originTree);
+    boost::property_tree::ptree origin_tree;
+    origin_tree.add(s_X, origin[0]);
+    origin_tree.add(s_Y, origin[1]);
+    origin_tree.add(s_Z, origin[2]);
+    _tree.add_child(s_Origin, origin_tree);
 
-    boost::property_tree::ptree windowCentersTree;
-    for(std::size_t index = 0 ; const auto& windowCenter : image->getWindowCenter())
+    boost::property_tree::ptree window_centers_tree;
+    for(std::size_t index = 0 ; const auto& window_center : image->getWindowCenter())
     {
-        windowCentersTree.put(s_WindowCenter + std::to_string(index++), windowCenter);
+        window_centers_tree.put(s_WindowCenter + std::to_string(index++), window_center);
     }
 
-    tree.add_child(s_WindowCenters, windowCentersTree);
+    _tree.add_child(s_WindowCenters, window_centers_tree);
 
-    boost::property_tree::ptree windowWidthsTree;
-    for(std::size_t index = 0 ; const auto& windowWidth : image->getWindowWidth())
+    boost::property_tree::ptree window_widths_tree;
+    for(std::size_t index = 0 ; const auto& window_width : image->getWindowWidth())
     {
-        windowWidthsTree.put(s_WindowWidth + std::to_string(index++), windowWidth);
+        window_widths_tree.put(s_WindowWidth + std::to_string(index++), window_width);
     }
 
-    tree.add_child(s_WindowWidths, windowWidthsTree);
+    _tree.add_child(s_WindowWidths, window_widths_tree);
 
     // Create the output file inside the archive
-    const auto& ostream = archive.openFile(
+    const auto& ostream = _archive.openFile(
         get_file_path(image->get_uuid()),
-        password,
+        _password,
         sight::io::zip::Method::DEFAULT,
         sight::io::zip::Level::BEST
     );
@@ -141,21 +141,21 @@ inline static void write(
     /// @todo For now, toVTKImage doesn't handle all pixel formats we handle. For example, BGR is written as RGB.
     /// It should be better to convert it, even if, here we don't really care as we save the real pixel format and
     /// restore it back. It is faster, but produce a non standard vti file.
-    auto vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(image, vtkImage);
+    auto vtk_image = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::to_vtk_image(image, vtk_image);
 
     // Create the vtk writer
-    const auto& vtkWriter = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-    vtkWriter->SetCompressorTypeToNone();
-    vtkWriter->SetDataModeToBinary();
-    vtkWriter->WriteToOutputStringOn();
-    vtkWriter->SetInputData(vtkImage);
+    const auto& vtk_writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+    vtk_writer->SetCompressorTypeToNone();
+    vtk_writer->SetDataModeToBinary();
+    vtk_writer->WriteToOutputStringOn();
+    vtk_writer->SetInputData(vtk_image);
 
     // Write to internal string...
-    vtkWriter->Update();
+    vtk_writer->Update();
 
     // Write back to the archive
-    (*ostream) << vtkWriter->GetOutputString();
+    (*ostream) << vtk_writer->GetOutputString();
 #else
     // Write the image data as raw bytes
     ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->getSizeInBytes()));
@@ -165,63 +165,63 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::image::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto image           = helper::cast_or_create<data::image>(object);
+    auto image           = helper::cast_or_create<data::image>(_object);
     const auto dump_lock = image->dump_lock();
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::image>(tree, 0, 1);
+    helper::read_version<data::image>(_tree, 0, 1);
 
     // Deserialize image
-    const auto& sizeTree         = tree.get_child(s_Size);
+    const auto& size_tree        = _tree.get_child(s_Size);
     const data::image::Size size = {
-        sizeTree.get<size_t>(s_Width),
-        sizeTree.get<size_t>(s_Height),
-        sizeTree.get<size_t>(s_Depth)
+        size_tree.get<size_t>(s_Width),
+        size_tree.get<size_t>(s_Height),
+        size_tree.get<size_t>(s_Depth)
     };
 
-    core::type type(tree.get<std::string>(s_Type));
+    core::type type(_tree.get<std::string>(s_Type));
 
-    const auto format = static_cast<data::image::PixelFormat>(tree.get<int>(s_PixelFormat));
+    const auto format = static_cast<data::image::PixelFormat>(_tree.get<int>(s_PixelFormat));
 
     ///@note This is not saved in VTK files.
-    std::vector<double> windowCenters;
-    for(const auto& value : tree.get_child(s_WindowCenters))
+    std::vector<double> window_centers;
+    for(const auto& value : _tree.get_child(s_WindowCenters))
     {
-        windowCenters.push_back(value.second.get_value<double>());
+        window_centers.push_back(value.second.get_value<double>());
     }
 
-    image->setWindowCenter(windowCenters);
+    image->setWindowCenter(window_centers);
 
-    std::vector<double> windowWidths;
-    for(const auto& value : tree.get_child(s_WindowWidths))
+    std::vector<double> window_widths;
+    for(const auto& value : _tree.get_child(s_WindowWidths))
     {
-        windowWidths.push_back(value.second.get_value<double>());
+        window_widths.push_back(value.second.get_value<double>());
     }
 
-    image->setWindowWidth(windowWidths);
+    image->setWindowWidth(window_widths);
 
-    const auto& spacingTree = tree.get_child(s_Spacing);
+    const auto& spacing_tree = _tree.get_child(s_Spacing);
     image->setSpacing(
         {
-            spacingTree.get<double>(s_X),
-            spacingTree.get<double>(s_Y),
-            spacingTree.get<double>(s_Z)
+            spacing_tree.get<double>(s_X),
+            spacing_tree.get<double>(s_Y),
+            spacing_tree.get<double>(s_Z)
         });
 
-    const auto& originTree = tree.get_child(s_Origin);
+    const auto& origin_tree = _tree.get_child(s_Origin);
     image->setOrigin(
         {
-            originTree.get<double>(s_X),
-            originTree.get<double>(s_Y),
-            originTree.get<double>(s_Z)
+            origin_tree.get<double>(s_X),
+            origin_tree.get<double>(s_Y),
+            origin_tree.get<double>(s_Z)
         });
 
     // If pixelFormart == UNDEFINED it is ALWAYS an empty image, so early return here.
@@ -230,13 +230,13 @@ inline static data::image::sptr read(
         return image;
     }
 
-    const auto& serialized_uuid = tree.get<std::string>(s_uuid);
+    const auto& serialized_uuid = _tree.get<std::string>(s_uuid);
 
     // Read the image data
     // Create the istream from the input file inside the archive
-    const auto& istream = archive.openFile(
+    const auto& istream = _archive.openFile(
         get_file_path(serialized_uuid),
-        password
+        _password
     );
 
 #if defined(USE_VTK)
@@ -250,7 +250,7 @@ inline static data::image::sptr read(
     vtk_reader->Update();
 
     // Convert from VTK
-    io::vtk::fromVTKImage(vtk_reader->GetOutput(), image);
+    io::vtk::from_vtk_image(vtk_reader->GetOutput(), image);
 #endif
 
     /// @todo We should convert VTK RGB back to BGR if the original image is BGR and we produced a real vti files by

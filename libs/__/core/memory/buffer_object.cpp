@@ -25,10 +25,10 @@
 namespace sight::core::memory
 {
 
-buffer_object::buffer_object(bool auto_delete) :
+buffer_object::buffer_object(bool _auto_delete) :
     m_buffer_manager(core::memory::buffer_manager::get()),
     m_alloc_policy(std::make_shared<core::memory::buffer_no_alloc_policy>()),
-    m_auto_delete(auto_delete)
+    m_auto_delete(_auto_delete)
 {
     m_buffer_manager->register_buffer(&m_buffer).get();
 }
@@ -51,19 +51,19 @@ buffer_object::~buffer_object()
 
 //------------------------------------------------------------------------------
 
-void buffer_object::allocate(size_t size, const core::memory::buffer_allocation_policy::sptr& policy)
+void buffer_object::allocate(size_t _size, const core::memory::buffer_allocation_policy::sptr& _policy)
 {
-    m_buffer_manager->allocate_buffer(&m_buffer, size, policy).get();
-    m_alloc_policy = policy;
-    m_size         = size;
+    m_buffer_manager->allocate_buffer(&m_buffer, _size, _policy).get();
+    m_alloc_policy = _policy;
+    m_size         = _size;
 }
 
 //------------------------------------------------------------------------------
 
-void buffer_object::reallocate(size_t size)
+void buffer_object::reallocate(size_t _size)
 {
-    m_buffer_manager->reallocate_buffer(&m_buffer, size).get();
-    m_size = size;
+    m_buffer_manager->reallocate_buffer(&m_buffer, _size).get();
+    m_size = _size;
 }
 
 //------------------------------------------------------------------------------
@@ -78,16 +78,16 @@ void buffer_object::destroy()
 //------------------------------------------------------------------------------
 
 void buffer_object::set_buffer(
-    core::memory::buffer_manager::buffer_t buffer,
-    size_t size,
-    const core::memory::buffer_allocation_policy::sptr& policy,
-    bool auto_delete
+    core::memory::buffer_manager::buffer_t _buffer,
+    size_t _size,
+    const core::memory::buffer_allocation_policy::sptr& _policy,
+    bool _auto_delete
 )
 {
-    m_buffer_manager->set_buffer(&m_buffer, buffer, size, policy).get();
-    m_alloc_policy = policy;
-    m_size         = size;
-    m_auto_delete  = auto_delete;
+    m_buffer_manager->set_buffer(&m_buffer, _buffer, _size, _policy).get();
+    m_alloc_policy = _policy;
+    m_size         = _size;
+    m_auto_delete  = _auto_delete;
 }
 
 //------------------------------------------------------------------------------
@@ -125,31 +125,31 @@ buffer_manager::stream_info buffer_object::get_stream_info() const
 //------------------------------------------------------------------------------
 
 void buffer_object::set_istream_factory(
-    const SPTR(core::memory::stream::in::factory)& factory,
-    size_t size,
-    const std::filesystem::path& source_file,
-    core::memory::file_format_type format,
-    const core::memory::buffer_allocation_policy::sptr& policy
+    const SPTR(core::memory::stream::in::factory)& _factory,
+    size_t _size,
+    const std::filesystem::path& _source_file,
+    core::memory::file_format_type _format,
+    const core::memory::buffer_allocation_policy::sptr& _policy
 )
 {
-    m_size         = size;
-    m_alloc_policy = policy;
-    m_buffer_manager->set_istream_factory(&m_buffer, factory, size, source_file, format, policy).get();
+    m_size         = _size;
+    m_alloc_policy = _policy;
+    m_buffer_manager->set_istream_factory(&m_buffer, _factory, _size, _source_file, _format, _policy).get();
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer_object::operator==(const buffer_object& other) const noexcept
+bool buffer_object::operator==(const buffer_object& _other) const noexcept
 {
-    return m_buffer == other.m_buffer
-           || (m_size == other.m_size && std::memcmp(m_buffer, other.m_buffer, m_size) == 0);
+    return m_buffer == _other.m_buffer
+           || (m_size == _other.m_size && std::memcmp(m_buffer, _other.m_buffer, m_size) == 0);
 }
 
 //------------------------------------------------------------------------------
 
-bool buffer_object::operator!=(const buffer_object& other) const noexcept
+bool buffer_object::operator!=(const buffer_object& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } //namespace sight::core::memory

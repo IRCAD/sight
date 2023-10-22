@@ -57,29 +57,29 @@ void job_test::tearDown()
 //------------------------------------------------------------------------------
 
 void algo_mock_generic_callback(
-    int n,
-    std::function<void(int)> progress,
-    std::function<bool()> should_cancel,
-    std::function<void(const std::string&)> log = nullptr
+    int _n,
+    std::function<void(int)> _progress,
+    std::function<bool()> _should_cancel,
+    std::function<void(const std::string&)> _log = nullptr
 )
 {
-    int div = n / 15;
+    int div = _n / 15;
 
-    for(int i = 0 ; i < n ; ++i)
+    for(int i = 0 ; i < _n ; ++i)
     {
         // algo ...
 
-        if(should_cancel())
+        if(_should_cancel())
         {
             break;
         }
 
-        if(log && i % div == 0)
+        if(_log && i % div == 0)
         {
-            log("algoMockGenericCallback step " + std::to_string(i));
+            _log("algoMockGenericCallback step " + std::to_string(i));
         }
 
-        progress(i + 1);
+        _progress(i + 1);
     }
 }
 
@@ -110,9 +110,9 @@ void job_test::apiand_state_test()
     }
 
     {
-        core::jobs::job job("Job", [](core::jobs::job& running_job)
+        core::jobs::job job("Job", [](core::jobs::job& _running_job)
                 {
-                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, running_job.get_state());
+                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::RUNNING, _running_job.get_state());
                 });
         CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
 
@@ -128,10 +128,10 @@ void job_test::apiand_state_test()
 
     {
         core::thread::worker::sptr worker = core::thread::worker::make();
-        core::jobs::job job("Job", [](core::jobs::job& running_job)
+        core::jobs::job job("Job", [](core::jobs::job& _running_job)
                 {
                             std::this_thread::sleep_for(std::chrono::milliseconds(30));
-                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELING, running_job.get_state());
+                            CPPUNIT_ASSERT_EQUAL(core::jobs::base::CANCELING, _running_job.get_state());
                 }, worker);
         CPPUNIT_ASSERT_EQUAL(core::jobs::base::WAITING, job.get_state());
 
@@ -223,12 +223,12 @@ void job_test::generic_callback_test()
         }
 
         {
-            core::jobs::job::task func = [loops](core::jobs::job& running_job)
+            core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                          {
                                              algo_mock_generic_callback(
                                                  loops,
-                                                 running_job.progress_callback(),
-                                                 running_job.cancel_requested_callback()
+                                                 _running_job.progress_callback(),
+                                                 _running_job.cancel_requested_callback()
                                              );
                                          };
             core::jobs::job job("GenericCallbackJob", func);
@@ -245,12 +245,12 @@ void job_test::generic_callback_test()
 
             loops = 1 << 30;
             core::jobs::job job("GenericCallbackJob",
-                                [loops](core::jobs::job& running_job)
+                                [loops](core::jobs::job& _running_job)
                     {
                                 algo_mock_generic_callback(
                                     loops,
-                                    running_job.progress_callback(),
-                                    running_job.cancel_requested_callback()
+                                    _running_job.progress_callback(),
+                                    _running_job.cancel_requested_callback()
                                 );
                     },
                                 worker);
@@ -279,12 +279,12 @@ void job_test::aggregation_test()
 
     {
         // Job aggregation test
-        core::jobs::job::task func = [loops](core::jobs::job& running_job)
+        core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                      {
                                          algo_mock_generic_callback(
                                              loops,
-                                             running_job.progress_callback(),
-                                             running_job.cancel_requested_callback()
+                                             _running_job.progress_callback(),
+                                             _running_job.cancel_requested_callback()
                                          );
                                      };
         auto job1 = std::make_shared<core::jobs::job>("GenericCallbackJob1", func);
@@ -308,12 +308,12 @@ void job_test::aggregation_test()
 
     {
         // Job and aggregator aggregation test
-        core::jobs::job::task func = [loops](core::jobs::job& running_job)
+        core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                      {
                                          algo_mock_generic_callback(
                                              loops,
-                                             running_job.progress_callback(),
-                                             running_job.cancel_requested_callback()
+                                             _running_job.progress_callback(),
+                                             _running_job.cancel_requested_callback()
                                          );
                                      };
         auto job1 = std::make_shared<core::jobs::job>("GenericCallbackJob1", func);
@@ -342,14 +342,14 @@ void job_test::aggregation_test()
 
     {
         // total work units update test
-        auto func_gen = [](int progress_steps) -> core::jobs::job::task
+        auto func_gen = [](int _progress_steps) -> core::jobs::job::task
                         {
-                            return [ = ](core::jobs::job& running_job)
+                            return [ = ](core::jobs::job& _running_job)
                                    {
                                        algo_mock_generic_callback(
-                                           progress_steps,
-                                           running_job.progress_callback(),
-                                           running_job.cancel_requested_callback(),
+                                           _progress_steps,
+                                           _running_job.progress_callback(),
+                                           _running_job.cancel_requested_callback(),
                                            nullptr
                                        );
                                    };
@@ -415,12 +415,12 @@ void job_test::aggregation_test()
     {
         core::thread::worker::sptr worker = core::thread::worker::make();
 
-        core::jobs::job::task func = [loops](core::jobs::job& running_job)
+        core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                      {
                                          algo_mock_generic_callback(
                                              loops,
-                                             running_job.progress_callback(),
-                                             running_job.cancel_requested_callback()
+                                             _running_job.progress_callback(),
+                                             _running_job.cancel_requested_callback()
                                          );
                                      };
 
@@ -429,12 +429,12 @@ void job_test::aggregation_test()
         auto job3 = std::make_shared<core::jobs::job>("GenericCallbackJob3", func, worker);
 
         loops = 1 << 30;
-        func  = [loops](core::jobs::job& running_job)
+        func  = [loops](core::jobs::job& _running_job)
                 {
                     algo_mock_generic_callback(
                         loops,
-                        running_job.progress_callback(),
-                        running_job.cancel_requested_callback()
+                        _running_job.progress_callback(),
+                        _running_job.cancel_requested_callback()
                     );
                 };
         auto job4 = std::make_shared<core::jobs::job>("GenericCallbackJob4", func, worker);
@@ -510,9 +510,9 @@ void job_test::aggregation_test()
         // weight test
         auto func_gen = []() -> core::jobs::job::task
                         {
-                            return [ = ](core::jobs::job& running_job)
+                            return [ = ](core::jobs::job& _running_job)
                                    {
-                                       running_job.done();
+                                       _running_job.done();
                                    };
                         };
 
@@ -572,8 +572,8 @@ class progress_observer
 {
 public:
 
-    virtual void progress_notify(double p) = 0;
-    virtual bool canceled()                = 0;
+    virtual void progress_notify(double _p) = 0;
+    virtual bool canceled()                 = 0;
     virtual ~progress_observer()
     = default;
 };
@@ -582,8 +582,8 @@ class algo_mock_observer
 {
 public:
 
-    explicit algo_mock_observer(progress_observer* obs) :
-        m_obs(obs)
+    explicit algo_mock_observer(progress_observer* _obs) :
+        m_obs(_obs)
     {
     }
 
@@ -594,14 +594,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void run(int n)
+    void run(int _n)
     {
-        for(int i = 0 ; i < n ; i++)
+        for(int i = 0 ; i < _n ; i++)
         {
             // algo ...
             if(m_obs != nullptr)
             {
-                m_obs->progress_notify(((double) (i + 1)) / n);
+                m_obs->progress_notify(((double) (i + 1)) / _n);
 
                 if(m_obs->canceled())
                 {
@@ -631,16 +631,16 @@ private:
 
 struct job_observer : public progress_observer
 {
-    explicit job_observer(std::function<void(double)> func) :
-        m_callback(std::move(func))
+    explicit job_observer(std::function<void(double)> _func) :
+        m_callback(std::move(_func))
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void progress_notify(double p) override
+    void progress_notify(double _p) override
     {
-        m_callback(p);
+        m_callback(_p);
     }
 
     //------------------------------------------------------------------------------
@@ -656,11 +656,11 @@ struct job_observer : public progress_observer
 struct job_observer_canceler : public job_observer
 {
     explicit job_observer_canceler(
-        std::function<void(double)> func,
-        base::cancel_request_callback canceled_callback
+        std::function<void(double)> _func,
+        base::cancel_request_callback _canceled_callback
     ) :
-        job_observer(std::move(func)),
-        m_canceled_callback(std::move(canceled_callback))
+        job_observer(std::move(_func)),
+        M_CANCELED_CALLBACK(std::move(_canceled_callback))
     {
     }
 
@@ -668,10 +668,10 @@ struct job_observer_canceler : public job_observer
 
     bool canceled() override
     {
-        return m_canceled_callback();
+        return M_CANCELED_CALLBACK();
     }
 
-    const base::cancel_request_callback m_canceled_callback;
+    const base::cancel_request_callback M_CANCELED_CALLBACK;
 };
 
 //------------------------------------------------------------------------------
@@ -686,9 +686,9 @@ void job_test::observer_test()
         {
             core::jobs::observer job("GenericCallbackJob");
 
-            auto f = [ =, &job](double d)
+            auto f = [ =, &job](double _d)
                      {
-                         job.done_work(std::uint64_t(d * f_progress));
+                         job.done_work(std::uint64_t(_d * f_progress));
                      };
             algo_mock_observer algo(new job_observer(f));
 
@@ -700,11 +700,11 @@ void job_test::observer_test()
 
         {
             core::jobs::job job("GenericCallbackJob",
-                                [ = ](core::jobs::job& job)
+                                [ = ](core::jobs::job& _job)
                     {
-                                auto f = [ =, &job](double d)
+                                auto f = [ =, &_job](double _d)
                         {
-                                         job.done_work(std::uint64_t(d * f_progress));
+                                         _job.done_work(std::uint64_t(_d * f_progress));
                         };
                                 algo_mock_observer algo(new job_observer(f));
                                 algo.run(loops);
@@ -718,14 +718,14 @@ void job_test::observer_test()
 
             loops = 1 << 30;
             core::jobs::job job("GenericCallbackJob",
-                                [ = ](core::jobs::job& running_job)
+                                [ = ](core::jobs::job& _running_job)
                     {
-                                auto f = [ =, &running_job](double d)
+                                auto f = [ =, &_running_job](double _d)
                         {
-                                         running_job.done_work(std::uint64_t(d * f_progress));
+                                         _running_job.done_work(std::uint64_t(_d * f_progress));
                         };
                                 algo_mock_observer algo(new job_observer(f));
-                                running_job.add_simple_cancel_hook(
+                                _running_job.add_simple_cancel_hook(
                                     [&]()
                         {
                                     algo.cancel();
@@ -748,15 +748,15 @@ void job_test::observer_test()
             loops = 1 << 30;
             core::jobs::job job(
                 "GenericCallbackJob",
-                [ = ](core::jobs::job& running_job)
+                [ = ](core::jobs::job& _running_job)
                     {
                 auto f =
-                    [ =, &running_job](double d)
+                    [ =, &_running_job](double _d)
                         {
-                    running_job.done_work(std::uint64_t(d * f_progress));
+                    _running_job.done_work(std::uint64_t(_d * f_progress));
                         };
 
-                algo_mock_observer algo(new job_observer_canceler(f, running_job.cancel_requested_callback()));
+                algo_mock_observer algo(new job_observer_canceler(f, _running_job.cancel_requested_callback()));
                 algo.run(loops);
                     },
                 worker
@@ -785,24 +785,24 @@ void job_test::log_test()
             loops,
             job.progress_callback(),
             job.cancel_requested_callback(),
-            [&job](const std::string& message)
+            [&job](const std::string& _message)
             {
-                job.log(message);
+                job.log(_message);
             });
 
         job.finish();
     }
 
     {
-        core::jobs::job::task func = [loops](core::jobs::job& running_job)
+        core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                      {
                                          algo_mock_generic_callback(
                                              loops,
-                                             running_job.progress_callback(),
-                                             running_job.cancel_requested_callback(),
-                                             [&running_job](const std::string message)
+                                             _running_job.progress_callback(),
+                                             _running_job.cancel_requested_callback(),
+                                             [&_running_job](const std::string _message)
                 {
-                    running_job.log(message);
+                    _running_job.log(_message);
                 });
                                      };
         core::jobs::job job("GenericCallbackJob2", func);
@@ -813,15 +813,15 @@ void job_test::log_test()
     }
 
     {
-        core::jobs::job::task func = [loops](core::jobs::job& running_job)
+        core::jobs::job::task func = [loops](core::jobs::job& _running_job)
                                      {
                                          algo_mock_generic_callback(
                                              loops,
-                                             running_job.progress_callback(),
-                                             running_job.cancel_requested_callback(),
-                                             [&running_job](const std::string message)
+                                             _running_job.progress_callback(),
+                                             _running_job.cancel_requested_callback(),
+                                             [&_running_job](const std::string _message)
                 {
-                    running_job.log(message);
+                    _running_job.log(_message);
                 });
                                      };
         auto job1 = std::make_shared<core::jobs::job>("GenericCallbackJob1", func);

@@ -62,11 +62,11 @@ text_status::~text_status()
 
 void text_status::configuring()
 {
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     m_labelValue = new QLabel();
     m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-    m_labelValue->setObjectName(serviceID);
+    m_labelValue->setObjectName(service_id);
 
     this->initialize();
 
@@ -80,12 +80,12 @@ void text_status::configuring()
 
     QString color = "red";
 
-    if(const auto colorCfg = config.get_optional<std::string>("color"); colorCfg.has_value())
+    if(const auto color_cfg = config.get_optional<std::string>("color"); color_cfg.has_value())
     {
-        const QString txtColor = QString::fromStdString(colorCfg.value());
-        if(!txtColor.isEmpty())
+        const QString txt_color = QString::fromStdString(color_cfg.value());
+        if(!txt_color.isEmpty())
         {
-            color = txtColor;
+            color = txt_color;
         }
     }
 
@@ -97,7 +97,7 @@ void text_status::configuring()
 void text_status::starting()
 {
     this->create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);
@@ -105,14 +105,14 @@ void text_status::starting()
 
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     // Get input data.
-    const auto stringInput = m_string.lock();
+    const auto string_input = m_string.lock();
 
-    if(stringInput)
+    if(string_input)
     {
-        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+        m_labelValue->setText(QString::fromStdString(string_input->value()));
     }
 }
 
@@ -131,11 +131,11 @@ service::connections_t text_status::auto_connections() const
 void text_status::updating()
 {
     // Get input data.
-    const auto stringInput = m_string.lock();
+    const auto string_input = m_string.lock();
 
-    if(stringInput)
+    if(string_input)
     {
-        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+        m_labelValue->setText(QString::fromStdString(string_input->value()));
     }
 }
 

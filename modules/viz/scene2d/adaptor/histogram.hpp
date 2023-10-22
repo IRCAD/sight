@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <data/helper/Histogram.hpp>
+#include <data/helper/histogram.hpp>
 #include <data/image.hpp>
 
 #include <viz/scene2d/adaptor.hpp>
@@ -115,10 +115,10 @@ private:
     /// Width of histogram bins
     std::size_t m_histogramBinsWidth {5};
 
-    // Layer for the histogram, may be rescaled on mouse wheel event
+    // layer for the histogram, may be rescaled on mouse wheel event
     QGraphicsItemGroup* m_layer {nullptr};
 
-    // Layer for the cursor, never rescaled
+    // layer for the cursor, never rescaled
     QGraphicsItemGroup* m_cursorLayer {nullptr};
 
     /// Enables the display of a cursor
@@ -154,7 +154,7 @@ private:
     QGraphicsEllipseItem* m_cursorItem {nullptr};
 
     /// Helper to compute the image histogram
-    std::unique_ptr<data::helper::Histogram> m_histogram;
+    std::unique_ptr<data::helper::histogram> m_histogram;
 
     static constexpr std::string_view s_IMAGE_INPUT    = "image";
     static constexpr std::string_view s_VIEWPORT_INOUT = "viewport";

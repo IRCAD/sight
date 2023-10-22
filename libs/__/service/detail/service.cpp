@@ -33,8 +33,8 @@ namespace sight::service::detail
 
 //-----------------------------------------------------------------------------
 
-service::service(sight::service::base& service) :
-    m_service(service)
+service::service(sight::service::base& _service) :
+    m_service(_service)
 {
 }
 
@@ -45,9 +45,9 @@ service::~service()
 
 //-----------------------------------------------------------------------------
 
-void service::set_config(const config_t& config)
+void service::set_config(const config_t& _config)
 {
-    m_configuration      = config;
+    m_configuration      = _config;
     m_configurationState = base::UNCONFIGURED;
 }
 
@@ -108,7 +108,7 @@ base::shared_future_t service::start(bool _async)
 
     m_globalState = base::STARTING;
 
-    PackagedTaskType task([this](auto&& ...){m_service.starting();});
+    packaged_task_t task([this](auto&& ...){m_service.starting();});
     base::shared_future_t future = task.get_future();
     task();
 
@@ -151,7 +151,7 @@ base::shared_future_t service::stop(bool _async)
 
     this->auto_disconnect();
 
-    PackagedTaskType task([this](auto&& ...){m_service.stopping();});
+    packaged_task_t task([this](auto&& ...){m_service.stopping();});
     base::shared_future_t future = task.get_future();
 
     m_globalState = base::STOPPING;
@@ -186,7 +186,7 @@ base::shared_future_t service::stop(bool _async)
     m_connections.disconnect(m_service);
 
     // check if the service manage outputs that are not maintained by someone else.
-    std::string objectKeys;
+    std::string object_keys;
     for(const auto& [key, ptr] : m_service.container())
     {
         if(ptr->access() == data::Access::out)
@@ -194,21 +194,21 @@ base::shared_future_t service::stop(bool _async)
             const data::object::cwptr output = ptr->get();
             if(output.use_count() == 1)
             {
-                if(!objectKeys.empty())
+                if(!object_keys.empty())
                 {
-                    objectKeys += ", ";
+                    object_keys += ", ";
                 }
 
-                objectKeys += "'" + std::string(key.first) + "'(nbRef: " + std::to_string(output.use_count()) + ")";
+                object_keys += "'" + std::string(key.first) + "'(nbRef: " + std::to_string(output.use_count()) + ")";
             }
         }
     }
 
     SIGHT_WARN_IF(
-        "service " + m_service.get_id() + " still contains registered outputs: " + objectKeys + ". They will no "
-                                                                                                "longer be maintained. You should call set_output(key, nullptr) before stopping the service to inform "
-                                                                                                "AppManager and other services that the object will be destroyed.",
-        !objectKeys.empty()
+        "service " + m_service.get_id() + " still contains registered outputs: " + object_keys + ". They will no "
+                                                                                                 "longer be maintained. You should call set_output(key, nullptr) before stopping the service to inform "
+                                                                                                 "AppManager and other services that the object will be destroyed.",
+        !object_keys.empty()
     );
 
     return future;
@@ -225,7 +225,7 @@ base::shared_future_t service::swap_key(std::string_view _key, data::object::spt
     );
 
     auto fn = [this, _key]{m_service.swapping(_key);};
-    PackagedTaskType task(fn);
+    packaged_task_t task(fn);
     base::shared_future_t future = task.get_future();
 
     this->auto_disconnect();
@@ -280,7 +280,7 @@ base::shared_future_t service::update(bool _async)
         m_updatingState == base::NOTUPDATING
     );
 
-    PackagedTaskType task([this](auto&& ...){m_service.updating();});
+    packaged_task_t task([this](auto&& ...){m_service.updating();});
     base::shared_future_t future = task.get_future();
     m_updatingState = base::UPDATING;
     task();
@@ -316,7 +316,7 @@ base::shared_future_t service::update(bool _async)
 
 void service::auto_connect()
 {
-    sight::service::connections_t connectionMap = m_service.auto_connections();
+    sight::service::connections_t connection_map = m_service.auto_connections();
 
     for(const auto& [key, ptr] : m_service.container())
     {
@@ -325,9 +325,9 @@ void service::auto_connect()
         if(ptr->auto_connect() && obj)
         {
             core::com::helper::sig_slot_connection::key_connections_t connections;
-            if(!connectionMap.empty())
+            if(!connection_map.empty())
             {
-                if(auto it = connectionMap.find(key.first); it != connectionMap.end())
+                if(auto it = connection_map.find(key.first); it != connection_map.end())
                 {
                     connections = it->second;
                 }
@@ -363,9 +363,9 @@ void service::auto_disconnect()
 std::pair<bool, bool> service::get_object_key_attrs(const std::string& _key) const
 {
     const auto& container = m_service.container();
-    if(auto itData = container.find({_key, {}}); itData != container.end())
+    if(auto it_data = container.find({_key, {}}); it_data != container.end())
     {
-        return {itData->second->auto_connect(), itData->second->optional()};
+        return {it_data->second->auto_connect(), it_data->second->optional()};
     }
 
     return {false, false};

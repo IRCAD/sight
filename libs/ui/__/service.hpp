@@ -50,7 +50,7 @@ class view;
 namespace detail::registry
 {
 
-class View;
+class view;
 
 } // namespace detail::registry
 
@@ -145,7 +145,7 @@ public:
 
     UI_API SPTR(ui::container::widget) getContainer();
 
-    UI_API void setParent(std::string wid);
+    UI_API void setParent(std::string _wid);
 
     /// @name Slots
     /// @{
@@ -167,7 +167,7 @@ public:
     };
 
     /// SLOT: enable/disable the container
-    UI_API virtual void setEnabled(bool isEnabled);
+    UI_API virtual void setEnabled(bool _is_enabled);
 
     /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
     UI_API virtual void setEnabledByParameter(ui::parameter_t);
@@ -179,7 +179,7 @@ public:
     UI_API virtual void disable();
 
     /// SLOT: show/hide the container
-    UI_API virtual void setVisible(bool isVisible);
+    UI_API virtual void setVisible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
     UI_API virtual void setVisibleByParameter(ui::parameter_t);
@@ -194,7 +194,7 @@ public:
     UI_API void toggleVisibility();
 
     /// SLOT: modify a layout element, depending of the key. Forwarded to the view layout manager.
-    UI_API virtual void modifyLayout(ui::parameter_t parameter, std::string key);
+    UI_API virtual void modifyLayout(ui::parameter_t _parameter, std::string _key);
 
     /// @}
 
@@ -206,7 +206,7 @@ protected:
     /**
      * @brief Initialize managers.
      *
-       @see ui::registry::View::initialize(), ui::layout::view::initialize(),
+       @see ui::registry::view::initialize(), ui::layout::view::initialize(),
      *::ui::builder::toolbar::initialize()
      */
     UI_API void initialize();
@@ -223,19 +223,19 @@ protected:
 
 private:
 
-    typedef std::vector<SPTR(ui::builder::slideview)> SlideViewContainerType;
+    typedef std::vector<SPTR(ui::builder::slideview)> slide_view_container_t;
 
-    void initializeLayoutManager(const ui::config_t& layoutConfig);
-    void initializeToolBarBuilder(const ui::config_t& toolBarConfig);
-    void initializeSlideViewBuilder(const ui::config_t& slideViewConfig);
+    void initializeLayoutManager(const ui::config_t& _layout_config);
+    void initializeToolBarBuilder(const ui::config_t& _tool_bar_config);
+    void initializeSlideViewBuilder(const ui::config_t& _slide_view_config);
 
     bool m_viewLayoutManagerIsCreated {false};
     SPTR(ui::layout::view) m_viewLayoutManager;
 
-    SPTR(ui::detail::registry::View) m_viewRegistry;
+    SPTR(ui::detail::registry::view) m_viewRegistry;
     SPTR(ui::builder::toolbar) m_toolBarBuilder;
     SPTR(ui::builder::widget) m_containerBuilder;
-    SlideViewContainerType m_slideViewBuilders;
+    slide_view_container_t m_slideViewBuilders;
 
     bool m_hasToolBar {false};
 };

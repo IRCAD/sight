@@ -79,24 +79,24 @@ void DefaultDicomFilterCustomTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
-    CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
-    dicomSeriesContainer.push_back(dicomSeries);
+    data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    CPPUNIT_ASSERT(dicom_series);
+    std::vector<data::dicom_series::sptr> dicom_series_container;
+    dicom_series_container.push_back(dicom_series);
 
     // Apply filter
     sight::filter::dicom::filter::sptr filter =
         sight::filter::dicom::factory::make("sight::filter::dicom::custom::DefaultDicomFilter");
     CPPUNIT_ASSERT(filter);
-    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
-    data::dicom_series::sptr dicomSeriesA = dicomSeriesContainer[0];
-    data::dicom_series::sptr dicomSeriesB = dicomSeriesContainer[1];
+    sight::filter::dicom::helper::Filter::applyFilter(dicom_series_container, filter, true);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicom_series_container.size());
+    data::dicom_series::sptr dicom_series_a = dicom_series_container[0];
+    data::dicom_series::sptr dicom_series_b = dicom_series_container[1];
 
     // Check SOP Class UIDs
     // CT Image Storage Surface Segmentation Storage
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicomSeriesA->getSOPClassUIDs().begin());
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicomSeriesB->getSOPClassUIDs().begin());
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicom_series_a->getSOPClassUIDs().begin());
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicom_series_b->getSOPClassUIDs().begin());
 }
 
 //------------------------------------------------------------------------------

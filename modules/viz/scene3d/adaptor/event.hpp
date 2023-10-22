@@ -68,18 +68,25 @@ public:
 
     event();
 
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(MouseButton button, Modifier mods, int x, int y, int dx, int dy) final;
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier mods, double angleDelta, int x, int y) final;
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton button, Modifier mods, int x, int y) final;
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton button, Modifier mods, int x, int y) final;
-    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton button, Modifier mods, int x, int y) final;
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int key, Modifier mods, int mouseX, int mouseY) final;
-    MODULE_VIZ_SCENE3D_API void keyReleaseEvent(int key, Modifier mods, int mouseX, int mouseY) final;
-    MODULE_VIZ_SCENE3D_API void resizeEvent(int width, int height) final;
-    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double scaleFactor, int centerX, int centerY) final;
-    MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int x, int y, int dx, int dy) final;
-    MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int x, int y, int dx, int dy) final;
-    MODULE_VIZ_SCENE3D_API void longTapGestureEvent(int x, int y) final;
+    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
+        MouseButton _button,
+        Modifier _mods,
+        int _x,
+        int _y,
+        int _dx,
+        int _dy
+    ) final;
+    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier _mods, double _angle_delta, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
+    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y) final;
+    MODULE_VIZ_SCENE3D_API void keyReleaseEvent(int _key, Modifier _mods, int _mouse_x, int _mouse_y) final;
+    MODULE_VIZ_SCENE3D_API void resizeEvent(int _width, int _height) final;
+    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scale_factor, int _center_x, int _center_y) final;
+    MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy) final;
+    MODULE_VIZ_SCENE3D_API void longTapGestureEvent(int _x, int _y) final;
 
     MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TRIGGERED;
     typedef core::com::signal<void (sight::viz::scene3d::window_interactor::InteractionInfo)> TriggeredSignal;
@@ -95,10 +102,10 @@ private:
     };
 
     bool check(
-        sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum type,
-        std::optional<MouseButton> button,
-        std::optional<Modifier> modifiers,
-        std::optional<int> key
+        sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum _type,
+        std::optional<MouseButton> _button,
+        std::optional<Modifier> _modifiers,
+        std::optional<int> _key
     );
 
     MODULE_VIZ_SCENE3D_API void configuring() final;

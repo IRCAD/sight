@@ -63,9 +63,9 @@ public:
     /// @param level the way the password is changed
     /// @param policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     static inline core::crypto::secure_string pickle(
-        const core::crypto::secure_string& password,
-        const core::crypto::secure_string& salt,
-        core::crypto::password_keeper::encryption_policy policy = core::crypto::password_keeper::encryption_policy::PASSWORD
+        const core::crypto::secure_string& _password,
+        const core::crypto::secure_string& _salt,
+        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::PASSWORD
     );
 
 protected:
@@ -94,33 +94,33 @@ inline std::filesystem::path session::getIndexFilePath()
 //------------------------------------------------------------------------------
 
 inline core::crypto::secure_string session::pickle(
-    const core::crypto::secure_string& password,
-    const core::crypto::secure_string& salt,
-    const core::crypto::password_keeper::encryption_policy policy
+    const core::crypto::secure_string& _password,
+    const core::crypto::secure_string& _salt,
+    const core::crypto::password_keeper::encryption_policy _policy
 )
 {
-    if(password.empty() && policy == core::crypto::password_keeper::encryption_policy::FORCED)
+    if(_password.empty() && _policy == core::crypto::password_keeper::encryption_policy::FORCED)
     {
         if constexpr(core::crypto::password_keeper::has_default_password())
         {
             return core::crypto::password_keeper::get_default_password();
         }
-        else if(!salt.empty())
+        else if(!_salt.empty())
         {
-            return core::crypto::hash(salt);
+            return core::crypto::hash(_salt);
         }
         else
         {
             SIGHT_THROW("No password provided and no default password available");
         }
     }
-    else if(policy == core::crypto::password_keeper::encryption_policy::SALTED)
+    else if(_policy == core::crypto::password_keeper::encryption_policy::SALTED)
     {
-        return core::crypto::hash(password + salt);
+        return core::crypto::hash(_password + _salt);
     }
     else
     {
-        return password;
+        return _password;
     }
 }
 

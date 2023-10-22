@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/vr/volume_renderer.hpp"
 
-#include "viz/scene3d/Layer.hpp"
+#include "viz/scene3d/layer.hpp"
 
 #include <boost/algorithm/clamp.hpp>
 
@@ -48,39 +48,39 @@ const std::array<Ogre::Vector3, 8> volume_renderer::s_imagePositions =
 //-----------------------------------------------------------------------------
 
 volume_renderer::volume_renderer(
-    std::string parentId,
-    Ogre::SceneManager* const sceneManager,
-    Ogre::SceneNode* const volumeNode,
-    sight::data::image::csptr image,
-    sight::data::image::csptr mask,
-    sight::data::transfer_function::csptr tf,
-    std::uint16_t samples,
-    bool with_buffer,
-    bool preintegration
+    std::string _parent_id,
+    Ogre::SceneManager* const _scene_manager,
+    Ogre::SceneNode* const _volume_node,
+    sight::data::image::csptr _image,
+    sight::data::image::csptr _mask,
+    sight::data::transfer_function::csptr _tf,
+    std::uint16_t _samples,
+    bool _with_buffer,
+    bool _preintegration
 ) :
-    m_parentId(std::move(parentId)),
-    m_sceneManager(sceneManager),
-    m_3DOgreTexture(std::make_shared<sight::viz::scene3d::Texture>(image)),
-    m_maskTexture(std::make_shared<sight::viz::scene3d::Texture>(mask)),
-    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::transfer_function>(tf)),
-    m_with_buffer(with_buffer),
-    m_preintegration(preintegration),
-    m_volumeSceneNode(volumeNode),
-    m_camera(m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)),
-    m_nbSlices(samples),
+    M_PARENT_ID(std::move(_parent_id)),
+    M_SCENE_MANAGER(_scene_manager),
+    m_3DOgreTexture(std::make_shared<sight::viz::scene3d::texture>(_image)),
+    m_maskTexture(std::make_shared<sight::viz::scene3d::texture>(_mask)),
+    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::transfer_function>(_tf)),
+    M_WITH_BUFFER(_with_buffer),
+    m_preintegration(_preintegration),
+    m_volumeSceneNode(_volume_node),
+    m_camera(M_SCENE_MANAGER->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME)),
+    m_nbSlices(_samples),
     m_clippedImagePositions(s_imagePositions)
 {
     //Transfer function and preintegration table
     {
-        m_preIntegrationTable.createTexture(m_parentId);
+        m_preIntegrationTable.createTexture(M_PARENT_ID);
     }
 
     // 3D source texture instantiation
 
-    if(m_with_buffer)
+    if(M_WITH_BUFFER)
     {
         // 3D source texture instantiation
-        m_bufferingTexture = std::make_shared<sight::viz::scene3d::Texture>(image, "_buffered");
+        m_bufferingTexture = std::make_shared<sight::viz::scene3d::texture>(_image, "_buffered");
     }
 }
 
@@ -103,13 +103,13 @@ volume_renderer::~volume_renderer()
 
 void volume_renderer::loadImage()
 {
-    if(m_with_buffer)
+    if(M_WITH_BUFFER)
     {
         m_bufferingTexture->update();
 
         // Swap texture pointers.
         {
-            std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+            std::lock_guard<std::mutex> swap_lock(m_bufferSwapMutex);
             std::swap(m_3DOgreTexture, m_bufferingTexture);
         }
     }
@@ -128,10 +128,10 @@ void volume_renderer::loadMask()
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::clipImage(const Ogre::AxisAlignedBox& clippingBox)
+void volume_renderer::clipImage(const Ogre::AxisAlignedBox& _clipping_box)
 {
-    const Ogre::Vector3 min = clippingBox.getMinimum();
-    const Ogre::Vector3 max = clippingBox.getMaximum();
+    const Ogre::Vector3 min = _clipping_box.getMinimum();
+    const Ogre::Vector3 max = _clipping_box.getMaximum();
 
     for(unsigned i = 0 ; i < 8 ; ++i)
     {
@@ -152,29 +152,29 @@ void volume_renderer::resizeViewport(int /*w*/, int /*h*/)
 //-----------------------------------------------------------------------------
 
 void volume_renderer::scaleTranslateCube(
-    const data::image::Spacing& spacing,
-    const data::image::Origin& origin
+    const data::image::Spacing& _spacing,
+    const data::image::Origin& _origin
 )
 {
     // Scale the volume based on the image's spacing and move it to the image origin.
     m_volumeSceneNode->resetToInitialState();
 
-    const double width  = static_cast<double>(m_3DOgreTexture->width()) * spacing[0];
-    const double height = static_cast<double>(m_3DOgreTexture->height()) * spacing[1];
-    const double depth  = static_cast<double>(m_3DOgreTexture->depth()) * spacing[2];
+    const double width  = static_cast<double>(m_3DOgreTexture->width()) * _spacing[0];
+    const double height = static_cast<double>(m_3DOgreTexture->height()) * _spacing[1];
+    const double depth  = static_cast<double>(m_3DOgreTexture->depth()) * _spacing[2];
 
-    const Ogre::Vector3 scaleFactors(
+    const Ogre::Vector3 scale_factors(
         static_cast<float>(width),
         static_cast<float>(height),
         static_cast<float>(depth));
 
-    const Ogre::Vector3 ogreOrigin(
-        static_cast<float>(origin[0]),
-        static_cast<float>(origin[1]),
-        static_cast<float>(origin[2]));
+    const Ogre::Vector3 ogre_origin(
+        static_cast<float>(_origin[0]),
+        static_cast<float>(_origin[1]),
+        static_cast<float>(_origin[2]));
 
-    m_volumeSceneNode->setScale(scaleFactors);
-    m_volumeSceneNode->setPosition(ogreOrigin);
+    m_volumeSceneNode->setScale(scale_factors);
+    m_volumeSceneNode->setPosition(ogre_origin);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,8 +188,8 @@ void volume_renderer::updateSampleDistance()
     );
 
     //Compares the distances to the camera plane to get the cube's closest and furthest vertex to the camera
-    const auto comp = [this](const Ogre::Vector3& v1, const Ogre::Vector3& v2)
-                      {return m_cameraInfo.plane.getDistance(v1) < m_cameraInfo.plane.getDistance(v2);};
+    const auto comp = [this](const Ogre::Vector3& _v1, const Ogre::Vector3& _v2)
+                      {return m_cameraInfo.plane.getDistance(_v1) < m_cameraInfo.plane.getDistance(_v2);};
 
     //Closest vertex
     {

@@ -38,13 +38,13 @@ class mesh
 {
 public:
 
-    typedef std::map<std::array<float, 3>, data::mesh::point_t> PointsMapType;
+    typedef std::map<std::array<float, 3>, data::mesh::point_t> points_map_t;
 
     /**
      * @brief Generate a mesh.
      * @param mesh mesh to generate
      */
-    UTEST_DATA_API static void generateMesh(const data::mesh::sptr& mesh);
+    UTEST_DATA_API static void generateMesh(const data::mesh::sptr& _mesh);
 
     /**
      * @brief Generate a quad mesh.
@@ -55,8 +55,8 @@ public:
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     UTEST_DATA_API static void generateQuadMesh(
-        const data::mesh::sptr& mesh,
-        data::mesh::Attributes attributes = data::mesh::Attributes::NONE
+        const data::mesh::sptr& _mesh,
+        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
     );
 
     /**
@@ -68,8 +68,8 @@ public:
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     UTEST_DATA_API static void generateTriangleMesh(
-        const data::mesh::sptr& mesh,
-        data::mesh::Attributes attributes = data::mesh::Attributes::NONE
+        const data::mesh::sptr& _mesh,
+        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
     );
 
     /**
@@ -81,8 +81,8 @@ public:
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     UTEST_DATA_API static void generateTriangleQuadMesh(
-        const data::mesh::sptr& mesh,
-        data::mesh::Attributes attributes = data::mesh::Attributes::NONE
+        const data::mesh::sptr& _mesh,
+        data::mesh::Attributes _attributes = data::mesh::Attributes::NONE
     );
 
 private:
@@ -91,44 +91,44 @@ private:
      * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
      *
      * @param[out]  mesh data::mesh Mesh structure to fill with quad cells.
-     * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   points points_map_t Point registration map used to not create point which already in mesh buffer.
      * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
 
     static void addQuadMesh(
-        const data::mesh::sptr& mesh,
-        PointsMapType& points,
-        std::size_t nbPointsByEdge = 10,
-        float edgeDim              = 100.F
+        const data::mesh::sptr& _mesh,
+        points_map_t& _points,
+        std::size_t _nb_points_by_edge = 10,
+        float _edge_dim                = 100.F
     );
 
     /**
      * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
      *
      * @param[out]  mesh data::mesh Mesh structure to fill with triangle cells.
-     * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   points points_map_t Point registration map used to not create point which already in mesh buffer.
      * @param[in]   nbPointsByEdge std::size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
     static void addTriangleMesh(
-        const data::mesh::sptr& mesh,
-        PointsMapType& points,
-        std::size_t nbPointsByEdge = 10,
-        float edgeDim              = 100.F
+        const data::mesh::sptr& _mesh,
+        points_map_t& _points,
+        std::size_t _nb_points_by_edge = 10,
+        float _edge_dim                = 100.F
     );
 
     static data::mesh::point_t addPoint(
-        const data::mesh::position_t* pt,
-        const data::mesh::sptr& mesh,
-        PointsMapType& points
+        const data::mesh::position_t* _pt,
+        const data::mesh::sptr& _mesh,
+        points_map_t& _points
     );
     /**
      * @brief Shake points of the mesh.
      *
      * @param[out]  mesh data::mesh structure to shake.
      */
-    static void shakePoints(const data::mesh::sptr& mesh);
+    static void shakePoints(const data::mesh::sptr& _mesh);
 };
 
 } // namespace sight::utest_data::generator

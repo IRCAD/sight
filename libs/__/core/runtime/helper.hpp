@@ -42,17 +42,17 @@ namespace sight::core::runtime
  * @throw   sight::core::exception if the value type is not compatible
  */
 template<typename T>
-T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& path, T default_value)
+T get_ptree_value(const boost::property_tree::ptree& _tree, const std::string& _path, T _default_value)
 {
     boost::property_tree::ptree element;
     try
     {
-        element = tree.get_child(path);
+        element = _tree.get_child(_path);
     }
     catch(const boost::property_tree::ptree_bad_path&)
     {
         // 3.
-        return default_value;
+        return _default_value;
     }
 
     if(boost::optional<T> value = element.get_value_optional<T>())
@@ -62,14 +62,14 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     }
 
     // 2.
-    SIGHT_THROW_EXCEPTION(core::exception("Wrong value set in path: " + path));
-    return default_value;
+    SIGHT_THROW_EXCEPTION(core::exception("Wrong value set in path: " + _path));
+    return _default_value;
 }
 
 namespace property_tree
 {
 
-CORE_API std::string to_string(const boost::property_tree::ptree& pt);
+CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
 
 }
 

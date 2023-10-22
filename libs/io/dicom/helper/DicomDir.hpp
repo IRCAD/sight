@@ -65,7 +65,7 @@ public:
      * @brief Find the DICOMDIR file in the parent arborescence
      * @return Path to the DICOMDIR or empty path if the DICOMDIR has not been found
      */
-    IO_DICOM_API static std::filesystem::path findDicomDir(const std::filesystem::path& root);
+    IO_DICOM_API static std::filesystem::path findDicomDir(const std::filesystem::path& _root);
 
     /**
      * @brief Create DicomSeries from information stored in DICOMDIR.
@@ -74,11 +74,11 @@ public:
      * @param[in] fileLookupObserver file lookup observer
      */
     IO_DICOM_API static void retrieveDicomSeries(
-        const std::filesystem::path& dicomdir,
-        std::vector<SPTR(data::dicom_series)>& series_set,
-        const SPTR(core::log::logger)& logger,
-        std::function<void(std::uint64_t)> progress = nullptr,
-        std::function<bool()> cancel                = nullptr
+        const std::filesystem::path& _dicomdir,
+        std::vector<SPTR(data::dicom_series)>& _series_set,
+        const SPTR(core::log::logger)& _logger,
+        std::function<void(std::uint64_t)> _progress = nullptr,
+        std::function<bool()> _cancel                = nullptr
     );
 };
 

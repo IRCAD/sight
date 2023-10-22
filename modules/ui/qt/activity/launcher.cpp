@@ -72,7 +72,7 @@ using sight::activity::validator::base;
 //------------------------------------------------------------------------------
 
 launcher::launcher() noexcept :
-    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG)),
+    m_sigActivityLaunched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG)),
     m_mode("message")
 {
     new_slot(LAUNCH_SERIES_SLOT, &launcher::launchSeries, this);
@@ -126,11 +126,11 @@ void launcher::configuring()
 
         if(config.count("parameters") == 1)
         {
-            const service::config_t& configParameters = config.get_child("parameters");
+            const service::config_t& config_parameters = config.get_child("parameters");
             // NOLINTNEXTLINE(bugprone-branch-clone)
-            BOOST_FOREACH(const config_t::value_type& v, configParameters.equal_range("parameter"))
+            BOOST_FOREACH(const config_t::value_type& v, config_parameters.equal_range("parameter"))
             {
-                ParametersType::value_type parameter(v.second);
+                parameters_t::value_type parameter(v.second);
                 m_parameters.push_back(parameter);
             }
         }
@@ -139,10 +139,10 @@ void launcher::configuring()
 
         if(config.count("filter") == 1)
         {
-            const service::config_t& configFilter = config.get_child("filter");
-            SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+            const service::config_t& config_filter = config.get_child("filter");
+            SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", config_filter.count("mode") < 2);
 
-            const auto mode = configFilter.get<std::string>("mode");
+            const auto mode = config_filter.get<std::string>("mode");
             SIGHT_ASSERT(
                 "'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
                 mode == "include" || mode == "exclude"
@@ -150,7 +150,7 @@ void launcher::configuring()
             m_filterMode = mode;
 
             // NOLINTNEXTLINE(bugprone-branch-clone)
-            BOOST_FOREACH(const config_t::value_type& v, configFilter.equal_range("id"))
+            BOOST_FOREACH(const config_t::value_type& v, config_filter.equal_range("id"))
             {
                 m_keys.push_back(v.second.get<std::string>(""));
             }
@@ -161,9 +161,9 @@ void launcher::configuring()
         if(config.count("quickLaunch") == 1)
         {
             m_quickLaunch.clear();
-            const service::config_t& configQuickLaunch = config.get_child("quickLaunch");
+            const service::config_t& config_quick_launch = config.get_child("quickLaunch");
             // NOLINTNEXTLINE(bugprone-branch-clone)
-            BOOST_FOREACH(const config_t::value_type& v, configQuickLaunch.equal_range("association"))
+            BOOST_FOREACH(const config_t::value_type& v, config_quick_launch.equal_range("association"))
             {
                 const service::config_t& association = v.second;
                 const service::config_t xmlattr      = association.get_child("<xmlattr>");
@@ -184,7 +184,7 @@ void launcher::configuring()
 
 //------------------------------------------------------------------------------
 
-activity_info launcher::show(const activity_infos_t& infos)
+activity_info launcher::show(const activity_infos_t& _infos)
 {
     QWidget* parent = qApp->activeWindow();
 
@@ -192,7 +192,7 @@ activity_info launcher::show(const activity_infos_t& infos)
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
     auto* model = new QStandardItemModel(dialog);
-    for(const activity_info& info : infos)
+    for(const activity_info& info : _infos)
     {
         std::string text;
         if(info.title.empty())
@@ -210,39 +210,39 @@ activity_info launcher::show(const activity_infos_t& infos)
         model->appendRow(item);
     }
 
-    auto* selectionList = new QListView();
-    selectionList->setIconSize(QSize(100, 100));
-    selectionList->setUniformItemSizes(true);
-    selectionList->setModel(model);
+    auto* selection_list = new QListView();
+    selection_list->setIconSize(QSize(100, 100));
+    selection_list->setUniformItemSizes(true);
+    selection_list->setModel(model);
 
     QModelIndex index = model->index(0, 0);
     if(index.isValid())
     {
-        selectionList->selectionModel()->select(index, QItemSelectionModel::Select);
+        selection_list->selectionModel()->select(index, QItemSelectionModel::Select);
     }
 
-    auto* okButton     = new QPushButton("Ok");
-    auto* cancelButton = new QPushButton("Cancel");
+    auto* ok_button     = new QPushButton("Ok");
+    auto* cancel_button = new QPushButton("Cancel");
 
     auto* h_layout = new QHBoxLayout();
-    h_layout->addWidget(okButton);
-    h_layout->addWidget(cancelButton);
+    h_layout->addWidget(ok_button);
+    h_layout->addWidget(cancel_button);
 
-    auto* vLayout = new QVBoxLayout();
-    vLayout->addWidget(selectionList);
-    vLayout->addLayout(h_layout);
+    auto* v_layout = new QVBoxLayout();
+    v_layout->addWidget(selection_list);
+    v_layout->addLayout(h_layout);
 
-    dialog->setLayout(vLayout);
-    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
+    dialog->setLayout(v_layout);
+    QObject::connect(ok_button, SIGNAL(clicked()), dialog, SLOT(accept()));
+    QObject::connect(cancel_button, SIGNAL(clicked()), dialog, SLOT(reject()));
+    QObject::connect(selection_list, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
     activity_info info;
     if(dialog->exec() != 0)
     {
-        QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
-        QStandardItem* item      = model->itemFromIndex(currentIndex);
-        QVariant var             = item->data();
+        QModelIndex current_index = selection_list->selectionModel()->currentIndex();
+        QStandardItem* item       = model->itemFromIndex(current_index);
+        QVariant var              = item->data();
         info = var.value<activity_info>();
     }
 
@@ -251,19 +251,19 @@ activity_info launcher::show(const activity_infos_t& infos)
 
 //------------------------------------------------------------------------------
 
-launcher::activity_infos_t launcher::getEnabledActivities(const activity_infos_t& infos)
+launcher::activity_infos_t launcher::getEnabledActivities(const activity_infos_t& _infos)
 {
     activity_infos_t configs;
 
     if(m_filterMode == "include" || m_filterMode == "exclude")
     {
-        const bool isIncludeMode = m_filterMode == "include";
+        const bool is_include_mode = m_filterMode == "include";
 
-        for(const auto& info : infos)
+        for(const auto& info : _infos)
         {
-            auto keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
+            auto key_it = std::find(m_keys.begin(), m_keys.end(), info.id);
 
-            if((keyIt != m_keys.end() && isIncludeMode) || (keyIt == m_keys.end() && !isIncludeMode))
+            if((key_it != m_keys.end() && is_include_mode) || (key_it == m_keys.end() && !is_include_mode))
             {
                 configs.push_back(info);
             }
@@ -271,7 +271,7 @@ launcher::activity_infos_t launcher::getEnabledActivities(const activity_infos_t
     }
     else
     {
-        configs = infos;
+        configs = _infos;
     }
 
     return configs;
@@ -284,8 +284,8 @@ void launcher::updating()
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
-    const bool launchAS = this->launchAS(selection.get_shared());
-    if(!launchAS)
+    const bool launch_as = this->launchAS(selection.get_shared());
+    if(!launch_as)
     {
         activity_infos_t infos = activity::getDefault()->getInfos(selection.get_shared());
         infos = this->getEnabledActivities(infos);
@@ -325,7 +325,7 @@ void launcher::updateState()
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
-    bool isEnabled = false;
+    bool is_enabled = false;
 
     if(selection->size() == 1 && std::dynamic_pointer_cast<data::activity>((*selection)[0]))
     {
@@ -333,60 +333,60 @@ void launcher::updateState()
 
         if(m_filterMode == "include" || m_filterMode == "exclude")
         {
-            const bool isIncludeMode = m_filterMode == "include";
+            const bool is_include_mode = m_filterMode == "include";
 
-            auto keyIt = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
+            auto key_it = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
 
-            isEnabled = ((keyIt != m_keys.end()) != isIncludeMode);
+            is_enabled = ((key_it != m_keys.end()) != is_include_mode);
 
-            isEnabled &= activity::getDefault()->hasInfo(
+            is_enabled &= activity::getDefault()->hasInfo(
                 as->getActivityConfigId()
             );
         }
         else
         {
-            isEnabled = activity::getDefault()->hasInfo(
+            is_enabled = activity::getDefault()->hasInfo(
                 as->getActivityConfigId()
             );
         }
     }
     else
     {
-        activity_info::DataCountType dataCount;
-        dataCount = activity::getDefault()->getDataCount(selection.get_shared());
-        if(m_filterMode.empty() && dataCount.size() == 1)
+        activity_info::data_count_t data_count;
+        data_count = activity::getDefault()->getDataCount(selection.get_shared());
+        if(m_filterMode.empty() && data_count.size() == 1)
         {
             data::object::sptr obj = selection->front();
             if(std::dynamic_pointer_cast<data::activity>(obj))
             {
-                isEnabled = true;
+                is_enabled = true;
             }
         }
 
         activity_infos_t infos = activity::getDefault()->getInfos(selection.get_shared());
         infos = this->getEnabledActivities(infos);
 
-        isEnabled |= !infos.empty();
+        is_enabled |= !infos.empty();
     }
 
-    this->setEnabled(isEnabled);
+    this->setEnabled(is_enabled);
 }
 
 //------------------------------------------------------------------------------
 
 void launcher::buildActivity(
-    const activity_info& info,
-    const data::vector::csptr& selection
+    const activity_info& _info,
+    const data::vector::csptr& _selection
 )
 {
-    auto builder = sight::activity::builder::factory::make(info.builderImpl);
-    SIGHT_ASSERT(info.builderImpl << " instantiation failed", builder);
+    auto builder = sight::activity::builder::factory::make(_info.builderImpl);
+    SIGHT_ASSERT(_info.builderImpl << " instantiation failed", builder);
 
-    auto activity = builder->buildData(info, selection);
+    auto activity = builder->buildData(_info, _selection);
 
     if(!activity)
     {
-        const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl
+        const std::string msg = "The activity <" + _info.title + "> can't be launched. Builder <" + _info.builderImpl
                                 + "> failed.";
         sight::ui::dialog::message::show(
             "Activity can not be launched",
@@ -398,21 +398,22 @@ void launcher::buildActivity(
     }
 
     // Applies activity validator on activity to check the data
-    if(!info.validatorsImpl.empty())
+    if(!_info.validatorsImpl.empty())
     {
-        for(const std::string& validatorImpl : info.validatorsImpl)
+        for(const std::string& validator_impl : _info.validatorsImpl)
         {
             /// Process activity validator
-            auto validator = sight::activity::validator::factory::make(validatorImpl);
+            auto validator = sight::activity::validator::factory::make(validator_impl);
 
-            auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
+            auto activity_validator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
-            if(activityValidator)
+            if(activity_validator)
             {
-                auto ret = activityValidator->validate(activity);
+                auto ret = activity_validator->validate(activity);
                 if(!ret.first)
                 {
-                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" + ret.second;
+                    const std::string message = "The activity '" + _info.title + "' can not be launched:\n"
+                                                + ret.second;
                     sight::ui::dialog::message::show(
                         "Activity launch",
                         message,
@@ -424,7 +425,7 @@ void launcher::buildActivity(
         }
     }
 
-    const message msg(activity, info, m_parameters);
+    const message msg(activity, _info, m_parameters);
 
     if(m_mode == "message")
     {
@@ -434,12 +435,12 @@ void launcher::buildActivity(
     {
         sight::ui::LockAction lock(this->get_sptr());
 
-        const std::string& viewConfigID = msg.getAppConfigID();
-        auto replacementMap             = msg.getReplacementMap();
-        replacementMap["GENERIC_UID"] = app::extension::config::getUniqueIdentifier();
+        const std::string& view_config_id = msg.getAppConfigID();
+        auto replacement_map              = msg.getReplacementMap();
+        replacement_map["GENERIC_UID"] = app::extension::config::getUniqueIdentifier();
 
         auto helper = app::config_manager::make();
-        helper->setConfig(viewConfigID, replacementMap);
+        helper->setConfig(view_config_id, replacement_map);
         helper->launch();
         helper->stopAndDestroy();
     }
@@ -447,10 +448,10 @@ void launcher::buildActivity(
 
 //------------------------------------------------------------------------------
 
-void launcher::sendConfig(const activity_info& info)
+void launcher::sendConfig(const activity_info& _info)
 {
     // Start module containing the activity if it is not started
-    core::runtime::start_module(info.bundleId);
+    core::runtime::start_module(_info.bundleId);
 
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
@@ -458,12 +459,12 @@ void launcher::sendConfig(const activity_info& info)
     sight::activity::validator::return_t validation;
     validation.first = true;
 
-    for(auto const& validatorImpl : info.validatorsImpl)
+    for(auto const& validator_impl : _info.validatorsImpl)
     {
-        auto validator = sight::activity::validator::factory::make(validatorImpl);
-        SIGHT_ASSERT(validatorImpl << " instantiation failed", validator);
+        auto validator = sight::activity::validator::factory::make(validator_impl);
+        SIGHT_ASSERT(validator_impl << " instantiation failed", validator);
 
-        auto valid = validator->validate(info, selection.get_shared());
+        auto valid = validator->validate(_info, selection.get_shared());
         validation.first &= valid.first;
         if(!valid.first)
         {
@@ -475,58 +476,58 @@ void launcher::sendConfig(const activity_info& info)
     {
         sight::ui::dialog::message::show(
             "Activity can not be launched",
-            "The activity " + info.title + " can't be launched. Reason : " + validation.second,
+            "The activity " + _info.title + " can't be launched. Reason : " + validation.second,
             sight::ui::dialog::message::WARNING
         );
     }
     else
     {
-        this->buildActivity(info, selection.get_shared());
+        this->buildActivity(_info, selection.get_shared());
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool launcher::launchAS(const data::vector::csptr& selection)
+bool launcher::launchAS(const data::vector::csptr& _selection)
 {
-    bool launchAS = false;
-    activity_info::DataCountType dataCount;
-    dataCount = activity::getDefault()->getDataCount(selection);
-    if(dataCount.size() == 1)
+    bool launch_as = false;
+    activity_info::data_count_t data_count;
+    data_count = activity::getDefault()->getDataCount(_selection);
+    if(data_count.size() == 1)
     {
-        for(const data::object::sptr& obj : *selection)
+        for(const data::object::sptr& obj : *_selection)
         {
             data::activity::sptr as = std::dynamic_pointer_cast<data::activity>(obj);
             if(!as)
             {
-                launchAS = false;
+                launch_as = false;
                 break;
             }
 
             this->launchActivity(as);
-            launchAS = true;
+            launch_as = true;
         }
     }
 
-    return launchAS;
+    return launch_as;
 }
 
 //------------------------------------------------------------------------------
 
-void launcher::launchSeries(data::series::sptr series)
+void launcher::launchSeries(data::series::sptr _series)
 {
     auto selection = std::make_shared<data::vector>();
-    selection->push_back(series);
+    selection->push_back(_series);
     activity_infos_t infos = activity::getDefault()->getInfos(selection);
 
-    if(m_quickLaunch.find(series->get_classname()) != m_quickLaunch.end())
+    if(m_quickLaunch.find(_series->get_classname()) != m_quickLaunch.end())
     {
-        std::string activityId = m_quickLaunch[series->get_classname()];
+        std::string activity_id = m_quickLaunch[_series->get_classname()];
         SIGHT_ASSERT(
-            "Activity information not found for" + activityId,
-            activity::getDefault()->hasInfo(activityId)
+            "Activity information not found for" + activity_id,
+            activity::getDefault()->hasInfo(activity_id)
         );
-        this->sendConfig(activity::getDefault()->getInfo(activityId));
+        this->sendConfig(activity::getDefault()->getInfo(activity_id));
     }
     else if(!infos.empty())
     {
@@ -544,23 +545,23 @@ void launcher::launchSeries(data::series::sptr series)
 
 //------------------------------------------------------------------------------
 
-void launcher::launchActivity(data::activity::sptr activity)
+void launcher::launchActivity(data::activity::sptr _activity)
 {
     activity_info info;
-    info = activity::getDefault()->getInfo(activity->getActivityConfigId());
+    info = activity::getDefault()->getInfo(_activity->getActivityConfigId());
 
     // Applies activity validator on activity to check the data
     if(!info.validatorsImpl.empty())
     {
-        for(const std::string& validatorImpl : info.validatorsImpl)
+        for(const std::string& validator_impl : info.validatorsImpl)
         {
             /// Process activity validator
-            auto validator         = sight::activity::validator::factory::make(validatorImpl);
-            auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
+            auto validator          = sight::activity::validator::factory::make(validator_impl);
+            auto activity_validator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
-            if(activityValidator)
+            if(activity_validator)
             {
-                auto ret = activityValidator->validate(activity);
+                auto ret = activity_validator->validate(_activity);
                 if(!ret.first)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" + ret.second;
@@ -575,7 +576,7 @@ void launcher::launchActivity(data::activity::sptr activity)
         }
     }
 
-    m_sigActivityLaunched->async_emit(message(activity, info, m_parameters));
+    m_sigActivityLaunched->async_emit(message(_activity, info, m_parameters));
 }
 
 //------------------------------------------------------------------------------

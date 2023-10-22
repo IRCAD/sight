@@ -84,7 +84,7 @@ void mip_matching_registration::updating()
     core::tools::dispatcher<core::tools::supported_dispatcher_types, sight::filter::image::RegistrationDispatch>
     ::invoke(type, params);
 
-    transform->signal<data::matrix4::ModifiedSignalType>(data::matrix4::MODIFIED_SIG)->async_emit();
+    transform->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
 }
 
 //------------------------------------------------------------------------------

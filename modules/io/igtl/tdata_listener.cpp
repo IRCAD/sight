@@ -31,7 +31,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/range/iterator_range_core.hpp>
@@ -48,22 +48,22 @@ void tdata_listener::configuring()
 {
     const auto configuration = this->get_config();
 
-    const auto serverInfo = configuration.get<std::string>("server");
-    SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
-    const std::string::size_type splitPosition = serverInfo.find(':');
-    SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+    const auto server_info = configuration.get<std::string>("server");
+    SIGHT_INFO("OpenIGTLinkListener::configure server: " + server_info);
+    const std::string::size_type split_position = server_info.find(':');
+    SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-    m_hostnameConfig = serverInfo.substr(0, splitPosition);
-    m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+    m_hostnameConfig = server_info.substr(0, split_position);
+    m_portConfig     = server_info.substr(split_position + 1, server_info.size());
 
     const auto devices = configuration.equal_range("deviceName");
     std::transform(
         devices.first,
         devices.second,
         std::back_inserter(m_deviceNamesConfig),
-        [](const auto& device)
+        [](const auto& _device)
         {
-            return device.second.template get_value<std::string>();
+            return _device.second.template get_value<std::string>();
         });
 
     const auto tdata = configuration.get_child("TData");
@@ -84,7 +84,7 @@ void tdata_listener::runClient()
     // 1. Connection
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
         const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
         const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
@@ -125,12 +125,12 @@ void tdata_listener::runClient()
     {
         while(m_client.isConnected())
         {
-            std::string deviceName;
-            double timestamp                 = 0;
-            data::object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
-            if(receiveObject)
+            std::string device_name;
+            double timestamp                  = 0;
+            data::object::sptr receive_object = m_client.receiveObject(device_name, timestamp);
+            if(receive_object)
             {
-                composite->shallow_copy(receiveObject);
+                composite->shallow_copy(receive_object);
                 this->manageTimeline(composite, timestamp);
             }
         }
@@ -157,9 +157,9 @@ void tdata_listener::runClient()
 
 void tdata_listener::starting()
 {
-    const auto matTL = m_timeline.lock();
-    matTL->setMaximumSize(10);
-    matTL->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
+    const auto mat_tl = m_timeline.lock();
+    mat_tl->setMaximumSize(10);
+    mat_tl->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
 
     m_clientFuture = std::async(std::launch::async, [this](auto&& ...){runClient();});
 }
@@ -175,44 +175,44 @@ void tdata_listener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void tdata_listener::manageTimeline(const data::composite::sptr& obj, double timestamp)
+void tdata_listener::manageTimeline(const data::composite::sptr& _obj, double _timestamp)
 {
-    const auto matTL = m_timeline.lock();
-    SPTR(data::matrix_tl::BufferType) matrixBuf;
-    matrixBuf = matTL->createBuffer(timestamp);
+    const auto mat_tl = m_timeline.lock();
+    SPTR(data::matrix_tl::buffer_t) matrix_buf;
+    matrix_buf = mat_tl->createBuffer(_timestamp);
 
-    for(const auto& elt : *obj)
+    for(const auto& elt : *_obj)
     {
-        data::matrix4::csptr transfoMatrix = std::dynamic_pointer_cast<const data::matrix4>(elt.second);
+        data::matrix4::csptr transfo_matrix = std::dynamic_pointer_cast<const data::matrix4>(elt.second);
 
         auto it = m_matrixNameIndex.find(elt.first);
 
-        if(transfoMatrix && it != m_matrixNameIndex.end())
+        if(transfo_matrix && it != m_matrixNameIndex.end())
         {
             std::uint64_t index = it->second;
 
-            std::array<float, 16> matrixValues {};
-            bool isZero = true;
+            std::array<float, 16> matrix_values {};
+            bool is_zero = true;
             for(unsigned int i = 0 ; i < 16 ; ++i)
             {
-                matrixValues[i] = static_cast<float>((*transfoMatrix)[i]);
+                matrix_values[i] = static_cast<float>((*transfo_matrix)[i]);
                 //Test if matrix contains only '0' except last value (always '1)
-                isZero &= i < 15 ? (matrixValues[i] == 0.F) : true;
+                is_zero &= i < 15 ? (matrix_values[i] == 0.F) : true;
             }
 
             //don't push the matrix if it contains only '0'
-            if(!isZero)
+            if(!is_zero)
             {
-                matrixBuf->setElement(matrixValues, static_cast<unsigned int>(index));
+                matrix_buf->setElement(matrix_values, static_cast<unsigned int>(index));
             }
         }
     }
 
-    matTL->pushObject(matrixBuf);
+    mat_tl->pushObject(matrix_buf);
 
     data::timeline::signals::pushed_t::sptr sig;
-    sig = matTL->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-    sig->async_emit(timestamp);
+    sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+    sig->async_emit(_timestamp);
 }
 
 //-----------------------------------------------------------------------------

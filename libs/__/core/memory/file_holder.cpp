@@ -32,8 +32,8 @@ namespace sight::core::memory
 
 struct file_auto_delete
 {
-    explicit file_auto_delete(std::filesystem::path file) :
-        m_path(std::move(file))
+    explicit file_auto_delete(std::filesystem::path _file) :
+        m_path(std::move(_file))
     {
     }
 
@@ -52,12 +52,12 @@ struct file_auto_delete
 
 //-----------------------------------------------------------------------------
 
-file_holder::file_holder(const std::filesystem::path& file, bool autodelete) :
-    m_path(file)
+file_holder::file_holder(const std::filesystem::path& _file, bool _autodelete) :
+    m_path(_file)
 {
-    if(autodelete)
+    if(_autodelete)
     {
-        m_auto_delete = std::make_shared<file_auto_delete>(file);
+        m_auto_delete = std::make_shared<file_auto_delete>(_file);
     }
 }
 

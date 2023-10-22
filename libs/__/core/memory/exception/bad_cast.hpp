@@ -34,8 +34,8 @@ namespace sight::core::memory::exception
  */
 struct CORE_CLASS_API bad_cast : core::exception
 {
-    bad_cast(const std::string& err) :
-        core::exception(err)
+    bad_cast(const std::string& _err) :
+        core::exception(_err)
     {
     }
 };

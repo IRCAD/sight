@@ -42,7 +42,7 @@ Q_OBJECT
 
 public:
 
-    VIZ_SCENE2D_API Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget);
+    VIZ_SCENE2D_API Scene2DGraphicsView(QGraphicsScene* _scene, QWidget* _widget);
 
     /// Events
 
@@ -62,14 +62,14 @@ public:
 
     VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event) override;
 
-    VIZ_SCENE2D_API void enterEvent(QEvent* event) override;
-    VIZ_SCENE2D_API void leaveEvent(QEvent* event) override;
+    VIZ_SCENE2D_API void enterEvent(QEvent* _event) override;
+    VIZ_SCENE2D_API void leaveEvent(QEvent* _event) override;
 
     VIZ_SCENE2D_API QSize sizeHint() const override;
 
-    VIZ_SCENE2D_API void updateFromViewport(const scene2d::data::Viewport& viewport);
+    VIZ_SCENE2D_API void updateFromViewport(const scene2d::data::Viewport& _viewport);
 
-    VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::render) sceneRender);
+    VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::render) _scene_render);
 
 protected:
 

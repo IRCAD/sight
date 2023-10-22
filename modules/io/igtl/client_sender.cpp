@@ -28,7 +28,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 namespace sight::module::io::igtl
 {
@@ -49,29 +49,29 @@ void client_sender::configuring()
 {
     service::config_t config = this->get_config();
 
-    const config_t configIn = config.get_child("in");
+    const config_t config_in = config.get_child("in");
 
     SIGHT_ASSERT(
         "configured group must be 'objects'",
-        configIn.get<std::string>("<xmlattr>.group", "") == "objects"
+        config_in.get<std::string>("<xmlattr>.group", "") == "objects"
     );
 
-    const auto keyCfg = configIn.equal_range("key");
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
+    const auto key_cfg = config_in.equal_range("key");
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg)
     {
-        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
+        const service::config_t& attr = it_cfg->second.get_child("<xmlattr>");
         const std::string name        = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(name);
     }
 
-    const std::string serverInfo = config.get("server", "");
-    if(!serverInfo.empty())
+    const std::string server_info = config.get("server", "");
+    if(!server_info.empty())
     {
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string::size_type split_position = server_info.find(':');
+        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_hostnameConfig = serverInfo.substr(0, splitPosition);
-        m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+        m_hostnameConfig = server_info.substr(0, split_position);
+        m_portConfig     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -87,7 +87,7 @@ void client_sender::starting()
     {
         try
         {
-            ui::Preferences preferences;
+            ui::preferences preferences;
             const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
             const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
@@ -125,14 +125,14 @@ void client_sender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void client_sender::sendObject(const data::object::csptr& obj, const std::size_t index)
+void client_sender::sendObject(const data::object::csptr& _obj, const std::size_t _index)
 {
-    SIGHT_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
+    SIGHT_ASSERT("No device name associated with object index " << _index, _index < m_deviceNames.size());
 
     if(m_client.isConnected())
     {
-        m_client.setDeviceNameOut(m_deviceNames[index]);
-        m_client.sendObject(obj);
+        m_client.setDeviceNameOut(m_deviceNames[_index]);
+        m_client.sendObject(_obj);
     }
 }
 

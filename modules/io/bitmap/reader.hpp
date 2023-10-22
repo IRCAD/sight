@@ -138,7 +138,7 @@ private:
     /// Retrieve the backend in the enabled backend list from the given extension
     /// @param extension the extension of the file to write
     /// @return the found backend
-    sight::io::bitmap::Backend findBackend(const std::string& extension) const;
+    sight::io::bitmap::Backend findBackend(const std::string& _extension) const;
 
     /// How and When display a dialog
     DialogPolicy m_dialog_policy {DialogPolicy::NEVER};

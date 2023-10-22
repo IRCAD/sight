@@ -35,7 +35,7 @@
 namespace sight::viz::qt3d::core
 {
 
-GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
+GenericScene::GenericScene(bool _is_qml, Qt3DCore::QNode* _parent) :
     QEntity(_parent),
     m_camera(new Qt3DRender::QCamera(this)),
     m_cameraController(new Qt3DExtras::QOrbitCameraController(this)),
@@ -56,7 +56,7 @@ GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
     m_frameGraph->setCamera(m_camera);
     m_frameGraph->setBuffersToClear(Qt3DRender::QClearBuffers::AllBuffers);
 
-    if(_isQml)
+    if(_is_qml)
     {
         m_inputSettings = new Qt3DInput::QInputSettings(this);
         this->addComponent(m_inputSettings);
@@ -120,31 +120,31 @@ void GenericScene::setCamera(Qt3DRender::QCamera* _camera)
 
 //------------------------------------------------------------------------------
 
-void GenericScene::setCameraController(Qt3DExtras::QAbstractCameraController* _cameraController)
+void GenericScene::setCameraController(Qt3DExtras::QAbstractCameraController* _camera_controller)
 {
-    m_cameraController = _cameraController;
+    m_cameraController = _camera_controller;
 }
 
 //------------------------------------------------------------------------------
 
-void GenericScene::SetInputSettings(Qt3DInput::QInputSettings* _inputSettings)
+void GenericScene::SetInputSettings(Qt3DInput::QInputSettings* _input_settings)
 {
-    m_inputSettings = _inputSettings;
+    m_inputSettings = _input_settings;
 }
 
 //------------------------------------------------------------------------------
 
-void GenericScene::setRenderSettings(Qt3DRender::QRenderSettings* _renderSettings)
+void GenericScene::setRenderSettings(Qt3DRender::QRenderSettings* _render_settings)
 {
-    m_renderSettings = _renderSettings;
+    m_renderSettings = _render_settings;
 }
 
 //------------------------------------------------------------------------------
 
-void GenericScene::setFrameGraph(FrameGraph* _frameGraph)
+void GenericScene::setFrameGraph(FrameGraph* _frame_graph)
 {
-    SIGHT_ASSERT("FrameGraph can't be set to null value.", _frameGraph);
-    m_frameGraph = _frameGraph;
+    SIGHT_ASSERT("FrameGraph can't be set to null value.", _frame_graph);
+    m_frameGraph = _frame_graph;
 }
 
 } // namespace sight::viz::qt3d::core

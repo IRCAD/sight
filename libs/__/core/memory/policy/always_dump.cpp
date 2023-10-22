@@ -33,86 +33,86 @@ SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::always_dump);
 //------------------------------------------------------------------------------
 
 void always_dump::allocation_request(
-    buffer_info& info,
-    core::memory::buffer_manager::const_buffer_ptr_t buffer,
-    buffer_info::size_t size
+    buffer_info& _info,
+    core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+    buffer_info::size_t _size
 )
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(size);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_size);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
 void always_dump::set_request(
-    buffer_info& info,
-    core::memory::buffer_manager::const_buffer_ptr_t buffer,
-    buffer_info::size_t size
+    buffer_info& _info,
+    core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+    buffer_info::size_t _size
 )
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(size);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_size);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
 void always_dump::reallocate_request(
-    buffer_info& info,
-    core::memory::buffer_manager::const_buffer_ptr_t buffer,
-    buffer_info::size_t new_size
+    buffer_info& _info,
+    core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+    buffer_info::size_t _new_size
 )
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
-    SIGHT_NOT_USED(new_size);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
+    SIGHT_NOT_USED(_new_size);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void always_dump::destroy_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)
+void always_dump::destroy_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void always_dump::lock_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)
+void always_dump::lock_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void always_dump::unlock_request(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)
+void always_dump::unlock_request(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void always_dump::dump_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)
+void always_dump::dump_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
 }
 
 //------------------------------------------------------------------------------
 
-void always_dump::restore_success(buffer_info& info, core::memory::buffer_manager::const_buffer_ptr_t buffer)
+void always_dump::restore_success(buffer_info& _info, core::memory::buffer_manager::const_buffer_ptr_t _buffer)
 {
-    SIGHT_NOT_USED(info);
-    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(_info);
+    SIGHT_NOT_USED(_buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -158,12 +158,12 @@ void always_dump::refresh()
 
 //------------------------------------------------------------------------------
 
-std::string always_dump::get_param(const std::string& name, bool* ok) const
+std::string always_dump::get_param(const std::string& _name, bool* _ok) const
 {
-    SIGHT_NOT_USED(name);
-    if(ok != nullptr)
+    SIGHT_NOT_USED(_name);
+    if(_ok != nullptr)
     {
-        *ok = false;
+        *_ok = false;
     }
 
     return "";

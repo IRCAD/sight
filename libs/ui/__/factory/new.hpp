@@ -38,13 +38,13 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME) make();
 
-UI_API SPTR(sight::ui::object) make(const sight::ui::registry::key_t& classname);
+UI_API SPTR(sight::ui::object) make(const sight::ui::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make()
 {
-    SPTR(CLASSNAME) guiObj = std::make_shared<CLASSNAME>();
-    return guiObj;
+    SPTR(CLASSNAME) gui_obj = std::make_shared<CLASSNAME>();
+    return gui_obj;
 }
 
 } // namespace factory

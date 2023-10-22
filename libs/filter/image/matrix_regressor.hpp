@@ -39,7 +39,7 @@ class FILTER_IMAGE_CLASS_API matrix_regressor
 {
 public:
 
-    typedef glm::dvec4 PointType;
+    typedef glm::dvec4 point_t;
 
     /**
      * @brief Constructor
@@ -48,7 +48,7 @@ public:
      * @param matrixList list of matrix to 'average'.
      * @param points list of points used for solving.
      */
-    FILTER_IMAGE_API matrix_regressor(const data::vector::csptr& matrixList, std::vector<PointType> points);
+    FILTER_IMAGE_API matrix_regressor(const data::vector::csptr& _matrix_list, std::vector<point_t> _points);
 
     /**
      * @brief computes the matrix that best fits our matrix list.
@@ -62,18 +62,18 @@ public:
      * @return the 'average' matrix
      */
     FILTER_IMAGE_API data::matrix4::sptr minimize(
-        const data::matrix4& initValue,
-        double stepLength     = 1.,
-        double stepTolerance  = 1e-2,
-        double valueTolerance = 1e-2,
-        unsigned int maxIter  = 10000
+        const data::matrix4& _init_value,
+        double _step_length     = 1.,
+        double _step_tolerance  = 1e-2,
+        double _value_tolerance = 1e-2,
+        unsigned int _max_iter  = 10000
     );
 
 private:
 
     std::vector<glm::dmat4> m_matList;
 
-    std::vector<PointType> m_pointList;
+    std::vector<point_t> m_pointList;
 };
 
 } // namespace sight::filter::image.

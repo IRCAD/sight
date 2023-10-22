@@ -23,56 +23,56 @@
 
 #include <QListWidget>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void ListWidget::countEquals(Tester& tester, const Select& list, int expected)
+void ListWidget::countEquals(Tester& _tester, const Select& _list, int _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking if \"" + list.getDescription(tester) + "\" list has " + std::to_string(expected) + " elements"
+    auto bt = _tester.addInBacktrace(
+        "checking if \"" + _list.getDescription(_tester) + "\" list has " + std::to_string(_expected) + " elements"
     );
-    list.select(tester);
-    tester.doubt<QListWidget*>(
-        '"' + list.getDescription(tester) + "\" list has " + std::to_string(expected) + " elements",
-        [&expected](QListWidget* list)
+    _list.select(_tester);
+    _tester.doubt<QListWidget*>(
+        '"' + _list.getDescription(_tester) + "\" list has " + std::to_string(_expected) + " elements",
+        [&_expected](QListWidget* _list)
         {
-            return list->count() == expected;
+            return _list->count() == _expected;
         });
 }
 
 //------------------------------------------------------------------------------
 
-void ListWidget::setCurrentRow(Tester& tester, const Select& list, int index)
+void ListWidget::setCurrentRow(Tester& _tester, const Select& _list, int _index)
 {
-    auto bt = tester.addInBacktrace(
-        "setting \"" + list.getDescription(tester) + "\" list current index to " + std::to_string(index)
+    auto bt = _tester.addInBacktrace(
+        "setting \"" + _list.getDescription(_tester) + "\" list current index to " + std::to_string(_index)
     );
-    list.select(tester);
-    tester.doSomethingAsynchronously<QListWidget*>([index](QListWidget* l){l->setCurrentRow(index);});
+    _list.select(_tester);
+    _tester.doSomethingAsynchronously<QListWidget*>([_index](QListWidget* _l){_l->setCurrentRow(_index);});
 }
 
 //------------------------------------------------------------------------------
 
-void ListWidget::setCurrentText(Tester& tester, const Select& list, const std::string& text)
+void ListWidget::setCurrentText(Tester& _tester, const Select& _list, const std::string& _text)
 {
-    auto bt = tester.addInBacktrace(
-        "setting \"" + list.getDescription(tester) + "\" list current text to \"" + text + '"'
+    auto bt = _tester.addInBacktrace(
+        "setting \"" + _list.getDescription(_tester) + "\" list current text to \"" + _text + '"'
     );
-    list.select(tester);
-    QString qText = QString::fromStdString(text);
-    tester.doSomethingAsynchronously<QListWidget*>(
-        [&qText](QListWidget* current)
+    _list.select(_tester);
+    QString q_text = QString::fromStdString(_text);
+    _tester.doSomethingAsynchronously<QListWidget*>(
+        [&q_text](QListWidget* _current)
         {
-            current->setCurrentItem(current->findItems(qText, Qt::MatchExactly)[0]);
+            _current->setCurrentItem(_current->findItems(q_text, Qt::MatchExactly)[0]);
         });
-    tester.doubt<QListWidget*>(
+    _tester.doubt<QListWidget*>(
         "the selection is selected",
-        [&qText](QListWidget* current)
+        [&q_text](QListWidget* _current)
         {
-            return current->currentItem()->text() == qText;
+            return _current->currentItem()->text() == q_text;
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

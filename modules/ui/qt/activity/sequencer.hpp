@@ -181,7 +181,7 @@ public:
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    MODULE_UI_QT_API void goTo(int index);
+    MODULE_UI_QT_API void goTo(int _index);
 
 protected:
 
@@ -209,10 +209,10 @@ protected:
 private:
 
     /// Invoke 'enableActivity' method in Qml file
-    void enableActivity(int index);
+    void enableActivity(int _index);
 
     /// Invokes 'disableActivity' method in Qml file
-    void disableActivity(int index);
+    void disableActivity(int _index);
 
     /// List of the activities
     std::vector<std::string> m_activityNames;
@@ -233,35 +233,35 @@ private:
     std::string m_buttonWidth {"200"};
     double m_fontSize {12.0};
 
-    const Signals::activity_signal_t::sptr m_activity_created {
+    const Signals::activity_signal_t::sptr M_ACTIVITY_CREATED {
         new_signal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)
     };
 
-    const Signals::activity_signal_t::sptr m_data_required {
+    const Signals::activity_signal_t::sptr M_DATA_REQUIRED {
         new_signal<Signals::activity_signal_t>(Signals::DATA_REQUIRED)
     };
 
-    const Signals::bool_signal_t::sptr m_has_previous {
+    const Signals::bool_signal_t::sptr M_HAS_PREVIOUS {
         new_signal<Signals::bool_signal_t>(Signals::HAS_PREVIOUS)
     };
 
-    const Signals::bool_signal_t::sptr m_has_next {
+    const Signals::bool_signal_t::sptr M_HAS_NEXT {
         new_signal<Signals::bool_signal_t>(Signals::HAS_NEXT)
     };
 
-    const Signals::bool_signal_t::sptr m_next_enabled {
+    const Signals::bool_signal_t::sptr M_NEXT_ENABLED {
         new_signal<Signals::bool_signal_t>(Signals::NEXT_ENABLED)
     };
 
-    const Signals::bool_signal_t::sptr m_next_validated {
+    const Signals::bool_signal_t::sptr M_NEXT_VALIDATED {
         new_signal<Signals::bool_signal_t>(Signals::NEXT_VALIDATED)
     };
 
-    const Signals::void_signal_t::sptr m_next_valid {
+    const Signals::void_signal_t::sptr M_NEXT_VALID {
         new_signal<Signals::void_signal_t>(Signals::NEXT_VALID)
     };
 
-    const Signals::void_signal_t::sptr m_next_invalid {
+    const Signals::void_signal_t::sptr M_NEXT_INVALID {
         new_signal<Signals::void_signal_t>(Signals::NEXT_INVALID)
     };
 

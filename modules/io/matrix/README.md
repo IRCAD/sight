@@ -14,7 +14,7 @@ Module containing services to read/write matrices from/to files.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_matrix ... )
+add_dependencies(my_target module_io_matrix ... )
 ```
 
 ### XML

@@ -54,7 +54,7 @@ public:
         std::string_view _key,
         std::optional<std::size_t> _index,
         data::Access _access,
-        const bool _autoConnect,
+        const bool _auto_connect,
         const bool _optional
     );
 

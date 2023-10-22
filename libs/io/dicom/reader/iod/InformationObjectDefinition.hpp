@@ -56,11 +56,11 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationObjectDefinition(
-        data::dicom_series::csptr dicomSeries,
-        SPTR(io::dicom::container::DicomInstance)instance,
-        core::log::logger::sptr logger = nullptr,
-        ProgressCallback progress      = nullptr,
-        CancelRequestedCallback cancel = nullptr
+        data::dicom_series::csptr _dicom_series,
+        SPTR(io::dicom::container::DicomInstance)_instance,
+        core::log::logger::sptr _logger = nullptr,
+        ProgressCallback _progress      = nullptr,
+        CancelRequestedCallback _cancel = nullptr
     );
 
     /// Destructor
@@ -71,7 +71,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API virtual void read(data::series::sptr series) = 0;
+    IO_DICOM_API virtual void read(data::series::sptr _series) = 0;
 
 protected:
 

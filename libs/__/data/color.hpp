@@ -39,13 +39,13 @@ class DATA_CLASS_API color final : public object
 {
 public:
 
-    typedef float ColorType;
-    typedef std::array<ColorType, 4> ColorArray;
+    typedef float color_t;
+    typedef std::array<color_t, 4> ColorArray;
 
     SIGHT_DECLARE_CLASS(color, object);
 
     DATA_API color();
-    DATA_API color(ColorType red, ColorType green = 1.F, ColorType blue = 1.F, ColorType alpha = 1.F);
+    DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
 
     /// Destructor
     DATA_API ~color() noexcept override = default;
@@ -55,60 +55,60 @@ public:
      *  @{  */
     ColorArray& getRGBA();
     const ColorArray& getRGBA() const;
-    void setRGBA(const ColorArray& _vRGBA);
+    void setRGBA(const ColorArray& _v_rgba);
     /** @} */
 
     ///@{
     /// Set RGBA color
     DATA_API void setRGBA(
-        ColorType red,
-        ColorType green,
-        ColorType blue,
-        ColorType alpha = 1.0
+        color_t _red,
+        color_t _green,
+        color_t _blue,
+        color_t _alpha = 1.0
     );
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] hexaColor c hexadecimal format (\#ffffff)
-    DATA_API void setRGBA(const std::string& hexaColor);
+    DATA_API void setRGBA(const std::string& _hexa_color);
     ///@}
 
     /** @name color attributes accessor
      *  @brief Get editable reference to color attributes
      *  @{
      */
-    DATA_API ColorType& red();
-    DATA_API ColorType& green();
-    DATA_API ColorType& blue();
-    DATA_API ColorType& alpha();
+    DATA_API color_t& red();
+    DATA_API color_t& green();
+    DATA_API color_t& blue();
+    DATA_API color_t& alpha();
     /// @}
 
     /**@brief Get read-only reference to color attributes
      * @{
      */
-    DATA_API const ColorType& red() const;
-    DATA_API const ColorType& green() const;
-    DATA_API const ColorType& blue() const;
-    DATA_API const ColorType& alpha() const;
+    DATA_API const color_t& red() const;
+    DATA_API const color_t& green() const;
+    DATA_API const color_t& blue() const;
+    DATA_API const color_t& alpha() const;
     //@}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const color& other) const noexcept;
-    DATA_API bool operator!=(const color& other) const noexcept;
+    DATA_API bool operator==(const color& _other) const noexcept;
+    DATA_API bool operator!=(const color& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -133,9 +133,9 @@ inline const color::ColorArray& color::getRGBA() const
 
 //-----------------------------------------------------------------------------
 
-inline void color::setRGBA(const color::ColorArray& _vRGBA)
+inline void color::setRGBA(const color::ColorArray& _v_rgba)
 {
-    this->m_vRGBA = _vRGBA;
+    this->m_vRGBA = _v_rgba;
 }
 
 //-----------------------------------------------------------------------------

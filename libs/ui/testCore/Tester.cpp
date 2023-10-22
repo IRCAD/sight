@@ -24,7 +24,7 @@
 
 #include <core/spy_log.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -38,7 +38,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace sight::ui::testCore
+namespace sight::ui::test_core
 {
 
 //------------------------------------------------------------------------------
@@ -48,9 +48,9 @@ std::filesystem::path Tester::s_imageOutputPath = std::filesystem::temp_director
 
 //------------------------------------------------------------------------------
 
-TestEvent::TestEvent(std::function<void()> f) :
+TestEvent::TestEvent(std::function<void()> _f) :
     QEvent(QEvent::User),
-    m_function(std::move(f))
+    m_function(std::move(_f))
 {
 }
 
@@ -63,36 +63,36 @@ std::function<void()> TestEvent::function()
 
 //------------------------------------------------------------------------------
 
-bool TestEventFilter::eventFilter(QObject* obj, QEvent* event)
+bool TestEventFilter::eventFilter(QObject* _obj, QEvent* _event)
 {
-    if(event->type() == QEvent::User)
+    if(_event->type() == QEvent::User)
     {
-        auto* testEvent = dynamic_cast<TestEvent*>(event);
+        auto* test_event = dynamic_cast<TestEvent*>(_event);
         // the event catched here might not be a TestEvent, in which case, testEvent will be nullptr
-        if(testEvent != nullptr)
+        if(test_event != nullptr)
         {
-            testEvent->function()();
+            test_event->function()();
             return true;
         }
     }
 
-    return QObject::eventFilter(obj, event);
+    return QObject::eventFilter(_obj, _event);
 }
 
-TesterAssertionFailed::TesterAssertionFailed(const std::string& msg) :
-    std::runtime_error(msg)
+TesterAssertionFailed::TesterAssertionFailed(const std::string& _msg) :
+    std::runtime_error(_msg)
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool alwaysTrue(QObject* /*unused*/)
+bool always_true(QObject* /*unused*/)
 {
     return true;
 }
 
-Tester::BacktraceLock::BacktraceLock(Tester& tester) :
-    m_tester(tester)
+Tester::BacktraceLock::BacktraceLock(Tester& _tester) :
+    m_tester(_tester)
 {
 }
 
@@ -105,9 +105,9 @@ Tester::BacktraceLock::~BacktraceLock()
     }
 }
 
-Tester::Tester(std::string testName, bool verboseMode) :
-    m_testName(std::move(testName)),
-    m_verboseMode(verboseMode)
+Tester::Tester(std::string _test_name, bool _verbose_mode) :
+    M_TEST_NAME(std::move(_test_name)),
+    m_verboseMode(_verbose_mode)
 {
 }
 
@@ -122,59 +122,59 @@ Tester::~Tester()
 //------------------------------------------------------------------------------
 
 void Tester::take(
-    const std::string& componentDescription,
-    std::function<QObject* ()> graphicComponent,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<QObject* ()> _graphic_component,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
-    take<QObject*>(componentDescription, graphicComponent, condition, timeout);
+    take<QObject*>(_component_description, _graphic_component, _condition, _timeout);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::take(const std::string& componentDescription, QObject* graphicComponent)
+void Tester::take(const std::string& _component_description, QObject* _graphic_component)
 {
-    m_componentDescription = componentDescription;
-    m_graphicComponent     = graphicComponent;
+    m_componentDescription = _component_description;
+    m_graphicComponent     = _graphic_component;
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::take(
-    const std::string& componentDescription,
-    QObject* parent,
-    const std::string& objectName,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    QObject* _parent,
+    const std::string& _object_name,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
     take(
-        componentDescription,
-        [parent, &objectName]
+        _component_description,
+        [_parent, &_object_name]
         {
-            return parent->findChild<QObject*>(QString::fromStdString(objectName));
+            return _parent->findChild<QObject*>(QString::fromStdString(_object_name));
         },
-        condition,
-        timeout
+        _condition,
+        _timeout
     );
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::take(
-    const std::string& componentDescription,
-    const std::string& objectName,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    const std::string& _object_name,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
-    take(componentDescription, getMainWindow(), objectName, condition, timeout);
+    take(_component_description, getMainWindow(), _object_name, _condition, _timeout);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::interact(std::unique_ptr<Interaction>&& interaction)
+void Tester::interact(std::unique_ptr<Interaction>&& _interaction)
 {
     if(m_graphicComponent == nullptr)
     {
@@ -190,98 +190,102 @@ void Tester::interact(std::unique_ptr<Interaction>&& interaction)
 
     if(m_verboseMode)
     {
-        qDebug() << interaction->toString().c_str() << "on" << QString::fromStdString(m_componentDescription);
+        qDebug() << _interaction->toString().c_str() << "on" << QString::fromStdString(m_componentDescription);
     }
 
     if(widget != nullptr)
     {
-        interaction->interactWith(widget);
+        _interaction->interactWith(widget);
     }
     else if(window != nullptr)
     {
-        interaction->interactWith(window);
+        _interaction->interactWith(window);
     }
 
-    m_interactions.push_back(std::move(interaction));
+    m_interactions.push_back(std::move(_interaction));
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::doubt(const std::string& resultDescription, std::function<bool(QObject*)> result, int timeout)
+void Tester::doubt(const std::string& _result_description, std::function<bool(QObject*)> _result, int _timeout)
 {
-    doubt<QObject*>(resultDescription, result, timeout);
-}
-
-//------------------------------------------------------------------------------
-
-void Tester::yields(
-    const std::string& componentDescription,
-    std::function<QObject* (QObject*)> graphicComponent,
-    std::function<bool(QObject*)> condition,
-    int timeout
-)
-{
-    yields<QObject*>(componentDescription, graphicComponent, condition, timeout);
+    doubt<QObject*>(_result_description, _result, _timeout);
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::yields(
-    const std::string& componentDescription,
-    const std::string& objectName,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<QObject* (QObject*)> _graphic_component,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
-    yields<QObject*>(componentDescription, objectName, condition, timeout);
+    yields<QObject*>(_component_description, _graphic_component, _condition, _timeout);
+}
+
+//------------------------------------------------------------------------------
+
+void Tester::yields(
+    const std::string& _component_description,
+    const std::string& _object_name,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
+)
+{
+    yields<QObject*>(_component_description, _object_name, _condition, _timeout);
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::maybeTake(
-    const std::string& componentDescription,
-    std::function<QObject* ()> graphicComponent,
-    std::function<bool(QObject*)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<QObject* ()> _graphic_component,
+    std::function<bool(QObject*)> _condition,
+    int _timeout
 )
 {
-    maybeTake<QObject*>(componentDescription, graphicComponent, condition, timeout);
+    maybeTake<QObject*>(_component_description, _graphic_component, _condition, _timeout);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::doSomething(std::function<void(QObject*)> f)
+void Tester::doSomething(std::function<void(QObject*)> _f)
 {
-    doSomething<QObject*>(f);
+    doSomething<QObject*>(_f);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::doSomethingAsynchronously(std::function<void(QObject*)> f)
+void Tester::doSomethingAsynchronously(std::function<void(QObject*)> _f)
 {
-    doSomethingAsynchronously<QObject*>(f);
+    doSomethingAsynchronously<QObject*>(_f);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::takeScreenshot(const std::filesystem::path& path)
+void Tester::takeScreenshot(const std::filesystem::path& _path)
 {
     if(get<QWidget*>()->windowHandle() != nullptr)
     {
-        get<QWidget*>()->screen()->grabWindow(get<QWidget*>()->winId()).save(QString::fromStdString(path.string()));
+        get<QWidget*>()->screen()->grabWindow(get<QWidget*>()->winId()).save(QString::fromStdString(_path.string()));
     }
     else
     {
-        doSomethingAsynchronously<QWidget*>([path](QWidget* o){o->grab().save(QString::fromStdString(path.string()));});
+        doSomethingAsynchronously<QWidget*>(
+            [_path](QWidget* _o)
+            {
+                _o->grab().save(QString::fromStdString(_path.string()));
+            });
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::start(std::function<void()> f)
+void Tester::start(std::function<void()> _f)
 {
     m_thread = std::thread(
-        [this, f]() -> void
+        [this, _f]() -> void
         {
             try
             {
@@ -304,7 +308,7 @@ void Tester::start(std::function<void()> f)
                 }
 
                 QTest::qWait(2000); // Temporize, because the window takes time to effectively show up
-                f();
+                _f();
                 qApp->postEvent(
                     qApp,
                     new TestEvent(
@@ -344,7 +348,7 @@ void Tester::start(std::function<void()> f)
                     m_mainWindow->screen()->grabWindow(0).save(
                         QString::fromStdString(
                             (s_imageOutputPath
-                             / (m_testName + "_failure.png")).string()
+                             / (M_TEST_NAME + "_failure.png")).string()
                         )
                     );
                 }
@@ -392,44 +396,44 @@ void Tester::start(std::function<void()> f)
 //------------------------------------------------------------------------------
 
 void Tester::shouldBeHidden(
-    const std::string& componentDescription,
-    std::function<QWidget* ()> graphicComponent,
-    std::function<bool(QWidget*)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<QWidget* ()> _graphic_component,
+    std::function<bool(QWidget*)> _condition,
+    int _timeout
 )
 {
     maybeTake<QWidget*>(
-        componentDescription,
-        graphicComponent,
-        [&condition](QWidget* obj)
+        _component_description,
+        _graphic_component,
+        [&_condition](QWidget* _obj)
         {
-            return condition(obj) && !obj->isVisible();
+            return _condition(_obj) && !_obj->isVisible();
         },
-        timeout
+        _timeout
     );
     if(exists())
     {
-        fail('"' + componentDescription + "\" is present, though it should be hidden");
+        fail('"' + _component_description + "\" is present, though it should be hidden");
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::shouldBePresent(
-    const std::string& componentDescription,
-    std::function<QWidget* ()> graphicComponent,
-    std::function<bool(QWidget*)> condition,
-    int timeout
+    const std::string& _component_description,
+    std::function<QWidget* ()> _graphic_component,
+    std::function<bool(QWidget*)> _condition,
+    int _timeout
 )
 {
     take<QWidget*>(
-        componentDescription,
-        graphicComponent,
-        [&condition](QWidget* obj)
+        _component_description,
+        _graphic_component,
+        [&_condition](QWidget* _obj)
         {
-            return condition(obj) && obj->isVisible();
+            return _condition(_obj) && _obj->isVisible();
         },
-        timeout
+        _timeout
     );
 }
 
@@ -463,9 +467,9 @@ bool Tester::failed() const
 
 //------------------------------------------------------------------------------
 
-Tester::BacktraceLock Tester::addInBacktrace(const std::string& description)
+Tester::BacktraceLock Tester::addInBacktrace(const std::string& _description)
 {
-    m_backtrace.push_back(description);
+    m_backtrace.push_back(_description);
     return {*this};
 }
 
@@ -490,7 +494,7 @@ void Tester::init()
             s_imageOutputPath = image_output_path;
         }
 
-        sight::ui::Preferences::ignoreFilesystem(true);
+        sight::ui::preferences::ignoreFilesystem(true);
 
         s_alreadyLoaded = true;
 
@@ -505,112 +509,112 @@ void Tester::init()
 
 //------------------------------------------------------------------------------
 
-QWidget* Tester::getWidgetFromAction(QAction* action)
+QWidget* Tester::getWidgetFromAction(QAction* _action)
 {
-    return action != nullptr ? action->associatedWidgets().last() : nullptr;
+    return _action != nullptr ? _action->associatedWidgets().last() : nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::mouseMove(
-    QWidget* widget,
-    QPoint pos,
-    int delay,
-    Qt::MouseButton button,
-    Qt::KeyboardModifiers modifiers
+    QWidget* _widget,
+    QPoint _pos,
+    int _delay,
+    Qt::MouseButton _button,
+    Qt::KeyboardModifiers _modifiers
 )
 {
     // Workaround to QTBUG-5232
-    if(delay > 0)
+    if(_delay > 0)
     {
-        QTest::qWait(delay);
+        QTest::qWait(_delay);
     }
 
-    if(pos.isNull())
+    if(_pos.isNull())
     {
-        pos = widget->rect().center();
+        _pos = _widget->rect().center();
     }
 
-    QMouseEvent event(QEvent::MouseMove, pos, widget->mapToGlobal(pos), Qt::NoButton, button, modifiers);
-    qApp->sendEvent(widget, &event);
+    QMouseEvent event(QEvent::MouseMove, _pos, _widget->mapToGlobal(_pos), Qt::NoButton, _button, _modifiers);
+    qApp->sendEvent(_widget, &event);
 }
 
 //------------------------------------------------------------------------------
 
 void Tester::mouseMove(
-    QWindow* window,
-    QPoint pos,
-    int delay,
-    Qt::MouseButton button,
-    Qt::KeyboardModifiers modifiers
+    QWindow* _window,
+    QPoint _pos,
+    int _delay,
+    Qt::MouseButton _button,
+    Qt::KeyboardModifiers _modifiers
 )
 {
     // Workaround to QTBUG-5232
-    if(delay > 0)
+    if(_delay > 0)
     {
-        QTest::qWait(delay);
+        QTest::qWait(_delay);
     }
 
-    if(pos.isNull())
+    if(_pos.isNull())
     {
-        pos = window->geometry().center();
+        _pos = _window->geometry().center();
     }
 
-    QMouseEvent event(QEvent::MouseMove, pos, window->mapToGlobal(pos), Qt::NoButton, button, modifiers);
-    qApp->sendEvent(window, &event);
+    QMouseEvent event(QEvent::MouseMove, _pos, _window->mapToGlobal(_pos), Qt::NoButton, _button, _modifiers);
+    qApp->sendEvent(_window, &event);
 }
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesPixelPerfect(QImage a, QImage b, bool strict)
+double Tester::compareImagesPixelPerfect(QImage _a, QImage _b, bool _strict)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
-        if(strict)
+        if(_strict)
         {
             return 0;
         }
 
-        const QSize size = a.size().boundedTo(b.size());
-        a = a.scaled(size);
-        b = b.scaled(size);
+        const QSize size = _a.size().boundedTo(_b.size());
+        _a = _a.scaled(size);
+        _b = _b.scaled(size);
     }
 
-    int identicalPixels = 0;
-    for(int y = 0 ; y < a.height() ; y++)
+    int identical_pixels = 0;
+    for(int y = 0 ; y < _a.height() ; y++)
     {
-        for(int x = 0 ; x < a.width() ; x++)
+        for(int x = 0 ; x < _a.width() ; x++)
         {
-            identicalPixels += static_cast<int>(a.pixelColor(x, y) == b.pixelColor(x, y));
+            identical_pixels += static_cast<int>(_a.pixelColor(x, y) == _b.pixelColor(x, y));
         }
     }
 
-    return static_cast<double>(identicalPixels) / (a.height() * a.width());
+    return static_cast<double>(identical_pixels) / (_a.height() * _a.width());
 }
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesMSE(QImage a, QImage b, bool strict)
+double Tester::compareImagesMSE(QImage _a, QImage _b, bool _strict)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
-        if(strict)
+        if(_strict)
         {
             return 0;
         }
 
-        const QSize size = a.size().boundedTo(b.size());
-        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        const QSize size = _a.size().boundedTo(_b.size());
+        _a = _a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        _b = _b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double res = 0;
-    for(int y = 0 ; y < a.height() ; y++)
+    for(int y = 0 ; y < _a.height() ; y++)
     {
-        for(int x = 0 ; x < a.width() ; x++)
+        for(int x = 0 ; x < _a.width() ; x++)
         {
-            const QColor ca = a.pixelColor(x, y);
-            const QColor cb = b.pixelColor(x, y);
+            const QColor ca = _a.pixelColor(x, y);
+            const QColor cb = _b.pixelColor(x, y);
             res += std::pow(ca.red() - cb.red(), 2) + std::pow(ca.green() - cb.green(), 2) + std::pow(
                 ca.blue() - cb.blue(),
                 2
@@ -618,37 +622,37 @@ double Tester::compareImagesMSE(QImage a, QImage b, bool strict)
         }
     }
 
-    return 1 - (res / (a.height() * a.width())) / (3 * std::pow(255, 2));
+    return 1 - (res / (_a.height() * _a.width())) / (3 * std::pow(255, 2));
 }
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesCosine(QImage a, QImage b, bool strict)
+double Tester::compareImagesCosine(QImage _a, QImage _b, bool _strict)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
-        if(strict)
+        if(_strict)
         {
             return 0;
         }
 
-        const QSize size = a.size().boundedTo(b.size());
-        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        const QSize size = _a.size().boundedTo(_b.size());
+        _a = _a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        _b = _b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double pa = 0;
     double pb = 0;
     double ab = 0;
-    for(int y = 0 ; y < a.height() ; y++)
+    for(int y = 0 ; y < _a.height() ; y++)
     {
-        for(int x = 0 ; x < a.width() ; x++)
+        for(int x = 0 ; x < _a.width() ; x++)
         {
-            const QColor ca = a.pixelColor(x, y);
+            const QColor ca = _a.pixelColor(x, y);
             int ra          = ca.red() + 1;
             int ga          = ca.green() + 1;
             int ba          = ca.blue() + 1;
-            const QColor cb = b.pixelColor(x, y);
+            const QColor cb = _b.pixelColor(x, y);
             int rb          = cb.red() + 1;
             int gb          = cb.green() + 1;
             int bb          = cb.blue() + 1;
@@ -663,21 +667,21 @@ double Tester::compareImagesCosine(QImage a, QImage b, bool strict)
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesHistogram(const QImage& x, const QImage& y)
+double Tester::compareImagesHistogram(const QImage& _x, const QImage& _y)
 {
-    const QVector<QVector<QVector<double> > > histogramA = computeHistogram(x);
-    const QVector<QVector<QVector<double> > > histogramB = computeHistogram(y);
-    double res                                           = 0;
+    const QVector<QVector<QVector<double> > > histogram_a = computeHistogram(_x);
+    const QVector<QVector<QVector<double> > > histogram_b = computeHistogram(_y);
+    double res                                            = 0;
     for(int r = 0 ; r < 256 ; r++)
     {
         for(int g = 0 ; g < 256 ; g++)
         {
             for(int b = 0 ; b < 256 ; b++)
             {
-                double addition = histogramA[r][g][b] + histogramB[r][g][b];
+                double addition = histogram_a[r][g][b] + histogram_b[r][g][b];
                 if(addition > 0)
                 {
-                    res += std::pow(histogramA[r][g][b] - histogramB[r][g][b], 2) / addition;
+                    res += std::pow(histogram_a[r][g][b] - histogram_b[r][g][b], 2) / addition;
                 }
             }
         }
@@ -688,27 +692,27 @@ double Tester::compareImagesHistogram(const QImage& x, const QImage& y)
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesCorrelation(QImage a, QImage b, bool strict)
+double Tester::compareImagesCorrelation(QImage _a, QImage _b, bool _strict)
 {
-    if(a.size() != b.size())
+    if(_a.size() != _b.size())
     {
-        if(strict)
+        if(_strict)
         {
             return 0;
         }
 
-        const QSize size = a.size().boundedTo(b.size());
-        a = a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        b = b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        const QSize size = _a.size().boundedTo(_b.size());
+        _a = _a.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        _b = _b.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
     double res = 0;
-    for(int y = 0 ; y < a.height() ; y++)
+    for(int y = 0 ; y < _a.height() ; y++)
     {
-        for(int x = 0 ; x < a.width() ; x++)
+        for(int x = 0 ; x < _a.width() ; x++)
         {
-            const QColor ca = a.pixelColor(x, y);
-            const QColor cb = b.pixelColor(x, y);
+            const QColor ca = _a.pixelColor(x, y);
+            const QColor cb = _b.pixelColor(x, y);
             res += std::pow(ca.red() - cb.red(), 2) + std::pow(ca.green() - cb.green(), 2) + std::pow(
                 ca.blue() - cb.blue(),
                 2
@@ -716,24 +720,24 @@ double Tester::compareImagesCorrelation(QImage a, QImage b, bool strict)
         }
     }
 
-    const int size = a.height() * a.width();
+    const int size = _a.height() * _a.width();
     return 1 - (6 * res) / (std::pow(size, 2) - 1);
 }
 
 //------------------------------------------------------------------------------
 
-double Tester::compareImagesVoodoo(const QImage& a, const QImage& b)
+double Tester::compareImagesVoodoo(const QImage& _a, const QImage& _b)
 {
-    const QImage av = voodooize(a);
-    const QImage bv = voodooize(b);
+    const QImage av = voodooize(_a);
+    const QImage bv = voodooize(_b);
     return compareImagesMSE(av, bv);
 }
 
 //------------------------------------------------------------------------------
 
-void Tester::fail(const std::string& message)
+void Tester::fail(const std::string& _message)
 {
-    throw TesterAssertionFailed(message);
+    throw TesterAssertionFailed(_message);
 }
 
 //------------------------------------------------------------------------------
@@ -777,14 +781,14 @@ std::string Tester::generateFailureMessage()
 
 //------------------------------------------------------------------------------
 
-QVector<QVector<QVector<double> > > Tester::computeHistogram(const QImage& img)
+QVector<QVector<QVector<double> > > Tester::computeHistogram(const QImage& _img)
 {
     QVector<QVector<QVector<double> > > histogram(256, QVector(256, QVector(256, 0.0)));
-    for(int y = 0 ; y < img.height() ; y++)
+    for(int y = 0 ; y < _img.height() ; y++)
     {
-        for(int x = 0 ; x < img.width() ; x++)
+        for(int x = 0 ; x < _img.width() ; x++)
         {
-            QColor color = img.pixelColor(x, y);
+            QColor color = _img.pixelColor(x, y);
             histogram[color.red()][color.green()][color.blue()]++;
         }
     }
@@ -795,7 +799,7 @@ QVector<QVector<QVector<double> > > Tester::computeHistogram(const QImage& img)
         {
             for(int b = 0 ; b < 256 ; b++)
             {
-                histogram[r][g][b] /= img.width() * img.height();
+                histogram[r][g][b] /= _img.width() * _img.height();
             }
         }
     }
@@ -805,68 +809,68 @@ QVector<QVector<QVector<double> > > Tester::computeHistogram(const QImage& img)
 
 //------------------------------------------------------------------------------
 
-QImage Tester::normalize(QImage img)
+QImage Tester::normalize(QImage _img)
 {
-    int lightestRed   = -1;
-    int lightestGreen = -1;
-    int lightestBlue  = -1;
-    int darkestRed    = 256;
-    int darkestGreen  = 256;
-    int darkestBlue   = 256;
-    for(int y = 0 ; y < img.height() ; y++)
+    int lightest_red   = -1;
+    int lightest_green = -1;
+    int lightest_blue  = -1;
+    int darkest_red    = 256;
+    int darkest_green  = 256;
+    int darkest_blue   = 256;
+    for(int y = 0 ; y < _img.height() ; y++)
     {
-        for(int x = 0 ; x < img.width() ; x++)
+        for(int x = 0 ; x < _img.width() ; x++)
         {
-            QColor color = img.pixelColor(x, y);
+            QColor color = _img.pixelColor(x, y);
 
-            lightestRed   = std::max(lightestRed, color.red());
-            darkestRed    = std::min(darkestRed, color.red());
-            lightestGreen = std::max(lightestGreen, color.green());
-            darkestGreen  = std::min(darkestGreen, color.green());
-            lightestBlue  = std::max(lightestBlue, color.blue());
-            darkestBlue   = std::min(darkestBlue, color.blue());
+            lightest_red   = std::max(lightest_red, color.red());
+            darkest_red    = std::min(darkest_red, color.red());
+            lightest_green = std::max(lightest_green, color.green());
+            darkest_green  = std::min(darkest_green, color.green());
+            lightest_blue  = std::max(lightest_blue, color.blue());
+            darkest_blue   = std::min(darkest_blue, color.blue());
         }
     }
 
     // If the lightest and darkest color are the same, don't modify the color
-    if(lightestRed == darkestRed)
+    if(lightest_red == darkest_red)
     {
-        darkestRed  = 0;
-        lightestRed = 255;
+        darkest_red  = 0;
+        lightest_red = 255;
     }
 
-    if(lightestGreen == darkestGreen)
+    if(lightest_green == darkest_green)
     {
-        darkestGreen  = 0;
-        lightestGreen = 255;
+        darkest_green  = 0;
+        lightest_green = 255;
     }
 
-    if(lightestBlue == darkestBlue)
+    if(lightest_blue == darkest_blue)
     {
-        darkestBlue  = 0;
-        lightestBlue = 255;
+        darkest_blue  = 0;
+        lightest_blue = 255;
     }
 
-    for(int y = 0 ; y < img.height() ; y++)
+    for(int y = 0 ; y < _img.height() ; y++)
     {
-        for(int x = 0 ; x < img.width() ; x++)
+        for(int x = 0 ; x < _img.width() ; x++)
         {
-            QColor color = img.pixelColor(x, y);
-            color.setRed((color.red() - darkestRed) * (255 / (lightestRed - darkestRed)));
-            color.setGreen((color.green() - darkestGreen) * (255 / (lightestGreen - darkestGreen)));
-            color.setBlue((color.blue() - darkestBlue) * (255 / (lightestBlue - darkestBlue)));
-            img.setPixelColor(x, y, color);
+            QColor color = _img.pixelColor(x, y);
+            color.setRed((color.red() - darkest_red) * (255 / (lightest_red - darkest_red)));
+            color.setGreen((color.green() - darkest_green) * (255 / (lightest_green - darkest_green)));
+            color.setBlue((color.blue() - darkest_blue) * (255 / (lightest_blue - darkest_blue)));
+            _img.setPixelColor(x, y, color);
         }
     }
 
-    return img;
+    return _img;
 }
 
 //------------------------------------------------------------------------------
 
-QImage Tester::voodooize(const QImage& img)
+QImage Tester::voodooize(const QImage& _img)
 {
-    QImage res = img.scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QImage res = _img.scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     res = normalize(res);
     // We must put the lightest edge in the top left, the next next darker edge to the top right, the next one to the
     // bottom left, etc
@@ -912,10 +916,10 @@ QImage Tester::voodooize(const QImage& img)
 
 //------------------------------------------------------------------------------
 
-bool Tester::waitForAsynchronously(std::function<bool()> predicate, int timeout)
+bool Tester::waitForAsynchronously(std::function<bool()> _predicate, int _timeout)
 {
     return QTest::qWaitFor(
-        [predicate]() -> bool
+        [_predicate]() -> bool
         {
             QMutex mutex;
             mutex.lock(); // Lock the mutex by default
@@ -923,9 +927,9 @@ bool Tester::waitForAsynchronously(std::function<bool()> predicate, int timeout)
             qApp->postEvent(
                 qApp,
                 new TestEvent(
-                    [&mutex, &ok, predicate]
+                    [&mutex, &ok, _predicate]
             {
-                ok = predicate();
+                ok = _predicate();
                 mutex.unlock(); // Unlock the mutex for the calling thread to be unlocked
             })
             );
@@ -933,43 +937,43 @@ bool Tester::waitForAsynchronously(std::function<bool()> predicate, int timeout)
             mutex.unlock(); // We must unlock it, as destroying a locked mutex is undefined behavior
             return ok;
         },
-        timeout
+        _timeout
     );
 }
 
 //------------------------------------------------------------------------------
 
-QPoint Tester::centerOf(const QWidget* widget)
+QPoint Tester::centerOf(const QWidget* _widget)
 {
-    return widget->rect().center();
+    return _widget->rect().center();
 }
 
 //------------------------------------------------------------------------------
 
-QPoint Tester::leftOf(const QWidget* widget)
+QPoint Tester::leftOf(const QWidget* _widget)
 {
-    return {1, centerOf(widget).y()};
+    return {1, centerOf(_widget).y()};
 }
 
 //------------------------------------------------------------------------------
 
-QPoint Tester::rightOf(const QWidget* widget)
+QPoint Tester::rightOf(const QWidget* _widget)
 {
-    return {widget->width() - 1, centerOf(widget).y()};
+    return {_widget->width() - 1, centerOf(_widget).y()};
 }
 
 //------------------------------------------------------------------------------
 
-QPoint Tester::topOf(const QWidget* widget)
+QPoint Tester::topOf(const QWidget* _widget)
 {
-    return {centerOf(widget).x(), 1};
+    return {centerOf(_widget).x(), 1};
 }
 
 //------------------------------------------------------------------------------
 
-QPoint Tester::bottomOf(const QWidget* widget)
+QPoint Tester::bottomOf(const QWidget* _widget)
 {
-    return {centerOf(widget).x(), widget->height() - 1};
+    return {centerOf(_widget).x(), _widget->height() - 1};
 }
 
 //------------------------------------------------------------------------------
@@ -993,4 +997,4 @@ QTouchDevice* Tester::getDummyTouchScreen()
     return res;
 }
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test_core

@@ -62,7 +62,7 @@ public:
      */
     plane_list::sptr& getPlaneList();
     const plane_list::sptr& getPlaneList() const;
-    void setPlaneList(const plane_list::sptr& _planeList);
+    void setPlaneList(const plane_list::sptr& _plane_list);
     /// @}
 
     /**
@@ -71,7 +71,7 @@ public:
      */
     ResectionInputs& getInputs();
     const ResectionInputs& getInputs() const;
-    void SetInputs(const ResectionInputs& _vInputs);
+    void SetInputs(const ResectionInputs& _v_inputs);
     /// @}
 
     /**
@@ -80,7 +80,7 @@ public:
      */
     ResectionOutputs& getOutputs();
     const ResectionOutputs& getOutputs() const;
-    void setOutputs(const ResectionOutputs& _vOutputs);
+    void setOutputs(const ResectionOutputs& _v_outputs);
     /// @}
 
     /**
@@ -88,7 +88,7 @@ public:
      * @brief Get/Set value of the IsSafePart.
      */
     bool getIsSafePart() const;
-    void setIsSafePart(bool _isSafePart);
+    void setIsSafePart(bool _is_safe_part);
     /// @}
 
     /**
@@ -105,7 +105,7 @@ public:
      * @brief Get/Set value of the IsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(bool _isVisible);
+    void setIsVisible(bool _is_visible);
     /// @}
 
     /**
@@ -113,7 +113,7 @@ public:
      * @brief Get/Set value of the IsValid.
      */
     bool getIsValid() const;
-    void setIsValid(bool _isValid);
+    void setIsValid(bool _is_valid);
     /// @}
 
     /***
@@ -122,13 +122,13 @@ public:
      */
 
     /// Type of signal when a reconstruction is added
-    typedef core::com::signal<void ()> ReconstructionAddedSignalType;
+    typedef core::com::signal<void ()> reconstruction_added_signal_t;
 
     /// Key in m_signals map of signal m_sigReconstructionAdded
     DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
 
     /// Type of signal when the resection visibility is modified
-    typedef core::com::signal<void ()> VisibilityModifiedSignalType;
+    typedef core::com::signal<void ()> visibility_modified_signal_t;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
@@ -138,22 +138,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const resection& other) const noexcept;
-    DATA_API bool operator!=(const resection& other) const noexcept;
+    DATA_API bool operator==(const resection& _other) const noexcept;
+    DATA_API bool operator!=(const resection& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:
@@ -186,10 +186,10 @@ private:
      * @{
      */
     /// Signal emitted when a reconstruction is added
-    ReconstructionAddedSignalType::sptr m_sigReconstructionAdded;
+    reconstruction_added_signal_t::sptr m_sigReconstructionAdded;
 
     /// Signal emitted when the resection visibility is modified
-    VisibilityModifiedSignalType::sptr m_sigVisibilityModified;
+    visibility_modified_signal_t::sptr m_sigVisibilityModified;
     /**
      * @}
      */
@@ -211,9 +211,9 @@ inline const plane_list::sptr& resection::getPlaneList() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setPlaneList(const plane_list::sptr& _planeList)
+inline void resection::setPlaneList(const plane_list::sptr& _plane_list)
 {
-    m_planeList = _planeList;
+    m_planeList = _plane_list;
 }
 
 //-----------------------------------------------------------------------------
@@ -232,9 +232,9 @@ inline const resection::ResectionInputs& resection::getInputs() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::SetInputs(const resection::ResectionInputs& _vInputs)
+inline void resection::SetInputs(const resection::ResectionInputs& _v_inputs)
 {
-    m_vInputs = _vInputs;
+    m_vInputs = _v_inputs;
 }
 
 //-----------------------------------------------------------------------------
@@ -253,9 +253,9 @@ inline const resection::ResectionOutputs& resection::getOutputs() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setOutputs(const resection::ResectionOutputs& _vOutputs)
+inline void resection::setOutputs(const resection::ResectionOutputs& _v_outputs)
 {
-    m_vOutputs = _vOutputs;
+    m_vOutputs = _v_outputs;
 }
 
 //-----------------------------------------------------------------------------
@@ -267,9 +267,9 @@ inline bool resection::getIsSafePart() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsSafePart(const bool _isSafePart)
+inline void resection::setIsSafePart(const bool _is_safe_part)
 {
-    m_isSafePart = _isSafePart;
+    m_isSafePart = _is_safe_part;
 }
 
 //-----------------------------------------------------------------------------
@@ -302,9 +302,9 @@ inline bool resection::getIsVisible() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsVisible(const bool _isVisible)
+inline void resection::setIsVisible(const bool _is_visible)
 {
-    m_isVisible = _isVisible;
+    m_isVisible = _is_visible;
 }
 
 //-----------------------------------------------------------------------------
@@ -316,9 +316,9 @@ inline bool resection::getIsValid() const
 
 //-----------------------------------------------------------------------------
 
-inline void resection::setIsValid(const bool _isValid)
+inline void resection::setIsValid(const bool _is_valid)
 {
-    m_isValid = _isValid;
+    m_isValid = _is_valid;
 }
 
 //-----------------------------------------------------------------------------

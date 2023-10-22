@@ -36,8 +36,8 @@ module_element::module_element() :
 
 //------------------------------------------------------------------------------
 
-module_element::module_element(std::shared_ptr<module> module) :
-    m_module(module)
+module_element::module_element(std::shared_ptr<module> _module) :
+    m_module(_module)
 {
     // Post-condition
     SIGHT_ASSERT("Module '" << m_module.lock()->identifier() << "' not initialized", m_module.lock() != nullptr);
@@ -63,9 +63,9 @@ bool module_element::enabled() const
 
 //------------------------------------------------------------------------------
 
-void module_element::set_enable(const bool enable)
+void module_element::set_enable(const bool _enable)
 {
-    m_enable = enable;
+    m_enable = _enable;
 }
 
 } // namespace sight::core::runtime

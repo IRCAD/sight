@@ -62,10 +62,10 @@ int system::get_pid() noexcept
 
 //------------------------------------------------------------------------------
 
-bool system::is_process_running(int pid) noexcept
+bool system::is_process_running(int _pid) noexcept
 {
 #ifdef WIN32
-    HANDLE h_process = OpenProcess(SYNCHRONIZE, FALSE, pid);
+    HANDLE h_process = OpenProcess(SYNCHRONIZE, FALSE, _pid);
     if(!h_process)
     {
         return false;
@@ -76,23 +76,23 @@ bool system::is_process_running(int pid) noexcept
         return true;
     }
 #else
-    return kill(pid, 0) == 0;
+    return kill(_pid, 0) == 0;
 #endif
 }
 
 //------------------------------------------------------------------------------
 
-void system::kill_process(int pid) noexcept
+void system::kill_process(int _pid) noexcept
 {
 #ifdef WIN32
-    HANDLE h_process = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+    HANDLE h_process = OpenProcess(PROCESS_TERMINATE, FALSE, _pid);
     if(h_process)
     {
         TerminateProcess(h_process, 0);
         CloseHandle(h_process);
     }
 #else
-    kill(pid, SIGKILL);
+    kill(_pid, SIGKILL);
 #endif
 }
 
@@ -158,10 +158,10 @@ void system::robust_rename(
 //------------------------------------------------------------------------------
 
 [[deprecated("Removed in sight 23.0.")]] std::filesystem::path system::get_temporary_folder(
-    const std::string& sub_folder_prefix
+    const std::string& _sub_folder_prefix
 ) noexcept
 {
-    return os::temp_dir::shared_directory(sub_folder_prefix);
+    return os::temp_dir::shared_directory(_sub_folder_prefix);
 }
 
 } //end namespace sight::core::tools

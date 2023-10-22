@@ -31,20 +31,20 @@ namespace sight::data::dicom
 
 // ----------------------------------------------------------------------------
 
-data::image_series::sptr series::convert_to_image_series(const data::dicom_series::csptr& series)
+data::image_series::sptr series::convert_to_image_series(const data::dicom_series::csptr& _series)
 {
     data::image_series::sptr result = std::make_shared<data::image_series>();
-    result->data::series::deep_copy(series);
+    result->data::series::deep_copy(_series);
 
     return result;
 }
 
 // ----------------------------------------------------------------------------
 
-data::model_series::sptr series::convert_to_model_series(const data::dicom_series::csptr& series)
+data::model_series::sptr series::convert_to_model_series(const data::dicom_series::csptr& _series)
 {
     data::model_series::sptr result = std::make_shared<data::model_series>();
-    result->data::series::deep_copy(series);
+    result->data::series::deep_copy(_series);
 
     return result;
 }

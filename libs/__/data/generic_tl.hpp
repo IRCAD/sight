@@ -40,7 +40,7 @@ public:
 
     SIGHT_DECLARE_CLASS(generic_tl<BUFFER_TYPE>, buffer_tl);
 
-    typedef timeline::generic_object<BUFFER_TYPE> BufferType;
+    typedef timeline::generic_object<BUFFER_TYPE> buffer_t;
 
     generic_tl();
     ~generic_tl() override = default;
@@ -50,55 +50,55 @@ public:
      * @param timestamp timestamp used to find the closest buffer
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
-    CSPTR(BufferType) getClosestBuffer(
-        core::hires_clock::type timestamp,
-        timeline::direction_t direction = timeline::BOTH
+    CSPTR(buffer_t) getClosestBuffer(
+        core::hires_clock::type _timestamp,
+        timeline::direction_t _direction = timeline::BOTH
     ) const;
 
     /// Returns the buffer matching the specified timestamp, returns NULL if object is not found
-    CSPTR(BufferType) get_buffer(core::hires_clock::type timestamp) const;
+    CSPTR(buffer_t) get_buffer(core::hires_clock::type _timestamp) const;
 
     /// Initializes the size of the pool buffer.
-    virtual void initPoolSize(unsigned int maxElementNum);
+    virtual void initPoolSize(unsigned int _max_element_num);
 
     /**
      * @brief Returns a new timeline::object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(timeline::object) createObject(core::hires_clock::type timestamp) override;
+    SPTR(timeline::object) createObject(core::hires_clock::type _timestamp) override;
 
     /**
-     * @brief Returns a new BufferType with the given timestamp.
+     * @brief Returns a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(BufferType) createBuffer(core::hires_clock::type timestamp);
+    SPTR(buffer_t) createBuffer(core::hires_clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    bool isObjectValid(const CSPTR(timeline::object)& obj) const override;
+    bool isObjectValid(const CSPTR(timeline::object)& _obj) const override;
 
     /// Get/set the maximum number of objects inside a single buffer
     unsigned int getMaxElementNum() const;
 
     /// Equality comparison operators
     /// @{
-    bool operator==(const generic_tl& other) const noexcept;
-    bool operator!=(const generic_tl& other) const noexcept;
+    bool operator==(const generic_tl& _other) const noexcept;
+    bool operator!=(const generic_tl& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    void shallow_copy(const object::csptr& source) override;
+    void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
 protected:

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,31 +28,31 @@ namespace sight::geometry::vision::detail
 //-----------------------------------------------------------------------------
 
 ReprojectionError::ReprojectionError(
-    cv::Mat _cameraMat,
-    cv::Mat _distCoef,
-    cv::Point2f _imagePoints,
-    cv::Point3f _objectPoints,
+    cv::Mat _camera_mat,
+    cv::Mat _dist_coef,
+    cv::Point2f _image_points,
+    cv::Point3f _object_points,
     cv::Mat _extrinsic
 ) :
-    m_imagePoint(std::move(_imagePoints)),
-    m_objectPoint(std::move(_objectPoints)),
+    m_imagePoint(std::move(_image_points)),
+    m_objectPoint(std::move(_object_points)),
     m_extrinsic(std::move(_extrinsic)),
-    m_cameraMatrix(std::move(_cameraMat)),
-    m_distCoef(std::move(_distCoef))
+    m_cameraMatrix(std::move(_camera_mat)),
+    m_distCoef(std::move(_dist_coef))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ::ceres::CostFunction* ReprojectionError::Create(
-    const cv::Mat& _cameraMatrix,
-    const cv::Mat& _distCoef,
-    const cv::Point2f& _imagePoints,
-    const cv::Point3f& _objectPoints,
+    const cv::Mat& _camera_matrix,
+    const cv::Mat& _dist_coef,
+    const cv::Point2f& _image_points,
+    const cv::Point3f& _object_points,
     const cv::Mat& _extrinsic
 )
 {
-    auto* rep = new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _extrinsic);
+    auto* rep = new ReprojectionError(_camera_matrix, _dist_coef, _image_points, _object_points, _extrinsic);
     return new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(rep);
 }
 

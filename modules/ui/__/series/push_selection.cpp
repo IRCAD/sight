@@ -74,63 +74,63 @@ void push_selection::updating()
     auto dest_series_set = m_series_set.lock();
     SIGHT_ASSERT("\"seriesSet\" key is not found.", dest_series_set);
 
-    const auto selectedSeries = m_selectedSeries.lock();
+    const auto selected_series = m_selectedSeries.lock();
 
     // Save added series in this container in order to display information on the push
-    std::vector<data::series::sptr> addedSeries;
+    std::vector<data::series::sptr> added_series;
 
     {
         const auto scoped_emitter = dest_series_set->scoped_emit();
 
         // Loop through all selected series
-        for(const auto& object : *selectedSeries)
+        for(const auto& object : *selected_series)
         {
             const auto& series = std::dynamic_pointer_cast<data::series>(object);
 
             if(series && dest_series_set->insert(dest_series_set->cend(), series).second)
             {
-                addedSeries.push_back(series);
+                added_series.push_back(series);
             }
         }
     }
 
     // Display the informations
-    sight::ui::dialog::message messageBox;
-    messageBox.setIcon(sight::ui::dialog::message::INFO);
-    messageBox.addButton(sight::ui::dialog::message::OK);
-    messageBox.setTitle("Push Series");
+    sight::ui::dialog::message message_box;
+    message_box.setIcon(sight::ui::dialog::message::INFO);
+    message_box.addButton(sight::ui::dialog::message::OK);
+    message_box.setTitle("Push Series");
 
-    if(selectedSeries->empty())
+    if(selected_series->empty())
     {
-        messageBox.setMessage("Unable to push series, there is no series selected.");
+        message_box.setMessage("Unable to push series, there is no series selected.");
     }
-    else if(addedSeries.empty())
+    else if(added_series.empty())
     {
-        messageBox.setMessage("Unable to push series, the series are already present in the database.");
+        message_box.setMessage("Unable to push series, the series are already present in the database.");
     }
     else
     {
         std::stringstream ss;
-        if(addedSeries.size() == 1)
+        if(added_series.size() == 1)
         {
-            ss << addedSeries.size() << " series has been correctly pushed in the database:\n";
+            ss << added_series.size() << " series has been correctly pushed in the database:\n";
         }
         else
         {
-            ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
+            ss << added_series.size() << " series have been correctly pushed in the database:\n";
         }
 
-        for(const auto& series : addedSeries)
+        for(const auto& series : added_series)
         {
             std::string description = series->getSeriesDescription();
             description = (description.empty()) ? "[No description]" : description;
             ss << "- " << description << std::endl;
         }
 
-        messageBox.setMessage(ss.str());
+        message_box.setMessage(ss.str());
     }
 
-    messageBox.show();
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

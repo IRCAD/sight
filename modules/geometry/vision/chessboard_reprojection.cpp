@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
@@ -56,7 +56,7 @@ chessboard_reprojection::chessboard_reprojection()
     new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggleDistortion, this);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chessboard_reprojection::updateChessboardSize, this);
 
-    m_errorComputedSig = new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    m_errorComputedSig = new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,19 +68,19 @@ chessboard_reprojection::~chessboard_reprojection()
 
 void chessboard_reprojection::configuring()
 {
-    const config_t configTree  = this->get_config();
-    const config_t boardConfig = configTree.get_child("board");
-    const config_t config      = configTree.get_child("config.<xmlattr>");
+    const config_t config_tree  = this->get_config();
+    const config_t board_config = config_tree.get_child("board");
+    const config_t config       = config_tree.get_child("config.<xmlattr>");
 
-    m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
+    m_widthKey = board_config.get<std::string>("<xmlattr>.width");
     SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
-    m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
+    m_heightKey = board_config.get<std::string>("<xmlattr>.height");
     SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
-    m_squareSizeKey = boardConfig.get<std::string>("<xmlattr>.squareSize");
+    m_squareSizeKey = board_config.get<std::string>("<xmlattr>.squareSize");
     SIGHT_ASSERT("Missing board square size preference key.", !m_squareSizeKey.empty());
 
-    const std::string outputKey = configTree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
-    if(outputKey == s_CHESSBOARD_MODEL_OUTPUT)
+    const std::string output_key = config_tree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
+    if(output_key == s_CHESSBOARD_MODEL_OUTPUT)
     {
         m_hasOutputChessboard = true;
     }
@@ -101,10 +101,10 @@ void chessboard_reprojection::starting()
 
 void chessboard_reprojection::updating()
 {
-    const auto detectedChessboard = m_detectedChessboard.lock();
-    SIGHT_ASSERT("Missing 'detectedChessboard'.", detectedChessboard);
+    const auto detected_chessboard = m_detectedChessboard.lock();
+    SIGHT_ASSERT("Missing 'detectedChessboard'.", detected_chessboard);
 
-    if(detectedChessboard->getPoints().empty())
+    if(detected_chessboard->getPoints().empty())
     {
         return;
     }
@@ -112,89 +112,94 @@ void chessboard_reprojection::updating()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("Missing 'camera'.", camera);
 
-    cv::Size imgSize;
-    cv::Mat cameraMx;
-    cv::Mat distortionCoefficients;
-    std::tie(cameraMx, imgSize, distortionCoefficients) = io::opencv::camera::copyToCv(camera.get_shared());
+    cv::Size img_size;
+    cv::Mat camera_mx;
+    cv::Mat distortion_coefficients;
+    std::tie(camera_mx, img_size, distortion_coefficients) = io::opencv::camera::copyToCv(camera.get_shared());
 
     cv::Mat rvec;
     cv::Mat tvec;
 
-    std::vector<cv::Point2d> detectedPts;
-    io::opencv::point_list::copyToCv(detectedChessboard.get_shared(), detectedPts);
+    std::vector<cv::Point2d> detected_pts;
+    io::opencv::point_list::copyToCv(detected_chessboard.get_shared(), detected_pts);
 
     // Cast Point2d to Point2f ...
-    std::vector<cv::Point2f> detectedPointsF;
-    std::copy(detectedPts.begin(), detectedPts.end(), std::back_inserter(detectedPointsF));
+    std::vector<cv::Point2f> detected_points_f;
+    std::copy(detected_pts.begin(), detected_pts.end(), std::back_inserter(detected_points_f));
 
     double rmse = -1.;
-    std::vector<cv::Point2f> reprojectedPts;
+    std::vector<cv::Point2f> reprojected_pts;
 
-    if(camera->getIsCalibrated() && !detectedPointsF.empty())
+    if(camera->getIsCalibrated() && !detected_points_f.empty())
     {
         const auto transform = m_transform.lock();
         SIGHT_ASSERT("Missing 'transform'.", transform);
 
         io::opencv::matrix::copyToCv(transform.get_shared(), rvec, tvec);
 
-        std::tie(rmse, reprojectedPts) = sight::geometry::vision::helper::computeReprojectionError(
+        std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
             m_chessboardModel,
-            detectedPointsF,
+            detected_points_f,
             rvec,
             tvec,
-            cameraMx,
-            distortionCoefficients
+            camera_mx,
+            distortion_coefficients
         );
 
         m_errorComputedSig->async_emit(rmse);
     }
 
-    const auto videoImage = m_videoImage.lock();
+    const auto video_image = m_videoImage.lock();
     SIGHT_ERROR_IF(
         "Drawing is enabled in the configuration but there is no 'videoImage' to draw onto.",
-        !videoImage && (m_drawDetected || m_drawReprojection || m_drawReprojectionError)
+        !video_image && (m_drawDetected || m_drawReprojection || m_drawReprojectionError)
     );
 
-    if(videoImage)
+    if(video_image)
     {
         // Reprojected points have a radius equal to 1/3000th of the image's height.
-        int reprojectionRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
-        reprojectionRadius = std::max(reprojectionRadius, 1);
+        int reprojection_radius = static_cast<int>(std::floor(0.003 * img_size.height));
+        reprojection_radius = std::max(reprojection_radius, 1);
 
-        if(!data::helper::MedicalImage::checkImageValidity(videoImage.get_shared()))
+        if(!data::helper::medical_image::check_image_validity(video_image.get_shared()))
         {
             return;
         }
 
-        cv::Mat img = io::opencv::image::moveToCv(videoImage.get_shared());
+        cv::Mat img = io::opencv::image::move_to_cv(video_image.get_shared());
 
-        const bool drawingEnabled = m_drawDetected || m_drawReprojection || m_drawReprojectionError;
+        const bool drawing_enabled = m_drawDetected || m_drawReprojection || m_drawReprojectionError;
         SIGHT_WARN_IF(
             "An inout 'videoImage' was given to the service but no drawing operation was enabled.",
-            !drawingEnabled
+            !drawing_enabled
         );
 
         if(m_drawReprojection)
         {
-            std::vector<cv::Point2f> drawnDetectedPoints;
+            std::vector<cv::Point2f> drawn_detected_points;
             if(!m_distortReprojection && camera->getIsCalibrated())
             {
-                cv::undistortPoints(cv::Mat(detectedPointsF), drawnDetectedPoints, cameraMx, distortionCoefficients);
-                for(auto& pt : drawnDetectedPoints)
+                cv::undistortPoints(
+                    cv::Mat(detected_points_f),
+                    drawn_detected_points,
+                    camera_mx,
+                    distortion_coefficients
+                );
+                for(auto& pt : drawn_detected_points)
                 {
-                    const auto pt3d = cv::Matx33f(cameraMx) * pt;
+                    const auto pt3d = cv::Matx33f(camera_mx) * pt;
                     pt = cv::Point2f(pt3d.x, pt3d.y);
                 }
             }
             else
             {
-                drawnDetectedPoints = detectedPointsF;
+                drawn_detected_points = detected_points_f;
             }
 
-            const int detectionThickness = reprojectionRadius < 2 ? 1 : 2;
-            for(const auto& pt : drawnDetectedPoints)
+            const int detection_thickness = reprojection_radius < 2 ? 1 : 2;
+            for(const auto& pt : drawn_detected_points)
             {
-                cv::circle(img, pt, reprojectionRadius + 3, cv::Scalar(0, 255, 255, 255), detectionThickness);
+                cv::circle(img, pt, reprojection_radius + 3, cv::Scalar(0, 255, 255, 255), detection_thickness);
             }
         }
 
@@ -202,10 +207,10 @@ void chessboard_reprojection::updating()
         {
             if(m_drawReprojection)
             {
-                std::vector<cv::Point2f> drawnReprojectedPts;
+                std::vector<cv::Point2f> drawn_reprojected_pts;
                 if(m_distortReprojection)
                 {
-                    drawnReprojectedPts = reprojectedPts;
+                    drawn_reprojected_pts = reprojected_pts;
                 }
                 else
                 {
@@ -214,30 +219,30 @@ void chessboard_reprojection::updating()
                         cv::Mat(m_chessboardModel),
                         rvec,
                         tvec,
-                        cameraMx,
+                        camera_mx,
                         cv::Mat(),
-                        drawnReprojectedPts
+                        drawn_reprojected_pts
                     );
                 }
 
-                for(const auto& pt : drawnReprojectedPts)
+                for(const auto& pt : drawn_reprojected_pts)
                 {
-                    cv::circle(img, pt, reprojectionRadius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
+                    cv::circle(img, pt, reprojection_radius, cv::Scalar(255, 255, 0, 255), cv::FILLED);
                 }
             }
 
             if(m_drawReprojectionError)
             {
-                const auto fontFace                    = cv::FONT_HERSHEY_SIMPLEX;
-                const std::string reprojectionErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
-                const int leftPadding                  = static_cast<int>(0.05 * imgSize.width);
-                const int topPadding                   = static_cast<int>(0.05 * imgSize.height);
+                const auto font_face                     = cv::FONT_HERSHEY_SIMPLEX;
+                const std::string reprojection_error_str = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
+                const int left_padding                   = static_cast<int>(0.05 * img_size.width);
+                const int top_padding                    = static_cast<int>(0.05 * img_size.height);
 
                 cv::putText(
                     img,
-                    reprojectionErrorStr,
-                    cv::Point(leftPadding, topPadding),
-                    fontFace,
+                    reprojection_error_str,
+                    cv::Point(left_padding, top_padding),
+                    font_face,
                     1.,
                     cv::Scalar(255, 255, 0, 255),
                     2
@@ -245,10 +250,10 @@ void chessboard_reprojection::updating()
             }
         }
 
-        if(drawingEnabled)
+        if(drawing_enabled)
         {
             auto sig =
-                videoImage->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG);
+                video_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
 
             sig->async_emit();
         }
@@ -275,39 +280,39 @@ void chessboard_reprojection::updateChessboardSize()
 {
     std::uint64_t width(1);
     std::uint64_t height(1);
-    double squareSize(0.);
+    double square_size(0.);
 
     try
     {
-        ui::Preferences preferences;
-        width      = preferences.get(m_widthKey, width);
-        height     = preferences.get(m_heightKey, height);
-        squareSize = preferences.get(m_squareSizeKey, squareSize);
+        ui::preferences preferences;
+        width       = preferences.get(m_widthKey, width);
+        height      = preferences.get(m_heightKey, height);
+        square_size = preferences.get(m_squareSizeKey, square_size);
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }
 
     m_chessboardModel.clear();
 
-    data::point_list::sptr chessboardModelPl = std::make_shared<data::point_list>();
+    data::point_list::sptr chessboard_model_pl = std::make_shared<data::point_list>();
 
     for(std::uint64_t i = 0 ; i < height - 1 ; ++i)
     {
-        const double x = double(i) * squareSize;
+        const double x = double(i) * square_size;
 
         for(std::uint64_t j = 0 ; j < width - 1 ; ++j)
         {
-            const double y = double(j) * squareSize;
+            const double y = double(j) * square_size;
             m_chessboardModel.push_back(cv::Point3d(x, y, 0.));
-            chessboardModelPl->pushBack(std::make_shared<data::point>(x, y, 0.));
+            chessboard_model_pl->pushBack(std::make_shared<data::point>(x, y, 0.));
         }
     }
 
     if(m_hasOutputChessboard)
     {
-        m_chessboardModelOut = chessboardModelPl;
+        m_chessboardModelOut = chessboard_model_pl;
     }
 }
 

@@ -28,7 +28,7 @@ namespace sight::ui::ut
 {
 
 /**
- * @brief Preferences unit test.
+ * @brief preferences unit test.
  */
 class actionTest : public CPPUNIT_NS::TestFixture
 {

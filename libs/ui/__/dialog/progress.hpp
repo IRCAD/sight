@@ -42,19 +42,19 @@ public:
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base);
 
     /// will instantiate the concrete implementation
-    UI_API progress(const std::string& title = std::string(), const std::string& msg = std::string());
+    UI_API progress(const std::string& _title = std::string(), const std::string& _msg = std::string());
     UI_API ~progress() override;
 
     ///set the title for the dialog
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     ///set the message for the dialog
-    UI_API void setMessage(const std::string& message) override;
+    UI_API void setMessage(const std::string& _message) override;
 
     /// action called by core::tools::progress_adviser
-    UI_API void operator()(float percent, std::string msg) override;
+    UI_API void operator()(float _percent, std::string _msg) override;
 
-    UI_API void setCancelCallback(CancelCallbackType callback) override;
+    UI_API void setCancelCallback(cancel_callback_t _callback) override;
 
     UI_API void hideCancelButton() override;
 

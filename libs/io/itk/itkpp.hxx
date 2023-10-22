@@ -31,20 +31,20 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-template<class PIXELTYPE, int VDimension, class ScannerType>
-typename ScannerType::Pointer itkppScannerFactory(data::image::sptr imageData)
+template<class PIXELTYPE, int VDimension, class scanner_t>
+typename scanner_t::Pointer itkppScannerFactory(data::image::sptr imageData)
 {
-    typedef itk::Image<PIXELTYPE, VDimension> ImageType;
+    typedef itk::Image<PIXELTYPE, VDimension> image_t;
 
-    typename ImageType::Pointer itkRoi = io::itk::moveToItk<ImageType>(imageData);
+    typename image_t::Pointer itkRoi = io::itk::move_to_itk<image_t>(imageData);
     typedef itk::Image<unsigned char, VDimension> ROIType;
-    typedef itk::CastImageFilter<ImageType, ROIType> CasterType;
-    typename CasterType::Pointer caster = CasterType::New();
+    typedef itk::CastImageFilter<image_t, ROIType> caster_t;
+    typename caster_t::Pointer caster = caster_t::New();
     caster->set_input(itkRoi);
     caster->Update();
 
-    typename ScannerType::Pointer scanner = ScannerType::New();
-    typename ROIType::Pointer outImg      = caster->GetOutput();
+    typename scanner_t::Pointer scanner = scanner_t::New();
+    typename ROIType::Pointer outImg    = caster->GetOutput();
     scanner->SetMaskImage(outImg);
     outImg->DisconnectPipeline();
 

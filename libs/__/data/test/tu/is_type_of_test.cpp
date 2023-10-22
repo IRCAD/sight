@@ -55,12 +55,12 @@ void is_type_of_test::tearDown()
 
 void is_type_of_test::checkType()
 {
-    data::composite::sptr dataComposite  = std::make_shared<data::composite>();
-    data::boolean::sptr dataBoolean      = std::make_shared<data::boolean>();
-    data::real::sptr dataFloat           = std::make_shared<data::real>();
-    data::integer::sptr dataInteger      = std::make_shared<data::integer>();
-    data::image::sptr dataImage          = std::make_shared<data::image>();
-    data::transfer_function::sptr dataTF = std::make_shared<data::transfer_function>();
+    data::composite::sptr data_composite  = std::make_shared<data::composite>();
+    data::boolean::sptr data_boolean      = std::make_shared<data::boolean>();
+    data::real::sptr data_float           = std::make_shared<data::real>();
+    data::integer::sptr data_integer      = std::make_shared<data::integer>();
+    data::image::sptr data_image          = std::make_shared<data::image>();
+    data::transfer_function::sptr data_tf = std::make_shared<data::transfer_function>();
 
     data::composite::is_type_of("sight::data::object");
     data::boolean::is_type_of("sight::data::object");
@@ -76,40 +76,40 @@ void is_type_of_test::checkType()
     data::image::is_type_of("sight::data::image");
     data::transfer_function::is_type_of("sight::data::transfer_function");
 
-    CPPUNIT_ASSERT(dataComposite->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(dataBoolean->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(dataFloat->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(dataInteger->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(dataImage->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(dataTF->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_composite->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_boolean->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_float->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_integer->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_image->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(data_tf->is_a("sight::data::object"));
 
-    CPPUNIT_ASSERT(dataComposite->is_a("sight::data::composite"));
-    CPPUNIT_ASSERT(dataBoolean->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(dataFloat->is_a("sight::data::real"));
-    CPPUNIT_ASSERT(dataInteger->is_a("sight::data::integer"));
-    CPPUNIT_ASSERT(dataImage->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(dataTF->is_a("sight::data::transfer_function"));
+    CPPUNIT_ASSERT(data_composite->is_a("sight::data::composite"));
+    CPPUNIT_ASSERT(data_boolean->is_a("sight::data::boolean"));
+    CPPUNIT_ASSERT(data_float->is_a("sight::data::real"));
+    CPPUNIT_ASSERT(data_integer->is_a("sight::data::integer"));
+    CPPUNIT_ASSERT(data_image->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(data_tf->is_a("sight::data::transfer_function"));
 
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataComposite)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataBoolean)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataFloat)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataInteger)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataImage)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataTF)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_composite)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_boolean)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_float)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_integer)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_image)->is_a("sight::data::object"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_tf)->is_a("sight::data::object"));
 
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataComposite)->is_a("sight::data::composite"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataBoolean)->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataFloat)->is_a("sight::data::real"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataInteger)->is_a("sight::data::integer"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataImage)->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(dataTF)->is_a("sight::data::transfer_function"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_composite)->is_a("sight::data::composite"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_boolean)->is_a("sight::data::boolean"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_float)->is_a("sight::data::real"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_integer)->is_a("sight::data::integer"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_image)->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_tf)->is_a("sight::data::transfer_function"));
 
-    CPPUNIT_ASSERT(!dataComposite->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!dataBoolean->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!dataFloat->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!dataInteger->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!dataImage->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(!dataTF->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(!data_composite->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(!data_boolean->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(!data_float->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(!data_integer->is_a("sight::data::image"));
+    CPPUNIT_ASSERT(!data_image->is_a("sight::data::boolean"));
+    CPPUNIT_ASSERT(!data_tf->is_a("sight::data::image"));
 }
 
 } // namespace sight::data::ut

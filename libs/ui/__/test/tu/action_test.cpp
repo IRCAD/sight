@@ -89,12 +89,12 @@ void actionTest::configuringTest()
     }
     {
         auto action = std::make_shared<TestAction>();
-        std::stringstream xmlConfig;
-        xmlConfig << ""
-                     "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
-                     "";
+        std::stringstream xml_config;
+        xml_config << ""
+                      "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
+                      "";
         boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xmlConfig, config);
+        boost::property_tree::read_xml(xml_config, config);
 
         action->set_config(config);
         action->configure();
@@ -111,13 +111,13 @@ void actionTest::configuringTest()
     }
     {
         auto action = std::make_shared<TestAction>();
-        std::stringstream xmlConfig;
-        xmlConfig << ""
-                     "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
-                     "<confirmation message=\"Are you sure?\" defaultButton=\"true\"/>"
-                     "";
+        std::stringstream xml_config;
+        xml_config << ""
+                      "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
+                      "<confirmation message=\"Are you sure?\" defaultButton=\"true\"/>"
+                      "";
         boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xmlConfig, config);
+        boost::property_tree::read_xml(xml_config, config);
 
         action->set_config(config);
         action->configure();
@@ -135,12 +135,12 @@ void actionTest::configuringTest()
     {
         // Test deprecated attributes
         auto action = std::make_shared<TestAction>();
-        std::stringstream xmlConfig;
-        xmlConfig << ""
-                     "<state inverse=\"true\" checked=\"true\" enabled=\"false\" />"
-                     "";
+        std::stringstream xml_config;
+        xml_config << ""
+                      "<state inverse=\"true\" checked=\"true\" enabled=\"false\" />"
+                      "";
         boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xmlConfig, config);
+        boost::property_tree::read_xml(xml_config, config);
 
         action->set_config(config);
         action->configure();

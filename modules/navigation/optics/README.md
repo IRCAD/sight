@@ -7,7 +7,7 @@ In other words, it mainly contains services operating on `sight::data::frame_tl`
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(my_target 
                 ...
                  module_navigation_optics
 )

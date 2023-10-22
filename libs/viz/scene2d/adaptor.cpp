@@ -46,9 +46,9 @@ adaptor::~adaptor() noexcept =
 
 //-----------------------------------------------------------------------------
 
-void adaptor::setZValue(float _zValue)
+void adaptor::setZValue(float _z_value)
 {
-    m_zValue = _zValue;
+    m_zValue = _z_value;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,19 +84,19 @@ double adaptor::getViewSizeRatio() const
 
 //-----------------------------------------------------------------------------
 
-vec2d_t adaptor::viewToViewport(const scene2d::data::Viewport& viewport) const
+vec2d_t adaptor::viewToViewport(const scene2d::data::Viewport& _viewport) const
 {
     auto* view = this->getScene2DRender()->getView();
 
-    const double viewportHeight = viewport.height();
-    const double viewportWidth  = viewport.width();
+    const double viewport_height = _viewport.height();
+    const double viewport_width  = _viewport.width();
 
-    const double viewportViewRatio = viewportWidth / view->width();
-    const double viewportSizeRatio = viewportHeight / viewportWidth;
-    const double viewSizeRatio     = static_cast<double>(view->width())
-                                     / static_cast<double>(view->height());
+    const double viewport_view_ratio = viewport_width / view->width();
+    const double viewport_size_ratio = viewport_height / viewport_width;
+    const double view_size_ratio     = static_cast<double>(view->width())
+                                       / static_cast<double>(view->height());
 
-    return {viewportViewRatio, viewportSizeRatio* viewSizeRatio* viewportViewRatio};
+    return {viewport_view_ratio, viewport_size_ratio* view_size_ratio* viewport_view_ratio};
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ vec2d_t adaptor::mapAdaptorToScene(
     double x = NAN;
     double y = NAN;
 
-    if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_xAxis->get_scale_type() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.x <= 0.)
@@ -127,7 +127,7 @@ vec2d_t adaptor::mapAdaptorToScene(
         x = m_xAxis->getScale() * _xy.x;
     }
 
-    if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_yAxis->get_scale_type() == scene2d::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if(_xy.y <= 0.)
@@ -156,7 +156,7 @@ vec2d_t adaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
     // Do the reverse operation of the mapAdaptorToScene function
     double x = NAN;
     double y = NAN;
-    if(m_xAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_xAxis->get_scale_type() == scene2d::data::Axis::LOG)
     {
         x = 10. * std::exp(_xy.x) / m_xAxis->getScale();
     }
@@ -165,7 +165,7 @@ vec2d_t adaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
         x = (_xy.x) / m_xAxis->getScale();
     }
 
-    if(m_yAxis->getScaleType() == scene2d::data::Axis::LOG)
+    if(m_yAxis->get_scale_type() == scene2d::data::Axis::LOG)
     {
         y = 10. * std::exp(_xy.y) / m_yAxis->getScale();
     }

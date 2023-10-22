@@ -91,16 +91,16 @@ void viewport_interactor::processInteraction(sight::viz::scene2d::data::Event& _
             sight::viz::scene2d::vec2d_t coord = _event.getCoord();
             const auto viewport                = m_viewport.lock();
 
-            const double dx     = coord.x - m_lastCoordEvent.x;
-            const double xTrans = dx * viewport->width()
-                                  / static_cast<double>(this->getScene2DRender()->getView()->width());
+            const double dx      = coord.x - m_lastCoordEvent.x;
+            const double x_trans = dx * viewport->width()
+                                   / static_cast<double>(this->getScene2DRender()->getView()->width());
 
-            const double dy     = coord.y - m_lastCoordEvent.y;
-            const double yTrans = dy * viewport->height()
-                                  / static_cast<double>(this->getScene2DRender()->getView()->height());
+            const double dy      = coord.y - m_lastCoordEvent.y;
+            const double y_trans = dy * viewport->height()
+                                   / static_cast<double>(this->getScene2DRender()->getView()->height());
 
-            viewport->setX(viewport->x() - xTrans);
-            viewport->setY(viewport->y() - yTrans);
+            viewport->setX(viewport->x() - x_trans);
+            viewport->setY(viewport->y() - y_trans);
 
             this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 
@@ -115,49 +115,49 @@ void viewport_interactor::processInteraction(sight::viz::scene2d::data::Event& _
 
 //-----------------------------------------------------------------------------
 
-void viewport_interactor::zoom(bool zoomIn)
+void viewport_interactor::zoom(bool _zoom_in)
 {
-    const auto sceneViewport = m_viewport.lock();
+    const auto scene_viewport = m_viewport.lock();
 
-    double y = sceneViewport->y();
-    double x = sceneViewport->x();
+    double y = scene_viewport->y();
+    double x = scene_viewport->x();
 
-    double width  = sceneViewport->width();
-    double height = sceneViewport->height();
+    double width  = scene_viewport->width();
+    double height = scene_viewport->height();
 
-    const double zoomPercent = 10.F / 100.0F;
-    const double centerX     = x + width / 2.0F;
-    const double centerY     = y + height / 2.0F;
+    const double zoom_percent = 10.F / 100.0F;
+    const double center_x     = x + width / 2.0F;
+    const double center_y     = y + height / 2.0F;
 
-    double newWidth  = NAN;
-    double newHeight = NAN;
-    if(zoomIn)
+    double new_width  = NAN;
+    double new_height = NAN;
+    if(_zoom_in)
     {
-        newWidth  = width * zoomPercent;
-        newHeight = height * zoomPercent;
+        new_width  = width * zoom_percent;
+        new_height = height * zoom_percent;
     }
     else
     {
-        newWidth  = -width * zoomPercent;
-        newHeight = -height * zoomPercent;
+        new_width  = -width * zoom_percent;
+        new_height = -height * zoom_percent;
     }
 
-    newWidth  += width;
-    newHeight += height;
+    new_width  += width;
+    new_height += height;
 
-    x = centerX - newWidth / 2;
-    y = centerY - newHeight / 2;
+    x = center_x - new_width / 2;
+    y = center_y - new_height / 2;
 
-    width  = newWidth;
-    height = newHeight;
+    width  = new_width;
+    height = new_height;
 
     // Set viewport
-    sceneViewport->setX(x);
-    sceneViewport->setY(y);
-    sceneViewport->setWidth(width);
-    sceneViewport->setHeight(height);
-    auto viewportObject = m_viewport.lock();
-    this->getScene2DRender()->getView()->updateFromViewport(*viewportObject);
+    scene_viewport->setX(x);
+    scene_viewport->setY(y);
+    scene_viewport->setWidth(width);
+    scene_viewport->setHeight(height);
+    auto viewport_object = m_viewport.lock();
+    this->getScene2DRender()->getView()->updateFromViewport(*viewport_object);
 }
 
 //-----------------------------------------------------------------------------

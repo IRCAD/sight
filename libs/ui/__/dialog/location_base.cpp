@@ -30,14 +30,14 @@
 #include <service/base.hpp>
 #include <service/registry.hpp>
 
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 namespace sight::ui::dialog
 {
 
-const location_base::FactoryRegistryKeyType location_base::REGISTRY_KEY = "::ui::dialog::location";
+const location_base::factory_registry_key_t location_base::REGISTRY_KEY = "::ui::dialog::location";
 
 const std::string location_base::SOFTWARE_UI           = "SOFTWARE_UI";
 const std::string location_base::DLG_DEFAULT_FILE      = "DLG_DEFAULT_FILE";
@@ -45,23 +45,23 @@ const std::string location_base::DLG_DEFAULT_DIRECTORY = "DLG_DEFAULT_DIRECTORY"
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFrameKey(const std::string& title)
+inline static std::string get_frame_key(const std::string& _title)
 {
-    return std::string(location_base::SOFTWARE_UI) + "." + title;
+    return std::string(location_base::SOFTWARE_UI) + "." + _title;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getFileKey(const std::string& title)
+inline static std::string get_file_key(const std::string& _title)
 {
-    return getFrameKey(title) + "." + location_base::DLG_DEFAULT_FILE;
+    return get_frame_key(_title) + "." + location_base::DLG_DEFAULT_FILE;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string getDirectoryKey(const std::string& title)
+inline static std::string get_directory_key(const std::string& _title)
 {
-    return getFrameKey(title) + "." + location_base::DLG_DEFAULT_DIRECTORY;
+    return get_frame_key(_title) + "." + location_base::DLG_DEFAULT_DIRECTORY;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,9 +76,9 @@ location_base::~location_base()
 
 //------------------------------------------------------------------------------
 
-void location_base::setTitle(const std::string& title)
+void location_base::setTitle(const std::string& _title)
 {
-    m_title = title;
+    m_title = _title;
 }
 
 //------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ const std::string& location_base::getTitle()
 
 //------------------------------------------------------------------------------
 
-void location_base::setDefaultLocation(core::location::base::sptr loc)
+void location_base::setDefaultLocation(core::location::base::sptr _loc)
 {
-    m_defaultLocaction = loc;
+    m_defaultLocaction = _loc;
 }
 
 //------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ core::location::base::sptr location_base::getDefaultLocation()
 
     try
     {
-        ui::Preferences preferences;
+        ui::preferences preferences;
 
-        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(getFileKey(getTitle()));
+        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(getTitle()));
            default_file)
         {
             auto single_file = std::make_shared<core::location::single_file>();
@@ -113,14 +113,14 @@ core::location::base::sptr location_base::getDefaultLocation()
             location = single_file;
         }
         else if(const auto& default_directory =
-                    preferences.get_optional<std::filesystem::path>(getDirectoryKey(getTitle())); default_directory)
+                    preferences.get_optional<std::filesystem::path>(get_directory_key(getTitle())); default_directory)
         {
             auto single_directory = std::make_shared<core::location::single_folder>();
             single_directory->set_folder(*default_directory);
             location = single_directory;
         }
     }
-    catch(const ui::PreferencesDisabled&)
+    catch(const ui::preferences_disabled&)
     {
         // Nothing to do..
     }
@@ -135,24 +135,24 @@ core::location::base::sptr location_base::getDefaultLocation()
 
 //-----------------------------------------------------------------------------
 
-void location_base::saveDefaultLocation(core::location::base::sptr loc)
+void location_base::saveDefaultLocation(core::location::base::sptr _loc)
 {
-    if(loc)
+    if(_loc)
     {
         try
         {
-            ui::Preferences preferences;
+            ui::preferences preferences;
 
-            if(auto singleFile = std::dynamic_pointer_cast<core::location::single_file>(loc))
+            if(auto single_file = std::dynamic_pointer_cast<core::location::single_file>(_loc))
             {
-                preferences.put(getFileKey(getTitle()), singleFile->get_file());
+                preferences.put(get_file_key(getTitle()), single_file->get_file());
             }
-            else if(auto singleDirectory = std::dynamic_pointer_cast<core::location::single_folder>(loc))
+            else if(auto single_directory = std::dynamic_pointer_cast<core::location::single_folder>(_loc))
             {
-                preferences.put(getDirectoryKey(getTitle()), singleDirectory->get_folder());
+                preferences.put(get_directory_key(getTitle()), single_directory->get_folder());
             }
         }
-        catch(const ui::PreferencesDisabled&)
+        catch(const ui::preferences_disabled&)
         {
             // Nothing to do..
         }

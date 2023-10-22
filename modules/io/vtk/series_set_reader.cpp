@@ -51,7 +51,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 series_set_reader::series_set_reader() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -65,32 +65,32 @@ sight::io::service::IOPathType series_set_reader::getIOPathType() const
 
 void series_set_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setType(ui::dialog::location::MULTI_FILES);
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
-    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
-    dialogFile.addFilter("MetaImage files", "*.mhd");
-    dialogFile.addFilter("OBJ Files(.obj)", "*.obj");
-    dialogFile.addFilter("PLY Files(.ply)", "*.ply");
-    dialogFile.addFilter("STL Files(.stl)", "*.stl");
-    dialogFile.addFilter("VTI image files", "*.vti");
-    dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
-    dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialogFile.addFilter("VTU image files", "*.vtu");
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setType(ui::dialog::location::MULTI_FILES);
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
+    dialog_file.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
+    dialog_file.addFilter("MetaImage files", "*.mhd");
+    dialog_file.addFilter("OBJ Files(.obj)", "*.obj");
+    dialog_file.addFilter("PLY Files(.ply)", "*.ply");
+    dialog_file.addFilter("STL Files(.stl)", "*.stl");
+    dialog_file.addFilter("VTI image files", "*.vti");
+    dialog_file.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
+    dialog_file.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
+    dialog_file.addFilter("VTU image files", "*.vtu");
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
     if(result)
     {
         const std::vector<std::filesystem::path> paths = result->get_files();
         if(!paths.empty())
         {
-            defaultDirectory->set_folder(paths[0].parent_path());
-            dialogFile.saveDefaultLocation(defaultDirectory);
+            default_directory->set_folder(paths[0].parent_path());
+            dialog_file.saveDefaultLocation(default_directory);
         }
 
         this->set_files(paths);
@@ -130,15 +130,15 @@ void series_set_reader::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 void series_set_reader::loadSeriesSet(
-    const std::vector<std::filesystem::path>& vtkFiles,
-    const data::series_set::sptr& series_set
+    const std::vector<std::filesystem::path>& _vtk_files,
+    const data::series_set::sptr& _series_set
 )
 {
     m_readFailed = true;
 
     auto reader = std::make_shared<sight::io::vtk::SeriesSetReader>();
-    reader->set_object(series_set);
-    reader->set_files(vtkFiles);
+    reader->set_object(_series_set);
+    reader->set_files(_vtk_files);
 
     m_sigJobCreated->emit(reader->getJob());
 

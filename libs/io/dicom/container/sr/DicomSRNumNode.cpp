@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,14 +32,14 @@ namespace sight::io::dicom::container::sr
 //------------------------------------------------------------------------------
 
 DicomSRNumNode::DicomSRNumNode(
-    const DicomCodedAttribute& codedAttribute,
-    const std::string& relationship,
-    const double numValue,
-    DicomCodedAttribute measurementUnits
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship,
+    const double _num_value,
+    DicomCodedAttribute _measurement_units
 ) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "NUM", relationship),
-    m_numValue(numValue),
-    m_measurementUnits(std::move(measurementUnits))
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "NUM", _relationship),
+    m_numValue(_num_value),
+    m_measurementUnits(std::move(_measurement_units))
 {
 }
 
@@ -50,42 +50,42 @@ DicomSRNumNode::~DicomSRNumNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::write(gdcm::DataSet& dataset) const
+void DicomSRNumNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Measured Value Sequence - Type 2
-    this->writeMeasuredValueSequence(dataset);
+    this->writeMeasuredValueSequence(_dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::writeMeasuredValueSequence(gdcm::DataSet& dataset) const
+void DicomSRNumNode::writeMeasuredValueSequence(gdcm::DataSet& _dataset) const
 {
     gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = new gdcm::SequenceOfItems();
     gdcm::Item item;
     item.SetVLToUndefined();
-    gdcm::DataSet& itemDataset = item.GetNestedDataSet();
+    gdcm::DataSet& item_dataset = item.GetNestedDataSet();
 
     // Add numerical value - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0040, 0xa30a>(&m_numValue, 1, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0040, 0xa30a>(&m_numValue, 1, item_dataset);
 
     // Add measured units code sequence - Type 1
-    gdcm::SmartPointer<gdcm::SequenceOfItems> codeSequence =
+    gdcm::SmartPointer<gdcm::SequenceOfItems> code_sequence =
         this->createConceptNameCodeSequence(m_measurementUnits);
-    io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
+    io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(code_sequence, item_dataset);
 
     sequence->AddItem(item);
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa300>(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa300>(sequence, _dataset);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::print(std::ostream& os) const
+void DicomSRNumNode::print(std::ostream& _os) const
 {
-    DicomSRNode::print(os);
-    os << "\\nMeasurement units : [" << m_measurementUnits << "]";
-    os << "\\nMeasurement value : [" << m_numValue << "]";
+    DicomSRNode::print(_os);
+    _os << "\\nMeasurement units : [" << m_measurementUnits << "]";
+    _os << "\\nMeasurement value : [" << m_numValue << "]";
 }
 
 //------------------------------------------------------------------------------

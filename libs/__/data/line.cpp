@@ -34,13 +34,13 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-void line::shallow_copy(const object::csptr& source)
+void line::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const line>(source);
+    const auto& other = std::dynamic_pointer_cast<const line>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -54,22 +54,22 @@ void line::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void line::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void line::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const line>(source);
+    const auto& other = std::dynamic_pointer_cast<const line>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
     );
 
-    m_position  = data::object::copy(other->m_position, cache);
-    m_direction = data::object::copy(other->m_direction, cache);
+    m_position  = data::object::copy(other->m_position, _cache);
+    m_direction = data::object::copy(other->m_direction, _cache);
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -82,23 +82,23 @@ void line::setValue(const data::point::sptr& _position, const data::point::sptr&
 
 //------------------------------------------------------------------------------
 
-bool line::operator==(const line& other) const noexcept
+bool line::operator==(const line& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_position, other.m_position)
-       || !core::tools::is_equal(m_direction, other.m_direction))
+    if(!core::tools::is_equal(m_position, _other.m_position)
+       || !core::tools::is_equal(m_direction, _other.m_direction))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool line::operator!=(const line& other) const noexcept
+bool line::operator!=(const line& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

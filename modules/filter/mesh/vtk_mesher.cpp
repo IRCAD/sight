@@ -75,9 +75,9 @@ void vtk_mesher::stopping()
 
 void vtk_mesher::configuring()
 {
-    const service::config_t& srvConfig = this->get_config();
-    SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
-    const service::config_t& config = srvConfig.get_child("config");
+    const service::config_t& srv_config = this->get_config();
+    SIGHT_ASSERT("You must have one <config/> element.", srv_config.count("config") == 1);
+    const service::config_t& config = srv_config.get_child("config");
     m_threshold = config.get<unsigned int>("<xmlattr>.threshold");
     m_reduction = config.get<unsigned int>("<xmlattr>.percentReduction");
 }
@@ -86,82 +86,82 @@ void vtk_mesher::configuring()
 
 void vtk_mesher::updating()
 {
-    auto imageSeries = m_image.lock();
+    auto image_series = m_image.lock();
 
-    auto modelSeries = std::make_shared<data::model_series>();
+    auto model_series = std::make_shared<data::model_series>();
 
-    modelSeries->series::deep_copy(imageSeries.get_shared());
+    model_series->series::deep_copy(image_series.get_shared());
 
     // vtk img
-    auto vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(imageSeries.get_shared(), vtkImage);
+    auto vtk_image = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::to_vtk_image(image_series.get_shared(), vtk_image);
 
     // contour filter
-    auto contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
-    contourFilter->SetInputData(vtkImage);
-    contourFilter->SetValue(0, m_threshold);
-    contourFilter->ComputeScalarsOn();
-    contourFilter->ComputeNormalsOn();
-    contourFilter->Update();
+    auto contour_filter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
+    contour_filter->SetInputData(vtk_image);
+    contour_filter->SetValue(0, m_threshold);
+    contour_filter->ComputeScalarsOn();
+    contour_filter->ComputeNormalsOn();
+    contour_filter->Update();
 
     // smooth filter
-    auto smoothFilter = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
-    smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
-    smoothFilter->SetNumberOfIterations(50);
-    smoothFilter->BoundarySmoothingOn();
-    smoothFilter->SetPassBand(0.1);
-    smoothFilter->SetFeatureAngle(120.0);
-    smoothFilter->SetEdgeAngle(90);
-    smoothFilter->FeatureEdgeSmoothingOn();
-    smoothFilter->Update();
+    auto smooth_filter = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
+    smooth_filter->SetInputConnection(contour_filter->GetOutputPort());
+    smooth_filter->SetNumberOfIterations(50);
+    smooth_filter->BoundarySmoothingOn();
+    smooth_filter->SetPassBand(0.1);
+    smooth_filter->SetFeatureAngle(120.0);
+    smooth_filter->SetEdgeAngle(90);
+    smooth_filter->FeatureEdgeSmoothingOn();
+    smooth_filter->Update();
 
     // Get polyData
-    vtkSmartPointer<vtkPolyData> polyData;
+    vtkSmartPointer<vtkPolyData> poly_data;
     auto mesh = std::make_shared<data::mesh>();
 
     // decimate filter
     if(m_reduction > 0)
     {
         auto decimate = vtkSmartPointer<vtkDecimatePro>::New();
-        decimate->SetInputConnection(smoothFilter->GetOutputPort());
+        decimate->SetInputConnection(smooth_filter->GetOutputPort());
         decimate->SetTargetReduction(m_reduction / 100.0);
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();
         decimate->BoundaryVertexDeletionOn();
         decimate->SetSplitAngle(120);
         decimate->Update();
-        polyData = decimate->GetOutput();
-        io::vtk::helper::mesh::fromVTKMesh(polyData, mesh);
+        poly_data = decimate->GetOutput();
+        io::vtk::helper::mesh::fromVTKMesh(poly_data, mesh);
     }
     else
     {
-        polyData = smoothFilter->GetOutput();
-        io::vtk::helper::mesh::fromVTKMesh(polyData, mesh);
+        poly_data = smooth_filter->GetOutput();
+        io::vtk::helper::mesh::fromVTKMesh(poly_data, mesh);
     }
 
     auto reconstruction = std::make_shared<data::reconstruction>();
 
-    static unsigned int organNumber = 0;
-    ++organNumber;
-    reconstruction->setOrganName("OrganMesher_VTK_" + std::to_string(organNumber));
-    reconstruction->setStructureType("OrganType");
+    static unsigned int organ_number = 0;
+    ++organ_number;
+    reconstruction->setOrganName("OrganMesher_VTK_" + std::to_string(organ_number));
+    reconstruction->set_structure_type("organ_t");
     reconstruction->setIsVisible(true);
     // Set Mesh
     reconstruction->setMesh(mesh);
 
-    data::model_series::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+    data::model_series::reconstruction_vector_t recs = model_series->getReconstructionDB();
     recs.push_back(reconstruction);
-    modelSeries->setReconstructionDB(recs);
-    modelSeries->setDicomReference(imageSeries->getDicomReference());
+    model_series->setReconstructionDB(recs);
+    model_series->setDicomReference(image_series->getDicomReference());
 
-    m_model = modelSeries;
+    m_model = model_series;
 }
 
 //------------------------------------------------------------------------------
 
-void vtk_mesher::updateThreshold(int threshold)
+void vtk_mesher::updateThreshold(int _threshold)
 {
-    m_threshold = (threshold >= 0) ? static_cast<unsigned int>(threshold) : 0;
+    m_threshold = (_threshold >= 0) ? static_cast<unsigned int>(_threshold) : 0;
     this->update();
 }
 

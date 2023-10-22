@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,9 +40,9 @@ public:
 
     /// Constructor
     IO_DICOM_API DicomSRCodeNode(
-        const DicomCodedAttribute& codedAttribute,
-        const std::string& relationship,
-        DicomCodedAttribute codedEntry
+        const DicomCodedAttribute& _coded_attribute,
+        const std::string& _relationship,
+        DicomCodedAttribute _coded_entry
     );
 
     /// Destructor
@@ -52,7 +52,7 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
+    IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get Coded Entry
     [[nodiscard]] const DicomCodedAttribute& getCodedEntry() const
@@ -61,15 +61,15 @@ public:
     }
 
     /// Set Coded Entry
-    void setCodedEntry(const DicomCodedAttribute& codedEntry)
+    void setCodedEntry(const DicomCodedAttribute& _coded_entry)
     {
-        m_codedEntry = codedEntry;
+        m_codedEntry = _coded_entry;
     }
 
 protected:
 
     /// Dump function
-    void print(std::ostream& os) const override;
+    void print(std::ostream& _os) const override;
 
     /// Coded Entry
     DicomCodedAttribute m_codedEntry;

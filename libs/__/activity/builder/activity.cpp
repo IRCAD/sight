@@ -35,22 +35,22 @@ SIGHT_REGISTER_ACTIVITY_BUILDER(sight::activity::builder::Activity, "sight::acti
 
 //-----------------------------------------------------------------------------
 
-data::composite::sptr vectorToComposite(
-    const data::vector::csptr& vector,
-    const activity::extension::activity_requirement& req
+data::composite::sptr vector_to_composite(
+    const data::vector::csptr& _vector,
+    const activity::extension::activity_requirement& _req
 )
 {
     namespace ActReg = activity::extension;
     data::composite::sptr composite = std::make_shared<data::composite>();
 
-    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs);
+    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", _req.keys.size() >= _req.maxOccurs);
 
-    auto iter = req.keys.begin();
+    auto iter = _req.keys.begin();
 
-    for(const auto& obj : *vector)
+    for(const auto& obj : *_vector)
     {
-        const ActReg::activity_requirement_key& keyTag = (*iter++);
-        (*composite)[keyTag.key] = obj;
+        const ActReg::activity_requirement_key& key_tag = (*iter++);
+        (*composite)[key_tag.key] = obj;
     }
 
     return composite;
@@ -59,26 +59,26 @@ data::composite::sptr vectorToComposite(
 //-----------------------------------------------------------------------------
 
 data::activity::sptr Activity::buildData(
-    const activity::extension::activity_info& activity_info,
-    const data::vector::csptr& currentSelection
+    const activity::extension::activity_info& _activity_info,
+    const data::vector::csptr& _current_selection
 ) const
 {
     auto activity = std::make_shared<data::activity>();
 
-    activity->setActivityConfigId(activity_info.id);
-    activity->setDescription(activity_info.description);
+    activity->setActivityConfigId(_activity_info.id);
+    activity->setDescription(_activity_info.description);
 
     namespace ActReg = activity::extension;
 
-    ActReg::activity_info::RequirementsType reqVect = activity_info.requirements;
-    for(const ActReg::activity_requirement& req : reqVect)
+    ActReg::activity_info::requirements_t req_vect = _activity_info.requirements;
+    for(const ActReg::activity_requirement& req : req_vect)
     {
-        data::vector::sptr vectorType = this->getType(currentSelection, req.type);
+        data::vector::sptr vector_type = this->getType(_current_selection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
-            SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vectorType->empty());
-            (*activity)[req.name] = (*vectorType)[0];
+            SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vector_type->empty());
+            (*activity)[req.name] = (*vector_type)[0];
         }
         else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
         {
@@ -94,11 +94,11 @@ data::activity::sptr Activity::buildData(
             );
             if(req.container == "vector")
             {
-                (*activity)[req.name] = vectorType;
+                (*activity)[req.name] = vector_type;
             }
             else if(req.container == "composite" || req.container.empty())
             {
-                (*activity)[req.name] = vectorToComposite(vectorType, req);
+                (*activity)[req.name] = vector_to_composite(vector_type, req);
             }
         }
     }

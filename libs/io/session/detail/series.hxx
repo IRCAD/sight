@@ -50,27 +50,27 @@ constexpr static auto s_num_instances {"num_instances"};
 //------------------------------------------------------------------------------
 
 inline static void write(
-    zip::ArchiveWriter& archive,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
+    zip::ArchiveWriter& _archive,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
     std::map<std::string, data::object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& _password = ""
 )
 {
-    const auto series = helper::safe_cast<data::series>(object);
+    const auto series = helper::safe_cast<data::series>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::series>(tree, 1);
+    helper::write_version<data::series>(_tree, 1);
 
     // Store the instance count to be able to know how many instances to read
-    tree.put(s_num_instances, series->numInstances());
+    _tree.put(s_num_instances, series->numInstances());
 
     // Write the "instance" datasets. In case the original data come from a DICOM series with several instances (files)
     for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
     {
-        const auto& ostream = archive.openFile(
+        const auto& ostream = _archive.openFile(
             std::filesystem::path(series->get_uuid() + "/" + std::to_string(instance) + "_" + s_instance_dataset),
-            password
+            _password
         );
 
         series->getDataSet(instance).Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
@@ -80,28 +80,28 @@ inline static void write(
 //------------------------------------------------------------------------------
 
 inline static data::series::sptr read(
-    zip::ArchiveReader& archive,
-    const boost::property_tree::ptree& tree,
+    zip::ArchiveReader& _archive,
+    const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>&,
-    data::object::sptr object,
-    const core::crypto::secure_string& password = ""
+    data::object::sptr _object,
+    const core::crypto::secure_string& _password = ""
 )
 {
     // Create or reuse the object
-    auto series = helper::cast_or_create<data::series>(object);
+    auto series = helper::cast_or_create<data::series>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::series>(tree, 0, 1);
+    helper::read_version<data::series>(_tree, 0, 1);
 
     // Get the input stream
-    const auto& uuid = tree.get<std::string>(s_uuid);
+    const auto& uuid = _tree.get<std::string>(s_uuid);
 
     // Read the instance count to be able to know how many instances to read
-    for(std::size_t instance = 0, end = tree.get<std::size_t>(s_num_instances) ; instance < end ; ++instance)
+    for(std::size_t instance = 0, end = _tree.get<std::size_t>(s_num_instances) ; instance < end ; ++instance)
     {
-        const auto& istream = archive.openFile(
+        const auto& istream = _archive.openFile(
             std::filesystem::path(uuid + "/" + std::to_string(instance) + "_" + s_instance_dataset),
-            password
+            _password
         );
 
         gdcm::DataSet dataset;

@@ -21,7 +21,7 @@
  ***********************************************************************/
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 
-#include "viz/scene3d/factory/R2VBRenderable.hpp"
+#include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/ogre.hpp"
 
 #include <OGRE/OgreDepthBuffer.h>
@@ -45,27 +45,27 @@ namespace sight::viz::scene3d::vr
 
 grid_proxy_geometry* grid_proxy_geometry::make(
     const std::string& _name,
-    Ogre::SceneManager* _sceneManager,
-    const viz::scene3d::Texture::sptr& _3DImageTexture,
-    const viz::scene3d::Texture::sptr& _maskTexture,
+    Ogre::SceneManager* _scene_manager,
+    const viz::scene3d::texture::sptr& _3_d_image_texture,
+    const viz::scene3d::texture::sptr& _mask_texture,
     const transfer_function::sptr& _tf,
-    const std::string& _mtlName
+    const std::string& _mtl_name
 )
 {
-    SIGHT_ASSERT("Scene manager cannot be nullptr.", _sceneManager != nullptr);
+    SIGHT_ASSERT("scene manager cannot be nullptr.", _scene_manager != nullptr);
 
     auto* instance = static_cast<viz::scene3d::vr::grid_proxy_geometry*>
-                     (_sceneManager->createMovableObject(_name, grid_proxy_geometry_factory::FACTORY_TYPE_NAME));
+                     (_scene_manager->createMovableObject(_name, grid_proxy_geometry_factory::FACTORY_TYPE_NAME));
 
-    instance->m_inputPrimitiveType = data::mesh::CellType::POINT;
-    instance->mParentSceneManager  = _sceneManager;
-    instance->m_3DImageTexture     = _3DImageTexture;
-    instance->m_maskTexture        = _maskTexture;
+    instance->m_inputPrimitiveType = data::mesh::cell_type_t::POINT;
+    instance->mParentSceneManager  = _scene_manager;
+    instance->m_3DImageTexture     = _3_d_image_texture;
+    instance->m_maskTexture        = _mask_texture;
     instance->m_gpuTF              = _tf;
 
     Ogre::MaterialPtr mat =
         Ogre::MaterialManager::getSingleton().getByName(
-            std::string(_name) + "_" + _mtlName,
+            std::string(_name) + "_" + _mtl_name,
             RESOURCE_GROUP
         );
 
@@ -73,9 +73,9 @@ grid_proxy_geometry* grid_proxy_geometry::make(
     {
         mat =
             Ogre::MaterialManager::getSingleton().getByName(
-                _mtlName,
+                _mtl_name,
                 RESOURCE_GROUP
-            )->clone(std::string(_name) + "_" + _mtlName);
+            )->clone(std::string(_name) + "_" + _mtl_name);
     }
 
     instance->setMaterial(mat);
@@ -88,8 +88,8 @@ grid_proxy_geometry* grid_proxy_geometry::make(
 
 //------------------------------------------------------------------------------
 
-grid_proxy_geometry::grid_proxy_geometry(const Ogre::String& name) :
-    R2VBRenderable(name)
+grid_proxy_geometry::grid_proxy_geometry(const Ogre::String& _name) :
+    r2vb_renderable(_name)
 {
 }
 
@@ -140,7 +140,7 @@ void grid_proxy_geometry::initialize()
 
 void grid_proxy_geometry::updateGridSize()
 {
-    const std::vector<int> imageSize =
+    const std::vector<int> image_size =
     {
         static_cast<int>(m_3DImageTexture->width()),
         static_cast<int>(m_3DImageTexture->height()),
@@ -150,8 +150,8 @@ void grid_proxy_geometry::updateGridSize()
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         m_gridSize[i] =
-            static_cast<int>(imageSize[i]) / s_brickSize[i]
-            + static_cast<int>(static_cast<int>(imageSize[i]) % s_brickSize[i] != 0);
+            static_cast<int>(image_size[i]) / s_brickSize[i]
+            + static_cast<int>(static_cast<int>(image_size[i]) % s_brickSize[i] != 0);
     }
 
     if(m_gridTexture)
@@ -171,39 +171,39 @@ void grid_proxy_geometry::initializeR2VBSource()
     if(m_r2vbSource == nullptr)
     {
         //The mesh managed by m_r2vbSource
-        Ogre::MeshPtr gridMesh = Ogre::MeshManager::getSingleton().createManual(
+        Ogre::MeshPtr grid_mesh = Ogre::MeshManager::getSingleton().createManual(
             mName + "_gridMesh",
             viz::scene3d::RESOURCE_GROUP
         );
 
         //Set up its SubMesh
         {
-            Ogre::SubMesh* subMesh = gridMesh->createSubMesh();
+            Ogre::SubMesh* sub_mesh = grid_mesh->createSubMesh();
 
-            const int nbVtx = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
+            const int nb_vtx = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
 
-            subMesh->useSharedVertices = false;
-            subMesh->operationType     = Ogre::RenderOperation::OT_POINT_LIST;
+            sub_mesh->useSharedVertices = false;
+            sub_mesh->operationType     = Ogre::RenderOperation::OT_POINT_LIST;
 
-            subMesh->vertexData              = new Ogre::VertexData();
-            subMesh->vertexData->vertexStart = 0;
-            subMesh->vertexData->vertexCount = static_cast<std::size_t>(nbVtx);
+            sub_mesh->vertexData              = new Ogre::VertexData();
+            sub_mesh->vertexData->vertexStart = 0;
+            sub_mesh->vertexData->vertexCount = static_cast<std::size_t>(nb_vtx);
 
-            Ogre::VertexDeclaration* decl = subMesh->vertexData->vertexDeclaration;
+            Ogre::VertexDeclaration* decl = sub_mesh->vertexData->vertexDeclaration;
 
             decl->addElement(0, 0, Ogre::VET_INT1, Ogre::VES_POSITION);
         }
 
         //Update the bounds
         {
-            gridMesh->_setBounds(Ogre::AxisAlignedBox::BOX_INFINITE);
-            gridMesh->_setBoundingSphereRadius(1000);
-            gridMesh->load();
+            grid_mesh->_setBounds(Ogre::AxisAlignedBox::BOX_INFINITE);
+            grid_mesh->_setBoundingSphereRadius(1000);
+            grid_mesh->load();
         }
 
         //Create the R2VB source
         {
-            m_r2vbSource = mParentSceneManager->createEntity(gridMesh);
+            m_r2vbSource = mParentSceneManager->createEntity(grid_mesh);
 
             m_srcObject = m_r2vbSource->getSubEntity(0);
 
@@ -216,32 +216,32 @@ void grid_proxy_geometry::initializeR2VBSource()
 
 void grid_proxy_geometry::initializeGridMaterials()
 {
-    Ogre::MaterialManager& mtlMng = Ogre::MaterialManager::getSingleton();
+    Ogre::MaterialManager& mtl_mng = Ogre::MaterialManager::getSingleton();
 
     if(m_gridComputingPass == nullptr)
     {
-        Ogre::MaterialPtr gridMtl = mtlMng.getByName(this->getName() + "_VolumeBricksGrid", RESOURCE_GROUP);
-        if(!gridMtl)
+        Ogre::MaterialPtr grid_mtl = mtl_mng.getByName(this->getName() + "_VolumeBricksGrid", RESOURCE_GROUP);
+        if(!grid_mtl)
         {
-            gridMtl =
-                mtlMng.getByName("VolumeBricksGrid", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricksGrid");
+            grid_mtl =
+                mtl_mng.getByName("VolumeBricksGrid", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricksGrid");
         }
 
-        gridMtl->load();
-        m_gridComputingPass = gridMtl->getTechnique(0)->getPass(0);
+        grid_mtl->load();
+        m_gridComputingPass = grid_mtl->getTechnique(0)->getPass(0);
     }
 
     if(m_geomGeneratorPass == nullptr)
     {
-        Ogre::MaterialPtr geomGeneratorMtl = mtlMng.getByName(this->getName() + "_VolumeBricks", RESOURCE_GROUP);
-        if(!geomGeneratorMtl)
+        Ogre::MaterialPtr geom_generator_mtl = mtl_mng.getByName(this->getName() + "_VolumeBricks", RESOURCE_GROUP);
+        if(!geom_generator_mtl)
         {
-            geomGeneratorMtl =
-                mtlMng.getByName("VolumeBricks", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricks");
+            geom_generator_mtl =
+                mtl_mng.getByName("VolumeBricks", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricks");
         }
 
-        geomGeneratorMtl->load();
-        m_geomGeneratorPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
+        geom_generator_mtl->load();
+        m_geomGeneratorPass = geom_generator_mtl->getTechnique(0)->getPass(0);
     }
 
     this->setupGrid();
@@ -275,25 +275,26 @@ void grid_proxy_geometry::setupGrid()
 
     // Update R2VB source geometry.
     {
-        Ogre::MeshPtr r2vbSrcMesh = Ogre::MeshManager::getSingleton().getByName(
+        Ogre::MeshPtr r2vb_src_mesh = Ogre::MeshManager::getSingleton().getByName(
             mName + "_gridMesh",
             RESOURCE_GROUP
         );
 
-        Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
+        Ogre::VertexData* mesh_vtx_data = r2vb_src_mesh->getSubMesh(0)->vertexData;
 
-        meshVtxData->vertexCount = std::size_t(m_gridSize[0]) * std::size_t(m_gridSize[1]) * std::size_t(m_gridSize[2]);
+        mesh_vtx_data->vertexCount = std::size_t(m_gridSize[0]) * std::size_t(m_gridSize[1])
+                                     * std::size_t(m_gridSize[2]);
 
-        Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
+        Ogre::HardwareVertexBufferSharedPtr vtx_buffer =
             Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
                 Ogre::VertexElement::getTypeSize(Ogre::VET_INT1),
-                meshVtxData->vertexCount,
+                mesh_vtx_data->vertexCount,
                 Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY
             );
 
-        for(std::size_t i = 0 ; i < meshVtxData->vertexCount ; ++i)
+        for(std::size_t i = 0 ; i < mesh_vtx_data->vertexCount ; ++i)
         {
-            vtxBuffer->writeData(
+            vtx_buffer->writeData(
                 i * Ogre::VertexElement::getTypeSize(Ogre::VET_INT1),
                 Ogre::VertexElement::getTypeSize(Ogre::VET_INT1),
                 &i,
@@ -301,9 +302,9 @@ void grid_proxy_geometry::setupGrid()
             );
         }
 
-        meshVtxData->vertexBufferBinding->setBinding(0, vtxBuffer);
+        mesh_vtx_data->vertexBufferBinding->setBinding(0, vtx_buffer);
 
-        r2vbSrcMesh->load();
+        r2vb_src_mesh->load();
 
         m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
 
@@ -312,48 +313,48 @@ void grid_proxy_geometry::setupGrid()
         // This means half the bricks are full.
         // The transform feedback outputs triangles (not strips) meaning that
         // one brick then generates 36 vertices (6 per cube face).
-        const std::size_t maximumVertexCount = 1 + (meshVtxData->vertexCount * 36 - 1) / 2; // = (vC * 36)/2 + (vC *
-                                                                                            // 36)%2
+        const std::size_t maximum_vertex_count = 1 + (mesh_vtx_data->vertexCount * 36 - 1) / 2; // = (vC * 36)/2 + (vC *
+        // 36)%2
 
-        this->setOutputSettings(maximumVertexCount, false, false, false);
+        this->setOutputSettings(maximum_vertex_count, false, false, false);
         this->setRenderToBufferMaterial(this->getName() + "_VolumeBricks");
     }
 
     // Set shader parameters.
     {
-        Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = m_gridComputingPass->getFragmentProgramParameters();
+        Ogre::GpuProgramParametersSharedPtr grid_generator_params = m_gridComputingPass->getFragmentProgramParameters();
 
-        m_gpuTF.lock()->bind(m_gridComputingPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
+        m_gpuTF.lock()->bind(m_gridComputingPass, s_TF_TEXUNIT_NAME, grid_generator_params);
         m_3DImageTexture->bind(m_gridComputingPass, "image");
 
-        gridGeneratorParams->setNamedConstant("u_brickSize", s_brickSize.data(), 3, 1);
+        grid_generator_params->setNamedConstant("u_brickSize", s_brickSize.data(), 3, 1);
 
-        Ogre::GpuProgramParametersSharedPtr geomGeneratorVtxParams =
+        Ogre::GpuProgramParametersSharedPtr geom_generator_vtx_params =
             m_geomGeneratorPass->getVertexProgramParameters();
-        geomGeneratorVtxParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
+        geom_generator_vtx_params->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
 
-        Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams =
+        Ogre::GpuProgramParametersSharedPtr geom_generator_geom_params =
             m_geomGeneratorPass->getGeometryProgramParameters();
 
-        const std::vector<int> imageSize = {{
+        const std::vector<int> image_size = {{
             int(m_3DImageTexture->width()),
             int(m_3DImageTexture->height()),
             int(m_3DImageTexture->depth())
         }
         };
 
-        geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
-        geomGeneratorGeomParams->setNamedConstant(
+        geom_generator_geom_params->setNamedConstant("u_imageResolution", image_size.data(), 3, 1);
+        geom_generator_geom_params->setNamedConstant(
             "u_brickSize",
             sight::viz::scene3d::vr::grid_proxy_geometry::s_brickSize.data(),
             3,
             1
         );
 
-        Ogre::TextureUnitState* gridTexState = m_geomGeneratorPass->getTextureUnitState("gridVolume");
+        Ogre::TextureUnitState* grid_tex_state = m_geomGeneratorPass->getTextureUnitState("gridVolume");
 
-        SIGHT_ASSERT("'gridVolume' texture unit is not found", gridTexState);
-        gridTexState->setTexture(m_gridTexture);
+        SIGHT_ASSERT("'gridVolume' texture unit is not found", grid_tex_state);
+        grid_tex_state->setTexture(m_gridTexture);
     }
 }
 
@@ -393,25 +394,25 @@ void grid_proxy_geometry::computeGrid()
 
 //------------------------------------------------------------------------------
 
-void grid_proxy_geometry::clipGrid(const Ogre::AxisAlignedBox& _clippingBox)
+void grid_proxy_geometry::clipGrid(const Ogre::AxisAlignedBox& _clipping_box)
 {
-    Ogre::GpuProgramParametersSharedPtr geomParams = m_geomGeneratorPass->getGeometryProgramParameters();
+    Ogre::GpuProgramParametersSharedPtr geom_params = m_geomGeneratorPass->getGeometryProgramParameters();
 
-    if(_clippingBox.isFinite())
+    if(_clipping_box.isFinite())
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", _clippingBox.getMinimum());
-        geomParams->setNamedConstant("u_boundingBoxMax", _clippingBox.getMaximum());
+        geom_params->setNamedConstant("u_boundingBoxMin", _clipping_box.getMinimum());
+        geom_params->setNamedConstant("u_boundingBoxMax", _clipping_box.getMaximum());
     }
-    else if(_clippingBox.isNull())
+    else if(_clipping_box.isNull())
     {
         SIGHT_ERROR("Unexpected empty clipping box, no proxy geometry will be generated.");
-        geomParams->setNamedConstant("u_boundingBoxMin", Ogre::Vector3::ZERO);
-        geomParams->setNamedConstant("u_boundingBoxMax", Ogre::Vector3::ZERO);
+        geom_params->setNamedConstant("u_boundingBoxMin", Ogre::Vector3::ZERO);
+        geom_params->setNamedConstant("u_boundingBoxMax", Ogre::Vector3::ZERO);
     }
     else // Infinite box
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", Ogre::Vector3::ZERO);
-        geomParams->setNamedConstant("u_boundingBoxMax", Ogre::Vector3::UNIT_SCALE);
+        geom_params->setNamedConstant("u_boundingBoxMin", Ogre::Vector3::ZERO);
+        geom_params->setNamedConstant("u_boundingBoxMax", Ogre::Vector3::UNIT_SCALE);
     }
 
     this->manualUpdate();

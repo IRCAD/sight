@@ -74,7 +74,7 @@ protected:
 private:
 
     /// Slot: get the interaction information
-    void getInteraction(data::tools::picking_info info);
+    void getInteraction(data::tools::picking_info _info);
 
     QPointer<QLineEdit> m_textCtrl_x;
     QPointer<QLineEdit> m_textCtrl_y;

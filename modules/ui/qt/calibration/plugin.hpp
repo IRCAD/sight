@@ -23,7 +23,7 @@
 #pragma once
 
 #ifndef _UICALIBRATION_PLUGIN_HPP_
-#define _UICALIBRATION_PLUGIN_HPP_
+#define UICALIBRATION_PLUGIN_HPP
 
 #include <core/runtime/plugin.hpp>
 

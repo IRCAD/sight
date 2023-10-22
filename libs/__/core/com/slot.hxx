@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(__FWCOM_SLOT_HPP__)
+#if !defined(FWCOM_SLOT_HPP)
 #error core/com/slot.hpp not included
 #endif
 
@@ -53,31 +53,31 @@ slot<R(A ...)>::slot() :
 
 template<typename R, typename ... A>
 template<typename F>
-slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)slot) :
+slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)_slot) :
     core::com::slot<function_t>(
         core::com::util::auto_bind<
             signature_type,
             boost::function_types::function_arity<F>::value
-        >::wrap(&slot_run<F>::run, slot.get()))
+        >::wrap(&slot_run<F>::run, _slot.get()))
 {
     static_assert(std::is_same<void, R>::value);
-    this->set_worker(slot->get_worker());
-    this->m_source_slot = slot;
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
 template<typename F>
-slot<slot<R(A ...)> >::slot(SPTR(slot<F>)slot) :
+slot<slot<R(A ...)> >::slot(SPTR(slot<F>)_slot) :
     core::com::slot<function_t>(
         core::com::util::auto_bind<
             signature_type,
             boost::function_types::function_arity<F>::value
-        >::wrap(&core::com::slot<F>::call, slot.get()))
+        >::wrap(&core::com::slot<F>::call, _slot.get()))
 {
-    this->set_worker(slot->get_worker());
-    this->m_source_slot = slot;
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
 }
 
 //-----------------------------------------------------------------------------

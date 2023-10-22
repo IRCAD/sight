@@ -26,8 +26,8 @@
 
 #include <io/http/helper/Series.hpp>
 
-#include <ui/qt/App.hpp>
-#include <ui/qt/WorkerQt.hpp>
+#include <ui/qt/app.hpp>
+#include <ui/qt/worker_qt.hpp>
 
 #include <utest/exception.hpp>
 
@@ -40,12 +40,12 @@ namespace sight::io::http::ut
 
 //------------------------------------------------------------------------------
 
-std::uint8_t operator""_hhu(unsigned long long x) // NOLINT(google-runtime-int)
+std::uint8_t operator""_hhu(unsigned long long _x) // NOLINT(google-runtime-int)
 {
-    return static_cast<std::uint8_t>(x);
+    return static_cast<std::uint8_t>(_x);
 }
 
-std::array getAnswer { /* Packet 3145 */
+std::array get_answer { /* Packet 3145 */
     0x1f_hhu, 0x8b_hhu, 0x08_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu,
     0x00_hhu, 0x03_hhu, 0x2d_hhu, 0xcd_hhu, 0xcb_hhu, 0x0d_hhu, 0xc3_hhu, 0x30_hhu,
     0x08_hhu, 0x00_hhu, 0xd0_hhu, 0x7b_hhu, 0xa6_hhu, 0x88_hhu, 0x72_hhu, 0x2e_hhu,
@@ -68,7 +68,7 @@ std::array getAnswer { /* Packet 3145 */
     0xcf_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu
 };
 
-std::array postAnswer { /* Packet 196 */
+std::array post_answer { /* Packet 196 */
     0x1f_hhu, 0x8b_hhu, 0x08_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu,
     0x00_hhu, 0x03_hhu, 0x8b_hhu, 0x56_hhu, 0x50_hhu, 0x4a_hhu, 0x4b_hhu, 0x4b_hhu,
     0x35_hhu, 0x4c_hhu, 0x4c_hhu, 0x35_hhu, 0x33_hhu, 0xd7_hhu, 0xb5_hhu, 0xb0_hhu,
@@ -97,11 +97,11 @@ void ClientQtTest::setUp()
 
     CPPUNIT_ASSERT(qApp == nullptr);
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& argc, char** argv)
+        [](int& _argc, char** _argv)
         {
-            return QSharedPointer<QApplication>(new ui::qt::App(argc, argv, false));
+            return QSharedPointer<QApplication>(new ui::qt::app(_argc, _argv, false));
         };
-    m_worker = ui::qt::getQtWorker(argc, argv.data(), callback, "", "");
+    m_worker = ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
 
     m_server.moveToThread(&m_thread);
     QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
@@ -153,7 +153,7 @@ void ClientQtTest::get()
                 "Content-Encoding: gzip\n"
                 "Content-Length: 156\r\n\r\n"
             );
-            socket->write(reinterpret_cast<char*>(getAnswer.data()), getAnswer.size());
+            socket->write(reinterpret_cast<char*>(get_answer.data()), get_answer.size());
             socket->waitForBytesWritten();
 
             delete socket;
@@ -220,7 +220,7 @@ void ClientQtTest::post()
                 "Content-Encoding: gzip\n"
                 "Content-Length: 71\r\n\r\n"
             );
-            socket->write(reinterpret_cast<char*>(postAnswer.data()), postAnswer.size());
+            socket->write(reinterpret_cast<char*>(post_answer.data()), post_answer.size());
             socket->waitForBytesWritten();
 
             delete socket;

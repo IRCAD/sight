@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -43,7 +43,7 @@ const core::com::signals::key_t Distance::DISTANCE_REQUESTED_SIG = "distanceRequ
 
 Distance::Distance() noexcept
 {
-    m_sigDistanceRequested = new_signal<DistanceRequestedSignalType>(DISTANCE_REQUESTED_SIG);
+    m_sigDistanceRequested = new_signal<distance_requested_signal_t>(DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -57,17 +57,17 @@ void Distance::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
     namespace fs = std::filesystem;
-    fs::path pathImageDist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.png");
-    SIGHT_ASSERT("image " << pathImageDist << "is missing", fs::exists(pathImageDist));
+    fs::path path_image_dist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.png");
+    SIGHT_ASSERT("image " << path_image_dist << "is missing", fs::exists(path_image_dist));
 
-    QIcon imageDist(QString::fromStdString(pathImageDist.string()));
+    QIcon image_dist(QString::fromStdString(path_image_dist.string()));
 
-    m_distButton = new QPushButton(imageDist, tr(""));
+    m_distButton = new QPushButton(image_dist, tr(""));
     m_distButton->setToolTip(tr("Distance"));
 
     auto* layout = new QVBoxLayout();
@@ -75,7 +75,7 @@ void Distance::starting()
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void Distance::onDistanceButton()
     SIGHT_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
-    data::helper::MedicalImage::setDistanceVisibility(*image, true);
+    data::helper::medical_image::set_distance_visibility(*image, true);
     m_sigDistanceRequested->async_emit();
 }
 

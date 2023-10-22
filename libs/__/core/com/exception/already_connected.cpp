@@ -29,8 +29,8 @@
 namespace sight::core::com::exception
 {
 
-already_connected::already_connected(const std::string& err) :
-    core::exception(err)
+already_connected::already_connected(const std::string& _err) :
+    core::exception(_err)
 {
 }
 

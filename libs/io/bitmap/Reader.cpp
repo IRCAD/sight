@@ -45,7 +45,7 @@ std::string Reader::extension() const
 {
     try
     {
-        const auto& [backend, extensions] = detail::guessBackendOrExtension(
+        const auto& [backend, extensions] = detail::guess_backend_or_extension(
             Backend::ANY,
             get_file().extension().string()
         );
@@ -67,7 +67,7 @@ void Reader::read()
 
 //------------------------------------------------------------------------------
 
-void Reader::read(Backend backend)
+void Reader::read(Backend _backend)
 {
     auto file = get_file();
 
@@ -77,7 +77,7 @@ void Reader::read(Backend backend)
     }
 
     // Compute the right backend to use
-    const auto& [backend_to_use, extensions_to_use] = detail::guessBackendOrExtension(backend, extension());
+    const auto& [backend_to_use, extensions_to_use] = detail::guess_backend_or_extension(_backend, extension());
 
     // If there is an extension
     if(file.has_extension())
@@ -106,9 +106,9 @@ void Reader::read(Backend backend)
 
 //------------------------------------------------------------------------------
 
-void Reader::read(std::istream& istream, Backend backend)
+void Reader::read(std::istream& _istream, Backend _backend)
 {
-    m_pimpl->read(istream, backend);
+    m_pimpl->read(_istream, _backend);
 }
 
 } // namespace sight::io::bitmap

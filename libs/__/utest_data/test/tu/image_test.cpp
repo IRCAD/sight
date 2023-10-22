@@ -110,12 +110,12 @@ void image_test::deep_copyTest()
 
 //------------------------------------------------------------------------------
 
-inline static void stressTestWithType(core::type type, int nbTest)
+inline static void stress_test_with_type(core::type _type, int _nb_test)
 {
-    for(int nb = 0 ; nb < nbTest ; ++nb)
+    for(int nb = 0 ; nb < _nb_test ; ++nb)
     {
         data::image::sptr image = std::make_shared<data::image>();
-        utest_data::generator::image::generateRandomImage(image, type);
+        utest_data::generator::image::generateRandomImage(image, _type);
 
         data::image::sptr image2;
         image2 = data::object::copy(image);
@@ -128,34 +128,34 @@ inline static void stressTestWithType(core::type type, int nbTest)
 void image_test::stressTest()
 {
     core::type type = core::type::INT8;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::UINT8;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::INT16;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::UINT16;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::INT32;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::UINT32;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::INT64;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::UINT64;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::FLOAT;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 
     type = core::type::DOUBLE;
-    stressTestWithType(type, 10);
+    stress_test_with_type(type, 10);
 }
 
 //------------------------------------------------------------------------------

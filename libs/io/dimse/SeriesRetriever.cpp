@@ -53,14 +53,14 @@ SeriesRetriever::~SeriesRetriever()
 // ----------------------------------------------------------------------------
 
 void SeriesRetriever::initialize(
-    const std::string& applicationTitle,
-    std::uint16_t applicationport,
-    int timeout,
-    ProgressCallbackSlotType::sptr progress_callback
+    const std::string& _application_title,
+    std::uint16_t _applicationport,
+    int _timeout,
+    progress_callback_slot_t::sptr _progress_callback
 )
 {
     //Callback
-    m_progressCallback = progress_callback;
+    m_progressCallback = _progress_callback;
 
     //Creating folder
     m_path = core::os::temp_dir::shared_directory() / "dicom/";
@@ -70,17 +70,17 @@ void SeriesRetriever::initialize(
     }
 
     //Configure network connection
-    this->setAETitle(applicationTitle.c_str());
-    this->setPort(applicationport);
+    this->setAETitle(_application_title.c_str());
+    this->setPort(_applicationport);
 
     // Load configuration
-    std::filesystem::path cfgPath = core::runtime::get_library_resource_file_path("io_dimse/storescp.cfg");
-    SIGHT_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfgPath));
-    this->loadAssociationCfgFile(cfgPath.string().c_str());
+    std::filesystem::path cfg_path = core::runtime::get_library_resource_file_path("io_dimse/storescp.cfg");
+    SIGHT_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfg_path));
+    this->loadAssociationCfgFile(cfg_path.string().c_str());
     this->setAndCheckAssociationProfile("Default");
 
     // Set non blocking states & timeout so we don't end up in an infinite loop
-    this->setConnectionTimeout(Uint32(timeout));
+    this->setConnectionTimeout(Uint32(_timeout));
     this->setConnectionBlockingMode(DUL_NOBLOCK);
 }
 
@@ -98,21 +98,21 @@ bool SeriesRetriever::start()
 // ----------------------------------------------------------------------------
 
 OFCondition SeriesRetriever::handleIncomingCommand(
-    T_DIMSE_Message* incomingMsg,
-    const DcmPresentationContextInfo& presContextInfo
+    T_DIMSE_Message* _incoming_msg,
+    const DcmPresentationContextInfo& _pres_context_info
 )
 {
     OFCondition cond;
 
     // Process C-STORE request
-    if(incomingMsg->CommandField == DIMSE_C_STORE_RQ)
+    if(_incoming_msg->CommandField == DIMSE_C_STORE_RQ)
     {
-        cond = handleSTORERequest(incomingMsg, presContextInfo.presentationContextID);
+        cond = handleSTORERequest(_incoming_msg, _pres_context_info.presentationContextID);
     }
     // Process other requests
     else
     {
-        cond = DcmSCP::handleIncomingCommand(incomingMsg, presContextInfo);
+        cond = DcmSCP::handleIncomingCommand(_incoming_msg, _pres_context_info);
     }
 
     return cond;
@@ -121,48 +121,48 @@ OFCondition SeriesRetriever::handleIncomingCommand(
 // ----------------------------------------------------------------------------
 
 OFCondition SeriesRetriever::handleSTORERequest(
-    T_DIMSE_Message* incomingMsg,
-    T_ASC_PresentationContextID presID
+    T_DIMSE_Message* _incoming_msg,
+    T_ASC_PresentationContextID _pres_id
 )
 {
     OFCondition cond;
 
     // Dump incoming message
-    OFString tempStr;
+    OFString temp_str;
 
     // Get Dataset
     auto* dataset = new DcmDataset();
-    if(this->receiveDIMSEDataset(&presID, &dataset).good())
+    if(this->receiveDIMSEDataset(&_pres_id, &dataset).good())
     {
         if(dataset != nullptr)
         {
             //Find the series UID
-            OFString seriesID;
-            if(dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
+            OFString series_id;
+            if(dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_id).good())
             {
             }
 
             //Find the instance UID
-            OFString instanceID;
-            if(dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, instanceID).good())
+            OFString instance_id;
+            if(dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, instance_id).good())
             {
             }
 
             //Create Folder
-            std::filesystem::path seriesPath = std::filesystem::path(m_path.string() + seriesID.c_str() + "/");
-            if(!std::filesystem::exists(seriesPath))
+            std::filesystem::path series_path = std::filesystem::path(m_path.string() + series_id.c_str() + "/");
+            if(!std::filesystem::exists(series_path))
             {
-                std::filesystem::create_directories(seriesPath);
+                std::filesystem::create_directories(series_path);
             }
 
             //Save the file in the specified folder
-            std::string filePath = seriesPath.string() + instanceID.c_str();
-            dataset->saveFile(filePath.c_str());
+            std::string file_path = series_path.string() + instance_id.c_str();
+            dataset->saveFile(file_path.c_str());
 
             // Send a store response
             T_DIMSE_C_StoreRSP rsp {};
             rsp.DimseStatus = STATUS_Success;
-            cond            = this->sendSTOREResponse(presID, incomingMsg->msg.CStoreRQ, rsp.DimseStatus);
+            cond            = this->sendSTOREResponse(_pres_id, _incoming_msg->msg.CStoreRQ, rsp.DimseStatus);
 
             // Dump outgoing message
 
@@ -175,7 +175,7 @@ OFCondition SeriesRetriever::handleSTORERequest(
             // Notify callback
             if(m_progressCallback)
             {
-                m_progressCallback->async_run(seriesID.c_str(), ++m_instanceIndex, filePath);
+                m_progressCallback->async_run(series_id.c_str(), ++m_instanceIndex, file_path);
             }
         }
     }

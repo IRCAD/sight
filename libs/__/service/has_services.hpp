@@ -70,7 +70,7 @@ protected:
      * @param[in] id Optional identifier of the service
      */
     SERVICE_API SPTR(service::base) registerService(
-        const std::string& _implType,
+        const std::string& _impl_type,
         const std::string& _id = ""
     );
 
@@ -80,7 +80,7 @@ protected:
      * @param[in] id Optional identifier of the service
      */
     template<class T>
-    SPTR(T) registerService(const std::string& _implType, const std::string& _id = "");
+    SPTR(T) registerService(const std::string& _impl_type, const std::string& _id = "");
 
     /**
      * @brief Unregister a specific service
@@ -98,7 +98,7 @@ protected:
      * @brief Unregister all services linked to this service, optionally matches only a given type of services
      * @param _implType Optional type of the services to unregister
      */
-    SERVICE_API void unregisterServices(const std::string& _implType = "");
+    SERVICE_API void unregisterServices(const std::string& _impl_type = "");
 
 private:
 
@@ -116,9 +116,9 @@ inline const has_services::ServiceVector& has_services::getRegisteredServices() 
 //------------------------------------------------------------------------------
 
 template<class T>
-SPTR(T) has_services::registerService(const std::string& _implType, const std::string& _id)
+SPTR(T) has_services::registerService(const std::string& _impl_type, const std::string& _id)
 {
-    auto srv = service::add<T>(_implType, _id);
+    auto srv = service::add<T>(_impl_type, _id);
     m_subServices.push_back(srv);
 
     return srv;

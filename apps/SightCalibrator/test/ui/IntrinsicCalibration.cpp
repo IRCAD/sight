@@ -55,62 +55,62 @@ std::filesystem::path IntrinsicCalibration::getProfilePath()
 void IntrinsicCalibration::test()
 {
     using namespace std::literals::string_literals;
-    namespace helper = sight::ui::testCore::helper;
+    namespace helper = sight::ui::test_core::helper;
 
-    const std::filesystem::path videoPath = utest_data::Data::dir()
-                                            / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
+    const std::filesystem::path video_path = utest_data::Data::dir()
+                                             / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
 
     start(
         "IntrinsicCalibration",
-        [&videoPath](sight::ui::testCore::Tester& tester)
+        [&video_path](sight::ui::test_core::Tester& _tester)
         {
             // Access the calibration activity
-            helper::Button::push(tester, "activityCreatorSrv/Calibration");
+            helper::Button::push(_tester, "activityCreatorSrv/Calibration");
 
             // Configure the chessboard size (the size of the example chessboard is 10*8)
-            helper::Button::push(tester, "toolBarView/Chessboard size");
-            helper::PreferencesConfiguration::fill(tester, {{"CHESSBOARD_WIDTH", "10"}, {"CHESSBOARD_HEIGHT", "8"}});
+            helper::Button::push(_tester, "toolBarView/Chessboard size");
+            helper::PreferencesConfiguration::fill(_tester, {{"CHESSBOARD_WIDTH", "10"}, {"CHESSBOARD_HEIGHT", "8"}});
 
             // We didn't load the chessboard yet: trying to add captures gives no result
-            helper::Label::toolTipMatches(tester, "detectionStatusSrv/0", "Points are NOT visible");
-            helper::Label::contain(tester, "cameraInfoSrv/isCalibrated", "The camera is not calibrated.");
+            helper::Label::toolTipMatches(_tester, "detectionStatusSrv/0", "Points are NOT visible");
+            helper::Label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is not calibrated.");
             for(int i = 0 ; i < 3 ; i++)
             {
-                helper::Button::push(tester, "intrinsicCameraView/Add");
+                helper::Button::push(_tester, "intrinsicCameraView/Add");
             }
 
-            helper::Label::exactlyMatch(tester, "calibrationInfoEditorSrv/nbCapturesLabel", "0");
-            helper::ListWidget::countEquals(tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
+            helper::Label::exactlyMatch(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "0");
+            helper::ListWidget::countEquals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
 
             // We load the chessboard
-            helper::VideoControls::load(tester, "videoToolbarView", videoPath);
+            helper::VideoControls::load(_tester, "videoToolbarView", video_path);
 
             // The chessboard is loaded, trying to add captures effectively add them to the list
-            helper::Label::toolTipMatches(tester, "detectionStatusSrv/0", "Point are visible");
-            helper::Button::push(tester, "intrinsicCameraView/Add");
+            helper::Label::toolTipMatches(_tester, "detectionStatusSrv/0", "Point are visible");
+            helper::Button::push(_tester, "intrinsicCameraView/Add");
             for(int i = 0 ; i < 3 ; i++)
             {
                 QTest::qWait(1000);
-                helper::Button::push(tester, "intrinsicCameraView/Add");
+                helper::Button::push(_tester, "intrinsicCameraView/Add");
             }
 
-            helper::Label::exactlyMatch(tester, "calibrationInfoEditorSrv/nbCapturesLabel", "4");
-            helper::ListWidget::countEquals(tester, "calibrationInfoEditorSrv/capturesListWidget", 4);
+            helper::Label::exactlyMatch(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "4");
+            helper::ListWidget::countEquals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 4);
 
             // To click on the remove button should effectively remove a capture
-            helper::ListWidget::setCurrentRow(tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
-            helper::Button::push(tester, "intrinsicCameraView/Remove");
-            helper::Label::exactlyMatch(tester, "calibrationInfoEditorSrv/nbCapturesLabel", "3");
-            helper::ListWidget::countEquals(tester, "calibrationInfoEditorSrv/capturesListWidget", 3);
+            helper::ListWidget::setCurrentRow(_tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
+            helper::Button::push(_tester, "intrinsicCameraView/Remove");
+            helper::Label::exactlyMatch(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "3");
+            helper::ListWidget::countEquals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 3);
 
             // Clicking the calibrate button should start the calibration procedure and the calibration info must become
             // available
-            helper::Button::push(tester, "intrinsicCameraView/Calibrate");
-            helper::Label::contain(tester, "cameraInfoSrv/isCalibrated", "The camera is calibrated.");
-            tester.take("reprojection error label", "errorLabelSrv");
-            tester.doubt<QLabel*>(
+            helper::Button::push(_tester, "intrinsicCameraView/Calibrate");
+            helper::Label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is calibrated.");
+            _tester.take("reprojection error label", "errorLabelSrv");
+            _tester.doubt<QLabel*>(
                 "the reprojection error is not empty and is a positive number",
-                [](QLabel* obj) -> bool {return !obj->text().isEmpty() && obj->text().toInt() >= 0;});
+                [](QLabel* _obj) -> bool {return !_obj->text().isEmpty() && _obj->text().toInt() >= 0;});
 
             // Since the process of calibration is deterministic and the video is actually a fixed image, the values are
             // reproducible
@@ -131,10 +131,10 @@ void IntrinsicCalibration::test()
             QRegExp re("<font color='#0066CC'>(.*)</font>");
             for(auto [name, expected, tolerance] : fields)
             {
-                helper::Label::equal(tester, "cameraInfoSrv/"s + name, expected, tolerance, re);
+                helper::Label::equal(_tester, "cameraInfoSrv/"s + name, expected, tolerance, re);
             }
 
-            helper::Label::equal(tester, "errorLabelSrv", 0.084695868, 0.0002);
+            helper::Label::equal(_tester, "errorLabelSrv", 0.084695868, 0.0002);
         },
         true
     );

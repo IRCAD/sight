@@ -45,7 +45,7 @@ public:
     inline ~LibPNGReader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
@@ -74,7 +74,7 @@ public:
         } keeper;
 
         // Set read callback
-        png_set_read_fn(keeper.m_png, &istream, readCallback);
+        png_set_read_fn(keeper.m_png, &_istream, readCallback);
 
         // Read header
         png_read_info(keeper.m_png, keeper.m_png_info);
@@ -166,7 +166,7 @@ public:
             }();
 
         // Allocate destination image
-        image.resize({width, height, 0}, component_type, pixel_format);
+        _image.resize({width, height, 0}, component_type, pixel_format);
 
         // Create an array of row pointers and assign them to the image buffer
         std::vector<png_bytep> row_pointers;
@@ -174,7 +174,7 @@ public:
 
         for(size_t row = 0 ; row < height ; ++row)
         {
-            row_pointers.emplace_back(reinterpret_cast<png_bytep>(image.getPixel(row * width)));
+            row_pointers.emplace_back(reinterpret_cast<png_bytep>(_image.getPixel(row * width)));
         }
 
         // Read pixel data
@@ -186,24 +186,24 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void readCallback(png_structp png_ptr, png_bytep data, png_size_t length)
+    inline static void readCallback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
-        auto* istream = reinterpret_cast<std::istream*>(png_get_io_ptr(png_ptr));
-        istream->read(reinterpret_cast<char*>(data), std::streamsize(length));
+        auto* istream = reinterpret_cast<std::istream*>(png_get_io_ptr(_png_ptr));
+        istream->read(reinterpret_cast<char*>(_data), std::streamsize(_length));
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void warningCallback(png_structp, png_const_charp msg)
+    inline static void warningCallback(png_structp, png_const_charp _msg)
     {
-        SIGHT_WARN(msg);
+        SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void errorCallback(png_structp, png_const_charp msg)
+    inline static void errorCallback(png_structp, png_const_charp _msg)
     {
-        SIGHT_THROW(msg);
+        SIGHT_THROW(_msg);
     }
 
 public:

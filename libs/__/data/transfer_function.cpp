@@ -46,11 +46,11 @@ const core::com::signals::key_t transfer_function::WINDOWING_MODIFIED_SIG = "win
 
 transfer_function_base::value_t transfer_function_base::mapValueToWindow(value_t _value) const
 {
-    const min_max_t minMax       = this->minMax();
-    const min_max_t windowMinMax = this->windowMinMax();
+    const min_max_t min_max        = this->minMax();
+    const min_max_t window_min_max = this->windowMinMax();
 
-    const value_t scale = window() / (minMax.second - minMax.first);
-    const value_t value = (_value - minMax.first) * scale + windowMinMax.first;
+    const value_t scale = window() / (min_max.second - min_max.first);
+    const value_t value = (_value - min_max.first) * scale + window_min_max.first;
 
     return value;
 }
@@ -59,11 +59,11 @@ transfer_function_base::value_t transfer_function_base::mapValueToWindow(value_t
 
 transfer_function_base::value_t transfer_function_base::mapValueFromWindow(value_t _value) const
 {
-    const min_max_t minMax       = this->minMax();
-    const min_max_t windowMinMax = this->windowMinMax();
+    const min_max_t min_max        = this->minMax();
+    const min_max_t window_min_max = this->windowMinMax();
 
-    const value_t scale = (minMax.second - minMax.first) / window();
-    const value_t value = (_value - windowMinMax.first) * scale + minMax.first;
+    const value_t scale = (min_max.second - min_max.first) / window();
+    const value_t value = (_value - window_min_max.first) * scale + min_max.first;
 
     return value;
 }
@@ -86,29 +86,29 @@ transfer_function_base::color_t transfer_function_base::sampleLinear(value_t _va
 
 transfer_function_piece::min_max_t transfer_function_base::windowMinMax() const
 {
-    min_max_t minMax;
-    const value_t halfWindow = this->window() / 2.;
+    min_max_t min_max;
+    const value_t half_window = this->window() / 2.;
 
     const value_t level = this->level();
-    minMax.first  = level - halfWindow;
-    minMax.second = level + halfWindow;
-    return minMax;
+    min_max.first  = level - half_window;
+    min_max.second = level + half_window;
+    return min_max;
 }
 
 //------------------------------------------------------------------------------
 
-void transfer_function_base::setWindowMinMax(const min_max_t& _minMax)
+void transfer_function_base::setWindowMinMax(const min_max_t& _min_max)
 {
     this->setWindow(
-        _minMax.second
-        >= _minMax.first ? std::max(1., _minMax.second - _minMax.first) : std::min(
+        _min_max.second
+        >= _min_max.first ? std::max(1., _min_max.second - _min_max.first) : std::min(
             -1.,
-            _minMax.second - _minMax.first
+            _min_max.second - _min_max.first
         )
     );
 
-    const value_t halfWindow = window() * 0.5;
-    this->setLevel(halfWindow + _minMax.first);
+    const value_t half_window = window() * 0.5;
+    this->setLevel(half_window + _min_max.first);
 }
 
 //------------------------------------------------------------------------------
@@ -118,10 +118,10 @@ void transfer_function_base::setWindowMinMax(const min_max_t& _minMax)
 transfer_function_piece::min_max_t transfer_function_piece::minMax() const
 {
     SIGHT_ASSERT("It must have at least one value.", !this->empty());
-    min_max_t minMax;
-    minMax.first  = this->begin()->first;
-    minMax.second = (this->rbegin())->first;
-    return minMax;
+    min_max_t min_max;
+    min_max.first  = this->begin()->first;
+    min_max.second = (this->rbegin())->first;
+    return min_max;
 }
 
 //------------------------------------------------------------------------------
@@ -135,21 +135,21 @@ transfer_function_piece::color_t transfer_function_piece::sample(
 
     const value_t value = this->mapValueFromWindow(_value);
 
-    const color_t blackColor(0.0);
+    const color_t black_color(0.0);
 
-    value_t previousValue = value;
-    color_t previousColor = m_clamped ? blackColor : this->begin()->second;
+    value_t previous_value = value;
+    color_t previous_color = m_clamped ? black_color : this->begin()->second;
 
-    value_t nextValue = value;
-    color_t nextColor = m_clamped ? blackColor : this->rbegin()->second;
+    value_t next_value = value;
+    color_t next_color = m_clamped ? black_color : this->rbegin()->second;
 
     color_t color(0.0);
 
     bool found = false;
     for(const data_t::value_type& data : *this)
     {
-        nextValue = data.first;
-        nextColor = data.second;
+        next_value = data.first;
+        next_color = data.second;
 
         if(value < data.first)
         {
@@ -157,14 +157,14 @@ transfer_function_piece::color_t transfer_function_piece::sample(
             break;
         }
 
-        previousValue = nextValue;
-        previousColor = nextColor;
+        previous_value = next_value;
+        previous_color = next_color;
     }
 
     if(!found)
     {
-        nextValue = value;
-        nextColor = m_clamped ? blackColor : this->rbegin()->second;
+        next_value = value;
+        next_color = m_clamped ? black_color : this->rbegin()->second;
     }
 
     const InterpolationMode mode = _mode == std::nullopt ? m_interpolationMode : _mode.value();
@@ -172,21 +172,21 @@ transfer_function_piece::color_t transfer_function_piece::sample(
     {
         case transfer_function_piece::InterpolationMode::LINEAR:
         {
-            const value_t distance    = nextValue - previousValue;
-            const value_t interpolant = distance < 1e-5 ? 0. : (value - previousValue) / distance;
-            color = glm::mix(previousColor, nextColor, interpolant);
+            const value_t distance    = next_value - previous_value;
+            const value_t interpolant = distance < 1e-5 ? 0. : (value - previous_value) / distance;
+            color = glm::mix(previous_color, next_color, interpolant);
             break;
         }
 
         case transfer_function_piece::InterpolationMode::NEAREST:
         {
-            if((value - previousValue) <= (nextValue - value))
+            if((value - previous_value) <= (next_value - value))
             {
-                color = previousColor;
+                color = previous_color;
             }
             else
             {
-                color = nextColor;
+                color = next_color;
             }
 
             break;
@@ -223,12 +223,12 @@ data::transfer_function::sptr transfer_function::createDefaultTF()
 
     tf->setName(transfer_function::s_DEFAULT_TF_NAME);
 
-    auto tfData = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
-    tfData->insert({0.0, color_t()});
-    tfData->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
-    tfData->setClamped(false);
-    tfData->setWindow(500.);
-    tfData->setLevel(50.);
+    auto tf_data = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
+    tf_data->insert({0.0, color_t()});
+    tf_data->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
+    tf_data->setClamped(false);
+    tf_data->setWindow(500.);
+    tf_data->setLevel(50.);
 
     tf->fitWindow();
 
@@ -243,19 +243,19 @@ data::transfer_function::sptr transfer_function::createDefaultTF(core::type _typ
 
     tf->setName(transfer_function::s_DEFAULT_TF_NAME);
 
-    auto tfData = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
-    tfData->insert({0.0, color_t()});
-    tfData->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
-    tfData->setClamped(false);
+    auto tf_data = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
+    tf_data->insert({0.0, color_t()});
+    tf_data->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
+    tf_data->setClamped(false);
     if(_type == core::type::INT8 || _type == core::type::UINT8)
     {
-        tfData->setWindow(255.);
-        tfData->setLevel(127.);
+        tf_data->setWindow(255.);
+        tf_data->setLevel(127.);
     }
     else
     {
-        tfData->setWindow(500.);
-        tfData->setLevel(50.);
+        tf_data->setWindow(500.);
+        tf_data->setLevel(50.);
     }
 
     tf->fitWindow();
@@ -267,19 +267,19 @@ data::transfer_function::sptr transfer_function::createDefaultTF(core::type _typ
 
 transfer_function::transfer_function()
 {
-    new_signal<PointsModifiedSignalType>(POINTS_MODIFIED_SIG);
-    new_signal<WindowingModifiedSignalType>(WINDOWING_MODIFIED_SIG);
+    new_signal<points_modified_signal_t>(POINTS_MODIFIED_SIG);
+    new_signal<windowing_modified_signal_t>(WINDOWING_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void transfer_function::shallow_copy(const object::csptr& source)
+void transfer_function::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const transfer_function>(source);
+    const auto& other = std::dynamic_pointer_cast<const transfer_function>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -299,13 +299,13 @@ void transfer_function::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void transfer_function::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void transfer_function::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const transfer_function>(source);
+    const auto& other = std::dynamic_pointer_cast<const transfer_function>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -323,14 +323,14 @@ void transfer_function::deep_copy(const object::csptr& source, const std::unique
         other->m_pieces.cbegin(),
         other->m_pieces.cend(),
         std::back_inserter(this->m_pieces),
-        [&](const auto& value)
+        [&](const auto& _value)
         {
             auto data = std::make_shared<transfer_function_piece>();
-            *data     = *value;
+            *data     = *_value;
             return data;
         });
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -377,18 +377,18 @@ bool transfer_function::operator!=(const transfer_function& _other) const noexce
 
 void transfer_function::fitWindow()
 {
-    min_max_t minMax {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
+    min_max_t min_max {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
 
     for(auto& piece : this->pieces())
     {
-        const auto pieceMinMax = piece->minMax();
-        minMax.first  = std::min(piece->mapValueToWindow(pieceMinMax.first), minMax.first);
-        minMax.second = std::max(piece->mapValueToWindow(pieceMinMax.second), minMax.second);
+        const auto piece_min_max = piece->minMax();
+        min_max.first  = std::min(piece->mapValueToWindow(piece_min_max.first), min_max.first);
+        min_max.second = std::max(piece->mapValueToWindow(piece_min_max.second), min_max.second);
     }
 
     // Updates the window/level.
-    m_window = minMax.second - minMax.first;
-    m_level  = minMax.first + m_window * .5;
+    m_window = min_max.second - min_max.first;
+    m_level  = min_max.first + m_window * .5;
 }
 
 //------------------------------------------------------------------------------
@@ -428,16 +428,16 @@ transfer_function_piece::min_max_t transfer_function::minMax() const
         return {-1., 1.};
     }
 
-    min_max_t minMax {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
+    min_max_t min_max {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
 
     for(const auto& piece : this->pieces())
     {
-        const auto pieceMinMax = piece->minMax();
-        minMax.first  = std::min(piece->mapValueToWindow(pieceMinMax.first), minMax.first);
-        minMax.second = std::max(piece->mapValueToWindow(pieceMinMax.second), minMax.second);
+        const auto piece_min_max = piece->minMax();
+        min_max.first  = std::min(piece->mapValueToWindow(piece_min_max.first), min_max.first);
+        min_max.second = std::max(piece->mapValueToWindow(piece_min_max.second), min_max.second);
     }
 
-    return minMax;
+    return min_max;
 }
 
 //------------------------------------------------------------------------------

@@ -27,7 +27,7 @@
 #include <core/tools/compare.hpp>
 
 #include <data/dicom/Sop.hpp>
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
@@ -67,9 +67,9 @@ struct FiducialSetWithMetadata
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr scanGDCMFiles(
-    const gdcm::Directory::FilenamesType& files,
-    const std::set<data::dicom::sop::Keyword>& filters = {})
+inline static data::series_set::sptr scan_gdcm_files(
+    const gdcm::Directory::FilenamesType& _files,
+    const std::set<data::dicom::sop::Keyword>& _filters = {})
 {
     // Use GDCM scanner to scan all files
     gdcm::Scanner scanner;
@@ -136,7 +136,7 @@ inline static data::series_set::sptr scanGDCMFiles(
     }
 
     // Scan all files
-    const auto result = scanner.Scan(files);
+    const auto result = scanner.Scan(_files);
 
     SIGHT_THROW_IF(
         "There is no DICOM files among the scanned files.",
@@ -150,14 +150,14 @@ inline static data::series_set::sptr scanGDCMFiles(
     auto series_set = std::make_shared<data::series_set>();
 
     // Convert to our own format
-    for(const auto& file : files)
+    for(const auto& file : _files)
     {
         if(const char* const key = file.c_str(); scanner.IsKey(key))
         {
             const auto& mapping = scanner.GetMapping(key);
 
             // Filter, if needed
-            if(!filters.empty())
+            if(!_filters.empty())
             {
                 // Get the SOP Class UID
                 const auto& found = mapping.find(gdcm::Keywords::SOPClassUID::GetTag());
@@ -178,7 +178,7 @@ inline static data::series_set::sptr scanGDCMFiles(
                 }
 
                 // Check if the SOP Class UID is in the filter
-                if(!filters.contains(sop_keyword))
+                if(!_filters.contains(sop_keyword))
                 {
                     continue;
                 }
@@ -253,97 +253,97 @@ inline static data::series_set::sptr scanGDCMFiles(
 
 //------------------------------------------------------------------------------
 
-inline static auto convertGDCMImage(
-    gdcm::Image& gdcm_image,
-    const std::string& filename
+inline static auto convert_gdcm_image(
+    gdcm::Image& _gdcm_image,
+    const std::string& _filename
 )
 {
     // Decompress the Pixel Data buffer if needed
-    if(gdcm_image.GetTransferSyntax().IsEncapsulated())
+    if(_gdcm_image.GetTransferSyntax().IsEncapsulated())
     {
         gdcm::ImageChangeTransferSyntax changer;
-        changer.SetInput(gdcm_image);
+        changer.SetInput(_gdcm_image);
         changer.SetTransferSyntax(gdcm::TransferSyntax::ImplicitVRLittleEndian);
 
         SIGHT_THROW_IF(
-            "Cannot change the transfer syntax of DICOM file '" << filename << "'.",
+            "Cannot change the transfer syntax of DICOM file '" << _filename << "'.",
             !changer.Change()
         );
 
-        gdcm_image = changer.GetOutput();
+        _gdcm_image = changer.GetOutput();
     }
 
     // We only support 0 as planar configuration (r1g1b1, r2g2b2, ... not r1r2..g1g2..b1b2)
-    if(gdcm_image.GetPlanarConfiguration() == 1)
+    if(_gdcm_image.GetPlanarConfiguration() == 1)
     {
         gdcm::ImageChangePlanarConfiguration changer;
-        changer.SetInput(gdcm_image);
+        changer.SetInput(_gdcm_image);
         changer.SetPlanarConfiguration(0);
 
         SIGHT_THROW_IF(
-            "Cannot change the planar configuration of DICOM file '" << filename << "'.",
+            "Cannot change the planar configuration of DICOM file '" << _filename << "'.",
             !changer.Change()
         );
 
-        gdcm_image = changer.GetOutput();
+        _gdcm_image = changer.GetOutput();
     }
 
     // For palette color image, we need to convert palette values to real RGB values
-    if(const auto& photometric_interpretation = gdcm_image.GetPhotometricInterpretation();
+    if(const auto& photometric_interpretation = _gdcm_image.GetPhotometricInterpretation();
        photometric_interpretation == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // Apply lookup table
         gdcm::ImageApplyLookupTable applier;
-        applier.SetInput(gdcm_image);
+        applier.SetInput(_gdcm_image);
 
         SIGHT_THROW_IF(
-            "Cannot Apply the lookup table of DICOM file '" << filename << "'.",
+            "Cannot Apply the lookup table of DICOM file '" << _filename << "'.",
             !applier.Apply()
         );
 
-        gdcm_image = applier.GetOutput();
+        _gdcm_image = applier.GetOutput();
     }
     // Sight assumes that the minimum sample value is intended to be displayed as black after any VOI grayscale
     // transformations have been performed.
     else if(photometric_interpretation == gdcm::PhotometricInterpretation::MONOCHROME1)
     {
         gdcm::ImageChangePhotometricInterpretation changer;
-        changer.SetInput(gdcm_image);
+        changer.SetInput(_gdcm_image);
         changer.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
 
         SIGHT_THROW_IF(
-            "Cannot change the photometric interpretation of DICOM file '" << filename << "'.",
+            "Cannot change the photometric interpretation of DICOM file '" << _filename << "'.",
             !changer.Change()
         );
 
-        gdcm_image = changer.GetOutput();
+        _gdcm_image = changer.GetOutput();
     }
 
-    return gdcm_image;
+    return _gdcm_image;
 }
 
 //------------------------------------------------------------------------------
 
-inline static data::image::Size computeSize(const data::series& source, const gdcm::Image& gdcm_image)
+inline static data::image::Size compute_size(const data::series& _source, const gdcm::Image& _gdcm_image)
 {
-    const auto gdcm_num_dimensions = gdcm_image.GetNumberOfDimensions();
-    const auto& gdcm_dimensions    = gdcm_image.GetDimensions();
+    const auto gdcm_num_dimensions = _gdcm_image.GetNumberOfDimensions();
+    const auto& gdcm_dimensions    = _gdcm_image.GetDimensions();
 
     return {
         gdcm_num_dimensions > 0 ? gdcm_dimensions[0] : 1,
         gdcm_num_dimensions > 1 ? gdcm_dimensions[1] : 1,
-        gdcm_num_dimensions > 2 ? gdcm_dimensions[2] : source.numInstances()
+        gdcm_num_dimensions > 2 ? gdcm_dimensions[2] : _source.numInstances()
     };
 }
 
 //------------------------------------------------------------------------------
 
-inline static core::type computeType(
-    const gdcm::Image& gdcm_image,
-    const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler
+inline static core::type compute_type(
+    const gdcm::Image& _gdcm_image,
+    const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler
 )
 {
-    const auto& gdcm_pixel_format = gdcm_image.GetPixelFormat();
+    const auto& gdcm_pixel_format = _gdcm_image.GetPixelFormat();
 
     if(gdcm_pixel_format == gdcm::PixelFormat::SINGLEBIT)
     {
@@ -352,8 +352,8 @@ inline static core::type computeType(
     }
 
     // Let the target type be guessed by GDCM
-    const auto& gdcm_rescaled_pixel_type = gdcm_rescaler
-                                           ? gdcm_rescaler->ComputeInterceptSlopePixelType()
+    const auto& gdcm_rescaled_pixel_type = _gdcm_rescaler
+                                           ? _gdcm_rescaler->ComputeInterceptSlopePixelType()
                                            : gdcm_pixel_format.GetScalarType();
 
     // Dumb boilerplate code to convert the GDCM pixel type to a Sight pixel type
@@ -396,12 +396,12 @@ inline static core::type computeType(
 
 //------------------------------------------------------------------------------
 
-inline static data::image::PixelFormat computeFormat(
-    const gdcm::Image& gdcm_image,
-    const std::string& filename
+inline static data::image::PixelFormat compute_format(
+    const gdcm::Image& _gdcm_image,
+    const std::string& _filename
 )
 {
-    const auto gdcm_photometric_interpretation = gdcm_image.GetPhotometricInterpretation();
+    const auto gdcm_photometric_interpretation = _gdcm_image.GetPhotometricInterpretation();
 
     if(gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
@@ -409,7 +409,7 @@ inline static data::image::PixelFormat computeFormat(
         return data::image::PixelFormat::RGB;
     }
 
-    const auto gdcm_sample_per_pixel = gdcm_image.GetPixelFormat().GetSamplesPerPixel();
+    const auto gdcm_sample_per_pixel = _gdcm_image.GetPixelFormat().GetSamplesPerPixel();
 
     if(gdcm_sample_per_pixel == 1)
     {
@@ -428,7 +428,7 @@ inline static data::image::PixelFormat computeFormat(
     }
 
     SIGHT_THROW_IF(
-        "Retired photometric interpretation used in DICOM file '" << filename << "'.",
+        "Retired photometric interpretation used in DICOM file '" << _filename << "'.",
         gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::ARGB
         || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::CMYK
         || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::HSV
@@ -442,16 +442,16 @@ inline static data::image::PixelFormat computeFormat(
 
 //------------------------------------------------------------------------------
 
-inline static std::optional<double> computeFramePosition(const data::series& series, std::size_t instance)
+inline static std::optional<double> compute_frame_position(const data::series& _series, std::size_t _instance)
 {
-    auto position    = series.getImagePositionPatient(instance);
-    auto orientation = series.getImageOrientationPatient(instance);
+    auto position    = _series.getImagePositionPatient(_instance);
+    auto orientation = _series.getImageOrientationPatient(_instance);
 
     if(position.size() != 3 || orientation.size() != 6)
     {
         // Fallback to gdcm::ImageReader if the position is not available
         // This is of course slower...
-        const auto& file = series.get_file(instance);
+        const auto& file = _series.get_file(_instance);
 
         if(file.empty() || !std::filesystem::exists(file) || std::filesystem::is_directory(file))
         {
@@ -493,23 +493,23 @@ inline static std::optional<double> computeFramePosition(const data::series& ser
 
 //------------------------------------------------------------------------------
 
-inline static std::optional<double> computeZSpacing(const data::series& series)
+inline static std::optional<double> compute_z_spacing(const data::series& _series)
 {
     // Use a map to sort for us....
     std::map<std::int64_t, double> sorted_positions;
 
-    if(series.numInstances() < 2)
+    if(_series.numInstances() < 2)
     {
         SIGHT_WARN(
             "The Z spacing cannot be computed, there is not enough instances."
         );
 
-        return series.getSliceThickness();
+        return _series.getSliceThickness();
     }
 
-    for(std::size_t instance = 0, end = series.numInstances() ; instance < end ; ++instance)
+    for(std::size_t instance = 0, end = _series.numInstances() ; instance < end ; ++instance)
     {
-        const auto& value = computeFramePosition(series, instance);
+        const auto& value = compute_frame_position(_series, instance);
 
         if(!value)
         {
@@ -532,7 +532,7 @@ inline static std::optional<double> computeZSpacing(const data::series& series)
             "The Z spacing cannot be computed, too much frame where dropped."
         );
 
-        return series.getSliceThickness();
+        return _series.getSliceThickness();
     }
 
     // cspell: ignore crbegin
@@ -554,7 +554,7 @@ inline static std::optional<double> computeZSpacing(const data::series& series)
             << ")."
         );
 
-        return series.getSliceThickness();
+        return _series.getSliceThickness();
     }
 
     return first_spacing;
@@ -562,13 +562,13 @@ inline static std::optional<double> computeZSpacing(const data::series& series)
 
 //------------------------------------------------------------------------------
 
-inline static data::image::Spacing computeSpacing(
-    const data::series& source,
-    const gdcm::Image& gdcm_image
+inline static data::image::Spacing compute_spacing(
+    const data::series& _source,
+    const gdcm::Image& _gdcm_image
 )
 {
     /// @note Z spacing may have to be recomputed using ImagePositionPatient...
-    const double* const gdcm_spacing = gdcm_image.GetSpacing();
+    const double* const gdcm_spacing = _gdcm_image.GetSpacing();
 
     // Use absolute value since gdcm sometimes return negative spacing, which is odd.
     data::image::Spacing spacing {std::abs(gdcm_spacing[0]), std::abs(gdcm_spacing[1]), std::abs(gdcm_spacing[2])};
@@ -577,7 +577,7 @@ inline static data::image::Spacing computeSpacing(
     // Overwrite only if GDCM returned the default value (1.0), since GDCM usually knows to compute it right
     if(core::tools::is_equal(spacing[2], 1.0))
     {
-        const auto& computed_spacing = computeZSpacing(source);
+        const auto& computed_spacing = compute_z_spacing(_source);
 
         if(computed_spacing)
         {
@@ -590,12 +590,12 @@ inline static data::image::Spacing computeSpacing(
 
 //------------------------------------------------------------------------------
 
-inline static data::image_series::sptr newImageSeries(
-    const data::series& source,
-    const core::jobs::job::sptr& job,
-    const gdcm::Image& gdcm_image,
-    const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler,
-    const std::string& filename
+inline static data::image_series::sptr new_image_series(
+    const data::series& _source,
+    const core::jobs::job::sptr& _job,
+    const gdcm::Image& _gdcm_image,
+    const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
+    const std::string& _filename
 )
 {
     // Create a new series and set the common dataset
@@ -604,20 +604,20 @@ inline static data::image_series::sptr newImageSeries(
 
     // Retrieve the image information
     // Target sizes (that's easy)
-    const auto& size = computeSize(source, gdcm_image);
+    const auto& size = compute_size(_source, _gdcm_image);
 
     // Target type, a bit more complicated
-    const core::type& type = computeType(gdcm_image, gdcm_rescaler);
+    const core::type& type = compute_type(_gdcm_image, _gdcm_rescaler);
 
     // Target PixelFormat, even more complicated
-    const data::image::PixelFormat& format = computeFormat(gdcm_image, filename);
+    const data::image::PixelFormat& format = compute_format(_gdcm_image, _filename);
 
     SIGHT_THROW_IF(
-        "Cannot guess the target pixel format to use while reading DICOM file '" << filename << "'.",
+        "Cannot guess the target pixel format to use while reading DICOM file '" << _filename << "'.",
         type == core::type::NONE || format == data::image::PixelFormat::UNDEFINED
     );
 
-    if(job && job->cancel_requested())
+    if(_job && _job->cancel_requested())
     {
         return nullptr;
     }
@@ -626,10 +626,10 @@ inline static data::image_series::sptr newImageSeries(
     image_series->resize(size, type, format);
 
     // Spacing.
-    image_series->setSpacing(computeSpacing(source, gdcm_image));
+    image_series->setSpacing(compute_spacing(_source, _gdcm_image));
 
     // Origin
-    const double* const origin = gdcm_image.GetOrigin();
+    const double* const origin = _gdcm_image.GetOrigin();
     image_series->setOrigin({origin[0], origin[1], origin[2]});
 
     return image_series;
@@ -638,74 +638,74 @@ inline static data::image_series::sptr newImageSeries(
 //------------------------------------------------------------------------------
 
 template<typename T>
-constexpr static void ybrToRgb(T* buffer, std::size_t size, std::uint16_t stored_bits = 8)
+constexpr static void ybr_to_rgb(T* _buffer, std::size_t _size, std::uint16_t _stored_bits = 8)
 {
-    for(std::size_t i = 0 ; i < size ; i += 3)
+    for(std::size_t i = 0 ; i < _size ; i += 3)
     {
         gdcm::ImageChangePhotometricInterpretation::YBR2RGB<T>(
-            &buffer[i],
-            &buffer[i],
-            stored_bits
+            &_buffer[i],
+            &_buffer[i],
+            _stored_bits
         );
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline static const char* readGDCMBuffer(
-    const gdcm::Image& gdcm_image,
-    char* const buffer,
-    const std::string& filename
+inline static const char* read_gdcm_buffer(
+    const gdcm::Image& _gdcm_image,
+    char* const _buffer,
+    const std::string& _filename
 )
 {
-    SIGHT_ASSERT("Null buffer.", buffer != nullptr);
+    SIGHT_ASSERT("Null buffer.", _buffer != nullptr);
 
     SIGHT_THROW_IF(
-        "Cannot read Pixel Data from DICOM file '" << filename << "'.",
-        buffer == nullptr || !gdcm_image.GetBuffer(buffer)
+        "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
+        _buffer == nullptr || !_gdcm_image.GetBuffer(_buffer)
     );
 
-    return buffer;
+    return _buffer;
 }
 
 //------------------------------------------------------------------------------
 
-inline static bool readBuffer(
-    const core::jobs::job::sptr& job,
-    const gdcm::Image& gdcm_image,
-    const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler,
-    std::unique_ptr<std::vector<char> >& gdcm_instance_buffer,
-    char* const instance_buffer,
-    const std::size_t instance_buffer_size,
-    const std::string& filename
+inline static bool read_buffer(
+    const core::jobs::job::sptr& _job,
+    const gdcm::Image& _gdcm_image,
+    const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
+    std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
+    char* const _instance_buffer,
+    const std::size_t _instance_buffer_size,
+    const std::string& _filename
 )
 {
-    if(job && job->cancel_requested())
+    if(_job && _job->cancel_requested())
     {
         return false;
     }
 
     // Get the input buffer size
-    const std::size_t gdcm_buffer_size = gdcm_image.GetBufferLength();
+    const std::size_t gdcm_buffer_size = _gdcm_image.GetBufferLength();
     SIGHT_THROW_IF(
-        "Source buffer size cannot be read in DICOM file '" << filename << "'.",
+        "Source buffer size cannot be read in DICOM file '" << _filename << "'.",
         gdcm_buffer_size == 0
     );
 
-    if(const auto& gdcm_pixel_format = gdcm_image.GetPixelFormat();
+    if(const auto& gdcm_pixel_format = _gdcm_image.GetPixelFormat();
        gdcm_pixel_format == gdcm::PixelFormat::SINGLEBIT)
     {
-        SIGHT_ASSERT("Instance Buffer size must large enough.", instance_buffer_size == gdcm_buffer_size * 8);
+        SIGHT_ASSERT("Instance Buffer size must large enough.", _instance_buffer_size == gdcm_buffer_size * 8);
 
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return false;
         }
 
         // Read the buffer. Use the buffer from the image series object
-        readGDCMBuffer(gdcm_image, instance_buffer, filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
 
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return false;
         }
@@ -713,12 +713,12 @@ inline static bool readBuffer(
         // We need to convert bits to bytes...
         /// @note iterate from the end to the beginning, so we can use the same buffer
         auto* end_instance_buffer = reinterpret_cast<std::uint8_t*>(
-            instance_buffer + instance_buffer_size - 1
+            _instance_buffer + _instance_buffer_size - 1
         );
 
         for(auto i = std::streamsize(gdcm_buffer_size) ; --i >= 0 ; )
         {
-            const auto byte = std::uint8_t(instance_buffer[i]);
+            const auto byte = std::uint8_t(_instance_buffer[i]);
 
             end_instance_buffer[0] = (byte & 0x01) != 0 ? 0xff : 0x00;
             end_instance_buffer[1] = (byte & 0x02) != 0 ? 0xff : 0x00;
@@ -732,73 +732,73 @@ inline static bool readBuffer(
             end_instance_buffer -= 8;
         }
     }
-    else if(gdcm_rescaler)
+    else if(_gdcm_rescaler)
     {
         // Apply rescale slope / intercept
         SIGHT_ASSERT(
             "Instance Buffer size must large enough.",
-            instance_buffer_size >= (
+            _instance_buffer_size >= (
                 gdcm_buffer_size
-                * gdcm::PixelFormat(gdcm_rescaler->ComputeInterceptSlopePixelType()).GetPixelSize()
+                * gdcm::PixelFormat(_gdcm_rescaler->ComputeInterceptSlopePixelType()).GetPixelSize()
                 / std::max(gdcm_pixel_format.GetPixelSize(), std::uint8_t(1))
             )
         );
 
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return false;
         }
 
         // Prepare the input buffer
-        if(!gdcm_instance_buffer)
+        if(!_gdcm_instance_buffer)
         {
-            gdcm_instance_buffer = std::make_unique<std::vector<char> >(gdcm_buffer_size);
+            _gdcm_instance_buffer = std::make_unique<std::vector<char> >(gdcm_buffer_size);
         }
-        else if(gdcm_instance_buffer->size() < gdcm_buffer_size)
+        else if(_gdcm_instance_buffer->size() < gdcm_buffer_size)
         {
-            gdcm_instance_buffer->resize(gdcm_buffer_size);
+            _gdcm_instance_buffer->resize(gdcm_buffer_size);
         }
 
         // Read raw input buffer
-        const char* const gdcm_buffer = readGDCMBuffer(gdcm_image, gdcm_instance_buffer->data(), filename);
+        const char* const gdcm_buffer = read_gdcm_buffer(_gdcm_image, _gdcm_instance_buffer->data(), _filename);
 
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return false;
         }
 
-        gdcm_rescaler->Rescale(instance_buffer, gdcm_buffer, gdcm_buffer_size);
+        _gdcm_rescaler->Rescale(_instance_buffer, gdcm_buffer, gdcm_buffer_size);
     }
-    else if(const auto gdcm_photometric_interpretation = gdcm_image.GetPhotometricInterpretation();
+    else if(const auto gdcm_photometric_interpretation = _gdcm_image.GetPhotometricInterpretation();
             gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::YBR_FULL
             || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::YBR_FULL_422)
     {
         // Convert YBR to RGB
         SIGHT_THROW_IF(
-            "Source buffer is incompatible with the Photometric Interpretation in DICOM file '" << filename << "'.",
+            "Source buffer is incompatible with the Photometric Interpretation in DICOM file '" << _filename << "'.",
             gdcm_pixel_format.GetSamplesPerPixel() != 3 && gdcm_buffer_size % 3 != 0
         );
 
         SIGHT_ASSERT(
             "Instance Buffer size must large enough.",
-            instance_buffer_size >= gdcm_buffer_size
+            _instance_buffer_size >= gdcm_buffer_size
         );
 
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return false;
         }
 
         // Read the buffer. Use the buffer from the image series object
-        readGDCMBuffer(gdcm_image, instance_buffer, filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
 
         // 99% of the time, the pixel type is 8 bits per component, but it can be 16 bits too.
         switch(gdcm_pixel_format.GetBitsAllocated())
         {
             case 8:
             {
-                ybrToRgb(
-                    reinterpret_cast<std::uint8_t*>(instance_buffer),
+                ybr_to_rgb(
+                    reinterpret_cast<std::uint8_t*>(_instance_buffer),
                     gdcm_buffer_size,
                     gdcm_pixel_format.GetBitsStored()
                 );
@@ -807,8 +807,8 @@ inline static bool readBuffer(
 
             case 16:
             {
-                ybrToRgb(
-                    reinterpret_cast<std::uint16_t*>(instance_buffer),
+                ybr_to_rgb(
+                    reinterpret_cast<std::uint16_t*>(_instance_buffer),
                     gdcm_buffer_size,
                     gdcm_pixel_format.GetBitsStored()
                 );
@@ -816,13 +816,13 @@ inline static bool readBuffer(
             }
 
             default:
-                SIGHT_THROW("Unsupported allocated bits per pixel in DICOM file '" << filename << "'.");
+                SIGHT_THROW("Unsupported allocated bits per pixel in DICOM file '" << _filename << "'.");
         }
     }
     else
     {
         // Nothing to do other than copying the buffer
-        readGDCMBuffer(gdcm_image, instance_buffer, filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
     }
 
     return true;
@@ -830,10 +830,10 @@ inline static bool readBuffer(
 
 //------------------------------------------------------------------------------
 
-inline static std::vector<double> tuneDirections(const double* const gdcm_direction_cosines)
+inline static std::vector<double> tune_directions(const double* const _gdcm_direction_cosines)
 {
-    glm::dvec3 glm_u {gdcm_direction_cosines[0], gdcm_direction_cosines[1], gdcm_direction_cosines[2]};
-    glm::dvec3 glm_v {gdcm_direction_cosines[3], gdcm_direction_cosines[4], gdcm_direction_cosines[5]};
+    glm::dvec3 glm_u {_gdcm_direction_cosines[0], _gdcm_direction_cosines[1], _gdcm_direction_cosines[2]};
+    glm::dvec3 glm_v {_gdcm_direction_cosines[3], _gdcm_direction_cosines[4], _gdcm_direction_cosines[5]};
 
     // Make them Orthogonal
     // This code is also found in ITK and is mostly a bugfix when direction vectors are not orthogonal.
@@ -846,29 +846,29 @@ inline static std::vector<double> tuneDirections(const double* const gdcm_direct
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr readImageInstance(
-    const data::series& source,
-    const core::jobs::job::sptr& job,
-    std::unique_ptr<std::vector<char> >& gdcm_instance_buffer,
-    std::size_t instance                   = 0,
-    data::series_set::sptr splitted_series = nullptr
+inline static data::series_set::sptr read_image_instance(
+    const data::series& _source,
+    const core::jobs::job::sptr& _job,
+    std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
+    std::size_t _instance                   = 0,
+    data::series_set::sptr _splitted_series = nullptr
 )
 {
-    if(job && job->cancel_requested())
+    if(_job && _job->cancel_requested())
     {
         return nullptr;
     }
 
     // Read the DICOM file using GDCM ImageReader
     gdcm::ImageReader gdcm_reader;
-    const std::string& filename = source.get_file(instance).string();
+    const std::string& filename = _source.get_file(_instance).string();
     gdcm_reader.SetFileName(filename.c_str());
 
     SIGHT_INFO("Reading DICOM file '" << filename << "'.");
     SIGHT_THROW_IF("Cannot read DICOM file '" << filename << "'.", !gdcm_reader.Read());
 
     // Get the image and convert it to a suitable format
-    const auto& gdcm_image = convertGDCMImage(gdcm_reader.GetImage(), filename);
+    const auto& gdcm_image = convert_gdcm_image(gdcm_reader.GetImage(), filename);
 
     // Get the dataset and the input pixel format
     const auto& gdcm_dataset = gdcm_reader.GetFile().GetDataSet();
@@ -885,9 +885,9 @@ inline static data::series_set::sptr readImageInstance(
 
             if(gdcm_dataset.FindDataElement(gdcm::Keywords::RescaleIntercept::GetTag()))
             {
-                gdcm::Keywords::RescaleIntercept rescaleIntercept;
-                rescaleIntercept.SetFromDataSet(gdcm_dataset);
-                return std::make_pair(true, rescaleIntercept.GetValue());
+                gdcm::Keywords::RescaleIntercept rescale_intercept;
+                rescale_intercept.SetFromDataSet(gdcm_dataset);
+                return std::make_pair(true, rescale_intercept.GetValue());
             }
 
             return std::make_pair(false, 0.0);
@@ -904,9 +904,9 @@ inline static data::series_set::sptr readImageInstance(
 
             if(gdcm_dataset.FindDataElement(gdcm::Keywords::RescaleSlope::GetTag()))
             {
-                gdcm::Keywords::RescaleSlope rescaleSlope;
-                rescaleSlope.SetFromDataSet(gdcm_dataset);
-                return std::make_pair(true, rescaleSlope.GetValue());
+                gdcm::Keywords::RescaleSlope rescale_slope;
+                rescale_slope.SetFromDataSet(gdcm_dataset);
+                return std::make_pair(true, rescale_slope.GetValue());
             }
 
             return std::make_pair(false, 1.0);
@@ -926,15 +926,15 @@ inline static data::series_set::sptr readImageInstance(
     // Create the ImageSeries, if needed, get or compute needed image information
     // Special case here: if the current image is a volume, and we have more than one instance, we have no other
     // choice than splitting the series.
-    const bool split = gdcm_image.GetNumberOfDimensions() >= 3 && source.numInstances() > 1;
-    if(!splitted_series || split)
+    const bool split = gdcm_image.GetNumberOfDimensions() >= 3 && _source.numInstances() > 1;
+    if(!_splitted_series || split)
     {
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return nullptr;
         }
 
-        const auto& image_series = newImageSeries(source, job, gdcm_image, gdcm_rescaler, filename);
+        const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
 
         // User may have canceled the job
         if(image_series)
@@ -950,51 +950,51 @@ inline static data::series_set::sptr readImageInstance(
                 // Make direction vectors orthogonal. Also found in ITK
                 // This is for some strange DICOM files that have non orthogonal direction vectors.
                 /// @note This is not done for multi-frame images, because frame may be independently oriented.
-                const auto& tuned_directions = tuneDirections(gdcm_image.GetDirectionCosines());
+                const auto& tuned_directions = tune_directions(gdcm_image.GetDirectionCosines());
                 image_series->setImageOrientationPatient(tuned_directions);
             }
 
             // Add the series to a new dataset
-            if(!splitted_series)
+            if(!_splitted_series)
             {
-                splitted_series = std::make_shared<data::series_set>();
+                _splitted_series = std::make_shared<data::series_set>();
             }
 
-            splitted_series->push_back(image_series);
+            _splitted_series->push_back(image_series);
         }
     }
 
-    if(job && job->cancel_requested())
+    if(_job && _job->cancel_requested())
     {
         return nullptr;
     }
 
     // Use the last series as current series
-    auto image_series    = std::static_pointer_cast<data::image_series>(splitted_series->back());
+    auto image_series    = std::static_pointer_cast<data::image_series>(_splitted_series->back());
     const auto dump_lock = image_series->dump_lock();
 
     // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
-    image_series->setDataSet(gdcm_dataset, instance);
+    image_series->setDataSet(gdcm_dataset, _instance);
 
     // Also save the file path. It could be useful to keep a link to the original file.
-    image_series->set_file(filename, instance);
+    image_series->set_file(filename, _instance);
 
     // Get the output buffer (as char* since gdcm takes char* as input)
     // If the series will be splitted by instance, we keep 0 as instance number
-    char* const instance_buffer = &image_series->at<char>(0, 0, split ? 0 : instance, 0);
+    char* const instance_buffer = &image_series->at<char>(0, 0, split ? 0 : _instance, 0);
     SIGHT_ASSERT("Null buffer.", instance_buffer != nullptr);
 
     // Compute the size
     const std::size_t instance_buffer_size =
         split ? image_series->getSizeInBytes()
-              : image_series->getSizeInBytes() / std::max(std::size_t(1), source.numInstances());
+              : image_series->getSizeInBytes() / std::max(std::size_t(1), _source.numInstances());
 
     // Read the image data and fill the image series
-    if(!readBuffer(
-           job,
+    if(!read_buffer(
+           _job,
            gdcm_image,
            gdcm_rescaler,
-           gdcm_instance_buffer,
+           _gdcm_instance_buffer,
            instance_buffer,
            instance_buffer_size,
            filename
@@ -1004,14 +1004,14 @@ inline static data::series_set::sptr readImageInstance(
         return nullptr;
     }
 
-    return splitted_series;
+    return _splitted_series;
 }
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr readImage(const data::series& source, const core::jobs::job::sptr& job)
+inline static data::series_set::sptr read_image(const data::series& _source, const core::jobs::job::sptr& _job)
 {
-    if(job && job->cancel_requested())
+    if(_job && _job->cancel_requested())
     {
         return nullptr;
     }
@@ -1019,7 +1019,7 @@ inline static data::series_set::sptr readImage(const data::series& source, const
     // Read first instance to get image information
     // readImageInstance() returns a series set, because the series can be splitted in rare cases, like US 4D Volume.
     std::unique_ptr<std::vector<char> > gdcm_instance_buffer;
-    auto splitted_series = readImageInstance(source, job, gdcm_instance_buffer, 0);
+    auto splitted_series = read_image_instance(_source, _job, gdcm_instance_buffer, 0);
 
     if(!splitted_series)
     {
@@ -1028,23 +1028,23 @@ inline static data::series_set::sptr readImage(const data::series& source, const
     }
 
     // Read the other instances if necessary
-    for(std::size_t instance = 1, end = source.numInstances() ; instance < end ; ++instance)
+    for(std::size_t instance = 1, end = _source.numInstances() ; instance < end ; ++instance)
     {
-        if(job && job->cancel_requested())
+        if(_job && _job->cancel_requested())
         {
             return nullptr;
         }
 
-        readImageInstance(source, job, gdcm_instance_buffer, instance, splitted_series);
+        read_image_instance(_source, _job, gdcm_instance_buffer, instance, splitted_series);
     }
 
     for(const auto& series : *splitted_series)
     {
         auto image_series = std::static_pointer_cast<data::image_series>(series);
 
-        if(data::helper::MedicalImage::checkImageValidity(image_series))
+        if(data::helper::medical_image::check_image_validity(image_series))
         {
-            data::helper::MedicalImage::checkImageSliceIndex(image_series);
+            data::helper::medical_image::check_image_slice_index(image_series);
         }
 
         ///@todo check if we must rotate the buffer to match ImageOrientationPatient. Not sure it is a good idea...
@@ -1055,7 +1055,7 @@ inline static data::series_set::sptr readImage(const data::series& source, const
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr readModel(const data::series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
+inline static data::series_set::sptr read_model(const data::series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
 {
     data::series_set::sptr splitted_series;
 
@@ -1066,27 +1066,27 @@ inline static data::series_set::sptr readModel(const data::series& /*unused*/, c
 
 //------------------------------------------------------------------------------
 
-inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::series& series)
+inline static std::vector<FiducialSetWithMetadata> read_fiducial_sets(const data::series& _series)
 {
     gdcm::Reader reader;
-    reader.SetFileName(series.get_file().string().c_str());
+    reader.SetFileName(_series.get_file().string().c_str());
     reader.Read();
-    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
-    fiducialsSeries->setDataSet(reader.GetFile().GetDataSet());
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+    fiducials_series->setDataSet(reader.GetFile().GetDataSet());
     std::vector<FiducialSetWithMetadata> res;
     std::ranges::transform(
-        fiducialsSeries->getFiducialSets(),
+        fiducials_series->getFiducialSets(),
         std::back_inserter(res),
-        [fiducialsSeries](data::fiducials_series::FiducialSet fs) -> FiducialSetWithMetadata
+        [fiducials_series](data::fiducials_series::FiducialSet _fs) -> FiducialSetWithMetadata
         {
             return {
-                .fiducialSet        = fs,
-                .contentDate        = fiducialsSeries->getContentDate(),
-                .contentTime        = fiducialsSeries->getContentTime(),
-                .instanceNumber     = fiducialsSeries->getInstanceNumber(),
-                .contentLabel       = fiducialsSeries->getContentLabel(),
-                .contentDescription = fiducialsSeries->getContentDescription(),
-                .contentCreatorName = fiducialsSeries->getContentCreatorName()
+                .fiducialSet        = _fs,
+                .contentDate        = fiducials_series->getContentDate(),
+                .contentTime        = fiducials_series->getContentTime(),
+                .instanceNumber     = fiducials_series->getInstanceNumber(),
+                .contentLabel       = fiducials_series->getContentLabel(),
+                .contentDescription = fiducials_series->getContentDescription(),
+                .contentCreatorName = fiducials_series->getContentCreatorName()
             };
         });
     return res;
@@ -1104,8 +1104,8 @@ public:
     ReaderImpl& operator=(ReaderImpl&&)      = delete;
 
     /// Constructor
-    inline explicit ReaderImpl(Reader* const reader) noexcept :
-        m_reader(reader)
+    inline explicit ReaderImpl(Reader* const _reader) noexcept :
+        M_READER(_reader)
     {
     }
 
@@ -1113,19 +1113,19 @@ public:
     inline ~ReaderImpl() noexcept = default;
 
     /// Pointer to the public interface
-    Reader* const m_reader;
+    Reader* const M_READER;
 
     /// Returns a list of DICOM series by scanning files using get_files()
     /// The files are NOT sorted!
     /// @return data::series_set::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::series_set::sptr scanFiles(const std::vector<std::filesystem::path>& files) const
+    [[nodiscard]] inline data::series_set::sptr scanFiles(const std::vector<std::filesystem::path>& _files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
         gdcm::Directory::FilenamesType gdcm_files;
 
-        for(const auto& file : files)
+        for(const auto& file : _files)
         {
             if(std::filesystem::exists(file) && !std::filesystem::is_directory(file))
             {
@@ -1138,7 +1138,7 @@ public:
             gdcm_files.empty()
         );
 
-        return scanGDCMFiles(gdcm_files, m_filters);
+        return scan_gdcm_files(gdcm_files, m_filters);
     }
 
     /// Returns a list of DICOM series with associated files sorted
@@ -1181,14 +1181,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByImagePosition(const data::series::sptr& series)
+    inline static bool sortInstancesByImagePosition(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
 
-        for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+        for(std::size_t instance = 0, end = _series->numInstances() ; instance < end ; ++instance)
         {
-            const auto& value = computeFramePosition(*series, instance);
+            const auto& value = compute_frame_position(*_series, instance);
 
             if(!value)
             {
@@ -1211,21 +1211,21 @@ public:
             sorter.cbegin(),
             sorter.cend(),
             std::back_inserter(sorted),
-            [](const auto& v){return v.second;});
+            [](const auto& _v){return _v.second;});
 
-        return series->sort(sorted);
+        return _series->sort(sorted);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByContentTime(const data::series::sptr& series)
+    inline static bool sortInstancesByContentTime(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
 
-        for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+        for(std::size_t instance = 0, end = _series->numInstances() ; instance < end ; ++instance)
         {
-            const auto& value = series->getContentTime(instance);
+            const auto& value = _series->getContentTime(instance);
 
             if(value.empty())
             {
@@ -1316,21 +1316,21 @@ public:
             sorter.cbegin(),
             sorter.cend(),
             std::back_inserter(sorted),
-            [](const auto& v){return v.second;});
+            [](const auto& _v){return _v.second;});
 
-        return series->sort(sorted);
+        return _series->sort(sorted);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByInstanceNumber(const data::series::sptr& series)
+    inline static bool sortInstancesByInstanceNumber(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
 
-        for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+        for(std::size_t instance = 0, end = _series->numInstances() ; instance < end ; ++instance)
         {
-            const auto& value = series->getInstanceNumber(instance);
+            const auto& value = _series->getInstanceNumber(instance);
 
             if(!value)
             {
@@ -1350,21 +1350,21 @@ public:
             sorter.cbegin(),
             sorter.cend(),
             std::back_inserter(sorted),
-            [](const auto& v){return v.second;});
+            [](const auto& _v){return _v.second;});
 
-        return series->sort(sorted);
+        return _series->sort(sorted);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByFilename(const data::series::sptr& series)
+    inline static bool sortInstancesByFilename(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::filesystem::path, std::size_t> sorter;
 
-        for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+        for(std::size_t instance = 0, end = _series->numInstances() ; instance < end ; ++instance)
         {
-            const auto& value = series->get_file(instance);
+            const auto& value = _series->get_file(instance);
 
             if(value.empty())
             {
@@ -1384,9 +1384,9 @@ public:
             sorter.cbegin(),
             sorter.cend(),
             std::back_inserter(sorted),
-            [](const auto& v){return v.second;});
+            [](const auto& _v){return _v.second;});
 
-        return series->sort(sorted);
+        return _series->sort(sorted);
     }
 
     //------------------------------------------------------------------------------
@@ -1399,7 +1399,7 @@ public:
         );
 
         // Instantiate or reuse the output series set
-        if(const auto& object = std::dynamic_pointer_cast<data::series_set>(m_reader->m_object.lock()); object)
+        if(const auto& object = std::dynamic_pointer_cast<data::series_set>(M_READER->m_object.lock()); object)
         {
             m_read = object;
             m_read->clear();
@@ -1407,10 +1407,10 @@ public:
         else
         {
             m_read = std::make_shared<data::series_set>();
-            m_reader->set_object(m_read);
+            M_READER->set_object(m_read);
         }
 
-        std::vector<FiducialSetWithMetadata> fiducialSets;
+        std::vector<FiducialSetWithMetadata> fiducial_sets;
 
         // Start reading selected series
         for(const auto& source : *m_sorted)
@@ -1425,19 +1425,19 @@ public:
             // Therefore, we use a series set, so we can split the series if needed.
             data::series_set::sptr splitted_series;
 
-            if(source->getDicomType() == data::series::DicomType::IMAGE)
+            if(source->get_dicom_type() == data::series::dicom_t::IMAGE)
             {
                 // Read an image series
-                splitted_series = readImage(*source, m_job);
+                splitted_series = read_image(*source, m_job);
             }
-            else if(source->getDicomType() == data::series::DicomType::MODEL)
+            else if(source->get_dicom_type() == data::series::dicom_t::MODEL)
             {
                 // Read a model series
-                splitted_series = readModel(*source, m_job);
+                splitted_series = read_model(*source, m_job);
             }
-            else if(source->getDicomType() == data::series::DicomType::FIDUCIALS)
+            else if(source->get_dicom_type() == data::series::dicom_t::FIDUCIALS)
             {
-                std::ranges::copy(readFiducialSets(*source), std::back_inserter(fiducialSets));
+                std::ranges::copy(read_fiducial_sets(*source), std::back_inserter(fiducial_sets));
             }
             else
             {
@@ -1456,63 +1456,64 @@ public:
         }
 
         // Associate the fiducials to their images/models
-        for(const FiducialSetWithMetadata& fiducialSet : fiducialSets)
+        for(const FiducialSetWithMetadata& fiducial_set : fiducial_sets)
         {
             for(const data::series::sptr& series : *m_read)
             {
-                auto imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
-                auto modelSeries = std::dynamic_pointer_cast<data::model_series>(series);
-                if(imageSeries == nullptr && modelSeries == nullptr)
+                auto image_series = std::dynamic_pointer_cast<data::image_series>(series);
+                auto model_series = std::dynamic_pointer_cast<data::model_series>(series);
+                if(image_series == nullptr && model_series == nullptr)
                 {
                     break;
                 }
 
-                bool fiducialSetIsRelevant = fiducialSet.fiducialSet.frameOfReferenceUID && series->getStringValue(
+                bool fiducial_set_is_relevant = fiducial_set.fiducialSet.frameOfReferenceUID && series->getStringValue(
                     data::dicom::attribute::Keyword::FrameOfReferenceUID
                 )
-                                             == fiducialSet.fiducialSet.frameOfReferenceUID;
-                if(!fiducialSetIsRelevant && fiducialSet.fiducialSet.referencedImageSequence)
+                                                == fiducial_set.fiducialSet.frameOfReferenceUID;
+                if(!fiducial_set_is_relevant && fiducial_set.fiducialSet.referencedImageSequence)
                 {
-                    for(const data::fiducials_series::ReferencedImage& referencedImage :
-                        *fiducialSet.fiducialSet.referencedImageSequence)
+                    for(const data::fiducials_series::ReferencedImage& referenced_image :
+                        *fiducial_set.fiducialSet.referencedImageSequence)
                     {
                         // TODO: Take ReferencedSegmentNumber into account for Segmentation IOD
-                        if(referencedImage.referencedSOPClassUID == data::dicom::sop::get(series->getSOPKeyword()).m_uid
-                           && referencedImage.referencedSOPInstanceUID == series->getSOPInstanceUID())
+                        if(referenced_image.referencedSOPClassUID
+                           == data::dicom::sop::get(series->getSOPKeyword()).m_uid
+                           && referenced_image.referencedSOPInstanceUID == series->getSOPInstanceUID())
                         {
-                            fiducialSetIsRelevant = true;
+                            fiducial_set_is_relevant = true;
                             break;
                         }
                     }
                 }
 
-                if(fiducialSetIsRelevant)
+                if(fiducial_set_is_relevant)
                 {
-                    data::fiducials_series::sptr fiducialsSeries;
-                    bool seriesHaveFiducials = false;
-                    if(imageSeries != nullptr)
+                    data::fiducials_series::sptr fiducials_series;
+                    bool series_have_fiducials = false;
+                    if(image_series != nullptr)
                     {
-                        fiducialsSeries     = imageSeries->getFiducials();
-                        seriesHaveFiducials = imageSeries->hasFiducials();
+                        fiducials_series      = image_series->getFiducials();
+                        series_have_fiducials = image_series->hasFiducials();
                     }
-                    else if(modelSeries != nullptr)
+                    else if(model_series != nullptr)
                     {
-                        fiducialsSeries     = modelSeries->getFiducials();
-                        seriesHaveFiducials = modelSeries->hasFiducials();
+                        fiducials_series      = model_series->getFiducials();
+                        series_have_fiducials = model_series->hasFiducials();
                     }
 
-                    if(!seriesHaveFiducials)
+                    if(!series_have_fiducials)
                     {
                         // It is the first fiducial set to be appended to this fiducials series; set fiducials metadata
-                        fiducialsSeries->setContentDate(fiducialSet.contentDate);
-                        fiducialsSeries->setContentTime(fiducialSet.contentTime);
-                        fiducialsSeries->setInstanceNumber(fiducialSet.instanceNumber);
-                        fiducialsSeries->setContentLabel(fiducialSet.contentLabel);
-                        fiducialsSeries->setContentDescription(fiducialSet.contentDescription);
-                        fiducialsSeries->setContentCreatorName(fiducialSet.contentCreatorName);
+                        fiducials_series->setContentDate(fiducial_set.contentDate);
+                        fiducials_series->setContentTime(fiducial_set.contentTime);
+                        fiducials_series->setInstanceNumber(fiducial_set.instanceNumber);
+                        fiducials_series->setContentLabel(fiducial_set.contentLabel);
+                        fiducials_series->setContentDescription(fiducial_set.contentDescription);
+                        fiducials_series->setContentCreatorName(fiducial_set.contentCreatorName);
                     }
 
-                    fiducialsSeries->appendFiducialSet(fiducialSet.fiducialSet);
+                    fiducials_series->appendFiducialSet(fiducial_set.fiducialSet);
                 }
             }
         }
@@ -1530,11 +1531,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void progress(std::uint64_t units) const
+    inline void progress(std::uint64_t _units) const
     {
         if(m_job)
         {
-            m_job->done_work(units);
+            m_job->done_work(_units);
         }
     }
 
@@ -1606,7 +1607,7 @@ data::series_set::sptr Reader::scan()
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
         const auto& filenames = gdcm_directory.GetFilenames();
-        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& v){return v;});
+        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& _v){return _v;});
     }
 
     if(m_pimpl->cancel_requested())
@@ -1668,16 +1669,16 @@ void Reader::read()
 
 //------------------------------------------------------------------------------
 
-void Reader::setFilters(const data::series::SopKeywords& filters)
+void Reader::setFilters(const data::series::SopKeywords& _filters)
 {
-    m_pimpl->m_filters = filters;
+    m_pimpl->m_filters = _filters;
 }
 
 //------------------------------------------------------------------------------
 
-void Reader::setScanned(const data::series_set::sptr& scanned)
+void Reader::setScanned(const data::series_set::sptr& _scanned)
 {
-    m_pimpl->m_scanned = scanned;
+    m_pimpl->m_scanned = _scanned;
 
     // The sorted files are no more relevant
     m_pimpl->m_sorted.reset();
@@ -1685,9 +1686,9 @@ void Reader::setScanned(const data::series_set::sptr& scanned)
 
 //------------------------------------------------------------------------------
 
-void Reader::setSorted(const data::series_set::sptr& sorted)
+void Reader::setSorted(const data::series_set::sptr& _sorted)
 {
-    m_pimpl->m_sorted = sorted;
+    m_pimpl->m_sorted = _sorted;
 
     // No need to keep the scanned files, they are not used anymore
     m_pimpl->m_scanned.reset();
@@ -1702,10 +1703,10 @@ core::jobs::base::sptr Reader::getJob() const
 
 //------------------------------------------------------------------------------
 
-void Reader::setJob(core::jobs::job::sptr job)
+void Reader::setJob(core::jobs::job::sptr _job)
 {
-    SIGHT_ASSERT("Some work have already be reported.", job->get_done_work_units() == 0);
-    m_pimpl->m_job = job;
+    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
+    m_pimpl->m_job = _job;
     m_pimpl->m_job->set_total_work_units(100);
     m_pimpl->m_job->done_work(10);
 }

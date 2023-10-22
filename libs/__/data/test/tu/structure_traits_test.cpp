@@ -55,11 +55,11 @@ void structure_traits_test::equalityTest()
     TEST(setClass(data::structure_traits::TOOL));
     TEST(setNativeExp("2"));
     TEST(setNativeGeometricExp("3"));
-    TEST(setAttachmentType("4"));
+    TEST(set_attachment_type("4"));
     TEST(setColor(std::make_shared<data::color>(5.F, 6.F, 7.F)));
     TEST(setAnatomicRegion("8"));
     TEST(setPropertyCategory("9"));
-    TEST(setPropertyType("10"));
+    TEST(set_property_type("10"));
 
     #undef TEST
 }

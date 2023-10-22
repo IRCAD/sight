@@ -74,18 +74,18 @@ void timestamp_slot_caller::updating()
 {
     core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
 
-    for(const SlotInfoType& info : m_slotInfos)
+    for(const slot_info_t& info : m_slotInfos)
     {
-        HasSlotIDType HasSlotId         = info.first;
-        core::com::slots::key_t slotKey = info.second;
+        HasSlotIDType has_slot_id        = info.first;
+        core::com::slots::key_t slot_key = info.second;
 
-        if(core::tools::id::exist(HasSlotId))
+        if(core::tools::id::exist(has_slot_id))
         {
-            core::tools::object::sptr obj       = core::tools::id::get_object(HasSlotId);
-            core::com::has_slots::sptr hasSlots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
-            SIGHT_ASSERT("Object with id " << HasSlotId << " is not a has_slots", hasSlots);
+            core::tools::object::sptr obj        = core::tools::id::get_object(has_slot_id);
+            core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
+            SIGHT_ASSERT("Object with id " << has_slot_id << " is not a has_slots", has_slots);
 
-            core::com::slot_base::sptr slot = hasSlots->slot(slotKey);
+            core::com::slot_base::sptr slot = has_slots->slot(slot_key);
 
             slot->async_run(timestamp);
         }

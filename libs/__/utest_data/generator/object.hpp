@@ -53,9 +53,9 @@ public:
 
     /// Creates a TransferFunction with random values and specified nbPoints, window and level
     UTEST_DATA_API static data::transfer_function::sptr createTFColor(
-        unsigned char nbPoints,
-        double window,
-        double level
+        unsigned char _nb_points,
+        double _window,
+        double _level
     );
 
     /// Creates a TransferFunction with few values

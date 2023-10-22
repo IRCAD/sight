@@ -113,11 +113,11 @@ public:
 
     /// Slot: pops a notification.
     /// @param notification notification.
-    MODULE_UI_QT_API void pop(service::Notification notification);
+    MODULE_UI_QT_API void pop(service::Notification _notification);
 
     /// Slot: close a notification identified by the channel name.
     /// @param channel notification channel.
-    MODULE_UI_QT_API void closeNotification(std::string channel);
+    MODULE_UI_QT_API void closeNotification(std::string _channel);
 
 protected:
 
@@ -146,14 +146,14 @@ protected:
 private:
 
     /// Called when a notification is closed
-    void onNotificationClosed(const sight::ui::dialog::notification::sptr& notif);
+    void onNotificationClosed(const sight::ui::dialog::notification::sptr& _notif);
 
     /// Erase a notification from m_popups and move down the remaining
     /// @param position The stack where we need to erase a notification
     /// @param it the iterator pointing on the element to erase
     std::list<sight::ui::dialog::notification::sptr>::iterator eraseNotification(
-        const service::Notification::Position& position,
-        const std::list<sight::ui::dialog::notification::sptr>::iterator& it
+        const service::Notification::Position& _position,
+        const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
     );
 
     /// Count the number of notifications and remove the oldest if > m_maxStackedNotifs
@@ -161,10 +161,10 @@ private:
     /// @param max The maximum number of element
     /// @param skipPermanent if true, only non permanent notifications are counted
     void cleanNotifications(
-        const service::Notification::Position& position,
-        std::size_t max,
-        std::array<int, 2> size,
-        bool skipPermanent = true
+        const service::Notification::Position& _position,
+        std::size_t _max,
+        std::array<int, 2> _size,
+        bool _skip_permanent = true
     );
 
     /// Default message (if message in slot are empty), the default message can be configured in xml.

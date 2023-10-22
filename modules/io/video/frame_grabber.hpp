@@ -118,7 +118,7 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~frame_grabber() noexcept override;
 
-    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t value, std::string key) override;
+    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t _value, std::string _key) override;
 
 protected:
 
@@ -147,7 +147,7 @@ protected:
     void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
-    void setPosition(int64_t position) override;
+    void setPosition(int64_t _position) override;
 
     /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled).
     void nextImage() override;
@@ -156,23 +156,23 @@ protected:
     void previousImage() override;
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int step, std::string key) override;
+    void setStep(int _step, std::string _key) override;
 
     /// SLOT: Adds a region of interest center. Currently this function implements image zoom.
     ///       The added point can be forwarded from a picker in singlePointMode for example.
-    void addROICenter(sight::data::point::sptr p) final;
+    void addROICenter(sight::data::point::sptr _p) final;
 
     /// SLOT: Removes a region of interest center. Currently this function relates to image zoom.
     ///       The removed point can be forwarded from a picker in singlePointMode for example.
-    void removeROICenter(sight::data::point::sptr p) final;
+    void removeROICenter(sight::data::point::sptr _p) final;
 
 private:
 
-    typedef std::vector<std::filesystem::path> ImageFilesType;
-    typedef std::vector<double> ImageTimestampsType;
+    typedef std::vector<std::filesystem::path> image_files_t;
+    typedef std::vector<double> image_timestamps_t;
 
     /// Initializes the video reader, start the timer.
-    void readVideo(const std::filesystem::path& file);
+    void readVideo(const std::filesystem::path& _file);
 
     /// Initializes the usb device reader, start the timer.
     void readDevice(const data::camera& _cam);
@@ -181,7 +181,7 @@ private:
     void readStream(const data::camera& _cam);
 
     /// Initializes the image reader, start the timer.
-    void readImages(const std::filesystem::path& folder, const std::string& extension);
+    void readImages(const std::filesystem::path& _folder, const std::string& _extension);
 
     /// Reads the next video frame.
     void grabVideo();
@@ -190,7 +190,7 @@ private:
     void grabImage();
 
     /// Updates the image if zoom is requested
-    void updateZoom(cv::Mat image);
+    void updateZoom(cv::Mat _image);
 
     /// State of the loop mode.
     bool m_loopVideo {false};
@@ -213,10 +213,10 @@ private:
     cv::VideoCapture m_videoCapture;
 
     /// List of image paths to read.
-    ImageFilesType m_imageToRead;
+    image_files_t m_imageToRead;
 
     /// List of the image timestamps.
-    ImageTimestampsType m_imageTimestamps;
+    image_timestamps_t m_imageTimestamps;
 
     /// Zoom factor
     int m_zoomFactor {2};

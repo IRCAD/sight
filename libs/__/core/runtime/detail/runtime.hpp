@@ -82,7 +82,7 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    void add_modules(const std::filesystem::path& repository);
+    void add_modules(const std::filesystem::path& _repository);
 
     /**
      * @brief       Retrieves the module for the specified identifier.
@@ -92,7 +92,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    [[nodiscard]] SPTR(core::runtime::module) find_module(const std::string& identifier) const;
+    [[nodiscard]] SPTR(core::runtime::module) find_module(const std::string& _identifier) const;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -106,7 +106,7 @@ public:
      *
      * @return      a pointer to the created executable instance
      */
-    [[nodiscard]] executable* create_executable_instance(const std::string& type) const;
+    [[nodiscard]] executable* create_executable_instance(const std::string& _type) const;
 
     /**
      * @brief       Retrieves the extension instance matching the specified identifier.
@@ -115,7 +115,7 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    [[nodiscard]] std::shared_ptr<core::runtime::extension> find_extension(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<core::runtime::extension> find_extension(const std::string& _identifier) const;
 
     /// Return all modules known by the runtime
     module_container modules() const;
@@ -140,14 +140,14 @@ public:
      * @remark      The given module state will be altered according to the current configuration rules.
      * @param[in]   module  a shared pointer to the module instance to add
      */
-    void add_module(std::shared_ptr<detail::module> module);
+    void add_module(std::shared_ptr<detail::module> _module);
 
     /**
      * @brief       Unregister a module instance to the runtime system.
      *
      * @param[in]   module  a shared pointer to the module instance to unregister
      */
-    void unregister_module(std::shared_ptr<detail::module> module);
+    void unregister_module(std::shared_ptr<detail::module> _module);
 
     /**
      * @brief       Retrieves the enabled module for the specified identifier.
@@ -157,7 +157,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    [[nodiscard]] std::shared_ptr<core::runtime::module> find_enabled_module(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<core::runtime::module> find_enabled_module(const std::string& _identifier) const;
 
     //@}
 
@@ -172,14 +172,14 @@ public:
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    void add_executable_factory(std::shared_ptr<executable_factory> factory);
+    void add_executable_factory(std::shared_ptr<executable_factory> _factory);
 
     /**
      * @brief       Unregister a new executable factory instance to the runtime system.
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    void unregister_executable_factory(std::shared_ptr<executable_factory> factory);
+    void unregister_executable_factory(std::shared_ptr<executable_factory> _factory);
 
     /**
      * @brief       Retrieves the executable factory for the given identifier.
@@ -188,7 +188,7 @@ public:
      *
      * @return      a sgared pointer to the found executable factory or null of none
      */
-    [[nodiscard]] std::shared_ptr<executable_factory> find_executable_factory(const std::string& type) const;
+    [[nodiscard]] std::shared_ptr<executable_factory> find_executable_factory(const std::string& _type) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified module.
@@ -197,7 +197,7 @@ public:
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
-    [[nodiscard]] std::shared_ptr<plugin> get_plugin(std::shared_ptr<module> module) const;
+    [[nodiscard]] std::shared_ptr<plugin> get_plugin(std::shared_ptr<module> _module) const;
 
     //@}
 
@@ -212,14 +212,14 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void add_extension(std::shared_ptr<detail::extension> extension);
+    void add_extension(std::shared_ptr<detail::extension> _extension);
 
     /**
      * @brief       Unregister a new extension.
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void unregister_extension(std::shared_ptr<detail::extension> extension);
+    void unregister_extension(std::shared_ptr<detail::extension> _extension);
 
     /// Retrieves the extension collection.
     extension_container extensions() const;
@@ -236,14 +236,14 @@ public:
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    void add_extension_point(std::shared_ptr<extension_point> point);
+    void add_extension_point(std::shared_ptr<extension_point> _point);
 
     /**
      * @brief       Unregister a new extension point.
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    void unregister_extension_point(std::shared_ptr<extension_point> point);
+    void unregister_extension_point(std::shared_ptr<extension_point> _point);
 
     /**
      * @brief       Retrieves the extension point instance matching the specified identifier.
@@ -252,7 +252,7 @@ public:
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */
-    [[nodiscard]] std::shared_ptr<extension_point> find_extension_point(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<extension_point> find_extension_point(const std::string& _identifier) const;
     //@}
 
 private:

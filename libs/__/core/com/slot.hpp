@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define __FWCOM_SLOT_HPP__
+#define FWCOM_SLOT_HPP
 
 #include "core/com/slot_call.hpp"
 #include "core/function.hpp"
@@ -62,9 +62,9 @@ public:
     using function_t = std::function<signature_type>;
 
     template<typename FUNCTOR>
-    slot(FUNCTOR f) :
+    slot(FUNCTOR _f) :
         slot<R(A ...)>(),
-        m_func(std::move(f))
+        m_func(std::move(_f))
     {
     }
 
@@ -73,16 +73,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void run(A ... a) const override
+    void run(A ... _a) const override
     {
-        m_func(a ...);
+        m_func(_a ...);
     }
 
     //------------------------------------------------------------------------------
 
-    R call(A ... a) const override
+    R call(A ... _a) const override
     {
-        return m_func(a ...);
+        return m_func(_a ...);
     }
 
 protected:
@@ -100,9 +100,9 @@ public:
     typedef R signature_type(A ...);
     using function_t = std::function<signature_type>;
 
-    template<typename F> slot(SPTR(slot_run<F>)slot);
+    template<typename F> slot(SPTR(slot_run<F>)_slot);
 
-    template<typename F> slot(SPTR(slot<F>)slot);
+    template<typename F> slot(SPTR(slot<F>)_slot);
 };
 
 //-----------------------------------------------------------------------------

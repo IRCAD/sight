@@ -35,12 +35,12 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-csv_reader::csv_reader(const std::filesystem::path& csvPath) :
-    m_stream(csvPath)
+csv_reader::csv_reader(const std::filesystem::path& _csv_path) :
+    m_stream(_csv_path)
 {
     SIGHT_THROW_IF(
         "CSV File Path Directory can not be Found",
-        !std::filesystem::exists(csvPath)
+        !std::filesystem::exists(_csv_path)
     );
 }
 
@@ -51,16 +51,16 @@ csv_reader::~csv_reader()
 
 //------------------------------------------------------------------------------
 
-using CharSeparatorType = boost::char_separator<char>;
-using TokenizerType     = boost::tokenizer<CharSeparatorType>;
+using char_separator_t = boost::char_separator<char>;
+using tokenizer_t      = boost::tokenizer<char_separator_t>;
 
 //------------------------------------------------------------------------------
 
-csv_reader::TokenContainerType csv_reader::getLine(const std::string& separator)
+csv_reader::token_container_t csv_reader::getLine(const std::string& _separator)
 {
     std::string line;
-    TokenContainerType tokens;
-    const CharSeparatorType sep(separator.c_str(), "", boost::keep_empty_tokens);
+    token_container_t tokens;
+    const char_separator_t sep(_separator.c_str(), "", boost::keep_empty_tokens);
 
     if(std::getline(m_stream, line))
     {
@@ -74,7 +74,7 @@ csv_reader::TokenContainerType csv_reader::getLine(const std::string& separator)
             line.pop_back();
         }
 
-        TokenizerType tokenizer(line, sep);
+        tokenizer_t tokenizer(line, sep);
         tokens.assign(tokenizer.begin(), tokenizer.end());
     }
 

@@ -23,81 +23,81 @@
 
 #include <QLabel>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void Label::toolTipMatches(Tester& tester, const Select& label, const std::string& expected)
+void Label::toolTipMatches(Tester& _tester, const Select& _label, const std::string& _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking if \"" + label.getDescription(tester) + "\" label tooltip is equal to \"" + expected + '"'
+    auto bt = _tester.addInBacktrace(
+        "checking if \"" + _label.getDescription(_tester) + "\" label tooltip is equal to \"" + _expected + '"'
     );
-    label.select(tester);
-    tester.doubt<QLabel*>(
-        '"' + label.getDescription(tester) + "\" label tooltip should be equal to \"" + expected + '"',
-        [&expected](QLabel* obj){return obj->toolTip() == QString::fromStdString(expected);});
+    _label.select(_tester);
+    _tester.doubt<QLabel*>(
+        '"' + _label.getDescription(_tester) + "\" label tooltip should be equal to \"" + _expected + '"',
+        [&_expected](QLabel* _obj){return _obj->toolTip() == QString::fromStdString(_expected);});
 }
 
 //------------------------------------------------------------------------------
 
-void Label::contain(Tester& tester, const Select& label, const std::string& expected)
+void Label::contain(Tester& _tester, const Select& _label, const std::string& _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking if \"" + label.getDescription(tester) + "\" label contains \"" + expected + '"'
+    auto bt = _tester.addInBacktrace(
+        "checking if \"" + _label.getDescription(_tester) + "\" label contains \"" + _expected + '"'
     );
-    label.select(tester);
-    tester.doubt<QLabel*>(
-        '"' + label.getDescription(tester) + "\" label should contain \"" + expected + '"',
-        [&expected](QLabel* obj)
+    _label.select(_tester);
+    _tester.doubt<QLabel*>(
+        '"' + _label.getDescription(_tester) + "\" label should contain \"" + _expected + '"',
+        [&_expected](QLabel* _obj)
         {
-            return obj->text().contains(QString::fromStdString(expected));
+            return _obj->text().contains(QString::fromStdString(_expected));
         });
 }
 
 //------------------------------------------------------------------------------
 
-void Label::exactlyMatch(Tester& tester, const Select& label, const std::string& expected)
+void Label::exactlyMatch(Tester& _tester, const Select& _label, const std::string& _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking if \"" + label.getDescription(tester) + "\" label is equal to \"" + expected + '"'
+    auto bt = _tester.addInBacktrace(
+        "checking if \"" + _label.getDescription(_tester) + "\" label is equal to \"" + _expected + '"'
     );
-    label.select(tester);
-    tester.doubt<QLabel*>(
-        '"' + label.getDescription(tester) + "\" label should be equal to \"" + expected + '"',
-        [&expected](QLabel* obj)
+    _label.select(_tester);
+    _tester.doubt<QLabel*>(
+        '"' + _label.getDescription(_tester) + "\" label should be equal to \"" + _expected + '"',
+        [&_expected](QLabel* _obj)
         {
-            return obj->text() == QString::fromStdString(expected);
+            return _obj->text() == QString::fromStdString(_expected);
         });
 }
 
 //------------------------------------------------------------------------------
 
-void Label::equal(Tester& tester, const Select& label, double expected, double tolerance, QRegExp re)
+void Label::equal(Tester& _tester, const Select& _label, double _expected, double _tolerance, QRegExp _re)
 {
-    auto bt = tester.addInBacktrace(
-        "checking if \"" + label.getDescription(tester) + "\" label is equal to "
-        + std::to_string(expected) + " (with " + std::to_string(tolerance) + " tolerance)"
+    auto bt = _tester.addInBacktrace(
+        "checking if \"" + _label.getDescription(_tester) + "\" label is equal to "
+        + std::to_string(_expected) + " (with " + std::to_string(_tolerance) + " tolerance)"
     );
-    label.select(tester);
-    tester.doubt<QLabel*>(
-        '"' + label.getDescription(tester) + "\" label should be equal to " + std::to_string(expected),
-        [&expected, &tolerance, &re](QLabel* obj)
+    _label.select(_tester);
+    _tester.doubt<QLabel*>(
+        '"' + _label.getDescription(_tester) + "\" label should be equal to " + std::to_string(_expected),
+        [&_expected, &_tolerance, &_re](QLabel* _obj)
         {
-            obj->text().indexOf(re);
-            return std::abs(re.cap(1).toDouble() - expected) <= tolerance;
+            _obj->text().indexOf(_re);
+            return std::abs(_re.cap(1).toDouble() - _expected) <= _tolerance;
         });
 }
 
 //------------------------------------------------------------------------------
 
-std::string Label::get(Tester& tester, const Select& label)
+std::string Label::get(Tester& _tester, const Select& _label)
 {
-    auto bt = tester.addInBacktrace("getting the text within " + label.getDescription(tester) + " label");
-    label.select(tester);
+    auto bt = _tester.addInBacktrace("getting the text within " + _label.getDescription(_tester) + " label");
+    _label.select(_tester);
     std::string res;
-    tester.doSomething<QLabel*>([&res](QLabel* l){res = l->text().toStdString();});
+    _tester.doSomething<QLabel*>([&res](QLabel* _l){res = _l->text().toStdString();});
     return res;
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

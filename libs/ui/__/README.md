@@ -4,8 +4,8 @@ This is the core library in _sight_ which defines the various base interface for
 
 ## Classes
 
-- **ActionCallbackBase**: defines a graphical menu item with callback
-- **Application**: gives access to the underlayed application part
+- **action_callback_base**: defines a graphical menu item with callback
+- **application**: gives access to the underlayed application part
 - **cursor**: defines a generic graphical cursor
 - **GuiBaseObject**: base class for all graphical objects classes
 - **registry**: internal mechanism: contains helpers to manage the various graphical container in a  _sight_ application.
@@ -60,26 +60,26 @@ Mechanism which allows to store and get user preferences and propose them from o
 
 ### _registry_
 
-- **Action**:  defines the action registry for the graphical interface services
+- **action**:  defines the action registry for the graphical interface services
 - **detail**: internal mechanism: provides the instances of the factory registry
 - **macro**: defines the macro which registers internally the user interfaces services
-- **Menu**: defines a registry which handles xml definitions of a graphical menu
-- **MenuBar**: defines a registry which handles xml definitions of a graphical menu bar
-- **ToolBar**: defines a registry which handles xml definitions of a graphical tool bar
-- **View**: defines a registry which handles xml definitions of a graphical generic view manager
+- **menu**: defines a registry which handles xml definitions of a graphical menu
+- **menu_bar**: defines a registry which handles xml definitions of a graphical menu bar
+- **tool_bar**: defines a registry which handles xml definitions of a graphical tool bar
+- **view**: defines a registry which handles xml definitions of a graphical generic view manager
 
 
 ### _view_
 
-- **IActivityView**: defines the base class for services displaying activity view
-- **IView**: defines the service interface managing a view placed in main frame.
+- **activity_view**: defines the base class for services displaying activity view
+- **view**: defines the service interface managing a view placed in main frame.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE>
+target_link_libraries( my_target <PUBLIC|PRIVATE>
                        ui
 )
 ```

@@ -27,7 +27,7 @@
 #include <string>
 #include <variant>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Select
@@ -53,8 +53,8 @@ public:
      *
      * @{
      */
-    GUITEST_API Select(const char* objectName);
-    GUITEST_API Select(const std::string& objectName);
+    GUITEST_API Select(const char* _object_name);
+    GUITEST_API Select(const std::string& _object_name);
     /// @}
 
     /**
@@ -62,14 +62,14 @@ public:
      *
      * @param objectName The objectName of the object to be selected
      */
-    GUITEST_API static Select fromMain(const std::string& objectName);
+    GUITEST_API static Select fromMain(const std::string& _object_name);
 
     /**
      * Create a selector to select an object from the current dialog window.
      *
      * @param objectName The objectName of the object to be selected
      */
-    GUITEST_API static Select fromDialog(const std::string& objectName);
+    GUITEST_API static Select fromDialog(const std::string& _object_name);
 
     /**
      * Create a selector to select an object via its parent.
@@ -77,14 +77,14 @@ public:
      * @param parentName The objectName of the parent of the object to be selected
      * @param childName The objectName of the object to be selected
      */
-    GUITEST_API static Select fromParent(const std::string& parentName, const std::string& childName);
+    GUITEST_API static Select fromParent(const std::string& _parent_name, const std::string& _child_name);
 
     /**
      * Create a selector to select an object via the current graphic component.
      *
      * @param objectName The objectName of the object to be selected
      */
-    GUITEST_API static Select fromCurrent(const std::string& objectName);
+    GUITEST_API static Select fromCurrent(const std::string& _object_name);
 
     /**
      * Create a selector to select the current component graphic component.
@@ -103,7 +103,7 @@ public:
      *
      * @returns A copy of this
      */
-    GUITEST_API Select withTimeout(int timeout) const;
+    GUITEST_API Select withTimeout(int _timeout) const;
 
     /**
      * Adds a new condition for the object to meet
@@ -112,7 +112,7 @@ public:
      *
      * @returns A copy of this
      */
-    GUITEST_API Select withCondition(std::function<bool(QObject*)> condition) const;
+    GUITEST_API Select withCondition(std::function<bool(QObject*)> _condition) const;
 
     /**
      * Selects the desired object.
@@ -121,7 +121,7 @@ public:
      *
      * @post The current tester's current graphic component is the desired object if it was found.
      */
-    GUITEST_API void select(Tester& tester) const;
+    GUITEST_API void select(Tester& _tester) const;
 
     /**
      * Returns the description of the object
@@ -130,7 +130,7 @@ public:
      *
      * @returns The description of the object
      */
-    GUITEST_API std::string getDescription(const Tester& tester) const;
+    GUITEST_API std::string getDescription(const Tester& _tester) const;
 
     //------------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ public:
 
 private:
 
-    Select(Type type, Data data);
+    Select(Type _type, Data _data);
 
     Type m_type;
     Data m_data;

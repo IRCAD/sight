@@ -23,37 +23,45 @@
 
 #include <QObject>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Dialog::take(Tester& tester, const std::string& desc, const std::string& childName)
+void Dialog::take(Tester& _tester, const std::string& _desc, const std::string& _child_name)
 {
-    auto bt = tester.addInBacktrace("take " + desc + " dialog");
-    tester.take<T>(
-        desc,
+    auto bt = _tester.addInBacktrace("take " + _desc + " dialog");
+    _tester.take<T>(
+        _desc,
         []{return qobject_cast<T>(qApp->activeModalWidget());},
-        [&childName](T o)
+        [&_child_name](T _o)
         {
-            return o->isVisible()
-            && (childName.empty() || o->template findChild<QObject*>(QString::fromStdString(childName)) != nullptr);
+            return _o->isVisible()
+            && (_child_name.empty() || _o->template findChild<QObject*>(
+                    QString::fromStdString(
+                        _child_name
+                    )
+                ) != nullptr);
         });
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Dialog::maybeTake(Tester& tester, const std::string& desc, const std::string& childName)
+void Dialog::maybeTake(Tester& _tester, const std::string& _desc, const std::string& _child_name)
 {
-    tester.maybeTake<T>(
-        desc,
+    _tester.maybeTake<T>(
+        _desc,
         []{return qobject_cast<T>(qApp->activeModalWidget());},
-        [&childName](T o)
+        [&_child_name](T _o)
         {
-            return o->isVisible()
-            && (childName.empty() || o->template findChild<QObject*>(QString::fromStdString(childName)) != nullptr);
+            return _o->isVisible()
+            && (_child_name.empty() || _o->template findChild<QObject*>(
+                    QString::fromStdString(
+                        _child_name
+                    )
+                ) != nullptr);
         });
 }
 

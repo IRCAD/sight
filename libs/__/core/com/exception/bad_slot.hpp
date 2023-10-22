@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// Bad slot exception.
 struct bad_slot : core::exception
 {
-    CORE_API bad_slot(const std::string& err);
+    CORE_API bad_slot(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

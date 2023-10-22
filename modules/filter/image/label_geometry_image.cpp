@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <filter/image/labeling.hpp>
 
@@ -57,17 +57,17 @@ void label_geometry_image::configuring()
     const auto& clusters = config.get_child("clusters");
     for(const auto& elt : boost::make_iterator_range(clusters.equal_range("cluster")))
     {
-        const auto clusterStr = elt.second.get_value<std::string>();
-        std::vector<std::size_t> clusterLabels;
+        const auto cluster_str = elt.second.get_value<std::string>();
+        std::vector<std::size_t> cluster_labels;
         const boost::char_separator<char> separator(",");
-        const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
+        const boost::tokenizer<boost::char_separator<char> > tok {cluster_str, separator};
 
         for(const auto& t : tok)
         {
-            clusterLabels.push_back(std::stoul(t));
+            cluster_labels.push_back(std::stoul(t));
         }
 
-        m_lPointListLabels.push_back(clusterLabels);
+        m_lPointListLabels.push_back(cluster_labels);
         m_lPointListCentroids.push_back(std::make_shared<data::point_list>());
     }
 }
@@ -85,17 +85,17 @@ void label_geometry_image::updating()
     const auto image = m_image.lock();
 
     // Call the ITK operator
-    sight::filter::image::computeCentroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
+    sight::filter::image::compute_centroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
 
     if(m_lPointListCentroids.empty())
     {
-        data::point_list::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
+        data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image);
 
         SIGHT_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
         {
-            auto sig = image->signal<data::image::LandmarkAddedSignalType>(data::image::LANDMARK_ADDED_SIG);
+            auto sig = image->signal<data::image::landmark_added_signal_t>(data::image::LANDMARK_ADDED_SIG);
             sig->async_emit(point);
         }
     }
@@ -115,27 +115,27 @@ void label_geometry_image::stopping()
 
 //-----------------------------------------------------------------------------
 
-void label_geometry_image::updateSelectedPointList(std::string value, std::string /*key*/)
+void label_geometry_image::updateSelectedPointList(std::string _value, std::string /*key*/)
 {
     SIGHT_ASSERT(
-        "value: " << value << "should end by a number between 0 and 9",
-        value.back() >= '0' && value.back() <= '9'
+        "value: " << _value << "should end by a number between 0 and 9",
+        _value.back() >= '0' && _value.back() <= '9'
     );
-    std::size_t indexPlane = std::stoul(value);
+    std::size_t index_plane = std::stoul(_value);
     // if the XML enum is between 1 and n, instead of 0 and n-1
-    if(indexPlane > 0)
+    if(index_plane > 0)
     {
-        indexPlane--;
+        index_plane--;
     }
 
-    data::point_list::sptr selectedPointList = m_lPointListCentroids.at(indexPlane);
+    data::point_list::sptr selected_point_list = m_lPointListCentroids.at(index_plane);
 
-    for(std::size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
+    for(std::size_t id_point = 0 ; id_point < selected_point_list->getPoints().size() ; ++id_point)
     {
-        selectedPointList->getPoints().at(idPoint)->setLabel(std::to_string(idPoint));
+        selected_point_list->getPoints().at(id_point)->setLabel(std::to_string(id_point));
     }
 
-    this->set_output("pointList", m_lPointListCentroids.at(indexPlane));
+    this->set_output("pointList", m_lPointListCentroids.at(index_plane));
 }
 
 //-----------------------------------------------------------------------------

@@ -37,20 +37,20 @@ namespace detail::set
 
 inline static void write(
     zip::ArchiveWriter&,
-    boost::property_tree::ptree& tree,
-    data::object::csptr object,
-    std::map<std::string, data::object::csptr>& children,
+    boost::property_tree::ptree& _tree,
+    data::object::csptr _object,
+    std::map<std::string, data::object::csptr>& _children,
     const core::crypto::secure_string& = ""
 )
 {
-    const auto set = helper::safe_cast<data::set>(object);
+    const auto set = helper::safe_cast<data::set>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::set>(tree, 1);
+    helper::write_version<data::set>(_tree, 1);
 
     for(std::size_t index = 0, end = set->size() ; index < end ; ++index)
     {
-        children[data::set::classname() + std::to_string(index)] = set->at(index);
+        _children[data::set::classname() + std::to_string(index)] = set->at(index);
     }
 }
 
@@ -58,27 +58,27 @@ inline static void write(
 
 inline static data::set::sptr read(
     zip::ArchiveReader&,
-    const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::object::sptr>& children,
-    data::object::sptr object,
+    const boost::property_tree::ptree& _tree,
+    const std::map<std::string, data::object::sptr>& _children,
+    data::object::sptr _object,
     const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
-    auto set = helper::cast_or_create<data::set>(object);
+    auto set = helper::cast_or_create<data::set>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::set>(tree, 0, 1);
+    helper::read_version<data::set>(_tree, 0, 1);
 
     // Deserialize vector
     // Clearing is required in case the object is reused
     set->clear();
 
-    for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
+    for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {
-        const auto& it = children.find(data::set::classname() + std::to_string(index));
+        const auto& it = _children.find(data::set::classname() + std::to_string(index));
 
-        if(it == children.cend())
+        if(it == _children.cend())
         {
             break;
         }

@@ -40,7 +40,7 @@ Defines base configuration for video playing.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget activity_navigation_calibration ... )
+add_dependencies(my_target activity_navigation_calibration ... )
 ```
 
 ### XML

@@ -61,31 +61,31 @@ void IoItkTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void executeService(
-    const SPTR(data::object)& obj,
-    const std::string& srvImpl,
-    const boost::property_tree::ptree& cfg,
-    const data::Access access = data::Access::inout
+void execute_service(
+    const SPTR(data::object)& _obj,
+    const std::string& _srv_impl,
+    const boost::property_tree::ptree& _cfg,
+    const data::Access _access = data::Access::inout
 )
 {
-    service::base::sptr srv = service::add(srvImpl);
+    service::base::sptr srv = service::add(_srv_impl);
     CPPUNIT_ASSERT(srv);
 
-    if(access == data::Access::inout)
+    if(_access == data::Access::inout)
     {
-        srv->set_inout(obj, sight::io::service::s_DATA_KEY);
+        srv->set_inout(_obj, sight::io::service::s_DATA_KEY);
     }
     else
     {
-        srv->set_input(obj, sight::io::service::s_DATA_KEY);
+        srv->set_input(_obj, sight::io::service::s_DATA_KEY);
     }
 
-    srv->set_config(cfg);
+    srv->set_config(_cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    service::unregisterService(srv);
+    service::unregister_service(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -93,30 +93,30 @@ void executeService(
 void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
-    auto imageSeries = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(imageSeries, core::type::INT16);
+    auto image_series = std::make_shared<data::image_series>();
+    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
 
     // Create path
-    core::os::temp_dir tmpDir;
+    core::os::temp_dir tmp_dir;
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("folder", tmpDir.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("folder", tmp_dir.string());
 
     // Create and execute service
-    executeService(
-        imageSeries,
+    execute_service(
+        image_series,
         "sight::module::io::itk::sliced_image_series_writer",
-        srvCfg,
+        srv_cfg,
         data::Access::in
     );
 }
 
 //------------------------------------------------------------------------------
 
-double tolerance(double num)
+double tolerance(double _num)
 {
-    return std::floor(num * 100. + .5) / 100.;
+    return std::floor(_num * 100. + .5) / 100.;
 }
 
 //------------------------------------------------------------------------------
@@ -131,27 +131,27 @@ void IoItkTest::testSaveLoadInr()
     image->setOrigin(origin);
 
     // save image in inr
-    core::os::temp_dir tmpDir;
-    const auto& path = tmpDir / "image.inr.gz";
+    core::os::temp_dir tmp_dir;
+    const auto& path = tmp_dir / "image.inr.gz";
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("file", path.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("file", path.string());
 
     // Create and execute service
-    executeService(
+    execute_service(
         image,
         "sight::module::io::itk::image_writer",
-        srvCfg,
+        srv_cfg,
         data::Access::in
     );
 
     // load image
     data::image::sptr image2 = std::make_shared<data::image>();
-    executeService(
+    execute_service(
         image2,
         "sight::module::io::itk::image_reader",
-        srvCfg,
+        srv_cfg,
         data::Access::inout
     );
 
@@ -177,27 +177,27 @@ void IoItkTest::testSaveLoadNifti()
     image->setOrigin(origin);
 
     // save image in inr
-    core::os::temp_dir tmpDir;
-    const auto& path = tmpDir / "image.nii";
+    core::os::temp_dir tmp_dir;
+    const auto& path = tmp_dir / "image.nii";
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("file", path.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("file", path.string());
 
     // Create and execute service
-    executeService(
+    execute_service(
         image,
         "sight::module::io::itk::image_writer",
-        srvCfg,
+        srv_cfg,
         data::Access::in
     );
 
     // load image
     data::image::sptr image2 = std::make_shared<data::image>();
-    executeService(
+    execute_service(
         image2,
         "sight::module::io::itk::image_reader",
-        srvCfg,
+        srv_cfg,
         data::Access::inout
     );
 
@@ -216,50 +216,50 @@ void IoItkTest::testSaveLoadNifti()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    auto imageSeries = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(imageSeries, core::type::INT16);
+    auto image_series = std::make_shared<data::image_series>();
+    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::image::Origin origin = {0., 0., 0.};
-    imageSeries->setOrigin(origin);
+    image_series->setOrigin(origin);
 
     // save image in inr
-    core::os::temp_dir tmpDir;
-    const auto& path = tmpDir / "imageseries.inr.gz";
+    core::os::temp_dir tmp_dir;
+    const auto& path = tmp_dir / "imageseries.inr.gz";
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("file", path.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("file", path.string());
 
     // Create and execute service
-    executeService(
-        imageSeries,
+    execute_service(
+        image_series,
         "sight::module::io::itk::image_series_writer",
-        srvCfg,
+        srv_cfg,
         data::Access::in
     );
 
     // load image
-    auto imageSeries2 = std::make_shared<data::image_series>();
-    executeService(
-        imageSeries2,
+    auto image_series2 = std::make_shared<data::image_series>();
+    execute_service(
+        image_series2,
         "sight::module::io::itk::image_series_reader",
-        srvCfg,
+        srv_cfg,
         data::Access::inout
     );
 
-    data::image::Spacing spacing = imageSeries2->getSpacing();
+    data::image::Spacing spacing = image_series2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    imageSeries2->setSpacing(spacing);
+    image_series2->setSpacing(spacing);
 
     // check image
-    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
-    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
+    image_series2->setWindowCenter(image_series->getWindowCenter());
+    image_series2->setWindowWidth(image_series->getWindowWidth());
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "image" part...
-    const auto image  = std::dynamic_pointer_cast<data::image>(imageSeries);
-    const auto image2 = std::dynamic_pointer_cast<data::image>(imageSeries2);
+    const auto image  = std::dynamic_pointer_cast<data::image>(image_series);
+    const auto image2 = std::dynamic_pointer_cast<data::image>(image_series2);
     image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
@@ -269,50 +269,50 @@ void IoItkTest::ImageSeriesInrTest()
 
 void IoItkTest::ImageSeriesNiftiTest()
 {
-    auto imageSeries = std::make_shared<data::image_series>();
-    utest_data::generator::image::generateRandomImage(imageSeries, core::type::INT16);
+    auto image_series = std::make_shared<data::image_series>();
+    utest_data::generator::image::generateRandomImage(image_series, core::type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::image::Origin origin = {0., 0., 0.};
-    imageSeries->setOrigin(origin);
+    image_series->setOrigin(origin);
 
     // save image in inr
-    core::os::temp_dir tmpDir;
-    const auto& path = tmpDir / "imageseries.nii";
+    core::os::temp_dir tmp_dir;
+    const auto& path = tmp_dir / "imageseries.nii";
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("file", path.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("file", path.string());
 
     // Create and execute service
-    executeService(
-        imageSeries,
+    execute_service(
+        image_series,
         "sight::module::io::itk::image_series_writer",
-        srvCfg,
+        srv_cfg,
         data::Access::in
     );
 
     // load image
-    data::image_series::sptr imageSeries2 = std::make_shared<data::image_series>();
-    executeService(
-        imageSeries2,
+    data::image_series::sptr image_series2 = std::make_shared<data::image_series>();
+    execute_service(
+        image_series2,
         "sight::module::io::itk::image_series_reader",
-        srvCfg,
+        srv_cfg,
         data::Access::inout
     );
 
-    data::image::Spacing spacing = imageSeries2->getSpacing();
+    data::image::Spacing spacing = image_series2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    imageSeries2->setSpacing(spacing);
+    image_series2->setSpacing(spacing);
 
     // check image
-    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
-    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
+    image_series2->setWindowCenter(image_series->getWindowCenter());
+    image_series2->setWindowWidth(image_series->getWindowWidth());
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "image" part...
-    const auto image  = std::dynamic_pointer_cast<data::image>(imageSeries);
-    const auto image2 = std::dynamic_pointer_cast<data::image>(imageSeries2);
+    const auto image  = std::dynamic_pointer_cast<data::image>(image_series);
+    const auto image2 = std::dynamic_pointer_cast<data::image>(image_series2);
     image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
@@ -326,30 +326,30 @@ void IoItkTest::SeriesSetInrTest()
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const std::filesystem::path imageFile = utest_data::Data::dir() / "sight/image/inr/image.inr.gz";
-    const std::filesystem::path skinFile  = utest_data::Data::dir() / "sight/image/inr/skin.inr.gz";
+    const std::filesystem::path image_file = utest_data::Data::dir() / "sight/image/inr/image.inr.gz";
+    const std::filesystem::path skin_file  = utest_data::Data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + imageFile.string() + "' does not exist",
-        std::filesystem::exists(imageFile)
+        "The file '" + image_file.string() + "' does not exist",
+        std::filesystem::exists(image_file)
     );
 
     CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + skinFile.string() + "' does not exist",
-        std::filesystem::exists(skinFile)
+        "The file '" + skin_file.string() + "' does not exist",
+        std::filesystem::exists(skin_file)
     );
 
     // Create config
-    service::config_t srvCfg;
-    srvCfg.add("file", imageFile.string());
-    srvCfg.add("file", skinFile.string());
+    service::config_t srv_cfg;
+    srv_cfg.add("file", image_file.string());
+    srv_cfg.add("file", skin_file.string());
 
     // load series_set
     auto series_set = std::make_shared<data::series_set>();
-    executeService(
+    execute_service(
         series_set,
         "sight::module::io::itk::series_set_reader",
-        srvCfg,
+        srv_cfg,
         data::Access::inout
     );
 
@@ -357,25 +357,25 @@ void IoItkTest::SeriesSetInrTest()
     const data::image::Size size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
-    data::image_series::sptr imgSeries = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
-    CPPUNIT_ASSERT(imgSeries);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
+    data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
+    CPPUNIT_ASSERT(img_series);
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->getModality());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("int16"), imgSeries->getType().name());
-    CPPUNIT_ASSERT(size == imgSeries->size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), img_series->getType().name());
+    CPPUNIT_ASSERT(size == img_series->size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->getSpacing()[2], EPSILON);
 
-    imgSeries = std::dynamic_pointer_cast<data::image_series>(series_set->at(1));
-    CPPUNIT_ASSERT(imgSeries);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
+    img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(1));
+    CPPUNIT_ASSERT(img_series);
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->getModality());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), imgSeries->getType().name());
-    CPPUNIT_ASSERT(size == imgSeries->size());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), img_series->getType().name());
+    CPPUNIT_ASSERT(size == img_series->size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], img_series->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], img_series->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], img_series->getSpacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------

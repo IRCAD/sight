@@ -68,16 +68,16 @@ bool is_pointed_value_const(T /*unused*/)
 
 void buffer_object_test::allocate_test()
 {
-    const std::size_t SIZE               = 100000;
+    const std::size_t size               = 100000;
     core::memory::buffer_object::sptr bo = std::make_shared<core::memory::buffer_object>();
 
     CPPUNIT_ASSERT(bo->is_empty());
     CPPUNIT_ASSERT(bo->lock().buffer() == nullptr);
 
-    bo->allocate(SIZE);
+    bo->allocate(size);
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     // We need to wait before checking that the buffer was unlocked because all buffer operations are done on a worker.
@@ -91,7 +91,7 @@ void buffer_object_test::allocate_test()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(1), bo->lock_count());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(std::size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < size ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -101,7 +101,7 @@ void buffer_object_test::allocate_test()
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(std::size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < size ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -137,17 +137,17 @@ void buffer_object_test::allocate_test()
     CPPUNIT_ASSERT(bo->is_empty());
     CPPUNIT_ASSERT(bo->lock().buffer() == nullptr);
 
-    bo->allocate(SIZE, std::make_shared<core::memory::buffer_new_policy>());
+    bo->allocate(size, std::make_shared<core::memory::buffer_new_policy>());
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     {
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(std::size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < size ; ++i)
         {
             buf[i] = static_cast<char>(i % 256);
         }
@@ -157,7 +157,7 @@ void buffer_object_test::allocate_test()
         core::memory::buffer_object::lock_t lock(bo->lock());
         char* buf = static_cast<char*>(lock.buffer());
 
-        for(std::size_t i = 0 ; i < SIZE ; ++i)
+        for(std::size_t i = 0 ; i < size ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i % 256), buf[i]);
         }
@@ -169,28 +169,28 @@ void buffer_object_test::allocate_test()
 
     CPPUNIT_ASSERT_THROW(bo->allocate(std::numeric_limits<std::size_t>::max() / 2), core::memory::exception::memory);
 
-    bo->allocate(SIZE);
+    bo->allocate(size);
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     CPPUNIT_ASSERT_THROW(bo->reallocate(std::numeric_limits<std::size_t>::max() / 2), core::memory::exception::memory);
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
-    const std::size_t SMALLER_REALLOC_SIZE = 1024;
-    const std::size_t BIGGER_REALLOC_SIZE  = SIZE + 1024;
+    const std::size_t smaller_realloc_size = 1024;
+    const std::size_t bigger_realloc_size  = size + 1024;
 
-    bo->reallocate(SMALLER_REALLOC_SIZE);
+    bo->reallocate(smaller_realloc_size);
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SMALLER_REALLOC_SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(smaller_realloc_size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
-    bo->reallocate(BIGGER_REALLOC_SIZE);
+    bo->reallocate(bigger_realloc_size);
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(BIGGER_REALLOC_SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(bigger_realloc_size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     bo->destroy();
@@ -209,7 +209,7 @@ void buffer_object_test::allocate_test()
 
 void buffer_object_test::allocate_zero_test()
 {
-    const std::size_t SIZE               = 100000;
+    const std::size_t size               = 100000;
     core::memory::buffer_object::sptr bo = std::make_shared<core::memory::buffer_object>();
 
     CPPUNIT_ASSERT(bo->is_empty());
@@ -220,10 +220,10 @@ void buffer_object_test::allocate_zero_test()
     CPPUNIT_ASSERT(bo->is_empty());
     CPPUNIT_ASSERT(bo->lock().buffer() == nullptr);
 
-    bo->allocate(SIZE);
+    bo->allocate(size);
 
     CPPUNIT_ASSERT(!bo->is_empty());
-    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(SIZE), bo->size());
+    CPPUNIT_ASSERT_EQUAL(static_cast<core::memory::buffer_object::size_t>(size), bo->size());
     CPPUNIT_ASSERT(bo->lock().buffer() != nullptr);
 
     bo->destroy();
@@ -231,19 +231,19 @@ void buffer_object_test::allocate_zero_test()
 
 //------------------------------------------------------------------------------
 
-void stress_lock(core::memory::buffer_object::sptr bo, int nb_locks, int nb_test)
+void stress_lock(core::memory::buffer_object::sptr _bo, int _nb_locks, int _nb_test)
 {
     std::vector<core::memory::buffer_object::lock_t> m_locks;
 
-    for(int t = 0 ; t < nb_test ; ++t)
+    for(int t = 0 ; t < _nb_test ; ++t)
     {
-        for(int i = 0 ; i < nb_locks ; ++i)
+        for(int i = 0 ; i < _nb_locks ; ++i)
         {
-            m_locks.push_back(bo->lock());
+            m_locks.push_back(_bo->lock());
         }
 
-        SIGHT_TEST_WAIT(bo->lock_count() >= 3);
-        CPPUNIT_ASSERT(bo->lock_count() >= static_cast<std::int64_t>(3));
+        SIGHT_TEST_WAIT(_bo->lock_count() >= 3);
+        CPPUNIT_ASSERT(_bo->lock_count() >= static_cast<std::int64_t>(3));
 
         m_locks.clear();
     }

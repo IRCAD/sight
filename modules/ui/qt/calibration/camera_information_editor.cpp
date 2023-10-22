@@ -58,75 +58,75 @@ void camera_information_editor::configuring()
 
 void camera_information_editor::starting()
 {
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
-    qtContainer->getQtContainer()->setObjectName(serviceID);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    qt_container->getQtContainer()->setObjectName(service_id);
 
-    auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
-    mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    auto* main_layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    main_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    auto* gridLayout = new QGridLayout();
-    auto* desc       = new QLabel("description: ");
+    auto* grid_layout = new QGridLayout();
+    auto* desc        = new QLabel("description: ");
     m_description = new QLabel();
-    m_description->setObjectName(serviceID + "/description");
-    gridLayout->addWidget(desc, 0, 0);
-    gridLayout->addWidget(m_description, 0, 1);
+    m_description->setObjectName(service_id + "/description");
+    grid_layout->addWidget(desc, 0, 0);
+    grid_layout->addWidget(m_description, 0, 1);
 
-    auto* titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* title_layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_isCalibrated = new QLabel();
-    m_isCalibrated->setObjectName(serviceID + "/isCalibrated");
-    titleLayout->addWidget(m_isCalibrated);
+    m_isCalibrated->setObjectName(service_id + "/isCalibrated");
+    title_layout->addWidget(m_isCalibrated);
 
-    auto* infoLayout = new QGridLayout;
-    infoLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    auto* info_layout = new QGridLayout;
+    info_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    mainLayout->addLayout(gridLayout);
-    mainLayout->addLayout(titleLayout);
-    mainLayout->addLayout(infoLayout);
+    main_layout->addLayout(grid_layout);
+    main_layout->addLayout(title_layout);
+    main_layout->addLayout(info_layout);
 
     m_width = new QLabel();
-    m_width->setObjectName(serviceID + "/width");
+    m_width->setObjectName(service_id + "/width");
     m_height = new QLabel();
-    m_height->setObjectName(serviceID + "/height");
+    m_height->setObjectName(service_id + "/height");
     m_cx = new QLabel();
-    m_cx->setObjectName(serviceID + "/cx");
+    m_cx->setObjectName(service_id + "/cx");
     m_cy = new QLabel();
-    m_cy->setObjectName(serviceID + "/cy");
+    m_cy->setObjectName(service_id + "/cy");
     m_fx = new QLabel();
-    m_fx->setObjectName(serviceID + "/fx");
+    m_fx->setObjectName(service_id + "/fx");
     m_fy = new QLabel();
-    m_fy->setObjectName(serviceID + "/fy");
+    m_fy->setObjectName(service_id + "/fy");
     m_k1 = new QLabel();
-    m_k1->setObjectName(serviceID + "/k1");
+    m_k1->setObjectName(service_id + "/k1");
     m_k2 = new QLabel();
-    m_k2->setObjectName(serviceID + "/k2");
+    m_k2->setObjectName(service_id + "/k2");
     m_p1 = new QLabel();
-    m_p1->setObjectName(serviceID + "/p1");
+    m_p1->setObjectName(service_id + "/p1");
     m_p2 = new QLabel();
-    m_p2->setObjectName(serviceID + "/p2");
+    m_p2->setObjectName(service_id + "/p2");
     m_k3 = new QLabel();
-    m_k3->setObjectName(serviceID + "/k3");
+    m_k3->setObjectName(service_id + "/k3");
     m_skew = new QLabel();
-    m_skew->setObjectName(serviceID + "/skew");
+    m_skew->setObjectName(service_id + "/skew");
 
-    infoLayout->addWidget(m_width, 0, 0);
-    infoLayout->addWidget(m_height, 0, 1);
-    infoLayout->addWidget(m_skew, 0, 2);
+    info_layout->addWidget(m_width, 0, 0);
+    info_layout->addWidget(m_height, 0, 1);
+    info_layout->addWidget(m_skew, 0, 2);
 
-    infoLayout->addWidget(m_cx, 1, 0);
-    infoLayout->addWidget(m_cy, 1, 1);
-    infoLayout->addWidget(m_fx, 1, 2);
-    infoLayout->addWidget(m_fy, 1, 3);
+    info_layout->addWidget(m_cx, 1, 0);
+    info_layout->addWidget(m_cy, 1, 1);
+    info_layout->addWidget(m_fx, 1, 2);
+    info_layout->addWidget(m_fy, 1, 3);
 
-    infoLayout->addWidget(m_k1, 2, 0);
-    infoLayout->addWidget(m_k2, 2, 1);
-    infoLayout->addWidget(m_p1, 2, 2);
-    infoLayout->addWidget(m_p2, 2, 3);
-    infoLayout->addWidget(m_k3, 2, 4);
+    info_layout->addWidget(m_k1, 2, 0);
+    info_layout->addWidget(m_k2, 2, 1);
+    info_layout->addWidget(m_p1, 2, 2);
+    info_layout->addWidget(m_p2, 2, 3);
+    info_layout->addWidget(m_k3, 2, 4);
 
-    qtContainer->setLayout(mainLayout);
+    qt_container->setLayout(main_layout);
 
     updateInformations();
 }
@@ -192,7 +192,7 @@ void camera_information_editor::updateInformations()
     out << "Fy: <font color='#0066CC'>" << camera->getFy() << "</font>";
     m_fy->setText(out.str().c_str());
 
-    const data::camera::DistArrayType& dist = camera->getDistortionCoefficient();
+    const data::camera::dist_array_t& dist = camera->getDistortionCoefficient();
 
     out.str("");
 

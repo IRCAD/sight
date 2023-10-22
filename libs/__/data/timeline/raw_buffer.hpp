@@ -37,20 +37,20 @@ public:
 
     /// Constructor
     DATA_API raw_buffer(
-        core::hires_clock::type timestamp = 0,
-        BufferDataType buffer             = nullptr,
-        std::size_t size                  = 0,
-        DeleterType d                     = nullptr
+        core::hires_clock::type _timestamp = 0,
+        buffer_data_t _buffer              = nullptr,
+        std::size_t _size                  = 0,
+        deleter_t _d                       = nullptr
     );
 
     /// Destructor
     DATA_API ~raw_buffer() override;
 
     /// Set buffer values
-    DATA_API void setBufferValues(BufferDataType values);
+    DATA_API void setBufferValues(buffer_data_t _values);
 
     /// Return buffer
-    [[nodiscard]] BufferDataType buffer() const
+    [[nodiscard]] buffer_data_t buffer() const
     {
         return m_buffer;
     }

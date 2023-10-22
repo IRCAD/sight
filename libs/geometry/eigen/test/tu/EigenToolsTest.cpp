@@ -50,7 +50,7 @@ void EigenToolsTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void EigenToolsTest::eigenToF4s()
+void EigenToolsTest::from_eigen()
 {
     Eigen::Matrix<double, 4, 4> mat;
 
@@ -71,7 +71,7 @@ void EigenToolsTest::eigenToF4s()
     mat(3, 2) = 0;
     mat(3, 3) = 1;
 
-    data::matrix4::sptr f4sRes = geometry::eigen::helper::toF4s(mat);
+    data::matrix4::sptr f4s_res = geometry::eigen::helper::from_eigen(mat);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -82,7 +82,7 @@ void EigenToolsTest::eigenToF4s()
                     c
                 ) + ")",
                 mat(r, c),
-                (*f4sRes)(r, c)
+                (*f4s_res)(r, c)
             );
         }
     }
@@ -92,7 +92,7 @@ void EigenToolsTest::eigenToF4s()
 
 void EigenToolsTest::f4sToEigen()
 {
-    Eigen::Matrix<float, 4, 4> eigenRes;
+    Eigen::Matrix<float, 4, 4> eigen_res;
 
     data::matrix4::sptr mat = std::make_shared<data::matrix4>();
 
@@ -113,9 +113,9 @@ void EigenToolsTest::f4sToEigen()
     (*mat)(3, 2) = 0;
     (*mat)(3, 3) = 1;
 
-    eigenRes = geometry::eigen::helper::toEigen<float>(mat);
+    eigen_res = geometry::eigen::helper::to_eigen<float>(mat);
 
-    data::matrix4::sptr mat2 = geometry::eigen::helper::toF4s(eigenRes);
+    data::matrix4::sptr mat2 = geometry::eigen::helper::from_eigen(eigen_res);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -126,7 +126,7 @@ void EigenToolsTest::f4sToEigen()
                     c
                 ) + ")",
                 (*mat)(r, c),
-                eigenRes(r, c)
+                eigen_res(r, c)
                 ,
                 0.0000000001
             );
@@ -138,17 +138,17 @@ void EigenToolsTest::f4sToEigen()
 
 void EigenToolsTest::eigenMatToRvecTvec()
 {
-    Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
-    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
+    Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
+    Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
 
-    Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
+    Eigen::Vector3d expected_rvec = rot_vec.angle() * rot_vec.axis();
     Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
-    m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
+    m.block<3, 3>(0, 0) = rot_vec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
 
-    geometry::eigen::helper::RvecTvecType actualRvecTvec =
-        geometry::eigen::helper::eigenMatToRvecTvec(m);
+    geometry::eigen::helper::rvec_tvec_t actual_rvec_tvec =
+        geometry::eigen::helper::eigen_mat_to_rvec_tvec(m);
 
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
@@ -156,7 +156,7 @@ void EigenToolsTest::eigenMatToRvecTvec()
             "RVecs differ at " + std::to_string(i)
             ,
             expected_rvec(i),
-            actualRvecTvec.first(i),
+            actual_rvec_tvec.first(i),
             0.0000000001
         );
     }
@@ -167,7 +167,7 @@ void EigenToolsTest::eigenMatToRvecTvec()
             "TVecs differ at " + std::to_string(i)
             ,
             expected_tvec(i),
-            actualRvecTvec.second(i),
+            actual_rvec_tvec.second(i),
             0.0000000001
         );
     }
@@ -177,19 +177,19 @@ void EigenToolsTest::eigenMatToRvecTvec()
 
 void EigenToolsTest::f4sMatToRvecTvec()
 {
-    Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
-    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
+    Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
+    Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
 
-    Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
+    Eigen::Vector3d expected_rvec = rot_vec.angle() * rot_vec.axis();
     Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
-    m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
+    m.block<3, 3>(0, 0) = rot_vec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
 
-    data::matrix4::sptr trf = geometry::eigen::helper::toF4s(m);
+    data::matrix4::sptr trf = geometry::eigen::helper::from_eigen(m);
 
-    geometry::eigen::helper::RvecTvecType actualRvecTvec =
-        geometry::eigen::helper::f4sMatToRvecTvec(const_pointer_cast<data::matrix4>(trf));
+    geometry::eigen::helper::rvec_tvec_t actual_rvec_tvec =
+        geometry::eigen::helper::f4s_mat_to_rvec_tvec(const_pointer_cast<data::matrix4>(trf));
 
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
@@ -197,7 +197,7 @@ void EigenToolsTest::f4sMatToRvecTvec()
             "RVecs differ at " + std::to_string(i)
             ,
             expected_rvec(i),
-            actualRvecTvec.first(i),
+            actual_rvec_tvec.first(i),
             0.0000000001
         );
     }
@@ -208,7 +208,7 @@ void EigenToolsTest::f4sMatToRvecTvec()
             "TVecs differ at " + std::to_string(i)
             ,
             expected_tvec(i),
-            actualRvecTvec.second(i),
+            actual_rvec_tvec.second(i),
             0.0000000001
         );
     }
@@ -227,7 +227,7 @@ void EigenToolsTest::float16ToEigen()
 
     Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
 
-    mat = geometry::eigen::helper::toEigen(mat16);
+    mat = geometry::eigen::helper::to_eigen(mat16);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {

@@ -34,8 +34,8 @@ class CORE_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    inline exception(const std::string& err) :
-        std::runtime_error(err)
+    inline exception(const std::string& _err) :
+        std::runtime_error(_err)
     {
     }
 };

@@ -23,32 +23,36 @@
 
 #include <QComboBox>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void ComboBox::select(Tester& tester, const Select& comboBox, const std::string& text)
+void ComboBox::select(Tester& _tester, const Select& _combo_box, const std::string& _text)
 {
-    auto bt = tester.addInBacktrace("selecting " + text + " in \"" + comboBox.getDescription(tester) + "\" combo box");
-    comboBox.select(tester);
-    tester.doSomething<QComboBox*>([&text](QComboBox* cb){cb->setCurrentText(QString::fromStdString(text));});
-}
-
-//------------------------------------------------------------------------------
-
-void ComboBox::valueEquals(Tester& tester, const Select& comboBox, const std::string& expected)
-{
-    auto bt = tester.addInBacktrace(
-        "checking whether " + comboBox.getDescription(
-            tester
-        ) + " combo box value is \"" + expected + '"'
+    auto bt = _tester.addInBacktrace(
+        "selecting " + _text + " in \"" + _combo_box.getDescription(
+            _tester
+        ) + "\" combo box"
     );
-    comboBox.select(tester);
-    QString qExpected = QString::fromStdString(expected);
-    tester.doubt<QComboBox*>(
-        comboBox.getDescription(tester) + " combo box value should be \"" + expected + '"',
-        [&qExpected](QComboBox* obj){return obj->currentText() == qExpected;});
+    _combo_box.select(_tester);
+    _tester.doSomething<QComboBox*>([&_text](QComboBox* _cb){_cb->setCurrentText(QString::fromStdString(_text));});
 }
 
-} // namespace sight::ui::testCore::helper
+//------------------------------------------------------------------------------
+
+void ComboBox::valueEquals(Tester& _tester, const Select& _combo_box, const std::string& _expected)
+{
+    auto bt = _tester.addInBacktrace(
+        "checking whether " + _combo_box.getDescription(
+            _tester
+        ) + " combo box value is \"" + _expected + '"'
+    );
+    _combo_box.select(_tester);
+    QString q_expected = QString::fromStdString(_expected);
+    _tester.doubt<QComboBox*>(
+        _combo_box.getDescription(_tester) + " combo box value should be \"" + _expected + '"',
+        [&q_expected](QComboBox* _obj){return _obj->currentText() == q_expected;});
+}
+
+} // namespace sight::ui::test_core::helper

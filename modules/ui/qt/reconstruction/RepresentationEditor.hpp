@@ -99,9 +99,9 @@ protected:
 
 protected Q_SLOTS:
 
-    void onChangeRepresentation(int id);
-    void onChangeShading(int id);
-    void onShowNormals(int state);
+    void onChangeRepresentation(int _id);
+    void onChangeShading(int _id);
+    void onShowNormals(int _state);
 
 private:
 

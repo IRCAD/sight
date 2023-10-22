@@ -32,7 +32,7 @@
 namespace sight::ui::builder
 {
 
-const toolbar::RegistryKeyType toolbar::REGISTRY_KEY = "::ui::toolbar";
+const toolbar::registry_key_t toolbar::REGISTRY_KEY = "::ui::toolbar";
 
 //-----------------------------------------------------------------------------
 
@@ -43,9 +43,9 @@ toolbar::toolbar() :
 
 //-----------------------------------------------------------------------------
 
-void toolbar::initialize(const ui::config_t& configuration)
+void toolbar::initialize(const ui::config_t& _configuration)
 {
-    const auto alignment = configuration.get_optional<std::string>("<xmlattr>.align");
+    const auto alignment = _configuration.get_optional<std::string>("<xmlattr>.align");
     if(alignment.has_value())
     {
         if(alignment.value() == "top")
@@ -70,21 +70,21 @@ void toolbar::initialize(const ui::config_t& configuration)
         }
     }
 
-    if(const auto hexaColor = configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexaColor.empty())
+    if(const auto hexa_color = _configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexa_color.empty())
     {
         SIGHT_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
-            "hexadecimal digits. Given color: " << hexaColor,
-            hexaColor[0] == '#'
-            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+            "hexadecimal digits. Given color: " << hexa_color,
+            hexa_color[0] == '#'
+            && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
-        m_backgroundColor = hexaColor;
+        m_backgroundColor = hexa_color;
     }
 
-    m_toolBitmapSize.first  = configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_toolBitmapSize.first);
-    m_toolBitmapSize.second = configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_toolBitmapSize.second);
+    m_toolBitmapSize.first  = _configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_toolBitmapSize.first);
+    m_toolBitmapSize.second = _configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_toolBitmapSize.second);
 
-    m_spacing = configuration.get<int>("<xmlattr>.spacing", m_spacing);
+    m_spacing = _configuration.get<int>("<xmlattr>.spacing", m_spacing);
 }
 
 //-----------------------------------------------------------------------------

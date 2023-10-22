@@ -73,10 +73,10 @@ Scene2DGraphicsView* render::getView() const
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Axis::sptr render::getAxis(const std::string& id) const
+scene2d::data::Axis::sptr render::getAxis(const std::string& _id) const
 {
     scene2d::data::Axis::sptr axis;
-    const auto iter = m_axisMap.find(id);
+    const auto iter = m_axisMap.find(_id);
     if(iter != m_axisMap.end())
     {
         axis = iter->second;
@@ -92,7 +92,7 @@ void render::dispatchInteraction(scene2d::data::Event& _event)
     if(!_event.isAccepted())
     {
         // Get all started adaptors.
-        std::vector<viz::scene2d::adaptor::sptr> orderedAdaptors;
+        std::vector<viz::scene2d::adaptor::sptr> ordered_adaptors;
 
         const auto& registry = viz::scene2d::registry::get_adaptor_registry();
         for(const auto& elt : registry)
@@ -103,22 +103,22 @@ void render::dispatchInteraction(scene2d::data::Event& _event)
                     std::dynamic_pointer_cast<viz::scene2d::adaptor>(core::tools::id::get_object(elt.first));
                 if(adaptor != nullptr && adaptor->started())
                 {
-                    orderedAdaptors.push_back(adaptor);
+                    ordered_adaptors.push_back(adaptor);
                 }
             }
         }
 
         // Sort adaptors by z value.
         std::sort(
-            orderedAdaptors.begin(),
-            orderedAdaptors.end(),
+            ordered_adaptors.begin(),
+            ordered_adaptors.end(),
             [&](viz::scene2d::adaptor::sptr _a1, viz::scene2d::adaptor::sptr _a2)
             {
                 return _a1->getZValue() > _a2->getZValue();
             });
 
         // Process interaction on all adaptors until one has accepted the event.
-        for(const viz::scene2d::adaptor::sptr& adaptor : orderedAdaptors)
+        for(const viz::scene2d::adaptor::sptr& adaptor : ordered_adaptors)
         {
             adaptor->processInteraction(_event);
             if(_event.isAccepted())
@@ -131,10 +131,10 @@ void render::dispatchInteraction(scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-bool render::contains(const scene2d::vec2d_t& coord) const
+bool render::contains(const scene2d::vec2d_t& _coord) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
+    const QPoint qp(static_cast<int>(_coord.x), static_cast<int>(_coord.y));
     QPointF qps = m_view->mapToScene(qp);
 
     QRectF rect = m_view->sceneRect();
@@ -144,12 +144,12 @@ bool render::contains(const scene2d::vec2d_t& coord) const
 
 //-----------------------------------------------------------------------------
 
-scene2d::vec2d_t render::mapToScene(const scene2d::vec2d_t& coord, bool clip) const
+scene2d::vec2d_t render::mapToScene(const scene2d::vec2d_t& _coord, bool _clip) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
+    const QPoint qp(static_cast<int>(_coord.x), static_cast<int>(_coord.y));
     QPointF qps = m_view->mapToScene(qp);
-    if(clip)
+    if(_clip)
     {
         QRectF rect = m_view->sceneRect();
         if(!rect.contains(qps))
@@ -171,10 +171,10 @@ void render::configuring()
 
     const auto& config = this->get_config();
 
-    const auto sceneCfg = config.get_child_optional("scene");
-    SIGHT_ASSERT("There is no implementation between \"scene\" tags", sceneCfg.has_value());
+    const auto scene_cfg = config.get_child_optional("scene");
+    SIGHT_ASSERT("There is no implementation between \"scene\" tags", scene_cfg.has_value());
 
-    for(const auto& iter : sceneCfg.value())
+    for(const auto& iter : scene_cfg.value())
     {
         if(iter.first == "axis")
         {
@@ -224,7 +224,7 @@ void render::stopping()
 
 void render::startContext()
 {
-    auto qtContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<ui::qt::container::widget>(this->getContainer());
 
     // Convert the background color
     std::array<std::uint8_t, 4> color {};
@@ -234,20 +234,20 @@ void render::startContext()
     m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
     m_scene->setFocus(Qt::MouseFocusReason);
 
-    m_view = new Scene2DGraphicsView(m_scene, qtContainer->getQtContainer());
+    m_view = new Scene2DGraphicsView(m_scene, qt_container->getQtContainer());
     m_view->setSceneRender(std::dynamic_pointer_cast<viz::scene2d::render>(this->get_sptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
     auto* layout = new QVBoxLayout;
     layout->addWidget(m_view);
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
-    viz::scene2d::data::Viewport initViewport;
-    initViewport.setX(m_sceneStart.x);
-    initViewport.setY(m_sceneStart.y);
-    initViewport.setWidth(m_sceneWidth.x);
-    initViewport.setHeight(m_sceneWidth.y);
-    m_view->updateFromViewport(initViewport);
+    viz::scene2d::data::Viewport init_viewport;
+    init_viewport.setX(m_sceneStart.x);
+    init_viewport.setY(m_sceneStart.y);
+    init_viewport.setWidth(m_sceneWidth.x);
+    init_viewport.setHeight(m_sceneWidth.y);
+    m_view->updateFromViewport(init_viewport);
 }
 
 //-----------------------------------------------------------------------------
@@ -269,15 +269,15 @@ Qt::AspectRatioMode render::getAspectRatioMode() const
 
 void render::configureAxis(const config_t& _conf)
 {
-    const auto id        = _conf.get<std::string>("id");
-    const auto scaleType = _conf.get<std::string>("scaleType");
-    const auto origin    = _conf.get<float>("origin");
-    const auto scale     = _conf.get<float>("scale");
+    const auto id         = _conf.get<std::string>("id");
+    const auto scale_type = _conf.get<std::string>("scaleType");
+    const auto origin     = _conf.get<float>("origin");
+    const auto scale      = _conf.get<float>("scale");
 
     scene2d::data::Axis::sptr axis = std::make_shared<scene2d::data::Axis>();
     axis->setOrigin(origin);
     axis->setScale(scale);
-    axis->setScaleType(scaleType == "LINEAR" ? scene2d::data::Axis::LINEAR : scene2d::data::Axis::LOG);
+    axis->set_scale_type(scale_type == "LINEAR" ? scene2d::data::Axis::LINEAR : scene2d::data::Axis::LOG);
     m_axisMap[id] = axis;
 }
 
@@ -292,13 +292,13 @@ void render::configureScene(const config_t& _conf)
 
     m_antialiasing = _conf.get<bool>("antialiasing", m_antialiasing);
 
-    if(const auto aspectRatio = _conf.get_optional<std::string>("aspectRatioMode"); aspectRatio.has_value())
+    if(const auto aspect_ratio = _conf.get_optional<std::string>("aspectRatioMode"); aspect_ratio.has_value())
     {
-        if(*aspectRatio == "KeepAspectRatioByExpanding")
+        if(*aspect_ratio == "KeepAspectRatioByExpanding")
         {
             m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
         }
-        else if(*aspectRatio == "KeepAspectRatio")
+        else if(*aspect_ratio == "KeepAspectRatio")
         {
             m_aspectRatioMode = Qt::KeepAspectRatio;
         }
@@ -306,23 +306,23 @@ void render::configureScene(const config_t& _conf)
         {
             SIGHT_ERROR_IF(
                 "Unknown aspect ratio ("
-                << *aspectRatio
+                << *aspect_ratio
                 << "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
-                *aspectRatio != "IgnoreAspectRatio"
+                *aspect_ratio != "IgnoreAspectRatio"
             );
             m_aspectRatioMode = Qt::IgnoreAspectRatio;
         }
     }
 
-    if(const auto hexaColor = _conf.get<std::string>("background", ""); !hexaColor.empty())
+    if(const auto hexa_color = _conf.get<std::string>("background", ""); !hexa_color.empty())
     {
         SIGHT_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
-            "hexadecimal digits. Given color: " << hexaColor,
-            hexaColor[0] == '#'
-            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+            "hexadecimal digits. Given color: " << hexa_color,
+            hexa_color[0] == '#'
+            && (hexa_color.length() == 7 || hexa_color.length() == 9)
         );
-        m_background = hexaColor;
+        m_background = hexa_color;
     }
 }
 
@@ -330,15 +330,15 @@ void render::configureScene(const config_t& _conf)
 
 void render::configureAdaptor(const config_t& _conf)
 {
-    const auto adaptorId = _conf.get<std::string>("uid");
+    const auto adaptor_id = _conf.get<std::string>("uid");
 
     auto& registry = viz::scene2d::registry::get_adaptor_registry();
-    registry[adaptorId] = this->get_id();
+    registry[adaptor_id] = this->get_id();
 }
 
 //-----------------------------------------------------------------------------
 
-void render::updateSceneSize(float ratioPercent)
+void render::updateSceneSize(float _ratio_percent)
 {
     QRectF rec = m_scene->itemsBoundingRect();
     qreal x    = NAN;
@@ -347,14 +347,14 @@ void render::updateSceneSize(float ratioPercent)
     qreal h    = NAN;
     rec.getRect(&x, &y, &w, &h);
 
-    if(ratioPercent != 0)
+    if(_ratio_percent != 0)
     {
-        qreal centerX = x + w / 2.0;
-        qreal centerY = y + h / 2.0;
-        w = w + w * ratioPercent;
-        h = h + h * ratioPercent;
-        x = centerX - w / 2.0;
-        y = centerY - h / 2.0;
+        qreal center_x = x + w / 2.0;
+        qreal center_y = y + h / 2.0;
+        w = w + w * _ratio_percent;
+        h = h + h * _ratio_percent;
+        x = center_x - w / 2.0;
+        y = center_y - h / 2.0;
         rec.setRect(x, y, w, h);
     }
 

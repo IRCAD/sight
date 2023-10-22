@@ -49,29 +49,29 @@ MemoryInfo::~MemoryInfo() noexcept =
 void MemoryInfo::updating()
 {
     // Memory information
-    std::uint64_t mo                = 1024LL * 1024;
-    std::uint64_t totalSystemMemory = core::memory::tools::memory_monitor_tools::get_total_system_memory();
-    std::uint64_t freeSystemMemory  = core::memory::tools::memory_monitor_tools::get_free_system_memory();
-    std::uint64_t usedProcessMemory = core::memory::tools::memory_monitor_tools::get_used_process_memory();
-    std::uint64_t estimateFreeMem   = core::memory::tools::memory_monitor_tools::estimate_free_mem();
+    std::uint64_t mo                  = 1024LL * 1024;
+    std::uint64_t total_system_memory = core::memory::tools::memory_monitor_tools::get_total_system_memory();
+    std::uint64_t free_system_memory  = core::memory::tools::memory_monitor_tools::get_free_system_memory();
+    std::uint64_t used_process_memory = core::memory::tools::memory_monitor_tools::get_used_process_memory();
+    std::uint64_t estimate_free_mem   = core::memory::tools::memory_monitor_tools::estimate_free_mem();
 
-    core::memory::buffer_manager::size_t managedBufferSize = 0;
-    core::memory::buffer_manager::size_t dumpedBufferSize  = 0;
-    core::memory::buffer_manager::sptr manager             = core::memory::buffer_manager::get();
+    core::memory::buffer_manager::size_t managed_buffer_size = 0;
+    core::memory::buffer_manager::size_t dumped_buffer_size  = 0;
+    core::memory::buffer_manager::sptr manager               = core::memory::buffer_manager::get();
     if(manager)
     {
         core::memory::buffer_manager::buffer_stats stats = manager->get_buffer_stats().get();
-        managedBufferSize = stats.total_managed;
-        dumpedBufferSize  = stats.total_dumped;
+        managed_buffer_size = stats.total_managed;
+        dumped_buffer_size  = stats.total_dumped;
     }
 
     std::stringstream stream;
-    stream << "Total system memory = " << totalSystemMemory / mo << " Mo" << std::endl;
-    stream << "Free system memory  = " << freeSystemMemory / mo << " Mo" << std::endl;
-    stream << "Used process memory = " << usedProcessMemory / mo << " Mo" << std::endl;
-    stream << "Estimated Free memory = " << estimateFreeMem / mo << " Mo" << std::endl;
-    stream << "ManagedBuffer size  = " << managedBufferSize / mo << " Mo" << std::endl;
-    stream << "DumpedBuffer size   = " << dumpedBufferSize / mo << " Mo" << std::endl;
+    stream << "Total system memory = " << total_system_memory / mo << " Mo" << std::endl;
+    stream << "Free system memory  = " << free_system_memory / mo << " Mo" << std::endl;
+    stream << "Used process memory = " << used_process_memory / mo << " Mo" << std::endl;
+    stream << "Estimated Free memory = " << estimate_free_mem / mo << " Mo" << std::endl;
+    stream << "ManagedBuffer size  = " << managed_buffer_size / mo << " Mo" << std::endl;
+    stream << "DumpedBuffer size   = " << dumped_buffer_size / mo << " Mo" << std::endl;
 
     // Information message box
     sight::ui::dialog::message::show(

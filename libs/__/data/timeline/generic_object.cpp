@@ -28,14 +28,14 @@ namespace sight::data::timeline
 //-----------------------------------------------------------------------------
 
 generic_object_base::generic_object_base(
-    unsigned int maxElementNum,
-    core::hires_clock::type timestamp,
-    BufferDataType buffer,
-    std::size_t size,
-    DeleterType d
+    unsigned int _max_element_num,
+    core::hires_clock::type _timestamp,
+    buffer_data_t _buffer,
+    std::size_t _size,
+    deleter_t _d
 ) :
-    timeline::buffer(timestamp, buffer, size, d),
-    m_maxElementNum(maxElementNum)
+    timeline::buffer(_timestamp, _buffer, _size, _d),
+    m_maxElementNum(_max_element_num)
 {
     SIGHT_ASSERT(
         "m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
@@ -57,9 +57,9 @@ unsigned int generic_object_base::getPresentElementNum() const
 
 //-----------------------------------------------------------------------------
 
-bool generic_object_base::isPresent(unsigned int index) const
+bool generic_object_base::isPresent(unsigned int _index) const
 {
-    return (m_presenceMask & (uint64_t(1) << index)) != 0U;
+    return (m_presenceMask & (uint64_t(1) << _index)) != 0U;
 }
 
 //-----------------------------------------------------------------------------
@@ -85,14 +85,14 @@ std::size_t generic_object_base::getElementSize() const
 
 //-----------------------------------------------------------------------------
 
-void generic_object_base::deep_copy(const data::timeline::object& other)
+void generic_object_base::deep_copy(const data::timeline::object& _other)
 {
-    buffer::deep_copy(other);
+    buffer::deep_copy(_other);
 
-    const auto& otherObject = static_cast<const generic_object_base&>(other);
-    m_numPresent    = otherObject.m_numPresent;
-    m_presenceMask  = otherObject.m_presenceMask;
-    m_maxElementNum = otherObject.m_maxElementNum;
+    const auto& other_object = static_cast<const generic_object_base&>(_other);
+    m_numPresent    = other_object.m_numPresent;
+    m_presenceMask  = other_object.m_presenceMask;
+    m_maxElementNum = other_object.m_maxElementNum;
 }
 
 //-----------------------------------------------------------------------------

@@ -19,6 +19,6 @@ Contains functions to handle type conversion between `Eigen` types and `sight::d
 ### CMake
 
 ```cmake
-target_link_libraries(myTarget <PUBLIC|PRIVATE> geometry_eigen)
+target_link_libraries(my_target <PUBLIC|PRIVATE> geometry_eigen)
 ```
 

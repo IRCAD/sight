@@ -44,9 +44,9 @@ void matrix4_test::basicTest()
         30 31 32 33
     )");
     auto matrix = std::make_shared<data::matrix4>();
-    parser::matrix4 matrixParser;
-    matrixParser.setObjectConfig(ptree);
-    matrixParser.createConfig(matrix);
+    parser::matrix4 matrix_parser;
+    matrix_parser.setObjectConfig(ptree);
+    matrix_parser.createConfig(matrix);
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)

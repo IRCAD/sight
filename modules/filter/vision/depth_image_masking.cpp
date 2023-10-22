@@ -83,32 +83,32 @@ void depth_image_masking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        const auto videoImage = m_videoImage.lock();
-        SIGHT_ASSERT("No '" << s_VIDEO_IMAGE_KEY << "' found.", videoImage);
-        const auto depthImage = m_depthImage.lock();
-        SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
+        const auto video_image = m_videoImage.lock();
+        SIGHT_ASSERT("No '" << s_VIDEO_IMAGE_KEY << "' found.", video_image);
+        const auto depth_image = m_depthImage.lock();
+        SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depth_image);
 
-        const cv::Mat cvVideoImage = io::opencv::image::moveToCv(videoImage.get_shared());
-        const cv::Mat cvDepthImage = io::opencv::image::moveToCv(depthImage.get_shared());
+        const cv::Mat cv_video_image = io::opencv::image::move_to_cv(video_image.get_shared());
+        const cv::Mat cv_depth_image = io::opencv::image::move_to_cv(depth_image.get_shared());
 
-        cv::Mat cvMaskedDepth;
-        cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
+        cv::Mat cv_masked_depth;
+        cv_depth_image.copyTo(cv_masked_depth, m_cvMaskImage);
 
-        cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
+        cv::Mat cv_foreground_image = (cv_masked_depth < (m_cvDepthMaskImage - m_threshold));
 
-        cv::Mat morphElem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
-        cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
-        cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
+        cv::Mat morph_elem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
+        cv::dilate(cv_foreground_image, cv_foreground_image, morph_elem);
+        cv::erode(cv_foreground_image, cv_foreground_image, morph_elem);
 
-        cv::Mat cvMaskedVideo = cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
-        cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
+        cv::Mat cv_masked_video = cv::Mat::zeros(cv_video_image.rows, cv_video_image.cols, cv_video_image.type());
+        cv_video_image.copyTo(cv_masked_video, cv_foreground_image);
 
-        auto foregroundImage = m_foregroundImage.lock();
-        SIGHT_ASSERT("No '" << s_FOREGROUND_IMAGE_KEY << "' found.", foregroundImage);
+        auto foreground_image = m_foregroundImage.lock();
+        SIGHT_ASSERT("No '" << s_FOREGROUND_IMAGE_KEY << "' found.", foreground_image);
 
-        io::opencv::image::copyFromCv(*foregroundImage, cvMaskedVideo);
+        io::opencv::image::copy_from_cv(*foreground_image, cv_masked_video);
 
-        const auto sig = foregroundImage->signal<data::image::BufferModifiedSignalType>(
+        const auto sig = foreground_image->signal<data::image::buffer_modified_signal_t>(
             data::image::BUFFER_MODIFIED_SIG
         );
         sig->async_emit();
@@ -121,16 +121,16 @@ void depth_image_masking::updating()
 
 void depth_image_masking::setBackground()
 {
-    const auto maskImage = m_maskImage.lock();
-    SIGHT_ASSERT("No '" << s_MASK_IMAGE_KEY << "' found.", maskImage);
-    const auto depthImage = m_depthImage.lock();
-    SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
+    const auto mask_image = m_maskImage.lock();
+    SIGHT_ASSERT("No '" << s_MASK_IMAGE_KEY << "' found.", mask_image);
+    const auto depth_image = m_depthImage.lock();
+    SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depth_image);
 
-    if(maskImage && depthImage && (maskImage->getType() != core::type::NONE)
-       && (depthImage->getType() != core::type::NONE))
+    if(mask_image && depth_image && (mask_image->getType() != core::type::NONE)
+       && (depth_image->getType() != core::type::NONE))
     {
-        const cv::Mat cvDepthImage = io::opencv::image::moveToCv(depthImage.get_shared());
-        m_cvMaskImage = io::opencv::image::moveToCv(maskImage.get_shared());
+        const cv::Mat cv_depth_image = io::opencv::image::move_to_cv(depth_image.get_shared());
+        m_cvMaskImage = io::opencv::image::move_to_cv(mask_image.get_shared());
         if(m_cvMaskImage.channels() == 4)
         {
             cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
@@ -144,10 +144,10 @@ void depth_image_masking::setBackground()
 
         if(m_cvDepthMaskImage.empty())
         {
-            m_cvDepthMaskImage = cv::Mat::zeros(cvDepthImage.rows, cvDepthImage.cols, cvDepthImage.type());
+            m_cvDepthMaskImage = cv::Mat::zeros(cv_depth_image.rows, cv_depth_image.cols, cv_depth_image.type());
         }
 
-        cvDepthImage.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
+        cv_depth_image.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
     }
 }
 

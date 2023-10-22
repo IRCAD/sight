@@ -26,7 +26,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/data/Viewport.hpp>
@@ -84,23 +84,23 @@ service::connections_t viewport_range_selector::auto_connections() const
 void viewport_range_selector::starting()
 {
     {
-        auto* const scene        = this->getScene2DRender()->getScene();
-        const auto sceneViewport = m_viewport.lock();
+        auto* const scene         = this->getScene2DRender()->getScene();
+        const auto scene_viewport = m_viewport.lock();
 
-        const double viewportWidth = sceneViewport->width_or(scene->sceneRect().width());
-        const double defaultWidth  = 2. * viewportWidth / 4.;
+        const double viewport_width = scene_viewport->width_or(scene->sceneRect().width());
+        const double default_width  = 2. * viewport_width / 4.;
 
-        if(m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange)
+        if(m_initialWidth > viewport_width || m_initialWidth < m_clickCatchRange)
         {
             SIGHT_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
-            m_initialWidth = defaultWidth;
+            m_initialWidth = default_width;
         }
 
-        const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
-        if(m_initialX < sceneViewport->x_or(scene->sceneRect().x()) || (m_initialX + m_initialWidth) > viewportWidth)
+        const double default_pos = (viewport_width - m_initialWidth) / 2.;
+        if(m_initialX < scene_viewport->x_or(scene->sceneRect().x()) || (m_initialX + m_initialWidth) > viewport_width)
         {
             SIGHT_WARN("Set viewport position to a default value since the given one is not correct.");
-            m_initialX = defaultPos;
+            m_initialX = default_pos;
         }
     }
 
@@ -133,7 +133,7 @@ void viewport_range_selector::updating()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void viewport_range_selector::updateViewport(bool _signalSelectedViewport)
+void viewport_range_selector::updateViewport(bool _signal_selected_viewport)
 {
     const auto tf    = m_tf.lock();
     const auto image = m_image.lock();
@@ -150,7 +150,7 @@ void viewport_range_selector::updateViewport(bool _signalSelectedViewport)
 
     if(image)
     {
-        sight::data::helper::MedicalImage::getMinMax(image.get_shared(), m_imageMin, m_imageMax);
+        sight::data::helper::medical_image::get_min_max(image.get_shared(), m_imageMin, m_imageMax);
 
         m_min = std::min(m_min, m_imageMin);
         m_max = std::max(m_max, m_imageMax);
@@ -186,21 +186,21 @@ void viewport_range_selector::updateViewport(bool _signalSelectedViewport)
     viewport->setWidth(m_max - m_min);
     this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 
-    auto sig = viewport->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    auto sig = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         sig->async_emit();
     }
 
-    if(_signalSelectedViewport)
+    if(_signal_selected_viewport)
     {
-        auto selectedViewport = m_selectedViewport.lock();
-        auto sigSelected      = selectedViewport->signal<data::object::ModifiedSignalType>(
+        auto selected_viewport = m_selectedViewport.lock();
+        auto sig_selected      = selected_viewport->signal<data::object::modified_signal_t>(
             data::object::MODIFIED_SIG
         );
         {
-            core::com::connection::blocker block(sigSelected->get_connection(slot(service::slots::UPDATE)));
-            sigSelected->async_emit();
+            core::com::connection::blocker block(sig_selected->get_connection(slot(service::slots::UPDATE)));
+            sig_selected->async_emit();
         }
     }
 
@@ -216,37 +216,37 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
     coord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // Shutter coordinates in scene
-    const vec2d_t shutterCoordPair =
+    const vec2d_t shutter_coord_pair =
         this->mapAdaptorToScene(vec2d_t(m_shutter->rect().x(), m_shutter->rect().y()));
-    const double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
+    const double shutter_width = m_shutter->rect().width() * m_xAxis->getScale();
 
-    const QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
+    const QRectF scene_rect = this->getScene2DRender()->getScene()->sceneRect();
 
-    const bool onShutterLeft   = mouseOnShutterLeft(coord);
-    const bool onShutterRight  = mouseOnShutterRight(coord);
-    const bool onShutterMiddle = mouseOnShutterMiddle(coord);
+    const bool on_shutter_left   = mouseOnShutterLeft(coord);
+    const bool on_shutter_right  = mouseOnShutterRight(coord);
+    const bool on_shutter_middle = mouseOnShutterMiddle(coord);
 
     QRectF rect = m_shutter->rect();
 
     if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
-        if(onShutterLeft)
+        if(on_shutter_left)
         {
             m_isLeftInteracting = true;
         }
-        else if(onShutterRight)
+        else if(on_shutter_right)
         {
             m_isRightInteracting = true;
         }
-        else if(onShutterMiddle)
+        else if(on_shutter_middle)
         {
             this->getScene2DRender()->getView()->setCursor(Qt::ClosedHandCursor);
 
             // Interaction when clicking on the center of the shutter
             m_isInteracting         = true;
             m_dragStartPoint        = coord;
-            m_dragStartShutterPos.x = shutterCoordPair.x;
-            m_dragStartShutterPos.y = shutterCoordPair.y;
+            m_dragStartShutterPos.x = shutter_coord_pair.x;
+            m_dragStartShutterPos.y = shutter_coord_pair.y;
         }
     }
     else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
@@ -256,7 +256,7 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
         m_isRightInteracting = false;
 
         // Reset cursor
-        if(onShutterMiddle)
+        if(on_shutter_middle)
         {
             this->getScene2DRender()->getView()->setCursor(Qt::OpenHandCursor);
         }
@@ -271,11 +271,11 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
         // that symbolize the available interactions
         if(!m_isLeftInteracting && !m_isRightInteracting && !m_isInteracting)
         {
-            if(onShutterLeft || onShutterRight)
+            if(on_shutter_left || on_shutter_right)
             {
                 this->getScene2DRender()->getView()->setCursor(Qt::SizeHorCursor); // horizontal double arrow
             }
-            else if(onShutterMiddle)
+            else if(on_shutter_middle)
             {
                 this->getScene2DRender()->getView()->setCursor(Qt::OpenHandCursor); // open hand, for moving the
                                                                                     // whole shutter
@@ -289,39 +289,39 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
 
         bool update = false; // if a viewport update will be requested
 
-        const auto image               = m_image.lock();
-        const double leftSideBoundary  = image ? m_min : sceneRect.x();
-        const double rightSideBoundary = image ? m_max : sceneRect.width() - sceneRect.x();
+        const auto image                 = m_image.lock();
+        const double left_side_boundary  = image ? m_min : scene_rect.x();
+        const double right_side_boundary = image ? m_max : scene_rect.width() - scene_rect.x();
         if(m_isLeftInteracting)
         {
             // Shutter right side position
-            const double rightSide = rect.x() + rect.width();
+            const double right_side = rect.x() + rect.width();
 
-            if(coord.x < rightSide - m_clickCatchRange)
+            if(coord.x < right_side - m_clickCatchRange)
             {
-                rect.setX(std::max(leftSideBoundary, coord.x));
+                rect.setX(std::max(left_side_boundary, coord.x));
             }
             else
             {
-                rect.setX(rightSide - m_clickCatchRange);
+                rect.setX(right_side - m_clickCatchRange);
             }
 
             update = true;
         }
         else if(m_isRightInteracting)
         {
-            const double newWidth        = coord.x - shutterCoordPair.x;
-            const double shutterRightPos = shutterCoordPair.x + newWidth;
+            const double new_width         = coord.x - shutter_coord_pair.x;
+            const double shutter_right_pos = shutter_coord_pair.x + new_width;
 
-            if(newWidth > m_clickCatchRange) // Shutter's width must be greater than the allowed picking range
+            if(new_width > m_clickCatchRange) // Shutter's width must be greater than the allowed picking range
             {
-                if(shutterRightPos <= rightSideBoundary)
+                if(shutter_right_pos <= right_side_boundary)
                 {
-                    rect.setWidth(newWidth);
+                    rect.setWidth(new_width);
                 }
                 else
                 {
-                    rect.setWidth(rightSideBoundary - shutterCoordPair.x);
+                    rect.setWidth(right_side_boundary - shutter_coord_pair.x);
                 }
             }
             else
@@ -333,24 +333,24 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
         }
         else if(m_isInteracting)
         {
-            const double offset          = coord.x - m_dragStartPoint.x;
-            const double newX            = m_dragStartShutterPos.x + offset;
-            const double shutterRightPos = newX + shutterWidth;
+            const double offset            = coord.x - m_dragStartPoint.x;
+            const double new_x             = m_dragStartShutterPos.x + offset;
+            const double shutter_right_pos = new_x + shutter_width;
 
-            if(newX >= leftSideBoundary && shutterRightPos < rightSideBoundary)
+            if(new_x >= left_side_boundary && shutter_right_pos < right_side_boundary)
             {
-                rect.setX(newX);
+                rect.setX(new_x);
             }
-            else if(newX < leftSideBoundary)
+            else if(new_x < left_side_boundary)
             {
-                rect.setX(leftSideBoundary);
+                rect.setX(left_side_boundary);
             }
-            else if(shutterRightPos >= rightSideBoundary)
+            else if(shutter_right_pos >= right_side_boundary)
             {
-                rect.setX(rightSideBoundary - shutterWidth);
+                rect.setX(right_side_boundary - shutter_width);
             }
 
-            rect.setWidth(shutterWidth);
+            rect.setWidth(shutter_width);
             update = true;
         }
 
@@ -364,8 +364,8 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
             // Update object
             this->updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height());
             {
-                auto selectedViewport = m_selectedViewport.lock();
-                auto sig              = selectedViewport->signal<data::object::ModifiedSignalType>(
+                auto selected_viewport = m_selectedViewport.lock();
+                auto sig               = selected_viewport->signal<data::object::modified_signal_t>(
                     data::object::MODIFIED_SIG
                 );
                 {
@@ -381,21 +381,21 @@ void viewport_range_selector::processInteraction(sight::viz::scene2d::data::Even
 
 void viewport_range_selector::updateViewportFromShutter(double _x, double _y, double _width, double _height)
 {
-    auto selectedViewport = m_selectedViewport.lock();
+    auto selected_viewport = m_selectedViewport.lock();
 
-    const vec2d_t fromSceneCoord = this->mapSceneToAdaptor(vec2d_t(_x, _y));
-    const vec2d_t pair           = this->mapSceneToAdaptor(vec2d_t(_width, _height));
+    const vec2d_t from_scene_coord = this->mapSceneToAdaptor(vec2d_t(_x, _y));
+    const vec2d_t pair             = this->mapSceneToAdaptor(vec2d_t(_width, _height));
 
-    selectedViewport->setX(fromSceneCoord.x);
-    selectedViewport->setWidth(pair.x);
+    selected_viewport->setX(from_scene_coord.x);
+    selected_viewport->setWidth(pair.x);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 bool viewport_range_selector::mouseOnShutterMiddle(sight::viz::scene2d::vec2d_t _coord)
 {
-    vec2d_t shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
+    vec2d_t shutter_coord_pair;
+    shutter_coord_pair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
     return (_coord.x > m_shutter->rect().x() + m_clickCatchRange)
            && (_coord.x < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange);
@@ -405,22 +405,22 @@ bool viewport_range_selector::mouseOnShutterMiddle(sight::viz::scene2d::vec2d_t 
 
 bool viewport_range_selector::mouseOnShutterLeft(sight::viz::scene2d::vec2d_t _coord)
 {
-    vec2d_t shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
+    vec2d_t shutter_coord_pair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
-    return (_coord.x >= shutterCoordPair.x - m_clickCatchRange)
-           && (_coord.x <= shutterCoordPair.x + m_clickCatchRange);
+    return (_coord.x >= shutter_coord_pair.x - m_clickCatchRange)
+           && (_coord.x <= shutter_coord_pair.x + m_clickCatchRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 bool viewport_range_selector::mouseOnShutterRight(sight::viz::scene2d::vec2d_t _coord)
 {
-    const vec2d_t shutterCoordPair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
+    const vec2d_t shutter_coord_pair = this->mapAdaptorToScene({m_shutter->rect().x(), m_shutter->rect().y()});
 
-    const double shutterRightPos = shutterCoordPair.x + m_shutter->rect().width() * m_xAxis->getScale();
+    const double shutter_right_pos = shutter_coord_pair.x + m_shutter->rect().width() * m_xAxis->getScale();
 
-    return (_coord.x >= shutterRightPos - m_clickCatchRange)
-           && (_coord.x <= shutterRightPos + m_clickCatchRange);
+    return (_coord.x >= shutter_right_pos - m_clickCatchRange)
+           && (_coord.x <= shutter_right_pos + m_clickCatchRange);
 }
 
 //---------------------------------------------------------------------------------------------------------------

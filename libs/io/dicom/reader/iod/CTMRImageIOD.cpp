@@ -42,13 +42,13 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::CTMRImageIOD(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
+    io::dicom::reader::iod::InformationObjectDefinition(_dicom_series, _instance, _logger, _progress, _cancel)
 {
 }
 
@@ -59,61 +59,61 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::read(data::series::sptr series)
+void CTMRImageIOD::read(data::series::sptr _series)
 {
     // Retrieve image series
-    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
-    SIGHT_ASSERT("Image series should not be null.", imageSeries);
+    data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(_series);
+    SIGHT_ASSERT("Image series should not be null.", image_series);
 
     // Create GDCM reader
     SPTR(gdcm::ImageReader) reader = std::make_shared<gdcm::ImageReader>();
 
     // Read the first file
-    const core::memory::buffer_object::sptr bufferObj          = m_dicomSeries->getDicomContainer().begin()->second;
-    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-    SPTR(std::istream) is = streamInfo.stream;
+    const core::memory::buffer_object::sptr buffer_obj          = m_dicomSeries->getDicomContainer().begin()->second;
+    const core::memory::buffer_manager::stream_info stream_info = buffer_obj->get_stream_info();
+    SPTR(std::istream) is = stream_info.stream;
     reader->SetStream(*is);
 
     const bool success = reader->Read();
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->get_stream_info().fs_file.string()
+            + buffer_obj->get_stream_info().fs_file.string()
             + "\" using the GDCM Reader."
         ),
         !success
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                             m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                         m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger, m_progressCallback,
-                                           m_cancelRequestedCallback);
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                                 m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::image imageIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger, m_progressCallback,
-                                         m_cancelRequestedCallback);
-    imageIE.setBufferRotationEnabled(m_enableBufferRotation);
+    io::dicom::reader::ie::Patient patient_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                              m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Study study_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                          m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::series series_ie(m_dicomSeries, reader, m_instance, _series, m_logger, m_progressCallback,
+                                            m_cancelRequestedCallback);
+    io::dicom::reader::ie::Equipment equipment_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                                  m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::image image_ie(m_dicomSeries, reader, m_instance, image_series, m_logger, m_progressCallback,
+                                          m_cancelRequestedCallback);
+    image_ie.setBufferRotationEnabled(m_enableBufferRotation);
 
     // Read Patient Module - PS 3.3 C.7.1.1
-    patientIE.readPatientModule();
+    patient_ie.readPatientModule();
     unsigned int progress = 3;
     m_progressCallback(progress);
 
     // Read General Study Module - PS 3.3 C.7.2.1
-    studyIE.readGeneralStudyModule();
+    study_ie.readGeneralStudyModule();
     progress += 3;
     m_progressCallback(progress);
 
     // Read Patient Study Module - PS 3.3 C.7.2.2
-    studyIE.readPatientStudyModule();
+    study_ie.readPatientStudyModule();
     progress += 3;
     m_progressCallback(progress);
 
     // Read General Series Module - PS 3.3 C.7.3.1
-    seriesIE.readGeneralSeriesModule();
+    series_ie.readGeneralSeriesModule();
     progress += 3;
     m_progressCallback(progress);
 
@@ -121,7 +121,7 @@ void CTMRImageIOD::read(data::series::sptr series)
     // NOTE: Not used in Sight
 
     // Read General Equipment Module - PS 3.3 C.7.5.1
-    equipmentIE.readGeneralEquipmentModule();
+    equipment_ie.readGeneralEquipmentModule();
     progress += 3;
     m_progressCallback(progress);
 
@@ -129,12 +129,12 @@ void CTMRImageIOD::read(data::series::sptr series)
     // NOTE: Not used in Sight
 
     // Read Image Plane Module - PS 3.3 C.7.6.2
-    imageIE.readImagePlaneModule();
+    image_ie.readImagePlaneModule();
     progress += 3;
     m_progressCallback(progress);
 
     // Read Image Pixel Module - PS 3.3 C.7.6.3
-    imageIE.readImagePixelModule();
+    image_ie.readImagePixelModule();
     progress = 98;
     m_progressCallback(progress);
 
@@ -142,7 +142,7 @@ void CTMRImageIOD::read(data::series::sptr series)
     // NOTE: Not used in Sight
 
     // Read VOI LUT Module - PS 3.3 C.11.2
-    imageIE.readVOILUTModule();
+    image_ie.readVOILUTModule();
     progress = 100;
     m_progressCallback(progress);
 

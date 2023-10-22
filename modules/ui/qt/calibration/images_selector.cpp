@@ -67,34 +67,34 @@ void images_selector::configuring()
 
 void images_selector::starting()
 {
-    const auto frameTL = m_frameTL.lock();
-    SIGHT_ASSERT("Frame timeline is not found.", frameTL);
+    const auto frame_tl = m_frameTL.lock();
+    SIGHT_ASSERT("Frame timeline is not found.", frame_tl);
 
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     // Main container, VBox
-    auto* vLayout = new QVBoxLayout();
+    auto* v_layout = new QVBoxLayout();
 
     //   First HBox, displays number of items and the remove button
-    auto* nbItemsHBox = new QHBoxLayout();
+    auto* nb_items_h_box = new QHBoxLayout();
 
     //     Fill the nbItemsHBox
     auto* label = new QLabel("nb captures:");
-    nbItemsHBox->addWidget(label);
+    nb_items_h_box->addWidget(label);
 
     m_nbCapturesLabel = new QLabel("0");
-    nbItemsHBox->addWidget(m_nbCapturesLabel);
-    nbItemsHBox->addStretch();
+    nb_items_h_box->addWidget(m_nbCapturesLabel);
+    nb_items_h_box->addStretch();
 
     //   The ListWidget
     m_capturesListWidget = new QListWidget();
 
     // Fill the main VBox
-    vLayout->addLayout(nbItemsHBox);
-    vLayout->addWidget(m_capturesListWidget);
+    v_layout->addLayout(nb_items_h_box);
+    v_layout->addWidget(m_capturesListWidget);
 
-    qtContainer->setLayout(vLayout);
+    qt_container->setLayout(v_layout);
 
     this->updating();
 }
@@ -113,21 +113,21 @@ void images_selector::updating()
     const auto vector = m_selected_image.lock();
 
     m_capturesListWidget->clear();
-    unsigned int captureIdx = 0;
+    unsigned int capture_idx = 0;
     for(const data::object::sptr& obj : *vector)
     {
         data::image::sptr image = std::dynamic_pointer_cast<data::image>(obj);
         if(image)
         {
-            QString countString;
+            QString count_string;
 
-            countString = QString("%1. %2").arg(captureIdx).arg(QString::fromStdString(image->get_id()));
-            m_capturesListWidget->addItem(countString);
-            ++captureIdx;
+            count_string = QString("%1. %2").arg(capture_idx).arg(QString::fromStdString(image->get_id()));
+            m_capturesListWidget->addItem(count_string);
+            ++capture_idx;
         }
     }
 
-    m_nbCapturesLabel->setText(QString("%1").arg(captureIdx));
+    m_nbCapturesLabel->setText(QString("%1").arg(capture_idx));
 }
 
 // ----------------------------------------------------------------------------
@@ -163,28 +163,28 @@ void images_selector::reset()
 
 //------------------------------------------------------------------------------
 
-void images_selector::add(core::hires_clock::type timestamp)
+void images_selector::add(core::hires_clock::type _timestamp)
 {
-    const auto frameTL = m_frameTL.lock();
-    CSPTR(data::frame_tl::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+    const auto frame_tl = m_frameTL.lock();
+    CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->getClosestBuffer(_timestamp);
 
     if(!buffer)
     {
-        SIGHT_INFO("Buffer not found with timestamp " << timestamp);
+        SIGHT_INFO("Buffer not found with timestamp " << _timestamp);
         return;
     }
 
     data::image::sptr image = std::make_shared<data::image>();
 
     data::image::Size size;
-    size[0] = frameTL->getWidth();
-    size[1] = frameTL->getHeight();
+    size[0] = frame_tl->getWidth();
+    size[1] = frame_tl->getHeight();
     size[2] = 1;
 
     data::image::PixelFormat format {data::image::PixelFormat::UNDEFINED};
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
-    switch(frameTL->numComponents())
+    switch(frame_tl->numComponents())
     {
         case 1:
             format = data::image::GRAY_SCALE;
@@ -202,7 +202,7 @@ void images_selector::add(core::hires_clock::type timestamp)
             format = data::image::UNDEFINED;
     }
 
-    image->resize(size, frameTL->getType(), format);
+    image->resize(size, frame_tl->getType(), format);
     const data::image::Origin origin = {0., 0., 0.};
     image->setOrigin(origin);
     const data::image::Spacing spacing = {1., 1., 1.};
@@ -210,11 +210,11 @@ void images_selector::add(core::hires_clock::type timestamp)
     image->setWindowWidth({100});
     image->setWindowCenter({0});
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
 
-    const std::uint8_t* frameBuff = &buffer->getElement(0);
-    auto* imgBuffer               = static_cast<std::uint8_t*>(image->buffer());
-    std::copy(frameBuff, frameBuff + buffer->size(), imgBuffer);
+    const std::uint8_t* frame_buff = &buffer->getElement(0);
+    auto* img_buffer               = static_cast<std::uint8_t*>(image->buffer());
+    std::copy(frame_buff, frame_buff + buffer->size(), img_buffer);
 
     const auto vector = m_selected_image.lock();
 

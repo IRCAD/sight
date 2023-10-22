@@ -75,11 +75,11 @@ public:
      * @brief Build a byte_size object from given size and unit
      * @{
      */
-    CORE_API byte_size(size_t size, unit_t unit = bytes);
+    CORE_API byte_size(size_t _size, unit_t _unit = bytes);
     template<typename T>
-    byte_size(T size, unit_t unit = bytes)
+    byte_size(T _size, unit_t _unit = bytes)
     {
-        this->set_size(size_t(size), unit);
+        this->set_size(size_t(_size), _unit);
     }
 
     ///@}
@@ -87,12 +87,12 @@ public:
     /**
      * @brief Build a byte_size object from given size and unit
      */
-    CORE_API byte_size(double size, unit_t unit = bytes);
+    CORE_API byte_size(double _size, unit_t _unit = bytes);
 
     /**
      * @brief Build a byte_size object from given string
      */
-    CORE_API byte_size(const std::string& size);
+    CORE_API byte_size(const std::string& _size);
 
     /**
      * @brief Convert this size to a string with specified unit
@@ -101,7 +101,7 @@ public:
      *
      * @return std::string representing the size
      */
-    [[nodiscard]] CORE_API std::string get_size_as_string(unit_t unit = bytes) const;
+    [[nodiscard]] CORE_API std::string get_size_as_string(unit_t _unit = bytes) const;
     /**
      * @brief Convert this size to a human readable string in the required
      * Convert this size to a human readable string in the required standard.
@@ -112,7 +112,7 @@ public:
      *
      * @return std::string representing the size
      */
-    [[nodiscard]] CORE_API std::string get_human_readable_size(standard_type standard = IEC) const;
+    [[nodiscard]] CORE_API std::string get_human_readable_size(standard_type _standard = IEC) const;
 
     /**
      * @brief Returns size in bytes.
@@ -126,13 +126,13 @@ public:
      * @brief Build a byte_size object from given size and unit
      * @{
      */
-    CORE_API void set_size(size_t size, unit_t unit = bytes);
+    CORE_API void set_size(size_t _size, unit_t _unit = bytes);
     //------------------------------------------------------------------------------
 
     template<typename T>
-    void set_size(T size, unit_t unit = bytes)
+    void set_size(T _size, unit_t _unit = bytes)
     {
-        this->set_size(size_t(size), unit);
+        this->set_size(size_t(_size), _unit);
     }
 
     ///@}
@@ -140,21 +140,21 @@ public:
     /**
      * @brief Build a byte_size object from given size and unit
      */
-    CORE_API void set_size(double size, unit_t unit = bytes);
+    CORE_API void set_size(double _size, unit_t _unit = bytes);
     /**
      * @brief Build a byte_size object from given string
      */
-    CORE_API void set_size(const std::string& size);
+    CORE_API void set_size(const std::string& _size);
 
-    CORE_API byte_size& operator=(size_t size);
-    CORE_API byte_size& operator=(double size);
-    CORE_API byte_size& operator=(const std::string& size);
+    CORE_API byte_size& operator=(size_t _size);
+    CORE_API byte_size& operator=(double _size);
+    CORE_API byte_size& operator=(const std::string& _size);
     //------------------------------------------------------------------------------
 
     template<typename T>
-    byte_size& operator=(T size)
+    byte_size& operator=(T _size)
     {
-        this->operator=(size_t(size));
+        this->operator=(size_t(_size));
         return *this;
     }
 
@@ -167,8 +167,8 @@ public:
         return get_human_readable_size();
     }
 
-    CORE_API static bool parse_size(const std::string& s, std::uint64_t& size);
-    CORE_API static std::string unit_to_string(unit_t unit);
+    CORE_API static bool parse_size(const std::string& _s, std::uint64_t& _size);
+    CORE_API static std::string unit_to_string(unit_t _unit);
 
 protected:
 

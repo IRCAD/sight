@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,11 @@ namespace sight::io::dicom::container::sr
 
 //------------------------------------------------------------------------------
 
-DicomSRContainerNode::DicomSRContainerNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship) :
-    io::dicom::container::sr::DicomSRNode(codedAttribute, "CONTAINER", relationship)
+DicomSRContainerNode::DicomSRContainerNode(
+    const DicomCodedAttribute& _coded_attribute,
+    const std::string& _relationship
+) :
+    io::dicom::container::sr::DicomSRNode(_coded_attribute, "CONTAINER", _relationship)
 {
 }
 
@@ -41,13 +44,13 @@ DicomSRContainerNode::~DicomSRContainerNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRContainerNode::write(gdcm::DataSet& dataset) const
+void DicomSRContainerNode::write(gdcm::DataSet& _dataset) const
 {
-    io::dicom::container::sr::DicomSRNode::write(dataset);
+    io::dicom::container::sr::DicomSRNode::write(_dataset);
 
     // Continuity of content - Type 1 - See PS 3.3 C.18.8 (Only for type CONTAINER)
     // NOTE : Continuity is fixed to SEPARATE because it provides a better compatibility.
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa050>("SEPARATE", dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa050>("SEPARATE", _dataset);
 }
 
 //------------------------------------------------------------------------------

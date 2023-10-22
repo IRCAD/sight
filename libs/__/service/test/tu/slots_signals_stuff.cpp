@@ -91,8 +91,8 @@ void readerTest::updating()
     auto buff = m_buffer.lock();
 
     // Emit object Modified
-    data::object::ModifiedSignalType::sptr sig;
-    sig = buff->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    data::object::modified_signal_t::sptr sig;
+    sig = buff->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
 
     {
         core::com::connection::blocker block(sig->get_connection(this->slot(service::signals::UPDATED)));
@@ -145,7 +145,7 @@ const core::com::signals::key_t reader2Test::CHANGED_SIG = "changed";
 //------------------------------------------------------------------------------
 
 reader2Test::reader2Test() :
-    m_sigChanged(std::make_shared<ChangedSignalType>())
+    m_sigChanged(std::make_shared<changed_signal_t>())
 {
     // Register
     core::com::has_signals::m_signals(CHANGED_SIG, m_sigChanged);
@@ -156,8 +156,8 @@ reader2Test::reader2Test() :
 void reader2Test::updating()
 {
     // Emit object Modified
-    reader2Test::ChangedSignalType::sptr sig;
-    sig = this->signal<reader2Test::ChangedSignalType>(reader2Test::CHANGED_SIG);
+    reader2Test::changed_signal_t::sptr sig;
+    sig = this->signal<reader2Test::changed_signal_t>(reader2Test::CHANGED_SIG);
     sig->async_emit();
 }
 
@@ -180,8 +180,8 @@ void SShow2Test::updating()
     const auto buffer = m_buffer.lock();
 
     // Emit object Modified
-    data::object::ModifiedSignalType::sptr sig;
-    sig = buffer->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+    data::object::modified_signal_t::sptr sig;
+    sig = buffer->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     {
         core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_BUFFER_SLOT)));
         sig->async_emit();

@@ -45,8 +45,8 @@ public:
      *
      * @param[in]   type    a string containing the type supported by the factory
      */
-    generic_executable_factory(const std::string& type) :
-        executable_factory(type)
+    generic_executable_factory(const std::string& _type) :
+        executable_factory(_type)
     {
     }
 

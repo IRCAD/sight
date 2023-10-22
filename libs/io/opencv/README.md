@@ -17,7 +17,7 @@ Library containing helper classes for data conversion between OpenCV and Sight.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_opencv)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_opencv)
 
 ```
 

@@ -50,7 +50,7 @@ const core::com::signals::key_t snapshot_editor::SNAPPED_SIG = "snapped";
 
 snapshot_editor::snapshot_editor() noexcept
 {
-    m_sigSnapped = new_signal<SnappedSignalType>(SNAPPED_SIG);
+    m_sigSnapped = new_signal<snapped_signal_t>(SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void snapshot_editor::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     std::filesystem::path path = core::runtime::get_module_resource_file_path(
         "sight::module::ui::qt",
@@ -78,7 +78,7 @@ void snapshot_editor::starting()
     h_layout->addWidget(m_snapButton);
     h_layout->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(h_layout);
+    qt_container->setLayout(h_layout);
 
     QObject::connect(m_snapButton, SIGNAL(clicked()), this, SLOT(onSnapButton()));
 }
@@ -113,10 +113,10 @@ void snapshot_editor::info(std::ostream& /*_sstream*/)
 
 void snapshot_editor::onSnapButton()
 {
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    QWidget* container = qtContainer->getQtContainer();
+    QWidget* container = qt_container->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
     if(container->isVisible())
     {
@@ -129,13 +129,13 @@ void snapshot_editor::onSnapButton()
     }
     else
     {
-        std::string msgInfo("It is not possible to snapshot the negato view. This view is not shown on screen.");
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Negato view snapshot");
-        messageBox.setMessage(msgInfo);
-        messageBox.setIcon(sight::ui::dialog::message::WARNING);
-        messageBox.addButton(sight::ui::dialog::message::OK);
-        messageBox.show();
+        std::string msg_info("It is not possible to snapshot the negato view. This view is not shown on screen.");
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Negato view snapshot");
+        message_box.setMessage(msg_info);
+        message_box.setIcon(sight::ui::dialog::message::WARNING);
+        message_box.addButton(sight::ui::dialog::message::OK);
+        message_box.show();
     }
 }
 
@@ -143,29 +143,29 @@ void snapshot_editor::onSnapButton()
 
 std::string snapshot_editor::requestFileName()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
-    std::string fileName;
+    static auto default_directory = std::make_shared<core::location::single_folder>();
+    std::string file_name;
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle("Save snapshot as");
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
-    dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
-    dialogFile.addFilter("bmp", "*.bmp");
-    dialogFile.addFilter("png", "*.png");
-    dialogFile.addFilter("tiff", "*.tiff");
-    dialogFile.addFilter("all", "*.*");
-    dialogFile.setOption(sight::ui::dialog::location::WRITE);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle("Save snapshot as");
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
+    dialog_file.addFilter("jpeg", "*.jpg *.jpeg");
+    dialog_file.addFilter("bmp", "*.bmp");
+    dialog_file.addFilter("png", "*.png");
+    dialog_file.addFilter("tiff", "*.tiff");
+    dialog_file.addFilter("all", "*.*");
+    dialog_file.setOption(sight::ui::dialog::location::WRITE);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        fileName = result->get_file().string();
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        file_name = result->get_file().string();
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
 
-    return fileName;
+    return file_name;
 }
 
 //------------------------------------------------------------------------------

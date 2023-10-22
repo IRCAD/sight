@@ -81,14 +81,14 @@ public:
     VIZ_SCENE3D_API render::sptr getRenderService() const;
 
     /// @returns the layer where this adaptor is attached.
-    VIZ_SCENE3D_API Layer::sptr getLayer() const;
+    VIZ_SCENE3D_API layer::sptr getLayer() const;
 
     /**
      * @brief SLOT: sets the visibility of the adaptor.
      * @param _isVisible the visibility status.
      * @see setVisible(bool)
      */
-    VIZ_SCENE3D_API void updateVisibility(bool _isVisible);
+    VIZ_SCENE3D_API void updateVisibility(bool _is_visible);
 
 protected:
 

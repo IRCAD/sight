@@ -40,7 +40,7 @@ const core::com::slots::key_t REMOVE_POINT_SLOT             = "removePoint";
 
 point_to_landmark_distance::point_to_landmark_distance() noexcept
 {
-    new_signal<DistanceChangedSignalType>(DISTANCE_CHANGED_SIG);
+    new_signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG);
     new_slot(SELECTED_POINT_SLOT, &point_to_landmark_distance::updateSelectedPoint, this);
     new_slot(UPDATE_POINT_SLOT, &point_to_landmark_distance::updatePoint, this);
     new_slot(REMOVE_POINT_SLOT, &point_to_landmark_distance::removePoint, this);
@@ -82,14 +82,14 @@ void point_to_landmark_distance::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto pointMat            = m_pointMatrix.lock();
-        auto pointToLandmarkMat        = m_pointToLandmarkMatrix.lock();
-        const auto distanceText        = m_distanceText.lock();
-        const glm::dmat4x4 pointMatrix = sight::geometry::data::getMatrixFromTF3D(
-            *pointMat
+        const auto point_mat            = m_pointMatrix.lock();
+        auto point_to_landmark_mat      = m_pointToLandmarkMatrix.lock();
+        const auto distance_text        = m_distanceText.lock();
+        const glm::dmat4x4 point_matrix = sight::geometry::data::to_glm_mat(
+            *point_mat
         );
-        const glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
-        const glm::dvec3 point = glm::dvec3(pointMatrix * originPoint);
+        const glm::dvec4 origin_point(0.0, 0.0, 0.0, 1.0);
+        const glm::dvec3 point = glm::dvec3(point_matrix * origin_point);
 
         const glm::dvec3 direction = m_currentLandmark - point;
         const auto length          = static_cast<float>(glm::length(direction));
@@ -97,15 +97,15 @@ void point_to_landmark_distance::updating()
         std::ostringstream out;
         out.precision(m_precision);
         out << std::fixed << length;
-        distanceText->setValue(out.str() + m_unit);
+        distance_text->setValue(out.str() + m_unit);
 
         // notify that distance is modified
-        this->signal<DistanceChangedSignalType>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(length));
+        this->signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(length));
         // notify that text distance is modified
-        distanceText->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG)->async_emit();
+        distance_text->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
 
         // compute the matrix
-        glm::dmat4x4 cameraMatrix;
+        glm::dmat4x4 camera_matrix;
 
         const glm::dvec3 front = glm::normalize(direction);
         // compute an orthogonal vector to front ( vec(a,b,c) --> vecOrtho(-b,a,0))
@@ -113,16 +113,16 @@ void point_to_landmark_distance::updating()
         const glm::dvec3 right = glm::normalize(cross(up, front));
         up = glm::cross(front, right);
 
-        cameraMatrix[0] = glm::dvec4(right, 0.0);
-        cameraMatrix[1] = glm::dvec4(up, 0.0);
-        cameraMatrix[2] = glm::dvec4(front, 0.0);
-        cameraMatrix[3] = glm::dvec4(point, 1.0);
-        sight::geometry::data::setTF3DFromMatrix(
-            *pointToLandmarkMat,
-            cameraMatrix
+        camera_matrix[0] = glm::dvec4(right, 0.0);
+        camera_matrix[1] = glm::dvec4(up, 0.0);
+        camera_matrix[2] = glm::dvec4(front, 0.0);
+        camera_matrix[3] = glm::dvec4(point, 1.0);
+        sight::geometry::data::from_glm_mat(
+            *point_to_landmark_mat,
+            camera_matrix
         );
         auto sig =
-            pointToLandmarkMat->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+            point_to_landmark_mat->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
         {
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
             sig->async_emit();
@@ -131,13 +131,13 @@ void point_to_landmark_distance::updating()
 }
 
 // -----------------------------------------------------------------------------
-void point_to_landmark_distance::updateSelectedPoint(std::string name, std::size_t index)
+void point_to_landmark_distance::updateSelectedPoint(std::string _name, std::size_t _index)
 {
     m_landmarkSelected = true;
 
     const auto landmark = m_landmark.lock();
 
-    const data::landmarks::PointType& point = landmark->getPoint(name, index);
+    const data::landmarks::point_t& point = landmark->getPoint(_name, _index);
     for(int i = 0 ; i < 3 ; ++i)
     {
         m_currentLandmark[i] = point[std::size_t(i)];
@@ -147,13 +147,13 @@ void point_to_landmark_distance::updateSelectedPoint(std::string name, std::size
 }
 
 // -----------------------------------------------------------------------------
-void point_to_landmark_distance::updatePoint(std::string name)
+void point_to_landmark_distance::updatePoint(std::string _name)
 {
     m_landmarkSelected = true;
 
-    const auto landmark                     = m_landmark.lock();
-    std::size_t size                        = landmark->getGroup(name).m_points.size();
-    const data::landmarks::PointType& point = landmark->getPoint(name, size - 1);
+    const auto landmark                   = m_landmark.lock();
+    std::size_t size                      = landmark->getGroup(_name).m_points.size();
+    const data::landmarks::point_t& point = landmark->getPoint(_name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
     {
         m_currentLandmark[i] = point[std::size_t(i)];
@@ -168,13 +168,13 @@ void point_to_landmark_distance::removePoint()
     // When a point is removed, it's not selected anymore
     m_landmarkSelected = false;
     // Notify that distance is modified
-    this->signal<DistanceChangedSignalType>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(0.0));
+    this->signal<distance_changed_signal_t>(DISTANCE_CHANGED_SIG)->async_emit(static_cast<float>(0.0));
 
-    auto distanceText = m_distanceText.lock();
-    distanceText->setValue("");
+    auto distance_text = m_distanceText.lock();
+    distance_text->setValue("");
 
     // notify that text distance is modified
-    distanceText->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG)->async_emit();
+    distance_text->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
 }
 
 // -----------------------------------------------------------------------------

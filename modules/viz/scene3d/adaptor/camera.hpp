@@ -125,10 +125,10 @@ private:
     void updateTF3D();
 
     /// Defines the near clipping plane position.
-    void setNearClipDistance(Ogre::Real _nearClipDistance);
+    void setNearClipDistance(Ogre::Real _near_clip_distance);
 
     /// Defines the far clipping plane position.
-    void setFarClipDistance(Ogre::Real _farClipDistance);
+    void setFarClipDistance(Ogre::Real _far_clip_distance);
 
     /// Defines the aspect ratio.
     void setAspectRatio(Ogre::Real _ratio);

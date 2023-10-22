@@ -15,7 +15,7 @@ Library containing helper classes and computer vision algorithms.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> filter_vision)
+target_link_libraries( my_target <PUBLIC|PRIVATE> filter_vision)
 
 ```
 

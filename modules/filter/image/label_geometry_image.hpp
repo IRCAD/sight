@@ -101,7 +101,7 @@ private:
      * @param value
      * @param key
      */
-    void updateSelectedPointList(std::string value, std::string key);
+    void updateSelectedPointList(std::string _value, std::string _key);
 
     std::vector<std::vector<std::size_t> > m_lPointListLabels;
     std::vector<data::point_list::sptr> m_lPointListCentroids;

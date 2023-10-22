@@ -34,28 +34,28 @@ ImageTypeConverter::TypeConverterMap ImageTypeConverter::s_typeConverterMap =
 
 ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
 {
-    ImageTypeConverter::TypeConverterMap convertMap;
+    ImageTypeConverter::TypeConverterMap convert_map;
 
-    convertMap[core::type::INT8]   = ::igtl::ImageMessage::TYPE_INT8;
-    convertMap[core::type::UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
-    convertMap[core::type::INT16]  = ::igtl::ImageMessage::TYPE_INT16;
-    convertMap[core::type::UINT16] = ::igtl::ImageMessage::TYPE_UINT16;
-    convertMap[core::type::INT32]  = ::igtl::ImageMessage::TYPE_INT32;
-    convertMap[core::type::UINT32] = ::igtl::ImageMessage::TYPE_UINT32;
-    convertMap[core::type::FLOAT]  = ::igtl::ImageMessage::TYPE_FLOAT32;
-    convertMap[core::type::DOUBLE] = ::igtl::ImageMessage::TYPE_FLOAT64;
-    return convertMap;
+    convert_map[core::type::INT8]   = ::igtl::ImageMessage::TYPE_INT8;
+    convert_map[core::type::UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
+    convert_map[core::type::INT16]  = ::igtl::ImageMessage::TYPE_INT16;
+    convert_map[core::type::UINT16] = ::igtl::ImageMessage::TYPE_UINT16;
+    convert_map[core::type::INT32]  = ::igtl::ImageMessage::TYPE_INT32;
+    convert_map[core::type::UINT32] = ::igtl::ImageMessage::TYPE_UINT32;
+    convert_map[core::type::FLOAT]  = ::igtl::ImageMessage::TYPE_FLOAT32;
+    convert_map[core::type::DOUBLE] = ::igtl::ImageMessage::TYPE_FLOAT64;
+    return convert_map;
 }
 
 //-----------------------------------------------------------------------------
 
-const core::type& ImageTypeConverter::getFwToolsType(const std::uint8_t& igtlType)
+const core::type& ImageTypeConverter::get_fw_tools_type(const std::uint8_t& _igtl_type)
 {
-    for(const auto& typeConverter : ImageTypeConverter::s_typeConverterMap)
+    for(const auto& type_converter : ImageTypeConverter::s_typeConverterMap)
     {
-        if(typeConverter.second == igtlType)
+        if(type_converter.second == _igtl_type)
         {
-            return typeConverter.first;
+            return type_converter.first;
         }
     }
 
@@ -64,11 +64,11 @@ const core::type& ImageTypeConverter::getFwToolsType(const std::uint8_t& igtlTyp
 
 //-----------------------------------------------------------------------------
 
-std::uint8_t ImageTypeConverter::getIgtlType(const core::type& type)
+std::uint8_t ImageTypeConverter::get_igtl_type(const core::type& _type)
 {
     ImageTypeConverter::TypeConverterMap::const_iterator it;
 
-    it = ImageTypeConverter::s_typeConverterMap.find(type);
+    it = ImageTypeConverter::s_typeConverterMap.find(_type);
     if(it != ImageTypeConverter::s_typeConverterMap.end())
     {
         return it->second;
@@ -76,7 +76,7 @@ std::uint8_t ImageTypeConverter::getIgtlType(const core::type& type)
 
     throw io::igtl::detail::exception::Conversion(
               "Cannot found a igtl image type for type : "
-              + type.name()
+              + _type.name()
     );
 }
 

@@ -94,13 +94,13 @@ private:
      * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(Ogre::MovableObject* object);
+    void attachNode(Ogre::MovableObject* _object);
 
     /**
      * @brief Draws the grid.
      * @param _existingLine use true if the line already exists.
      */
-    void drawGrid(bool _existingLine);
+    void drawGrid(bool _existing_line);
 
     /**
      * @brief SLOT: updates the size of the grid.

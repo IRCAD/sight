@@ -33,16 +33,16 @@ namespace sight::ui::dialog
 //-----------------------------------------------------------------------------
 
 bool logger::showLoggerDialog(
-    const std::string& title,
-    const std::string& message,
-    const core::log::logger::sptr& logger
+    const std::string& _title,
+    const std::string& _message,
+    const core::log::logger::sptr& _logger
 )
 {
     // The construction itself must be run in the main thread, since it creates widgets.
     return core::thread::get_default_worker()->post_task<bool>(
-        [title, message, logger]
+        [_title, _message, _logger]
         {
-            ui::dialog::logger dialog(title, message, logger);
+            ui::dialog::logger dialog(_title, _message, _logger);
             return dialog.show();
         }).get();
 }
@@ -54,45 +54,45 @@ logger::logger()
     core::thread::get_default_worker()->post_task<void>(
         [this]
         {
-            ui::object::sptr guiObj = ui::factory::make(logger_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::logger_base>(guiObj);
+            ui::object::sptr gui_obj = ui::factory::make(logger_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::logger_base>(gui_obj);
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-logger::logger(const std::string& title, const std::string& message, const core::log::logger::sptr& logger)
+logger::logger(const std::string& _title, const std::string& _message, const core::log::logger::sptr& _logger)
 {
     core::thread::get_default_worker()->post_task<void>(
-        [title, message, logger, this]
+        [_title, _message, _logger, this]
         {
-            ui::object::sptr guiObj = ui::factory::make(logger_base::REGISTRY_KEY);
-            m_implementation        = std::dynamic_pointer_cast<ui::dialog::logger_base>(guiObj);
-            m_implementation->setTitle(title);
-            m_implementation->setMessage(message);
-            m_implementation->setLogger(logger);
+            ui::object::sptr gui_obj = ui::factory::make(logger_base::REGISTRY_KEY);
+            m_implementation         = std::dynamic_pointer_cast<ui::dialog::logger_base>(gui_obj);
+            m_implementation->setTitle(_title);
+            m_implementation->setMessage(_message);
+            m_implementation->setLogger(_logger);
         }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setTitle(const std::string& title)
+void logger::setTitle(const std::string& _title)
 {
-    m_implementation->setTitle(title);
+    m_implementation->setTitle(_title);
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setMessage(const std::string& message)
+void logger::setMessage(const std::string& _message)
 {
-    m_implementation->setMessage(message);
+    m_implementation->setMessage(_message);
 }
 
 //-----------------------------------------------------------------------------
 
-void logger::setLogger(const core::log::logger::sptr& logger)
+void logger::setLogger(const core::log::logger::sptr& _logger)
 {
-    m_implementation->setLogger(logger);
+    m_implementation->setLogger(_logger);
 }
 
 //-----------------------------------------------------------------------------

@@ -66,21 +66,21 @@ void vtk_mesher_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<sight::service::base::sptr, sight::data::image_series::sptr> generateMeshService()
+inline static std::pair<sight::service::base::sptr, sight::data::image_series::sptr> generate_mesh_service()
 {
     // Create service
-    sight::service::base::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::vtk_mesher");
-    CPPUNIT_ASSERT(generateMeshService);
+    sight::service::base::sptr generate_mesh_service = sight::service::add("sight::module::filter::mesh::vtk_mesher");
+    CPPUNIT_ASSERT(generate_mesh_service);
 
-    auto imageSeries    = std::make_shared<sight::data::image_series>();
-    const auto dumpLock = imageSeries->dump_lock();
+    auto image_series    = std::make_shared<sight::data::image_series>();
+    const auto dump_lock = image_series->dump_lock();
 
     const data::image::Size size       = {10, 20, 90};
     const data::image::Spacing spacing = {1., 1., 1.};
     const data::image::Origin origin   = {0., 0., 0.};
 
     utest_data::generator::image::generateImage(
-        imageSeries,
+        image_series,
         size,
         spacing,
         origin,
@@ -100,32 +100,32 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
                 {
                     std::int16_t val = 0;
 
-                    imageSeries->setPixel(index, reinterpret_cast<data::image::BufferType*>(&val));
+                    image_series->setPixel(index, reinterpret_cast<data::image::buffer_t*>(&val));
                     CPPUNIT_ASSERT_EQUAL(
                         val,
-                        *reinterpret_cast<const std::int16_t*>(imageSeries->getPixel(index))
+                        *reinterpret_cast<const std::int16_t*>(image_series->getPixel(index))
                     );
                 }
                 else
                 {
                     std::int16_t threshold = 255;
-                    imageSeries->setPixel(index, reinterpret_cast<data::image::BufferType*>(&threshold));
+                    image_series->setPixel(index, reinterpret_cast<data::image::buffer_t*>(&threshold));
                     CPPUNIT_ASSERT_EQUAL(
                         threshold,
-                        *reinterpret_cast<const std::int16_t*>(imageSeries->getPixel(index))
+                        *reinterpret_cast<const std::int16_t*>(image_series->getPixel(index))
                     );
                 }
             }
         }
     }
 
-    core::os::temp_file tempFile;
-    auto myWriter = std::make_shared<io::vtk::ImageWriter>();
-    myWriter->set_object(imageSeries);
-    myWriter->set_file(tempFile);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+    core::os::temp_file temp_file;
+    auto my_writer = std::make_shared<io::vtk::ImageWriter>();
+    my_writer->set_object(image_series);
+    my_writer->set_file(temp_file);
+    CPPUNIT_ASSERT_NO_THROW(my_writer->write());
 
-    return {generateMeshService, imageSeries};
+    return {generate_mesh_service, image_series};
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
 void vtk_mesher_test::generateMesh()
 {
     // Create service
-    auto [mesherService, imageSeries] = generateMeshService();
+    auto [mesherService, imageSeries] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
@@ -149,11 +149,11 @@ void vtk_mesher_test::generateMesh()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int numberPoints = 77;
-        unsigned int numberCells  = 125;
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
+        unsigned int number_points = 77;
+        unsigned int number_cells  = 125;
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numPoints(), number_points);
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numCells(), number_cells);
     }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
@@ -164,7 +164,7 @@ void vtk_mesher_test::generateMesh()
 void vtk_mesher_test::generateMeshWithMinReduction()
 {
     // Create service
-    auto [mesherService, imageSeries] = generateMeshService();
+    auto [mesherService, imageSeries] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
@@ -180,11 +180,11 @@ void vtk_mesher_test::generateMeshWithMinReduction()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int numberPoints = 147;
-        unsigned int numberCells  = 253;
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
+        unsigned int number_points = 147;
+        unsigned int number_cells  = 253;
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numPoints(), number_points);
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numCells(), number_cells);
     }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
@@ -195,7 +195,7 @@ void vtk_mesher_test::generateMeshWithMinReduction()
 void vtk_mesher_test::noMeshGenerated()
 {
     // Create service
-    auto [mesherService, imageSeries] = generateMeshService();
+    auto [mesherService, imageSeries] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
@@ -211,11 +211,11 @@ void vtk_mesher_test::noMeshGenerated()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int numberPoints = 0;
-        unsigned int numberCells  = 0;
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
+        unsigned int number_points = 0;
+        unsigned int number_cells  = 0;
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numPoints(), number_points);
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numCells(), number_cells);
     }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
@@ -226,7 +226,7 @@ void vtk_mesher_test::noMeshGenerated()
 void vtk_mesher_test::updateThresholdTest()
 {
     // Create service
-    auto [mesherService, imageSeries] = generateMeshService();
+    auto [mesherService, imageSeries] = generate_mesh_service();
     service::config_t config;
     std::stringstream config_string;
 
@@ -242,17 +242,17 @@ void vtk_mesher_test::updateThresholdTest()
     mesherService->configure();
 
     //threshold is modified by the slot updateThreshold
-    const int newThreshold = 50;
-    mesherService->slot("updateThreshold")->run(newThreshold);
+    const int new_threshold = 50;
+    mesherService->slot("updateThreshold")->run(new_threshold);
 
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int numberPoints = 0;
-        unsigned int numberCells  = 0;
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
+        unsigned int number_points = 0;
+        unsigned int number_cells  = 0;
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numPoints(), number_points);
+        CPPUNIT_ASSERT_EQUAL(model_series->getReconstructionDB()[0]->getMesh()->numCells(), number_cells);
     }
     mesherService->stop().wait();
     sight::service::remove(mesherService);

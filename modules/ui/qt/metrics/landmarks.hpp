@@ -267,19 +267,19 @@ public:
      *
      * @param world_coord coordinate of the current landmark
      */
-    void updateCurrentLandmark(data::landmarks::PointType& world_coord) const;
+    void updateCurrentLandmark(data::landmarks::point_t& _world_coord) const;
 
     /**
      * @brief Called when a group's point size is modified.
      * @param _newSize the new size of the group.
      */
-    void onSizeChanged(int _newSize);
+    void onSizeChanged(int _new_size);
 
     /**
      * @brief Called when a group's opacity is modified.
      * @param _newOpacity the new opacity of the group.
      */
-    void onOpacityChanged(int _newOpacity);
+    void onOpacityChanged(int _new_opacity);
 
     /**
      * @brief Called when a group's visibility is turned on or off.
@@ -305,21 +305,21 @@ public:
      * @brief SLOT: adds a point to the editor.
      * @param _groupName the group name where the point is added.
      */
-    void addPoint(std::string _groupName) const;
+    void addPoint(std::string _group_name) const;
 
     /**
      * @brief Slot: updates a point coordinates in the editor.
      * @param _groupName the group name of the updated point.
      * @param _index the index of the point to update.
      */
-    void modifyPoint(std::string _groupName, std::size_t _index) const;
+    void modifyPoint(std::string _group_name, std::size_t _index) const;
 
     /**
      * @brief SLOT: selects the point's corresponding item in the editor.
      * @param _groupName the group name of the selected point.
      * @param _index the index of the point to select.
      */
-    void selectPoint(std::string _groupName, std::size_t _index) const;
+    void selectPoint(std::string _group_name, std::size_t _index) const;
 
     /// Slot: deselects the currently selected item.
     void deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const;
@@ -341,14 +341,14 @@ public:
      * @param _groupName the group name of the point the remove.
      * @param _index the index of the point to remove.
      */
-    void removePoint(std::string _groupName, std::size_t _index) const;
+    void removePoint(std::string _group_name, std::size_t _index) const;
 
     /**
      * @brief SLOT: renames a group in the editor.
      * @param _oldName the old name of the group.
      * @param _newName the new name of the group.
      */
-    void renameGroup(std::string _oldName, std::string _newName) const;
+    void renameGroup(std::string _old_name, std::string _new_name) const;
 
     /**
      * @brief SLOT: updates a group properties in the editor.
@@ -368,7 +368,7 @@ public:
      * @param _groupName the name of the item to find.
      * @return The item representing _groupName.
      */
-    QTreeWidgetItem* getGroupItem(const std::string& _groupName) const;
+    QTreeWidgetItem* getGroupItem(const std::string& _group_name) const;
 
     /**
      * @brief Generates a group name that doesn't exist already.
@@ -387,14 +387,14 @@ public:
      * @param _color The landmarks color type.
      * @return A QColor with same colour value than _color.
      */
-    static QColor convertToQColor(const data::landmarks::ColorType& _color);
+    static QColor convertToQColor(const data::landmarks::color_t& _color);
 
     /**
      * @brief Draws a colored square on the button.
      * @param button the button where the square will be drawn.
      * @param _color the color of the square.
      */
-    static void setColorButtonIcon(QPushButton* button, const QColor& _color);
+    static void setColorButtonIcon(QPushButton* _button, const QColor& _color);
 
     LandmarksOrImageSeriesLock lock();
 

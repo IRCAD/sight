@@ -70,8 +70,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(optical_flow, sight::service::controller);
 
-    typedef core::com::signal<void ()> MotionSignalType;
-    typedef core::com::signal<void ()> NoMotionSignalType;
+    typedef core::com::signal<void ()> motion_signal_t;
+    typedef core::com::signal<void ()> no_motion_signal_t;
 
     /// Constructor
     MODULE_FILTER_VISION_CLASS_API optical_flow() noexcept;
@@ -102,10 +102,10 @@ private:
     std::mutex m_mainMutex;
 
     /// Signal send when motion is detected.
-    MotionSignalType::sptr m_motionSignal;
+    motion_signal_t::sptr m_motionSignal;
 
     /// Signal send when no motion is detected.
-    NoMotionSignalType::sptr m_noMotionSignal;
+    no_motion_signal_t::sptr m_noMotionSignal;
 
     /// Stores last image.
     cv::Mat m_lastGrayImg;

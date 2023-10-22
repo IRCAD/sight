@@ -60,16 +60,16 @@ void PlyMeshWriter::write()
 
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
-    [[maybe_unused]] const auto objectLock = m_object.lock();
+    [[maybe_unused]] const auto object_lock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock);
+    SIGHT_ASSERT("Object Lock null.", object_lock);
 
-    const data::mesh::csptr pMesh = getConcreteObject();
+    const data::mesh::csptr p_mesh = getConcreteObject();
 
-    vtkSmartPointer<vtkPLYWriter> writer = vtkSmartPointer<vtkPLYWriter>::New();
-    vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(pMesh, vtkMesh);
-    writer->SetInputData(vtkMesh);
+    vtkSmartPointer<vtkPLYWriter> writer  = vtkSmartPointer<vtkPLYWriter>::New();
+    vtkSmartPointer<vtkPolyData> vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(p_mesh, vtk_mesh);
+    writer->SetInputData(vtk_mesh);
     writer->SetFileName(this->get_file().string().c_str());
     writer->SetFileTypeToBinary();
 
@@ -77,9 +77,9 @@ void PlyMeshWriter::write()
 
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [&](vtkObject* caller, std::uint64_t, void*)
+        [&](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* const filter = static_cast<vtkPLYWriter*>(caller);
+            auto* const filter = static_cast<vtkPLYWriter*>(_caller);
             m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);

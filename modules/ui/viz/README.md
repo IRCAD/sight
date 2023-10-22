@@ -28,16 +28,16 @@ Contains all user interface widgets related to scene3d (Ogre).
 
 ## Other classes
 
-- **helper/Utils**: contains functions to convert from Ogre to Qt color format.
+- **helper/utils**: contains functions to convert from Ogre to Qt color format.
 
-- **helper/ParameterEditor**: contains static function  to create a config that will be used to expose a shader parameter adaptor in a parameters.
+- **helper/parameter_editor**: contains static function  to create a config that will be used to expose a shader parameter adaptor in a parameters.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_viz ... )
+add_dependencies(my_target module_ui_viz ... )
 ```
 
 ### XML

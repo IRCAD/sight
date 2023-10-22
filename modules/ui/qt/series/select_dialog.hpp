@@ -67,7 +67,7 @@ class MODULE_UI_QT_CLASS_API select_dialog : public service::controller
 public:
 
     /// Type of signal sent when a screen is selected.
-    using SelectedSignalType = core::com::signal<void ()>;
+    using selected_signal_t = core::com::signal<void ()>;
 
     static const core::com::signals::key_t IMAGE_SELECTED_SIG;
     static const core::com::signals::key_t MODEL_SELECTED_SIG;

@@ -25,16 +25,16 @@
 #include "Dialog.hpp"
 #include "ListWidget.hpp"
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void selector_dialog::select(Tester& tester, const std::string& selection)
+void selector_dialog::select(Tester& _tester, const std::string& _selection)
 {
-    auto bt = tester.addInBacktrace("selecting \"" + selection + "\" from the selection window");
-    helper::ListWidget::setCurrentText(tester, Select::fromDialog("selectionList"), selection);
-    Button::push(tester, Select::fromDialog("Ok"));
+    auto bt = _tester.addInBacktrace("selecting \"" + _selection + "\" from the selection window");
+    helper::ListWidget::setCurrentText(_tester, Select::fromDialog("selectionList"), _selection);
+    Button::push(_tester, Select::fromDialog("Ok"));
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

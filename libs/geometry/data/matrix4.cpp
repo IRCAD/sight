@@ -40,17 +40,17 @@ bool invert(
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
-    const glm::dmat4x4 mat        = glm::make_mat4<double>(_input.data());
-    const glm::dmat4x4 matInverse = glm::inverse(mat);
+    const glm::dmat4x4 mat         = glm::make_mat4<double>(_input.data());
+    const glm::dmat4x4 mat_inverse = glm::inverse(mat);
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const std::size_t rowDst = i * 4;
-        const auto rowSrc        = static_cast<glm::length_t>(i);
+        const std::size_t row_dst = i * 4;
+        const auto row_src        = static_cast<glm::length_t>(i);
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const auto colSrc = static_cast<glm::length_t>(j);
-            _output[rowDst + j] = matInverse[rowSrc][colSrc];
+            const auto col_src = static_cast<glm::length_t>(j);
+            _output[row_dst + j] = mat_inverse[row_src][col_src];
         }
     }
 
@@ -60,27 +60,27 @@ bool invert(
 // ----------------------------------------------------------------------------
 
 void multiply(
-    const sight::data::matrix4& _trfA,
-    const sight::data::matrix4& _trfB,
+    const sight::data::matrix4& _trf_a,
+    const sight::data::matrix4& _trf_b,
     sight::data::matrix4& _output
 )
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
-    const glm::dmat4x4 matA = glm::make_mat4<double>(_trfA.data());
-    const glm::dmat4x4 matB = glm::make_mat4<double>(_trfB.data());
+    const glm::dmat4x4 mat_a = glm::make_mat4<double>(_trf_a.data());
+    const glm::dmat4x4 mat_b = glm::make_mat4<double>(_trf_b.data());
 
-    const glm::dmat4x4 matC = matB * matA;
+    const glm::dmat4x4 mat_c = mat_b * mat_a;
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const std::size_t rowDst = i * 4;
-        const auto rowSrc        = static_cast<glm::length_t>(i);
+        const std::size_t row_dst = i * 4;
+        const auto row_src        = static_cast<glm::length_t>(i);
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const auto colSrc = static_cast<glm::length_t>(j);
-            _output[rowDst + j] = matC[rowSrc][colSrc];
+            const auto col_src = static_cast<glm::length_t>(j);
+            _output[row_dst + j] = mat_c[row_src][col_src];
         }
     }
 }
@@ -111,11 +111,11 @@ void multiply(
     // and perform the inverse multiplication
     const glm::dmat4x4 mat = glm::make_mat4<double>(_trf.data());
 
-    const auto& inCoord = _input.getCoord();
+    const auto& in_coord = _input.getCoord();
     glm::dvec4 in;
-    in[0] = inCoord[0];
-    in[1] = inCoord[1];
-    in[2] = inCoord[2];
+    in[0] = in_coord[0];
+    in[1] = in_coord[1];
+    in[2] = in_coord[2];
     in[3] = 1;
 
     glm::dvec4 out            = in * mat;
@@ -125,7 +125,7 @@ void multiply(
 
 // ----------------------------------------------------------------------------
 
-bool isIdentity(const sight::data::matrix4& _trf, const double _epsilon)
+bool is_identity(const sight::data::matrix4& _trf, const double _epsilon)
 {
     static const sight::data::matrix4 s_IDENTITY;
 

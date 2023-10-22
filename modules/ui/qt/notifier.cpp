@@ -191,11 +191,11 @@ void notifier::starting()
 {
     if(!m_parentContainerID.empty())
     {
-        auto container = sight::ui::registry::getSIDContainer(m_parentContainerID);
+        auto container = sight::ui::registry::get_sid_container(m_parentContainerID);
 
         if(!container)
         {
-            container = sight::ui::registry::getWIDContainer(m_parentContainerID);
+            container = sight::ui::registry::get_wid_container(m_parentContainerID);
         }
 
         // If we have an SID/WID set the container.
@@ -275,13 +275,13 @@ void notifier::setEnumParameter(std::string _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void notifier::pop(service::Notification notification)
+void notifier::pop(service::Notification _notification)
 {
-    const bool channel_configured = m_channels.contains(notification.channel);
+    const bool channel_configured = m_channels.contains(_notification.channel);
 
     // Get channel configuration (or global configuration if there is no channel)
     const auto& channel_configuration = channel_configured
-                                        ? m_channels[notification.channel]
+                                        ? m_channels[_notification.channel]
                                         : m_channels[""];
 
     const auto& default_configuration = m_channels[""];
@@ -291,19 +291,19 @@ void notifier::pop(service::Notification notification)
     const auto& position = channel_configured && channel_configuration.position
                            ? *channel_configuration.position
                            : (channel_configured && !channel_configuration.position) || !default_configuration.position
-                           ? notification.position
+                           ? _notification.position
                            : *default_configuration.position;
 
     const auto& duration = channel_configured && channel_configuration.duration
                            ? *channel_configuration.duration
                            : (channel_configured && !channel_configuration.duration) || !default_configuration.duration
-                           ? notification.duration
+                           ? _notification.duration
                            : *default_configuration.duration;
 
     const auto& size = channel_configured && channel_configuration.size
                        ? *channel_configuration.size
                        : (channel_configured && !channel_configuration.size) || !default_configuration.size
-                       ? notification.size
+                       ? _notification.size
                        : *default_configuration.size;
 
     const auto& max = channel_configuration.max
@@ -315,7 +315,7 @@ void notifier::pop(service::Notification notification)
     const auto& closable = channel_configured && channel_configuration.closable
                            ? *channel_configuration.closable
                            : (channel_configured && !channel_configuration.closable) || !default_configuration.closable
-                           ? notification.closable
+                           ? _notification.closable
                            : *default_configuration.closable;
 
     // Get the wanted stack
@@ -342,13 +342,13 @@ void notifier::pop(service::Notification notification)
         [&]
         {
             // If a channel is present, try to retrieve the associated dialog
-            if(!notification.channel.empty())
+            if(!_notification.channel.empty())
             {
                 for(auto& [old_position, stack] : m_stacks)
                 {
                     for(const auto& popup : stack.popups)
                     {
-                        if(popup->getChannel() == notification.channel)
+                        if(popup->getChannel() == _notification.channel)
                         {
                             // If the position doesn't match, fix it
                             if(old_position != position)
@@ -380,22 +380,22 @@ void notifier::pop(service::Notification notification)
 
     popup->setContainer(m_containerWhereToDisplayNotifs);
 
-    const std::string& messageToShow = notification.message.empty() ? m_defaultMessage : notification.message;
-    popup->setMessage(messageToShow);
+    const std::string& message_to_show = _notification.message.empty() ? m_defaultMessage : _notification.message;
+    popup->setMessage(message_to_show);
 
-    popup->setType(notification.type);
+    popup->setType(_notification.type);
     popup->setPosition(position);
     popup->setDuration(duration);
     popup->setSize(*target_stack.size);
     popup->setClosedCallback([this, popup](auto&& ...){onNotificationClosed(popup);});
-    popup->setChannel(notification.channel);
+    popup->setChannel(_notification.channel);
     popup->setClosable(closable);
     popup->show();
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::closeNotification(std::string channel)
+void notifier::closeNotification(std::string _channel)
 {
     bool found = false;
 
@@ -403,7 +403,7 @@ void notifier::closeNotification(std::string channel)
     {
         for(const auto& popup : stack.popups)
         {
-            if(popup->getChannel() == channel)
+            if(popup->getChannel() == _channel)
             {
                 found = true;
                 popup->close();
@@ -411,7 +411,7 @@ void notifier::closeNotification(std::string channel)
         }
     }
 
-    SIGHT_WARN_IF("Notification on channel '" << channel << "' is already closed.", !found);
+    SIGHT_WARN_IF("Notification on channel '" << _channel << "' is already closed.", !found);
 }
 
 //------------------------------------------------------------------------------
@@ -431,13 +431,13 @@ void notifier::onNotificationClosed(const sight::ui::dialog::notification::sptr&
 //------------------------------------------------------------------------------
 
 std::list<sight::ui::dialog::notification::sptr>::iterator notifier::eraseNotification(
-    const service::Notification::Position& position,
-    const std::list<sight::ui::dialog::notification::sptr>::iterator& it
+    const service::Notification::Position& _position,
+    const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
 )
 {
     // Remove the notification from the container
-    auto& stack        = m_stacks[position];
-    const auto next_it = stack.popups.erase(it);
+    auto& stack        = m_stacks[_position];
+    const auto next_it = stack.popups.erase(_it);
     auto remaining_it  = next_it;
 
     // Move all the remaining notifications one index lower
@@ -454,34 +454,34 @@ std::list<sight::ui::dialog::notification::sptr>::iterator notifier::eraseNotifi
 //------------------------------------------------------------------------------
 
 void notifier::cleanNotifications(
-    const service::Notification::Position& position,
-    std::size_t max,
-    std::array<int, 2> size,
-    bool skipPermanent
+    const service::Notification::Position& _position,
+    std::size_t _max,
+    std::array<int, 2> _size,
+    bool _skip_permanent
 )
 {
     // Get the correct "stack"
-    auto& stack = m_stacks[position];
+    auto& stack = m_stacks[_position];
 
     std::size_t removable_popups = 0;
 
     // Count how many popups that can be removed there are
     for(const auto& popup : stack.popups)
     {
-        if(!skipPermanent || popup->getDuration())
+        if(!_skip_permanent || popup->getDuration())
         {
             ++removable_popups;
         }
     }
 
-    for(auto it = stack.popups.begin() ; removable_popups >= max && it != stack.popups.end() ; )
+    for(auto it = stack.popups.begin() ; removable_popups >= _max && it != stack.popups.end() ; )
     {
         // If the popup is removable
-        if(const auto& duration = (*it)->getDuration(); !skipPermanent || (duration && duration->count() > 0))
+        if(const auto& duration = (*it)->getDuration(); !_skip_permanent || (duration && duration->count() > 0))
         {
             // Remove it
             (*it)->close();
-            it = eraseNotification(position, it);
+            it = eraseNotification(_position, it);
             --removable_popups;
         }
         else
@@ -493,7 +493,7 @@ void notifier::cleanNotifications(
     // Adjust sizes
     for(const auto& popup : stack.popups)
     {
-        popup->setSize(size);
+        popup->setSize(_size);
     }
 }
 

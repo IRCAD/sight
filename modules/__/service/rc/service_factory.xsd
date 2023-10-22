@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="extension" type="ExtensionType" />
+    <xs:element name="extension" type="extension_t" />
 
-    <xs:complexType name="ExtensionType">
+    <xs:complexType name="extension_t">
         <xs:sequence>
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="service" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="tags" type="xs:string" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="implements" type="xs:string" use="required" />
     </xs:complexType>
 
-    <xs:complexType name="ObjectType">
+    <xs:complexType name="object_t">
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="key" type="xs:string" use="optional"/>

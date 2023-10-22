@@ -34,9 +34,9 @@ namespace sight::viz::scene3d
 
 class window_interactor;
 class ICamera;
-class ILight;
-class IText;
-class Layer;
+class light_adaptor;
+class text;
+class layer;
 
 namespace interactor
 {
@@ -52,19 +52,19 @@ typedef std::string key_t;
 
 typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(), key_t> Type;
 typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(std::pair<unsigned int, unsigned int>),
-                               key_t> OffscreenMgrType;
-typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), key_t> InteractorFactoryType;
-typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), key_t> CameraFactoryType;
-typedef core::factory_registry<SPTR(viz::scene3d::ILight)(), key_t> LightFactoryType;
-typedef core::factory_registry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
-                               key_t> TextFactoryType;
+                               key_t> offscreen_mgr_t;
+typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), key_t> interactor_factory_t;
+typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), key_t> camera_factory_t;
+typedef core::factory_registry<SPTR(viz::scene3d::light_adaptor)(), key_t> light_factory_t;
+typedef core::factory_registry<SPTR(viz::scene3d::text)(const SPTR(sight::viz::scene3d::layer)& _layer),
+                               key_t> text_factory_t;
 
 VIZ_SCENE3D_API SPTR(Type) get();
-VIZ_SCENE3D_API SPTR(OffscreenMgrType) getOffscreenMgr();
-VIZ_SCENE3D_API SPTR(InteractorFactoryType) getInteractorRegistry();
-VIZ_SCENE3D_API SPTR(CameraFactoryType) getCameraRegistry();
-VIZ_SCENE3D_API SPTR(LightFactoryType) getLightRegistry();
-VIZ_SCENE3D_API SPTR(TextFactoryType) getTextRegistry();
+VIZ_SCENE3D_API SPTR(offscreen_mgr_t) get_offscreen_mgr();
+VIZ_SCENE3D_API SPTR(interactor_factory_t) get_interactor_registry();
+VIZ_SCENE3D_API SPTR(camera_factory_t) get_camera_registry();
+VIZ_SCENE3D_API SPTR(light_factory_t) get_light_registry();
+VIZ_SCENE3D_API SPTR(text_factory_t) get_text_registry();
 
 } // namespace registry
 

@@ -44,51 +44,52 @@ void FiducialsReaderWriterTest::basicTest()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
-    auto originalImageSeries = std::dynamic_pointer_cast<data::image_series>(original->at(0));
-    CPPUNIT_ASSERT(originalImageSeries);
-    CPPUNIT_ASSERT(!originalImageSeries->hasFiducials());
-    data::fiducials_series::sptr originalFiducialsSeries = originalImageSeries->getFiducials();
+    auto original_image_series = std::dynamic_pointer_cast<data::image_series>(original->at(0));
+    CPPUNIT_ASSERT(original_image_series);
+    CPPUNIT_ASSERT(!original_image_series->hasFiducials());
+    data::fiducials_series::sptr original_fiducials_series = original_image_series->getFiducials();
 
-    originalFiducialsSeries->setContentDate("1");
-    originalFiducialsSeries->setContentTime("2");
-    originalFiducialsSeries->setInstanceNumber(3);
-    originalFiducialsSeries->setContentLabel("4");
-    originalFiducialsSeries->setContentDescription("5");
-    originalFiducialsSeries->setContentCreatorName("6");
+    original_fiducials_series->setContentDate("1");
+    original_fiducials_series->setContentTime("2");
+    original_fiducials_series->setInstanceNumber(3);
+    original_fiducials_series->setContentLabel("4");
+    original_fiducials_series->setContentDescription("5");
+    original_fiducials_series->setContentCreatorName("6");
 
-    data::fiducials_series::FiducialSet fiducialSet;
+    data::fiducials_series::FiducialSet fiducial_set;
 
-    data::fiducials_series::ReferencedImage referencedImage;
-    referencedImage.referencedSOPClassUID    = data::dicom::sop::get(originalImageSeries->getSOPKeyword()).m_uid;
-    referencedImage.referencedSOPInstanceUID = originalImageSeries->getSOPInstanceUID();
-    referencedImage.referencedFrameNumber    = {7};
-    referencedImage.referencedSegmentNumber  = {8};
-    fiducialSet.referencedImageSequence      = {referencedImage};
+    data::fiducials_series::ReferencedImage referenced_image;
+    referenced_image.referencedSOPClassUID    = data::dicom::sop::get(original_image_series->getSOPKeyword()).m_uid;
+    referenced_image.referencedSOPInstanceUID = original_image_series->getSOPInstanceUID();
+    referenced_image.referencedFrameNumber    = {7};
+    referenced_image.referencedSegmentNumber  = {8};
+    fiducial_set.referencedImageSequence      = {referenced_image};
 
-    fiducialSet.frameOfReferenceUID = "9";
+    fiducial_set.frameOfReferenceUID = "9";
 
     data::fiducials_series::Fiducial fiducial;
     fiducial.shapeType           = data::fiducials_series::Shape::POINT;
     fiducial.fiducialDescription = "10";
     fiducial.fiducialIdentifier  = "11";
 
-    data::fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID = data::dicom::sop::get(
-        originalImageSeries->getSOPKeyword()
+    data::fiducials_series::GraphicCoordinatesData graphic_coordinates_data;
+    graphic_coordinates_data.referencedImageSequence.referencedSOPClassUID = data::dicom::sop::get(
+        original_image_series->getSOPKeyword()
     ).m_uid;
-    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = originalImageSeries->getSOPInstanceUID();
-    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {12};
-    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {13};
-    graphicCoordinatesData.graphicData                                      = {{14, 15}};
-    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+    graphic_coordinates_data.referencedImageSequence.referencedSOPInstanceUID =
+        original_image_series->getSOPInstanceUID();
+    graphic_coordinates_data.referencedImageSequence.referencedFrameNumber   = {12};
+    graphic_coordinates_data.referencedImageSequence.referencedSegmentNumber = {13};
+    graphic_coordinates_data.graphicData                                     = {{14, 15}};
+    fiducial.graphicCoordinatesDataSequence                                  = {graphic_coordinates_data};
 
     fiducial.fiducialUID = "16";
     fiducial.contourData = {{17, 18, 19}};
-    fiducialSet.fiducialSequence.push_back(fiducial);
+    fiducial_set.fiducialSequence.push_back(fiducial);
 
-    fiducialSet.groupName = "20";
+    fiducial_set.groupName = "20";
 
-    originalFiducialsSeries->setSOPInstanceUID(
+    original_fiducials_series->setSOPInstanceUID(
         std::string(
             data::dicom::sop::get(
                 data::dicom::sop::Keyword::
@@ -96,7 +97,7 @@ void FiducialsReaderWriterTest::basicTest()
             ).m_uid
         ) + ".0"
     );
-    originalFiducialsSeries->appendFiducialSet(fiducialSet);
+    original_fiducials_series->appendFiducialSet(fiducial_set);
 
     auto writer = std::make_shared<io::dicom::Writer>();
     writer->set_object(original);
@@ -110,26 +111,26 @@ void FiducialsReaderWriterTest::basicTest()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 
-    auto actualImageSeries = std::dynamic_pointer_cast<data::image_series>(actual->at(0));
-    CPPUNIT_ASSERT(actualImageSeries);
-    auto actualFiducialsSeries = actualImageSeries->getFiducials();
-    CPPUNIT_ASSERT(actualFiducialsSeries);
-    std::vector<data::fiducials_series::FiducialSet> actualFiducialSets = actualFiducialsSeries->getFiducialSets();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), actualFiducialSets.size());
+    auto actual_image_series = std::dynamic_pointer_cast<data::image_series>(actual->at(0));
+    CPPUNIT_ASSERT(actual_image_series);
+    auto actual_fiducials_series = actual_image_series->getFiducials();
+    CPPUNIT_ASSERT(actual_fiducials_series);
+    std::vector<data::fiducials_series::FiducialSet> actual_fiducial_sets = actual_fiducials_series->getFiducialSets();
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual_fiducial_sets.size());
 
-    CPPUNIT_ASSERT_EQUAL(originalFiducialsSeries->getContentDate(), actualFiducialsSeries->getContentDate());
-    CPPUNIT_ASSERT_EQUAL(originalFiducialsSeries->getContentTime(), actualFiducialsSeries->getContentTime());
-    CPPUNIT_ASSERT(originalFiducialsSeries->getInstanceNumber() == actualFiducialsSeries->getInstanceNumber());
-    CPPUNIT_ASSERT_EQUAL(originalFiducialsSeries->getContentLabel(), actualFiducialsSeries->getContentLabel());
+    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->getContentDate(), actual_fiducials_series->getContentDate());
+    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->getContentTime(), actual_fiducials_series->getContentTime());
+    CPPUNIT_ASSERT(original_fiducials_series->getInstanceNumber() == actual_fiducials_series->getInstanceNumber());
+    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->getContentLabel(), actual_fiducials_series->getContentLabel());
     CPPUNIT_ASSERT_EQUAL(
-        originalFiducialsSeries->getContentDescription(),
-        actualFiducialsSeries->getContentDescription()
+        original_fiducials_series->getContentDescription(),
+        actual_fiducials_series->getContentDescription()
     );
     CPPUNIT_ASSERT_EQUAL(
-        originalFiducialsSeries->getContentCreatorName(),
-        actualFiducialsSeries->getContentCreatorName()
+        original_fiducials_series->getContentCreatorName(),
+        actual_fiducials_series->getContentCreatorName()
     );
-    CPPUNIT_ASSERT(fiducialSet == actualFiducialSets[0]);
+    CPPUNIT_ASSERT(fiducial_set == actual_fiducial_sets[0]);
 }
 
 } // namespace sight::io::dicom::ut

@@ -41,7 +41,7 @@ public:
 
     ~TestObject() override;
 
-    void slot(double timestamp);
+    void slot(double _timestamp);
 
     const std::vector<double>& getTimestamps() const;
 
@@ -65,9 +65,9 @@ TestObject::~TestObject()
 
 //------------------------------------------------------------------------------
 
-void TestObject::slot(double timestamp)
+void TestObject::slot(double _timestamp)
 {
-    m_timestamps.push_back(timestamp);
+    m_timestamps.push_back(_timestamp);
 }
 
 //------------------------------------------------------------------------------

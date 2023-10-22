@@ -62,17 +62,17 @@ void automatic_registration::configuring()
     const std::string metric = config.get<std::string>("metric", "");
     this->setMetric(metric);
 
-    const std::string shrinkList = config.get<std::string>("levels", "");
-    std::string sigmaShrinkPair;
+    const std::string shrink_list = config.get<std::string>("levels", "");
+    std::string sigma_shrink_pair;
 
-    std::istringstream shrinksStream(shrinkList);
-    while(std::getline(shrinksStream, sigmaShrinkPair, ';'))
+    std::istringstream shrinks_stream(shrink_list);
+    while(std::getline(shrinks_stream, sigma_shrink_pair, ';'))
     {
-        std::istringstream sigmaShrinkStream(sigmaShrinkPair);
+        std::istringstream sigma_shrink_stream(sigma_shrink_pair);
         std::vector<std::string> parameters;
         std::string token;
 
-        while(std::getline(sigmaShrinkStream, token, ':'))
+        while(std::getline(sigma_shrink_stream, token, ':'))
         {
             parameters.push_back(token);
         }
@@ -118,18 +118,18 @@ void automatic_registration::updating()
     SIGHT_ASSERT("No " << s_TRANSFORM_INOUT << " found !", transform);
 
     // Create a copy of m_multiResolutionParameters without empty values
-    automatic_registration::MultiResolutionParametersType
-        multiResolutionParameters(m_multiResolutionParameters.size());
+    automatic_registration::multi_resolution_parameters_t
+        multi_resolution_parameters(m_multiResolutionParameters.size());
 
-    using ParamPairType = automatic_registration::MultiResolutionParametersType::value_type;
+    using param_pair_t = automatic_registration::multi_resolution_parameters_t::value_type;
 
-    auto lastElt = std::remove_copy_if(
+    auto last_elt = std::remove_copy_if(
         m_multiResolutionParameters.begin(),
         m_multiResolutionParameters.end(),
-        multiResolutionParameters.begin(),
-        [](const ParamPairType& v){return v.first == 0;});
+        multi_resolution_parameters.begin(),
+        [](const param_pair_t& _v){return _v.first == 0;});
 
-    multiResolutionParameters.erase(lastElt, multiResolutionParameters.end());
+    multi_resolution_parameters.erase(last_elt, multi_resolution_parameters.end());
 
     automatic_registration registrator;
 
@@ -141,16 +141,17 @@ void automatic_registration::updating()
             registrator.stopRegistration();
         });
 
-    std::fstream regLog;
+    std::fstream reg_log;
 
     if(m_log)
     {
-        std::stringstream fileNameStream;
-        const std::time_t systemTime = std::time(nullptr);
-        fileNameStream << "registration_" << std::put_time(std::localtime(&systemTime), "%Y-%m-%d_%H-%M-%S") << ".csv";
+        std::stringstream file_name_stream;
+        const std::time_t system_time = std::time(nullptr);
+        file_name_stream << "registration_"
+        << std::put_time(std::localtime(&system_time), "%Y-%m-%d_%H-%M-%S") << ".csv";
 
-        regLog.open(fileNameStream.str(), std::ios_base::out);
-        regLog << "'Timestamp',"
+        reg_log.open(file_name_stream.str(), std::ios_base::out);
+        reg_log << "'Timestamp',"
         << "'Current level',"
         << "'Current iteration',"
         << "'Shrink',"
@@ -168,22 +169,22 @@ void automatic_registration::updating()
         << std::endl;
     }
 
-    auto transfoModifiedSig = transform->signal<data::matrix4::ModifiedSignalType>
-                                  (data::matrix4::MODIFIED_SIG);
+    auto transfo_modified_sig = transform->signal<data::matrix4::modified_signal_t>
+                                    (data::matrix4::MODIFIED_SIG);
 
-    std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> reg_start_time;
     std::size_t i = 0;
 
-    automatic_registration::IterationCallbackType iterationCallback =
+    automatic_registration::iteration_callback_t iteration_callback =
         [&]()
         {
-            const itk::SizeValueType currentIteration = registrator.getCurrentIteration();
-            const itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
+            const itk::SizeValueType current_iteration = registrator.getCurrentIteration();
+            const itk::SizeValueType current_level     = registrator.getCurrentLevel();
 
-            const float progress = float(i++) / float(m_maxIterations * multiResolutionParameters.size());
+            const float progress = float(i++) / float(m_maxIterations * multi_resolution_parameters.size());
 
             std::string msg = "Number of iterations : " + std::to_string(i) + " Current level : "
-                              + std::to_string(currentLevel);
+                              + std::to_string(current_level);
             dialog(progress, msg);
             dialog.setMessage(msg);
 
@@ -191,44 +192,44 @@ void automatic_registration::updating()
 
             if(m_log)
             {
-                std::stringstream transformStream;
+                std::stringstream transform_stream;
 
                 for(std::uint8_t j = 0 ; j < 16 ; ++j)
                 {
-                    transformStream << (*transform)[j];
+                    transform_stream << (*transform)[j];
 
                     if(j != 15)
                     {
-                        transformStream << ";";
+                        transform_stream << ";";
                     }
                 }
 
                 const std::chrono::time_point<std::chrono::high_resolution_clock> now =
                     std::chrono::high_resolution_clock::now();
 
-                const auto duration = now - regStartTime;
+                const auto duration = now - reg_start_time;
 
-                regLog << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
-                << "'" << currentLevel << "',"
-                << "'" << currentIteration << "',"
-                << "'" << multiResolutionParameters[currentLevel].first << "',"
-                << "'" << multiResolutionParameters[currentLevel].second << "',"
+                reg_log << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
+                << "'" << current_level << "',"
+                << "'" << current_iteration << "',"
+                << "'" << multi_resolution_parameters[current_level].first << "',"
+                << "'" << multi_resolution_parameters[current_level].second << "',"
                 << "'" << registrator.getCurrentMetricValue() << "',"
                 << "'" << registrator.getCurrentParameters() << "',"
-                << "'" << transformStream.str() << "',"
+                << "'" << transform_stream.str() << "',"
                 << "'" << registrator.getRelaxationFactor() << "',"
                 << "'" << registrator.getLearningRate() << "',"
                 << "'" << registrator.getGradientMagnitudeTolerance() << "',"
                 << "'" << m_minStep << "',"
                 << "'" << m_maxIterations << "',"
                 << "'" << m_samplingPercentage << "',"
-                << "'" << multiResolutionParameters.size() << "'"
+                << "'" << multi_resolution_parameters.size() << "'"
                 << std::endl;
 
-                regLog.flush(); // Flush, just to be sure.
+                reg_log.flush(); // Flush, just to be sure.
             }
 
-            transfoModifiedSig->async_emit();
+            transfo_modified_sig->async_emit();
         };
 
     try
@@ -238,11 +239,11 @@ void automatic_registration::updating()
             reference.get_shared(),
             transform.get_shared(),
             m_metric,
-            multiResolutionParameters,
+            multi_resolution_parameters,
             m_samplingPercentage,
             m_minStep,
             m_maxIterations,
-            iterationCallback
+            iteration_callback
         );
     }
     catch(itk::ExceptionObject& e)
@@ -251,7 +252,7 @@ void automatic_registration::updating()
     }
 
     m_sigComputed->async_emit();
-    transfoModifiedSig->async_emit();
+    transfo_modified_sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -275,67 +276,67 @@ service::connections_t automatic_registration::auto_connections() const
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::setEnumParameter(std::string val, std::string key)
+void automatic_registration::setEnumParameter(std::string _val, std::string _key)
 {
-    if(key == "metric")
+    if(_key == "metric")
     {
-        setMetric(val);
+        setMetric(_val);
     }
     else
     {
-        SIGHT_FATAL("Key must be 'metric', unknown key :" << key);
+        SIGHT_FATAL("Key must be 'metric', unknown key :" << _key);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::setDoubleParameter(double val, std::string key)
+void automatic_registration::setDoubleParameter(double _val, std::string _key)
 {
-    if(key == "minStep")
+    if(_key == "minStep")
     {
-        m_minStep = val;
+        m_minStep = _val;
     }
-    else if(key.find("sigma_") != std::string::npos)
+    else if(_key.find("sigma_") != std::string::npos)
     {
-        const std::uint64_t level = this->extractLevelFromParameterName(key);
-        m_multiResolutionParameters[level].second = val;
+        const std::uint64_t level = this->extractLevelFromParameterName(_key);
+        m_multiResolutionParameters[level].second = _val;
     }
-    else if(key == "samplingPercentage")
+    else if(_key == "samplingPercentage")
     {
-        m_samplingPercentage = val;
+        m_samplingPercentage = _val;
     }
     else
     {
-        SIGHT_FATAL("Unknown key : " << key);
+        SIGHT_FATAL("Unknown key : " << _key);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::setIntParameter(int val, std::string key)
+void automatic_registration::setIntParameter(int _val, std::string _key)
 {
-    if(key == "maxIterations")
+    if(_key == "maxIterations")
     {
-        SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
-        m_maxIterations = static_cast<std::uint64_t>(val);
+        SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", _val <= 0);
+        m_maxIterations = static_cast<std::uint64_t>(_val);
     }
-    else if(key.find("shrink_") != std::string::npos)
+    else if(_key.find("shrink_") != std::string::npos)
     {
-        const std::uint64_t level = this->extractLevelFromParameterName(key);
-        m_multiResolutionParameters[level].first = itk::SizeValueType(val);
+        const std::uint64_t level = this->extractLevelFromParameterName(_key);
+        m_multiResolutionParameters[level].first = itk::SizeValueType(_val);
     }
     else
     {
-        SIGHT_FATAL("Unknown key : " << key);
+        SIGHT_FATAL("Unknown key : " << _key);
     }
 }
 
 //------------------------------------------------------------------------------
-std::uint64_t automatic_registration::extractLevelFromParameterName(const std::string& name)
+std::uint64_t automatic_registration::extractLevelFromParameterName(const std::string& _name)
 {
     // find the level
-    const std::string levelSuffix = name.substr(name.find('_') + 1);
-    const std::uint64_t level     = std::stoul(levelSuffix);
+    const std::string level_suffix = _name.substr(_name.find('_') + 1);
+    const std::uint64_t level      = std::stoul(level_suffix);
 
     if(level >= m_multiResolutionParameters.size())
     {
@@ -347,23 +348,23 @@ std::uint64_t automatic_registration::extractLevelFromParameterName(const std::s
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::setMetric(const std::string& metricName)
+void automatic_registration::setMetric(const std::string& _metric_name)
 {
-    if(metricName == "MeanSquares")
+    if(_metric_name == "MeanSquares")
     {
         m_metric = sight::filter::image::MEAN_SQUARES;
     }
-    else if(metricName == "NormalizedCorrelation")
+    else if(_metric_name == "NormalizedCorrelation")
     {
         m_metric = sight::filter::image::NORMALIZED_CORRELATION;
     }
-    else if(metricName == "MutualInformation")
+    else if(_metric_name == "MutualInformation")
     {
         m_metric = sight::filter::image::MUTUAL_INFORMATION;
     }
     else
     {
-        SIGHT_FATAL("Unknown metric: " << metricName);
+        SIGHT_FATAL("Unknown metric: " << _metric_name);
     }
 }
 

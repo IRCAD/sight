@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/plugin.hpp"
 
-#include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <core/runtime/profile.hpp>
 #include <core/tools/os.hpp>
@@ -67,8 +67,8 @@ void plugin::start()
     // Ogre plugins to load
     if(this->get_module()->has_parameter("plugins"))
     {
-        const std::string pluginsStr = this->get_module()->get_parameter_value("plugins");
-        const std::size_t count      = std::size_t(std::count(pluginsStr.begin(), pluginsStr.end(), ' '));
+        const std::string plugins_str = this->get_module()->get_parameter_value("plugins");
+        const std::size_t count       = std::size_t(std::count(plugins_str.begin(), plugins_str.end(), ' '));
 
         std::vector<std::string> plugins;
         plugins.reserve(count);
@@ -78,11 +78,11 @@ void plugin::start()
             using separator = boost::char_separator<std::string::value_type>;
             using tokenizer = boost::tokenizer<separator>;
 
-            const tokenizer t(pluginsStr, separator {" ", "", boost::drop_empty_tokens});
+            const tokenizer t(plugins_str, separator {" ", "", boost::drop_empty_tokens});
             plugins.assign(t.begin(), t.end());
         }
 
-        sight::viz::scene3d::Utils::addPlugins(plugins);
+        sight::viz::scene3d::utils::addPlugins(plugins);
     }
 }
 
@@ -102,10 +102,10 @@ void SightOgreListener::messageLogged(
     Ogre::LogMessageLevel _lml,
     bool /*maskDebug*/,
     const Ogre::String& /*logName*/,
-    bool& _skipThisMessage
+    bool& _skip_this_message
 )
 {
-    if(!_skipThisMessage)
+    if(!_skip_this_message)
     {
         switch(_lml)
         {

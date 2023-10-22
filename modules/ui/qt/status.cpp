@@ -80,7 +80,7 @@ void status::starting()
 {
     this->create();
 
-    auto qtContainer   = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container  = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     QBoxLayout* layout = nullptr;
     if(m_layout == "horizontal")
     {
@@ -91,12 +91,12 @@ void status::starting()
         layout = new QVBoxLayout();
     }
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     for(std::size_t i = 0 ; i < m_count ; ++i)
     {
         QPointer<QLabel> indicator = new QLabel();
-        indicator->setObjectName(serviceID + "/" + QString::number(i));
+        indicator->setObjectName(service_id + "/" + QString::number(i));
         indicator->setFixedWidth(static_cast<int>(m_width));
         indicator->setFixedHeight(static_cast<int>(m_height));
         m_indicator.push_back(indicator);
@@ -105,7 +105,7 @@ void status::starting()
         layout->addWidget(m_labelStatus.at(static_cast<int>(i)));
     }
 
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     this->changeToRed();
 }
@@ -148,48 +148,48 @@ void status::configuring()
     if(m_count == 1)
     {
         const std::string label = config.get<std::string>("labelStatus", "");
-        QPointer<QLabel> qLab   = new QLabel();
-        qLab->setText(QString::fromStdString(label));
-        m_labelStatus.push_back(qLab);
+        QPointer<QLabel> q_lab  = new QLabel();
+        q_lab->setText(QString::fromStdString(label));
+        m_labelStatus.push_back(q_lab);
     }
     else
     {
-        const auto configLabels = config.get_child_optional("labels");
+        const auto config_labels = config.get_child_optional("labels");
         // Check if the labels tag exists
-        if(configLabels.is_initialized())
+        if(config_labels.is_initialized())
         {
-            const std::size_t countLabelStatus = configLabels.get().count("labelStatus");
+            const std::size_t count_label_status = config_labels.get().count("labelStatus");
 
             SIGHT_WARN_IF(
-                "Number of 'labelStatus' (" << countLabelStatus << ") is different from needed status (" << m_count << ").",
-                countLabelStatus != m_count
+                "Number of 'labelStatus' (" << count_label_status << ") is different from needed status (" << m_count << ").",
+                count_label_status != m_count
             );
             SIGHT_WARN_IF(
-                "'labelStatus' from " << m_count + 1 << " to " << countLabelStatus << " will be lost.",
-                countLabelStatus > m_count
+                "'labelStatus' from " << m_count + 1 << " to " << count_label_status << " will be lost.",
+                count_label_status > m_count
             );
 
-            const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
+            const auto label_status_config = config_labels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
             // NOLINTNEXTLINE(bugprone-branch-clone)
-            BOOST_FOREACH(const service::config_t::value_type& v, labelStatusConfig)
+            BOOST_FOREACH(const service::config_t::value_type& v, label_status_config)
             {
-                const auto label      = v.second.get<std::string>("");
-                QPointer<QLabel> qLab = new QLabel();
-                qLab->setText(QString::fromStdString(label));
+                const auto label       = v.second.get<std::string>("");
+                QPointer<QLabel> q_lab = new QLabel();
+                q_lab->setText(QString::fromStdString(label));
 
-                m_labelStatus.push_back(qLab);
+                m_labelStatus.push_back(q_lab);
             }
 
             // If there is less labelStatus than needed ones, fill with empty strings
-            if(countLabelStatus < m_count)
+            if(count_label_status < m_count)
             {
-                SIGHT_WARN("'labelStatus' from " << countLabelStatus + 1 << " to " << m_count << " will be empty.");
-                for(std::size_t i = countLabelStatus ; i < m_count ; ++i)
+                SIGHT_WARN("'labelStatus' from " << count_label_status + 1 << " to " << m_count << " will be empty.");
+                for(std::size_t i = count_label_status ; i < m_count ; ++i)
                 {
-                    QPointer<QLabel> qLab = new QLabel();
-                    qLab->setText("");
-                    m_labelStatus.push_back(qLab);
+                    QPointer<QLabel> q_lab = new QLabel();
+                    q_lab->setText("");
+                    m_labelStatus.push_back(q_lab);
                 }
             }
         }
@@ -197,9 +197,9 @@ void status::configuring()
         {
             for(std::size_t i = 0 ; i < m_count ; ++i)
             {
-                QPointer<QLabel> qLab = new QLabel();
-                qLab->setText("");
-                m_labelStatus.push_back(qLab);
+                QPointer<QLabel> q_lab = new QLabel();
+                q_lab->setText("");
+                m_labelStatus.push_back(q_lab);
             }
         }
     }
@@ -252,83 +252,83 @@ void status::changeToOrange()
 
 //------------------------------------------------------------------------------
 
-void status::toggleGreenRed(const bool green)
+void status::toggleGreenRed(const bool _green)
 {
     for(auto& it : m_indicator)
     {
         it->setStyleSheet(
-            "background-color:" + QString(green ? "green" : "red") + "; border-radius: " + m_borderRadius + ";"
+            "background-color:" + QString(_green ? "green" : "red") + "; border-radius: " + m_borderRadius + ";"
         );
-        it->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
+        it->setToolTip(_green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void status::changeNthToGreen(const int index)
+void status::changeNthToGreen(const int _index)
 {
     SIGHT_DEBUG_IF(
-        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= int(m_count)
+        "Index(" << _index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
+        _index < 0 || _index >= int(m_count)
     );
 
-    if(index >= 0 && index < int(m_count))
+    if(_index >= 0 && _index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet("background-color: green; border-radius: " + m_borderRadius + ";");
-        m_indicator.at(index)->setToolTip(QString::fromStdString(m_greenTooltip));
+        m_indicator.at(_index)->setStyleSheet("background-color: green; border-radius: " + m_borderRadius + ";");
+        m_indicator.at(_index)->setToolTip(QString::fromStdString(m_greenTooltip));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void status::changeNthToRed(const int index)
+void status::changeNthToRed(const int _index)
 {
     SIGHT_DEBUG_IF(
-        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= int(m_count)
+        "Index(" << _index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
+        _index < 0 || _index >= int(m_count)
     );
 
-    if(index >= 0 && index < int(m_count))
+    if(_index >= 0 && _index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet("background-color: red; border-radius: " + m_borderRadius + ";");
-        m_indicator.at(index)->setToolTip(QString::fromStdString(m_redTooltip));
+        m_indicator.at(_index)->setStyleSheet("background-color: red; border-radius: " + m_borderRadius + ";");
+        m_indicator.at(_index)->setToolTip(QString::fromStdString(m_redTooltip));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void status::changeNthToOrange(const int index)
+void status::changeNthToOrange(const int _index)
 {
     SIGHT_DEBUG_IF(
-        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= int(m_count)
+        "Index(" << _index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
+        _index < 0 || _index >= int(m_count)
     );
 
-    if(index >= 0 && index < int(m_count))
+    if(_index >= 0 && _index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet("background-color: orange; border-radius: " + m_borderRadius + ";");
-        m_indicator.at(index)->setToolTip(QString::fromStdString(m_orangeTooltip));
+        m_indicator.at(_index)->setStyleSheet("background-color: orange; border-radius: " + m_borderRadius + ";");
+        m_indicator.at(_index)->setToolTip(QString::fromStdString(m_orangeTooltip));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void status::toggleNthGreenRed(const int index, const bool green)
+void status::toggleNthGreenRed(const int _index, const bool _green)
 {
     SIGHT_DEBUG_IF(
-        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= int(m_count)
+        "Index(" << _index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
+        _index < 0 || _index >= int(m_count)
     );
 
-    if(index >= 0 && index < int(m_count))
+    if(_index >= 0 && _index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet(
-            "background-color:" + QString(green ? "green" : "red")
+        m_indicator.at(_index)->setStyleSheet(
+            "background-color:" + QString(_green ? "green" : "red")
             + "; border-radius: " + m_borderRadius + ";"
         );
-        m_indicator.at(index)->setToolTip(
-            green ? QString::fromStdString(m_greenTooltip)
-                  : QString::fromStdString(m_redTooltip)
+        m_indicator.at(_index)->setToolTip(
+            _green ? QString::fromStdString(m_greenTooltip)
+                   : QString::fromStdString(m_redTooltip)
         );
     }
 }

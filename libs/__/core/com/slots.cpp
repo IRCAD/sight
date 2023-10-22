@@ -32,27 +32,27 @@ namespace sight::core::com
 
 //-----------------------------------------------------------------------------
 
-void slots::set_worker(const core::thread::worker::sptr& worker)
+void slots::set_worker(const core::thread::worker::sptr& _worker)
 {
     for(const auto& elem : m_slots)
     {
-        elem.second->set_worker(worker);
+        elem.second->set_worker(_worker);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-slots& slots::operator()(const key_t& key, const slot_base::sptr& slot)
+slots& slots::operator()(const key_t& _key, const slot_base::sptr& _slot)
 {
-    m_slots.insert({key, slot});
+    m_slots.insert({_key, _slot});
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-slot_base::sptr slots::operator[](const key_t& key) const
+slot_base::sptr slots::operator[](const key_t& _key) const
 {
-    auto it = m_slots.find(key);
+    auto it = m_slots.find(_key);
 
     if(it != m_slots.end())
     {

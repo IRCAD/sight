@@ -51,20 +51,20 @@ public:
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base, ui::factory::make<progress>);
 
     UI_QML_API progress(
-        const std::string& title   = "Progression",
-        const std::string& message = std::string(86, ' ')
+        const std::string& _title   = "Progression",
+        const std::string& _message = std::string(86, ' ')
     );
 
     UI_QML_API ~progress() override;
 
     /// the operator to set the progress of the percentage
-    UI_QML_API void operator()(float percent, std::string msg) override;
+    UI_QML_API void operator()(float _percent, std::string _msg) override;
 
     /// override
-    UI_QML_API void setTitle(const std::string& title) override;
+    UI_QML_API void setTitle(const std::string& _title) override;
 
     /// override
-    UI_QML_API void setMessage(const std::string& message) override;
+    UI_QML_API void setMessage(const std::string& _message) override;
 
     UI_QML_API void hideCancelButton() override;
 

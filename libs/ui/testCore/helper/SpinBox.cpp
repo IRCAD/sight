@@ -24,67 +24,67 @@
 #include <QDoubleSpinBox>
 #include <QSpinBox>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-static void change(Tester& tester, const QPoint& pos)
+static void change(Tester& _tester, const QPoint& _pos)
 {
-    tester.interact(std::make_unique<MouseClick>(Qt::MouseButton::LeftButton, Qt::NoModifier, pos));
+    _tester.interact(std::make_unique<MouseClick>(Qt::MouseButton::LeftButton, Qt::NoModifier, _pos));
 }
 
 //------------------------------------------------------------------------------
 
-void SpinBox::increment(Tester& tester, const Select& spinBox, int times)
+void SpinBox::increment(Tester& _tester, const Select& _spin_box, int _times)
 {
-    auto bt = tester.addInBacktrace(
-        "incrementing \"" + spinBox.getDescription(tester) + "\" spin box " + std::to_string(times) + "times"
+    auto bt = _tester.addInBacktrace(
+        "incrementing \"" + _spin_box.getDescription(_tester) + "\" spin box " + std::to_string(_times) + "times"
     );
-    spinBox.select(tester);
-    auto* widget = tester.get<QWidget*>();
-    for(int i = 0 ; i < times ; i++)
+    _spin_box.select(_tester);
+    auto* widget = _tester.get<QWidget*>();
+    for(int i = 0 ; i < _times ; i++)
     {
-        change(tester, Tester::rightOf(widget));
+        change(_tester, Tester::rightOf(widget));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SpinBox::decrement(Tester& tester, const Select& spinBox, int times)
+void SpinBox::decrement(Tester& _tester, const Select& _spin_box, int _times)
 {
-    auto bt = tester.addInBacktrace(
-        "decrementing \"" + spinBox.getDescription(tester) + "\" spin box " + std::to_string(times) + "times"
+    auto bt = _tester.addInBacktrace(
+        "decrementing \"" + _spin_box.getDescription(_tester) + "\" spin box " + std::to_string(_times) + "times"
     );
-    spinBox.select(tester);
-    auto* widget = tester.get<QWidget*>();
-    for(int i = 0 ; i < times ; i++)
+    _spin_box.select(_tester);
+    auto* widget = _tester.get<QWidget*>();
+    for(int i = 0 ; i < _times ; i++)
     {
-        change(tester, Tester::leftOf(widget));
+        change(_tester, Tester::leftOf(widget));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SpinBox::valueEquals(Tester& tester, const Select& spinBox, const std::string& expected)
+void SpinBox::valueEquals(Tester& _tester, const Select& _spin_box, const std::string& _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking whether \"" + spinBox.getDescription(tester) + "\" spin box has the value " + expected
+    auto bt = _tester.addInBacktrace(
+        "checking whether \"" + _spin_box.getDescription(_tester) + "\" spin box has the value " + _expected
     );
-    spinBox.select(tester);
-    QString qExpected = QString::fromStdString(expected);
-    tester.doubt(
-        spinBox.getDescription(tester) + " should have the value " + expected,
-        [&qExpected](QObject* obj)
+    _spin_box.select(_tester);
+    QString q_expected = QString::fromStdString(_expected);
+    _tester.doubt(
+        _spin_box.getDescription(_tester) + " should have the value " + _expected,
+        [&q_expected](QObject* _obj)
         {
-            if(auto* doubleSpinBox = qobject_cast<QDoubleSpinBox*>(obj))
+            if(auto* double_spin_box = qobject_cast<QDoubleSpinBox*>(_obj))
             {
-                return doubleSpinBox->cleanText() == qExpected;
+                return double_spin_box->cleanText() == q_expected;
             }
 
-            if(auto* intSpinBox = qobject_cast<QSpinBox*>(obj))
+            if(auto* int_spin_box = qobject_cast<QSpinBox*>(_obj))
             {
-                return intSpinBox->cleanText() == qExpected;
+                return int_spin_box->cleanText() == q_expected;
             }
 
             return false;
@@ -93,28 +93,29 @@ void SpinBox::valueEquals(Tester& tester, const Select& spinBox, const std::stri
 
 //------------------------------------------------------------------------------
 
-void SpinBox::valueEquals(Tester& tester, const Select& spinBox, int expected)
+void SpinBox::valueEquals(Tester& _tester, const Select& _spin_box, int _expected)
 {
-    auto bt = tester.addInBacktrace(
-        "checking whether \"" + spinBox.getDescription(tester) + "\" spin box has the value " + std::to_string(expected)
+    auto bt = _tester.addInBacktrace(
+        "checking whether \"" + _spin_box.getDescription(_tester) + "\" spin box has the value "
+        + std::to_string(_expected)
     );
-    spinBox.select(tester);
-    tester.doubt(
-        spinBox.getDescription(tester) + " should have the value " + std::to_string(expected),
-        [&expected](QObject* obj)
+    _spin_box.select(_tester);
+    _tester.doubt(
+        _spin_box.getDescription(_tester) + " should have the value " + std::to_string(_expected),
+        [&_expected](QObject* _obj)
         {
-            if(auto* doubleSpinBox = qobject_cast<QDoubleSpinBox*>(obj))
+            if(auto* double_spin_box = qobject_cast<QDoubleSpinBox*>(_obj))
             {
-                return doubleSpinBox->value() == expected;
+                return double_spin_box->value() == _expected;
             }
 
-            if(auto* intSpinBox = qobject_cast<QSpinBox*>(obj))
+            if(auto* int_spin_box = qobject_cast<QSpinBox*>(_obj))
             {
-                return intSpinBox->value() == expected;
+                return int_spin_box->value() == _expected;
             }
 
             return false;
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

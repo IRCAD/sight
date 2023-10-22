@@ -60,84 +60,84 @@ void registry_test::tearDown()
 
 void registry_test::registerKeyTest()
 {
-    const std::string srvType("sight::service::ut::test_srv");
-    const std::string srvImplementation1("sight::service::ut::STestNoData");
-    const std::string srvImplementation2("sight::service::ut::STestNoData2");
+    const std::string srv_type("sight::service::ut::test_srv");
+    const std::string srv_implementation1("sight::service::ut::STestNoData");
+    const std::string srv_implementation2("sight::service::ut::STestNoData2");
 
     data::integer::sptr obj1 = std::make_shared<data::integer>();
     data::integer::sptr obj2 = std::make_shared<data::integer>();
     data::integer::sptr obj3 = std::make_shared<data::integer>();
 
-    auto service1 = service::extension::factory::get()->create(srvImplementation1);
-    auto service2 = service::extension::factory::get()->create(srvImplementation2);
-    auto service3 = service::extension::factory::get()->create(srvImplementation1);
+    auto service1 = service::extension::factory::get()->create(srv_implementation1);
+    auto service2 = service::extension::factory::get()->create(srv_implementation2);
+    auto service3 = service::extension::factory::get()->create(srv_implementation1);
 
-    sight::service::registerService(service1);
-    sight::service::registerService(service2);
-    sight::service::registerService(service3);
+    sight::service::register_service(service1);
+    sight::service::register_service(service2);
+    sight::service::register_service(service3);
 
     // 3 services in total
     {
-        auto servicesByType         = sight::service::getServices(srvType);
-        auto servicesByTemplateType = sight::service::getServices<service::ut::test_srv>();
+        auto services_by_type          = sight::service::get_services(srv_type);
+        auto services_by_template_type = sight::service::get_services<service::ut::test_srv>();
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
-        CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), services_by_type.size());
+        CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));
     }
 
     // 2 services of type "sight::service::ut::STestNoData"
     {
-        auto servicesByType         = sight::service::getServices(srvImplementation1);
-        auto servicesByTemplateType = sight::service::getServices<service::ut::STestNoData>();
+        auto services_by_type          = sight::service::get_services(srv_implementation1);
+        auto services_by_template_type = sight::service::get_services<service::ut::STestNoData>();
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
-        CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), services_by_type.size());
+        CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));
     }
 
     // 1 service of type "sight::service::ut::STestNoData2"
     {
-        auto servicesByType         = sight::service::getServices(srvImplementation2);
-        auto servicesByTemplateType = sight::service::getServices<service::ut::STestNoData2>();
+        auto services_by_type          = sight::service::get_services(srv_implementation2);
+        auto services_by_template_type = sight::service::get_services<service::ut::STestNoData2>();
 
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), servicesByType.size());
-        CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), services_by_type.size());
+        CPPUNIT_ASSERT(std::equal(services_by_type.begin(), services_by_type.end(), services_by_template_type.begin()));
     }
 
-    auto servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
+    auto services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), services_by_type.size());
 
-    CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
-    CPPUNIT_ASSERT(servicesByType.find(service2) != servicesByType.end());
-    CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
+    CPPUNIT_ASSERT(services_by_type.find(service1) != services_by_type.end());
+    CPPUNIT_ASSERT(services_by_type.find(service2) != services_by_type.end());
+    CPPUNIT_ASSERT(services_by_type.find(service3) != services_by_type.end());
 
     // Remove key 1 from service 1 and check consistency
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), services_by_type.size());
 
-    sight::service::unregisterService(service1);
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
+    sight::service::unregister_service(service1);
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), services_by_type.size());
 
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), services_by_type.size());
 
-    sight::service::registerService(service1);
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), servicesByType.size());
+    sight::service::register_service(service1);
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(3), services_by_type.size());
 
     // Remove service 3 and check consistency
-    sight::service::unregisterService(service3);
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), servicesByType.size());
+    sight::service::unregister_service(service3);
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), services_by_type.size());
 
-    sight::service::unregisterService(service2);
+    sight::service::unregister_service(service2);
 
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), servicesByType.size());
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), services_by_type.size());
 
-    sight::service::unregisterService(service1);
-    servicesByType = sight::service::getServices(srvType);
-    CPPUNIT_ASSERT(servicesByType.empty());
+    sight::service::unregister_service(service1);
+    services_by_type = sight::service::get_services(srv_type);
+    CPPUNIT_ASSERT(services_by_type.empty());
 }
 
 //------------------------------------------------------------------------------

@@ -45,8 +45,8 @@ public:
      * @param[in] maxUndo the maximum number of commands stored by the manager (commands are dumped beyond this point)
      */
     UI_HISTORY_API UndoRedoManager(
-        std::size_t maxMemory   = std::numeric_limits<std::size_t>::max(),
-        std::size_t maxCommands = std::numeric_limits<std::size_t>::max()
+        std::size_t _max_memory   = std::numeric_limits<std::size_t>::max(),
+        std::size_t _max_commands = std::numeric_limits<std::size_t>::max()
     );
 
     /**
@@ -56,7 +56,7 @@ public:
      *
      * @return false if the enqueue failed.
      */
-    UI_HISTORY_API bool enqueue(command::sptr cmd);
+    UI_HISTORY_API bool enqueue(command::sptr _cmd);
 
     /**
      * @brief Execute the next command if any.
@@ -85,17 +85,17 @@ public:
     [[nodiscard]] UI_HISTORY_API std::size_t getCommandCount() const;
 
     /// Set the maximum number of enqueued commands.
-    UI_HISTORY_API void setCommandCount(std::size_t cmdCount);
+    UI_HISTORY_API void setCommandCount(std::size_t _cmd_count);
 
     /// Returns the amount of memory used by the history.
     [[nodiscard]] UI_HISTORY_API std::size_t getHistorySize() const;
 
     /// Set the maximum amount of memory used by the history.
-    UI_HISTORY_API void setHistorySize(std::size_t histSize);
+    UI_HISTORY_API void setHistorySize(std::size_t _hist_size);
 
 private:
 
-    typedef std::deque<command::sptr> CommandHistoryType;
+    typedef std::deque<command::sptr> command_history_t;
 
     /// Maximum amount of memory (in bytes) that can be used by the manager.
     std::size_t m_maxMemory;
@@ -107,7 +107,7 @@ private:
     std::size_t m_usedMemory {0};
 
     /// Double-ended queue of commands.
-    CommandHistoryType m_commandQueue;
+    command_history_t m_commandQueue;
 
     /// Pointer to the last command.
     std::int64_t m_commandIndex {-1};

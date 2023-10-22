@@ -27,7 +27,7 @@ Example in a toolbar:
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_ui_flaticons
 )

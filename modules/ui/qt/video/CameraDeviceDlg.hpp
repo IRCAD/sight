@@ -55,22 +55,22 @@ Q_OBJECT;
 public:
 
     /// constructor
-    MODULE_UI_QT_API CameraDeviceDlg(std::string xmlResolution = "");
+    MODULE_UI_QT_API CameraDeviceDlg(std::string _xml_resolution = "");
 
     /// destructor
     MODULE_UI_QT_API ~CameraDeviceDlg() override = default;
 
-    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::camera) & camera, std::string& resolutionXMLOption);
+    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::camera) & _camera, std::string& _resolution_xml_option);
     // Filter the list of supported resolution to extract the lowest, highest and medium resolution in relation to
     // `resolutionType`
     MODULE_UI_QT_API QSize getResolution(
-        const std::string& resolutionXMLOption,
-        const QList<QSize>& supportedResolutions
+        const std::string& _resolution_xml_option,
+        const QList<QSize>& _supported_resolutions
     );
 
 private Q_SLOTS:
 
-    void onSelectDevice(int index);
+    void onSelectDevice(int _index);
 
 private:
 

@@ -24,7 +24,7 @@
 
 #include <core/spy_log.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <utility>
 
@@ -33,11 +33,11 @@ namespace sight::filter::image
 
 //-----------------------------------------------------------------------------
 
-line_drawer::line_drawer(data::image::sptr img, data::image::csptr roi) :
-    m_image(std::move(img)),
-    m_roiImage(std::move(roi))
+line_drawer::line_drawer(data::image::sptr _img, data::image::csptr _roi) :
+    m_image(std::move(_img)),
+    m_roiImage(std::move(_roi))
 {
-    m_useROI = data::helper::MedicalImage::checkImageValidity(m_roiImage);
+    m_useROI = data::helper::medical_image::check_image_validity(m_roiImage);
 
     m_imageTypeSize = std::uint8_t(m_image->getType().size());
     m_roiTypeSize   = m_useROI ? std::uint8_t(m_roiImage->getType().size()) : 0;
@@ -49,13 +49,13 @@ line_drawer::line_drawer(data::image::sptr img, data::image::csptr roi) :
 //-----------------------------------------------------------------------------
 
 bool line_drawer::drawEllipse(
-    const line_drawer::CoordinatesType& c,
-    data::image::BufferType* value,
-    const double radius,
-    const std::size_t firstDim,
-    const std::size_t secondDim,
-    const bool overwrite,
-    image_diff& diff
+    const line_drawer::coordinates_t& _c,
+    data::image::buffer_t* _value,
+    const double _radius,
+    const std::size_t _first_dim,
+    const std::size_t _second_dim,
+    const bool _overwrite,
+    image_diff& _diff
 )
 {
     bool modified = false;
@@ -63,19 +63,19 @@ bool line_drawer::drawEllipse(
     const auto& spacing = m_image->getSpacing();
     const auto& size    = m_image->size();
 
-    const double width  = radius / spacing[firstDim];
-    const double height = radius / spacing[secondDim];
+    const double width  = _radius / spacing[_first_dim];
+    const double height = _radius / spacing[_second_dim];
 
-    int origX = static_cast<int>(c[firstDim]);
-    int origY = static_cast<int>(c[secondDim]);
+    int orig_x = static_cast<int>(_c[_first_dim]);
+    int orig_y = static_cast<int>(_c[_second_dim]);
 
-    line_drawer::CoordinatesType point = c;
+    line_drawer::coordinates_t point = _c;
 
-    int w_begin = std::max(static_cast<int>(-width), -origX);
-    int h_begin = std::max(static_cast<int>(-height), -origY);
+    int w_begin = std::max(static_cast<int>(-width), -orig_x);
+    int h_begin = std::max(static_cast<int>(-height), -orig_y);
 
-    int w_end = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
-    int h_end = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
+    int w_end = std::min(static_cast<int>(width), static_cast<int>(size[_first_dim]) - 1 - orig_x);
+    int h_end = std::min(static_cast<int>(height), static_cast<int>(size[_second_dim]) - 1 - orig_y);
 
     for(int y = h_begin ; y <= h_end ; y++)
     {
@@ -85,12 +85,12 @@ bool line_drawer::drawEllipse(
             double dy = y / height;
             if(dx * dx + dy * dy <= 1)
             {
-                point[firstDim]  = static_cast<data::image::IndexType>(origX) + static_cast<data::image::IndexType>(x);
-                point[secondDim] = static_cast<data::image::IndexType>(origY) + static_cast<data::image::IndexType>(y);
+                point[_first_dim]  = static_cast<data::image::index_t>(orig_x) + static_cast<data::image::index_t>(x);
+                point[_second_dim] = static_cast<data::image::index_t>(orig_y) + static_cast<data::image::index_t>(y);
 
-                const data::image::IndexType index = point[0] + point[1] * m_yPitch + point[2] * m_zPitch;
+                const data::image::index_t index = point[0] + point[1] * m_yPitch + point[2] * m_zPitch;
 
-                modified |= this->drawPixel(index, value, overwrite, diff);
+                modified |= this->drawPixel(index, _value, _overwrite, _diff);
             }
         }
     }
@@ -101,37 +101,37 @@ bool line_drawer::drawEllipse(
 //-----------------------------------------------------------------------------
 
 bool line_drawer::drawPixel(
-    const data::image::IndexType index,
-    data::image::BufferType* value,
-    const bool overwrite,
-    image_diff& diff
+    const data::image::index_t _index,
+    data::image::buffer_t* _value,
+    const bool _overwrite,
+    image_diff& _diff
 )
 {
-    const data::image::BufferType* pixBuf =
-        reinterpret_cast<data::image::BufferType*>(m_image->getPixel(index));
+    const data::image::buffer_t* pix_buf =
+        reinterpret_cast<data::image::buffer_t*>(m_image->getPixel(_index));
 
     if(m_useROI)
     {
-        const auto* roiVal =
-            reinterpret_cast<const data::image::BufferType*>(m_roiImage->getPixel(index));
-        if(data::helper::MedicalImage::isBufNull(roiVal, m_roiTypeSize))
+        const auto* roi_val =
+            reinterpret_cast<const data::image::buffer_t*>(m_roiImage->getPixel(_index));
+        if(data::helper::medical_image::is_buf_null(roi_val, m_roiTypeSize))
         {
             return false;
         }
     }
 
-    if(std::equal(pixBuf, pixBuf + m_imageTypeSize, value))
+    if(std::equal(pix_buf, pix_buf + m_imageTypeSize, _value))
     {
         return false;
     }
 
-    if(!overwrite && !data::helper::MedicalImage::isBufNull(pixBuf, m_imageTypeSize))
+    if(!_overwrite && !data::helper::medical_image::is_buf_null(pix_buf, m_imageTypeSize))
     {
         return false;
     }
 
-    diff.addDiff(index, pixBuf, value);
-    m_image->setPixel(index, value);
+    _diff.addDiff(_index, pix_buf, _value);
+    m_image->setPixel(_index, _value);
 
     return true;
 }
@@ -139,12 +139,12 @@ bool line_drawer::drawPixel(
 //-----------------------------------------------------------------------------
 
 image_diff line_drawer::draw(
-    const bresenham_line::Orientation orientation,
-    const CoordinatesType& startCoord,
-    const CoordinatesType& endCoord,
-    data::image::BufferType* value,
-    const double thickness,
-    const bool overwrite
+    const bresenham_line::Orientation _orientation,
+    const coordinates_t& _start_coord,
+    const coordinates_t& _end_coord,
+    data::image::buffer_t* _value,
+    const double _thickness,
+    const bool _overwrite
 )
 {
     image_diff diff(m_imageTypeSize, 128);
@@ -152,7 +152,7 @@ image_diff line_drawer::draw(
     std::size_t dim0 = 0;
     std::size_t dim1 = 0;
 
-    switch(orientation)
+    switch(_orientation)
     {
         case bresenham_line::Orientation::Z_AXIS:
             dim0 = 0;
@@ -175,16 +175,16 @@ image_diff line_drawer::draw(
             dim1 = 1;
     }
 
-    bresenham_line::PathType path = bresenham_line::draw(orientation, startCoord, endCoord);
+    bresenham_line::path_t path = bresenham_line::draw(_orientation, _start_coord, _end_coord);
 
-    auto pixel    = path.begin();
-    auto endPixel = path.end();
+    auto pixel     = path.begin();
+    auto end_pixel = path.end();
 
     bool modified = false;
 
-    for( ; pixel != endPixel ; ++pixel)
+    for( ; pixel != end_pixel ; ++pixel)
     {
-        modified = this->drawEllipse(*pixel, value, thickness / 2.0, dim0, dim1, overwrite, diff) || modified;
+        modified = this->drawEllipse(*pixel, _value, _thickness / 2.0, dim0, dim1, _overwrite, diff) || modified;
     }
 
     return diff;

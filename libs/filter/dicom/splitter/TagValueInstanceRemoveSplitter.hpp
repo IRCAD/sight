@@ -52,9 +52,9 @@ public:
     FILTER_DICOM_API ~TagValueInstanceRemoveSplitter() override;
 
     /// Override
-    FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::dicom_series::sptr& series,
-        const core::log::logger::sptr& logger
+    FILTER_DICOM_API dicom_series_container_t apply(
+        const data::dicom_series::sptr& _series,
+        const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
@@ -111,9 +111,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setTagValue(const std::string& _tagValue)
+    void setTagValue(const std::string& _tag_value)
     {
-        this->m_tagValue = _tagValue;
+        this->m_tagValue = _tag_value;
     }
 
 /**  @} */

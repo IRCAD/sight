@@ -64,32 +64,32 @@ void transform_depth_tl2mm::configuring()
 
 //------------------------------------------------------------------------------
 
-void transform_depth_tl2mm::compute(core::hires_clock::type timestamp)
+void transform_depth_tl2mm::compute(core::hires_clock::type _timestamp)
 {
-    if(timestamp > m_lastTimestamp)
+    if(_timestamp > m_lastTimestamp)
     {
-        const auto originFrameTL = m_originFrameTL.lock();
-        SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_TL_INPUT << "' timeline", originFrameTL);
+        const auto origin_frame_tl = m_originFrameTL.lock();
+        SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_TL_INPUT << "' timeline", origin_frame_tl);
         const auto camera_set = m_camera_set.lock();
         SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
-        data::camera::csptr depthCamera = camera_set->get_camera(0);
+        data::camera::csptr depth_camera = camera_set->get_camera(0);
 
-        auto scaledFrameTL = m_scaledDepthTL.lock();
-        SIGHT_ASSERT("missing '" << s_SCALED_FRAME_TL_INOUT << "' timeline", scaledFrameTL);
+        auto scaled_frame_tl = m_scaledDepthTL.lock();
+        SIGHT_ASSERT("missing '" << s_SCALED_FRAME_TL_INOUT << "' timeline", scaled_frame_tl);
 
-        const double scale = depthCamera->getScale();
+        const double scale = depth_camera->getScale();
 
-        const auto depthBufferObj = originFrameTL->getClosestBuffer(timestamp);
+        const auto depth_buffer_obj = origin_frame_tl->getClosestBuffer(_timestamp);
 
-        if(depthBufferObj)
+        if(depth_buffer_obj)
         {
-            const std::size_t width  = originFrameTL->getWidth();
-            const std::size_t height = originFrameTL->getHeight();
+            const std::size_t width  = origin_frame_tl->getWidth();
+            const std::size_t height = origin_frame_tl->getHeight();
             const std::size_t size   = width * height;
 
-            if(scaledFrameTL->getWidth() == 0 || scaledFrameTL->getHeight() == 0)
+            if(scaled_frame_tl->getWidth() == 0 || scaled_frame_tl->getHeight() == 0)
             {
-                scaledFrameTL->initPoolSize(
+                scaled_frame_tl->initPoolSize(
                     width,
                     height,
                     core::type::UINT16,
@@ -97,28 +97,28 @@ void transform_depth_tl2mm::compute(core::hires_clock::type timestamp)
                 );
             }
 
-            const auto* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
+            const auto* depth_buffer_in = reinterpret_cast<const std::uint16_t*>(&depth_buffer_obj->getElement(0));
 
-            SPTR(data::frame_tl::BufferType) depthBufferOutObj = scaledFrameTL->createBuffer(timestamp);
+            SPTR(data::frame_tl::buffer_t) depth_buffer_out_obj = scaled_frame_tl->createBuffer(_timestamp);
 
-            auto* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
+            auto* depth_buffer_out = reinterpret_cast<std::uint16_t*>(depth_buffer_out_obj->addElement(0));
 
             for(std::size_t i = 0 ; i < size ; ++i)
             {
-                *depthBufferOut++ = static_cast<std::uint16_t>((*depthBufferIn++) * scale);
+                *depth_buffer_out++ = static_cast<std::uint16_t>((*depth_buffer_in++) * scale);
             }
 
-            scaledFrameTL->pushObject(depthBufferOutObj);
+            scaled_frame_tl->pushObject(depth_buffer_out_obj);
 
             auto sig =
-                scaledFrameTL->signal<data::timeline::signals::pushed_t>(
+                scaled_frame_tl->signal<data::timeline::signals::pushed_t>(
                     data::timeline::signals::PUSHED
                 );
-            sig->async_emit(timestamp);
+            sig->async_emit(_timestamp);
             m_sigComputed->async_emit();
         }
 
-        m_lastTimestamp = timestamp;
+        m_lastTimestamp = _timestamp;
     }
 }
 

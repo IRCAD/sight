@@ -39,7 +39,7 @@ namespace sight::io::itk
  * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-data::image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
+data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buffer_manager_is_data_image = true);
 
 /**
  * @brief Update a data Image from an itk one.
@@ -50,10 +50,10 @@ data::image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferMa
  * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-void moveFromItk(
-    typename ITKIMAGE::Pointer itkImage,
-    data::image::sptr _dataImage,
-    bool bufferManagerIsDataImage = true
+void move_from_itk(
+    typename ITKIMAGE::Pointer _itk_image,
+    data::image::sptr _data_image,
+    bool _buffer_manager_is_data_image = true
 );
 
 /**
@@ -64,11 +64,11 @@ void moveFromItk(
  * the created itkImage manage his image buffer and thus imageData releases his
  * buffer (in this case, imageData must be the owner of this buffer).
  *
- * @pre an assertion check if ITKIMAGE::PixelType correspond to imageData->getPixelType
+ * @pre an assertion check if ITKIMAGE::pixel_t correspond to imageData->get_pixel_type
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer moveToItk(data::image::csptr imageData);
+typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data);
 
 /**
  * @brief Map which associates itk types with sight types

@@ -67,10 +67,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_pusher, sight::service::controller);
 
-    typedef std::vector<CSPTR(data::series)> DicomSeriesContainerType;
+    typedef std::vector<CSPTR(data::series)> dicom_series_container_t;
 
     MODULE_IO_DICOMWEB_API static const core::com::slots::key_t DISPLAY_SLOT;
-    typedef core::com::slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    typedef core::com::slot<void (const std::string&, bool)> display_message_slot_t;
 
     /**
      * @brief Constructor
@@ -106,7 +106,7 @@ private:
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    static void displayMessage(const std::string& message, bool error);
+    static void displayMessage(const std::string& _message, bool _error);
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;

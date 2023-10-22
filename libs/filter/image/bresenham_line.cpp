@@ -29,16 +29,16 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-bresenham_line::PathType bresenham_line::draw(
-    const Orientation orientation,
-    const CoordinatesType& startCoord,
-    const CoordinatesType& endCoord
+bresenham_line::path_t bresenham_line::draw(
+    const Orientation _orientation,
+    const coordinates_t& _start_coord,
+    const coordinates_t& _end_coord
 )
 {
     std::size_t dim0 = 0;
     std::size_t dim1 = 1;
 
-    switch(orientation)
+    switch(_orientation)
     {
         case Orientation::X_AXIS:
             dim0 = 1;
@@ -56,36 +56,36 @@ bresenham_line::PathType bresenham_line::draw(
             break;
     }
 
-    const CoordinatesType::value_type beginX = startCoord[dim0];
-    const CoordinatesType::value_type beginY = startCoord[dim1];
-    const CoordinatesType::value_type endX   = endCoord[dim0];
-    const CoordinatesType::value_type endY   = endCoord[dim1];
+    const coordinates_t::value_type begin_x = _start_coord[dim0];
+    const coordinates_t::value_type begin_y = _start_coord[dim1];
+    const coordinates_t::value_type end_x   = _end_coord[dim0];
+    const coordinates_t::value_type end_y   = _end_coord[dim1];
 
     const std::int64_t dx = std::abs(
-        static_cast<std::int64_t>(endX) - static_cast<std::int64_t>(beginX)
+        static_cast<std::int64_t>(end_x) - static_cast<std::int64_t>(begin_x)
     );
     const std::int64_t dy = std::abs(
-        static_cast<std::int64_t>(endY) - static_cast<std::int64_t>(beginY)
+        static_cast<std::int64_t>(end_y) - static_cast<std::int64_t>(begin_y)
     );
 
-    const int sx = (endX < beginX) ? -1 : 1;
-    const int sy = (endY < beginY) ? -1 : 1;
+    const int sx = (end_x < begin_x) ? -1 : 1;
+    const int sy = (end_y < begin_y) ? -1 : 1;
 
     std::int64_t e = dx - dy;
 
-    CoordinatesType currentCoord = startCoord;
+    coordinates_t current_coord = _start_coord;
 
-    PathType result;
-    auto pathLength = static_cast<CoordinatesType::value_type>(std::max(dx, dy));
-    result.reserve(pathLength);
+    path_t result;
+    auto path_length = static_cast<coordinates_t::value_type>(std::max(dx, dy));
+    result.reserve(path_length);
 
-    result.push_back(currentCoord);
+    result.push_back(current_coord);
 
-    while(currentCoord != endCoord)
+    while(current_coord != _end_coord)
     {
         const std::int64_t e2 = e * 2;
-        auto cx               = static_cast<std::int64_t>(currentCoord[dim0]);
-        auto cy               = static_cast<std::int64_t>(currentCoord[dim1]);
+        auto cx               = static_cast<std::int64_t>(current_coord[dim0]);
+        auto cy               = static_cast<std::int64_t>(current_coord[dim1]);
 
         if(e2 > -static_cast<std::int64_t>(dy))
         {
@@ -99,9 +99,9 @@ bresenham_line::PathType bresenham_line::draw(
             cy += sy;
         }
 
-        currentCoord[dim0] = static_cast<CoordinatesType::value_type>(cx);
-        currentCoord[dim1] = static_cast<CoordinatesType::value_type>(cy);
-        result.push_back(currentCoord);
+        current_coord[dim0] = static_cast<coordinates_t::value_type>(cx);
+        current_coord[dim1] = static_cast<coordinates_t::value_type>(cy);
+        result.push_back(current_coord);
     }
 
     return result;

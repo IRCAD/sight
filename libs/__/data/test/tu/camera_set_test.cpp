@@ -47,9 +47,9 @@ void camera_set_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-camera_set::sptr initCameraSet()
+camera_set::sptr init_camera_set()
 {
-    auto cameraSet = std::make_shared<camera_set>();
+    auto camera_set = std::make_shared<data::camera_set>();
 
     // --------------- Camera 1 ----------------------
     auto camera1 = std::make_shared<camera>();
@@ -59,7 +59,7 @@ camera_set::sptr initCameraSet()
     camera1->setFy(7.3);
     camera1->setSkew(1.9);
     camera1->setDistortionCoefficient(1.1, 2.2, 3.3, 4.4, 5.5);
-    cameraSet->add_camera(camera1);
+    camera_set->add_camera(camera1);
 
     // --------------- Camera 2 ----------------------
     auto camera2 = std::make_shared<camera>();
@@ -69,7 +69,7 @@ camera_set::sptr initCameraSet()
     camera2->setFy(5.14);
     camera2->setSkew(0.19);
     camera2->setDistortionCoefficient(2.4, 5.1, 66., 4.1, 6.4);
-    cameraSet->add_camera(camera2);
+    camera_set->add_camera(camera2);
 
     // --------------- Extrinsic matrix ----------------------
     auto mat = std::make_shared<matrix4>();
@@ -82,17 +82,17 @@ camera_set::sptr initCameraSet()
         }
     }
 
-    cameraSet->set_extrinsic_matrix(1, mat);
+    camera_set->set_extrinsic_matrix(1, mat);
 
-    return cameraSet;
+    return camera_set;
 }
 
 //------------------------------------------------------------------------------
 
 void camera_set_test::cameraTest()
 {
-    auto cameraSet = std::make_shared<camera_set>();
-    CPPUNIT_ASSERT(cameraSet);
+    auto camera_set = std::make_shared<data::camera_set>();
+    CPPUNIT_ASSERT(camera_set);
 
     auto identity = std::make_shared<matrix4>();
     auto mat      = std::make_shared<matrix4>();
@@ -109,63 +109,63 @@ void camera_set_test::cameraTest()
     auto camera2 = std::make_shared<camera>();
     auto camera3 = std::make_shared<camera>();
 
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->add_camera(camera1));
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->add_camera(camera2));
-    CPPUNIT_ASSERT_THROW(cameraSet->add_camera(camera2), core::exception);
+    CPPUNIT_ASSERT_NO_THROW(camera_set->add_camera(camera1));
+    CPPUNIT_ASSERT_NO_THROW(camera_set->add_camera(camera2));
+    CPPUNIT_ASSERT_THROW(camera_set->add_camera(camera2), core::exception);
 
-    CPPUNIT_ASSERT(cameraSet->get_extrinsic_matrix(0));
-    CPPUNIT_ASSERT(*identity == *cameraSet->get_extrinsic_matrix(0));
-    CPPUNIT_ASSERT(!cameraSet->get_extrinsic_matrix(1));
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->set_extrinsic_matrix(1, mat));
-    CPPUNIT_ASSERT_THROW(cameraSet->set_extrinsic_matrix(2, mat), std::out_of_range);
-    CPPUNIT_ASSERT_THROW(cameraSet->get_extrinsic_matrix(2), std::out_of_range);
-    CPPUNIT_ASSERT(cameraSet->get_extrinsic_matrix(1) == mat);
+    CPPUNIT_ASSERT(camera_set->get_extrinsic_matrix(0));
+    CPPUNIT_ASSERT(*identity == *camera_set->get_extrinsic_matrix(0));
+    CPPUNIT_ASSERT(!camera_set->get_extrinsic_matrix(1));
+    CPPUNIT_ASSERT_NO_THROW(camera_set->set_extrinsic_matrix(1, mat));
+    CPPUNIT_ASSERT_THROW(camera_set->set_extrinsic_matrix(2, mat), std::out_of_range);
+    CPPUNIT_ASSERT_THROW(camera_set->get_extrinsic_matrix(2), std::out_of_range);
+    CPPUNIT_ASSERT(camera_set->get_extrinsic_matrix(1) == mat);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), cameraSet->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), camera_set->size());
 
-    CPPUNIT_ASSERT(cameraSet->get_camera(0) == camera1);
-    CPPUNIT_ASSERT(cameraSet->get_camera(1) == camera2);
-    CPPUNIT_ASSERT_THROW(cameraSet->get_camera(2), std::out_of_range);
+    CPPUNIT_ASSERT(camera_set->get_camera(0) == camera1);
+    CPPUNIT_ASSERT(camera_set->get_camera(1) == camera2);
+    CPPUNIT_ASSERT_THROW(camera_set->get_camera(2), std::out_of_range);
 
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->add_camera(camera3));
-    CPPUNIT_ASSERT(cameraSet->get_camera(2) == camera3);
+    CPPUNIT_ASSERT_NO_THROW(camera_set->add_camera(camera3));
+    CPPUNIT_ASSERT(camera_set->get_camera(2) == camera3);
 
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->remove_camera(camera1));
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), cameraSet->size());
-    CPPUNIT_ASSERT(cameraSet->get_camera(0) == camera2);
-    CPPUNIT_ASSERT_THROW(cameraSet->remove_camera(camera1), core::exception);
+    CPPUNIT_ASSERT_NO_THROW(camera_set->remove_camera(camera1));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), camera_set->size());
+    CPPUNIT_ASSERT(camera_set->get_camera(0) == camera2);
+    CPPUNIT_ASSERT_THROW(camera_set->remove_camera(camera1), core::exception);
 
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->remove_camera(camera2));
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), cameraSet->size());
-    CPPUNIT_ASSERT(cameraSet->get_camera(0) == camera3);
-    CPPUNIT_ASSERT_NO_THROW(cameraSet->remove_camera(camera3));
+    CPPUNIT_ASSERT_NO_THROW(camera_set->remove_camera(camera2));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), camera_set->size());
+    CPPUNIT_ASSERT(camera_set->get_camera(0) == camera3);
+    CPPUNIT_ASSERT_NO_THROW(camera_set->remove_camera(camera3));
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), cameraSet->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), camera_set->size());
 }
 
 //------------------------------------------------------------------------------
 
 void camera_set_test::shallow_copyTest()
 {
-    auto cameraSet  = initCameraSet();
-    auto cameraSet2 = std::make_shared<camera_set>();
+    auto camera_set  = init_camera_set();
+    auto camera_set2 = std::make_shared<data::camera_set>();
 
-    cameraSet2->shallow_copy(cameraSet);
+    camera_set2->shallow_copy(camera_set);
 
-    CPPUNIT_ASSERT_EQUAL(cameraSet->size(), cameraSet2->size());
-    CPPUNIT_ASSERT_EQUAL(cameraSet->get_camera(0), cameraSet2->get_camera(0));
-    CPPUNIT_ASSERT_EQUAL(cameraSet->get_camera(1), cameraSet2->get_camera(1));
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), camera_set2->size());
+    CPPUNIT_ASSERT_EQUAL(camera_set->get_camera(0), camera_set2->get_camera(0));
+    CPPUNIT_ASSERT_EQUAL(camera_set->get_camera(1), camera_set2->get_camera(1));
 }
 
 //------------------------------------------------------------------------------
 
 void camera_set_test::deep_copyTest()
 {
-    camera_set::sptr cameraSet = initCameraSet();
-    camera_set::sptr cameraSet2;
-    cameraSet2 = data::object::copy<camera_set>(cameraSet);
+    camera_set::sptr camera_set = init_camera_set();
+    camera_set::sptr camera_set2;
+    camera_set2 = data::object::copy<data::camera_set>(camera_set);
 
-    CPPUNIT_ASSERT(*cameraSet == *cameraSet2);
+    CPPUNIT_ASSERT(*camera_set == *camera_set2);
 }
 
 } // namespace sight::data::ut

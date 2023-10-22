@@ -38,29 +38,29 @@ SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::related_study);
 
 validator::return_t related_study::validate(
     const activity::extension::activity_info& /*activity_info*/,
-    const data::vector::csptr& currentSelection
+    const data::vector::csptr& _current_selection
 ) const
 {
     validator::return_t validation;
 
-    if(currentSelection->size() > 1)
+    if(_current_selection->size() > 1)
     {
         validation.first  = true;
         validation.second = "Selected series refers to the same study.";
 
-        auto seriesRef                  = std::dynamic_pointer_cast<data::series>((*currentSelection)[0]);
-        std::string studyInstanceUIDRef = seriesRef->getStudyInstanceUID();
-        boost::algorithm::trim(studyInstanceUIDRef);
+        auto series_ref                    = std::dynamic_pointer_cast<data::series>((*_current_selection)[0]);
+        std::string study_instance_uid_ref = series_ref->getStudyInstanceUID();
+        boost::algorithm::trim(study_instance_uid_ref);
 
         data::vector::container_type::const_iterator it;
-        for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
+        for(it = _current_selection->begin() + 1 ; it != _current_selection->end() ; ++it)
         {
             auto series = std::dynamic_pointer_cast<data::series>(*it);
 
-            std::string studyInstanceUID = series->getStudyInstanceUID();
-            boost::algorithm::trim(studyInstanceUID);
+            std::string study_instance_uid = series->getStudyInstanceUID();
+            boost::algorithm::trim(study_instance_uid);
 
-            if(studyInstanceUIDRef != studyInstanceUID)
+            if(study_instance_uid_ref != study_instance_uid)
             {
                 validation.first  = false;
                 validation.second = "Selected series do not refer to the same study.";

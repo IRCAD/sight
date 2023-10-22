@@ -37,19 +37,19 @@ SIGHT_REGISTER_DATA(sight::data::array);
 
 //------------------------------------------------------------------------------
 
-inline static std::size_t computeSize(
-    std::size_t elementSize,
-    const data::array::SizeType& size
+inline static std::size_t compute_size(
+    std::size_t _element_size,
+    const data::array::size_t& _size
 )
 {
     std::size_t total = 0;
-    if(!size.empty())
+    if(!_size.empty())
     {
-        total  = elementSize;
+        total  = _element_size;
         total *=
             std::accumulate(
-                size.begin(),
-                size.end(),
+                _size.begin(),
+                _size.end(),
                 static_cast<std::size_t>(1),
                 std::multiplies<>()
             );
@@ -60,16 +60,16 @@ inline static std::size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-data::array::OffsetType array::computeStrides(SizeType size, std::size_t sizeOfType)
+data::array::offset_t array::computeStrides(size_t _size, std::size_t _size_of_type)
 {
-    data::array::OffsetType strides;
-    strides.reserve(size.size());
+    data::array::offset_t strides;
+    strides.reserve(_size.size());
 
-    std::size_t currentStride = sizeOfType;
-    for(const SizeType::value_type& s : size)
+    std::size_t current_stride = _size_of_type;
+    for(const size_t::value_type& s : _size)
     {
-        strides.push_back(currentStride);
-        currentStride *= s;
+        strides.push_back(current_stride);
+        current_stride *= s;
     }
 
     return strides;
@@ -111,13 +111,13 @@ void array::shallow_copy(const object::csptr& /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void array::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void array::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const array>(source);
+    const auto& other = std::dynamic_pointer_cast<const array>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -137,29 +137,29 @@ void array::deep_copy(const object::csptr& source, const std::unique_ptr<deep_co
         m_size    = other->m_size;
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t array::resize(
-    const SizeType& size,
-    const core::type& type,
-    bool reallocate
+    const size_t& _size,
+    const core::type& _type,
+    bool _reallocate
 )
 {
-    const std::size_t bufSize = computeSize(type.size(), size);
+    const std::size_t buf_size = compute_size(_type.size(), _size);
 
-    if(reallocate && bufSize != m_bufferObject->size())
+    if(_reallocate && buf_size != m_bufferObject->size())
     {
         if(m_bufferObject->is_empty())
         {
             m_isBufferOwner = true;
-            m_bufferObject->allocate(bufSize);
+            m_bufferObject->allocate(buf_size);
         }
         else if(m_isBufferOwner)
         {
-            m_bufferObject->reallocate(bufSize);
+            m_bufferObject->reallocate(buf_size);
         }
         else
         {
@@ -170,18 +170,18 @@ std::size_t array::resize(
         }
     }
 
-    m_strides = computeStrides(size, type.size());
-    m_type    = type;
-    m_size    = size;
+    m_strides = computeStrides(_size, _type.size());
+    m_type    = _type;
+    m_size    = _size;
 
-    return bufSize;
+    return buf_size;
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t array::resize(const SizeType& size, bool reallocate)
+std::size_t array::resize(const size_t& _size, bool _reallocate)
 {
-    return this->resize(size, m_type, reallocate);
+    return this->resize(_size, m_type, _reallocate);
 }
 
 //------------------------------------------------------------------------------
@@ -219,26 +219,26 @@ std::size_t array::getElementSizeInBytes() const
 
 std::size_t array::numElements() const
 {
-    return computeSize(1, m_size);
+    return compute_size(1, m_size);
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t array::getSizeInBytes() const
 {
-    return computeSize(m_type.size(), m_size);
+    return compute_size(m_type.size(), m_size);
 }
 
 //------------------------------------------------------------------------------
 
-const data::array::SizeType& array::size() const
+const data::array::size_t& array::size() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-const data::array::OffsetType& array::getStrides() const
+const data::array::offset_t& array::getStrides() const
 {
     return m_strides;
 }
@@ -252,9 +252,9 @@ std::size_t array::numDimensions() const
 
 //------------------------------------------------------------------------------
 
-void array::setIsBufferOwner(const bool own)
+void array::setIsBufferOwner(const bool _own)
 {
-    m_isBufferOwner = own;
+    m_isBufferOwner = _own;
 }
 
 //------------------------------------------------------------------------------
@@ -273,21 +273,21 @@ core::type array::getType() const
 
 //------------------------------------------------------------------------------
 
-std::size_t array::getBufferOffset(const data::array::IndexType& id) const
+std::size_t array::getBufferOffset(const data::array::index_t& _id) const
 {
     SIGHT_THROW_EXCEPTION_IF(
         data::exception(
-            "Given index has " + std::to_string(id.size()) + " dimensions, but array has "
+            "Given index has " + std::to_string(_id.size()) + " dimensions, but array has "
             + std::to_string(m_size.size()) + " dimensions."
         ),
-        id.size() != m_size.size()
+        _id.size() != m_size.size()
     );
 
-    OffsetType offsets(id.size());
+    offset_t offsets(_id.size());
 
     std::transform(
-        id.begin(),
-        id.end(),
+        _id.begin(),
+        _id.end(),
         m_strides.begin(),
         offsets.begin(),
         std::multiplies<>()
@@ -325,7 +325,7 @@ const void* array::buffer() const
 
 //------------------------------------------------------------------------------
 
-void array::setBuffer(void* buf, bool takeOwnership, core::memory::buffer_allocation_policy::sptr policy)
+void array::setBuffer(void* _buf, bool _take_ownership, core::memory::buffer_allocation_policy::sptr _policy)
 {
     if(m_bufferObject)
     {
@@ -336,51 +336,51 @@ void array::setBuffer(void* buf, bool takeOwnership, core::memory::buffer_alloca
     }
     else
     {
-        core::memory::buffer_object::sptr newBufferObject = std::make_shared<core::memory::buffer_object>();
-        m_bufferObject->swap(newBufferObject);
+        core::memory::buffer_object::sptr new_buffer_object = std::make_shared<core::memory::buffer_object>();
+        m_bufferObject->swap(new_buffer_object);
     }
 
-    m_bufferObject->set_buffer(buf, (buf == nullptr) ? 0 : this->getSizeInBytes(), policy);
-    this->setIsBufferOwner(takeOwnership);
+    m_bufferObject->set_buffer(_buf, (_buf == nullptr) ? 0 : this->getSizeInBytes(), _policy);
+    this->setIsBufferOwner(_take_ownership);
 }
 
 //------------------------------------------------------------------------------
 
 void array::setBuffer(
-    void* buf,
-    bool takeOwnership,
-    const data::array::SizeType& size,
-    const core::type& type,
-    core::memory::buffer_allocation_policy::sptr policy
+    void* _buf,
+    bool _take_ownership,
+    const data::array::size_t& _size,
+    const core::type& _type,
+    core::memory::buffer_allocation_policy::sptr _policy
 )
 {
-    this->resize(size, type, false);
-    this->setBuffer(buf, takeOwnership, policy);
+    this->resize(_size, _type, false);
+    this->setBuffer(_buf, _take_ownership, _policy);
 }
 
 //-----------------------------------------------------------------------------
 
-char* array::getBufferPtr(const data::array::IndexType& id)
+char* array::getBufferPtr(const data::array::index_t& _id)
 {
-    const std::size_t offset = this->getBufferOffset(id);
+    const std::size_t offset = this->getBufferOffset(_id);
     char* item               = static_cast<char*>(this->buffer()) + offset;
     return item;
 }
 
 //------------------------------------------------------------------------------
 
-const char* array::getBufferPtr(const data::array::IndexType& id) const
+const char* array::getBufferPtr(const data::array::index_t& _id) const
 {
-    const std::size_t offset = this->getBufferOffset(id);
+    const std::size_t offset = this->getBufferOffset(_id);
     const char* item         = static_cast<const char*>(this->buffer()) + offset;
     return item;
 }
 
 //------------------------------------------------------------------------------
 
-void array::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& locks) const
+void array::dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const
 {
-    locks.push_back(m_bufferObject->lock());
+    _locks.push_back(m_bufferObject->lock());
 }
 
 //------------------------------------------------------------------------------
@@ -417,25 +417,25 @@ array::const_iterator<char> array::end() const
 
 //------------------------------------------------------------------------------
 
-bool array::operator==(const array& other) const noexcept
+bool array::operator==(const array& _other) const noexcept
 {
-    if(m_strides != other.m_strides
-       || m_type != other.m_type
-       || m_size != other.m_size
-       || !core::tools::is_equal(m_bufferObject, other.m_bufferObject))
+    if(m_strides != _other.m_strides
+       || m_type != _other.m_type
+       || m_size != _other.m_size
+       || !core::tools::is_equal(m_bufferObject, _other.m_bufferObject))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool array::operator!=(const array& other) const noexcept
+bool array::operator!=(const array& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } //namespace sight::data

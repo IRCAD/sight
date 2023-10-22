@@ -23,13 +23,13 @@
 #include "ui/qt/container/toolbar.hpp"
 #include "ui/qt/layout/toolbar.hpp"
 
-#include "ui/qt/ActionCallback.hpp"
+#include "ui/qt/action_callback.hpp"
 #include "ui/qt/container/menu.hpp"
 #include "ui/qt/container/menu_item.hpp"
 #include "ui/qt/container/widget.hpp"
 
 #include <ui/__/macros.hpp>
-#include <ui/qt/widget/AccordionMenu.hpp>
+#include <ui/qt/widget/accordion_menu.hpp>
 
 #include <QActionGroup>
 #include <qboxlayout.h>
@@ -46,132 +46,132 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void toolbar::createLayout(ui::container::toolbar::sptr parent, const std::string& id)
+void toolbar::createLayout(ui::container::toolbar::sptr _parent, const std::string& _id)
 {
-    m_parent = std::dynamic_pointer_cast<ui::qt::container::toolbar>(parent);
+    m_parent = std::dynamic_pointer_cast<ui::qt::container::toolbar>(_parent);
     SIGHT_ASSERT("dynamicCast toolbar to toolbar failed", m_parent);
 
-    const QString qId = QString::fromStdString(id);
+    const QString q_id = QString::fromStdString(_id);
 
-    QToolBar* toolBar = m_parent->getQtToolBar();
-    toolBar->setObjectName(qId);
+    QToolBar* tool_bar = m_parent->getQtToolBar();
+    tool_bar->setObjectName(q_id);
 
     if(m_style == "ToolButtonTextOnly")
     {
-        toolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
+        tool_bar->setToolButtonStyle(Qt::ToolButtonTextOnly);
     }
     else if(m_style == "ToolButtonTextBesideIcon")
     {
-        toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        tool_bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     }
     else if(m_style == "ToolButtonTextUnderIcon")
     {
-        toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        tool_bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     }
     else if(m_style == "ToolButtonFollowStyle")
     {
-        toolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
+        tool_bar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     }
     else
     {
-        toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        tool_bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }
 
-    [[maybe_unused]] QActionGroup* actionGroup  = nullptr;
-    widget::AccordionMenu* accordionLayout      = nullptr;
-    [[maybe_unused]] unsigned int menuItemIndex = 0;
-    for(ui::layout::toolbar_manager::ActionInfo& actionInfo : m_actionInfo)
+    [[maybe_unused]] QActionGroup* action_group   = nullptr;
+    widget::accordion_menu* accordion_layout      = nullptr;
+    [[maybe_unused]] unsigned int menu_item_index = 0;
+    for(ui::layout::toolbar_manager::ActionInfo& action_info : m_actionInfo)
     {
-        if(actionInfo.m_accordion == ui::layout::toolbar_manager::Accordion::NO)
+        if(action_info.m_accordion == ui::layout::toolbar_manager::Accordion::NO)
         {
-            accordionLayout = nullptr;
+            accordion_layout = nullptr;
         }
-        else if(actionInfo.m_accordion == ui::layout::toolbar_manager::Accordion::FIRST)
+        else if(action_info.m_accordion == ui::layout::toolbar_manager::Accordion::FIRST)
         {
-            accordionLayout = new widget::AccordionMenu(toolBar);
-            toolBar->addWidget(accordionLayout);
+            accordion_layout = new widget::accordion_menu(tool_bar);
+            tool_bar->addWidget(accordion_layout);
         }
 
-        if(actionInfo.m_isSeparator)
+        if(action_info.m_isSeparator)
         {
-            if(actionInfo.m_size > 0)
+            if(action_info.m_size > 0)
             {
-                auto* widget = new QWidget(toolBar);
-                widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
-                widget->setMinimumWidth(actionInfo.m_size);
-                toolBar->addWidget(widget);
+                auto* widget = new QWidget(tool_bar);
+                widget->setObjectName(q_id + '/' + action_info.m_name.c_str());
+                widget->setMinimumWidth(action_info.m_size);
+                tool_bar->addWidget(widget);
             }
             else
             {
-                toolBar->addSeparator();
+                tool_bar->addSeparator();
             }
 
-            actionGroup = nullptr;
+            action_group = nullptr;
         }
-        else if(actionInfo.m_isSpacer)
+        else if(action_info.m_isSpacer)
         {
-            auto* spacer = new QWidget(toolBar);
+            auto* spacer = new QWidget(tool_bar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            if(accordionLayout != nullptr)
+            if(accordion_layout != nullptr)
             {
-                accordionLayout->addWidget(spacer);
+                accordion_layout->addWidget(spacer);
             }
             else
             {
-                toolBar->addWidget(spacer);
+                tool_bar->addWidget(spacer);
             }
 
-            actionGroup = nullptr;
+            action_group = nullptr;
         }
-        else if(actionInfo.m_isMenu)
+        else if(action_info.m_isMenu)
         {
             ui::qt::container::menu::sptr menu = ui::qt::container::menu::make();
-            auto* qtMenu                       = new QMenu(toolBar);
-            menu->setQtMenu(qtMenu);
+            auto* qt_menu                      = new QMenu(tool_bar);
+            menu->setQtMenu(qt_menu);
 
-            auto* toolButton = new QToolButton(toolBar);
-            toolButton->setObjectName(qId + '/' + actionInfo.m_name.c_str());
-            if(toolBar->orientation() == Qt::Horizontal)
+            auto* tool_button = new QToolButton(tool_bar);
+            tool_button->setObjectName(q_id + '/' + action_info.m_name.c_str());
+            if(tool_bar->orientation() == Qt::Horizontal)
             {
-                toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+                tool_button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
             }
             else
             {
-                toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                tool_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             }
 
-            toolButton->setMenu(qtMenu);
-            toolButton->setPopupMode(QToolButton::InstantPopup);
-            toolButton->setText(QString::fromStdString(actionInfo.m_name));
-            toolButton->setObjectName(qId + '/' + actionInfo.m_name.c_str());
+            tool_button->setMenu(qt_menu);
+            tool_button->setPopupMode(QToolButton::InstantPopup);
+            tool_button->setText(QString::fromStdString(action_info.m_name));
+            tool_button->setObjectName(q_id + '/' + action_info.m_name.c_str());
 
-            if(!actionInfo.m_icon.empty())
+            if(!action_info.m_icon.empty())
             {
-                QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
-                toolButton->setIcon(icon);
-                toolButton->setToolTip(QString::fromStdString(actionInfo.m_name));
-                toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+                QIcon icon(QString::fromStdString(action_info.m_icon.string()));
+                tool_button->setIcon(icon);
+                tool_button->setToolTip(QString::fromStdString(action_info.m_name));
+                tool_button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             }
 
-            if(accordionLayout != nullptr)
+            if(accordion_layout != nullptr)
             {
-                accordionLayout->addWidget(toolButton);
+                accordion_layout->addWidget(tool_button);
             }
             else
             {
-                toolBar->addWidget(toolButton);
+                tool_bar->addWidget(tool_button);
             }
 
             m_menus.push_back(menu);
         }
-        else if(actionInfo.m_isEditor)
+        else if(action_info.m_isEditor)
         {
             ui::qt::container::widget::sptr container = ui::qt::container::widget::make();
-            auto* widget                              = new QWidget(toolBar);
-            widget->setObjectName(qId + '/' + actionInfo.m_name.c_str());
+            auto* widget                              = new QWidget(tool_bar);
+            widget->setObjectName(q_id + '/' + action_info.m_name.c_str());
             container->setQtContainer(widget);
 
-            if(toolBar->orientation() == Qt::Horizontal)
+            if(tool_bar->orientation() == Qt::Horizontal)
             {
                 widget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
             }
@@ -181,118 +181,118 @@ void toolbar::createLayout(ui::container::toolbar::sptr parent, const std::strin
             }
 
             widget->adjustSize();
-            if(accordionLayout != nullptr)
+            if(accordion_layout != nullptr)
             {
-                accordionLayout->addWidget(widget);
+                accordion_layout->addWidget(widget);
             }
             else
             {
-                toolBar->addWidget(widget);
+                tool_bar->addWidget(widget);
             }
 
             m_containers.push_back(container);
         }
         else
         {
-            ui::qt::container::menu_item::sptr menuItem = ui::qt::container::menu_item::make();
-            QAction* action                             = nullptr;
-            if(accordionLayout != nullptr)
+            ui::qt::container::menu_item::sptr menu_item = ui::qt::container::menu_item::make();
+            QAction* action                              = nullptr;
+            if(accordion_layout != nullptr)
             {
-                auto* toolButton = new QToolButton;
-                toolButton->setToolButtonStyle(toolBar->toolButtonStyle());
-                toolButton->setIconSize(toolBar->iconSize());
+                auto* tool_button = new QToolButton;
+                tool_button->setToolButtonStyle(tool_bar->toolButtonStyle());
+                tool_button->setIconSize(tool_bar->iconSize());
 
-                action = new QAction(toolBar);
-                toolButton->setDefaultAction(action);
-                action->setText(QString::fromStdString(actionInfo.m_name));
-                action->setToolTip(QString::fromStdString(actionInfo.m_name));
-                if(!actionInfo.m_icon.empty())
+                action = new QAction(tool_bar);
+                tool_button->setDefaultAction(action);
+                action->setText(QString::fromStdString(action_info.m_name));
+                action->setToolTip(QString::fromStdString(action_info.m_name));
+                if(!action_info.m_icon.empty())
                 {
-                    action->setIcon(QIcon(QString::fromStdString(actionInfo.m_icon.string())));
+                    action->setIcon(QIcon(QString::fromStdString(action_info.m_icon.string())));
                 }
 
-                if(!actionInfo.m_icon2.empty())
+                if(!action_info.m_icon2.empty())
                 {
                     QIcon icon = action->icon();
-                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Normal, QIcon::On);
-                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Active, QIcon::On);
+                    icon.addFile(QString::fromStdString(action_info.m_icon2.string()), {}, QIcon::Normal, QIcon::On);
+                    icon.addFile(QString::fromStdString(action_info.m_icon2.string()), {}, QIcon::Active, QIcon::On);
                     action->setIcon(icon);
                 }
 
-                if(toolBar->orientation() == Qt::Horizontal)
+                if(tool_bar->orientation() == Qt::Horizontal)
                 {
-                    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-                    toolBar->setMinimumHeight(std::max(toolBar->minimumHeight(), toolButton->sizeHint().height()));
+                    tool_button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+                    tool_bar->setMinimumHeight(std::max(tool_bar->minimumHeight(), tool_button->sizeHint().height()));
                 }
                 else
                 {
-                    toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                    tool_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                     // The +5 is to take into account the margin of the toolbar
-                    toolBar->setMinimumWidth(std::max(toolBar->minimumWidth(), toolButton->sizeHint().width() + 5));
+                    tool_bar->setMinimumWidth(std::max(tool_bar->minimumWidth(), tool_button->sizeHint().width() + 5));
                 }
 
-                accordionLayout->addWidget(toolButton);
+                accordion_layout->addWidget(tool_button);
             }
             else
             {
-                if(!actionInfo.m_icon.empty())
+                if(!action_info.m_icon.empty())
                 {
-                    QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
-                    if(!actionInfo.m_icon2.empty())
+                    QIcon icon(QString::fromStdString(action_info.m_icon.string()));
+                    if(!action_info.m_icon2.empty())
                     {
                         icon.addFile(
-                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QString::fromStdString(action_info.m_icon2.string()),
                             QSize(),
                             QIcon::Normal,
                             QIcon::On
                         );
                         icon.addFile(
-                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QString::fromStdString(action_info.m_icon2.string()),
                             QSize(),
                             QIcon::Active,
                             QIcon::On
                         );
                     }
 
-                    action = toolBar->addAction(icon, QString::fromStdString(actionInfo.m_name));
+                    action = tool_bar->addAction(icon, QString::fromStdString(action_info.m_name));
                 }
                 else
                 {
-                    action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
+                    action = tool_bar->addAction(QString::fromStdString(action_info.m_name));
                 }
             }
 
-            action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
-            action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+            action->setObjectName(q_id + '/' + action_info.m_name.c_str());
+            action->setCheckable(action_info.m_isCheckable || action_info.m_isRadio);
 
-            if(actionInfo.m_isRadio)
+            if(action_info.m_isRadio)
             {
-                if(actionGroup == nullptr)
+                if(action_group == nullptr)
                 {
-                    actionGroup = new QActionGroup(toolBar);
+                    action_group = new QActionGroup(tool_bar);
                 }
 
-                actionGroup->addAction(action);
+                action_group->addAction(action);
             }
 
             // create shortcut
-            if(!actionInfo.m_shortcut.empty())
+            if(!action_info.m_shortcut.empty())
             {
-                action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+                action->setShortcut(QKeySequence(QString::fromStdString(action_info.m_shortcut)));
             }
 
-            menuItem->setQtMenuItem(action);
+            menu_item->setQtMenuItem(action);
 
-            m_menuItems.push_back(menuItem);
-            SIGHT_ASSERT("No callback found for menu: " << actionInfo.m_name, menuItemIndex < m_callbacks.size());
-            ui::menu_item_callback::sptr callback = m_callbacks.at(menuItemIndex);
+            m_menuItems.push_back(menu_item);
+            SIGHT_ASSERT("No callback found for menu: " << action_info.m_name, menu_item_index < m_callbacks.size());
+            ui::menu_item_callback::sptr callback = m_callbacks.at(menu_item_index);
 
-            ui::qt::ActionCallback::sptr qtCallback = std::dynamic_pointer_cast<ui::qt::ActionCallback>(callback);
-            SIGHT_ASSERT("dynamicCast menu_item_callback to ActionCallback failed", qtCallback);
+            ui::qt::action_callback::sptr qt_callback = std::dynamic_pointer_cast<ui::qt::action_callback>(callback);
+            SIGHT_ASSERT("dynamicCast menu_item_callback to action_callback failed", qt_callback);
 
-            QObject::connect(action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
-            QObject::connect(action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
-            menuItemIndex++;
+            QObject::connect(action, SIGNAL(triggered(bool)), qt_callback.get(), SLOT(executeQt(bool)));
+            QObject::connect(action, SIGNAL(toggled(bool)), qt_callback.get(), SLOT(checkQt(bool)));
+            menu_item_index++;
         }
     }
 
@@ -300,23 +300,23 @@ void toolbar::createLayout(ui::container::toolbar::sptr parent, const std::strin
     if(m_unifyButtonSize)
     {
         int max         = -1;
-        const auto list = toolBar->findChildren<QToolButton*>();
+        const auto list = tool_bar->findChildren<QToolButton*>();
         for(auto* const tb : list)
         {
             // Check width if horizontal toolbar, height for vertical.
             const auto size =
-                (toolBar->orientation() == Qt::Horizontal) ? tb->sizeHint().width() : tb->sizeHint().height();
+                (tool_bar->orientation() == Qt::Horizontal) ? tb->sizeHint().width() : tb->sizeHint().height();
             max = std::max(max, size);
         }
 
         for(auto* const tb : list)
         {
             // Set minimum width on horizontal toolbar, set minimum height for vertical.
-            (toolBar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
+            (tool_bar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
         }
     }
 
-    m_toggleToolbarVisibilityAction = toolBar->toggleViewAction();
+    m_toggleToolbarVisibilityAction = tool_bar->toggleViewAction();
     m_toggleToolbarVisibilityAction->setVisible(false);
 }
 
@@ -331,41 +331,41 @@ void toolbar::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetVisible(ui::container::menu_item::sptr menu_item, bool isVisible)
+void toolbar::menuItemSetVisible(ui::container::menu_item::sptr _menu_item, bool _is_visible)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setVisible(isVisible);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetEnabled(ui::container::menu_item::sptr menu_item, bool isEnabled)
+void toolbar::menuItemSetEnabled(ui::container::menu_item::sptr _menu_item, bool _is_enabled)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setEnabled(isEnabled);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setEnabled(_is_enabled);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::menuItemSetChecked(ui::container::menu_item::sptr menu_item, bool isChecked)
+void toolbar::menuItemSetChecked(ui::container::menu_item::sptr _menu_item, bool _is_checked)
 {
-    ui::qt::container::menu_item::sptr menuItemContainer =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(menu_item);
-    QAction* action = menuItemContainer->getQtMenuItem();
-    action->setChecked(isChecked);
+    ui::qt::container::menu_item::sptr menu_item_container =
+        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+    QAction* action = menu_item_container->getQtMenuItem();
+    action->setChecked(_is_checked);
 }
 
 //-----------------------------------------------------------------------------
 
-void toolbar::setVisible(bool isVisible)
+void toolbar::setVisible(bool _is_visible)
 {
     if(m_toggleToolbarVisibilityAction != nullptr)
     {
-        m_toggleToolbarVisibilityAction->setChecked(!isVisible);
+        m_toggleToolbarVisibilityAction->setChecked(!_is_visible);
         m_toggleToolbarVisibilityAction->trigger();
     }
 }

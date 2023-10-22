@@ -53,7 +53,7 @@ protected:
      */
 
     /**
-     * @brief This method create a new ToolBar in frame.
+     * @brief This method create a new tool_bar in frame.
      */
 
     /**
@@ -63,7 +63,7 @@ protected:
     MODULE_UI_API void starting() override;
 
     /**
-     * @brief This method remove the tools situated in the ToolBar.
+     * @brief This method remove the tools situated in the tool_bar.
      * @see sight::ui::toolbar::destroy()
      */
     MODULE_UI_API void stopping() override;
@@ -108,7 +108,7 @@ protected:
      *   - \<registry\> \</registry\> : (mandatory) describe the service management.
      *     - \<menuItem\> represents action
      *     - \<menu\> represents menu
-     *     - \<editor\> represents container service (editor, IView, ...)
+     *     - \<editor\> represents container service (editor, view, ...)
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.

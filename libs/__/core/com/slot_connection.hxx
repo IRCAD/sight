@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(__FWCOM_SLOTCONNECTION_HPP__)
+#if !defined(FWCOM_SLOTCONNECTION_HPP)
 #error core/com/slot_connection.hpp not included
 #endif
 
@@ -35,12 +35,12 @@ namespace sight::core::com
 
 template<typename ... A>
 inline slot_connection<void(A ...)>::slot_connection(
-    const signal_sptr_type& signal,
-    const slot_run_sptr_type& slot
+    const signal_sptr_type& _signal,
+    const slot_run_sptr_type& _slot
 ) :
-    m_signal(signal),
-    m_connected_slot(slot),
-    m_pair(true, slot)
+    m_signal(_signal),
+    m_connected_slot(_slot),
+    m_pair(true, _slot)
 {
 }
 
@@ -48,14 +48,14 @@ inline slot_connection<void(A ...)>::slot_connection(
 
 template<typename ... A>
 inline slot_connection<void(A ...)>::slot_connection(
-    const signal_sptr_type& signal,
-    const slot_base::sptr& slot,
-    const slot_wrapper_sptr_type& slot_wrapper
+    const signal_sptr_type& _signal,
+    const slot_base::sptr& _slot,
+    const slot_wrapper_sptr_type& _slot_wrapper
 ) :
-    m_signal(signal),
-    m_connected_slot(slot),
-    m_slot_wrapper(slot_wrapper),
-    m_pair(true, slot_wrapper)
+    m_signal(_signal),
+    m_connected_slot(_slot),
+    m_slot_wrapper(_slot_wrapper),
+    m_pair(true, _slot_wrapper)
 {
 }
 
@@ -79,22 +79,22 @@ inline void slot_connection<void(A ...)>::connect_no_lock()
 //-----------------------------------------------------------------------------
 
 template<typename ... A>
-inline void slot_connection<void(A ...)>::disconnect_signal_no_lock(const signal_sptr_type& sig)
+inline void slot_connection<void(A ...)>::disconnect_signal_no_lock(const signal_sptr_type& _sig)
 {
-    sig->m_slots.remove(&m_pair);
-    sig->m_connections.erase(m_connected_slot);
+    _sig->m_slots.remove(&m_pair);
+    _sig->m_connections.erase(m_connected_slot);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename ... A>
-inline void slot_connection<void(A ...)>::disconnect_slot_no_lock(const slot_base::sptr& slot)
+inline void slot_connection<void(A ...)>::disconnect_slot_no_lock(const slot_base::sptr& _slot)
 {
     try
     {
         std::shared_ptr<const slot_connection<void(A ...)> > this_sptr =
             std::dynamic_pointer_cast<const slot_connection<void(A ...)> >(this->shared_from_this());
-        slot->m_connections.erase(this_sptr);
+        _slot->m_connections.erase(this_sptr);
     }
     catch(const boost::bad_weak_ptr&)
     {

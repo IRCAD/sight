@@ -56,10 +56,10 @@ public:
 
 protected:
 
-    static void generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile);
-    static void generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile);
-    static void generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile);
-    static void generateDictionaryFile(std::filesystem::path dictionaryFile);
+    static void generateDictionaryFileWithMissingSemiColon(std::filesystem::path _dictionary_file);
+    static void generateDictionaryFileWithWrongCategory(std::filesystem::path _dictionary_file);
+    static void generateDictionaryFileWithWrongClass(std::filesystem::path _dictionary_file);
+    static void generateDictionaryFile(std::filesystem::path _dictionary_file);
     std::filesystem::path m_tmpDictionaryFilePath;
 };
 

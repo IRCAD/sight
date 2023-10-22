@@ -41,8 +41,8 @@ const core::com::signals::key_t model_series::RECONSTRUCTIONS_REMOVED_SIG = "rec
 
 model_series::model_series() :
     has_fiducials(m_signals),
-    m_sigReconstructionsAdded(std::make_shared<ReconstructionsAddedSignalType>()),
-    m_sigReconstructionsRemoved(std::make_shared<ReconstructionsRemovedSignalType>())
+    m_sigReconstructionsAdded(std::make_shared<reconstructions_added_signal_t>()),
+    m_sigReconstructionsRemoved(std::make_shared<reconstructions_removed_signal_t>())
 {
     m_signals(RECONSTRUCTIONS_ADDED_SIG, m_sigReconstructionsAdded)
         (RECONSTRUCTIONS_REMOVED_SIG, m_sigReconstructionsRemoved);
@@ -50,13 +50,13 @@ model_series::model_series() :
 
 //------------------------------------------------------------------------------
 
-void model_series::shallow_copy(const object::csptr& source)
+void model_series::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const model_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const model_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -70,13 +70,13 @@ void model_series::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-void model_series::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void model_series::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const model_series>(source);
+    const auto& other = std::dynamic_pointer_cast<const model_series>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -85,33 +85,33 @@ void model_series::deep_copy(const object::csptr& source, const std::unique_ptr<
     m_reconstructionDB.clear();
     for(const data::reconstruction::sptr& rec : other->m_reconstructionDB)
     {
-        m_reconstructionDB.push_back(data::object::copy(rec, cache));
+        m_reconstructionDB.push_back(data::object::copy(rec, _cache));
     }
 
     m_dicomReference = data::object::copy(other->m_dicomReference);
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool model_series::operator==(const model_series& other) const noexcept
+bool model_series::operator==(const model_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicomReference, other.m_dicomReference)
-       || !core::tools::is_equal(m_reconstructionDB, other.m_reconstructionDB))
+    if(!core::tools::is_equal(m_dicomReference, _other.m_dicomReference)
+       || !core::tools::is_equal(m_reconstructionDB, _other.m_reconstructionDB))
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool model_series::operator!=(const model_series& other) const noexcept
+bool model_series::operator!=(const model_series& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 //------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
@@ -111,16 +111,16 @@ private:
     void setReslicerAxes();
 
     /// Modify the matrix parameter to align the plane with the current extent image slice.
-    void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const;
+    void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const;
 
     /// Slot: called when the extent image orientation.
-    void updateorientation_t(int from, int to);
+    void updateorientation_t(int _from, int _to);
 
     /// Slot: sets the reslicer default value which is the minimum value of the input image.
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::MedicalImage::orientation_t m_orientation {data::helper::MedicalImage::orientation_t::Z_AXIS};
+    data::helper::medical_image::orientation_t m_orientation {data::helper::medical_image::orientation_t::Z_AXIS};
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

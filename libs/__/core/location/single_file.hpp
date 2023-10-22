@@ -40,7 +40,7 @@ public:
     [[nodiscard]] inline std::string to_string() const override;
 
     /// Sets the file path
-    inline void set_file(const std::filesystem::path& file_path);
+    inline void set_file(const std::filesystem::path& _file_path);
 
     /// Gets the file path
     [[nodiscard]] inline std::filesystem::path get_file() const;
@@ -60,9 +60,9 @@ inline std::string single_file::to_string() const
 
 //------------------------------------------------------------------------------
 
-inline void single_file::set_file(const std::filesystem::path& file_path)
+inline void single_file::set_file(const std::filesystem::path& _file_path)
 {
-    m_file = file_path;
+    m_file = _file_path;
 }
 
 //------------------------------------------------------------------------------

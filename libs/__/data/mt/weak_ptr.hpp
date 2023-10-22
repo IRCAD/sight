@@ -61,34 +61,34 @@ class weak_ptr
 public:
 
     /// Constructor
-    inline explicit weak_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
-        m_data(data)
+    inline explicit weak_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
+        m_data(_data)
     {
     }
 
     /// Constructor
-    inline explicit weak_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
-        m_data(data)
+    inline explicit weak_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
+        m_data(_data)
     {
     }
 
     /// Constructor
-    inline explicit weak_ptr(const locked_ptr<DATATYPE>& data) noexcept :
-        m_data(data.get_shared())
+    inline explicit weak_ptr(const locked_ptr<DATATYPE>& _data) noexcept :
+        m_data(_data.get_shared())
     {
     }
 
     /// Assignment operator
-    inline weak_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
+    inline weak_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
     {
-        m_data = data;
+        m_data = _data;
         return *this;
     }
 
     /// Assignment operator
-    inline weak_ptr& operator=(const locked_ptr<DATATYPE>& data) noexcept
+    inline weak_ptr& operator=(const locked_ptr<DATATYPE>& _data) noexcept
     {
-        m_data = data.get_shared();
+        m_data = _data.get_shared();
         return *this;
     }
 

@@ -30,39 +30,39 @@ namespace sight::module::data
 
 void get_mesh::configuring()
 {
-    service::config_t config = this->get_config();
-    const config_t configOut = config.get_child("out");
-    const auto keyCfg        = configOut.equal_range("key");
-    size_t outputVarIndex    = 0;
+    service::config_t config  = this->get_config();
+    const config_t config_out = config.get_child("out");
+    const auto key_cfg        = config_out.equal_range("key");
+    size_t output_var_index   = 0;
 
     // All the configuration is parsed
-    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg, ++outputVarIndex)
+    for(auto it_cfg = key_cfg.first ; it_cfg != key_cfg.second ; ++it_cfg, ++output_var_index)
     {
         // A configuration can be a constraint either on the index or on the type
-        auto typeCfg  = itCfg->second.get_child_optional("<xmlattr>.type");
-        auto indexCfg = itCfg->second.get_child_optional("<xmlattr>.index");
+        auto type_cfg  = it_cfg->second.get_child_optional("<xmlattr>.type");
+        auto index_cfg = it_cfg->second.get_child_optional("<xmlattr>.index");
 
-        if(indexCfg)
+        if(index_cfg)
         {
             // There is a constraint on the index.
             // The index of the mesh required from the reconstructionDB and the index of the output var are stored.
             m_indexConfigurations.push_back(
                 {
-                    indexCfg->get_value<std::size_t>(),
-                    outputVarIndex
+                    index_cfg->get_value<std::size_t>(),
+                    output_var_index
                 });
         }
-        else if(typeCfg)
+        else if(type_cfg)
         {
             // There is a constraint on the index.
             // The type, the name matching (if there is one) and the index of the output var are stored
-            const auto matchingCfg = itCfg->second.get_child_optional("<xmlattr>.matching");
+            const auto matching_cfg = it_cfg->second.get_child_optional("<xmlattr>.matching");
 
             m_typeConfiguration.push_back(
                 {
-                    typeCfg->get_value<std::string>(),
-                    matchingCfg ? matchingCfg->get<std::string>("") : "",
-                    outputVarIndex
+                    type_cfg->get_value<std::string>(),
+                    matching_cfg ? matching_cfg->get<std::string>("") : "",
+                    output_var_index
                 });
         }
     }
@@ -79,49 +79,49 @@ void get_mesh::starting()
 void get_mesh::updating()
 {
     //Get the reconstruction database from which the mesh are extracted
-    auto modelSeries = m_modelSeries.lock();
-    if(modelSeries == nullptr)
+    auto model_series = m_modelSeries.lock();
+    if(model_series == nullptr)
     {
         SIGHT_THROW_EXCEPTION(sight::data::exception("Missing input models series"));
     }
 
-    const sight::data::model_series::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+    const sight::data::model_series::reconstruction_vector_t recs = model_series->getReconstructionDB();
 
     // do all index requests
-    for(indexConfig indexCfg : m_indexConfigurations)
+    for(indexConfig index_cfg : m_indexConfigurations)
     {
         // Get the mesh from the reconstructionDB which is located at the position stored in
         // indexCfg.inputIndex
-        if(indexCfg.inputIndex > recs.size())
+        if(index_cfg.inputIndex > recs.size())
         {
             SIGHT_THROW_EXCEPTION(sight::data::exception("Mesh index is out of bound"));
         }
 
-        const auto mesh = modelSeries->getReconstructionDB()[indexCfg.inputIndex]->getMesh();
+        const auto mesh = model_series->getReconstructionDB()[index_cfg.inputIndex]->getMesh();
 
         // put the mesh in the appropriate output variable
-        m_mesh[indexCfg.outputIndex] = mesh;
+        m_mesh[index_cfg.outputIndex] = mesh;
     }
 
     // do all type requests
-    for(const typeConfig& typeCfg : m_typeConfiguration)
+    for(const typeConfig& type_cfg : m_typeConfiguration)
     {
         //go through the whole reconstructionDB, and check if a mesh which respects the type and regex is found.
         bool found = false;
-        for(const auto& reconstruction : modelSeries->getReconstructionDB())
+        for(const auto& reconstruction : model_series->getReconstructionDB())
         {
             // check if the type of the reconstruction corresponds to the requested one.
-            if(reconstruction->getStructureType() == typeCfg.type)
+            if(reconstruction->get_structure_type() == type_cfg.type)
             {
                 // the reconstruction has the right type. Check if the name match the regex, if there is one.
-                if(typeCfg.matching.empty()
-                   || std::regex_match(reconstruction->getOrganName(), std::regex(typeCfg.matching)))
+                if(type_cfg.matching.empty()
+                   || std::regex_match(reconstruction->getOrganName(), std::regex(type_cfg.matching)))
                 {
                     //the type and name are appropriate. It is the mesh required.
                     auto mesh = reconstruction->getMesh();
 
                     // put the mesh in the appropriate output variable.
-                    m_mesh[typeCfg.outputIndex] = mesh;
+                    m_mesh[type_cfg.outputIndex] = mesh;
 
                     //When the appropriate mesh is found for a given type-regex, there is no need to go further in the
                     // reconstructionDB.

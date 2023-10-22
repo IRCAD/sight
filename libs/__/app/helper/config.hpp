@@ -113,17 +113,17 @@ class config : public sight::service::manager
 {
 public:
 
-    typedef std::pair<std::string, core::com::signals::key_t> SignalInfoType;
-    typedef std::pair<std::string, core::com::slots::key_t> SlotInfoType;
-    typedef std::vector<SlotInfoType> SlotInfoContainerType;
+    typedef std::pair<std::string, core::com::signals::key_t> signal_info_t;
+    typedef std::pair<std::string, core::com::slots::key_t> slot_info_t;
+    typedef std::vector<slot_info_t> slot_info_container_t;
 
-    typedef std::string ObjectIdType;
+    typedef std::string object_id_t;
     typedef std::vector<core::com::helper::proxy_connections> proxy_connectionsVectType;
-    typedef std::map<ObjectIdType, proxy_connectionsVectType> proxy_connections_map_t;
+    typedef std::map<object_id_t, proxy_connectionsVectType> proxy_connections_map_t;
     struct ConnectionInfo
     {
-        SignalInfoType m_signal;
-        SlotInfoContainerType m_slots;
+        signal_info_t m_signal;
+        slot_info_container_t m_slots;
     };
 
     /**
@@ -134,8 +134,8 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     APP_API static ConnectionInfo parseConnections(
-        const core::runtime::config_t& cfg,
-        const CSPTR(core::tools::object)& obj =
+        const core::runtime::config_t& _cfg,
+        const CSPTR(core::tools::object)& _obj =
         CSPTR(core::tools::object)()
     );
 
@@ -146,9 +146,9 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      */
     APP_API static core::com::helper::proxy_connections parseConnections2(
-        const core::runtime::config_t& connectionCfg,
-        const std::string& errMsgHead,
-        std::function<std::string()> generateChannelNameFn
+        const core::runtime::config_t& _connection_cfg,
+        const std::string& _err_msg_head,
+        std::function<std::string()> _generate_channel_name_fn
     );
 
     /**
@@ -159,26 +159,26 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     APP_API static void createConnections(
-        const core::runtime::config_t& cfg,
-        core::com::helper::sig_slot_connection& helper,
-        const CSPTR(core::tools::object)& obj = CSPTR(core::tools::object)()
+        const core::runtime::config_t& _cfg,
+        core::com::helper::sig_slot_connection& _helper,
+        const CSPTR(core::tools::object)& _obj = CSPTR(core::tools::object)()
     );
 
     /// Disconnects all proxies associated to objectKey
     APP_API static void disconnectProxies(
-        const std::string& objectKey,
-        config::proxy_connections_map_t& proxyMap
+        const std::string& _object_key,
+        config::proxy_connections_map_t& _proxy_map
     );
 
     /// Parse a service and return a service configuration
     APP_API static app::detail::service_config parseService(
-        const boost::property_tree::ptree& srvElem,
-        const std::string& errMsgHead
+        const boost::property_tree::ptree& _srv_elem,
+        const std::string& _err_msg_head
     );
 
     APP_API static std::pair<bool, bool> get_object_key_attrs(
-        const std::string& serviceType,
-        const std::string& key
+        const std::string& _service_type,
+        const std::string& _key
     );
 
     APP_API static void clearProps();

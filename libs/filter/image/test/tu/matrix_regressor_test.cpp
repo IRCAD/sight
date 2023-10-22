@@ -56,14 +56,14 @@ void matrix_regressor_test::identityTest()
 {
     auto id = std::make_shared<data::matrix4>();
 
-    auto matList = std::make_shared<data::vector>();
+    auto mat_list = std::make_shared<data::vector>();
 
     for(int i = 0 ; i < 5 ; ++i)
     {
-        matList->push_back(id);
+        mat_list->push_back(id);
     }
 
-    const std::vector<matrix_regressor::PointType> ptList = {{
+    const std::vector<matrix_regressor::point_t> pt_list = {{
         {0., 0., 0., 1.},
         {0., 0., 1., 1.},
         {0., 1., 0., 1.},
@@ -75,7 +75,7 @@ void matrix_regressor_test::identityTest()
     }
     };
 
-    matrix_regressor regressor(matList, ptList);
+    matrix_regressor regressor(mat_list, pt_list);
 
     data::matrix4::sptr res = regressor.minimize(*id);
 
@@ -99,15 +99,15 @@ void matrix_regressor_test::avgTranslationTest()
     glm::dmat4 t1 = glm::translate(glm::dmat4(1.), glm::dvec3(3, 3, 3));
     glm::dmat4 t2 = glm::translate(glm::dmat4(1.), glm::dvec3(5, 5, 5));
 
-    geometry::data::setTF3DFromMatrix(*trans1, t1);
-    geometry::data::setTF3DFromMatrix(*trans2, t2);
+    geometry::data::from_glm_mat(*trans1, t1);
+    geometry::data::from_glm_mat(*trans2, t2);
 
-    auto matList = std::make_shared<data::vector>();
+    auto mat_list = std::make_shared<data::vector>();
 
-    matList->push_back(trans1);
-    matList->push_back(trans2);
+    mat_list->push_back(trans1);
+    mat_list->push_back(trans2);
 
-    const std::vector<matrix_regressor::PointType> ptList = {{
+    const std::vector<matrix_regressor::point_t> pt_list = {{
         {0., 0., 0., 1.},
         {0., 0., 1., 1.},
         {0., 1., 0., 1.},
@@ -119,18 +119,18 @@ void matrix_regressor_test::avgTranslationTest()
     }
     };
 
-    matrix_regressor regressor(matList, ptList);
+    matrix_regressor regressor(mat_list, pt_list);
 
     data::matrix4::sptr res = regressor.minimize(id);
 
-    const glm::dmat4 transExpected = glm::translate(glm::dmat4(1.), glm::dvec3(4, 4, 4));
-    data::matrix4 expectedMat;
+    const glm::dmat4 trans_expected = glm::translate(glm::dmat4(1.), glm::dvec3(4, 4, 4));
+    data::matrix4 expected_mat;
 
-    geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
+    geometry::data::from_glm_mat(expected_mat, trans_expected);
 
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        const double expected = expectedMat[i];
+        const double expected = expected_mat[i];
         const double result   = (*res)[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, result, 1e-3);
@@ -146,14 +146,14 @@ void matrix_regressor_test::avgRotationTest()
 
     glm::dmat4 r1 = glm::rotate(glm::dmat4(1.), glm::pi<double>() / 2., glm::dvec3(0., 0., 1.));
 
-    geometry::data::setTF3DFromMatrix(*rot, r1);
+    geometry::data::from_glm_mat(*rot, r1);
 
-    auto matList = std::make_shared<data::vector>();
+    auto mat_list = std::make_shared<data::vector>();
 
-    matList->push_back(id);
-    matList->push_back(rot);
+    mat_list->push_back(id);
+    mat_list->push_back(rot);
 
-    const std::vector<matrix_regressor::PointType> ptList = {{
+    const std::vector<matrix_regressor::point_t> pt_list = {{
         {0., 0., 0., 1.},
         {0., 0., 1., 1.},
         {0., 1., 0., 1.},
@@ -165,17 +165,17 @@ void matrix_regressor_test::avgRotationTest()
     }
     };
 
-    matrix_regressor regressor(matList, ptList);
+    matrix_regressor regressor(mat_list, pt_list);
 
     data::matrix4::sptr res = regressor.minimize(*id, 1., 1e-5, 1e-5);
 
-    glm::dmat4 glmRes = geometry::data::getMatrixFromTF3D(*res);
+    glm::dmat4 glm_res = geometry::data::to_glm_mat(*res);
 
     // Extract the rotation from the result.
-    double scale = std::pow(glm::determinant(glmRes), 1. / 3.);
+    double scale = std::pow(glm::determinant(glm_res), 1. / 3.);
 
     // Remove the scale from the matrix. This is required by the glm::toQuat() function.
-    glm::dvec3 angles = glm::eulerAngles(glm::toQuat(glmRes / scale));
+    glm::dvec3 angles = glm::eulerAngles(glm::toQuat(glm_res / scale));
 
     CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(angles, glm::dvec3(0., 0., glm::pi<double>() / 4.), 1e-3)));
 }

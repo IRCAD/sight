@@ -30,7 +30,7 @@
 
 #include <data/material.hpp>
 
-#include <viz/scene3d/ILight.hpp>
+#include <viz/scene3d/light_adaptor.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -71,12 +71,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API light final : public sight::viz::scene3d::ILight
+class MODULE_VIZ_SCENE3D_CLASS_API light final : public sight::viz::scene3d::light_adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(light, sight::viz::scene3d::ILight);
+    SIGHT_DECLARE_SERVICE(light, sight::viz::scene3d::light_adaptor);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API light() noexcept;
@@ -118,7 +118,7 @@ public:
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuseColor) final;
+    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuse_color) final;
 
     /**
      * @brief Gets the specular color of the light.
@@ -130,7 +130,7 @@ public:
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specularColor) final;
+    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specular_color) final;
 
     /**
      * @brief Gets the light activation state.
@@ -155,7 +155,7 @@ public:
      * @param _thetaOffset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setThetaOffset(float _thetaOffset) final;
+    MODULE_VIZ_SCENE3D_API void setThetaOffset(float _theta_offset) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
@@ -168,7 +168,7 @@ public:
      * @param _phiOffset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phiOffset) final;
+    MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phi_offset) final;
 
     /**
      * @brief Enables the light visual feedback.

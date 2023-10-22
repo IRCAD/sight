@@ -51,9 +51,9 @@ void resection_test::equalityTest()
         *resection1 == *resection2 && !(*resection1 != *resection2) \
     );
 
-    auto planeList = std::make_shared<data::plane_list>();
-    planeList->setPlanes({std::make_shared<data::plane>()});
-    TEST(setPlaneList(planeList));
+    auto plane_list = std::make_shared<data::plane_list>();
+    plane_list->setPlanes({std::make_shared<data::plane>()});
+    TEST(setPlaneList(plane_list));
     TEST(SetInputs({std::make_shared<data::reconstruction>()}));
     TEST(setOutputs({std::make_shared<data::reconstruction>()}));
     TEST(setIsSafePart(false));

@@ -37,13 +37,13 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 ComprehensiveSRIOD::ComprehensiveSRIOD(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
+    io::dicom::reader::iod::InformationObjectDefinition(_dicom_series, _instance, _logger, _progress, _cancel)
 {
 }
 
@@ -54,38 +54,38 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::read(data::series::sptr series)
+void ComprehensiveSRIOD::read(data::series::sptr _series)
 {
     // Retrieve image series
-    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
-    SIGHT_ASSERT("Image series should not be null.", imageSeries);
+    data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(_series);
+    SIGHT_ASSERT("Image series should not be null.", image_series);
 
     // Create GDCM reader
     SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
-    const auto& dicomContainer                                 = m_dicomSeries->getDicomContainer();
-    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
-    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-    SPTR(std::istream) is = streamInfo.stream;
+    const auto& dicom_container                                 = m_dicomSeries->getDicomContainer();
+    const core::memory::buffer_object::sptr buffer_obj          = dicom_container.begin()->second;
+    const core::memory::buffer_manager::stream_info stream_info = buffer_obj->get_stream_info();
+    SPTR(std::istream) is = stream_info.stream;
     reader->SetStream(*is);
     const bool success = reader->Read();
 
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->get_stream_info().fs_file.string()
+            + buffer_obj->get_stream_info().fs_file.string()
             + "\" using the GDCM Image Reader."
         ),
         !success
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger,
-                                               m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Document document_ie(m_dicomSeries, reader, m_instance, image_series, m_logger,
+                                                m_progressCallback, m_cancelRequestedCallback);
 
     // Read SR
-    documentIE.readSR();
+    document_ie.readSR();
 }
 
 //------------------------------------------------------------------------------

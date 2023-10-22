@@ -37,7 +37,7 @@
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/render.hpp>
 
-#include <modules/ui/viz/helper/ParameterEditor.hpp>
+#include <modules/ui/viz/helper/parameter_editor.hpp>
 
 #include <QWidget>
 
@@ -74,11 +74,11 @@ void compositor_parameter_editor::starting()
 {
     this->create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout(m_sizer);
+    qt_container->setLayout(m_sizer);
 
     this->updating();
 }
@@ -102,7 +102,7 @@ void compositor_parameter_editor::updating()
 void compositor_parameter_editor::updateCompositor(
     std::string /*_compositorName*/,
     bool /*_enabled*/,
-    sight::viz::scene3d::Layer::sptr _layer
+    sight::viz::scene3d::layer::sptr _layer
 )
 {
     if(_layer->getLayerID() == m_layerID)
@@ -115,18 +115,18 @@ void compositor_parameter_editor::updateCompositor(
         const auto adaptors = _layer->getRegisteredAdaptors();
 
         // Is there at least one parameter that we can handle ?
-        for(const auto& wAdaptor : adaptors)
+        for(const auto& w_adaptor : adaptors)
         {
-            const auto adaptor = wAdaptor.lock();
+            const auto adaptor = w_adaptor.lock();
             if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::compositor_parameter")
             {
                 /// Filter object types
-                const auto shaderObj =
-                    adaptor->inout(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
-                const auto& objType = shaderObj->get_classname();
+                const auto shader_obj =
+                    adaptor->inout(sight::viz::scene3d::parameter_adaptor::s_PARAMETER_INOUT).lock();
+                const auto& obj_type = shader_obj->get_classname();
 
-                if(objType == "sight::data::boolean" || objType == "sight::data::real"
-                   || objType == "sight::data::integer")
+                if(obj_type == "sight::data::boolean" || obj_type == "sight::data::real"
+                   || obj_type == "sight::data::integer")
                 {
                     found = true;
                     break;
@@ -140,8 +140,8 @@ void compositor_parameter_editor::updateCompositor(
         }
 
         /// Getting this widget's container
-        auto qtContainer   = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-        QWidget* container = qtContainer->getQtContainer();
+        auto qt_container  = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+        QWidget* container = qt_container->getQtContainer();
 
         auto* p2 = new QWidget(container);
         m_editorInfo.editorPanel = sight::ui::qt::container::widget::make();
@@ -150,37 +150,37 @@ void compositor_parameter_editor::updateCompositor(
         const std::string uuid = this->get_id();
         m_editorInfo.uuid = uuid + "-editor";
 
-        sight::ui::registry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+        sight::ui::registry::register_sid_container(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = sight::service::add("sight::module::ui::qt::parameters", m_editorInfo.uuid);
-        m_editorInfo.srv = editorService;
+        auto editor_service = sight::service::add("sight::module::ui::qt::parameters", m_editorInfo.uuid);
+        m_editorInfo.srv = editor_service;
 
-        service::config_t editorConfig;
+        service::config_t editor_config;
 
         // Get all ShaderParameter subservices from the corresponding Material adaptor
-        for(const auto& wAdaptor : adaptors)
+        for(const auto& w_adaptor : adaptors)
         {
-            const auto adaptor = wAdaptor.lock();
+            const auto adaptor = w_adaptor.lock();
             if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::compositor_parameter")
             {
-                auto paramAdaptor = std::dynamic_pointer_cast<const sight::viz::scene3d::IParameter>(adaptor);
-                auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(
-                    paramAdaptor,
+                auto param_adaptor = std::dynamic_pointer_cast<const sight::viz::scene3d::parameter_adaptor>(adaptor);
+                auto param_config  = module::ui::viz::helper::parameter_editor::createConfig(
+                    param_adaptor,
                     m_editorInfo.srv.lock(),
                     m_editorInfo.connections
                 );
 
-                if(!paramConfig.empty())
+                if(!param_config.empty())
                 {
-                    editorConfig.add_child("parameters.param", paramConfig);
+                    editor_config.add_child("parameters.param", param_config);
                 }
             }
         }
 
-        editorService->set_config(editorConfig);
-        editorService->configure();
+        editor_service->set_config(editor_config);
+        editor_service->configure();
 
-        editorService->start();
+        editor_service->start();
 
         this->fillGui();
     }
@@ -190,15 +190,15 @@ void compositor_parameter_editor::updateCompositor(
 
 void compositor_parameter_editor::clear()
 {
-    service::base::sptr objService = m_editorInfo.srv.lock();
+    service::base::sptr obj_service = m_editorInfo.srv.lock();
 
-    if(objService)
+    if(obj_service)
     {
-        objService->stop();
+        obj_service->stop();
 
-        sight::ui::registry::unregisterSIDContainer(m_editorInfo.uuid);
+        sight::ui::registry::unregister_sid_container(m_editorInfo.uuid);
 
-        sight::service::unregisterService(objService);
+        sight::service::unregister_service(obj_service);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -210,8 +210,8 @@ void compositor_parameter_editor::clear()
 
 void compositor_parameter_editor::fillGui()
 {
-    auto editorService = m_editorInfo.srv.lock();
-    if(editorService)
+    auto editor_service = m_editorInfo.srv.lock();
+    if(editor_service)
     {
         m_sizer->addWidget(m_editorInfo.editorPanel->getQtContainer(), 0);
     }

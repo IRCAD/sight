@@ -39,9 +39,9 @@ public:
 
     SIGHT_DECLARE_CLASS(menubar, ui::object);
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     UI_API menubar() = default;
@@ -57,14 +57,14 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent menuBar.
      * @pre layout must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_API virtual void createMenuBar(ui::container::widget::sptr parent) = 0;
+    UI_API virtual void createMenuBar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -74,7 +74,7 @@ public:
 
 protected:
 
-    /// MenuBar.
+    /// menu_bar.
     ui::container::menubar::sptr m_menuBar;
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.

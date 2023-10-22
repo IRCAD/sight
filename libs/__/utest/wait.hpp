@@ -51,7 +51,7 @@
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
     }
 
-#define fwTestWithFailWaitMacro(cond, ...) \
+#define SIGHT_TEST_FAIL_WAIT(cond, ...) \
     sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
     BOOST_PP_CAT( \
         timeStamp, \

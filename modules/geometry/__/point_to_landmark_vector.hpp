@@ -109,9 +109,9 @@ protected:
 
 private:
 
-    typedef core::com::signal<void (float)> LengthChangedSignalType;
+    typedef core::com::signal<void (float)> length_changed_signal_t;
     typedef core::com::signal<void (std::string)> LengthStrChangedSignalType;
-    typedef core::com::signal<void (std::string)> SameSliceSignalType;
+    typedef core::com::signal<void (std::string)> same_slice_signal_t;
 
     /// landmarks group's label for the origin of the vector.
     std::string m_originLabel;

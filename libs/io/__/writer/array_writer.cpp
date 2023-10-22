@@ -39,16 +39,16 @@ void array_writer::write()
 {
     std::filesystem::path file = get_file();
 
-    data::array::csptr array     = this->getConcreteObject();
-    std::size_t arraySizeInBytes = array->getSizeInBytes();
-    const auto dumpLock          = array->dump_lock();
-    const char* buff             = static_cast<const char*>(array->buffer());
+    data::array::csptr array        = this->getConcreteObject();
+    std::size_t array_size_in_bytes = array->getSizeInBytes();
+    const auto dump_lock            = array->dump_lock();
+    const char* buff                = static_cast<const char*>(array->buffer());
 
     std::ofstream fs(file.string().c_str(), std::ios::binary | std::ios::trunc);
 
     SIGHT_THROW_IF("Unable to open " << file, !fs.good());
 
-    fs.write(buff, static_cast<std::streamsize>(arraySizeInBytes));
+    fs.write(buff, static_cast<std::streamsize>(array_size_in_bytes));
     fs.close();
 }
 

@@ -41,7 +41,7 @@ typedef enum
 } IOPathType;
 
 /// List of paths managed by io services
-typedef std::vector<std::filesystem::path> LocationsType;
+typedef std::vector<std::filesystem::path> locations_t;
 
 IO_API extern const std::string s_DATA_KEY;
 

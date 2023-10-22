@@ -34,13 +34,13 @@ namespace sight::filter::image::ut
 void image_extruder_test::setUp()
 {
     m_image = std::make_shared<data::image>();
-    const auto dumpLock = m_image->dump_lock();
-    m_image->setSpacing(m_spacing);
-    m_image->setOrigin(m_origin);
-    m_image->resize(m_size, m_type, m_format);
+    const auto dump_lock = m_image->dump_lock();
+    m_image->setSpacing(M_SPACING);
+    m_image->setOrigin(M_ORIGIN);
+    m_image->resize(M_SIZE, M_TYPE, M_FORMAT);
 
-    const auto iterEnd = m_image->end<std::int8_t>();
-    for(auto iter = m_image->begin<std::int8_t>() ; iter != iterEnd ; ++iter)
+    const auto iter_end = m_image->end<std::int8_t>();
+    for(auto iter = m_image->begin<std::int8_t>() ; iter != iter_end ; ++iter)
     {
         *iter = std::numeric_limits<std::int8_t>::max();
     }
@@ -60,42 +60,42 @@ void image_extruder_test::extrudeTriangleMesh()
     // Create a cube.
     const data::mesh::sptr mesh = std::make_shared<data::mesh>();
     const auto lock             = mesh->dump_lock();
-    mesh->resize(8, 12, data::mesh::CellType::TRIANGLE);
+    mesh->resize(8, 12, data::mesh::cell_type_t::TRIANGLE);
 
     {
         auto it = mesh->begin<data::iterator::point::xyz>();
 
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
     }
 
@@ -120,22 +120,22 @@ void image_extruder_test::extrudeTriangleMesh()
     image->resize(m_image->size(), core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
     image->setSpacing(m_image->getSpacing());
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
     std::fill(image->begin(), image->end(), std::uint8_t(255));
 
     filter::image::image_extruder::extrude(image, mesh, nullptr);
 
-    const auto dumpOriginLock = m_image->dump_lock();
+    const auto dump_origin_lock = m_image->dump_lock();
 
-    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
+    for(std::size_t z = 0 ; z < M_SIZE[2] ; ++z)
     {
-        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
+        for(std::size_t y = 0 ; y < M_SIZE[1] ; ++y)
         {
-            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
+            for(std::size_t x = 0 ; x < M_SIZE[0] ; ++x)
             {
-                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
-                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
-                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
+                if(double(x) >= M_ORIGIN[0] + 1 && x < M_SIZE[0] - 1
+                   && double(y) >= M_ORIGIN[1] + 1 && y < M_SIZE[1] - 1
+                   && double(z) >= M_ORIGIN[2] + 1 && z < M_SIZE[2] - 1)
                 {
                     CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
                 }
@@ -156,42 +156,42 @@ void image_extruder_test::extrudeQuadMesh()
     const data::mesh::sptr mesh = std::make_shared<data::mesh>();
     const auto lock             = mesh->dump_lock();
 
-    mesh->resize(8, 6, data::mesh::CellType::QUAD);
+    mesh->resize(8, 6, data::mesh::cell_type_t::QUAD);
 
     {
         auto it = mesh->begin<data::iterator::point::xyz>();
 
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_ORIGIN[2] + 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_ORIGIN[0] + 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_SIZE[1] - 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(M_SIZE[0] - 1);
+        it->y = static_cast<float>(M_ORIGIN[1] + 1);
+        it->z = static_cast<float>(M_SIZE[2] - 1);
         ++it;
     }
 
@@ -214,22 +214,22 @@ void image_extruder_test::extrudeQuadMesh()
     image->resize(m_image->size(), core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
     image->setSpacing(m_image->getSpacing());
 
-    const auto dumpLock = image->dump_lock();
+    const auto dump_lock = image->dump_lock();
     std::fill(image->begin(), image->end(), std::uint8_t(255));
 
     filter::image::image_extruder::extrude(image, mesh, nullptr);
 
-    const auto dumpOriginLock = m_image->dump_lock();
+    const auto dump_origin_lock = m_image->dump_lock();
 
-    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
+    for(std::size_t z = 0 ; z < M_SIZE[2] ; ++z)
     {
-        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
+        for(std::size_t y = 0 ; y < M_SIZE[1] ; ++y)
         {
-            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
+            for(std::size_t x = 0 ; x < M_SIZE[0] ; ++x)
             {
-                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
-                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
-                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
+                if(double(x) >= M_ORIGIN[0] + 1 && x < M_SIZE[0] - 1
+                   && double(y) >= M_ORIGIN[1] + 1 && y < M_SIZE[1] - 1
+                   && double(z) >= M_ORIGIN[2] + 1 && z < M_SIZE[2] - 1)
                 {
                     CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
                 }

@@ -62,16 +62,16 @@ void matrix_viewer::configuring()
 void matrix_viewer::starting()
 {
     sight::ui::service::create();
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
-    auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
-    mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    auto* main_layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    main_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     QPointer<QLabel> description = new QLabel(QString::fromStdString(m_title));
 
-    mainLayout->addWidget(description);
+    main_layout->addWidget(description);
 
-    auto* gridLayout = new QGridLayout();
+    auto* grid_layout = new QGridLayout();
 
     for(int i = 0 ; i < 4 ; ++i)
     {
@@ -79,13 +79,13 @@ void matrix_viewer::starting()
         {
             auto* label = new QLabel("");
             m_matrixLabels.push_back(label);
-            gridLayout->addWidget(label, i, j);
+            grid_layout->addWidget(label, i, j);
         }
     }
 
-    mainLayout->addLayout(gridLayout);
+    main_layout->addLayout(grid_layout);
 
-    qtContainer->setLayout(mainLayout);
+    qt_container->setLayout(main_layout);
 
     this->updateFromMatrix();
 }

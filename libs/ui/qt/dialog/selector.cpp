@@ -68,78 +68,78 @@ selector::selections_t selector::show()
     dialog->setWindowTitle(QString::fromStdString(m_title));
     dialog->setObjectName("selector");
 
-    auto* selectionList = new QListWidget(dialog);
-    selectionList->setObjectName("selectionList");
+    auto* selection_list = new QListWidget(dialog);
+    selection_list->setObjectName("selectionList");
     int selected_item = 0;
     for(const auto& choice : m_choices)
     {
         int item_index = 0;
         if(m_multiple)
         {
-            auto* item = new QListWidgetItem(QString::fromStdString(choice.first), selectionList);
+            auto* item = new QListWidgetItem(QString::fromStdString(choice.first), selection_list);
             item->setCheckState((choice.second ? Qt::Checked : Qt::Unchecked));
-            selectionList->addItem(item);
+            selection_list->addItem(item);
         }
         else
         {
-            selectionList->addItem(QString::fromStdString(choice.first));
+            selection_list->addItem(QString::fromStdString(choice.first));
         }
 
         selected_item = choice.second ? item_index : selected_item;
         ++item_index;
     }
 
-    QListWidgetItem* firstItem = selectionList->item(selected_item);
-    selectionList->setCurrentItem(firstItem);
+    QListWidgetItem* first_item = selection_list->item(selected_item);
+    selection_list->setCurrentItem(first_item);
 
-    auto* okButton = new QPushButton(QObject::tr("Ok"));
-    okButton->setObjectName("Ok");
-    auto* cancelButton = new QPushButton(QObject::tr("Cancel"));
-    cancelButton->setObjectName("Cancel");
+    auto* ok_button = new QPushButton(QObject::tr("Ok"));
+    ok_button->setObjectName("Ok");
+    auto* cancel_button = new QPushButton(QObject::tr("Cancel"));
+    cancel_button->setObjectName("Cancel");
 
     auto* h_layout = new QHBoxLayout();
-    h_layout->addWidget(okButton);
-    h_layout->addWidget(cancelButton);
+    h_layout->addWidget(ok_button);
+    h_layout->addWidget(cancel_button);
 
-    for(auto* customButton : m_customButtons)
+    for(auto* custom_button : m_customButtons)
     {
-        h_layout->addWidget(customButton);
-        QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+        h_layout->addWidget(custom_button);
+        QObject::connect(custom_button, SIGNAL(clicked()), dialog, SLOT(reject()));
     }
 
-    auto* vLayout = new QVBoxLayout();
+    auto* v_layout = new QVBoxLayout();
     if(!m_message.empty())
     {
-        auto* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-        vLayout->addWidget(msgText);
+        auto* msg_text = new QLabel(QString::fromStdString(m_message), dialog);
+        v_layout->addWidget(msg_text);
     }
 
-    vLayout->addWidget(selectionList);
-    vLayout->addLayout(h_layout);
+    v_layout->addWidget(selection_list);
+    v_layout->addLayout(h_layout);
 
-    dialog->setLayout(vLayout);
-    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
+    dialog->setLayout(v_layout);
+    QObject::connect(ok_button, SIGNAL(clicked()), dialog, SLOT(accept()));
+    QObject::connect(cancel_button, SIGNAL(clicked()), dialog, SLOT(reject()));
+    QObject::connect(selection_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
     selections_t selections;
     if(dialog->exec() != 0)
     {
-        int indexItem = 0;
+        int index_item = 0;
         if(m_multiple)
         {
             for(const auto& selection : m_choices)
             {
-                if(selectionList->item(indexItem)->checkState() == Qt::Checked)
+                if(selection_list->item(index_item)->checkState() == Qt::Checked)
                 {
                     selections.push_back(selection.first);
-                    indexItem++;
+                    index_item++;
                 }
             }
         }
         else
         {
-            selections.push_back(selectionList->currentItem()->text().toStdString());
+            selections.push_back(selection_list->currentItem()->text().toStdString());
         }
     }
 
@@ -148,18 +148,18 @@ selector::selections_t selector::show()
 
 //------------------------------------------------------------------------------
 
-void selector::setMessage(const std::string& msg)
+void selector::setMessage(const std::string& _msg)
 {
-    m_message = msg;
+    m_message = _msg;
 }
 
 //------------------------------------------------------------------------------
 
-void selector::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void selector::addCustomButton(const std::string& _label, std::function<void()> _clicked_fn)
 {
-    auto* button = new QPushButton(QString::fromStdString(label));
+    auto* button = new QPushButton(QString::fromStdString(_label));
     m_customButtons.push_back(button);
-    QObject::connect(button, &QPushButton::clicked, clickedFn);
+    QObject::connect(button, &QPushButton::clicked, _clicked_fn);
 }
 
 //------------------------------------------------------------------------------

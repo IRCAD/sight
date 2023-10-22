@@ -43,7 +43,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::spheroid_extraction_te
 namespace sight::filter::image::ut
 {
 
-using ImageType = itk::Image<std::int16_t, 3>;
+using image_t = itk::Image<std::int16_t, 3>;
 
 //------------------------------------------------------------------------------
 
@@ -70,26 +70,26 @@ static void makeNoise(
 //------------------------------------------------------------------------------
 
 static void plantSphere(
-    ImageType::Pointer _image,
+    image_t::Pointer _image,
     const std::array<double, 3> radius,
     const std::array<double, 3> center
 )
 {
-    using EllipseType = itk::EllipseSpatialObject<3>;
+    using ellipse_t = itk::EllipseSpatialObject<3>;
 
-    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<ellipse_t, image_t>;
 
-    EllipseType::Pointer ellipse = EllipseType::New();
+    ellipse_t::Pointer ellipse = ellipse_t::New();
     ellipse->SetRadius(radius.data());
 
-    using TransformType = EllipseType::TransformType;
-    TransformType::Pointer transform = TransformType::New();
+    using transform_t = ellipse_t::transform_t;
+    transform_t::Pointer transform = transform_t::New();
     transform->SetIdentity();
     transform->Translate(center.data(), false);
 
     ellipse->SetObjectToParentTransform(transform);
 
-    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<ellipse_t, image_t>;
 
     SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
 
@@ -104,9 +104,9 @@ static void plantSphere(
 
     imageFilter->Update();
 
-    using OrFilterType = typename itk::OrImageFilter<ImageType, ImageType>;
+    using or_filter_t = typename itk::OrImageFilter<image_t, image_t>;
 
-    typename OrFilterType::Pointer orFilter = OrFilterType::New();
+    typename or_filter_t::Pointer orFilter = or_filter_t::New();
     orFilter->SetInput1(_image);
     orFilter->SetInput2(imageFilter->GetOutput());
     orFilter->Update();
@@ -148,7 +148,7 @@ void spheroid_extraction_test::extractionTest()
 
     makeNoise<std::int16_t>(image, 0, 128);
 
-    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
+    image_t::Pointer itkImage = io::itk::move_to_itk<image_t>(image);
 
     const std::vector<std::array<double, 3> > spheroidCenters = {{{16., 16., 16.}},
         {{54., 67., 12.}},
@@ -178,7 +178,7 @@ void spheroid_extraction_test::extractionTest()
     }
 
     // Rewrite the itk image to the Sight image.
-    io::itk::moveFromItk(itkImage, image);
+    io::itk::move_from_itk(itkImage, image);
 
     data::point_list::sptr extractedSpheroids =
         filter::image::spheroid_extraction::extract(image, 200., 4., 9., 0.8, 1.2);

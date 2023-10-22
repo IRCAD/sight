@@ -166,41 +166,41 @@ void frame_tl_test::pushTest()
     core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
     core::hires_clock::type time2 = time1 + 42;
 
-    SPTR(data::frame_tl::BufferType) data1 = timeline->createBuffer(time1);
-    std::uint8_t* bufferData1 = data1->addElement(0);
-    std::memset(bufferData1, 1, (10LL * 20 * 3));
-    SPTR(data::frame_tl::BufferType) data2 = timeline->createBuffer(time2);
-    std::uint8_t* bufferData2 = data2->addElement(0);
-    std::memset(bufferData2, 2, (10LL * 20 * 3));
+    SPTR(data::frame_tl::buffer_t) data1 = timeline->createBuffer(time1);
+    std::uint8_t* buffer_data1 = data1->addElement(0);
+    std::memset(buffer_data1, 1, (10LL * 20 * 3));
+    SPTR(data::frame_tl::buffer_t) data2 = timeline->createBuffer(time2);
+    std::uint8_t* buffer_data2 = data2->addElement(0);
+    std::memset(buffer_data2, 2, (10LL * 20 * 3));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
 
-    CSPTR(data::timeline::object) dataPushed1 = timeline->getObject(time1);
-    CPPUNIT_ASSERT(data1 == dataPushed1);
+    CSPTR(data::timeline::object) data_pushed1 = timeline->getObject(time1);
+    CPPUNIT_ASSERT(data1 == data_pushed1);
 
-    CSPTR(data::timeline::object) dataPushed2 = timeline->getObject(time2);
-    CPPUNIT_ASSERT(data2 == dataPushed2);
+    CSPTR(data::timeline::object) data_pushed2 = timeline->getObject(time2);
+    CPPUNIT_ASSERT(data2 == data_pushed2);
 
-    CSPTR(data::timeline::object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
-    CSPTR(data::frame_tl::BufferType) buff       =
-        std::dynamic_pointer_cast<const data::frame_tl::BufferType>(dataPushed1Bis);
+    CSPTR(data::timeline::object) data_pushed1_bis = timeline->getClosestObject(time1 + 1.5);
+    CSPTR(data::frame_tl::buffer_t) buff           =
+        std::dynamic_pointer_cast<const data::frame_tl::buffer_t>(data_pushed1_bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
-    const std::uint8_t* buffData = &buff->getElement(0);
-    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[0]);
-    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[300]);
-    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[599]);
+    const std::uint8_t* buff_data = &buff->getElement(0);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buff_data[0]);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buff_data[300]);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buff_data[599]);
 
-    CSPTR(data::timeline::object) dataPushed2Bis = timeline->getNewerObject();
-    CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+    CSPTR(data::timeline::object) data_pushed2_bis = timeline->getNewerObject();
+    CPPUNIT_ASSERT(data2 == data_pushed2_bis);
 
-    core::hires_clock::type time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
+    core::hires_clock::type time2_pushed = timeline->getNewerTimestamp();
+    CPPUNIT_ASSERT_EQUAL(time2, time2_pushed);
 
     timeline->clearTimeline();
-    CSPTR(data::timeline::object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == nullptr);
+    CSPTR(data::timeline::object) null_obj = timeline->getNewerObject();
+    CPPUNIT_ASSERT(null_obj == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -219,53 +219,53 @@ void frame_tl_test::copyTest()
     core::hires_clock::type time1 = core::hires_clock::get_time_in_milli_sec();
     core::hires_clock::type time2 = time1 + 125;
 
-    SPTR(data::frame_tl::BufferType) data1 = timeline->createBuffer(time1);
-    std::uint8_t* bufferData1 = data1->addElement(0);
-    std::memset(bufferData1, 1, (11LL * 22 * 4));
-    SPTR(data::frame_tl::BufferType) data2 = timeline->createBuffer(time2);
-    std::uint8_t* bufferData2 = data2->addElement(0);
-    std::memset(bufferData2, 2, (11LL * 22 * 4));
+    SPTR(data::frame_tl::buffer_t) data1 = timeline->createBuffer(time1);
+    std::uint8_t* buffer_data1 = data1->addElement(0);
+    std::memset(buffer_data1, 1, (11LL * 22 * 4));
+    SPTR(data::frame_tl::buffer_t) data2 = timeline->createBuffer(time2);
+    std::uint8_t* buffer_data2 = data2->addElement(0);
+    std::memset(buffer_data2, 2, (11LL * 22 * 4));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
 
-    CSPTR(data::timeline::object) dataPushed1 = timeline->getObject(time1);
-    CPPUNIT_ASSERT(data1 == dataPushed1);
+    CSPTR(data::timeline::object) data_pushed1 = timeline->getObject(time1);
+    CPPUNIT_ASSERT(data1 == data_pushed1);
 
-    CSPTR(data::timeline::object) dataPushed2 = timeline->getObject(time2);
-    CPPUNIT_ASSERT(data2 == dataPushed2);
+    CSPTR(data::timeline::object) data_pushed2 = timeline->getObject(time2);
+    CPPUNIT_ASSERT(data2 == data_pushed2);
 
-    data::frame_tl::sptr copiedTimeline = data::frame_tl::copy(timeline);
+    data::frame_tl::sptr copied_timeline = data::frame_tl::copy(timeline);
 
-    CSPTR(data::timeline::object) copiedData1 = copiedTimeline->getClosestObject(time1);
-    CPPUNIT_ASSERT_EQUAL(time1, copiedData1->getTimestamp());
-    CSPTR(data::frame_tl::BufferType) copiedBuff =
-        std::dynamic_pointer_cast<const data::frame_tl::BufferType>(copiedData1);
-    CPPUNIT_ASSERT(copiedBuff);
-    CSPTR(data::frame_tl::BufferType) buff =
-        std::dynamic_pointer_cast<const data::frame_tl::BufferType>(timeline->getClosestBuffer(time1));
-    const std::uint8_t* copiedBuffData = &copiedBuff->getElement(0);
-    const std::uint8_t* buffData       = &buff->getElement(0);
+    CSPTR(data::timeline::object) copied_data1 = copied_timeline->getClosestObject(time1);
+    CPPUNIT_ASSERT_EQUAL(time1, copied_data1->getTimestamp());
+    CSPTR(data::frame_tl::buffer_t) copied_buff =
+        std::dynamic_pointer_cast<const data::frame_tl::buffer_t>(copied_data1);
+    CPPUNIT_ASSERT(copied_buff);
+    CSPTR(data::frame_tl::buffer_t) buff =
+        std::dynamic_pointer_cast<const data::frame_tl::buffer_t>(timeline->getClosestBuffer(time1));
+    const std::uint8_t* copied_buff_data = &copied_buff->getElement(0);
+    const std::uint8_t* buff_data        = &buff->getElement(0);
 
     for(std::size_t i = 0 ; i < 10LL * 20 * 4 ; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
+        CPPUNIT_ASSERT_EQUAL(buff_data[i], copied_buff_data[i]);
     }
 
-    const core::hires_clock::type copiedTime2 = copiedTimeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_EQUAL(time2, copiedTime2);
+    const core::hires_clock::type copied_time2 = copied_timeline->getNewerTimestamp();
+    CPPUNIT_ASSERT_EQUAL(time2, copied_time2);
 
     timeline->clearTimeline();
-    CSPTR(data::timeline::object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == nullptr);
+    CSPTR(data::timeline::object) null_obj = timeline->getNewerObject();
+    CPPUNIT_ASSERT(null_obj == nullptr);
 
-    CSPTR(data::timeline::object) copiedData2 = copiedTimeline->getClosestBuffer(time2);
-    CPPUNIT_ASSERT(copiedData2);
-    CPPUNIT_ASSERT_EQUAL(time2, copiedData2->getTimestamp());
+    CSPTR(data::timeline::object) copied_data2 = copied_timeline->getClosestBuffer(time2);
+    CPPUNIT_ASSERT(copied_data2);
+    CPPUNIT_ASSERT_EQUAL(time2, copied_data2->getTimestamp());
 
-    copiedTimeline->clearTimeline();
-    CSPTR(data::timeline::object) nullObj2 = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == nullptr);
+    copied_timeline->clearTimeline();
+    CSPTR(data::timeline::object) null_obj2 = timeline->getNewerObject();
+    CPPUNIT_ASSERT(null_obj == nullptr);
 }
 
 //------------------------------------------------------------------------------

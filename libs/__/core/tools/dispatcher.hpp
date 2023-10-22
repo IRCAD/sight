@@ -51,28 +51,28 @@ struct end_type_list_action
 
     /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class key_type>
-    static void invoke(const key_type& key_t)
+    static void invoke(const key_type& _key_t)
     {
-        std::string msg = key_t.name()
+        std::string msg = _key_t.name()
                           + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class key_type, class parameter>
-    static void invoke(const key_type& key_t, const parameter& param)
+    static void invoke(const key_type& _key_t, const parameter& _param)
     {
-        SIGHT_NOT_USED(param);
-        std::string msg = key_t.name()
+        SIGHT_NOT_USED(_param);
+        std::string msg = _key_t.name()
                           + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class base_class, class key_type>
-    static base_class* instantiate(const key_type& key_t)
+    static base_class* instantiate(const key_type& _key_t)
     {
-        std::string msg = key_t.name()
+        std::string msg = _key_t.name()
                           + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
         return NULL;
@@ -123,11 +123,11 @@ struct dispatcher
          * @brief Invoke only the specified Type only
          */
         template<class key_type>
-        static void invoke(const key_type& key_t)
+        static void invoke(const key_type& _key_t)
         {
             namespace mpl = boost::mpl;
 
-            if(is_mapping<head>(key_t))
+            if(is_mapping<head>(_key_t))
             {
                 // create the functor then excute it
                 FUNCTOR f;
@@ -145,7 +145,7 @@ struct dispatcher
                         end_type_list_action,
                         dispatcher<tail, FUNCTOR>
                 >::type type_x;
-                type_x::invoke(key_t);
+                type_x::invoke(_key_t);
             }
         }
 
@@ -157,18 +157,18 @@ struct dispatcher
          * @note That parameter is *NOT* const so functor can update value
          */
         template<class key_type, class parameter>
-        static void invoke(const key_type& key_t, parameter& param)
+        static void invoke(const key_type& _key_t, parameter& _param)
         {
             namespace mpl = boost::mpl;
 
-            if(is_mapping<head>(key_t))
+            if(is_mapping<head>(_key_t))
             {
                 // create the functor then excute it
                 FUNCTOR f;
 #ifdef _WIN32
-                f.operator()<head>(param);
+                f.operator()<head>(_param);
 #else
-                f.template operator()<head>(param);
+                f.template operator()<head>(_param);
 #endif
             }
             else
@@ -179,7 +179,7 @@ struct dispatcher
                         end_type_list_action,
                         dispatcher<tail, FUNCTOR>
                 >::type type_x;
-                type_x::invoke(key_t, param);
+                type_x::invoke(_key_t, _param);
             }
         }
 };

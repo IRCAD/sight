@@ -47,13 +47,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API Document(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::csptr& image,
-        bool use3DSR                          = false,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::csptr& _image,
+        bool _use3_dsr                         = false,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor

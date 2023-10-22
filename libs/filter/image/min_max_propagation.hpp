@@ -25,7 +25,7 @@
 #include "filter/image/config.hpp"
 #include "filter/image/image_diff.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <filter/image/bresenham_line.hpp>
@@ -47,11 +47,11 @@ public:
         MINMAX
     };
 
-    typedef filter::image::bresenham_line::CoordinatesType CoordinatesType;
+    typedef filter::image::bresenham_line::coordinates_t coordinates_t;
 
-    typedef filter::image::bresenham_line::Orientation OrientationType;
+    typedef filter::image::bresenham_line::Orientation orientation_t;
 
-    typedef std::vector<CoordinatesType> SeedsType;
+    typedef std::vector<coordinates_t> seeds_t;
 
     /**
      * @brief Constructor.
@@ -60,9 +60,9 @@ public:
      * @param[in] roi region of interest.
      */
     FILTER_IMAGE_API min_max_propagation(
-        data::image::csptr inImage,
-        data::image::sptr outImage,
-        data::image::csptr roi
+        data::image::csptr _in_image,
+        data::image::sptr _out_image,
+        data::image::csptr _roi
     );
 
     /**
@@ -76,17 +76,17 @@ public:
      * @return the differences in the image before and after propagation.
      */
     FILTER_IMAGE_API image_diff propagate(
-        SeedsType& seeds,
-        data::image::BufferType* value,
-        double radius,
-        bool overwrite,
-        Mode mode
+        seeds_t& _seeds,
+        data::image::buffer_t* _value,
+        double _radius,
+        bool _overwrite,
+        Mode _mode
     );
 
 private:
 
     /// Seed list.
-    SeedsType m_seeds;
+    seeds_t m_seeds;
 
     /// Input image. Where the voxel values are read from.
     data::image::csptr m_inImage;

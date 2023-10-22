@@ -67,7 +67,7 @@ void multi_config_controller_test::tearDown()
     // Clean up after the test run.
     // unregister the services that have not been unregistered because a test failed.
 
-    auto services = sight::service::getServices<service::base>();
+    auto services = sight::service::get_services<service::base>();
     for(const auto& srv : services)
     {
         if(srv->started())
@@ -75,7 +75,7 @@ void multi_config_controller_test::tearDown()
             srv->stop().wait();
         }
 
-        service::unregisterService(srv);
+        service::unregister_service(srv);
     }
 }
 
@@ -99,15 +99,15 @@ void multi_config_controller_test::multiConfigTest()
     srv->start().wait();
 
     // create connection to wait the end of the update
-    bool serviceUpdated     = false;
-    auto slotServiceUpdated = sight::core::com::new_slot(
-        [&serviceUpdated]()
+    bool service_updated      = false;
+    auto slot_service_updated = sight::core::com::new_slot(
+        [&service_updated]()
         {
-            serviceUpdated = true;
+            service_updated = true;
         });
-    slotServiceUpdated->set_worker(sight::core::thread::get_default_worker());
-    auto serviceUpdatedConnection = srv->signal("updated")->connect(
-        slotServiceUpdated
+    slot_service_updated->set_worker(sight::core::thread::get_default_worker());
+    auto service_updated_connection = srv->signal("updated")->connect(
+        slot_service_updated
     );
 
     // start the test!
@@ -116,67 +116,67 @@ void multi_config_controller_test::multiConfigTest()
     //  startStopConnectionTest_2_TestService5Uid : started
 
     srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
-    fwTestWithFailWaitMacro(serviceUpdated);
-    serviceUpdated = false;
+    SIGHT_TEST_FAIL_WAIT(service_updated);
+    service_updated = false;
 
-    auto genDataSrv =
+    auto gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_6_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv == nullptr);
-    auto noDataSrv =
+    CPPUNIT_ASSERT(gen_data_srv == nullptr);
+    auto no_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "startStopConnectionTest_6_TestService5Uid"
             )
         );
-    CPPUNIT_ASSERT(noDataSrv != nullptr && noDataSrv->started());
+    CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->started());
 
     // set config1 =>
     //  connectionTest_2_SGenerateData : started
     //  startStopConnectionTest_2_TestService5Uid : stopped
     srv->slot("setConfig")->run(ui::parameter_t("config1"), std::string("myKey"));
-    fwTestWithFailWaitMacro(serviceUpdated);
-    serviceUpdated = false;
+    SIGHT_TEST_FAIL_WAIT(service_updated);
+    service_updated = false;
 
-    genDataSrv =
+    gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_8_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv != nullptr && genDataSrv->started());
-    noDataSrv =
+    CPPUNIT_ASSERT(gen_data_srv != nullptr && gen_data_srv->started());
+    no_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "startStopConnectionTest_6_TestService5Uid"
             )
         );
-    CPPUNIT_ASSERT(noDataSrv != nullptr && noDataSrv->stopped());
+    CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->stopped());
 
     // set config2 =>
     //  connectionTest_2_SGenerateData : stopped
     //  startStopConnectionTest_2_TestService5Uid : started
     srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
-    fwTestWithFailWaitMacro(serviceUpdated);
-    serviceUpdated = false;
+    SIGHT_TEST_FAIL_WAIT(service_updated);
+    service_updated = false;
 
-    genDataSrv =
+    gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_8_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv != nullptr && genDataSrv->stopped());
-    noDataSrv =
+    CPPUNIT_ASSERT(gen_data_srv != nullptr && gen_data_srv->stopped());
+    no_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "startStopConnectionTest_10_TestService5Uid"
             )
         );
-    CPPUNIT_ASSERT(noDataSrv != nullptr && noDataSrv->started());
+    CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->started());
 
     srv->stop().wait();
 }
@@ -201,15 +201,15 @@ void multi_config_controller_test::setConfigKeyTest()
     srv->start().wait();
 
     // create connection to wait the end of the update
-    bool serviceUpdated     = false;
-    auto slotServiceUpdated = sight::core::com::new_slot(
-        [&serviceUpdated]()
+    bool service_updated      = false;
+    auto slot_service_updated = sight::core::com::new_slot(
+        [&service_updated]()
         {
-            serviceUpdated = true;
+            service_updated = true;
         });
-    slotServiceUpdated->set_worker(sight::core::thread::get_default_worker());
-    auto serviceUpdatedConnection = srv->signal("updated")->connect(
-        slotServiceUpdated
+    slot_service_updated->set_worker(sight::core::thread::get_default_worker());
+    auto service_updated_connection = srv->signal("updated")->connect(
+        slot_service_updated
     );
 
     // start the test!
@@ -218,44 +218,44 @@ void multi_config_controller_test::setConfigKeyTest()
     //  startStopConnectionTest_2_TestService5Uid : started
 
     srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("myKey"));
-    fwTestWithFailWaitMacro(serviceUpdated);
-    serviceUpdated = false;
+    SIGHT_TEST_FAIL_WAIT(service_updated);
+    service_updated = false;
 
-    auto genDataSrv =
+    auto gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_12_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv == nullptr);
-    auto noDataSrv =
+    CPPUNIT_ASSERT(gen_data_srv == nullptr);
+    auto no_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "startStopConnectionTest_12_TestService5Uid"
             )
         );
-    CPPUNIT_ASSERT(noDataSrv != nullptr && noDataSrv->started());
+    CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->started());
 
     // set config with bad key
     srv->slot("setConfig")->run(ui::parameter_t("config2"), std::string("badKey"));
     srv->slot("update")->run();
-    fwTestWithFailWaitMacro(serviceUpdated);
-    serviceUpdated = false;
+    SIGHT_TEST_FAIL_WAIT(service_updated);
+    service_updated = false;
 
-    genDataSrv =
+    gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_14_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv == nullptr);
-    noDataSrv =
+    CPPUNIT_ASSERT(gen_data_srv == nullptr);
+    no_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "startStopConnectionTest_14_TestService5Uid"
             )
         );
-    CPPUNIT_ASSERT(noDataSrv != nullptr && noDataSrv->started());
+    CPPUNIT_ASSERT(no_data_srv != nullptr && no_data_srv->started());
 
     srv->stop().wait();
 }
@@ -279,22 +279,22 @@ void multi_config_controller_test::defaultLoadingTest()
     srv->start().wait();
     srv->update().wait();
 
-    auto genDataSrv =
+    auto gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_16_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv != nullptr && genDataSrv->started());
+    CPPUNIT_ASSERT(gen_data_srv != nullptr && gen_data_srv->started());
 
     srv->update().wait();
-    genDataSrv =
+    gen_data_srv =
         std::dynamic_pointer_cast<app::ut::test_service>(
             core::tools::id::get_object(
                 "connectionTest_18_SGenerateData"
             )
         );
-    CPPUNIT_ASSERT(genDataSrv != nullptr && genDataSrv->started());
+    CPPUNIT_ASSERT(gen_data_srv != nullptr && gen_data_srv->started());
 
     srv->stop().wait();
 }

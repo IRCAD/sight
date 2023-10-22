@@ -37,8 +37,8 @@ class fw_profile_scope
 {
 public:
 
-    fw_profile_scope(const char* label) :
-        m_label(label)
+    fw_profile_scope(const char* _label) :
+        m_label(_label)
     {
         m_timer.start();
     }
@@ -63,8 +63,8 @@ class fw_profile_frame_timer
 {
 public:
 
-    fw_profile_frame_timer(double interval) :
-        m_interval(interval)
+    fw_profile_frame_timer(double _interval) :
+        m_interval(_interval)
     {
         m_timer.start();
     }
@@ -79,9 +79,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    bool tick(core::hires_clock::type time)
+    bool tick(core::hires_clock::type _time)
     {
-        m_average = (m_average * m_count + time) / (m_count + 1);
+        m_average = (m_average * m_count + _time) / (m_count + 1);
         ++m_count;
         return m_timer.get_elapsed_time_in_milli_sec() >= m_interval * 1000;
     }
@@ -112,9 +112,9 @@ class fw_profile_scope_avg
 {
 public:
 
-    fw_profile_scope_avg(const char* label, fw_profile_frame_timer& frame_timer) :
-        m_label(label),
-        m_frame_timer(frame_timer)
+    fw_profile_scope_avg(const char* _label, fw_profile_frame_timer& _frame_timer) :
+        m_label(_label),
+        m_frame_timer(_frame_timer)
     {
         m_timer.start();
     }
@@ -148,9 +148,9 @@ class fw_profile_frame
 {
 public:
 
-    fw_profile_frame(const char* label, fw_profile_frame_timer& frame_timer) :
-        m_label(label),
-        m_frame_timer(frame_timer)
+    fw_profile_frame(const char* _label, fw_profile_frame_timer& _frame_timer) :
+        m_label(_label),
+        m_frame_timer(_frame_timer)
     {
         SIGHT_INFO("FRAME : " << m_label << " = " << m_frame_timer.m_timer.get_elapsed_time_in_milli_sec() << " ms.");
         m_frame_timer.reset();
@@ -172,9 +172,9 @@ class fw_profile_frame_avg
 {
 public:
 
-    fw_profile_frame_avg(const char* label, fw_profile_frame_timer& frame_timer) :
-        m_label(label),
-        m_frame_timer(frame_timer)
+    fw_profile_frame_avg(const char* _label, fw_profile_frame_timer& _frame_timer) :
+        m_label(_label),
+        m_frame_timer(_frame_timer)
     {
         if(m_frame_timer.tick())
         {

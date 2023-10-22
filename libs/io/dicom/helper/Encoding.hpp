@@ -60,9 +60,9 @@ public:
      * @return converted string in utf-8 format
      */
     IO_DICOM_API static std::string convertString(
-        const std::string& source,
-        const std::string& definedCharsetTerm,
-        const SPTR(core::log::logger)& logger = nullptr
+        const std::string& _source,
+        const std::string& _defined_charset_term,
+        const SPTR(core::log::logger)& _logger = nullptr
     );
 
 private:
@@ -75,9 +75,9 @@ private:
      * @return converted charset
      */
     static std::string convertStringWithoutCodeExtensions(
-        const std::string& source,
-        const std::string& definedTerm,
-        const SPTR(core::log::logger)& logger
+        const std::string& _source,
+        const std::string& _defined_term,
+        const SPTR(core::log::logger)& _logger
     );
     /**
      * @brief Convert string sequence with a code extension.
@@ -89,29 +89,29 @@ private:
      * @return converted sequence in utf-8 format
      */
     static std::string convertSequenceWithCodeExtensions(
-        const std::string& sequence,
-        const std::vector<std::string>& definedTermList,
-        const SPTR(core::log::logger)& logger
+        const std::string& _sequence,
+        const std::vector<std::string>& _defined_term_list,
+        const SPTR(core::log::logger)& _logger
     );
 
     /**
      * @brief Map used to convert defined term to charset
      * @{ */
-    typedef std::map<std::string, std::string> DefinedTermToCharsetMapType;
-    static const DefinedTermToCharsetMapType s_DEFINED_TERM_TO_CHARSET;
+    typedef std::map<std::string, std::string> DefinedTermToCharset_map_type;
+    static const DefinedTermToCharset_map_type s_DEFINED_TERM_TO_CHARSET;
     /**  @} */
 
     /// Escape sequence representation
-    typedef std::pair<char, char> EscapeSequenceType;
+    typedef std::pair<char, char> escape_sequence_t;
 
     /// Pair containing a defined term and the associated charset
-    typedef std::pair<std::string, std::string> DefinedTermAndCharsetPairType;
+    typedef std::pair<std::string, std::string> DefinedTermAndCharset_pair_type;
 
     /**
      * @brief Map used to convert escape sequence to charset
      * @{ */
-    typedef std::map<EscapeSequenceType, DefinedTermAndCharsetPairType> EscapeSequenceToCharsetMapType;
-    static const EscapeSequenceToCharsetMapType s_ESCAPE_SEQUENCE_TO_CHARSET;
+    typedef std::map<escape_sequence_t, DefinedTermAndCharset_pair_type> EscapeSequenceToCharset_map_type;
+    static const EscapeSequenceToCharset_map_type s_ESCAPE_SEQUENCE_TO_CHARSET;
     /**  @} */
 };
 

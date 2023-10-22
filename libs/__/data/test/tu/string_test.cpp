@@ -49,20 +49,20 @@ void string_test::tearDown()
 void string_test::methode1()
 {
     using namespace std::literals::string_literals;
-    const std::array VALUES = {""s, "chaine_caractere"s};
+    const std::array values = {""s, "chaine_caractere"s};
 
-    for(const std::string& VALUE : VALUES)
+    for(const std::string& value : values)
     {
         data::string::sptr s0 = std::make_shared<data::string>();
-        s0->value() = VALUE;
-        data::string::sptr s1 = std::make_shared<data::string>(VALUE);
-        data::string::sptr s2 = std::make_shared<data::string>(VALUE + "other");
+        s0->value() = value;
+        data::string::sptr s1 = std::make_shared<data::string>(value);
+        data::string::sptr s2 = std::make_shared<data::string>(value + "other");
 
         CPPUNIT_ASSERT(*s0 == *s1);
         CPPUNIT_ASSERT(*s0 != *s2);
-        CPPUNIT_ASSERT_EQUAL(VALUE, s0->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, s1->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, std::make_shared<data::string>(VALUE)->value());
+        CPPUNIT_ASSERT_EQUAL(value, s0->value());
+        CPPUNIT_ASSERT_EQUAL(value, s1->value());
+        CPPUNIT_ASSERT_EQUAL(value, std::make_shared<data::string>(value)->value());
     }
 }
 

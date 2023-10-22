@@ -55,20 +55,20 @@ SPTR(module) module::get_loading_module()
 //------------------------------------------------------------------------------
 
 module::module(
-    const std::filesystem::path& location,
-    std::string id,
-    std::string c,
-    int priority
+    const std::filesystem::path& _location,
+    std::string _id,
+    std::string _c,
+    int _priority
 ) :
-    m_resources_location(location.lexically_normal()),
-    m_identifier(std::move(id)),
-    m_class(std::move(c)),
-    m_priority(priority)
+    M_RESOURCES_LOCATION(_location.lexically_normal()),
+    M_IDENTIFIER(std::move(_id)),
+    M_CLASS(std::move(_c)),
+    m_priority(_priority)
 {
     // Post-condition.
-    SIGHT_ASSERT("Invalid module location.", m_resources_location.is_absolute() == true);
+    SIGHT_ASSERT("Invalid module location.", M_RESOURCES_LOCATION.is_absolute() == true);
 
-    const auto location_normalized = std::filesystem::weakly_canonical(location);
+    const auto location_normalized = std::filesystem::weakly_canonical(_location);
     const auto str_location        = std::regex_replace(
         location_normalized.string(),
         runtime::s_match_module_path,
@@ -81,9 +81,9 @@ module::module(
 
 //------------------------------------------------------------------------------
 
-void module::add_executable_factory(SPTR(executable_factory)factory)
+void module::add_executable_factory(SPTR(executable_factory)_factory)
 {
-    m_executable_factories.insert(factory);
+    m_executable_factories.insert(_factory);
 }
 
 //------------------------------------------------------------------------------
@@ -102,12 +102,12 @@ module::executable_factory_const_iterator module::executable_factories_end() con
 
 //------------------------------------------------------------------------------
 
-SPTR(executable_factory) module::find_executable_factory(const std::string& type) const
+SPTR(executable_factory) module::find_executable_factory(const std::string& _type) const
 {
     std::shared_ptr<executable_factory> res_executable_factory;
     for(const executable_factory_container::value_type& factory : m_executable_factories)
     {
-        if(factory->get_type() == type)
+        if(factory->get_type() == _type)
         {
             res_executable_factory = factory;
             break;
@@ -119,19 +119,19 @@ SPTR(executable_factory) module::find_executable_factory(const std::string& type
 
 //------------------------------------------------------------------------------
 
-void module::add_extension(SPTR(extension)extension)
+void module::add_extension(SPTR(extension)_extension)
 {
-    m_extensions.insert(extension);
+    m_extensions.insert(_extension);
 }
 
 //------------------------------------------------------------------------------
 
-bool module::has_extension(const std::string& identifier) const
+bool module::has_extension(const std::string& _identifier) const
 {
     bool has_extension = false;
     for(const auto& extension : m_extensions)
     {
-        if(extension->identifier() == identifier)
+        if(extension->identifier() == _identifier)
         {
             has_extension = true;
             break;
@@ -143,13 +143,13 @@ bool module::has_extension(const std::string& identifier) const
 
 //------------------------------------------------------------------------------
 
-void module::set_enable_extension(const std::string& identifier, const bool enable)
+void module::set_enable_extension(const std::string& _identifier, const bool _enable)
 {
     for(const auto& extension : m_extensions)
     {
-        if(extension->identifier() == identifier)
+        if(extension->identifier() == _identifier)
         {
-            extension->set_enable(enable);
+            extension->set_enable(_enable);
             break; // The identifier is unique => can break the loop
         }
     }
@@ -171,19 +171,19 @@ module::extension_const_iterator module::extensions_end() const
 
 //------------------------------------------------------------------------------
 
-void module::add_extension_point(SPTR(extension_point)extension_point)
+void module::add_extension_point(SPTR(extension_point)_extension_point)
 {
-    m_extension_points.insert(extension_point);
+    m_extension_points.insert(_extension_point);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(extension_point) module::find_extension_point(const std::string& identifier) const
+SPTR(extension_point) module::find_extension_point(const std::string& _identifier) const
 {
     std::shared_ptr<extension_point> res_extension_point;
     for(const extension_point_container::value_type& extension_point : m_extension_points)
     {
-        if(extension_point->identifier() == identifier && extension_point->enabled())
+        if(extension_point->identifier() == _identifier && extension_point->enabled())
         {
             res_extension_point = extension_point;
             break;
@@ -195,12 +195,12 @@ SPTR(extension_point) module::find_extension_point(const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-bool module::has_extension_point(const std::string& identifier) const
+bool module::has_extension_point(const std::string& _identifier) const
 {
     bool has_extension_point = false;
     for(const extension_point_container::value_type& extension_point : m_extension_points)
     {
-        if(extension_point->identifier() == identifier)
+        if(extension_point->identifier() == _identifier)
         {
             has_extension_point = true;
             break;
@@ -212,13 +212,13 @@ bool module::has_extension_point(const std::string& identifier) const
 
 //------------------------------------------------------------------------------
 
-void module::set_enable_extension_point(const std::string& identifier, const bool enable)
+void module::set_enable_extension_point(const std::string& _identifier, const bool _enable)
 {
     for(const extension_point_container::value_type& extension_point : m_extension_points)
     {
-        if(extension_point->identifier() == identifier)
+        if(extension_point->identifier() == _identifier)
         {
-            extension_point->set_enable(enable);
+            extension_point->set_enable(_enable);
             break;
         }
     }
@@ -240,31 +240,31 @@ module::extension_point_const_iterator module::extension_points_end() const
 
 //------------------------------------------------------------------------------
 
-void module::set_library(SPTR(dl::library)library)
+void module::set_library(SPTR(dl::library)_library)
 {
-    library->set_search_path(this->get_library_location());
-    m_library = library;
+    _library->set_search_path(this->get_library_location());
+    m_library = _library;
 }
 
 //------------------------------------------------------------------------------
 
-void module::add_requirement(const std::string& requirement)
+void module::add_requirement(const std::string& _requirement)
 {
-    m_requirements.insert(requirement);
+    m_requirements.insert(_requirement);
 }
 
 //------------------------------------------------------------------------------
 
 std::string module::get_class() const
 {
-    return m_class;
+    return M_CLASS;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& module::identifier() const
 {
-    return m_identifier;
+    return M_IDENTIFIER;
 }
 
 //------------------------------------------------------------------------------
@@ -285,7 +285,7 @@ const std::filesystem::path& module::get_library_location() const
 
 const std::filesystem::path& module::get_resources_location() const
 {
-    return m_resources_location;
+    return M_RESOURCES_LOCATION;
 }
 
 //------------------------------------------------------------------------------
@@ -302,7 +302,7 @@ void module::load_libraries()
     // Ensure the module is enabled.
     if(!m_enabled)
     {
-        throw runtime_exception(get_module_str(m_identifier) + ": module is not enabled.");
+        throw runtime_exception(get_module_str(M_IDENTIFIER) + ": module is not enabled.");
     }
 
     // Pre-condition
@@ -373,7 +373,7 @@ void module::load_requirements()
     {
         std::string message;
 
-        message += "Module " + get_module_str(m_identifier) + " was not able to load requirements. ";
+        message += "Module " + get_module_str(M_IDENTIFIER) + " was not able to load requirements. ";
         message += e.what();
         throw runtime_exception(message);
     }
@@ -387,7 +387,7 @@ void module::start()
     {
         if(!m_enabled)
         {
-            throw runtime_exception(get_module_str(m_identifier) + ": module is not enabled.");
+            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": module is not enabled.");
         }
 
         if(m_plugin == nullptr)
@@ -401,11 +401,11 @@ void module::start()
             catch(std::exception& e)
             {
                 throw runtime_exception(
-                          get_module_str(m_identifier)
+                          get_module_str(M_IDENTIFIER)
                           + ": start plugin error (after load requirement) " + e.what()
                 );
             }
-            SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
+            SIGHT_INFO("Loaded module '" + M_IDENTIFIER + "' successfully");
         }
     }
 }
@@ -415,14 +415,12 @@ void module::start()
 void module::start_plugin()
 {
     SIGHT_ASSERT(
-        "Module " + get_module_str(m_identifier) + " plugin is already started.",
+        "Module " + get_module_str(M_IDENTIFIER) + " plugin is already started.",
         !m_started
     );
 
     // Retrieves the type of the plugin.
     std::string plugin_type(get_class());
-
-    plugin_type = std::regex_replace(plugin_type, std::regex("_"), "::");
 
     // According to the presence of a class or not, build and empty
     // plugin or attempt to instantiate a user defined plugin.
@@ -443,7 +441,7 @@ void module::start_plugin()
     // Ensures that a plugin has been created.
     if(plugin == nullptr)
     {
-        throw runtime_exception(get_module_str(m_identifier) + ": unable to create a plugin instance.");
+        throw runtime_exception(get_module_str(M_IDENTIFIER) + ": unable to create a plugin instance.");
     }
 
     if(core::runtime::get_current_profile())
@@ -461,7 +459,7 @@ void module::start_plugin()
         }
         catch(std::exception& e)
         {
-            throw runtime_exception(get_module_str(m_identifier) + ": start plugin error : " + e.what());
+            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": start plugin error : " + e.what());
         }
     }
 }
@@ -472,7 +470,7 @@ void module::stop()
 {
     if(m_started)
     {
-        SIGHT_ASSERT(get_module_str(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
+        SIGHT_ASSERT(get_module_str(M_IDENTIFIER) + " : m_plugin not an instance.", m_plugin != nullptr);
 
         try
         {
@@ -481,7 +479,7 @@ void module::stop()
         }
         catch(std::exception& e)
         {
-            throw runtime_exception(get_module_str(m_identifier) + ": stop plugin error : " + e.what());
+            throw runtime_exception(get_module_str(M_IDENTIFIER) + ": stop plugin error : " + e.what());
         }
 
         //Unloads all libraries.
@@ -507,32 +505,32 @@ bool module::enabled() const
 
 //------------------------------------------------------------------------------
 
-void module::set_enable(const bool state)
+void module::set_enable(const bool _state)
 {
-    m_enabled = state;
+    m_enabled = _state;
 }
 
 //------------------------------------------------------------------------------
 
-void module::add_parameter(const std::string& identifier, const std::string& value)
+void module::add_parameter(const std::string& _identifier, const std::string& _value)
 {
-    m_parameters[identifier] = value;
+    m_parameters[_identifier] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-std::string module::get_parameter_value(const std::string& identifier) const
+std::string module::get_parameter_value(const std::string& _identifier) const
 {
-    auto found = m_parameters.find(identifier);
+    auto found = m_parameters.find(_identifier);
 
     return (found != m_parameters.end()) ? found->second : std::string();
 }
 
 //------------------------------------------------------------------------------
 
-bool module::has_parameter(const std::string& identifier) const
+bool module::has_parameter(const std::string& _identifier) const
 {
-    return m_parameters.find(identifier) != m_parameters.end();
+    return m_parameters.find(_identifier) != m_parameters.end();
 }
 
 //------------------------------------------------------------------------------
@@ -540,15 +538,15 @@ bool module::has_parameter(const std::string& identifier) const
 core::runtime::module::extension_container core::runtime::detail::module::extensions() const
 {
     core::runtime::module::extension_container container;
-    std::ranges::transform(m_extensions, std::inserter(container, container.begin()), [](const auto& e){return e;});
+    std::ranges::transform(m_extensions, std::inserter(container, container.begin()), [](const auto& _e){return _e;});
     return container;
 }
 
 //------------------------------------------------------------------------------
 
-std::string module::get_module_str(const std::string& identifier)
+std::string module::get_module_str(const std::string& _identifier)
 {
-    return identifier;
+    return _identifier;
 }
 
 //------------------------------------------------------------------------------

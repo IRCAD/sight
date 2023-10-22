@@ -91,19 +91,19 @@ void matrix_writer::starting()
 
 void matrix_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
-    dialogFile.addFilter(".csv file", "*.csv");
+    static auto default_directory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
+    dialog_file.addFilter(".csv file", "*.csv");
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         this->set_file(result->get_file());
     }
     else
@@ -138,12 +138,12 @@ void matrix_writer::saveMatrix(core::hires_clock::type _timestamp)
 
 //------------------------------------------------------------------------------
 
-void matrix_writer::write(core::hires_clock::type timestamp)
+void matrix_writer::write(core::hires_clock::type _timestamp)
 {
     if(m_isRecording)
     {
-        const auto locked   = m_data.lock();
-        const auto matrixTL = std::dynamic_pointer_cast<const data::matrix_tl>(locked.get_shared());
+        const auto locked    = m_data.lock();
+        const auto matrix_tl = std::dynamic_pointer_cast<const data::matrix_tl>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -151,23 +151,23 @@ void matrix_writer::write(core::hires_clock::type timestamp)
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            matrixTL
+            matrix_tl
         );
 
-        const unsigned int numberOfMat = matrixTL->getMaxElementNum();
+        const unsigned int number_of_mat = matrix_tl->getMaxElementNum();
 
         // Get the buffer of the copied timeline
-        CSPTR(data::timeline::object) object = matrixTL->getClosestObject(timestamp);
+        CSPTR(data::timeline::object) object = matrix_tl->getClosestObject(_timestamp);
         if(object)
         {
-            CSPTR(data::matrix_tl::BufferType) buffer =
-                std::dynamic_pointer_cast<const data::matrix_tl::BufferType>(object);
+            CSPTR(data::matrix_tl::buffer_t) buffer =
+                std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object);
             if(buffer)
             {
-                timestamp = object->getTimestamp();
-                const auto time = static_cast<std::size_t>(timestamp);
+                _timestamp = object->getTimestamp();
+                const auto time = static_cast<std::size_t>(_timestamp);
                 m_filestream << time << ";";
-                for(unsigned int i = 0 ; i < numberOfMat ; ++i)
+                for(unsigned int i = 0 ; i < number_of_mat ; ++i)
                 {
                     const std::array<float, 16> values = buffer->getElement(i);
 
@@ -188,14 +188,14 @@ void matrix_writer::write(core::hires_clock::type timestamp)
 void matrix_writer::startRecord()
 {
     // Default mode when opening a file is in append mode
-    std::ios_base::openmode openMode = std::ofstream::app;
+    std::ios_base::openmode open_mode = std::ofstream::app;
     if(!this->hasLocationDefined())
     {
         this->openLocationDialog();
 
         // In trunc mode, any contents that existed in the file before it is open are discarded.
         // This is the needed behavior when opening the file for the first time.
-        openMode = std::ofstream::trunc;
+        open_mode = std::ofstream::trunc;
     }
 
     if(this->hasLocationDefined())
@@ -209,7 +209,7 @@ void matrix_writer::startRecord()
 
         if(!m_filestream.is_open())
         {
-            m_filestream.open(this->get_file().string(), std::ofstream::out | openMode);
+            m_filestream.open(this->get_file().string(), std::ofstream::out | open_mode);
             m_filestream.precision(7);
             m_filestream << std::fixed;
             m_isRecording = true;

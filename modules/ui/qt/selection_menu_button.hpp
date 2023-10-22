@@ -113,7 +113,7 @@ protected:
 protected Q_SLOTS:
 
     /// This method is called when the popup menu is clicked. Notify the selection changed.
-    void onSelection(QAction* action);
+    void onSelection(QAction* _action);
 
 private:
 
@@ -122,8 +122,8 @@ private:
      * @{
      */
     /// Signal emitted when an item is selected
-    typedef core::com::signal<void (int)> SelectedSignalType;
-    SelectedSignalType::sptr m_sigSelected;
+    typedef core::com::signal<void (int)> selected_signal_t;
+    selected_signal_t::sptr m_sigSelected;
     /**
      * @}
      */
@@ -133,7 +133,7 @@ private:
      * @{
      */
     /// Slot: enable/disable the button
-    void setEnabled(bool enabled) override;
+    void setEnabled(bool _enabled) override;
 
     /// Slot: enable the button
     void enable() override;
@@ -146,9 +146,9 @@ private:
 
     std::string m_text {">"}; ///< Text displayed on the button
     std::string m_toolTip;    ///< Tool tip displayed on the button
-    typedef std::pair<int, std::string> ItemType;
-    typedef std::vector<ItemType> ItemContainerType;
-    ItemContainerType m_items;
+    typedef std::pair<int, std::string> item_t;
+    typedef std::vector<item_t> item_container_t;
+    item_container_t m_items;
 
     QPointer<QMenu> m_pDropDownMenu;
     QPointer<QPushButton> m_dropDownButton;

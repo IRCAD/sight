@@ -33,14 +33,14 @@
 namespace sight::ui::layout
 {
 
-const menubar_manager::RegistryKeyType menubar_manager::REGISTRY_KEY = "sight::ui::layout::menubar";
+const menubar_manager::registry_key_t menubar_manager::REGISTRY_KEY = "sight::ui::layout::menubar";
 
 //-----------------------------------------------------------------------------
 
-void menubar_manager::initialize(const ui::config_t& configuration)
+void menubar_manager::initialize(const ui::config_t& _configuration)
 {
     m_menus.clear();
-    for(const auto& menu : boost::make_iterator_range(configuration.equal_range("menu")))
+    for(const auto& menu : boost::make_iterator_range(_configuration.equal_range("menu")))
     {
         const auto name = menu.second.get<std::string>("<xmlattr>.name");
         m_menuNames.push_back(name);

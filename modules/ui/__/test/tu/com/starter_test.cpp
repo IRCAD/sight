@@ -99,47 +99,47 @@ void starter_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void starter_test::test(const std::string& actionName, bool exists, ShouldBe shouldBe, int nbUpdate)
+void starter_test::test(const std::string& _action_name, bool _exists, ShouldBe _should_be, int _nb_update)
 {
-    if(exists)
+    if(_exists)
     {
-        service::base::sptr targetService = service::add("DummyService", "targetService");
-        CPPUNIT_ASSERT_MESSAGE("Failed to create service 'DummyService'", targetService);
-        m_dummyService = std::dynamic_pointer_cast<DummyService>(targetService);
+        service::base::sptr target_service = service::add("DummyService", "targetService");
+        CPPUNIT_ASSERT_MESSAGE("Failed to create service 'DummyService'", target_service);
+        m_dummyService = std::dynamic_pointer_cast<DummyService>(target_service);
         CPPUNIT_ASSERT_MESSAGE("Failed to cast service to 'DummyService'", m_dummyService);
         CPPUNIT_ASSERT_NO_THROW(m_dummyService->configure());
-        if(shouldBe == ShouldBe::STOPPED)
+        if(_should_be == ShouldBe::STOPPED)
         {
             CPPUNIT_ASSERT_NO_THROW(m_dummyService->start().get());
         }
     }
 
     boost::property_tree::ptree ptree;
-    ptree.put(actionName + ".<xmlattr>.uid", "targetService");
+    ptree.put(_action_name + ".<xmlattr>.uid", "targetService");
     m_starter->set_config(ptree);
     CPPUNIT_ASSERT_NO_THROW(m_starter->configure());
     CPPUNIT_ASSERT_NO_THROW(m_starter->start().get());
     CPPUNIT_ASSERT_NO_THROW(m_starter->update().get());
 
-    if(exists)
+    if(_exists)
     {
-        if(shouldBe == ShouldBe::STARTED)
+        if(_should_be == ShouldBe::STARTED)
         {
             CPPUNIT_ASSERT(m_dummyService->started());
         }
-        else if(shouldBe == ShouldBe::STOPPED)
+        else if(_should_be == ShouldBe::STOPPED)
         {
             CPPUNIT_ASSERT(m_dummyService->stopped());
         }
         else
         {
             CPPUNIT_ASSERT(m_dummyService->started());
-            CPPUNIT_ASSERT_EQUAL(nbUpdate, m_dummyService->nbUpdate);
+            CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummyService->nbUpdate);
             CPPUNIT_ASSERT_NO_THROW(m_starter->update().get());
             CPPUNIT_ASSERT(m_dummyService->stopped());
         }
 
-        CPPUNIT_ASSERT_EQUAL(nbUpdate, m_dummyService->nbUpdate);
+        CPPUNIT_ASSERT_EQUAL(_nb_update, m_dummyService->nbUpdate);
     }
 }
 

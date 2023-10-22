@@ -88,9 +88,9 @@ scan::scan() noexcept
     new_slot(CONFIGURE_RECORDING_PATH_SLOT, &scan::configureRecordingPath, this);
     new_slot(RECORD, &scan::record, this);
 
-    new_signal<DistanceComputedSignalType>(DISTANCE_COMPUTED_SIG);
-    new_signal<DevicePlayedSignalType>(DEVICE_PLAYED_SIG);
-    new_signal<FilePlayedSignalType>(FILE_PLAYED_SIG);
+    new_signal<distance_computed_signal_t>(DISTANCE_COMPUTED_SIG);
+    new_signal<device_played_signal_t>(DEVICE_PLAYED_SIG);
+    new_signal<file_played_signal_t>(FILE_PLAYED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -358,7 +358,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
 
                 camera_set->set_extrinsic_matrix(1, matrix);
 
-                auto sig = camera_set->signal<data::camera_set::ModifiedSignalType>(
+                auto sig = camera_set->signal<data::camera_set::modified_signal_t>(
                     data::camera_set::MODIFIED_SIG
                 );
                 sig->async_emit();
@@ -374,7 +374,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
     const data::mesh::size_t nbPoints = depthStreamW * depthStreamH;
 
     // Allocate mesh.
-    pointcloud->resize(nbPoints, nbPoints, data::mesh::CellType::POINT, data::mesh::Attributes::POINT_COLORS);
+    pointcloud->resize(nbPoints, nbPoints, data::mesh::cell_type_t::POINT, data::mesh::Attributes::POINT_COLORS);
 
     // to display the mesh, we need to create cells with one point.
     data::mesh::cell_t i = 0;
@@ -408,7 +408,7 @@ void scan::startCamera()
                 {
                     m_playbackMode     = true;
                     m_playbackFileName = camera->getVideoFile().string();
-                    this->signal<FilePlayedSignalType>(FILE_PLAYED_SIG)->async_emit();
+                    this->signal<file_played_signal_t>(FILE_PLAYED_SIG)->async_emit();
                 }
                 else if(camera->getCameraSource() == data::camera::STREAM)
                 {
@@ -429,7 +429,7 @@ void scan::startCamera()
                         m_deviceID = this->selectDevice();
                     }
 
-                    this->signal<DevicePlayedSignalType>(DEVICE_PLAYED_SIG)->async_emit();
+                    this->signal<device_played_signal_t>(DEVICE_PLAYED_SIG)->async_emit();
                 }
             };
 
@@ -583,7 +583,7 @@ void scan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal<grabber::CameraStartedSignalType>(
+    auto sigStarted = this->signal<grabber::camera_started_signal_t>(
         grabber::CAMERA_STARTED_SIG
     );
     sigStarted->async_emit();
@@ -621,7 +621,7 @@ void scan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<grabber::CameraStoppedSignalType>(grabber::CAMERA_STOPPED_SIG);
+        auto sig = this->signal<grabber::camera_stopped_signal_t>(grabber::CAMERA_STOPPED_SIG);
         sig->async_emit();
     }
 }
@@ -1097,7 +1097,7 @@ void scan::grab()
 
             // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
             const auto distanceToCenter = depth.get_distance(depth.get_width() / 2, depth.get_height() / 2);
-            this->signal<DistanceComputedSignalType>(DISTANCE_COMPUTED_SIG)->async_emit(
+            this->signal<distance_computed_signal_t>(DISTANCE_COMPUTED_SIG)->async_emit(
                 static_cast<double>(distanceToCenter * s_METERS_TO_MMS)
             );
         }
@@ -1277,7 +1277,7 @@ void scan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture
             points->y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
             points->z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale; // Re-map to mm.
 
-            // Normals to Texture Coordinates conversion
+            // Normals to texture Coordinates conversion
             const int x_value = std::min(
                 std::max(
                     static_cast<int>(std::lround(textureCoord[i].u * static_cast<float>(textureW))),

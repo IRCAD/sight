@@ -21,8 +21,7 @@
  ***********************************************************************/
 
 #include "ui/qt/layout/frame.hpp"
-
-#include "ui/qt/QtMainFrame.hpp"
+#include "ui/qt/qt_main_frame.hpp"
 
 #include <core/base.hpp>
 
@@ -48,34 +47,34 @@ frame::~frame()
 
 void frame::createFrame()
 {
-    FrameInfo frameInfo = this->getFrameInfo();
+    FrameInfo frame_info = this->getFrameInfo();
 
-    const std::string frameTitle = frameInfo.m_version.empty() ? frameInfo.m_name : frameInfo.m_name + " "
-                                   + frameInfo.m_version;
+    const std::string frame_title = frame_info.m_version.empty() ? frame_info.m_name : frame_info.m_name + " "
+                                    + frame_info.m_version;
 
-    auto* mainframe = new ui::qt::QtMainFrame();
+    auto* mainframe = new ui::qt::qt_main_frame();
     m_qtWindow = mainframe;
-    m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
-    if(!frameInfo.m_qssClass.empty())
+    m_qtWindow->setObjectName(QString::fromStdString(frame_info.m_name));
+    if(!frame_info.m_qssClass.empty())
     {
-        m_qtWindow->setProperty("class", QString::fromStdString(frameInfo.m_qssClass));
+        m_qtWindow->setProperty("class", QString::fromStdString(frame_info.m_qssClass));
     }
 
-    ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
+    ui::qt::qt_main_frame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);
 
     // cspell: ignore QWIDGETSIZE
-    m_qtWindow->setWindowTitle(QString::fromStdString(frameTitle));
-    m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
+    m_qtWindow->setWindowTitle(QString::fromStdString(frame_title));
+    m_qtWindow->setMinimumSize(std::max(frame_info.m_minSize.first, 0), std::max(frame_info.m_minSize.second, 0));
     m_qtWindow->setMaximumSize(
-        frameInfo.m_maxSize.first == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.first,
-        frameInfo.m_maxSize.second == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.second
+        frame_info.m_maxSize.first == -1 ? QWIDGETSIZE_MAX : frame_info.m_maxSize.first,
+        frame_info.m_maxSize.second == -1 ? QWIDGETSIZE_MAX : frame_info.m_maxSize.second
     );
 
-    if(!frameInfo.m_iconPath.empty())
+    if(!frame_info.m_iconPath.empty())
     {
-        QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
-        SIGHT_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
+        QIcon icon(QString::fromStdString(frame_info.m_iconPath.string()));
+        SIGHT_ASSERT("Unable to create an icon instance from " << frame_info.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
 
@@ -84,32 +83,32 @@ void frame::createFrame()
         qApp->setActiveWindow(m_qtWindow);
     }
 
-    if(frameInfo.m_style == ui::layout::frame_manager::STAY_ON_TOP)
+    if(frame_info.m_style == ui::layout::frame_manager::STAY_ON_TOP)
     {
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
-    else if(frameInfo.m_style == ui::layout::frame_manager::MODAL)
+    else if(frame_info.m_style == ui::layout::frame_manager::MODAL)
     {
         m_qtWindow->setWindowModality(Qt::ApplicationModal);
     }
 
-    int sizeX = (frameInfo.m_size.first > 0) ? frameInfo.m_size.first : m_qtWindow->size().width();
-    int sizeY = (frameInfo.m_size.second > 0) ? frameInfo.m_size.second : m_qtWindow->size().height();
+    int size_x = (frame_info.m_size.first > 0) ? frame_info.m_size.first : m_qtWindow->size().width();
+    int size_y = (frame_info.m_size.second > 0) ? frame_info.m_size.second : m_qtWindow->size().height();
 
-    int posX = frameInfo.m_position.first;
-    int posY = frameInfo.m_position.second;
-    QPoint pos(posX, posY);
+    int pos_x = frame_info.m_position.first;
+    int pos_y = frame_info.m_position.second;
+    QPoint pos(pos_x, pos_y);
     const QScreen* screen = QGuiApplication::screenAt(pos);
     if(screen == nullptr)
     {
-        QRect frame_rect(0, 0, sizeX, sizeY);
+        QRect frame_rect(0, 0, size_x, size_y);
         frame_rect.moveCenter(QGuiApplication::primaryScreen()->geometry().center());
         pos = frame_rect.topLeft();
     }
 
-    m_qtWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);
+    m_qtWindow->setGeometry(pos.x(), pos.y(), size_x, size_y);
 
-    this->setState(frameInfo.m_state);
+    this->setState(frame_info.m_state);
 
     auto* qwidget = new QWidget(m_qtWindow);
     m_qtWindow->setCentralWidget(qwidget);
@@ -120,10 +119,10 @@ void frame::createFrame()
     container->setQtContainer(qwidget);
     m_container = container;
 
-    ui::qt::container::widget::sptr frameContainer = ui::qt::container::widget::make();
-    frameContainer->setQtContainer(m_qtWindow);
-    m_frame = frameContainer;
-    m_frame->setVisible(frameInfo.m_visibility);
+    ui::qt::container::widget::sptr frame_container = ui::qt::container::widget::make();
+    frame_container->setQtContainer(m_qtWindow);
+    m_frame = frame_container;
+    m_frame->setVisible(frame_info.m_visibility);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,10 +153,10 @@ void frame::onCloseFrame()
 
 //-----------------------------------------------------------------------------
 
-void frame::setState(FrameState state)
+void frame::setState(FrameState _state)
 {
     // Updates the window state.
-    switch(state)
+    switch(_state)
     {
         case FrameState::ICONIZED:
             m_qtWindow->showMinimized();

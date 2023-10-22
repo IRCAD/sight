@@ -60,7 +60,7 @@ void service_test::tearDown()
     // Clean up after the test run.
     // unregister the services that have not been unregistered because a test failed.
 
-    auto services = sight::service::getServices<service::base>();
+    auto services = sight::service::get_services<service::base>();
     for(const auto& srv : services)
     {
         if(srv->started())
@@ -68,7 +68,7 @@ void service_test::tearDown()
             srv->stop();
         }
 
-        service::unregisterService(srv);
+        service::unregister_service(srv);
     }
 }
 
@@ -86,11 +86,11 @@ void service_test::testServiceConfiguration()
     CPPUNIT_ASSERT_EQUAL(service::base::ConfigurationStatus::CONFIGURED, srv->config_status());
     CPPUNIT_ASSERT_EQUAL(test_service::s_NOT_DEFINED, srv->getOption());
 
-    const std::string OPTION1 = "configuredOption1";
-    const std::string OPTION2 = "configuredOption2";
+    const std::string optio_n1 = "configuredOption1";
+    const std::string optio_n2 = "configuredOption2";
 
     service::config_t config;
-    config.add(test_service::s_OPTION_KEY, OPTION1);
+    config.add(test_service::s_OPTION_KEY, optio_n1);
 
     srv->set_config(config);
     CPPUNIT_ASSERT_EQUAL(service::base::ConfigurationStatus::UNCONFIGURED, srv->config_status());
@@ -98,10 +98,10 @@ void service_test::testServiceConfiguration()
     srv->configure();
 
     CPPUNIT_ASSERT_EQUAL(service::base::ConfigurationStatus::CONFIGURED, srv->config_status());
-    CPPUNIT_ASSERT_EQUAL(OPTION1, srv->getOption());
+    CPPUNIT_ASSERT_EQUAL(optio_n1, srv->getOption());
 
     service::config_t config2;
-    config2.add(test_service::s_OPTION_KEY, OPTION2);
+    config2.add(test_service::s_OPTION_KEY, optio_n2);
 
     CPPUNIT_ASSERT_EQUAL(service::base::ConfigurationStatus::UNCONFIGURED, srv2->config_status());
     CPPUNIT_ASSERT_EQUAL(test_service::s_UNCONFIGURED, srv2->getOption());
@@ -109,23 +109,23 @@ void service_test::testServiceConfiguration()
     srv2->configure(config2);
 
     CPPUNIT_ASSERT_EQUAL(service::base::ConfigurationStatus::CONFIGURED, srv2->config_status());
-    CPPUNIT_ASSERT_EQUAL(OPTION2, srv2->getOption());
+    CPPUNIT_ASSERT_EQUAL(optio_n2, srv2->getOption());
 
     // Test erasing service
-    service::unregisterService(srv);
-    service::unregisterService(srv2);
+    service::unregister_service(srv);
+    service::unregister_service(srv2);
 }
 
 //------------------------------------------------------------------------------
 
 void service_test::testServiceCreationWithMultipleData()
 {
-    const std::string dataKey1 = "data1";
-    const std::string dataKey2 = "data2";
-    const std::string dataKey3 = "data3";
-    data::integer::sptr obj1   = std::make_shared<data::integer>();
-    data::integer::sptr obj2   = std::make_shared<data::integer>();
-    data::integer::sptr obj3   = std::make_shared<data::integer>();
+    const std::string data_key1 = "data1";
+    const std::string data_key2 = "data2";
+    const std::string data_key3 = "data3";
+    data::integer::sptr obj1    = std::make_shared<data::integer>();
+    data::integer::sptr obj2    = std::make_shared<data::integer>();
+    data::integer::sptr obj3    = std::make_shared<data::integer>();
 
     // Test if the object support the service
     CPPUNIT_ASSERT(
@@ -137,41 +137,41 @@ void service_test::testServiceCreationWithMultipleData()
 
     // Test adding service
     service::base::sptr srv = service::add("sight::service::ut::STest2Inouts1Input");
-    srv->set_inout(obj1, dataKey1);
-    CPPUNIT_ASSERT(obj1 == srv->data::has_data::object(dataKey1, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey2, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey3, data::Access::in));
+    srv->set_inout(obj1, data_key1);
+    CPPUNIT_ASSERT(obj1 == srv->data::has_data::object(data_key1, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key2, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key3, data::Access::in));
 
     // Test getting the service object
-    CPPUNIT_ASSERT(srv->inout<data::integer>(dataKey1).lock() == obj1);
+    CPPUNIT_ASSERT(srv->inout<data::integer>(data_key1).lock() == obj1);
 
-    srv->set_inout(obj2, dataKey2, false, false);
-    CPPUNIT_ASSERT(obj2 == srv->data::has_data::object(dataKey2, data::Access::inout));
-
-    // Test getting the service object
-    CPPUNIT_ASSERT(srv->inout<data::integer>(dataKey2).lock() == obj2);
-
-    srv->set_input(obj3, dataKey3);
-    CPPUNIT_ASSERT(obj3 == srv->data::has_data::object(dataKey3, data::Access::in));
+    srv->set_inout(obj2, data_key2, false, false);
+    CPPUNIT_ASSERT(obj2 == srv->data::has_data::object(data_key2, data::Access::inout));
 
     // Test getting the service object
-    CPPUNIT_ASSERT(srv->input<data::integer>(dataKey3).lock() == obj3);
+    CPPUNIT_ASSERT(srv->inout<data::integer>(data_key2).lock() == obj2);
+
+    srv->set_input(obj3, data_key3);
+    CPPUNIT_ASSERT(obj3 == srv->data::has_data::object(data_key3, data::Access::in));
+
+    // Test getting the service object
+    CPPUNIT_ASSERT(srv->input<data::integer>(data_key3).lock() == obj3);
 
     // Test unregistering the objects
-    srv->set_inout(nullptr, dataKey1);
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey1, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(dataKey2, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(dataKey3, data::Access::in));
+    srv->set_inout(nullptr, data_key1);
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key1, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(data_key2, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(data_key3, data::Access::in));
 
-    srv->set_inout(nullptr, dataKey2);
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey1, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey2, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(dataKey3, data::Access::in));
+    srv->set_inout(nullptr, data_key2);
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key1, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key2, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr != srv->data::has_data::object(data_key3, data::Access::in));
 
-    srv->set_input(nullptr, dataKey3);
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey1, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey2, data::Access::inout));
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey3, data::Access::in));
+    srv->set_input(nullptr, data_key3);
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key1, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key2, data::Access::inout));
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key3, data::Access::in));
 
     // Test erasing service
     service::remove(srv);
@@ -181,8 +181,8 @@ void service_test::testServiceCreationWithMultipleData()
 
 void service_test::testServiceCreationWithTemplateMethods()
 {
-    const std::string dataKey = "data1";
-    data::integer::sptr obj   = std::make_shared<data::integer>();
+    const std::string data_key = "data1";
+    data::integer::sptr obj    = std::make_shared<data::integer>();
 
     // Test if the object support the service
     CPPUNIT_ASSERT(
@@ -194,15 +194,15 @@ void service_test::testServiceCreationWithTemplateMethods()
 
     // Test adding service
     auto srv = service::add<service::ut::test_service>("sight::service::ut::STest1Inout");
-    srv->set_inout(obj, dataKey);
-    CPPUNIT_ASSERT(srv->data::has_data::object(dataKey, data::Access::inout));
-    CPPUNIT_ASSERT(obj == srv->data::has_data::object(dataKey, data::Access::inout));
+    srv->set_inout(obj, data_key);
+    CPPUNIT_ASSERT(srv->data::has_data::object(data_key, data::Access::inout));
+    CPPUNIT_ASSERT(obj == srv->data::has_data::object(data_key, data::Access::inout));
 
     // Test getting the service its object
-    CPPUNIT_ASSERT(srv->inout<data::integer>(dataKey).lock() == obj);
+    CPPUNIT_ASSERT(srv->inout<data::integer>(data_key).lock() == obj);
 
-    srv->set_inout(nullptr, dataKey);
-    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(dataKey, data::Access::inout));
+    srv->set_inout(nullptr, data_key);
+    CPPUNIT_ASSERT(nullptr == srv->data::has_data::object(data_key, data::Access::inout));
 
     // Test erasing service
     service::remove(srv);
@@ -212,11 +212,11 @@ void service_test::testServiceCreationWithTemplateMethods()
 
 void service_test::testServiceCreationWithUUID()
 {
-    const std::string myUUID  = "myUUID";
-    const std::string myUUID2 = "myUUID2";
-    const std::string myUUID3 = "myUUID3";
-    const std::string dataKey = "data1";
-    std::size_t nbServices    = 0;
+    const std::string my_uuid   = "myUUID";
+    const std::string my_uui_d2 = "myUUID2";
+    const std::string my_uui_d3 = "myUUID3";
+    const std::string data_key  = "data1";
+    std::size_t nb_services     = 0;
 
     data::integer::sptr obj = std::make_shared<data::integer>();
     service::base::sptr service;
@@ -231,30 +231,30 @@ void service_test::testServiceCreationWithUUID()
     );
 
     // Test adding service
-    service = service::add("sight::service::ut::STest1Inout", myUUID);
+    service = service::add("sight::service::ut::STest1Inout", my_uuid);
     CPPUNIT_ASSERT(service);
-    service->set_inout(obj, dataKey);
+    service->set_inout(obj, data_key);
 
-    service2 = service::add("sight::service::ut::STest1Inout", myUUID2);
+    service2 = service::add("sight::service::ut::STest1Inout", my_uui_d2);
     CPPUNIT_ASSERT(service2);
-    service2->set_inout(obj, dataKey);
+    service2->set_inout(obj, data_key);
 
-    nbServices = 2;
-    CPPUNIT_ASSERT(core::tools::id::exist(myUUID));
-    CPPUNIT_ASSERT(core::tools::id::exist(myUUID2));
+    nb_services = 2;
+    CPPUNIT_ASSERT(core::tools::id::exist(my_uuid));
+    CPPUNIT_ASSERT(core::tools::id::exist(my_uui_d2));
 
     // Test getting the service its object
-    service::base::sptr service2bis = service::get(myUUID2);
+    service::base::sptr service2bis = service::get(my_uui_d2);
     CPPUNIT_ASSERT(service2bis);
-    CPPUNIT_ASSERT(service2bis->inout<data::integer>(dataKey).lock() == obj);
-    CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->get_id());
-    CPPUNIT_ASSERT(!core::tools::id::exist(myUUID3));
-    CPPUNIT_ASSERT_EQUAL(nbServices, sight::service::getServices("sight::service::ut::test_service").size());
+    CPPUNIT_ASSERT(service2bis->inout<data::integer>(data_key).lock() == obj);
+    CPPUNIT_ASSERT_EQUAL(my_uui_d2, service2bis->get_id());
+    CPPUNIT_ASSERT(!core::tools::id::exist(my_uui_d3));
+    CPPUNIT_ASSERT_EQUAL(nb_services, sight::service::get_services("sight::service::ut::test_service").size());
 
     // Test erasing service
     service::remove(service);
-    nbServices--;
-    CPPUNIT_ASSERT_EQUAL(nbServices, sight::service::getServices("sight::service::ut::test_service").size());
+    nb_services--;
+    CPPUNIT_ASSERT_EQUAL(nb_services, sight::service::get_services("sight::service::ut::test_service").size());
     service::remove(service2);
 }
 
@@ -262,7 +262,7 @@ void service_test::testServiceCreationWithUUID()
 
 void service_test::testStartStopUpdate()
 {
-    const std::string myUUID = "myUUID";
+    const std::string my_uuid = "myUUID";
 
     data::integer::sptr obj = std::make_shared<data::integer>();
     service::ut::test_service::sptr service;
@@ -274,7 +274,7 @@ void service_test::testStartStopUpdate()
             "sight::service::ut::test_service"
         )
     );
-    service = service::add<service::ut::test_service>("sight::service::ut::STestNoData", myUUID);
+    service = service::add<service::ut::test_service>("sight::service::ut::STestNoData", my_uuid);
     CPPUNIT_ASSERT(service);
 
     // Service must be stop when it is created
@@ -296,7 +296,7 @@ void service_test::testStartStopUpdate()
     CPPUNIT_ASSERT(!service->started());
 
     // Erase Service
-    service::unregisterService(service);
+    service::unregister_service(service);
 }
 
 //------------------------------------------------------------------------------
@@ -374,41 +374,41 @@ TestServiceSignals::~TestServiceSignals()
 
 void service_test::testCommunication()
 {
-    const std::string EVENT        = "EVENT";
-    const std::string dataKey      = "data1";
-    const std::string service1UUID = "service1UUID";
-    const std::string service2UUID = "service2UUID";
+    const std::string event         = "EVENT";
+    const std::string data_key      = "data1";
+    const std::string service1_uuid = "service1UUID";
+    const std::string service2_uuid = "service2UUID";
 
     data::composite::sptr obj = std::make_shared<data::composite>();
     service::ut::test_service::sptr service1;
     service::ut::test_service::sptr service2;
 
     // Add services
-    service::add("sight::service::ut::STest1Input", service1UUID);
-    service1 = std::dynamic_pointer_cast<service::ut::test_srv>(service::get(service1UUID));
+    service::add("sight::service::ut::STest1Input", service1_uuid);
+    service1 = std::dynamic_pointer_cast<service::ut::test_srv>(service::get(service1_uuid));
     CPPUNIT_ASSERT(service1);
-    service1->set_input(obj, dataKey, true);
+    service1->set_input(obj, data_key, true);
 
-    service2 = service::add<service::ut::test_srv>("sight::service::ut::STest1Input", service2UUID);
+    service2 = service::add<service::ut::test_srv>("sight::service::ut::STest1Input", service2_uuid);
     CPPUNIT_ASSERT(service2);
-    service2->set_input(obj, dataKey, true);
+    service2->set_input(obj, data_key, true);
 
     // Object used to check service signals
     TestServiceSignals::sptr receiver1 = std::make_shared<TestServiceSignals>();
     TestServiceSignals::sptr receiver2 = std::make_shared<TestServiceSignals>();
 
-    core::com::helper::sig_slot_connection comHelper;
-    comHelper.connect(service1, service::signals::STARTED, receiver1, "start");
-    comHelper.connect(service1, service::signals::UPDATED, receiver1, "update");
-    comHelper.connect(service1, service::signals::STOPPED, receiver1, "stop");
+    core::com::helper::sig_slot_connection com_helper;
+    com_helper.connect(service1, service::signals::STARTED, receiver1, "start");
+    com_helper.connect(service1, service::signals::UPDATED, receiver1, "update");
+    com_helper.connect(service1, service::signals::STOPPED, receiver1, "stop");
 
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_updated);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
 
-    comHelper.connect(service2, service::signals::STARTED, receiver2, "start");
-    comHelper.connect(service2, service::signals::UPDATED, receiver2, "update");
-    comHelper.connect(service2, service::signals::STOPPED, receiver2, "stop");
+    com_helper.connect(service2, service::signals::STARTED, receiver2, "start");
+    com_helper.connect(service2, service::signals::UPDATED, receiver2, "update");
+    com_helper.connect(service2, service::signals::STOPPED, receiver2, "stop");
 
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_started);
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_updated);
@@ -429,7 +429,7 @@ void service_test::testCommunication()
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
 
     // Register communication channel
-    comHelper.connect(
+    com_helper.connect(
         service1,
         service::ut::test_srv::signals::MSG_SENT,
         service2,
@@ -444,7 +444,7 @@ void service_test::testCommunication()
             service1->signal<service::ut::test_srv::signals::msg_sent_t>(service::ut::test_srv::signals::MSG_SENT);
         auto slot = service1->slot(service::slots::UPDATE);
         core::com::connection::blocker block(sig->get_connection(slot));
-        sig->async_emit(EVENT);
+        sig->async_emit(event);
     }
 
     service1->update().wait();
@@ -471,10 +471,10 @@ void service_test::testCommunication()
     CPPUNIT_ASSERT_EQUAL(true, receiver2->m_updated);
     CPPUNIT_ASSERT_EQUAL(true, receiver2->m_stopped);
 
-    comHelper.disconnect();
+    com_helper.disconnect();
 
-    service::unregisterService(service1);
-    service::unregisterService(service2);
+    service::unregister_service(service1);
+    service::unregister_service(service2);
 }
 
 //------------------------------------------------------------------------------
@@ -498,17 +498,17 @@ void service_test::startStopUpdateExceptions(test_service::sptr _service)
     CPPUNIT_ASSERT(_service->stopped());
 
     // Check we can catch the exception
-    bool exceptionCaught = false;
+    bool exception_caught = false;
     try
     {
         _service->start().get();
     }
     catch(const core::exception& e)
     {
-        exceptionCaught = true;
+        exception_caught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("start error"), std::string(e.what()));
     }
-    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(exception_caught);
     CPPUNIT_ASSERT(_service->stopped());
 
     // Start service again
@@ -524,17 +524,17 @@ void service_test::startStopUpdateExceptions(test_service::sptr _service)
 
     // Update service with exception caught
     _service->setRaiseException(true);
-    exceptionCaught = false;
+    exception_caught = false;
     try
     {
         _service->update().get();
     }
     catch(core::exception& e)
     {
-        exceptionCaught = true;
+        exception_caught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
     }
-    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(exception_caught);
     CPPUNIT_ASSERT(!_service->getIsUpdated());
 
     // Update service without exception caught
@@ -548,17 +548,17 @@ void service_test::startStopUpdateExceptions(test_service::sptr _service)
 
     // Stop service with exception caught
     _service->setRaiseException(true);
-    exceptionCaught = false;
+    exception_caught = false;
     try
     {
         _service->stop().get();
     }
     catch(core::exception& e)
     {
-        exceptionCaught = true;
+        exception_caught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));
     }
-    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(exception_caught);
     CPPUNIT_ASSERT(_service->started());
 
     // Update service without exception caught
@@ -570,7 +570,7 @@ void service_test::startStopUpdateExceptions(test_service::sptr _service)
     CPPUNIT_ASSERT(_service->stopped());
 
     // Erase Service
-    service::unregisterService(_service);
+    service::unregister_service(_service);
 }
 
 //------------------------------------------------------------------------------
@@ -605,16 +605,16 @@ void service_test::testWithInAndOut()
         data::Access::out
     );
     CPPUNIT_ASSERT(output);
-    data::integer::csptr outInteger = std::dynamic_pointer_cast<const data::integer>(output);
-    CPPUNIT_ASSERT(outInteger);
+    data::integer::csptr out_integer = std::dynamic_pointer_cast<const data::integer>(output);
+    CPPUNIT_ASSERT(out_integer);
 
-    CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger->value());
+    CPPUNIT_ASSERT_EQUAL(obj[0]->value(), out_integer->value());
 
     {
-        auto outInteger2 = service->output<data::integer>(service::ut::test_service_with_data::s_OUTPUT).lock();
-        CPPUNIT_ASSERT(outInteger2);
+        auto out_integer2 = service->output<data::integer>(service::ut::test_service_with_data::s_OUTPUT).lock();
+        CPPUNIT_ASSERT(out_integer2);
 
-        CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger2->value());
+        CPPUNIT_ASSERT_EQUAL(obj[0]->value(), out_integer2->value());
     }
 
     // Test index access
@@ -623,18 +623,18 @@ void service_test::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(obj[1]->value(), service->m_inoutGroup[1].lock()->value());
 
     // Test iterator access
-    auto itObj = obj.begin();
+    auto it_obj = obj.begin();
     for(const auto& data : service->m_inoutGroup)
     {
-        auto i = (*itObj)->value();
+        auto i = (*it_obj)->value();
         CPPUNIT_ASSERT_EQUAL(i, data.second->lock()->value());
-        ++itObj;
+        ++it_obj;
     }
 
     service->stop().wait();
 
-    auto nullInteger = service->output<data::integer>(service::ut::test_service_with_data::s_OUTPUT);
-    CPPUNIT_ASSERT(nullInteger.expired());
+    auto null_integer = service->output<data::integer>(service::ut::test_service_with_data::s_OUTPUT);
+    CPPUNIT_ASSERT(null_integer.expired());
 
     CPPUNIT_ASSERT(
         nullptr
@@ -645,7 +645,7 @@ void service_test::testWithInAndOut()
         != service->data::has_data::object(service::ut::test_service_with_data::s_INPUT, data::Access::in)
     );
 
-    service::unregisterService(service);
+    service::unregister_service(service);
 }
 
 //------------------------------------------------------------------------------

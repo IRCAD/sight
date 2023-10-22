@@ -69,79 +69,79 @@ void mesh_list::starting()
     this->initialize();
 
     // Get the inputs.
-    const auto transformInOut = m_transform.lock();
-    const auto imageInput     = m_texture.lock();
+    const auto transform_in_out = m_transform.lock();
+    const auto image_input      = m_texture.lock();
 
     // initialise N meshes adaptor
     for(std::size_t i = 0 ; i < m_capacity ; ++i)
     {
         // Matrix and image are copied because the input ones will change. Mesh is not copied because we want to use
         // the same mesh of all the adaptors
-        const auto transform = data::matrix4::copy(transformInOut.get_shared());
-        const auto image     = data::image::copy(imageInput.get_shared());
+        const auto transform = data::matrix4::copy(transform_in_out.get_shared());
+        const auto image     = data::image::copy(image_input.get_shared());
 
         // Create adaptors configurations
-        const std::string transformID = this->get_id() + transform->get_id();
+        const std::string transform_id = this->get_id() + transform->get_id();
         service::config_t config;
         config.add("config.<xmlattr>.layer", m_layerID);
-        config.add("config.<xmlattr>." + std::string(s_TRANSFORM_INPUT), transformID);
+        config.add("config.<xmlattr>." + std::string(s_TRANSFORM_INPUT), transform_id);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
-        const sight::viz::scene3d::adaptor::sptr transformAdaptor =
+        const sight::viz::scene3d::adaptor::sptr transform_adaptor =
             this->registerService<sight::viz::scene3d::adaptor>(
                 "sight::module::viz::scene3d::adaptor::transform"
             );
 
-        transformAdaptor->setLayerID(m_layerID);
-        transformAdaptor->setRenderService(this->getRenderService());
+        transform_adaptor->setLayerID(m_layerID);
+        transform_adaptor->setRenderService(this->getRenderService());
 
-        transformAdaptor->set_inout(transform, "transform", true);
+        transform_adaptor->set_inout(transform, "transform", true);
 
-        transformAdaptor->configure(config);
-        transformAdaptor->start();
+        transform_adaptor->configure(config);
+        transform_adaptor->start();
 
-        SIGHT_ASSERT("transform is not started", transformAdaptor->started());
+        SIGHT_ASSERT("transform is not started", transform_adaptor->started());
 
         // Create the texture adaptor
-        const sight::viz::scene3d::adaptor::sptr textureAdaptor =
+        const sight::viz::scene3d::adaptor::sptr texture_adaptor =
             this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::texture");
 
-        service::config_t textureConfig = config;
-        textureConfig.add("config.<xmlattr>.textureName", image->get_id());
-        textureConfig.add("config.<xmlattr>.useAlpha", "true");
+        service::config_t texture_config = config;
+        texture_config.add("config.<xmlattr>.textureName", image->get_id());
+        texture_config.add("config.<xmlattr>.useAlpha", "true");
 
-        textureAdaptor->setLayerID(m_layerID);
-        textureAdaptor->setRenderService(this->getRenderService());
+        texture_adaptor->setLayerID(m_layerID);
+        texture_adaptor->setRenderService(this->getRenderService());
 
-        textureAdaptor->set_input(image, "image", false);
+        texture_adaptor->set_input(image, "image", false);
 
-        textureAdaptor->configure(textureConfig);
-        textureAdaptor->start();
-        SIGHT_ASSERT("texture is not started", textureAdaptor->started());
+        texture_adaptor->configure(texture_config);
+        texture_adaptor->start();
+        SIGHT_ASSERT("texture is not started", texture_adaptor->started());
 
         // Creates the mesh adaptor.
-        const sight::viz::scene3d::adaptor::sptr meshAdaptor =
+        const sight::viz::scene3d::adaptor::sptr mesh_adaptor =
             this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::mesh");
 
-        service::config_t meshConfig = config;
-        meshConfig.add("config.<xmlattr>.textureName", image->get_id());
+        service::config_t mesh_config = config;
+        mesh_config.add("config.<xmlattr>.textureName", image->get_id());
 
-        meshAdaptor->setLayerID(m_layerID);
-        meshAdaptor->setRenderService(this->getRenderService());
+        mesh_adaptor->setLayerID(m_layerID);
+        mesh_adaptor->setRenderService(this->getRenderService());
 
         {
             const auto mesh = m_mesh.lock();
-            meshAdaptor->set_input(mesh.get_shared(), "mesh", true);
+            mesh_adaptor->set_input(mesh.get_shared(), "mesh", true);
         }
 
-        meshAdaptor->configure(meshConfig);
-        meshAdaptor->updateVisibility(false);
-        meshAdaptor->start();
-        SIGHT_ASSERT("mesh is not started", meshAdaptor->started());
+        mesh_adaptor->configure(mesh_config);
+        mesh_adaptor->updateVisibility(false);
+        mesh_adaptor->start();
+        SIGHT_ASSERT("mesh is not started", mesh_adaptor->started());
 
         // Store data.
-        MeshInstance instance {transform, image, transformAdaptor, meshAdaptor, textureAdaptor};
+        MeshInstance instance {transform, image, transform_adaptor, mesh_adaptor, texture_adaptor};
         m_meshes.push_back(instance);
     }
 }
@@ -209,19 +209,19 @@ void mesh_list::add()
 
         instance.m_isEnabled = true;
 
-        const sight::viz::scene3d::adaptor::sptr textureAdp = instance.m_texture;
+        const sight::viz::scene3d::adaptor::sptr texture_adp = instance.m_texture;
         {
-            const auto image        = textureAdp->input<data::image>("image").lock();
-            const auto textureInput = m_texture.lock();
+            const auto image         = texture_adp->input<data::image>("image").lock();
+            const auto texture_input = m_texture.lock();
 
-            if(m_generateAlpha && textureInput->getType() == core::type::UINT8
-               && (textureInput->getPixelFormat() == data::image::PixelFormat::GRAY_SCALE
-                   || textureInput->numComponents() == 1))
+            if(m_generateAlpha && texture_input->getType() == core::type::UINT8
+               && (texture_input->getPixelFormat() == data::image::PixelFormat::GRAY_SCALE
+                   || texture_input->numComponents() == 1))
             {
                 // transform the image into RGBA with a transparent texture
-                if(textureInput->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
+                if(texture_input->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
                 {
-                    instance.m_image->copyInformation(textureInput.get_shared());
+                    instance.m_image->copyInformation(texture_input.get_shared());
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->getType(),
@@ -229,27 +229,27 @@ void mesh_list::add()
                     );
                 }
 
-                auto inItr = textureInput->begin<std::uint8_t>();
-                auto inEnd = textureInput->end<std::uint8_t>();
-                auto itr   = instance.m_image->begin<data::iterator::rgba>();
+                auto in_itr = texture_input->begin<std::uint8_t>();
+                auto in_end = texture_input->end<std::uint8_t>();
+                auto itr    = instance.m_image->begin<data::iterator::rgba>();
 
-                for( ; inItr != inEnd ; ++inItr, ++itr)
+                for( ; in_itr != in_end ; ++in_itr, ++itr)
                 {
-                    itr->r = *inItr;
-                    itr->g = *inItr;
-                    itr->b = *inItr;
-                    itr->a = *inItr;
+                    itr->r = *in_itr;
+                    itr->g = *in_itr;
+                    itr->b = *in_itr;
+                    itr->a = *in_itr;
                 }
             }
-            else if(m_generateAlpha && textureInput->getType() == core::type::UINT8
-                    && (textureInput->getPixelFormat() == data::image::PixelFormat::RGB
-                        || textureInput->numComponents() == 3))
+            else if(m_generateAlpha && texture_input->getType() == core::type::UINT8
+                    && (texture_input->getPixelFormat() == data::image::PixelFormat::RGB
+                        || texture_input->numComponents() == 3))
             {
                 // transform the image into RGBA with a transparent texture
 
-                if(textureInput->getAllocatedSizeInBytes() * 4 / 3 != instance.m_image->getAllocatedSizeInBytes())
+                if(texture_input->getAllocatedSizeInBytes() * 4 / 3 != instance.m_image->getAllocatedSizeInBytes())
                 {
-                    instance.m_image->copyInformation(textureInput.get_shared());
+                    instance.m_image->copyInformation(texture_input.get_shared());
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->getType(),
@@ -257,40 +257,40 @@ void mesh_list::add()
                     );
                 }
 
-                auto inItr = textureInput->begin<data::iterator::rgb>();
-                auto inEnd = textureInput->end<data::iterator::rgb>();
-                auto itr   = instance.m_image->begin<data::iterator::rgba>();
+                auto in_itr = texture_input->begin<data::iterator::rgb>();
+                auto in_end = texture_input->end<data::iterator::rgb>();
+                auto itr    = instance.m_image->begin<data::iterator::rgba>();
 
-                for( ; inItr != inEnd ; ++inItr, ++itr)
+                for( ; in_itr != in_end ; ++in_itr, ++itr)
                 {
-                    itr->r = inItr->r;
-                    itr->g = inItr->g;
-                    itr->b = inItr->b;
+                    itr->r = in_itr->r;
+                    itr->g = in_itr->g;
+                    itr->b = in_itr->b;
                     // luminance
-                    itr->a = static_cast<std::uint8_t>(0.2126 * inItr->r + 0.7152 * inItr->g + 0.0722 * inItr->b);
+                    itr->a = static_cast<std::uint8_t>(0.2126 * in_itr->r + 0.7152 * in_itr->g + 0.0722 * in_itr->b);
                 }
             }
             else
             {
-                instance.m_image->deep_copy(textureInput.get_shared());
+                instance.m_image->deep_copy(texture_input.get_shared());
             }
         }
-        textureAdp->update();
+        texture_adp->update();
 
         // update the texture
-        const sight::viz::scene3d::adaptor::sptr transformAdp = instance.m_transform;
+        const sight::viz::scene3d::adaptor::sptr transform_adp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->inout<data::matrix4>("transform").lock();
+            const auto transform = transform_adp->inout<data::matrix4>("transform").lock();
 
-            const auto transformInOut = m_transform.lock();
-            transform->deep_copy(transformInOut.get_shared());
+            const auto transform_in_out = m_transform.lock();
+            transform->deep_copy(transform_in_out.get_shared());
         }
-        transformAdp->update();
+        transform_adp->update();
 
         // update mesh adaptor visibility
-        const sight::viz::scene3d::adaptor::sptr meshAdp = instance.m_mesh;
-        meshAdp->updateVisibility(m_isVisible);
+        const sight::viz::scene3d::adaptor::sptr mesh_adp = instance.m_mesh;
+        mesh_adp->updateVisibility(m_isVisible);
     }
 
     ++m_dropCount;

@@ -48,53 +48,53 @@ public:
     CORE_API barrier_dump();
 
     CORE_API void allocation_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) override;
 
     CORE_API void set_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _size
     ) override;
 
     CORE_API void reallocate_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer,
-        buffer_info::size_t new_size
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer,
+        buffer_info::size_t _new_size
     ) override;
 
     CORE_API void destroy_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void lock_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
     CORE_API void unlock_request(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void dump_success(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
     CORE_API void restore_success(
-        buffer_info& info,
-        core::memory::buffer_manager::const_buffer_ptr_t buffer
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
     CORE_API void refresh() override;
 
     //------------------------------------------------------------------------------
 
-    void set_barrier(std::size_t barrier)
+    void set_barrier(std::size_t _barrier)
     {
-        m_barrier = barrier;
+        m_barrier = _barrier;
     }
 
     //------------------------------------------------------------------------------
@@ -104,8 +104,8 @@ public:
         return m_barrier;
     }
 
-    CORE_API std::string get_param(const std::string& name, bool* ok = nullptr) const override;
-    CORE_API bool set_param(const std::string& name, const std::string& value) override;
+    CORE_API std::string get_param(const std::string& _name, bool* _ok = nullptr) const override;
+    CORE_API bool set_param(const std::string& _name, const std::string& _value) override;
     CORE_API const core::memory::policy::base::param_names_type& get_param_names() const override;
 
 protected:
@@ -113,7 +113,7 @@ protected:
     CORE_API std::size_t get_total_alive() const;
     CORE_API bool is_barrier_crossed() const;
 
-    static CORE_API std::size_t dump(std::size_t nb_of_bytes);
+    static CORE_API std::size_t dump(std::size_t _nb_of_bytes);
 
     CORE_API void apply();
 

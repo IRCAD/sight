@@ -23,9 +23,9 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/factory/R2VBRenderable.hpp"
-#include "viz/scene3d/R2VBRenderable.hpp"
-#include "viz/scene3d/Texture.hpp"
+#include "viz/scene3d/factory/r2vb_renderable.hpp"
+#include "viz/scene3d/r2vb_renderable.hpp"
+#include "viz/scene3d/texture.hpp"
 #include "viz/scene3d/transfer_function.hpp"
 
 #include <data/image.hpp>
@@ -55,7 +55,7 @@ namespace sight::viz::scene3d::vr
  * This is all done on the GPU using shaders and R2VB making it quite efficient.
  * The geometry needs to be recomputed when the TF changes or when the whole image changes.
  */
-class VIZ_SCENE3D_CLASS_API grid_proxy_geometry : public R2VBRenderable
+class VIZ_SCENE3D_CLASS_API grid_proxy_geometry : public r2vb_renderable
 {
 public:
 
@@ -63,15 +63,15 @@ public:
     //As the object must be created through Ogre::...::createMovableObject, the constructor cannot be called directly
     static VIZ_SCENE3D_API grid_proxy_geometry* make(
         const std::string& _name,
-        Ogre::SceneManager* _sceneManager,
-        const viz::scene3d::Texture::sptr& _3DImageTexture,
-        const viz::scene3d::Texture::sptr& _maskTexture,
+        Ogre::SceneManager* _scene_manager,
+        const viz::scene3d::texture::sptr& _3_d_image_texture,
+        const viz::scene3d::texture::sptr& _mask_texture,
         const transfer_function::sptr& _tf,
-        const std::string& _mtlName
+        const std::string& _mtl_name
     );
 
     /// Constructor, should never be called directly.
-    grid_proxy_geometry(const Ogre::String& name);
+    grid_proxy_geometry(const Ogre::String& _name);
 
     /// Destructor, frees resources if they have been allocated.
     VIZ_SCENE3D_API ~grid_proxy_geometry() override;
@@ -84,16 +84,16 @@ public:
 
     /// Clip the proxy geometry. Recomputes the geometry.
     /// @pre Clipping box coordinates must be clamped to the volume boundaries.
-    VIZ_SCENE3D_API void clipGrid(const Ogre::AxisAlignedBox& _clippingBox);
+    VIZ_SCENE3D_API void clipGrid(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Get the object's type as a string.
     VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void set3DImageTexture(const viz::scene3d::Texture::sptr& _texture);
+    VIZ_SCENE3D_API void set3DImageTexture(const viz::scene3d::texture::sptr& _texture);
 
     /// Sets the mask texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void setMaskTexture(const viz::scene3d::Texture::sptr& _texture);
+    VIZ_SCENE3D_API void setMaskTexture(const viz::scene3d::texture::sptr& _texture);
 
 private:
 
@@ -134,10 +134,10 @@ private:
     static constexpr std::array<int, 3> s_brickSize {{8, 8, 8}};
 
     /// image from which we define a grid.
-    viz::scene3d::Texture::sptr m_3DImageTexture {nullptr};
+    viz::scene3d::texture::sptr m_3DImageTexture {nullptr};
 
     /// image from which we define a grid.
-    viz::scene3d::Texture::sptr m_maskTexture {nullptr};
+    viz::scene3d::texture::sptr m_maskTexture {nullptr};
 
     /// Transfer function to be applied to the image.
     transfer_function::wptr m_gpuTF;
@@ -151,9 +151,9 @@ private:
  * @brief factory class generating grid_proxy_geometry objects.
  *
  * This is absolutely necessary for all ogre classes inheriting from Ogre::MovableObject.
- * The factory has to be registered at the ogre root. (@see Utils::getOgreRoot)
+ * The factory has to be registered at the ogre root. (@see utils::getOgreRoot)
  */
-class grid_proxy_geometry_factory : public viz::scene3d::factory::R2VBRenderable
+class grid_proxy_geometry_factory : public viz::scene3d::factory::r2vb_renderable
 {
 public:
 
@@ -189,12 +189,12 @@ protected:
 
     /// Produces a "GridGeometryObject" object.
     VIZ_SCENE3D_API Ogre::MovableObject* createInstanceImpl(
-        const Ogre::String& name,
+        const Ogre::String& _name,
         const Ogre::NameValuePairList*
         /*params*/
     ) override
     {
-        return new viz::scene3d::vr::grid_proxy_geometry(name);
+        return new viz::scene3d::vr::grid_proxy_geometry(_name);
     }
 };
 
@@ -208,14 +208,14 @@ inline const Ogre::String& grid_proxy_geometry::getMovableType() const
 
 //------------------------------------------------------------------------------
 
-inline void grid_proxy_geometry::set3DImageTexture(const viz::scene3d::Texture::sptr& _texture)
+inline void grid_proxy_geometry::set3DImageTexture(const viz::scene3d::texture::sptr& _texture)
 {
     m_3DImageTexture = _texture;
 }
 
 //------------------------------------------------------------------------------
 
-inline void grid_proxy_geometry::setMaskTexture(const viz::scene3d::Texture::sptr& _texture)
+inline void grid_proxy_geometry::setMaskTexture(const viz::scene3d::texture::sptr& _texture)
 {
     m_maskTexture = _texture;
 }

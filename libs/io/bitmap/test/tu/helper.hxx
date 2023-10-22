@@ -24,7 +24,7 @@
 #include <core/tools/system.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/bitmap/Writer.hpp>
@@ -44,16 +44,16 @@ namespace sight::io::bitmap::ut
 
 //------------------------------------------------------------------------------
 
-inline static data::image::sptr getSyntheticImage(
-    std::optional<std::uint32_t> seed = std::nullopt,
-    core::type type                   = core::type::UINT8,
-    data::image::PixelFormat format   = data::image::RGB
+inline static data::image::sptr get_synthetic_image(
+    std::optional<std::uint32_t> _seed = std::nullopt,
+    core::type _type                   = core::type::UINT8,
+    data::image::PixelFormat _format   = data::image::RGB
 )
 {
     using key_t = std::tuple<std::optional<std::uint32_t>, core::type, data::image::PixelFormat>;
     static std::map<key_t, data::image::sptr> s_generated;
 
-    const key_t key = std::make_tuple(seed, type, format);
+    const key_t key = std::make_tuple(_seed, _type, _format);
 
     if(const auto& it = s_generated.find(key); it == s_generated.end())
     {
@@ -65,9 +65,9 @@ inline static data::image::sptr getSyntheticImage(
             {256, 256, 0},
             {0, 0, 0},
             {0, 0, 0},
-            type,
-            format,
-            seed
+            _type,
+            _format,
+            _seed
         );
 
         // de-randomize a bit the image to make it easier to compare and to workaround a strange bug with pure synthetic
@@ -99,23 +99,23 @@ inline static data::image::sptr getSyntheticImage(
 
 //------------------------------------------------------------------------------
 
-inline static cv::Mat imageToMat(const data::image::sptr& image, bool clone = true)
+inline static cv::Mat image_to_mat(const data::image::sptr& _image, bool _clone = true)
 {
     // Convert origin to cv::Mat
-    const auto dump_lock = image->dump_lock();
-    const auto& sizes    = image->size();
+    const auto dump_lock = _image->dump_lock();
+    const auto& sizes    = _image->size();
     auto mat             = cv::Mat(
         std::vector<int> {int(sizes[1]), int(sizes[0])},
-        io::opencv::type::toCv(image->getType(), image->numComponents()),
-        image->buffer()
+        io::opencv::type::toCv(_image->getType(), _image->numComponents()),
+        _image->buffer()
     );
 
-    if(clone)
+    if(_clone)
     {
         mat = mat.clone();
     }
 
-    switch(image->getPixelFormat())
+    switch(_image->getPixelFormat())
     {
         case data::image::PixelFormat::RGB:
             cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
@@ -135,13 +135,13 @@ inline static cv::Mat imageToMat(const data::image::sptr& image, bool clone = tr
 
 //------------------------------------------------------------------------------
 
-inline static data::image::sptr matToImage(cv::Mat& mat, bool clone = true)
+inline static data::image::sptr mat_to_image(cv::Mat& _mat, bool _clone = true)
 {
     auto image           = std::make_shared<data::image>();
     const auto dump_lock = image->dump_lock();
 
     cv::Mat mat_copy;
-    cv::Mat& mat_ref = clone ? (mat_copy = mat.clone()) : mat;
+    cv::Mat& mat_ref = _clone ? (mat_copy = _mat.clone()) : _mat;
 
     const auto cv_type = io::opencv::type::fromCv(mat_ref.type());
 
@@ -160,31 +160,31 @@ inline static data::image::sptr matToImage(cv::Mat& mat, bool clone = true)
             break;
     }
 
-    io::opencv::image::copyFromCv(*image, mat_ref);
+    io::opencv::image::copy_from_cv(*image, mat_ref);
 
-    sight::data::helper::MedicalImage::checkImageSliceIndex(image);
+    sight::data::helper::medical_image::check_image_slice_index(image);
 
     return image;
 }
 
 //------------------------------------------------------------------------------
 
-inline static data::image::sptr readImage(const std::filesystem::path& path)
+inline static data::image::sptr read_image(const std::filesystem::path& _path)
 {
-    CPPUNIT_ASSERT(std::filesystem::exists(path) && std::filesystem::is_regular_file(path));
+    CPPUNIT_ASSERT(std::filesystem::exists(_path) && std::filesystem::is_regular_file(_path));
 
-    auto mat = cv::imread(path.string(), cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
-    return matToImage(mat, false);
+    auto mat = cv::imread(_path.string(), cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
+    return mat_to_image(mat, false);
 }
 
 //------------------------------------------------------------------------------
 
 // Borrowed from openCV sample
-inline static double computePSNR(const data::image::sptr& expected, const data::image::sptr& actual)
+inline static double compute_psnr(const data::image::sptr& _expected, const data::image::sptr& _actual)
 {
     // Convert origin to cv::Mat
-    const cv::Mat& expected_mat = imageToMat(expected);
-    const cv::Mat& actual_mat   = imageToMat(actual);
+    const cv::Mat& expected_mat = image_to_mat(_expected);
+    const cv::Mat& actual_mat   = image_to_mat(_actual);
 
     CPPUNIT_ASSERT(!expected_mat.empty() && !actual_mat.empty());
     CPPUNIT_ASSERT(expected_mat.rows == actual_mat.rows);
@@ -195,16 +195,16 @@ inline static double computePSNR(const data::image::sptr& expected, const data::
     cv::subtract(expected_mat, actual_mat, compute_mat);
     cv::multiply(compute_mat, compute_mat, compute_mat);
 
-    const double max_value = std::pow(2, expected->getType().size() * 8) - 1;
+    const double max_value = std::pow(2, _expected->getType().size() * 8) - 1;
 
     return 10.0 * log10(max_value * max_value / cv::mean(compute_mat).val[0]);
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string modeToString(const Writer::Mode& mode)
+inline static std::string mode_to_string(const Writer::Mode& _mode)
 {
-    switch(mode)
+    switch(_mode)
     {
         case Writer::Mode::BEST:
             return "BEST";
@@ -219,9 +219,9 @@ inline static std::string modeToString(const Writer::Mode& mode)
 
 //------------------------------------------------------------------------------
 
-inline static std::string pixelFormatToString(const data::image::PixelFormat& format)
+inline static std::string pixel_format_to_string(const data::image::PixelFormat& _format)
 {
-    switch(format)
+    switch(_format)
     {
         case data::image::PixelFormat::RGB:
             return "RGB";
@@ -248,24 +248,24 @@ inline static std::string pixelFormatToString(const data::image::PixelFormat& fo
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<std::string, std::string> backendToString(const Backend& backend)
+inline static std::pair<std::string, std::string> backend_to_string(const Backend& _backend)
 {
     auto backend_string =
-        backend == Backend::LIBJPEG
+        _backend == Backend::LIBJPEG
         ? std::make_pair(std::string("LIBJPEG"), std::string(".jpg"))
-        : backend == Backend::LIBTIFF
+        : _backend == Backend::LIBTIFF
         ? std::make_pair(std::string("LIBTIFF"), std::string(".tiff"))
-        : backend == Backend::LIBPNG
+        : _backend == Backend::LIBPNG
         ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
-        : backend == Backend::OPENJPEG
+        : _backend == Backend::OPENJPEG
         ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
-        : backend == Backend::OPENJPEG_J2K
+        : _backend == Backend::OPENJPEG_J2K
         ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
-        : backend == Backend::NVJPEG
+        : _backend == Backend::NVJPEG
         ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
-        : backend == Backend::NVJPEG2K
+        : _backend == Backend::NVJPEG2K
         ? std::make_pair(std::string("NVJPEG2K"), std::string(".jp2"))
-        : backend == Backend::NVJPEG2K_J2K
+        : _backend == Backend::NVJPEG2K_J2K
         ? std::make_pair(std::string("NVJPEG2K"), std::string(".j2k"))
         : std::make_pair(std::string("DEFAULT"), std::string(".tiff"));
 
@@ -274,10 +274,10 @@ inline static std::pair<std::string, std::string> backendToString(const Backend&
 
 //------------------------------------------------------------------------------
 
-inline static std::string fileSuffix(const Backend& backend, const Writer::Mode& mode)
+inline static std::string file_suffix(const Backend& _backend, const Writer::Mode& _mode)
 {
-    const auto [backend_string, ext_string] = backendToString(backend);
-    const std::string mode_string = modeToString(mode);
+    const auto [backend_string, ext_string] = backend_to_string(_backend);
+    const std::string mode_string = mode_to_string(_mode);
 
     return "_" + backend_string + "_" + mode_string + ext_string;
 }

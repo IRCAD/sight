@@ -65,9 +65,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setLocalApplicationTitle(const std::string& localApplicationTitle)
+    void setLocalApplicationTitle(const std::string& _local_application_title)
     {
-        m_localApplicationTitle = localApplicationTitle;
+        m_localApplicationTitle = _local_application_title;
     }
 
     /**  @} */
@@ -82,9 +82,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPacsHostName(const std::string& pacsHostName)
+    void setPacsHostName(const std::string& _pacs_host_name)
     {
-        m_pacsHostName = pacsHostName;
+        m_pacsHostName = _pacs_host_name;
     }
 
     /**  @} */
@@ -99,9 +99,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPacsApplicationTitle(const std::string& pacsApplicationTitle)
+    void setPacsApplicationTitle(const std::string& _pacs_application_title)
     {
-        m_pacsApplicationTitle = pacsApplicationTitle;
+        m_pacsApplicationTitle = _pacs_application_title;
     }
 
     /**  @} */
@@ -116,9 +116,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPacsApplicationPort(const std::uint16_t& pacsApplicationPort)
+    void setPacsApplicationPort(const std::uint16_t& _pacs_application_port)
     {
-        m_pacsApplicationPort = pacsApplicationPort;
+        m_pacsApplicationPort = _pacs_application_port;
     }
 
     /**  @} */
@@ -133,9 +133,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setMoveApplicationTitle(const std::string& moveApplicationTitle)
+    void setMoveApplicationTitle(const std::string& _move_application_title)
     {
-        m_moveApplicationTitle = moveApplicationTitle;
+        m_moveApplicationTitle = _move_application_title;
     }
 
     /**  @} */
@@ -150,9 +150,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setMoveApplicationPort(std::uint16_t moveApplicationPort)
+    void setMoveApplicationPort(std::uint16_t _move_application_port)
     {
-        m_moveApplicationPort = moveApplicationPort;
+        m_moveApplicationPort = _move_application_port;
     }
 
     /**  @} */
@@ -167,9 +167,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setRetrieveMethod(RETRIEVE_METHOD retrieveMethod)
+    void setRetrieveMethod(RETRIEVE_METHOD _retrieve_method)
     {
-        m_retrieveMethod = retrieveMethod;
+        m_retrieveMethod = _retrieve_method;
     }
 
 /**  @} */
@@ -181,7 +181,7 @@ protected:
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& source) override;
+    IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Local application title
     std::string m_localApplicationTitle;

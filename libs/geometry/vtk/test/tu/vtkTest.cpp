@@ -49,9 +49,9 @@ void vtkTest::tearDown()
 
 void vtkTest::computeCenterOfMass()
 {
-    sight::data::mesh::sptr mesh             = std::make_shared<sight::data::mesh>();
-    const auto dumpLock                      = mesh->dump_lock();
-    const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
+    sight::data::mesh::sptr mesh               = std::make_shared<sight::data::mesh>();
+    const auto dump_lock                       = mesh->dump_lock();
+    const std::array<double, 3> center_of_mass = {0.5, 1.5, 2.5};
 
     mesh->pushPoint(0.F, 0.F, 0.F);
     mesh->pushPoint(1.F, 0.F, 0.F);
@@ -68,11 +68,11 @@ void vtkTest::computeCenterOfMass()
     mesh->pushCell(4, 5, 6, 7);
     mesh->pushCell(0, 4, 7, 3);
     mesh->pushCell(3, 7, 6, 2);
-    sight::data::point::sptr computedCenterOfMass = geometry::vtk::computeCenterOfMass(mesh);
+    sight::data::point::sptr computed_center_of_mass = geometry::vtk::compute_center_of_mass(mesh);
 
-    CPPUNIT_ASSERT_EQUAL(centerOfMass[0], computedCenterOfMass->getCoord()[0]);
-    CPPUNIT_ASSERT_EQUAL(centerOfMass[1], computedCenterOfMass->getCoord()[1]);
-    CPPUNIT_ASSERT_EQUAL(centerOfMass[2], computedCenterOfMass->getCoord()[2]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[0], computed_center_of_mass->getCoord()[0]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[1], computed_center_of_mass->getCoord()[1]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[2], computed_center_of_mass->getCoord()[2]);
 }
 
 //------------------------------------------------------------------------------

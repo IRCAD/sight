@@ -24,9 +24,9 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
-#include <viz/scene3d/Texture.hpp>
+#include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
 #include <OGRE/OgreMaterial.h>
@@ -55,7 +55,7 @@ class VIZ_SCENE3D_CLASS_API plane
 {
 public:
 
-    using OrientationMode = data::helper::MedicalImage::orientation_t;
+    using OrientationMode = data::helper::medical_image::orientation_t;
 
     /// Defines the texture filtering mode.
     enum class filter_t : std::uint8_t
@@ -79,14 +79,14 @@ public:
      * @param _entityOpacity opacity of the entity.
      */
     VIZ_SCENE3D_API plane(
-        const core::tools::id::type& _negatoId,
-        Ogre::SceneNode* _parentSceneNode,
-        Ogre::SceneManager* _sceneManager,
-        viz::scene3d::Texture::sptr _tex,
+        const core::tools::id::type& _negato_id,
+        Ogre::SceneNode* _parent_scene_node,
+        Ogre::SceneManager* _scene_manager,
+        viz::scene3d::texture::sptr _tex,
         filter_t _filtering,
-        bool _displayBorder      = true,
-        bool _displayOtherPlanes = true,
-        float _entityOpacity     = 1.0F
+        bool _display_border       = true,
+        bool _display_other_planes = true,
+        float _entity_opacity      = 1.0F
     );
 
     /// Cleans ogre resources.
@@ -100,7 +100,7 @@ public:
         OrientationMode _orientation,
         const Ogre::Vector3& _spacing,
         const Ogre::Vector3& _origin,
-        bool _enableTransparency
+        bool _enable_transparency
     );
 
     /**
@@ -109,7 +109,7 @@ public:
      *     - in 3D, it will also move the scene node in space.
      * @param _slicesIndex the image slices indexes.
      */
-    VIZ_SCENE3D_API void changeSlice(const std::array<float, 3>& _slicesIndex);
+    VIZ_SCENE3D_API void changeSlice(const std::array<float, 3>& _slices_index);
 
     /**
      * @brief Sets the plane's opacity.
@@ -129,7 +129,7 @@ public:
      * @brief Adds or updates the texture containing the transfer function data in the negato passes.
      * @param _tfTexture the TF texture.
      */
-    VIZ_SCENE3D_API void setTFData(const viz::scene3d::transfer_function& _tfTexture);
+    VIZ_SCENE3D_API void setTFData(const viz::scene3d::transfer_function& _tf_texture);
 
     /// Gets the image axis orthogonal to the plane.
     [[nodiscard]] VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
@@ -144,12 +144,12 @@ public:
     VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _flags);
 
     /// Sets this object's render queue group and render priority.
-    VIZ_SCENE3D_API void setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t _priority);
+    VIZ_SCENE3D_API void setRenderQueuerGroupAndPriority(std::uint8_t _group_id, std::uint16_t _priority);
 
     /// Compute two cross lines that intersect at the given position, according to the plane orientation.
     VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> computeCross(
         const Ogre::Vector3& _center,
-        const Ogre::Vector3& _imageOrigin
+        const Ogre::Vector3& _image_origin
     ) const;
 
 private:
@@ -194,7 +194,7 @@ private:
     Ogre::MaterialPtr m_texMaterial {nullptr};
 
     /// Contains the texture.
-    viz::scene3d::Texture::sptr m_texture;
+    viz::scene3d::texture::sptr m_texture;
 
     /// Contains the scenemanager containing the plane.
     Ogre::SceneManager* m_sceneManager {nullptr};

@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/macros.hpp>
-#include <ui/qt/App.hpp>
+#include <ui/qt/app.hpp>
 #include <ui/qt/dialog/input.hpp>
 #include <ui/qt/dialog/location.hpp>
 #include <ui/qt/dialog/logger.hpp>
@@ -38,7 +38,7 @@
 #include <ui/qt/dialog/progress.hpp>
 #include <ui/qt/dialog/pulse_progress.hpp>
 #include <ui/qt/dialog/selector.hpp>
-#include <ui/qt/WorkerQt.hpp>
+#include <ui/qt/worker_qt.hpp>
 
 #include <QFile>
 #include <QResource>
@@ -82,15 +82,15 @@ void plugin::start()
     char** argv = profile->get_raw_params();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& argc, char** argv)
+        [](int& _argc, char** _argv)
         {
-            return QSharedPointer<QApplication>(new sight::ui::qt::App(argc, argv, true));
+            return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, true));
         };
 
-    auto workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->name(), profile->get_version());
-    core::thread::set_default_worker(workerQt);
+    auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->get_version());
+    core::thread::set_default_worker(worker_qt);
 
-    workerQt->post([this](auto&& ...){loadStyleSheet();});
+    worker_qt->post([this](auto&& ...){loadStyleSheet();});
 
     core::runtime::get_current_profile()->set_run_callback(run);
 }
@@ -106,10 +106,10 @@ void plugin::stop() noexcept
 
 int plugin::run() noexcept
 {
-    auto workerQt = core::thread::get_default_worker();
-    workerQt->get_future().wait(); // This is required to start WorkerQt loop
+    auto worker_qt = core::thread::get_default_worker();
+    worker_qt->get_future().wait(); // This is required to start worker_qt loop
 
-    int result = std::any_cast<int>(workerQt->get_future().get());
+    int result = std::any_cast<int>(worker_qt->get_future().get());
 
     return result;
 }
@@ -122,11 +122,11 @@ void plugin::loadStyleSheet()
     {
         if(this->get_module()->has_parameter("resource"))
         {
-            const std::string resourceFile = this->get_module()->get_parameter_value("resource");
-            const auto path                = core::runtime::get_module_resource_file_path(resourceFile);
+            const std::string resource_file = this->get_module()->get_parameter_value("resource");
+            const auto path                 = core::runtime::get_module_resource_file_path(resource_file);
 
-            [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(path.string().c_str());
-            SIGHT_ASSERT("Cannot load resources '" + resourceFile + "'.", resourceLoaded);
+            [[maybe_unused]] const bool resource_loaded = QResource::registerResource(path.string().c_str());
+            SIGHT_ASSERT("Cannot load resources '" + resource_file + "'.", resource_loaded);
         }
 
         if(this->get_module()->has_parameter("style"))
@@ -135,39 +135,39 @@ void plugin::loadStyleSheet()
             qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
         }
 
-        QString touchFriendlyStyle;
+        QString touch_friendly_style;
         if(this->get_module()->get_parameter_value("touch_friendly") == "true")
         {
-            const std::filesystem::path touchFriendlyStylePath = core::runtime::get_module_resource_file_path(
+            const std::filesystem::path touch_friendly_style_path = core::runtime::get_module_resource_file_path(
                 "sight::module::ui::qt/touch-friendly.qss"
             );
             {
-                QFile data(QString::fromStdString(touchFriendlyStylePath.string()));
+                QFile data(QString::fromStdString(touch_friendly_style_path.string()));
                 if(data.open(QFile::ReadOnly))
                 {
-                    touchFriendlyStyle = QTextStream(&data).readAll();
+                    touch_friendly_style = QTextStream(&data).readAll();
                 }
             }
         }
 
-        QString appStyle;
+        QString app_style;
         if(this->get_module()->has_parameter("stylesheet"))
         {
-            const std::string stylesheetValue = this->get_module()->get_parameter_value("stylesheet");
-            const std::filesystem::path path  = core::runtime::get_module_resource_file_path(stylesheetValue);
+            const std::string stylesheet_value = this->get_module()->get_parameter_value("stylesheet");
+            const std::filesystem::path path   = core::runtime::get_module_resource_file_path(stylesheet_value);
             {
                 QFile data(QString::fromStdString(path.string()));
                 if(data.open(QFile::ReadOnly))
                 {
-                    appStyle = QTextStream(&data).readAll();
+                    app_style = QTextStream(&data).readAll();
                 }
             }
         }
 
-        QString styleResult = appStyle + touchFriendlyStyle;
-        if(!styleResult.isEmpty())
+        QString style_result = app_style + touch_friendly_style;
+        if(!style_result.isEmpty())
         {
-            qApp->setStyleSheet(styleResult);
+            qApp->setStyleSheet(style_result);
         }
     }
 }

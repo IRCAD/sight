@@ -30,12 +30,12 @@ namespace sight::utest_data
 
 //------------------------------------------------------------------------------
 
-bool File::contentEquals(const std::filesystem::path& l_file, const std::filesystem::path& r_file)
+bool File::contentEquals(const std::filesystem::path& _l_file, const std::filesystem::path& _r_file)
 {
     const std::streambuf::int_type eof = std::streambuf::traits_type::eof();
 
-    std::ifstream l_stream(l_file.c_str());
-    std::ifstream r_stream(r_file.c_str());
+    std::ifstream l_stream(_l_file.c_str());
+    std::ifstream r_stream(_r_file.c_str());
 
     std::streambuf* l_buf = l_stream.rdbuf();
     std::streambuf* r_buf = r_stream.rdbuf();

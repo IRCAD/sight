@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(__FWCOM_SIGNAL_HPP__)
+#if !defined(FWCOM_SIGNAL_HPP)
 #error core/com/signal.hpp not included
 #endif
 
@@ -42,19 +42,19 @@ namespace sight::core::com
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-connection signal<R(A ...)>::connect(slot_base::sptr slot)
+connection signal<R(A ...)>::connect(slot_base::sptr _slot)
 {
-    return this->connect<signature_type>(slot);
+    return this->connect<signature_type>(_slot);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-void signal<R(A ...)>::disconnect(slot_base::sptr slot)
+void signal<R(A ...)>::disconnect(slot_base::sptr _slot)
 {
     core::mt::read_to_write_lock lock(m_connections_mutex);
 
-    auto iter = m_connections.find(slot);
+    auto iter = m_connections.find(_slot);
 
     if(iter != m_connections.end())
     {
@@ -96,7 +96,7 @@ void signal<R(A ...)>::disconnect_all()
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-void signal<R(A ...)>::emit(A ... a) const
+void signal<R(A ...)>::emit(A ... _a) const
 {
     core::mt::read_lock lock(m_connections_mutex);
     typename slot_container_type::const_iterator iter;
@@ -105,7 +105,7 @@ void signal<R(A ...)>::emit(A ... a) const
     {
         if((*iter)->first)
         {
-            (*iter)->second.lock()->run(a ...);
+            (*iter)->second.lock()->run(_a ...);
         }
     }
 }
@@ -113,7 +113,7 @@ void signal<R(A ...)>::emit(A ... a) const
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-void signal<R(A ...)>::async_emit(A ... a) const
+void signal<R(A ...)>::async_emit(A ... _a) const
 {
     // We hold the slots alive in case they are destroyed during the emission
     // If we don't do this, we could end up with a deadlock on m_connectionsMutex
@@ -130,7 +130,7 @@ void signal<R(A ...)>::async_emit(A ... a) const
             {
                 auto slot = (*iter)->second.lock();
                 keep_slots_alive.push_back(slot);
-                slot->async_run(a ...);
+                slot->async_run(_a ...);
             }
         }
     }
@@ -140,12 +140,12 @@ void signal<R(A ...)>::async_emit(A ... a) const
 
 template<typename R, typename ... A>
 template<typename FROM_F>
-connection signal<R(A ...)>::connect(slot_base::sptr slot)
+connection signal<R(A ...)>::connect(slot_base::sptr _slot)
 {
     {
         core::mt::read_lock lock(m_connections_mutex);
 
-        if(m_connections.find(slot) != m_connections.end())
+        if(m_connections.find(_slot) != m_connections.end())
         {
             SIGHT_THROW_EXCEPTION(core::com::exception::already_connected("Slot already connected"));
         }
@@ -155,16 +155,16 @@ connection signal<R(A ...)>::connect(slot_base::sptr slot)
     connection connection;
 
     unsigned int sig_arity = boost::function_types::function_arity<signature_type>::value;
-    if(sig_arity == slot->arity())
+    if(sig_arity == _slot->arity())
     {
-        slot_sptr slot_to_connect = std::dynamic_pointer_cast<slot_run_type>(slot);
+        slot_sptr slot_to_connect = std::dynamic_pointer_cast<slot_run_type>(_slot);
         if(slot_to_connect)
         {
             core::mt::write_lock lock(m_connections_mutex);
             auto sig             = std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
             auto slot_connection = std::make_shared<connection_type>(sig, slot_to_connect);
-            slot->m_connections.insert(slot_connection);
-            m_connections.insert(typename connection_map_type::value_type(slot, slot_connection));
+            _slot->m_connections.insert(slot_connection);
+            m_connections.insert(typename connection_map_type::value_type(_slot, slot_connection));
             slot_connection->connect_no_lock();
             connection = core::com::connection(slot_connection);
         }
@@ -173,10 +173,10 @@ connection signal<R(A ...)>::connect(slot_base::sptr slot)
             SIGHT_THROW_EXCEPTION(core::com::exception::bad_slot("Incompatible slot"));
         }
     }
-    else if(sig_arity > slot->arity())
+    else if(sig_arity > _slot->arity())
     {
         using wrapped_slot_run_type = slot_run<FROM_F>;
-        auto wrapped_slot = std::dynamic_pointer_cast<wrapped_slot_run_type>(slot);
+        auto wrapped_slot = std::dynamic_pointer_cast<wrapped_slot_run_type>(_slot);
 
         if(wrapped_slot)
         {
@@ -185,15 +185,15 @@ connection signal<R(A ...)>::connect(slot_base::sptr slot)
             auto slot_to_connect                = std::make_shared<slot_t>(wrapped_slot);
             typename signal<R(A ...)>::sptr sig =
                 std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
-            auto slot_connection = std::make_shared<connection_type>(sig, slot, slot_to_connect);
-            slot->m_connections.insert(slot_connection);
-            m_connections.insert(typename connection_map_type::value_type(slot, slot_connection));
+            auto slot_connection = std::make_shared<connection_type>(sig, _slot, slot_to_connect);
+            _slot->m_connections.insert(slot_connection);
+            m_connections.insert(typename connection_map_type::value_type(_slot, slot_connection));
             slot_connection->connect_no_lock();
             connection = core::com::connection(slot_connection);
         }
         else
         {
-            connection = this->connect<typename core::com::util::remove_last_arg<FROM_F>::type>(slot);
+            connection = this->connect<typename core::com::util::remove_last_arg<FROM_F>::type>(_slot);
         }
     }
     else
@@ -207,16 +207,16 @@ connection signal<R(A ...)>::connect(slot_base::sptr slot)
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-connection signal<R(A ...)>::get_connection(slot_base::sptr slot, bool throws)
+connection signal<R(A ...)>::get_connection(slot_base::sptr _slot, bool _throws)
 {
     core::mt::read_lock lock(m_connections_mutex);
     connection connection;
 
-    auto iter = m_connections.find(slot);
+    auto iter = m_connections.find(_slot);
 
     if(iter == m_connections.end())
     {
-        if(throws)
+        if(_throws)
         {
             SIGHT_THROW_EXCEPTION(core::com::exception::bad_slot("No such slot connected"));
         }

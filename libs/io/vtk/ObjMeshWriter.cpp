@@ -113,19 +113,19 @@ void ObjMeshWriter::write()
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
-    [[maybe_unused]] const auto objectLock = m_object.lock();
+    [[maybe_unused]] const auto object_lock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock);
+    SIGHT_ASSERT("Object Lock null.", object_lock);
 
-    const data::mesh::csptr pMesh        = getConcreteObject();
-    vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::toVTKMesh(pMesh, vtkMesh);
+    const data::mesh::csptr p_mesh        = getConcreteObject();
+    vtkSmartPointer<vtkPolyData> vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::mesh::toVTKMesh(p_mesh, vtk_mesh);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     vtkSmartPointer<vtkActor> actor       = vtkSmartPointer<vtkActor>::New();
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(vtkMesh);
+    mapper->SetInputData(vtk_mesh);
     actor->SetMapper(mapper);
 
     vtkProperty* property = actor->GetProperty();
@@ -137,8 +137,8 @@ void ObjMeshWriter::write()
 
     renderer->AddActor(actor);
 
-    vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-    renderWindow->AddRenderer(renderer);
+    vtkSmartPointer<vtkRenderWindow> render_window = vtkSmartPointer<vtkRenderWindow>::New();
+    render_window->AddRenderer(renderer);
 
     std::filesystem::path file = this->get_file();
     const std::string filename = file.extension() == ".obj"
@@ -146,7 +146,7 @@ void ObjMeshWriter::write()
                                  : file.string();
 
     vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
-    exporter->SetRenderWindow(renderWindow);
+    exporter->SetRenderWindow(render_window);
     exporter->SetFilePrefix(filename.c_str());
     exporter->Write();
     m_job->finish();

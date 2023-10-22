@@ -27,8 +27,8 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/helper/ManualObject.hpp>
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
@@ -136,10 +136,10 @@ void frustum_list::stopping()
 
 void frustum_list::setVisible(bool _visible)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
 
-    transNode->setVisible(_visible);
+    trans_node->setVisible(_visible);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,8 +147,8 @@ void frustum_list::setVisible(bool _visible)
 void frustum_list::addFrustum()
 {
     //Get camera parameters
-    const auto cameraData    = m_camera.lock();
-    Ogre::Camera* ogreCamera =
+    const auto camera_data    = m_camera.lock();
+    Ogre::Camera* ogre_camera =
         this->getSceneManager()->createCamera(
             Ogre::String(
                 this->get_id() + "_camera" + std::to_string(
@@ -157,29 +157,29 @@ void frustum_list::addFrustum()
             )
         );
 
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    transNode->attachObject(ogreCamera);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->getOrCreateTransformNode(root_scene_node);
+    trans_node->attachObject(ogre_camera);
 
     // Clipping
     if(m_near != 0.F)
     {
-        ogreCamera->setNearClipDistance(m_near);
+        ogre_camera->setNearClipDistance(m_near);
     }
 
     if(m_far != 0.F)
     {
-        ogreCamera->setFarClipDistance(m_far);
+        ogre_camera->setFarClipDistance(m_far);
     }
 
-    if(cameraData->getIsCalibrated())
+    if(camera_data->getIsCalibrated())
     {
         // Set data to camera
-        const auto width  = static_cast<float>(cameraData->getWidth());
-        const auto height = static_cast<float>(cameraData->getHeight());
+        const auto width  = static_cast<float>(camera_data->getWidth());
+        const auto height = static_cast<float>(camera_data->getHeight());
         Ogre::Matrix4 m   =
-            sight::viz::scene3d::helper::camera::computeProjectionMatrix(*cameraData, width, height, m_near, m_far);
-        ogreCamera->setCustomProjectionMatrix(true, m);
+            sight::viz::scene3d::helper::camera::computeProjectionMatrix(*camera_data, width, height, m_near, m_far);
+        ogre_camera->setCustomProjectionMatrix(true, m);
 
         if(m_frustumList.full())
         {
@@ -195,19 +195,19 @@ void frustum_list::addFrustum()
                 m_currentCamIndex
             )
         );
-        auto* const frustumNode = rootSceneNode->createChildSceneNode("Node_" + std::to_string(m_currentCamIndex));
+        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + std::to_string(m_currentCamIndex));
 
-        sight::viz::scene3d::helper::ManualObject::createFrustum(
+        sight::viz::scene3d::helper::manual_object::createFrustum(
             frustum,
             m_materialAdaptor->getMaterialName(),
-            *ogreCamera
+            *ogre_camera
         );
 
-        this->setTransfromToNode(frustumNode);
-        frustumNode->attachObject(frustum);
+        this->setTransfromToNode(frustum_node);
+        frustum_node->attachObject(frustum);
 
         //Add the new one
-        m_frustumList.push_front({frustum, frustumNode});
+        m_frustumList.push_front({frustum, frustum_node});
 
         m_currentCamIndex++;
 
@@ -224,13 +224,13 @@ void frustum_list::addFrustum()
 void frustum_list::setTransfromToNode(Ogre::SceneNode* _node)
 {
     const auto transform = m_transform.lock();
-    Ogre::Affine3 ogreMat;
+    Ogre::Affine3 ogre_mat;
 
     for(std::size_t lt = 0 ; lt < 4 ; lt++)
     {
         for(std::size_t ct = 0 ; ct < 4 ; ct++)
         {
-            ogreMat[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+            ogre_mat[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
         }
     }
 
@@ -238,11 +238,11 @@ void frustum_list::setTransfromToNode(Ogre::SceneNode* _node)
     Ogre::Vector3 position;
     Ogre::Vector3 scale;
     Ogre::Quaternion orientation;
-    ogreMat.decomposition(position, scale, orientation);
+    ogre_mat.decomposition(position, scale, orientation);
 
-    const Ogre::Quaternion rotateX(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
-    const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
-    orientation = orientation * rotateZ * rotateX;
+    const Ogre::Quaternion rotate_x(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
+    orientation = orientation * rotate_z * rotate_x;
 
     _node->setOrientation(orientation);
     _node->setPosition(position);

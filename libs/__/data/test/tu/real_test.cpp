@@ -49,19 +49,19 @@ void real_test::tearDown()
 
 void real_test::basic()
 {
-    constexpr std::array VALUES =
+    constexpr std::array values =
     {-3.14159265358979323851, 0.0, 2.04, 10., std::numeric_limits<double>::infinity()};
-    constexpr std::array NAN_VALUES = {
+    constexpr std::array nan_values = {
         std::numeric_limits<double>::quiet_NaN(),
         std::numeric_limits<double>::signaling_NaN()
     };
 
-    for(double VALUE : VALUES)
+    for(double value : values)
     {
         auto d0 = std::make_shared<data::real>();
-        d0->value() = VALUE;
-        auto d1 = std::make_shared<data::real>(VALUE);
-        auto d2 = std::make_shared<data::real>(VALUE + 0.1);
+        d0->value() = value;
+        auto d1 = std::make_shared<data::real>(value);
+        auto d2 = std::make_shared<data::real>(value + 0.1);
         auto d3 = std::make_shared<data::real>();
         d3->shallow_copy(d1);
         auto d4 = std::make_shared<data::real>();
@@ -69,7 +69,7 @@ void real_test::basic()
 
         CPPUNIT_ASSERT(*d0 == *d1);
 
-        if(std::isinf(VALUE))
+        if(std::isinf(value))
         {
             CPPUNIT_ASSERT(*d0 == *d2);
         }
@@ -78,18 +78,18 @@ void real_test::basic()
             CPPUNIT_ASSERT(*d0 != *d2);
         }
 
-        CPPUNIT_ASSERT_EQUAL(VALUE, d0->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, d1->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, std::make_shared<data::real>(VALUE)->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, d3->value());
-        CPPUNIT_ASSERT_EQUAL(VALUE, d4->value());
+        CPPUNIT_ASSERT_EQUAL(value, d0->value());
+        CPPUNIT_ASSERT_EQUAL(value, d1->value());
+        CPPUNIT_ASSERT_EQUAL(value, std::make_shared<data::real>(value)->value());
+        CPPUNIT_ASSERT_EQUAL(value, d3->value());
+        CPPUNIT_ASSERT_EQUAL(value, d4->value());
     }
 
-    for(double VALUE : NAN_VALUES)
+    for(double value : nan_values)
     {
         auto d0 = std::make_shared<data::real>();
-        d0->value() = VALUE;
-        auto d1 = std::make_shared<data::real>(VALUE);
+        d0->value() = value;
+        auto d1 = std::make_shared<data::real>(value);
         auto d2 = std::make_shared<data::real>();
         d2->shallow_copy(d1);
         auto d3 = std::make_shared<data::real>();
@@ -100,17 +100,17 @@ void real_test::basic()
         CPPUNIT_ASSERT(*d0 == *d2);
         CPPUNIT_ASSERT(*d0 == *d3);
 
-        CPPUNIT_ASSERT(!(VALUE == d0->value()));
-        CPPUNIT_ASSERT(!(VALUE < d0->value()));
-        CPPUNIT_ASSERT(!(VALUE > d0->value()));
+        CPPUNIT_ASSERT(!(value == d0->value()));
+        CPPUNIT_ASSERT(!(value < d0->value()));
+        CPPUNIT_ASSERT(!(value > d0->value()));
 
-        CPPUNIT_ASSERT(!(VALUE == d1->value()));
-        CPPUNIT_ASSERT(!(VALUE < d1->value()));
-        CPPUNIT_ASSERT(!(VALUE > d1->value()));
+        CPPUNIT_ASSERT(!(value == d1->value()));
+        CPPUNIT_ASSERT(!(value < d1->value()));
+        CPPUNIT_ASSERT(!(value > d1->value()));
 
-        CPPUNIT_ASSERT(!(VALUE == std::make_shared<data::real>(VALUE)->value()));
-        CPPUNIT_ASSERT(!(VALUE < std::make_shared<data::real>(VALUE)->value()));
-        CPPUNIT_ASSERT(!(VALUE > std::make_shared<data::real>(VALUE)->value()));
+        CPPUNIT_ASSERT(!(value == std::make_shared<data::real>(value)->value()));
+        CPPUNIT_ASSERT(!(value < std::make_shared<data::real>(value)->value()));
+        CPPUNIT_ASSERT(!(value > std::make_shared<data::real>(value)->value()));
     }
 }
 

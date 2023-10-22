@@ -38,7 +38,7 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
-    installSIGSEVBacktrace();
+    install_sigsev_backtrace();
 }
 
 //------------------------------------------------------------------------------

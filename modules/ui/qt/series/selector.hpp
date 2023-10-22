@@ -31,7 +31,7 @@
 #include <data/vector.hpp>
 
 #include <ui/__/editor.hpp>
-#include <ui/qt/series/Selector.hpp>
+#include <ui/qt/series/selector.hpp>
 
 #include <QAbstractItemView>
 #include <QObject>
@@ -141,27 +141,27 @@ protected Q_SLOTS:
 
 private:
 
-    typedef core::com::slot<void (data::series_set::container_type)> RemoveSeriesSlotType;
+    typedef core::com::slot<void (data::series_set::container_type)> remove_series_slot_t;
 
     typedef core::com::signal<void (SPTR(data::series))> SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
-    void addSeries(data::series_set::container_type addedSeries);
+    void addSeries(data::series_set::container_type _added_series);
 
     /// SLOT: removes series from the selector.
-    void removeSeries(data::series_set::container_type removedSeries);
+    void removeSeries(data::series_set::container_type _removed_series);
 
     /// Contains the slot used to remove series from the selector.
-    RemoveSeriesSlotType::sptr m_slotRemoveSeries;
+    remove_series_slot_t::sptr m_slotRemoveSeries;
 
     /// Contains the selector widget.
-    QPointer<sight::ui::qt::series::Selector> m_selectorWidget {nullptr};
+    QPointer<sight::ui::qt::series::selector> m_selectorWidget {nullptr};
 
     /// Contains the signal emitted when there is a double click on a series.
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked {nullptr};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
-    sight::ui::qt::series::Selector::SeriesIconType m_seriesIcons;
+    sight::ui::qt::series::selector::series_icon_t m_seriesIcons;
 
     /// Defines if series can be removed.
     bool m_removeAllowed {true};

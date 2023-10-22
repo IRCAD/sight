@@ -22,7 +22,7 @@
 
 #include "ui/qt/layout/toolbox.hpp"
 
-#include "ui/qt/App.hpp"
+#include "ui/qt/app.hpp"
 #include "ui/qt/container/widget.hpp"
 
 #include <core/base.hpp>
@@ -44,15 +44,15 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void toolbox::createLayout(ui::container::widget::sptr parent, const std::string& id)
+void toolbox::createLayout(ui::container::widget::sptr _parent, const std::string& _id)
 {
-    const QString qId                               = QString::fromStdString(id);
-    ui::qt::container::widget::sptr parentContainer =
-        std::dynamic_pointer_cast<ui::qt::container::widget>(parent);
-    parentContainer->getQtContainer()->setObjectName(qId);
+    const QString q_id                               = QString::fromStdString(_id);
+    ui::qt::container::widget::sptr parent_container =
+        std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
+    parent_container->getQtContainer()->setObjectName(q_id);
 
     auto* layout = new QVBoxLayout();
-    parentContainer->setLayout(layout);
+    parent_container->setLayout(layout);
 
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -63,36 +63,36 @@ void toolbox::createLayout(ui::container::widget::sptr parent, const std::string
     layout->addWidget(sv);
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
-    for(const ViewInfo& viewInfo : views)
+    for(const ViewInfo& view_info : views)
     {
-        int leftBorder   = 0;
-        int topBorder    = 0;
-        int rightBorder  = 0;
-        int bottomBorder = 0;
-        if(viewInfo.m_border != 0)
+        int left_border   = 0;
+        int top_border    = 0;
+        int right_border  = 0;
+        int bottom_border = 0;
+        if(view_info.m_border != 0)
         {
-            leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+            left_border = top_border = right_border = bottom_border = view_info.m_border;
         }
         else
         {
-            leftBorder   = viewInfo.m_leftBorder;
-            topBorder    = viewInfo.m_topBorder;
-            rightBorder  = viewInfo.m_rightBorder;
-            bottomBorder = viewInfo.m_bottomBorder;
+            left_border   = view_info.m_leftBorder;
+            top_border    = view_info.m_topBorder;
+            right_border  = view_info.m_rightBorder;
+            bottom_border = view_info.m_bottomBorder;
         }
 
         auto* panel = new QWidget();
-        panel->setObjectName(qId + '/' + viewInfo.m_caption.c_str());
-        panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+        panel->setObjectName(q_id + '/' + view_info.m_caption.c_str());
+        panel->setMinimumSize(std::max(view_info.m_minSize.first, 0), std::max(view_info.m_minSize.second, 0));
         panel->setMaximumSize(
-            std::min(viewInfo.m_maxSize.first, QWIDGETSIZE_MAX),
-            std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
+            std::min(view_info.m_maxSize.first, QWIDGETSIZE_MAX),
+            std::min(view_info.m_maxSize.second, QWIDGETSIZE_MAX)
         );
-        panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
-        if(!viewInfo.m_backgroundColor.empty())
+        panel->setContentsMargins(left_border, top_border, right_border, bottom_border);
+        if(!view_info.m_backgroundColor.empty())
         {
             std::array<std::uint8_t, 4> rgba {};
-            data::tools::color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+            data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
             std::stringstream ss;
             ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
             << static_cast<std::int16_t>(rgba[1]) << ','
@@ -102,44 +102,44 @@ void toolbox::createLayout(ui::container::widget::sptr parent, const std::string
             panel->setStyleSheet(style + qApp->styleSheet());
         }
 
-        ui::qt::container::widget::sptr subContainer = ui::qt::container::widget::make();
-        subContainer->setQtContainer(panel);
-        m_subViews.push_back(subContainer);
+        ui::qt::container::widget::sptr sub_container = ui::qt::container::widget::make();
+        sub_container->setQtContainer(panel);
+        m_subViews.push_back(sub_container);
 
         int index = 0;
-        if(viewInfo.m_useScrollBar)
+        if(view_info.m_useScrollBar)
         {
-            auto* scrollArea = new QScrollArea(toolbox);
-            scrollArea->setWidget(panel);
-            scrollArea->setWidgetResizable(true);
-            if(!viewInfo.m_backgroundColor.empty())
+            auto* scroll_area = new QScrollArea(toolbox);
+            scroll_area->setWidget(panel);
+            scroll_area->setWidgetResizable(true);
+            if(!view_info.m_backgroundColor.empty())
             {
                 std::array<std::uint8_t, 4> rgba {};
-                data::tools::color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                data::tools::color::hexaStringToRGBA(view_info.m_backgroundColor, rgba);
                 std::stringstream ss;
                 ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                 << static_cast<std::int16_t>(rgba[1]) << ','
                 << static_cast<std::int16_t>(rgba[2]) << ','
                 << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
-                scrollArea->setStyleSheet(style + qApp->styleSheet());
+                scroll_area->setStyleSheet(style + qApp->styleSheet());
             }
 
-            index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
+            index = toolbox->addItem(scroll_area, QString::fromStdString(view_info.m_caption));
         }
         else
         {
-            index = toolbox->addItem(panel, QString::fromStdString(viewInfo.m_caption));
+            index = toolbox->addItem(panel, QString::fromStdString(view_info.m_caption));
         }
 
-        if(viewInfo.m_expanded)
+        if(view_info.m_expanded)
         {
             toolbox->expandItem(index);
         }
 
-        if(!viewInfo.m_visible)
+        if(!view_info.m_visible)
         {
-            subContainer->setVisible(false);
+            sub_container->setVisible(false);
         }
     }
 }

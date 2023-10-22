@@ -26,10 +26,10 @@
 
 #include <core/tools/failed.hpp>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <ui/__/editor.hpp>
-#include <ui/qt/SliceSelector.hpp>
+#include <ui/qt/slice_selector.hpp>
 
 namespace sight::module::ui::qt::image
 {
@@ -75,7 +75,7 @@ protected:
     static const service::base::key_t s_IMAGE_INOUT;
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using orientation_t = data::helper::MedicalImage::orientation_t;
+    using orientation_t = data::helper::medical_image::orientation_t;
 
     /**
      * @brief Install the layout.
@@ -122,13 +122,13 @@ protected:
     MODULE_UI_QT_API void updateSliceIndexFromImg(const sight::data::image& _image);
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QT_API void updateSliceTypeFromImg(const orientation_t& type);
+    MODULE_UI_QT_API void updateSliceTypeFromImg(const orientation_t& _type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
-    MODULE_UI_QT_API void sliceIndexNotification(int index);
+    MODULE_UI_QT_API void sliceIndexNotification(int _index);
 
     /// This method is called when the slice type selected change. Notify the slice type is modified.
-    MODULE_UI_QT_API void sliceTypeNotification(int type);
+    MODULE_UI_QT_API void sliceTypeNotification(int _type);
 
 private:
 
@@ -138,10 +138,10 @@ private:
      */
 
     /// Slot: update image slice index
-    void updateSliceIndex(int axial, int frontal, int sagittal);
+    void updateSliceIndex(int _axial, int _frontal, int _sagittal);
 
     /// Slot: update image slice type
-    void updateSliceType(int from, int to);
+    void updateSliceType(int _from, int _to);
 
     /// Slot: update image buffer
     void updateBuffer();
@@ -149,7 +149,7 @@ private:
      * @}
      */
 
-    sight::ui::qt::SliceSelector* m_sliceSelectorPanel {};
+    sight::ui::qt::slice_selector* m_sliceSelectorPanel {};
 
     data::ptr<data::image, data::Access::inout> m_image {this, "image", true};
 

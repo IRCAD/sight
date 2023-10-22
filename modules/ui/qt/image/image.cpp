@@ -51,7 +51,7 @@ void image::starting()
 {
     this->create();
 
-    const auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QVBoxLayout();
     auto* const label  = new QLabel("");
@@ -83,7 +83,7 @@ void image::starting()
     }
 
     layout->addWidget(label);
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,9 +100,9 @@ void image::configuring()
     this->initialize();
 
     const config_t cfg = this->get_config();
-    auto pathCfg       = cfg.get<std::string>("path");
+    auto path_cfg      = cfg.get<std::string>("path");
 
-    m_path = core::runtime::get_module_resource_file_path(pathCfg);
+    m_path = core::runtime::get_module_resource_file_path(path_cfg);
 
     m_width  = cfg.get<int>("width", m_width);
     m_height = cfg.get<int>("height", m_height);

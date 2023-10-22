@@ -26,7 +26,7 @@
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/point.hpp>
 
 #include <io/vtk/vtk.hpp>
@@ -90,7 +90,7 @@ void plane_slicer::updating()
 
     vtkSmartPointer<vtkImageData> vtk_img = vtkSmartPointer<vtkImageData>::New();
 
-    io::vtk::toVTKImage(image.get_shared(), vtk_img.Get());
+    io::vtk::to_vtk_image(image.get_shared(), vtk_img.Get());
 
     m_reslicer->SetInputData(vtk_img);
     m_reslicer->Update();
@@ -98,7 +98,7 @@ void plane_slicer::updating()
     auto slice = m_slice.lock();
     SIGHT_ASSERT("Cannot find " << s_SLICE_INOUT, slice);
 
-    io::vtk::fromVTKImage(m_reslicer->GetOutput(), slice.get_shared());
+    io::vtk::from_vtk_image(m_reslicer->GetOutput(), slice.get_shared());
 
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::imageSlice.
@@ -110,7 +110,7 @@ void plane_slicer::updating()
     const auto origin = slice->getOrigin();
     slice->setOrigin({{origin[0], origin[1], 0}});
 
-    auto sig = slice->signal<data::image::ModifiedSignalType>(data::image::MODIFIED_SIG);
+    auto sig = slice->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
 
     sig->async_emit();
 }
@@ -119,23 +119,23 @@ void plane_slicer::updating()
 
 void plane_slicer::configuring()
 {
-    const auto& srvConf = this->get_config();
+    const auto& srv_conf = this->get_config();
 
-    const auto& config = srvConf.get_child("config.<xmlattr>");
+    const auto& config = srv_conf.get_child("config.<xmlattr>");
 
     const std::string& orientation = config.get<std::string>("orientation", "");
 
     if(orientation == "axial")
     {
-        m_orientation = data::helper::MedicalImage::orientation_t::Z_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::Z_AXIS;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = data::helper::MedicalImage::orientation_t::X_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::X_AXIS;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = data::helper::MedicalImage::orientation_t::Y_AXIS;
+        m_orientation = data::helper::medical_image::orientation_t::Y_AXIS;
     }
     else
     {
@@ -161,41 +161,41 @@ service::connections_t plane_slicer::auto_connections() const
 
 void plane_slicer::setReslicerExtent()
 {
-    const auto extentImg = m_extent.lock();
+    const auto extent_img = m_extent.lock();
 
-    SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extentImg);
+    SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extent_img);
 
-    const auto& size    = extentImg->size();
-    const auto& origin  = extentImg->getOrigin();
-    const auto& spacing = extentImg->getSpacing();
+    const auto& size    = extent_img->size();
+    const auto& origin  = extent_img->getOrigin();
+    const auto& spacing = extent_img->getSpacing();
 
     // cast std::size_t to int.
-    std::vector<int> intSize(size.size());
+    std::vector<int> int_size(size.size());
     std::transform(
         size.begin(),
         size.end(),
-        intSize.begin(),
-        [](std::size_t s) -> int
+        int_size.begin(),
+        [](std::size_t _s) -> int
         {
-            return std::max(static_cast<int>(s) - 1, 0);
+            return std::max(static_cast<int>(_s) - 1, 0);
         });
 
     switch(m_orientation)
     {
-        case data::helper::MedicalImage::orientation_t::X_AXIS:
-            m_reslicer->SetOutputExtent(0, intSize[1], 0, intSize[2], 0, 0);
+        case data::helper::medical_image::orientation_t::X_AXIS:
+            m_reslicer->SetOutputExtent(0, int_size[1], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[1], origin[2], origin[0]);
             m_reslicer->SetOutputSpacing(spacing[1], spacing[2], spacing[0]);
             break;
 
-        case data::helper::MedicalImage::orientation_t::Y_AXIS:
-            m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[2], 0, 0);
+        case data::helper::medical_image::orientation_t::Y_AXIS:
+            m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[2], origin[1]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[2], spacing[1]);
             break;
 
-        case data::helper::MedicalImage::orientation_t::Z_AXIS:
-            m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[1], 0, 0);
+        case data::helper::medical_image::orientation_t::Z_AXIS:
+            m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[1], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[1], origin[2]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[1], spacing[2]);
             break;
@@ -210,49 +210,49 @@ void plane_slicer::setReslicerAxes()
 
     SIGHT_ASSERT("No " << s_AXES_IN << " found.", axes);
 
-    vtkSmartPointer<vtkMatrix4x4> axesMatrix = io::vtk::toVTKMatrix(axes.get_shared());
+    vtkSmartPointer<vtkMatrix4x4> axes_matrix = io::vtk::to_vtk_matrix(axes.get_shared());
 
-    this->applySliceTranslation(axesMatrix);
+    this->applySliceTranslation(axes_matrix);
 
     // permutate axes.
     switch(m_orientation)
     {
-        case data::helper::MedicalImage::orientation_t::X_AXIS:
+        case data::helper::medical_image::orientation_t::X_AXIS:
             // permutate X with Y and Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
-                const double x = axesMatrix->GetElement(i, 0);
-                const double y = axesMatrix->GetElement(i, 1);
-                const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 0, y);
-                axesMatrix->SetElement(i, 1, z);
-                axesMatrix->SetElement(i, 2, x);
+                const double x = axes_matrix->GetElement(i, 0);
+                const double y = axes_matrix->GetElement(i, 1);
+                const double z = axes_matrix->GetElement(i, 2);
+                axes_matrix->SetElement(i, 0, y);
+                axes_matrix->SetElement(i, 1, z);
+                axes_matrix->SetElement(i, 2, x);
             }
 
             break;
 
-        case data::helper::MedicalImage::orientation_t::Y_AXIS:
+        case data::helper::medical_image::orientation_t::Y_AXIS:
             // permutate Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
-                const double y = axesMatrix->GetElement(i, 1);
-                const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 1, z);
-                axesMatrix->SetElement(i, 2, y);
+                const double y = axes_matrix->GetElement(i, 1);
+                const double z = axes_matrix->GetElement(i, 2);
+                axes_matrix->SetElement(i, 1, z);
+                axes_matrix->SetElement(i, 2, y);
             }
 
             break;
 
-        case data::helper::MedicalImage::orientation_t::Z_AXIS:
+        case data::helper::medical_image::orientation_t::Z_AXIS:
             break; // Nothing to do.
     }
 
-    m_reslicer->SetResliceAxes(axesMatrix);
+    m_reslicer->SetResliceAxes(axes_matrix);
 }
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const
+void plane_slicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const
 {
     const auto image = m_extent.lock();
     SIGHT_ASSERT("Cannot find " << s_EXTENT_IN, image);
@@ -260,24 +260,24 @@ void plane_slicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     std::int64_t idx = 0;
     switch(m_orientation)
     {
-        case data::helper::MedicalImage::orientation_t::X_AXIS:
-            idx = data::helper::MedicalImage::getSliceIndex(
+        case data::helper::medical_image::orientation_t::X_AXIS:
+            idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::MedicalImage::orientation_t::SAGITTAL
+                data::helper::medical_image::orientation_t::SAGITTAL
             ).value_or(0);
             break;
 
-        case data::helper::MedicalImage::orientation_t::Y_AXIS:
-            idx = data::helper::MedicalImage::getSliceIndex(
+        case data::helper::medical_image::orientation_t::Y_AXIS:
+            idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::MedicalImage::orientation_t::FRONTAL
+                data::helper::medical_image::orientation_t::FRONTAL
             ).value_or(0);
             break;
 
-        case data::helper::MedicalImage::orientation_t::Z_AXIS:
-            idx = data::helper::MedicalImage::getSliceIndex(
+        case data::helper::medical_image::orientation_t::Z_AXIS:
+            idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::MedicalImage::orientation_t::AXIAL
+                data::helper::medical_image::orientation_t::AXIAL
             ).value_or(0);
             break;
     }
@@ -289,24 +289,24 @@ void plane_slicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
 
     const double trans = spacing[axis] * static_cast<double>(idx) + origin[axis];
 
-    vtkSmartPointer<vtkMatrix4x4> transMat = vtkSmartPointer<vtkMatrix4x4>::New();
-    transMat->Identity();
-    transMat->SetElement(axis, 3, trans);
+    vtkSmartPointer<vtkMatrix4x4> trans_mat = vtkSmartPointer<vtkMatrix4x4>::New();
+    trans_mat->Identity();
+    trans_mat->SetElement(axis, 3, trans);
 
-    vtkMatrix4x4::Multiply4x4(vtkMat, transMat, vtkMat);
+    vtkMatrix4x4::Multiply4x4(_vtk_mat, trans_mat, _vtk_mat);
 }
 
 //------------------------------------------------------------------------------
 
-void plane_slicer::updateorientation_t(int from, int to)
+void plane_slicer::updateorientation_t(int _from, int _to)
 {
-    if(to == static_cast<int>(m_orientation))
+    if(_to == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<data::helper::MedicalImage::orientation_t>(from);
+        m_orientation = static_cast<data::helper::medical_image::orientation_t>(_from);
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(_from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<data::helper::MedicalImage::orientation_t>(to);
+        m_orientation = static_cast<data::helper::medical_image::orientation_t>(_to);
     }
 
     this->updating();
@@ -321,7 +321,7 @@ void plane_slicer::updateDefaultValue()
 
     double min = NAN;
     double max = NAN;
-    data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
+    data::helper::medical_image::get_min_max(image.get_shared(), min, max);
 
     m_reslicer->SetBackgroundLevel(min);
 }

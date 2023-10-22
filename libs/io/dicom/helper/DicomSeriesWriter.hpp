@@ -92,7 +92,7 @@ public:
     IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
 
     /// Defines optional anonymizer.
-    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
+    IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& _anonymizer);
 
     /**
      * @brief Defines output archive for DICOM files.
@@ -101,17 +101,17 @@ public:
      * @param subPath Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
      */
     IO_DICOM_API void setOutputArchive(
-        const SPTR(io::zip::write_archive)& archive,
-        const std::string& subPath = ""
+        const SPTR(io::zip::write_archive)& _archive,
+        const std::string& _sub_path = ""
     );
 
 protected:
 
     /// Compute DICOM filename according to anonymizer or return default filename.
-    std::string getFilename(const std::size_t& instanceIndex);
+    std::string getFilename(const std::size_t& _instance_index);
 
     /// Process inputStream to outputStream with anonymization management.
-    void processStream(std::istream& inputStream, std::ostream& outputStream);
+    void processStream(std::istream& _input_stream, std::ostream& _output_stream);
 
     /// Process write on archive
     void processWriteArchive();

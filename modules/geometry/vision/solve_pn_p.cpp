@@ -43,82 +43,82 @@ void solve_pn_p::computeRegistration(core::hires_clock::type /*timestamp*/)
         return;
     }
 
-    Camera cvCamera;
-    std::tie(cvCamera.intrinsicMat, cvCamera.imageSize, cvCamera.distCoef) =
+    Camera cv_camera;
+    std::tie(cv_camera.intrinsicMat, cv_camera.imageSize, cv_camera.distCoef) =
         io::opencv::camera::copyToCv(camera.get_shared());
 
     //get points
     std::vector<cv::Point2f> points2d;
     std::vector<cv::Point3f> points3d;
 
-    const auto fwPoints2d = m_pointList2d.lock();
-    const auto fwPoints3d = m_pointList3d.lock();
+    const auto fw_points2d = m_pointList2d.lock();
+    const auto fw_points3d = m_pointList3d.lock();
 
-    auto fwMatrix = m_matrix.lock();
+    auto fw_matrix = m_matrix.lock();
 
     //points list should have same number of points
-    if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
+    if(fw_points2d->getPoints().size() != fw_points3d->getPoints().size())
     {
         SIGHT_ERROR("The 2d and 3d point lists should have the same number of points");
 
         return;
     }
 
-    const std::size_t numberOfPoints = fwPoints2d->getPoints().size();
+    const std::size_t number_of_points = fw_points2d->getPoints().size();
 
-    float shiftX = 0.F;
-    float shiftY = 0.F;
+    float shift_x = 0.F;
+    float shift_y = 0.F;
     // Shift back 2d points to compensate "shifted" camera in a 3dScene.
     if(m_shiftPoints)
     {
-        shiftX = static_cast<float>(camera->getWidth()) / 2.F - static_cast<float>(camera->getCx());
-        shiftY = static_cast<float>(camera->getHeight()) / 2.F - static_cast<float>(camera->getCy());
+        shift_x = static_cast<float>(camera->getWidth()) / 2.F - static_cast<float>(camera->getCx());
+        shift_y = static_cast<float>(camera->getHeight()) / 2.F - static_cast<float>(camera->getCy());
     }
 
-    points2d.resize(numberOfPoints);
-    points3d.resize(numberOfPoints);
+    points2d.resize(number_of_points);
+    points3d.resize(number_of_points);
 
-    for(std::size_t i = 0 ; i < numberOfPoints ; ++i)
+    for(std::size_t i = 0 ; i < number_of_points ; ++i)
     {
         // 2d
-        data::point::csptr p2d = fwPoints2d->getPoints()[i];
-        cv::Point2f cvP2d;
+        data::point::csptr p2d = fw_points2d->getPoints()[i];
+        cv::Point2f cv_p2d;
 
-        cvP2d.x = static_cast<float>(p2d->getCoord()[0]) - shiftX;
-        cvP2d.y = static_cast<float>(p2d->getCoord()[1]) - shiftY;
+        cv_p2d.x = static_cast<float>(p2d->getCoord()[0]) - shift_x;
+        cv_p2d.y = static_cast<float>(p2d->getCoord()[1]) - shift_y;
 
-        points2d[i] = cvP2d;
+        points2d[i] = cv_p2d;
 
         // 3d
-        data::point::csptr p3d = fwPoints3d->getPoints()[i];
-        cv::Point3f cvP3d;
+        data::point::csptr p3d = fw_points3d->getPoints()[i];
+        cv::Point3f cv_p3d;
 
-        cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
-        cvP3d.y = static_cast<float>(p3d->getCoord()[1]);
-        cvP3d.z = static_cast<float>(p3d->getCoord()[2]);
+        cv_p3d.x = static_cast<float>(p3d->getCoord()[0]);
+        cv_p3d.y = static_cast<float>(p3d->getCoord()[1]);
+        cv_p3d.z = static_cast<float>(p3d->getCoord()[2]);
 
-        points3d[i] = cvP3d;
+        points3d[i] = cv_p3d;
     }
 
     // call solvepnp
-    cv::Matx44f cvMat = sight::geometry::vision::helper::cameraPoseMonocular(
+    cv::Matx44f cv_mat = sight::geometry::vision::helper::camera_pose_monocular(
         points3d,
         points2d,
-        cvCamera.intrinsicMat,
-        cvCamera.distCoef
+        cv_camera.intrinsicMat,
+        cv_camera.distCoef
     );
     // object pose
     if(m_reverseMatrix)
     {
-        cvMat = cvMat.inv();
+        cv_mat = cv_mat.inv();
     }
 
     data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
-    io::opencv::matrix::copyFromCv(cvMat, matrix);
+    io::opencv::matrix::copy_from_cv(cv_mat, matrix);
 
-    fwMatrix->deep_copy(matrix);
+    fw_matrix->deep_copy(matrix);
 
-    const auto sig = fwMatrix->signal<data::matrix4::ModifiedSignalType>(data::matrix4::MODIFIED_SIG);
+    const auto sig = fw_matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG);
     sig->async_emit();
 }
 

@@ -1,4 +1,4 @@
-# Name;(R,G,B,A);Category(ies);Class;Attachement;NativeExp;NativeExpGeo;AnatomicRegion;PropertyCategory;PropertyType
+# Name;(R,G,B,A);Category(ies);Class;Attachement;NativeExp;NativeExpGeo;AnatomicRegion;PropertyCategory;property_t
 World;(0,0,0,100);Body;No_constraint;;;;;;
 Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body
 Bones;(242,242,217,100);Body;Organ;;;;Bone;Anat_Struct;Bone

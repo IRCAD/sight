@@ -31,26 +31,26 @@ namespace sight::io::bitmap::detail::tiff
 
 //------------------------------------------------------------------------------
 
-inline static int mapProc(thandle_t, void**, toff_t*)
+inline static int map_proc(thandle_t, void**, toff_t*)
 {
     return 0;
 }
 
 //------------------------------------------------------------------------------
 
-inline static void unmapProc(thandle_t, void*, toff_t)
+inline static void unmap_proc(thandle_t, void*, toff_t)
 {
 }
 
 //------------------------------------------------------------------------------
 
-inline static void errorHandler(const char* module, const char* fmt, va_list args)
+inline static void error_handler(const char* _module, const char* _fmt, va_list _args)
 {
     char error_buffer[0xFFFF];
-    vsnprintf(error_buffer, sizeof(error_buffer), fmt, args);
+    vsnprintf(error_buffer, sizeof(error_buffer), _fmt, _args);
 
     std::string msg("Tiff Error: ");
-    msg += module;
+    msg += _module;
     msg += ": ";
     msg += error_buffer;
 
@@ -59,13 +59,13 @@ inline static void errorHandler(const char* module, const char* fmt, va_list arg
 
 //------------------------------------------------------------------------------
 
-inline static void warningHandler(const char* module, const char* fmt, va_list args)
+inline static void warning_handler(const char* _module, const char* _fmt, va_list _args)
 {
     char warning_buffer[0xFFFF];
-    vsnprintf(warning_buffer, sizeof(warning_buffer), fmt, args);
+    vsnprintf(warning_buffer, sizeof(warning_buffer), _fmt, _args);
 
     std::string msg("Tiff Warning: ");
-    msg += module;
+    msg += _module;
     msg += ": ";
     msg += warning_buffer;
 
@@ -76,8 +76,8 @@ static const struct HandlerRegistry final
 {
     inline HandlerRegistry() noexcept
     {
-        TIFFSetErrorHandler(&errorHandler);
-        TIFFSetWarningHandler(&warningHandler);
+        TIFFSetErrorHandler(&error_handler);
+        TIFFSetWarningHandler(&warning_handler);
     }
 } registry;
 

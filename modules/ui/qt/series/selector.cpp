@@ -32,7 +32,7 @@
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
-#include <ui/qt/series/Selector.hpp>
+#include <ui/qt/series/selector.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -97,41 +97,41 @@ void selector::configuring()
 
     if(config)
     {
-        const auto configAttr = config->get_child_optional("<xmlattr>");
+        const auto config_attr = config->get_child_optional("<xmlattr>");
 
-        const auto removeStudyIconCfg = configAttr->get_optional<std::string>(s_REMOVE_STUDY_ICON_CONFIG);
-        if(removeStudyIconCfg)
+        const auto remove_study_icon_cfg = config_attr->get_optional<std::string>(s_REMOVE_STUDY_ICON_CONFIG);
+        if(remove_study_icon_cfg)
         {
-            m_removeStudyIcon = core::runtime::get_module_resource_file_path(removeStudyIconCfg.value());
+            m_removeStudyIcon = core::runtime::get_module_resource_file_path(remove_study_icon_cfg.value());
         }
 
-        const auto removeSerieIconCfg = configAttr->get_optional<std::string>(s_REMOVE_SERIE_ICON_CONFIG);
-        if(removeSerieIconCfg)
+        const auto remove_serie_icon_cfg = config_attr->get_optional<std::string>(s_REMOVE_SERIE_ICON_CONFIG);
+        if(remove_serie_icon_cfg)
         {
-            m_removeSeriesIcon = core::runtime::get_module_resource_file_path(removeSerieIconCfg.value());
+            m_removeSeriesIcon = core::runtime::get_module_resource_file_path(remove_serie_icon_cfg.value());
         }
 
-        const auto selectionMode = configAttr->get<std::string>(s_SELECTION_MODE_CONFIG, "extended");
-        if(selectionMode == "single")
+        const auto selection_mode = config_attr->get<std::string>(s_SELECTION_MODE_CONFIG, "extended");
+        if(selection_mode == "single")
         {
             m_selectionMode = QAbstractItemView::SingleSelection;
         }
-        else if(selectionMode == "extended")
+        else if(selection_mode == "extended")
         {
             m_selectionMode = QAbstractItemView::ExtendedSelection;
         }
         else
         {
             SIGHT_WARN(
-                std::string("value ") + selectionMode + " is not managed for '"
+                std::string("value ") + selection_mode + " is not managed for '"
                 + s_SELECTION_MODE_CONFIG + "'"
             );
         }
 
-        m_removeAllowed = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_removeAllowed);
-        m_insertMode    = configAttr->get<bool>(s_INSERT_MODE_CONFIG, m_insertMode);
+        m_removeAllowed = config_attr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_removeAllowed);
+        m_insertMode    = config_attr->get<bool>(s_INSERT_MODE_CONFIG, m_insertMode);
 
-        m_displayedColumns = configAttr->get(s_DISPLAYED_COLUMN_CONFIG, m_displayedColumns);
+        m_displayedColumns = config_attr->get(s_DISPLAYED_COLUMN_CONFIG, m_displayedColumns);
     }
 }
 
@@ -141,11 +141,11 @@ void selector::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
-    m_selectorWidget = new sight::ui::qt::series::Selector(m_displayedColumns);
+    m_selectorWidget = new sight::ui::qt::series::selector(m_displayedColumns);
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->allowRemove(m_removeAllowed);
@@ -156,7 +156,7 @@ void selector::starting()
     auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_selectorWidget);
-    qtContainer->setLayout(layout);
+    qt_container->setLayout(layout);
 
     QObject::connect(
         m_selectorWidget,
@@ -237,17 +237,17 @@ void selector::onSelectedSeries(
     QVector<data::series::sptr> _deselection
 )
 {
-    const auto selectionVector = m_selection.lock();
-    const auto scoped_emitter  = selectionVector->scoped_emit();
+    const auto selection_vector = m_selection.lock();
+    const auto scoped_emitter   = selection_vector->scoped_emit();
 
     for(const auto& series : _deselection)
     {
-        selectionVector->remove(series);
+        selection_vector->remove(series);
     }
 
     for(const auto& series : _selection)
     {
-        selectionVector->push_back(series);
+        selection_vector->push_back(series);
     }
 }
 
@@ -258,12 +258,12 @@ void selector::onDoubleClick(const QModelIndex& _index)
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(_index);
 
-    const auto selectionVector = m_selection.lock();
+    const auto selection_vector = m_selection.lock();
 
-    if(m_selectorWidget->getItemType(_index) == sight::ui::qt::series::SelectorModel::SERIES)
+    if(m_selectorWidget->get_item_type(_index) == sight::ui::qt::series::selector_model::SERIES)
     {
-        SIGHT_ASSERT("There must be only one object selected",selectionVector->size() == 1);
-        data::object::sptr obj    = selectionVector->front();
+        SIGHT_ASSERT("There must be only one object selected",selection_vector->size() == 1);
+        data::object::sptr obj    = selection_vector->front();
         data::series::sptr series = std::dynamic_pointer_cast<data::series>(obj);
         SIGHT_ASSERT("Object must be a 'data::series'",series);
 
@@ -292,9 +292,9 @@ void selector::onRemoveSeries(QVector<data::series::sptr> _selection)
 
 //------------------------------------------------------------------------------
 
-void selector::addSeries(data::series_set::container_type _addedSeries)
+void selector::addSeries(data::series_set::container_type _added_series)
 {
-    for(const auto& series : _addedSeries)
+    for(const auto& series : _added_series)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -302,9 +302,9 @@ void selector::addSeries(data::series_set::container_type _addedSeries)
 
 //------------------------------------------------------------------------------
 
-void selector::removeSeries(data::series_set::container_type _removedSeries)
+void selector::removeSeries(data::series_set::container_type _removed_series)
 {
-    for(const auto& series : _removedSeries)
+    for(const auto& series : _removed_series)
     {
         m_selectorWidget->removeSeries(series);
     }

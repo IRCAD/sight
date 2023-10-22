@@ -67,22 +67,22 @@ sight::io::service::IOPathType image_reader::getIOPathType() const
 
 void image_reader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::dialog::location::READ);
-    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialog_file.addFilter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.setOption(ui::dialog::location::READ);
+    dialog_file.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
     if(result)
     {
         this->set_file(result->get_file());
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
     }
     else
     {
@@ -132,7 +132,7 @@ void image_reader::updating()
             if(sight::module::io::itk::image_reader::loadImage(this->get_file(), image))
             {
                 m_readFailed = false;
-                auto sig = image->signal<data::object::ModifiedSignalType>(data::object::MODIFIED_SIG);
+                auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 {
                     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
                     sig->async_emit();
@@ -155,27 +155,27 @@ void image_reader::updating()
 //------------------------------------------------------------------------------
 
 bool image_reader::loadImage(
-    const std::filesystem::path& imgFile,
-    const data::image::sptr& img
+    const std::filesystem::path& _img_file,
+    const data::image::sptr& _img
 )
 {
     bool ok = true;
 
-    std::string ext = imgFile.extension().string();
+    std::string ext = _img_file.extension().string();
     boost::algorithm::to_lower(ext);
 
-    sight::io::reader::object_reader::sptr imageReader;
-    if(boost::algorithm::ends_with(imgFile.string(), ".inr.gz"))
+    sight::io::reader::object_reader::sptr image_reader;
+    if(boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
     {
-        auto inrReader = std::make_shared<sight::io::itk::InrImageReader>();
-        inrReader->set_file(imgFile);
-        imageReader = inrReader;
+        auto inr_reader = std::make_shared<sight::io::itk::InrImageReader>();
+        inr_reader->set_file(_img_file);
+        image_reader = inr_reader;
     }
-    else if(ext == ".nii" || boost::algorithm::ends_with(imgFile.string(), ".nii.gz"))
+    else if(ext == ".nii" || boost::algorithm::ends_with(_img_file.string(), ".nii.gz"))
     {
-        auto niftiReader = std::make_shared<sight::io::itk::NiftiImageReader>();
-        niftiReader->set_file(imgFile);
-        imageReader = niftiReader;
+        auto nifti_reader = std::make_shared<sight::io::itk::NiftiImageReader>();
+        nifti_reader->set_file(_img_file);
+        image_reader = nifti_reader;
     }
     else
     {
@@ -190,11 +190,11 @@ bool image_reader::loadImage(
         return false;
     }
 
-    imageReader->set_object(img);
+    image_reader->set_object(_img);
 
     try
     {
-        imageReader->read();
+        image_reader->read();
     }
     catch(const std::exception& e)
     {

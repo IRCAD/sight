@@ -45,24 +45,24 @@ widget::~widget() noexcept
 
 //-----------------------------------------------------------------------------
 
-void widget::setLayout(QLayout* const layout)
+void widget::setLayout(QLayout* const _layout)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
     // Recursively delete all children
-    QLayout* oldLayout = m_container->layout();
+    QLayout* old_layout = m_container->layout();
 
-    if(nullptr != oldLayout)
+    if(nullptr != old_layout)
     {
         this->clean();
 
         // Since we will set a new layout, delete the old one as stated in Qt documentation
-        delete oldLayout;
-        oldLayout = nullptr;
+        delete old_layout;
+        old_layout = nullptr;
     }
 
     // Assign the new layout manager
-    m_container->setLayout(layout);
+    m_container->setLayout(_layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,14 +72,14 @@ void widget::clean()
     SIGHT_ASSERT("The container must be initialized before invoking clean().", m_container);
 
     // Recursively delete all children
-    QLayout* oldLayout = m_container->layout();
+    QLayout* old_layout = m_container->layout();
 
-    if(nullptr != oldLayout)
+    if(nullptr != old_layout)
     {
         // This block layouting when there is a lot of child
         m_container->setUpdatesEnabled(false);
 
-        for(QLayoutItem* child = oldLayout->takeAt(0) ; nullptr != child ; child = oldLayout->takeAt(0))
+        for(QLayoutItem* child = old_layout->takeAt(0) ; nullptr != child ; child = old_layout->takeAt(0))
         {
             delete child;
         }
@@ -104,9 +104,9 @@ void widget::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void widget::setQtContainer(QWidget* container)
+void widget::setQtContainer(QWidget* _container)
 {
-    m_container = container;
+    m_container = _container;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +126,7 @@ bool widget::isShownOnScreen()
 
 //-----------------------------------------------------------------------------
 
-void widget::setVisible(bool isVisible)
+void widget::setVisible(bool _is_visible)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setVisible().", m_container);
 
@@ -135,15 +135,15 @@ void widget::setVisible(bool isVisible)
 
     if(dock != nullptr)
     {
-        dock->setVisible(isVisible);
+        dock->setVisible(_is_visible);
     }
 
-    m_container->setVisible(isVisible);
+    m_container->setVisible(_is_visible);
 }
 
 //-----------------------------------------------------------------------------
 
-void widget::setEnabled(bool isEnabled)
+void widget::setEnabled(bool _is_enabled)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 
@@ -152,10 +152,10 @@ void widget::setEnabled(bool isEnabled)
 
     if(dock != nullptr)
     {
-        dock->setEnabled(isEnabled);
+        dock->setEnabled(_is_enabled);
     }
 
-    m_container->setEnabled(isEnabled);
+    m_container->setEnabled(_is_enabled);
 }
 
 //-----------------------------------------------------------------------------

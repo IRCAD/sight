@@ -42,24 +42,24 @@ void array_reader::read()
 
     data::array::sptr array = this->getConcreteObject();
 
-    const auto dumpLock = array->dump_lock();
+    const auto dump_lock = array->dump_lock();
 
-    std::size_t arraySizeInBytes = array->resize(array->size());
-    char* buff                   = static_cast<char*>(array->buffer());
+    std::size_t array_size_in_bytes = array->resize(array->size());
+    char* buff                      = static_cast<char*>(array->buffer());
 
     std::ifstream fs(file.string().c_str(), std::ios::in | std::ios::binary | std::ios::ate);
 
     SIGHT_THROW_IF("Unable to read " << file, !fs.good());
 
-    std::streampos fileSize = fs.tellg();
+    std::streampos file_size = fs.tellg();
     fs.seekg(0, std::ios::beg);
 
     SIGHT_THROW_IF(
-        file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
-        arraySizeInBytes - static_cast<std::size_t>(fileSize) != 0
+        file << ": Bad file size, expected: " << array_size_in_bytes << ", was: " << file_size,
+        array_size_in_bytes - static_cast<std::size_t>(file_size) != 0
     );
 
-    fs.read(buff, static_cast<std::streamsize>(arraySizeInBytes));
+    fs.read(buff, static_cast<std::streamsize>(array_size_in_bytes));
 
     fs.close();
 }

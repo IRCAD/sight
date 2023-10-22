@@ -114,37 +114,37 @@ SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::TestSrvThreeData, sight::data:
 
 void service_factory_test::factoryTest()
 {
-    const auto serviceFactory = service::extension::factory::get();
+    const auto service_factory = service::extension::factory::get();
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+        const auto services_impl = service_factory->getImplementationIdFromObjectAndType(
             "sight::data::real",
             "sight::service::ut::test_service"
         );
 
-        auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvOneData");
-        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvOneData not found ", it != servicesImpl.end());
+        auto it = std::find(services_impl.begin(), services_impl.end(), "sight::service::ut::TestSrvOneData");
+        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvOneData not found ", it != services_impl.end());
 
-        const auto objects = serviceFactory->getServiceObjects("sight::service::ut::TestSrvOneData");
+        const auto objects = service_factory->getServiceObjects("sight::service::ut::TestSrvOneData");
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::real"), objects[0]);
     }
     {
-        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+        auto services_impl = service_factory->getImplementationIdFromObjectAndType(
             "sight::data::real",
             "sight::service::ut::test_service"
         );
 
-        auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvThreeData");
-        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvThreeData not found ", it != servicesImpl.end());
+        auto it = std::find(services_impl.begin(), services_impl.end(), "sight::service::ut::TestSrvThreeData");
+        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvThreeData not found ", it != services_impl.end());
 
-        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+        services_impl = service_factory->getImplementationIdFromObjectAndType(
             "sight::data::integer",
             "sight::service::ut::test_service"
         );
 
-        it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvThreeData");
-        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvThreeData not found ", it != servicesImpl.end());
+        it = std::find(services_impl.begin(), services_impl.end(), "sight::service::ut::TestSrvThreeData");
+        CPPUNIT_ASSERT_MESSAGE("sight::service::ut::TestSrvThreeData not found ", it != services_impl.end());
 
-        const auto objects = serviceFactory->getServiceObjects("sight::service::ut::TestSrvThreeData");
+        const auto objects = service_factory->getServiceObjects("sight::service::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), objects.size());
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::real"), objects[0]);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::integer"), objects[1]);

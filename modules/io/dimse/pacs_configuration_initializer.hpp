@@ -143,7 +143,7 @@ private:
     std::string m_preferenceKey;
 
     /// Return the canonical preference key
-    std::string getKey(const std::string& subKey) const noexcept;
+    std::string getKey(const std::string& _sub_key) const noexcept;
 
     static constexpr std::string_view s_CONFIG_INOUT = "config";
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, s_CONFIG_INOUT, true};

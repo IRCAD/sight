@@ -52,13 +52,13 @@ void parameters::parse_plugin_infos()
     {
         const auto& config = ext->get_config();
 
-        const auto extensionId = config.get<std::string>("id");
+        const auto extension_id = config.get<std::string>("id");
 
         field_adaptor_t parameters;
 
-        if(const auto parametersCfg = config.get_child_optional("parameters"); parametersCfg.has_value())
+        if(const auto parameters_cfg = config.get_child_optional("parameters"); parameters_cfg.has_value())
         {
-            for(const auto& param : boost::make_iterator_range(parametersCfg->equal_range("param")))
+            for(const auto& param : boost::make_iterator_range(parameters_cfg->equal_range("param")))
             {
                 const auto name  = param.second.get<std::string>("<xmlattr>.name");
                 const auto value = param.second.get<std::string>("<xmlattr>.value");
@@ -68,14 +68,14 @@ void parameters::parse_plugin_infos()
 
         core::mt::write_lock lock(m_registryMutex);
 #ifdef _DEBUG
-        auto iter = m_reg.find(extensionId);
+        auto iter = m_reg.find(extension_id);
 #endif
         SIGHT_ASSERT(
-            "The id " << extensionId
+            "The id " << extension_id
             << " already exists in the application configuration parameter registry",
             iter == m_reg.end()
         );
-        m_reg[extensionId] = parameters;
+        m_reg[extension_id] = parameters;
     }
 }
 
@@ -94,12 +94,12 @@ void parameters::clear_registry()
 
 //-----------------------------------------------------------------------------
 
-const field_adaptor_t& parameters::getParameters(const std::string& extensionId) const
+const field_adaptor_t& parameters::getParameters(const std::string& _extension_id) const
 {
     core::mt::read_lock lock(m_registryMutex);
-    auto iter = m_reg.find(core::runtime::filter_id(extensionId));
+    auto iter = m_reg.find(core::runtime::filter_id(_extension_id));
     SIGHT_ASSERT(
-        "The id " << extensionId << " is not found in the application configuration parameter registry",
+        "The id " << _extension_id << " is not found in the application configuration parameter registry",
         iter != m_reg.end()
     );
     return iter->second;

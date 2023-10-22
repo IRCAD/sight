@@ -90,7 +90,7 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
      */
-    void changeSliceIndex(int value);
+    void changeSliceIndex(int _value);
 
 protected:
 
@@ -115,15 +115,15 @@ private:
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    void readImage(sight::data::dicom_series& dicomSeries, std::size_t selectedSliceIndex);
+    void readImage(sight::data::dicom_series& _dicom_series, std::size_t _selected_slice_index);
 
     /// Pull the selected slice from the Pacs
-    void pullInstance(sight::data::dicom_series& dicomSeries);
+    void pullInstance(sight::data::dicom_series& _dicom_series);
 
     /**
      * @brief Displays a dialog box with the error message
      */
-    static void displayErrorMessage(const std::string& message);
+    static void displayErrorMessage(const std::string& _message);
 
     /// Slice index slider
     QPointer<QSlider> m_sliceIndexSlider;

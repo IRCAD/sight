@@ -121,39 +121,39 @@ protected:
     MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
 
     /// Sets overwrite mode. Key must be 'overwrite'.
-    MODULE_FILTER_IMAGE_API void setBoolParameter(bool val, std::string key) override;
+    MODULE_FILTER_IMAGE_API void setBoolParameter(bool _val, std::string _key) override;
 
     /// Sets value. Key must be 'value'.
-    MODULE_FILTER_IMAGE_API void setIntParameter(int val, std::string key) override;
+    MODULE_FILTER_IMAGE_API void setIntParameter(int _val, std::string _key) override;
 
     /// Sets radius. Key must be 'radius'.
-    MODULE_FILTER_IMAGE_API void setDoubleParameter(double val, std::string key) override;
+    MODULE_FILTER_IMAGE_API void setDoubleParameter(double _val, std::string _key) override;
 
     /// Sets propagation mode. Key must be 'mode'.
-    MODULE_FILTER_IMAGE_API void setEnumParameter(std::string val, std::string key) override;
+    MODULE_FILTER_IMAGE_API void setEnumParameter(std::string _val, std::string _key) override;
 
 private:
 
-    typedef sight::filter::image::min_max_propagation::CoordinatesType CoordinatesType;
+    typedef sight::filter::image::min_max_propagation::coordinates_t coordinates_t;
 
-    typedef sight::filter::image::min_max_propagation::OrientationType OrientationType;
+    typedef sight::filter::image::min_max_propagation::orientation_t orientation_t;
 
-    typedef core::com::signal<void (ui::history::command::sptr)> DrawnSignalType;
+    typedef core::com::signal<void (ui::history::command::sptr)> drawn_signal_t;
 
     /// Swaps orientation.
-    void setOrientation(int from, int to);
+    void setOrientation(int _from, int _to);
 
     /// Sets drawing to false.
     void resetDrawing();
 
     /// Draws seeds while the left button is pressed, propagate on release.
-    void draw(data::tools::picking_info pickingInfo);
+    void draw(data::tools::picking_info _picking_info);
 
     /// Appends diff to member diff.
-    bool appendDiff(const sight::filter::image::image_diff& diff);
+    bool appendDiff(const sight::filter::image::image_diff& _diff);
 
     /// Gets seeds from the diff list.
-    sight::filter::image::min_max_propagation::SeedsType convertDiffToSeeds() const;
+    sight::filter::image::min_max_propagation::seeds_t convertDiffToSeeds() const;
 
     /// Line drawer.
     UPTR(sight::filter::image::line_drawer) m_lineDrawer;
@@ -162,16 +162,16 @@ private:
     UPTR(sight::filter::image::min_max_propagation) m_propagator;
 
     /// Memorizes the last cursor position.
-    CoordinatesType m_oldPoint {};
+    coordinates_t m_oldPoint {};
 
     /// Current slice orientation.
-    OrientationType m_orientation {};
+    orientation_t m_orientation {};
 
     /// Memorizes the seeds while drawing.
     sight::filter::image::image_diff m_diff;
 
     /// Signal sent when the pencil is released and the image has been modified.
-    DrawnSignalType::sptr m_sigDrawn;
+    drawn_signal_t::sptr m_sigDrawn;
 
     /// Value to be written inside the image.
     int m_value {1};

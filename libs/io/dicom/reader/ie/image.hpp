@@ -48,13 +48,13 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API image(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::sptr& image,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::sptr& _image,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
@@ -79,9 +79,9 @@ public:
     IO_DICOM_API virtual void readVOILUTModule();
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool enabled)
+    void setBufferRotationEnabled(bool _enabled)
     {
-        m_enableBufferRotation = enabled;
+        m_enableBufferRotation = _enabled;
     }
 
 protected:
@@ -96,11 +96,11 @@ protected:
      * @throw(io::dicom::exception::Failed)
      */
     char* readImageBuffer(
-        const std::vector<unsigned int>& dimensions,
-        core::type imageType,
-        std::uint16_t bitsAllocated,
-        std::uint16_t newBitsAllocated,
-        bool performRescale
+        const std::vector<unsigned int>& _dimensions,
+        core::type _image_type,
+        std::uint16_t _bits_allocated,
+        std::uint16_t _new_bits_allocated,
+        bool _perform_rescale
     );
 
     /**
@@ -110,9 +110,9 @@ protected:
      * @param[in] bitsAllocated Number of bits allocated before rescale
      */
     char* correctImageOrientation(
-        char* buffer,
-        std::vector<unsigned int>& dimensions,
-        std::uint16_t bitsAllocated
+        char* _buffer,
+        std::vector<unsigned int>& _dimensions,
+        std::uint16_t _bits_allocated
     );
 
     /// Enable buffer rotation

@@ -107,15 +107,15 @@ private:
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    static void displayErrorMessage(const std::string& message);
+    static void displayErrorMessage(const std::string& _message);
 
     /**
      * @brief Update the series_set with the series retrieved from the pacs
      * @param[in] series Series which must be added to the series_set
      */
-    void updateSeriesSet(const data::series_set::container_type& series);
+    void updateSeriesSet(const data::series_set::container_type& _series);
 
-    /// Patient Name Field
+    /// Patient Name field
     QPointer<QLineEdit> m_patientNameLineEdit;
 
     /// Patient Name Query Button

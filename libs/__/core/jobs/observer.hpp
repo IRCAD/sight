@@ -53,7 +53,7 @@ public:
      *
      * @param name The job name
      */
-    CORE_API observer(const std::string& name, std::uint64_t work_units = 100);
+    CORE_API observer(const std::string& _name, std::uint64_t _work_units = 100);
 
     /**
      * @name Exposed base methods

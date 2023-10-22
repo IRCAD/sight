@@ -60,72 +60,72 @@ std::string SliceThicknessModifier::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
-    const data::dicom_series::sptr& series,
+SliceThicknessModifier::dicom_series_container_t SliceThicknessModifier::apply(
+    const data::dicom_series::sptr& _series,
     const core::log::logger::sptr&
     /*logger*/
 ) const
 {
-    DicomSeriesContainerType result;
+    dicom_series_container_t result;
 
-    if(series->getDicomContainer().size() < 2)
+    if(_series->getDicomContainer().size() < 2)
     {
         SIGHT_WARN("SliceThicknessModifier is being applied on a series containing only one slice.");
-        result.push_back(series);
+        result.push_back(_series);
         return result;
     }
 
     // Retrieve the two first instances
-    auto firstItem = series->getDicomContainer().begin();
+    auto first_item = _series->getDicomContainer().begin();
 
-    const core::memory::buffer_object::sptr& firstBufferObj  = firstItem->second;
-    const core::memory::buffer_object::sptr& secondBufferObj = (++firstItem)->second;
+    const core::memory::buffer_object::sptr& first_buffer_obj  = first_item->second;
+    const core::memory::buffer_object::sptr& second_buffer_obj = (++first_item)->second;
 
     // Compute the slice thickness between the 2 first slices.
-    const double firstIndex     = this->getInstanceZPosition(firstBufferObj);
-    const double secondIndex    = this->getInstanceZPosition(secondBufferObj);
-    const double sliceThickness = std::abs(secondIndex - firstIndex);
+    const double first_index     = this->getInstanceZPosition(first_buffer_obj);
+    const double second_index    = this->getInstanceZPosition(second_buffer_obj);
+    const double slice_thickness = std::abs(second_index - first_index);
 
     // Check that the computed sliceThickness doesn't match the sliceThickness of the first instance
-    const double currentSliceThickness = this->getSliceThickness(firstBufferObj);
-    const double epsilon               = 1e-2;
+    const double current_slice_thickness = this->getSliceThickness(first_buffer_obj);
+    const double epsilon                 = 1e-2;
 
     // If the computed sliceThickness doesn't match the sliceThickness value
     // we add the computed value to the DicomSeries.
-    if(std::abs(sliceThickness - currentSliceThickness) > epsilon)
+    if(std::abs(slice_thickness - current_slice_thickness) > epsilon)
     {
-        series->addComputedTagValue("SliceThickness", std::to_string(sliceThickness));
+        _series->addComputedTagValue("SliceThickness", std::to_string(slice_thickness));
     }
 
-    result.push_back(series);
+    result.push_back(_series);
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
-double SliceThicknessModifier::getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj) const
+double SliceThicknessModifier::getInstanceZPosition(const core::memory::buffer_object::sptr& _buffer_obj) const
 {
-    DcmFileFormat fileFormat;
+    DcmFileFormat file_format;
     DcmDataset* dataset = nullptr;
 
-    const std::size_t buffSize = bufferObj->size();
-    core::memory::buffer_object::lock_t lock(bufferObj);
+    const std::size_t buff_size = _buffer_obj->size();
+    core::memory::buffer_object::lock_t lock(_buffer_obj);
     char* buffer = static_cast<char*>(lock.buffer());
 
     DcmInputBufferStream is;
-    is.setBuffer(buffer, offile_off_t(buffSize));
+    is.setBuffer(buffer, offile_off_t(buff_size));
     is.setEos();
 
-    fileFormat.transferInit();
-    if(!fileFormat.read(is).good())
+    file_format.transferInit();
+    if(!file_format.read(is).good())
     {
-        SIGHT_THROW("Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "'");
+        SIGHT_THROW("Unable to read Dicom file '" << _buffer_obj->get_stream_info().fs_file.string() << "'");
     }
 
-    fileFormat.loadAllDataIntoMemory();
-    fileFormat.transferEnd();
+    file_format.loadAllDataIntoMemory();
+    file_format.transferEnd();
 
-    dataset = fileFormat.getDataset();
+    dataset = file_format.getDataset();
 
     if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
     {
@@ -133,60 +133,60 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::buffer_o
         throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
-    fwVec3d imagePosition;
+    fwVec3d image_position;
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
+        dataset->findAndGetFloat64(DCM_ImagePositionPatient, image_position[i], i);
     }
 
-    fwVec3d imageOrientationU;
-    fwVec3d imageOrientationV;
+    fwVec3d image_orientation_u;
+    fwVec3d image_orientation_v;
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
+        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_u[i], i);
+        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_v[i], i + std::size_t(3));
     }
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
-    const double index = geometry::data::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(image_position, z_vector);
 
     return index;
 }
 
 //-----------------------------------------------------------------------------
 
-double SliceThicknessModifier::getSliceThickness(const core::memory::buffer_object::sptr& bufferObj) const
+double SliceThicknessModifier::getSliceThickness(const core::memory::buffer_object::sptr& _buffer_obj) const
 {
-    DcmFileFormat fileFormat;
+    DcmFileFormat file_format;
     OFCondition status;
     DcmDataset* dataset = nullptr;
 
-    const std::size_t buffSize = bufferObj->size();
-    core::memory::buffer_object::lock_t lock(bufferObj);
+    const std::size_t buff_size = _buffer_obj->size();
+    core::memory::buffer_object::lock_t lock(_buffer_obj);
     char* buffer = static_cast<char*>(lock.buffer());
 
     DcmInputBufferStream is;
-    is.setBuffer(buffer, offile_off_t(buffSize));
+    is.setBuffer(buffer, offile_off_t(buff_size));
     is.setEos();
 
-    fileFormat.transferInit();
-    if(!fileFormat.read(is).good())
+    file_format.transferInit();
+    if(!file_format.read(is).good())
     {
-        SIGHT_THROW("Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "'");
+        SIGHT_THROW("Unable to read Dicom file '" << _buffer_obj->get_stream_info().fs_file.string() << "'");
     }
 
-    fileFormat.loadAllDataIntoMemory();
-    fileFormat.transferEnd();
+    file_format.loadAllDataIntoMemory();
+    file_format.transferEnd();
 
-    dataset = fileFormat.getDataset();
+    dataset = file_format.getDataset();
 
-    double sliceThickness = 0.;
-    dataset->findAndGetFloat64(DCM_SliceThickness, sliceThickness);
+    double slice_thickness = 0.;
+    dataset->findAndGetFloat64(DCM_SliceThickness, slice_thickness);
 
-    return sliceThickness;
+    return slice_thickness;
 }
 
 } // namespace sight::filter::dicom::modifier

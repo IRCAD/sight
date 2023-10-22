@@ -48,13 +48,13 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(
-    const data::dicom_series::csptr& dicomSeries,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::logger::sptr& logger,
-    ProgressCallback progress,
-    CancelRequestedCallback cancel
+    const data::dicom_series::csptr& _dicom_series,
+    const SPTR(io::dicom::container::DicomInstance)& _instance,
+    const core::log::logger::sptr& _logger,
+    ProgressCallback _progress,
+    CancelRequestedCallback _cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
+    io::dicom::reader::iod::InformationObjectDefinition(_dicom_series, _instance, _logger, _progress, _cancel)
 {
 }
 
@@ -65,17 +65,17 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(data::series::sptr series)
+void SurfaceSegmentationIOD::read(data::series::sptr _series)
 {
-    data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series);
-    SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
+    data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(_series);
+    SIGHT_ASSERT("ModelSeries should not be null.", model_series);
 
     // Create GDCM Reader
     SPTR(gdcm::SurfaceReader) reader = std::make_shared<gdcm::SurfaceReader>();
 
     // Dicom container
-    data::dicom_series::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
-    if(dicomContainer.size() > 1)
+    data::dicom_series::dicom_container_t dicom_container = m_dicomSeries->getDicomContainer();
+    if(dicom_container.size() > 1)
     {
         m_logger->warning(
             "More than one surface segmentation storage have been found in the series. "
@@ -84,40 +84,40 @@ void SurfaceSegmentationIOD::read(data::series::sptr series)
     }
 
     // Read first file
-    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
-    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
-    SPTR(std::istream) is = streamInfo.stream;
+    const core::memory::buffer_object::sptr buffer_obj          = dicom_container.begin()->second;
+    const core::memory::buffer_manager::stream_info stream_info = buffer_obj->get_stream_info();
+    SPTR(std::istream) is = stream_info.stream;
     reader->SetStream(*is);
 
     const bool success = reader->Read();
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->get_stream_info().fs_file.string()
+            + buffer_obj->get_stream_info().fs_file.string()
             + "\" using the GDCM Reader."
         ),
         !success
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                             m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                         m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                           m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Patient patient_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                              m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Study study_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                          m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::series series_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                            m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                                 m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Equipment equipment_ie(m_dicomSeries, reader, m_instance, _series, m_logger,
+                                                  m_progressCallback, m_cancelRequestedCallback);
 
-    io::dicom::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
-                                             m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Surface surface_ie(m_dicomSeries, reader, m_instance, model_series, m_logger,
+                                              m_progressCallback, m_cancelRequestedCallback);
 
     // Load Segmented Property Registry
     const std::filesystem::path filepath = core::runtime::get_library_resource_file_path(
         "io_dicom/SegmentedPropertyRegistry.csv"
     );
-    if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
+    if(!surface_ie.loadSegmentedPropertyRegistry(filepath))
     {
         throw io::dicom::exception::Failed(
                   "Unable to load segmented property registry: '"
@@ -126,16 +126,16 @@ void SurfaceSegmentationIOD::read(data::series::sptr series)
     }
 
     // Read Patient Module - PS 3.3 C.7.1.1
-    patientIE.readPatientModule();
+    patient_ie.readPatientModule();
 
     // Read General Study Module - PS 3.3 C.7.2.1
-    studyIE.readGeneralStudyModule();
+    study_ie.readGeneralStudyModule();
 
     // Read Patient Study Module - PS 3.3 C.7.2.2
-    studyIE.readPatientStudyModule();
+    study_ie.readPatientStudyModule();
 
     // Read General Series Module - PS 3.3 C.7.3.1
-    seriesIE.readGeneralSeriesModule();
+    series_ie.readGeneralSeriesModule();
 
     // Read General Series Module - PS 3.3 C.8.20.1
     // NOTE: Not used in Sight
@@ -144,17 +144,17 @@ void SurfaceSegmentationIOD::read(data::series::sptr series)
     // NOTE: Not used in Sight
 
     // Read General Equipment Module - PS 3.3 C.7.5.1
-    equipmentIE.readGeneralEquipmentModule();
+    equipment_ie.readGeneralEquipmentModule();
 
     // Read SOP Common Module - PS 3.3 C.12.1
     // NOTE: Not used in Sight
 
     // Read Surface Segmentation Module - PS 3.3 C.8.23.1
     // And Surface Mesh Module - PS 3.3 C.27.1
-    surfaceIE.readSurfaceSegmentationAndSurfaceMeshModules();
+    surface_ie.readSurfaceSegmentationAndSurfaceMeshModules();
 
     // Display reconstructions
-    series->setField("ShowReconstructions", std::make_shared<data::boolean>(true));
+    _series->set_field("ShowReconstructions", std::make_shared<data::boolean>(true));
 }
 
 //------------------------------------------------------------------------------

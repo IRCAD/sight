@@ -54,16 +54,16 @@ public:
     UI_QT_API ~input() override = default;
 
     /// Set the title of the message box
-    UI_QT_API void setTitle(const std::string& title) override;
+    UI_QT_API void setTitle(const std::string& _title) override;
 
     /// Set the message
-    UI_QT_API void setMessage(const std::string& msg) override;
+    UI_QT_API void setMessage(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_QT_API void setEchoMode(input::EchoMode echoMode) override;
+    UI_QT_API void setEchoMode(input::EchoMode _echo_mode) override;
 
     /// Set the input text in the input field
-    UI_QT_API void set_input(const std::string& text) override;
+    UI_QT_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
     UI_QT_API std::pair<std::string, bool> getInput() override;

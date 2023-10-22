@@ -11,7 +11,7 @@ Contains services to process `sight::data::point_list`.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_filter_point ...)
+add_dependencies(my_target module_filter_point ...)
 ```
 
 ### XML

@@ -59,16 +59,16 @@ void GuiQtTest::testDefaultFrame()
 {
     data::string::sptr object = std::make_shared<data::string>();
 
-    service::config_t frameConfig;
+    service::config_t frame_config;
 
-    frameConfig.put("gui.frame.name", "guiQtUnitTest");
-    frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
-    frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
+    frame_config.put("gui.frame.name", "guiQtUnitTest");
+    frame_config.put("gui.frame.minSize.<xmlattr>.width", "800");
+    frame_config.put("gui.frame.minSize.<xmlattr>.height", "600");
 
     service::base::sptr srv = service::add("sight::module::ui::frame");
     ASSERT_NOT_NULL(srv);
 
-    srv->set_config(frameConfig);
+    srv->set_config(frame_config);
     srv->configure();
     srv->start();
 
@@ -80,7 +80,7 @@ void GuiQtTest::testDefaultFrame()
     CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
 
     srv->stop();
-    service::unregisterService(srv);
+    service::unregister_service(srv);
 }
 
 //------------------------------------------------------------------------------

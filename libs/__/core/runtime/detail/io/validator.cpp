@@ -43,27 +43,27 @@ namespace sight::core::runtime::detail::io
 
 //------------------------------------------------------------------------------
 
-validator::validator(const validator& validator) :
-    m_xsd_content(validator.m_xsd_content),
-    m_schema_parser_context(validator.m_schema_parser_context),
-    m_schema(validator.m_schema)
+validator::validator(const validator& _validator) :
+    m_xsd_content(_validator.m_xsd_content),
+    m_schema_parser_context(_validator.m_schema_parser_context),
+    m_schema(_validator.m_schema)
 {
 }
 
 //------------------------------------------------------------------------------
 
-validator::validator(std::string buffer) :
-    m_xsd_content(std::move(buffer))
+validator::validator(std::string _buffer) :
+    m_xsd_content(std::move(_buffer))
 {
 }
 
 //------------------------------------------------------------------------------
 
-validator::validator(const std::filesystem::path& path)
+validator::validator(const std::filesystem::path& _path)
 {
-    std::string str_path(path.string());
+    std::string str_path(_path.string());
     // Checks the path validity.
-    if(!std::filesystem::exists(path) || std::filesystem::is_directory(path))
+    if(!std::filesystem::exists(_path) || std::filesystem::is_directory(_path))
     {
         throw runtime_exception(str_path + ": is not a valid path to an xml schema file.");
     }
@@ -133,16 +133,16 @@ void validator::initialize_context()
 
 //------------------------------------------------------------------------------
 
-bool validator::validate(const std::filesystem::path& xml_file)
+bool validator::validate(const std::filesystem::path& _xml_file)
 {
     int result = 0;
 
     initialize_context();
 
-    xmlDocPtr xml_doc = xmlParseFile(xml_file.string().c_str());
+    xmlDocPtr xml_doc = xmlParseFile(_xml_file.string().c_str());
     if(xml_doc == nullptr)
     {
-        throw std::ios_base::failure("Unable to parse the XML file " + xml_file.string());
+        throw std::ios_base::failure("Unable to parse the XML file " + _xml_file.string());
     }
 
     xmlNodePtr xml_root = xmlDocGetRootElement(xml_doc);
@@ -163,7 +163,7 @@ bool validator::validate(const std::filesystem::path& xml_file)
 
     if(result != 0)
     {
-        SIGHT_WARN("Validator::validation NOK, xml = " << xml_file.string());
+        SIGHT_WARN("Validator::validation NOK, xml = " << _xml_file.string());
         SIGHT_WARN("Validator::validation NOK, xsd = " << get_xsd_content());
         SIGHT_ERROR("Validator::validation NOK, error log = " << get_error_log());
     }
@@ -173,7 +173,7 @@ bool validator::validate(const std::filesystem::path& xml_file)
 
 //------------------------------------------------------------------------------
 
-bool validator::validate(xmlNodePtr node)
+bool validator::validate(xmlNodePtr _node)
 {
     int result = 0;
 
@@ -184,12 +184,12 @@ bool validator::validate(xmlNodePtr node)
         return false;
     }
 
-    result = xmlSchemaValidateOneElement(m_schema_valid_context.get(), node);
+    result = xmlSchemaValidateOneElement(m_schema_valid_context.get(), _node);
 
     if(result != 0)
     {
         xmlBufferPtr buffer = xmlBufferCreate();
-        xmlNodeDump(buffer, node->doc, node, 1, 1);
+        xmlNodeDump(buffer, _node->doc, _node, 1, 1);
         SIGHT_WARN("Validator::validation NOK, node :\n " << buffer->content);
         xmlBufferFree(buffer);
         SIGHT_WARN("Validator::validation NOK, xsd = " << get_xsd_content());
@@ -201,11 +201,11 @@ bool validator::validate(xmlNodePtr node)
 
 //------------------------------------------------------------------------------
 
-void validator::error_handler(void* user_data, xmlErrorPtr error)
+void validator::error_handler(void* _user_data, xmlErrorPtr _error)
 {
-    auto* validator = reinterpret_cast<class validator*>(user_data);
+    auto* validator = reinterpret_cast<class validator*>(_user_data);
 
-    validator->m_error_log << "At line " << error->line << ": " << error->message;
+    validator->m_error_log << "At line " << _error->line << ": " << _error->message;
 }
 
 //------------------------------------------------------------------------------

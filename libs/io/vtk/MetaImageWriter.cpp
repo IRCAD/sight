@@ -61,21 +61,21 @@ void MetaImageWriter::write()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::image::csptr pImage = getConcreteObject();
+    data::image::csptr p_image = getConcreteObject();
 
     vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
-    vtkSmartPointer<vtkImageData> vtkImage     = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(pImage, vtkImage);
-    writer->SetInputData(vtkImage);
+    vtkSmartPointer<vtkImageData> vtk_image    = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::to_vtk_image(p_image, vtk_image);
+    writer->SetInputData(vtk_image);
     writer->SetFileName(this->get_file().string().c_str());
     writer->SetCompression(true);
 
     vtkSmartPointer<vtkLambdaCommand> progress_callback;
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [this](vtkObject* caller, std::uint64_t, void*)
+        [this](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* filter = static_cast<vtkMetaImageWriter*>(caller);
+            auto* filter = static_cast<vtkMetaImageWriter*>(_caller);
             m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
 

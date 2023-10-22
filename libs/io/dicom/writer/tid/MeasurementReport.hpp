@@ -45,9 +45,9 @@ public:
      * @param[in] image Image data
      */
     IO_DICOM_API MeasurementReport(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::csptr& image
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::csptr& _image
     );
 
     /// Destructor
@@ -57,7 +57,7 @@ public:
      * @brief Create Measurement Report template root node
      * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
      */
-    IO_DICOM_API virtual SPTR(io::dicom::container::sr::DicomSRNode) createRootNode(bool useSCoord3D = true);
+    IO_DICOM_API virtual SPTR(io::dicom::container::sr::DicomSRNode) createRootNode(bool _use_s_coord3_d = true);
 };
 
 } // namespace sight::io::dicom::writer::tid

@@ -46,10 +46,10 @@ std::vector<ui::container::widget::sptr> view::getSubViews()
 
 //------------------------------------------------------------------------------
 
-void view::modifyLayout(const ui::parameter_t& /*parameter*/, const std::string& key)
+void view::modifyLayout(const ui::parameter_t& /*parameter*/, const std::string& _key)
 {
     SIGHT_THROW(
-        "'" + std::string(__func__) + "' is not implemented for this layout manager with the key '" + key + "'."
+        "'" + std::string(__func__) + "' is not implemented for this layout manager with the key '" + _key + "'."
     );
 }
 

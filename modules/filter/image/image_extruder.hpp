@@ -46,7 +46,7 @@ namespace sight::module::filter::image
  * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  *
  * @section Slots Slots
- * - \b addReconstructions(data::model_series::ReconstructionVectorType): extrude reconstructions from the image.
+ * - \b addReconstructions(data::model_series::reconstruction_vector_t): extrude reconstructions from the image.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -107,7 +107,7 @@ private:
     void stopping() override;
 
     /// SLOT: called when reconstructions are added to the model series.
-    void addReconstructions(data::model_series::ReconstructionVectorType _reconstructions) const;
+    void addReconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;
 
     static constexpr std::string_view s_MESHES_INPUT    = "meshes";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";

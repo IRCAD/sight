@@ -27,32 +27,32 @@ namespace sight::io::itk::helper
 
 //-----------------------------------------------------------------------------
 
-Transform::MatrixType Transform::convertToITK(const data::matrix4::csptr& _inTrf)
+Transform::matrix_t Transform::convertToITK(const data::matrix4::csptr& _in_trf)
 {
-    MatrixType itkMat;
+    matrix_t itk_mat;
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            itkMat(i, j) = (*_inTrf)(i, j);
+            itk_mat(i, j) = (*_in_trf)(i, j);
         }
     }
 
-    return itkMat;
+    return itk_mat;
 }
 
 //-----------------------------------------------------------------------------
 
-void Transform::convertFromITK(const MatrixType& _inTrf, data::matrix4::sptr& _outTrf)
+void Transform::convertFromITK(const matrix_t& _in_trf, data::matrix4::sptr& _out_trf)
 {
-    SIGHT_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
+    SIGHT_ASSERT("Input itk Matrix should be 4x4", _in_trf.ColumnDimensions == 4 && _in_trf.RowDimensions == 4);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            (*_outTrf)(i, j) = _inTrf(i, j);
+            (*_out_trf)(i, j) = _in_trf(i, j);
         }
     }
 }

@@ -51,7 +51,7 @@ public:
         Ogre::LogMessageLevel _lml,
         bool /*maskDebug*/,
         const Ogre::String& /*logName*/,
-        bool& _skipThisMessage
+        bool& _skip_this_message
     ) override;
 };
 

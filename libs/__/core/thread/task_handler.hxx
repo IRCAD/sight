@@ -26,14 +26,14 @@ namespace sight::core::thread
 {
 
 template<typename R>
-task_handler<R>::task_handler(std::packaged_task<R>& task) :
-    m_task(std::move(task))
+task_handler<R>::task_handler(std::packaged_task<R>& _task) :
+    m_task(std::move(_task))
 {
 }
 
 template<typename R>
-task_handler<R>::task_handler(const task_handler& that) :
-    m_task(std::move(that.m_task))
+task_handler<R>::task_handler(const task_handler& _that) :
+    m_task(std::move(_that.m_task))
 {
 }
 
@@ -48,9 +48,9 @@ void task_handler<R>::operator()() const
 //------------------------------------------------------------------------------
 
 template<typename R>
-inline std::function<void()> move_task_into_function(std::packaged_task<R>& task)
+inline std::function<void()> move_task_into_function(std::packaged_task<R>& _task)
 {
-    return task_handler<R>(task);
+    return task_handler<R>(_task);
 }
 
 } //namespace sight::core::thread

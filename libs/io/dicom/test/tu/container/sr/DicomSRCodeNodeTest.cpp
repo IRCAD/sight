@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -64,16 +64,16 @@ void DicomSRCodeNodeTest::basicTest()
 
     DicomSRCodeNode({}, "enemy", {"anotherValue", "anotherDesignator", "42", "anotherVersion"}).write(dataset);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), sequence->GetNumberOfItems());
-    gdcm::DataSet& firstItem = sequence->GetItem(1).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("value"s, (DicomDataReader::getTagValue<VALUE>(firstItem)));
-    CPPUNIT_ASSERT_EQUAL("designator"s, (DicomDataReader::getTagValue<DESIGNATOR>(firstItem)));
-    CPPUNIT_ASSERT_EQUAL("meaning"s, (DicomDataReader::getTagValue<MEANING>(firstItem)));
+    gdcm::DataSet& first_item = sequence->GetItem(1).GetNestedDataSet();
+    CPPUNIT_ASSERT_EQUAL("value"s, (DicomDataReader::getTagValue<VALUE>(first_item)));
+    CPPUNIT_ASSERT_EQUAL("designator"s, (DicomDataReader::getTagValue<DESIGNATOR>(first_item)));
+    CPPUNIT_ASSERT_EQUAL("meaning"s, (DicomDataReader::getTagValue<MEANING>(first_item)));
     // TODO: fix
     // CPPUNIT_ASSERT_EQUAL("version"s, (DicomDataReader::getTagValue<VERSION>(firstItem)));
-    gdcm::DataSet& secondItem = sequence->GetItem(2).GetNestedDataSet();
-    CPPUNIT_ASSERT_EQUAL("anotherValue"s, (DicomDataReader::getTagValue<VALUE>(secondItem)));
-    CPPUNIT_ASSERT_EQUAL("anotherDesignator"s, (DicomDataReader::getTagValue<DESIGNATOR>(secondItem)));
-    CPPUNIT_ASSERT_EQUAL("42"s, (DicomDataReader::getTagValue<MEANING>(secondItem)));
+    gdcm::DataSet& second_item = sequence->GetItem(2).GetNestedDataSet();
+    CPPUNIT_ASSERT_EQUAL("anotherValue"s, (DicomDataReader::getTagValue<VALUE>(second_item)));
+    CPPUNIT_ASSERT_EQUAL("anotherDesignator"s, (DicomDataReader::getTagValue<DESIGNATOR>(second_item)));
+    CPPUNIT_ASSERT_EQUAL("42"s, (DicomDataReader::getTagValue<MEANING>(second_item)));
     // TODO: fix
     // CPPUNIT_ASSERT_EQUAL("anotherVersion"s, (DicomDataReader::getTagValue<VERSION>(secondItem)));
 }

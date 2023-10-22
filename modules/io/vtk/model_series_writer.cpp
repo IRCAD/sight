@@ -62,7 +62,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 model_series_writer::model_series_writer() noexcept
 {
-    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ sight::io::service::IOPathType model_series_writer::getIOPathType() const
 
 void model_series_writer::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation(defaultDirectory);
+    dialog.setDefaultLocation(default_directory);
     dialog.setOption(ui::dialog::location::WRITE);
     dialog.setType(ui::dialog::location::FOLDER);
 
@@ -94,13 +94,13 @@ void model_series_writer::openLocationDialog()
         }
 
         // message box
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Overwrite confirmation");
-        messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(ui::dialog::message::QUESTION);
-        messageBox.addButton(ui::dialog::message::YES);
-        messageBox.addButton(ui::dialog::message::CANCEL);
-        if(messageBox.show() == sight::ui::dialog::message::YES)
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Overwrite confirmation");
+        message_box.setMessage("The selected directory is not empty. Write anyway ?");
+        message_box.setIcon(ui::dialog::message::QUESTION);
+        message_box.addButton(ui::dialog::message::YES);
+        message_box.addButton(ui::dialog::message::CANCEL);
+        if(message_box.show() == sight::ui::dialog::message::YES)
         {
             break;
         }
@@ -109,38 +109,38 @@ void model_series_writer::openLocationDialog()
     if(result)
     {
         this->set_folder(result->get_folder());
-        defaultDirectory->set_folder(result->get_folder().parent_path());
-        dialog.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_folder().parent_path());
+        dialog.saveDefaultLocation(default_directory);
 
         if(m_selectedExtension.empty())
         {
             // Ask user to select extension
             // Create a map with description that will be displayed to user, and extensions.
-            std::map<std::string, std::string> descriptionToExtension;
-            descriptionToExtension["VTK Legacy (*.vtk)"]                = ".vtk";
-            descriptionToExtension["VTK Polydata (*.vtp"]               = ".vtp";
-            descriptionToExtension["OBJ Wavefront Object (*.obj)"]      = ".obj";
-            descriptionToExtension["PLY Polygonal File Format (*.ply)"] = ".ply";
-            descriptionToExtension["STL StereoLithograpy (*.stl)"]      = ".stl";
+            std::map<std::string, std::string> description_to_extension;
+            description_to_extension["VTK Legacy (*.vtk)"]                = ".vtk";
+            description_to_extension["VTK Polydata (*.vtp"]               = ".vtp";
+            description_to_extension["OBJ Wavefront Object (*.obj)"]      = ".obj";
+            description_to_extension["PLY Polygonal File Format (*.ply)"] = ".ply";
+            description_to_extension["STL StereoLithograpy (*.stl)"]      = ".stl";
 
             // Fill the descriptions vector with map keys.
             std::vector<std::string> descriptions;
             std::transform(
-                std::begin(descriptionToExtension),
-                std::end(descriptionToExtension),
+                std::begin(description_to_extension),
+                std::end(description_to_extension),
                 std::back_inserter(descriptions),
-                [](auto const& pair)
+                [](auto const& _pair)
                 {
-                    return pair.first;
+                    return _pair.first;
                 });
-            sight::ui::dialog::selector extensionDialog;
-            extensionDialog.setTitle("Extensions");
-            extensionDialog.setMessage("Choose the extensions: ");
-            extensionDialog.set_choices(descriptions);
+            sight::ui::dialog::selector extension_dialog;
+            extension_dialog.setTitle("Extensions");
+            extension_dialog.setMessage("Choose the extensions: ");
+            extension_dialog.set_choices(descriptions);
 
-            if(const auto& choices = extensionDialog.show(); !choices.empty())
+            if(const auto& choices = extension_dialog.show(); !choices.empty())
             {
-                m_selectedExtension = descriptionToExtension[choices.front()];
+                m_selectedExtension = description_to_extension[choices.front()];
             }
         }
     }
@@ -197,7 +197,7 @@ void model_series_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-typename WRITER::sptr configureWriter(const std::filesystem::path& _filename)
+typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_filename);
@@ -208,27 +208,27 @@ typename WRITER::sptr configureWriter(const std::filesystem::path& _filename)
 
 void model_series_writer::writeMesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh)
 {
-    sight::io::writer::object_writer::sptr meshWriter;
+    sight::io::writer::object_writer::sptr mesh_writer;
     const auto ext = _filename.extension();
     if(ext == ".vtk")
     {
-        meshWriter = configureWriter<sight::io::vtk::MeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::MeshWriter>(_filename);
     }
     else if(ext == ".vtp")
     {
-        meshWriter = configureWriter<sight::io::vtk::VtpMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::VtpMeshWriter>(_filename);
     }
     else if(ext == ".obj")
     {
-        meshWriter = configureWriter<sight::io::vtk::ObjMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::ObjMeshWriter>(_filename);
     }
     else if(ext == ".stl")
     {
-        meshWriter = configureWriter<sight::io::vtk::StlMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::StlMeshWriter>(_filename);
     }
     else if(ext == ".ply")
     {
-        meshWriter = configureWriter<sight::io::vtk::PlyMeshWriter>(_filename);
+        mesh_writer = configure_writer<sight::io::vtk::PlyMeshWriter>(_filename);
     }
     else
     {
@@ -240,10 +240,10 @@ void model_series_writer::writeMesh(const std::filesystem::path& _filename, cons
         );
     }
 
-    m_sigJobCreated->emit(meshWriter->getJob());
+    m_sigJobCreated->emit(mesh_writer->getJob());
 
-    meshWriter->set_object(_mesh);
-    meshWriter->write();
+    mesh_writer->set_object(_mesh);
+    mesh_writer->write();
 }
 
 //------------------------------------------------------------------------------
@@ -255,8 +255,8 @@ void model_series_writer::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked      = m_data.lock();
-        const auto modelSeries = std::dynamic_pointer_cast<const data::model_series>(locked.get_shared());
+        const auto locked       = m_data.lock();
+        const auto model_series = std::dynamic_pointer_cast<const data::model_series>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
@@ -264,13 +264,13 @@ void model_series_writer::updating()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
-            modelSeries
+            model_series
         );
 
         sight::ui::cursor cursor;
         cursor.setCursor(ui::cursor_base::BUSY);
 
-        for(const auto& rec : modelSeries->getReconstructionDB())
+        for(const auto& rec : model_series->getReconstructionDB())
         {
             SIGHT_ASSERT("Reconstruction from model series is not instanced", rec);
             data::mesh::sptr mesh = rec->getMesh();

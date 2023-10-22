@@ -55,25 +55,25 @@ void series_signal_test::tearDown()
 
 void series_signal_test::basicTest()
 {
-    auto seriesSet = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(seriesSet, "seriesSet");
-    std::vector<sight::data::series::sptr> seriesList;
-    auto seriesAddedSlot = core::com::new_slot(
-        [&](sight::data::series::sptr series)
+    auto series_set = std::make_shared<sight::data::series_set>();
+    m_seriesSignal->set_input(series_set, "seriesSet");
+    std::vector<sight::data::series::sptr> series_list;
+    auto series_added_slot = core::com::new_slot(
+        [&](sight::data::series::sptr _series)
         {
-            seriesList.push_back(series);
+            series_list.push_back(_series);
         });
     m_worker = core::thread::worker::make();
-    seriesAddedSlot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(seriesAddedSlot);
-    seriesSet->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
+    series_added_slot->set_worker(m_worker);
+    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
 
     auto series = std::make_shared<sight::data::series>();
     {
-        auto scopedEmitter = seriesSet->scoped_emit();
-        seriesSet->push_back(series);
+        auto scoped_emitter = series_set->scoped_emit();
+        series_set->push_back(series);
     }
     /* TODO: fix. With no filter, one would expect that all series are signaled, currently none are.
        SIGHT_TEST_WAIT(1 == seriesList.size());
@@ -85,18 +85,18 @@ void series_signal_test::basicTest()
 
 void series_signal_test::includeTest()
 {
-    auto seriesSet = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(seriesSet, "seriesSet");
-    std::vector<sight::data::series::sptr> seriesList;
-    auto seriesAddedSlot = core::com::new_slot(
-        [&](sight::data::series::sptr series)
+    auto series_set = std::make_shared<sight::data::series_set>();
+    m_seriesSignal->set_input(series_set, "seriesSet");
+    std::vector<sight::data::series::sptr> series_list;
+    auto series_added_slot = core::com::new_slot(
+        [&](sight::data::series::sptr _series)
         {
-            seriesList.push_back(series);
+            series_list.push_back(_series);
         });
     m_worker = core::thread::worker::make();
-    seriesAddedSlot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(seriesAddedSlot);
-    seriesSet->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
+    series_added_slot->set_worker(m_worker);
+    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "include");
     ptree.put("filter.type", "sight::data::image_series");
@@ -104,34 +104,34 @@ void series_signal_test::includeTest()
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
 
-    auto imageSeries = std::make_shared<sight::data::image_series>();
-    auto modelSeries = std::make_shared<sight::data::model_series>();
+    auto image_series = std::make_shared<sight::data::image_series>();
+    auto model_series = std::make_shared<sight::data::model_series>();
     {
-        auto scopedEmitter = seriesSet->scoped_emit();
-        seriesSet->push_back(imageSeries);
-        seriesSet->push_back(modelSeries);
+        auto scoped_emitter = series_set->scoped_emit();
+        series_set->push_back(image_series);
+        series_set->push_back(model_series);
     }
-    SIGHT_TEST_WAIT(1 == seriesList.size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesList.size());
-    CPPUNIT_ASSERT(seriesList[0] == imageSeries);
+    SIGHT_TEST_WAIT(1 == series_list.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_list.size());
+    CPPUNIT_ASSERT(series_list[0] == image_series);
 }
 
 //------------------------------------------------------------------------------
 
 void series_signal_test::excludeTest()
 {
-    auto seriesSet = std::make_shared<sight::data::series_set>();
-    m_seriesSignal->set_input(seriesSet, "seriesSet");
-    std::vector<sight::data::series::sptr> seriesList;
-    auto seriesAddedSlot = core::com::new_slot(
-        [&](sight::data::series::sptr series)
+    auto series_set = std::make_shared<sight::data::series_set>();
+    m_seriesSignal->set_input(series_set, "seriesSet");
+    std::vector<sight::data::series::sptr> series_list;
+    auto series_added_slot = core::com::new_slot(
+        [&](sight::data::series::sptr _series)
         {
-            seriesList.push_back(series);
+            series_list.push_back(_series);
         });
     m_worker = core::thread::worker::make();
-    seriesAddedSlot->set_worker(m_worker);
-    m_seriesSignal->signal("seriesAdded")->connect(seriesAddedSlot);
-    seriesSet->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
+    series_added_slot->set_worker(m_worker);
+    m_seriesSignal->signal("seriesAdded")->connect(series_added_slot);
+    series_set->signal("addedObjects")->connect(m_seriesSignal->slot("reportSeries"));
     boost::property_tree::ptree ptree;
     ptree.put("filter.mode", "exclude");
     ptree.put("filter.type", "sight::data::image_series");
@@ -139,12 +139,12 @@ void series_signal_test::excludeTest()
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->configure());
     CPPUNIT_ASSERT_NO_THROW(m_seriesSignal->start().get());
 
-    auto imageSeries = std::make_shared<sight::data::image_series>();
-    auto modelSeries = std::make_shared<sight::data::model_series>();
+    auto image_series = std::make_shared<sight::data::image_series>();
+    auto model_series = std::make_shared<sight::data::model_series>();
     {
-        auto scopedEmitter = seriesSet->scoped_emit();
-        seriesSet->push_back(imageSeries);
-        seriesSet->push_back(modelSeries);
+        auto scoped_emitter = series_set->scoped_emit();
+        series_set->push_back(image_series);
+        series_set->push_back(model_series);
     }
     /* TODO: fix. exclude filter mode doesn't work as expected.
        SIGHT_TEST_WAIT(1 == seriesList.size());

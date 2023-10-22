@@ -27,14 +27,14 @@ namespace sight::core::tools::random
 static std::mutex s_mutex;
 
 /// This is a thread safe implementation
-int safe_rand(const bool reset)
+int safe_rand(const bool _reset)
 {
     std::lock_guard guard(s_mutex);
 
     static std::mt19937 s_generator(std::random_device {}());
     static std::uniform_int_distribution<int> s_distributor(0, RAND_MAX);
 
-    if(reset)
+    if(_reset)
     {
         s_generator = std::mt19937(std::random_device {}());
     }

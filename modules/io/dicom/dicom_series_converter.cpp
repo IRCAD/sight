@@ -89,12 +89,12 @@ void dicom_series_converter::updating()
 
     if(dicom_series_set->empty())
     {
-        sight::ui::dialog::message messageBox;
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.setTitle("Read DICOM series");
-        messageBox.setMessage("There is no DICOM series that can be read.");
-        messageBox.show();
+        sight::ui::dialog::message message_box;
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.setTitle("Read DICOM series");
+        message_box.setMessage("There is no DICOM series that can be read.");
+        message_box.show();
     }
     else
     {

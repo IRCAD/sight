@@ -56,19 +56,19 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_QT_API_QT void setTitle(const std::string& title) override;
+    UI_QT_API_QT void setTitle(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_QT_API_QT void setMessage(const std::string& message) override;
+    UI_QT_API_QT void setMessage(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_QT_API_QT void setLogger(const core::log::logger::sptr& logger) override;
+    UI_QT_API_QT void setLogger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
@@ -81,7 +81,7 @@ protected Q_SLOTS:
      * @brief Slot called when the user wants to display the logs
      * @param[in] state Checkbox state
      */
-    void displayLogs(int state);
+    void displayLogs(int _state);
 
 private:
 

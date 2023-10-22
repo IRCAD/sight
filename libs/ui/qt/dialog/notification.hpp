@@ -118,9 +118,9 @@ Q_OBJECT
 public:
 
     /// Creates a clickable QLabel.
-    explicit ClickableQLabel(Container* root, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()) :
-        QLabel(parent, f),
-        m_root(root)
+    explicit ClickableQLabel(Container* _root, QWidget* _parent = nullptr, Qt::WindowFlags _f = Qt::WindowFlags()) :
+        QLabel(_parent, _f),
+        M_ROOT(_root)
     {
     }
 
@@ -144,7 +144,7 @@ public Q_SLOTS:
             m_timer_id = 0;
         }
 
-        QWidget* const parent_to_kill = !m_root.isNull() ? m_root : this->parentWidget() ? this->parentWidget() : this;
+        QWidget* const parent_to_kill = !M_ROOT.isNull() ? M_ROOT : this->parentWidget() ? this->parentWidget() : this;
 
         auto* const effect = new QGraphicsOpacityEffect();
         auto* a            = new QPropertyAnimation(effect, "opacity");
@@ -162,17 +162,17 @@ public Q_SLOTS:
 
     //------------------------------------------------------------------------------
 
-    void timedFadeout(std::optional<std::chrono::milliseconds> duration)
+    void timedFadeout(std::optional<std::chrono::milliseconds> _duration)
     {
         // Kill the timer if already started or null duration
-        if(m_timer_id != 0 || !duration || duration->count() == 0)
+        if(m_timer_id != 0 || !_duration || _duration->count() == 0)
         {
             killTimer(m_timer_id);
         }
 
-        if(duration && duration->count() > 0)
+        if(_duration && _duration->count() > 0)
         {
-            m_timer_id = startTimer(*duration);
+            m_timer_id = startTimer(*_duration);
         }
     }
 
@@ -191,9 +191,9 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void timerEvent(QTimerEvent* event) override
+    void timerEvent(QTimerEvent* _event) override
     {
-        if(event->timerId() == m_timer_id)
+        if(_event->timerId() == m_timer_id)
         {
             fadeout();
         }
@@ -224,7 +224,7 @@ private:
     int m_timer_id {0};
 
     /// Contains the root container which will be destroyed on close
-    const QPointer<Container> m_root;
+    const QPointer<Container> M_ROOT;
 };
 
 namespace dialog

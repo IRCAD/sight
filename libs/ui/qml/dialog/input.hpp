@@ -64,16 +64,16 @@ public:
     UI_QML_API ~input() override = default;
 
     /// Set the title of the message box
-    UI_QML_API void setTitle(const std::string& title) override;
+    UI_QML_API void setTitle(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void setMessage(const std::string& msg) override;
+    UI_QML_API void setMessage(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_QML_API void setEchoMode(input::EchoMode echoMode) override;
+    UI_QML_API void setEchoMode(input::EchoMode _echo_mode) override;
 
     /// Set the input text in the input field
-    UI_QML_API void set_input(const std::string& text) override;
+    UI_QML_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
     UI_QML_API std::pair<std::string, bool> getInput() override;
@@ -89,7 +89,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
 
     /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& msg, bool isOk);
+    void resultDialog(const QVariant& _msg, bool _is_ok);
 
 private:
 

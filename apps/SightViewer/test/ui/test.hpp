@@ -26,19 +26,19 @@
 namespace sight::sightviewer::test::ui
 {
 
-class test : public sight::ui::testCore::test
+class test : public sight::ui::test_core::test
 {
 public:
 
     std::filesystem::path getProfilePath() override;
 
     static void openFile(
-        sight::ui::testCore::Tester& tester,
-        const std::string& format,
-        const std::filesystem::path& path
+        sight::ui::test_core::Tester& _tester,
+        const std::string& _format,
+        const std::filesystem::path& _path
     );
-    static void saveSnapshot(sight::ui::testCore::Tester& tester, const std::filesystem::path& path);
-    static void resetNegatos(sight::ui::testCore::Tester& tester);
+    static void saveSnapshot(sight::ui::test_core::Tester& _tester, const std::filesystem::path& _path);
+    static void resetNegatos(sight::ui::test_core::Tester& _tester);
 };
 
 } // namespace sight::sightviewer::test::ui

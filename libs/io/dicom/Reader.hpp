@@ -75,19 +75,19 @@ public:
 
     /// Set SOP class filters to use when scanning for DICOM files (CTImageStorage, SpatialFiducialsStorage, ...).
     /// @param[in] filters SOP class filters
-    IO_DICOM_API void setFilters(const data::series::SopKeywords& filters);
+    IO_DICOM_API void setFilters(const data::series::SopKeywords& _filters);
 
     /// Set the scanned Series list, unsorted
     /// @param[in] scanned The Series with their associated files
-    IO_DICOM_API void setScanned(const data::series_set::sptr& scanned);
+    IO_DICOM_API void setScanned(const data::series_set::sptr& _scanned);
 
     /// Set the sorted Series list. These are the series that will be read
     /// @param[in] sorted The Series with their associated files
-    IO_DICOM_API void setSorted(const data::series_set::sptr& sorted);
+    IO_DICOM_API void setSorted(const data::series_set::sptr& _sorted);
 
     /// Set/get the current job
     IO_DICOM_API core::jobs::base::sptr getJob() const override;
-    IO_DICOM_API void setJob(core::jobs::job::sptr job);
+    IO_DICOM_API void setJob(core::jobs::job::sptr _job);
 
     /// @}
 

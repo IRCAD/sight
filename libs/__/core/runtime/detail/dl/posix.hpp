@@ -42,7 +42,7 @@ struct posix : public native
      *
      * @param[in]   modulePath  a path to the module to manage
      */
-    posix(const std::filesystem::path& module_path) noexcept;
+    posix(const std::filesystem::path& _module_path) noexcept;
 
     /**
      * @brief   Destructor.
@@ -61,7 +61,7 @@ struct posix : public native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    [[nodiscard]] void* get_symbol(const std::string& name) const override;
+    [[nodiscard]] void* get_symbol(const std::string& _name) const override;
 
     /**
      * @see core::runtime::dl::Native#load

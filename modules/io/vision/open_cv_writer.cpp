@@ -67,23 +67,23 @@ bool open_cv_writer::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    static auto default_directory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::dialog::location dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::dialog::location::WRITE);
-    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
-    dialogFile.addFilter("XML file", "*.xml");
-    dialogFile.addFilter("YAML file", "*.yaml *.yml");
+    sight::ui::dialog::location dialog_file;
+    dialog_file.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
+    dialog_file.setDefaultLocation(default_directory);
+    dialog_file.setOption(ui::dialog::location::WRITE);
+    dialog_file.setType(ui::dialog::location::SINGLE_FILE);
+    dialog_file.addFilter("XML file", "*.xml");
+    dialog_file.addFilter("YAML file", "*.yaml *.yml");
 
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
 
     if(result)
     {
         this->set_file(result->get_file());
-        defaultDirectory->set_folder(result->get_file().parent_path());
-        dialogFile.saveDefaultLocation(defaultDirectory);
+        default_directory->set_folder(result->get_file().parent_path());
+        dialog_file.saveDefaultLocation(default_directory);
         ok = true;
     }
     else
@@ -131,59 +131,59 @@ void open_cv_writer::updating()
 
     SIGHT_ASSERT("CameraSet is null", camera_set);
 
-    std::size_t numberOfCameras = camera_set->size();
+    std::size_t number_of_cameras = camera_set->size();
 
     std::vector<data::camera::csptr> cameras;
-    std::vector<cv::Mat> cameraMatrices;
-    std::vector<cv::Mat> cameraDistCoefs;
+    std::vector<cv::Mat> camera_matrices;
+    std::vector<cv::Mat> camera_dist_coefs;
 
     // Set the cameras
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
-    for(std::size_t i = 0 ; i < numberOfCameras ; ++i)
+    for(std::size_t i = 0 ; i < number_of_cameras ; ++i)
     {
         cameras.push_back(camera_set->get_camera(i));
-        cameraMatrices.push_back(cv::Mat::eye(3, 3, CV_64F));
-        cameraDistCoefs.push_back(cv::Mat::eye(5, 1, CV_64F));
+        camera_matrices.push_back(cv::Mat::eye(3, 3, CV_64F));
+        camera_dist_coefs.push_back(cv::Mat::eye(5, 1, CV_64F));
 
-        cameraMatrices[i].at<double>(0, 0) = cameras[i]->getFx();
-        cameraMatrices[i].at<double>(1, 1) = cameras[i]->getFy();
-        cameraMatrices[i].at<double>(0, 2) = cameras[i]->getCx();
-        cameraMatrices[i].at<double>(1, 2) = cameras[i]->getCy();
+        camera_matrices[i].at<double>(0, 0) = cameras[i]->getFx();
+        camera_matrices[i].at<double>(1, 1) = cameras[i]->getFy();
+        camera_matrices[i].at<double>(0, 2) = cameras[i]->getCx();
+        camera_matrices[i].at<double>(1, 2) = cameras[i]->getCy();
 
         for(std::uint8_t c = 0 ; c < 5 ; ++c)
         {
-            cameraDistCoefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[c];
+            camera_dist_coefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[c];
         }
     }
 
     cv::FileStorage fs(this->get_file().string(), cv::FileStorage::WRITE);
 
-    fs << "nbCameras" << static_cast<int>(numberOfCameras);
+    fs << "nbCameras" << static_cast<int>(number_of_cameras);
 
-    for(std::size_t c = 0 ; c < numberOfCameras ; ++c)
+    for(std::size_t c = 0 ; c < number_of_cameras ; ++c)
     {
         const auto camera = camera_set->get_camera(c);
-        std::stringstream camNum;
-        camNum << "camera_" << c;
+        std::stringstream cam_num;
+        cam_num << "camera_" << c;
 
-        fs << camNum.str() << "{";
+        fs << cam_num.str() << "{";
         fs << "id" << camera->getCameraID().c_str();
         fs << "description" << camera->getDescription().c_str();
         fs << "imageWidth" << static_cast<int>(camera->getWidth());
         fs << "imageHeight" << static_cast<int>(camera->getHeight());
-        fs << "matrix" << cameraMatrices[c];
-        fs << "distortion" << cameraDistCoefs[c];
+        fs << "matrix" << camera_matrices[c];
+        fs << "distortion" << camera_dist_coefs[c];
         fs << "scale" << camera->getScale();
 
-        const auto extrinsicMatrix = camera_set->get_extrinsic_matrix(c);
-        if(extrinsicMatrix)
+        const auto extrinsic_matrix = camera_set->get_extrinsic_matrix(c);
+        if(extrinsic_matrix)
         {
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
                 for(std::uint8_t j = 0 ; j < 4 ; ++j)
                 {
-                    extrinsic.at<double>(i, j) = (*extrinsicMatrix)(i, j);
+                    extrinsic.at<double>(i, j) = (*extrinsic_matrix)(i, j);
                 }
             }
 

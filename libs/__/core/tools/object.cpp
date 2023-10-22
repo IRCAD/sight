@@ -38,11 +38,11 @@ static std::mutex s_maps_mutex;
 
 //------------------------------------------------------------------------------
 
-object::sptr object::from_uuid(const std::string& uuid)
+object::sptr object::from_uuid(const std::string& _uuid)
 {
     // Find the weak pointer associated to this uuid
     std::lock_guard guard(s_maps_mutex);
-    const auto found = s_uuid_to_wptr.find(uuid);
+    const auto found = s_uuid_to_wptr.find(_uuid);
 
     if(found != s_uuid_to_wptr.cend())
     {
@@ -92,14 +92,14 @@ std::string object::get_uuid() const
 
 //------------------------------------------------------------------------------
 
-void object::set_uuid(const std::string& uuid, const bool force)
+void object::set_uuid(const std::string& _uuid, const bool _force)
 {
     std::lock_guard guard(s_maps_mutex);
 
-    if(!force)
+    if(!_force)
     {
         // Look if the uuid has already been used
-        const auto found_wptr = s_uuid_to_wptr.find(uuid);
+        const auto found_wptr = s_uuid_to_wptr.find(_uuid);
         if(found_wptr != s_uuid_to_wptr.cend())
         {
             // Try to see if the object is different
@@ -108,7 +108,7 @@ void object::set_uuid(const std::string& uuid, const bool force)
             if(old && this != old.get())
             {
                 /// That's no good, we set an already used uuid
-                SIGHT_FATAL("UUID '" << uuid << "' is already used for object '" << old->get_id() << "'");
+                SIGHT_FATAL("UUID '" << _uuid << "' is already used for object '" << old->get_id() << "'");
             }
         }
 
@@ -118,7 +118,7 @@ void object::set_uuid(const std::string& uuid, const bool force)
         {
             // Try to see if the uuid is different
             const std::string& old = found_uuid->second;
-            if(!old.empty() && uuid != old)
+            if(!old.empty() && _uuid != old)
             {
                 /// That's no good, the object has already be registered with a different uuid
                 SIGHT_FATAL("Object '" << get_id() << "' is already registered with UUID '" << old << "'");
@@ -126,8 +126,8 @@ void object::set_uuid(const std::string& uuid, const bool force)
         }
     }
 
-    s_ptr_to_uuid[this]  = uuid;
-    s_uuid_to_wptr[uuid] = get_sptr();
+    s_ptr_to_uuid[this]   = _uuid;
+    s_uuid_to_wptr[_uuid] = get_sptr();
 }
 
 object::~object()

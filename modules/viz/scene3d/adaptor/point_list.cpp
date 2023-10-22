@@ -34,8 +34,8 @@
 #include <service/macros.hpp>
 #include <service/op.hpp>
 
-#include <viz/scene3d/helper/Scene.hpp>
-#include <viz/scene3d/R2VBRenderable.hpp>
+#include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/r2vb_renderable.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -60,8 +60,8 @@ point_list::~point_list() noexcept
 {
     if(m_entity != nullptr)
     {
-        Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        sceneMgr->destroyEntity(m_entity);
+        Ogre::SceneManager* scene_mgr = this->getSceneManager();
+        scene_mgr->destroyEntity(m_entity);
     }
 }
 
@@ -133,16 +133,16 @@ void point_list::configuring()
         )
     );
 
-    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
-    if(!hexaMask.empty())
+    const std::string hexa_mask = config.get<std::string>(s_QUERY_CONFIG, "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
@@ -151,9 +151,9 @@ void point_list::configuring()
     m_radius       = config.get(s_RADIUS_CONFIG, m_radius);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
 
-    const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
+    const std::string label_color = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
     m_labelColor = std::make_shared<data::color>();
-    m_labelColor->setRGBA(labelColor);
+    m_labelColor->setRGBA(label_color);
 }
 
 //-----------------------------------------------------------------------------
@@ -166,13 +166,13 @@ void point_list::starting()
 
     m_meshGeometry = std::make_shared<sight::viz::scene3d::mesh>(this->get_id());
     m_meshGeometry->setDynamic(true);
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = this->getOrCreateTransformNode(rootSceneNode);
+    Ogre::SceneNode* root_scene_node = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode = this->getOrCreateTransformNode(root_scene_node);
 
-    const auto pointList = m_pointList.lock();
-    if(pointList)
+    const auto point_list = m_pointList.lock();
+    if(point_list)
     {
-        this->updateMesh(pointList.get_shared());
+        this->updateMesh(point_list.get_shared());
     }
     else
     {
@@ -216,13 +216,13 @@ void point_list::stopping()
 
     this->unregisterServices();
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
-    m_meshGeometry->clearMesh(*sceneMgr);
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
+    m_meshGeometry->clearMesh(*scene_mgr);
 
     if(m_entity != nullptr)
     {
-        sceneMgr->destroyEntity(m_entity);
+        scene_mgr->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 
@@ -242,10 +242,10 @@ void point_list::updating()
 
     this->destroyLabel();
 
-    const auto pointList = m_pointList.lock();
-    if(pointList)
+    const auto point_list = m_pointList.lock();
+    if(point_list)
     {
-        this->updateMesh(pointList.get_shared());
+        this->updateMesh(point_list.get_shared());
     }
     else
     {
@@ -265,26 +265,26 @@ void point_list::updating()
 
 //------------------------------------------------------------------------------
 
-void point_list::createLabel(const data::point_list::csptr& _pointList)
+void point_list::createLabel(const data::point_list::csptr& _point_list)
 {
-    auto renderSrv          = this->getRenderService();
-    std::size_t i           = 0;
-    std::string labelNumber = std::to_string(i);
-    for(const auto& point : _pointList->getPoints())
+    auto render_srv          = this->getRenderService();
+    std::size_t i            = 0;
+    std::string label_number = std::to_string(i);
+    for(const auto& point : _point_list->getPoints())
     {
         const auto label = point->getLabel();
         if(!label.empty())
         {
-            labelNumber = label;
+            label_number = label;
         }
         else
         {
-            labelNumber = std::to_string(i);
+            label_number = std::to_string(i);
         }
 
-        m_labels.push_back(sight::viz::scene3d::IText::make(this->getLayer()));
+        m_labels.push_back(sight::viz::scene3d::text::make(this->getLayer()));
         m_labels[i]->setFontSize(m_fontSize);
-        m_labels[i]->setText(labelNumber);
+        m_labels[i]->setText(label_number);
         m_labels[i]->setTextColor(
             Ogre::ColourValue(
                 m_labelColor->red(),
@@ -292,9 +292,9 @@ void point_list::createLabel(const data::point_list::csptr& _pointList)
                 m_labelColor->blue()
             )
         );
-        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->get_id() + labelNumber));
+        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->get_id() + label_number));
         m_labels[i]->attachToNode(m_nodes[i], this->getLayer()->getDefaultCamera());
-        data::point::PointCoordArrayType coord = point->getCoord();
+        data::point::point_coord_array_t coord = point->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }
@@ -304,39 +304,39 @@ void point_list::createLabel(const data::point_list::csptr& _pointList)
 
 void point_list::destroyLabel()
 {
-    std::ranges::for_each(m_nodes, [this](auto& node){m_sceneNode->removeAndDestroyChild(node);});
+    std::ranges::for_each(m_nodes, [this](auto& _node){m_sceneNode->removeAndDestroyChild(_node);});
     m_nodes.clear();
 
-    std::ranges::for_each(m_labels, [](auto& label){label->detachFromNode();});
+    std::ranges::for_each(m_labels, [](auto& _label){_label->detachFromNode();});
     m_labels.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void point_list::updateMesh(const data::point_list::csptr& _pointList)
+void point_list::updateMesh(const data::point_list::csptr& _point_list)
 {
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
     detachAndDestroyEntity();
 
-    const std::size_t uiNumVertices = _pointList->getPoints().size();
-    if(uiNumVertices == 0)
+    const std::size_t ui_num_vertices = _point_list->getPoints().size();
+    if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
-        m_meshGeometry->clearMesh(*sceneMgr);
+        m_meshGeometry->clearMesh(*scene_mgr);
 
         return;
     }
 
     if(m_displayLabel)
     {
-        this->createLabel(_pointList);
+        this->createLabel(_point_list);
     }
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(_pointList);
+    m_meshGeometry->updateMesh(_point_list);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -344,7 +344,7 @@ void point_list::updateMesh(const data::point_list::csptr& _pointList)
 
     if(m_entity == nullptr)
     {
-        m_entity = m_meshGeometry->createEntity(*sceneMgr);
+        m_entity = m_meshGeometry->createEntity(*scene_mgr);
         m_entity->setVisible(m_isVisible);
         m_entity->setQueryFlags(m_queryFlags);
     }
@@ -353,12 +353,12 @@ void point_list::updateMesh(const data::point_list::csptr& _pointList)
     // Update vertex layers
     //------------------------------------------
 
-    m_meshGeometry->updateVertices(_pointList);
+    m_meshGeometry->updateVertices(_point_list);
 
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor(_pointList->get_id());
+    this->updateMaterialAdaptor(_point_list->get_id());
 
     this->attachNode(m_entity);
 
@@ -374,17 +374,17 @@ void point_list::updateMesh(const data::point_list::csptr& _pointList)
 
 void point_list::updateMesh(const data::mesh::csptr& _mesh)
 {
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
 
     detachAndDestroyEntity();
 
-    const std::size_t uiNumVertices = _mesh->numPoints();
-    if(uiNumVertices == 0)
+    const std::size_t ui_num_vertices = _mesh->numPoints();
+    if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
 
-        m_meshGeometry->clearMesh(*sceneMgr);
+        m_meshGeometry->clearMesh(*scene_mgr);
         return;
     }
 
@@ -398,7 +398,7 @@ void point_list::updateMesh(const data::mesh::csptr& _mesh)
 
     if(m_entity == nullptr)
     {
-        m_entity = m_meshGeometry->createEntity(*sceneMgr);
+        m_entity = m_meshGeometry->createEntity(*scene_mgr);
         m_entity->setVisible(m_isVisible);
         m_entity->setQueryFlags(m_queryFlags);
     }
@@ -427,43 +427,43 @@ void point_list::updateMesh(const data::mesh::csptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-scene3d::adaptor::material::sptr point_list::createMaterialService(const std::string& _meshId)
+scene3d::adaptor::material::sptr point_list::createMaterialService(const std::string& _mesh_id)
 {
-    auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::material>(
+    auto material_adaptor = this->registerService<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
     );
-    materialAdaptor->set_inout(m_material, "material", true);
+    material_adaptor->set_inout(m_material, "material", true);
 
-    const auto tplName =
+    const auto tpl_name =
         !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::material::
         DEFAULT_MATERIAL_TEMPLATE_NAME;
 
-    materialAdaptor->configure(
-        this->get_id() + "_" + materialAdaptor->get_id(),
-        _meshId + "_" + materialAdaptor->get_id(),
+    material_adaptor->configure(
+        this->get_id() + "_" + material_adaptor->get_id(),
+        _mesh_id + "_" + material_adaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "",
-        tplName
+        tpl_name
     );
 
-    return materialAdaptor;
+    return material_adaptor;
 }
 
 //------------------------------------------------------------------------------
 
-void point_list::updateMaterialAdaptor(const std::string& _meshId)
+void point_list::updateMaterialAdaptor(const std::string& _mesh_id)
 {
     if(!m_materialAdaptor)
     {
         if(m_entity != nullptr)
         {
-            m_materialAdaptor = this->createMaterialService(_meshId);
+            m_materialAdaptor = this->createMaterialService(_mesh_id);
             m_materialAdaptor->start();
 
-            auto* materialFw = m_materialAdaptor->getMaterialFw();
-            m_meshGeometry->updateMaterial(materialFw, false);
-            materialFw->setMeshSize(m_radius);
+            auto* material_fw = m_materialAdaptor->getMaterialFw();
+            m_meshGeometry->updateMaterial(material_fw, false);
+            material_fw->setMeshSize(m_radius);
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
@@ -478,10 +478,10 @@ void point_list::updateMaterialAdaptor(const std::string& _meshId)
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
 
-                Ogre::TextureUnitState* texUnitState = material->getTechnique(0)->getPass(0)->getTextureUnitState(
+                Ogre::TextureUnitState* tex_unit_state = material->getTechnique(0)->getPass(0)->getTextureUnitState(
                     "sprite"
                 );
-                texUnitState->setTexture(texture);
+                tex_unit_state->setTexture(texture);
             }
 
             m_materialAdaptor->update();
@@ -490,15 +490,15 @@ void point_list::updateMaterialAdaptor(const std::string& _meshId)
     else if(m_materialAdaptor->inout<data::material>(material::s_MATERIAL_INOUT).lock()
             != m_material)
     {
-        auto* materialFw = m_materialAdaptor->getMaterialFw();
-        m_meshGeometry->updateMaterial(materialFw, false);
-        materialFw->setMeshSize(m_radius);
+        auto* material_fw = m_materialAdaptor->getMaterialFw();
+        m_meshGeometry->updateMaterial(material_fw, false);
+        material_fw->setMeshSize(m_radius);
     }
     else
     {
-        auto* materialFw = m_materialAdaptor->getMaterialFw();
-        m_meshGeometry->updateMaterial(materialFw, false);
-        materialFw->setMeshSize(m_radius);
+        auto* material_fw = m_materialAdaptor->getMaterialFw();
+        m_meshGeometry->updateMaterial(material_fw, false);
+        material_fw->setMeshSize(m_radius);
 
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
@@ -523,13 +523,13 @@ void point_list::detachAndDestroyEntity()
 {
     if(m_entity != nullptr)
     {
-        Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+        Ogre::SceneManager* const scene_mgr = this->getSceneManager();
         if(m_sceneNode != nullptr)
         {
             m_sceneNode->detachObject(m_entity);
         }
 
-        sceneMgr->destroyEntity(m_entity);
+        scene_mgr->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 }

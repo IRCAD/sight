@@ -71,15 +71,15 @@ protected:
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    MODULE_IO_IGTL_API virtual void sendObject(const data::object::csptr& obj, std::size_t index) = 0;
+    MODULE_IO_IGTL_API virtual void sendObject(const data::object::csptr& _obj, std::size_t _index) = 0;
 
     /// Defines the signal emitted when service is connected.
-    typedef core::com::signal<void ()> ConnectedSignalType;
-    ConnectedSignalType::sptr m_sigConnected;
+    typedef core::com::signal<void ()> connected_signal_t;
+    connected_signal_t::sptr m_sigConnected;
 
     /// Defines the signal emitted when service is disconnected.
-    typedef core::com::signal<void ()> DisconnectSignalType;
-    DisconnectSignalType::sptr m_sigDisconnected;
+    typedef core::com::signal<void ()> disconnect_signal_t;
+    disconnect_signal_t::sptr m_sigDisconnected;
 
     static constexpr std::string_view s_OBJECTS_INPUT = "objects";
     data::ptr_vector<data::object, sight::data::Access::in> m_objects {this, s_OBJECTS_INPUT, true};

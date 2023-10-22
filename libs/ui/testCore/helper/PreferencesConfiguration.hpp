@@ -23,7 +23,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class PreferencesConfiguration
@@ -36,7 +36,7 @@ public:
      * @param values The values to be set
      * @warning This method assumes that the preferences configuration window is already open.
      */
-    GUITEST_API static void fill(Tester& tester, const std::map<std::string, std::string>& values);
+    GUITEST_API static void fill(Tester& _tester, const std::map<std::string, std::string>& _values);
 };
 
 } // namespace sight::ui::testCore::helper

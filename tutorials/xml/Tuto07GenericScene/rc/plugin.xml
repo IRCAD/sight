@@ -8,7 +8,7 @@
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
 
     <extension implements="sight::app::extension::config">
         <id>Tuto07GenericScene_AppCfg</id>

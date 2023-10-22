@@ -29,9 +29,9 @@
 #include <core/thread/worker.hxx>
 
 #include <ui/__/service.hpp>
-#include <ui/qml/App.hpp>
+#include <ui/qml/app.hpp>
 #include <ui/qml/QmlEngine.hpp>
-#include <ui/qt/WorkerQt.hpp>
+#include <ui/qt/worker_qt.hpp>
 
 #include <modules/ui/qml/activity/sequencer.hpp>
 #include <modules/ui/qml/activity/view.hpp>
@@ -70,13 +70,13 @@ void plugin::start()
     char** argv = profile->get_raw_params();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& argc, char** argv)
+        [](int& _argc, char** _argv)
         {
-            return QSharedPointer<QGuiApplication>(new sight::ui::qml::App(argc, argv));
+            return QSharedPointer<QGuiApplication>(new sight::ui::qml::app(_argc, _argv));
         };
 
-    auto workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->name(), profile->get_version());
-    core::thread::set_default_worker(workerQt);
+    auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->get_version());
+    core::thread::set_default_worker(worker_qt);
 
     auto engine = sight::ui::qml::QmlEngine::getDefault();
 
@@ -84,19 +84,19 @@ void plugin::start()
     const auto path = core::runtime::get_module_resource_path("sight::module::ui::qml");
     engine->importModulePath(path);
 
-    qmlRegisterType<model::model_series_list>("model", 1, 0, "model_series_list");
+    qmlRegisterType<model::model_series_list>("model", 1, 0, "ModelSeriesList");
     qmlRegisterType<model::OrganListModel>("model", 1, 0, "OrganListModel");
-    qmlRegisterType<image::slice_index_position_editor>("image", 1, 0, "slice_index_position_editor");
-    qmlRegisterType<reconstruction::organ_material_editor>("reconstruction", 1, 0, "organ_material_editor");
-    qmlRegisterType<reconstruction::representation_editor>("reconstruction", 1, 0, "representation_editor");
-    qmlRegisterType<activity::view>("activitiesQml", 1, 0, "view");
-    qmlRegisterType<activity::sequencer>("activitiesQml", 1, 0, "sequencer");
+    qmlRegisterType<image::slice_index_position_editor>("image", 1, 0, "SliceIndexPositionEditor");
+    qmlRegisterType<reconstruction::organ_material_editor>("reconstruction", 1, 0, "OrganMaterialEditor");
+    qmlRegisterType<reconstruction::representation_editor>("reconstruction", 1, 0, "RepresentationEditor");
+    qmlRegisterType<activity::view>("activitiesQml", 1, 0, "View");
+    qmlRegisterType<activity::sequencer>("activitiesQml", 1, 0, "Sequencer");
 
     QQuickStyle::setStyle("Material");
 
-    QStringList iconPath = QIcon::themeSearchPaths();
-    iconPath.append(QString::fromStdString(path.string()));
-    QIcon::setThemeSearchPaths(iconPath);
+    QStringList icon_path = QIcon::themeSearchPaths();
+    icon_path.append(QString::fromStdString(path.string()));
+    QIcon::setThemeSearchPaths(icon_path);
 
     profile->set_run_callback(run);
 }
@@ -112,10 +112,10 @@ void plugin::stop() noexcept
 
 int plugin::run() noexcept
 {
-    auto workerQt = core::thread::get_default_worker();
-    workerQt->get_future().wait(); // This is required to start WorkerQt loop
+    auto worker_qt = core::thread::get_default_worker();
+    worker_qt->get_future().wait(); // This is required to start worker_qt loop
 
-    int result = std::any_cast<int>(workerQt->get_future().get());
+    int result = std::any_cast<int>(worker_qt->get_future().get());
     return result;
 }
 

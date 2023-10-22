@@ -109,7 +109,7 @@ private:
      * @brief Adds the compute shader that change a quad mesh to a triangle mesh.
      * @param _numberOfCells the cells number of the mesh.
      */
-    void addComputeEntityToScene(int _numberOfCells);
+    void addComputeEntityToScene(int _number_of_cells);
 
     /// Contains the scene rendering this mesh.
     QPointer<sight::viz::qt3d::core::GenericScene> m_scene;

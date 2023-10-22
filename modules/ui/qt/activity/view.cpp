@@ -46,7 +46,7 @@ static const std::string s_BORDER_CONFIG = "border";
 //------------------------------------------------------------------------------
 
 view::view() :
-    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG))
+    m_sigActivityLaunched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
 {
 }
 
@@ -59,7 +59,7 @@ view::~view()
 
 void view::configuring()
 {
-    this->sight::ui::view::IActivityView::configuring();
+    this->sight::ui::activity_view::configuring();
 
     const config_t config_t = this->get_config();
     const auto config       = config_t.get_child_optional("config.<xmlattr>");
@@ -76,10 +76,10 @@ void view::starting()
 {
     this->sight::ui::service::create();
 
-    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto parentContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
-    parentContainer->getQtContainer()->setObjectName(serviceID);
+    auto parent_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
+    parent_container->getQtContainer()->setObjectName(service_id);
 
     auto* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -89,15 +89,15 @@ void view::starting()
 
     auto* widget = new QWidget();
     layout->addWidget(widget);
-    widget->setObjectName(serviceID + "/container");
+    widget->setObjectName(service_id + "/container");
 
-    auto subContainer = sight::ui::qt::container::widget::make();
+    auto sub_container = sight::ui::qt::container::widget::make();
 
-    subContainer->setQtContainer(widget);
+    sub_container->setQtContainer(widget);
     m_wid = this->get_id() + "_container";
-    sight::ui::registry::registerWIDContainer(m_wid, subContainer);
+    sight::ui::registry::register_wid_container(m_wid, sub_container);
 
-    parentContainer->setLayout(layout);
+    parent_container->setLayout(layout);
 
     m_configManager = sight::app::config_manager::make();
 
@@ -120,10 +120,10 @@ void view::stopping()
         m_configManager->stopAndDestroy();
     }
 
-    auto subContainer = sight::ui::registry::getWIDContainer(m_wid);
-    sight::ui::registry::unregisterWIDContainer(m_wid);
+    auto sub_container = sight::ui::registry::get_wid_container(m_wid);
+    sight::ui::registry::unregister_wid_container(m_wid);
 
-    subContainer->destroyContainer();
+    sub_container->destroyContainer();
 
     this->destroy();
 }
@@ -136,9 +136,9 @@ void view::updating()
 
 //------------------------------------------------------------------------------
 
-void view::launchActivity(data::activity::sptr activity)
+void view::launchActivity(data::activity::sptr _activity)
 {
-    if(this->validateActivity(activity))
+    if(this->validateActivity(_activity))
     {
         if(m_configManager->started())
         {
@@ -146,7 +146,7 @@ void view::launchActivity(data::activity::sptr activity)
         }
 
         auto [info, replacementMap] = sight::activity::extension::activity::getDefault()->getInfoAndReplacementMap(
-            *activity,
+            *_activity,
             m_parameters
         );
 
@@ -158,7 +158,7 @@ void view::launchActivity(data::activity::sptr activity)
             m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
-            m_sigActivityLaunched->async_emit(activity);
+            m_sigActivityLaunched->async_emit(_activity);
         }
         catch(std::exception& e)
         {

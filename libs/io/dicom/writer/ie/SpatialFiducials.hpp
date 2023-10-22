@@ -47,12 +47,12 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducials(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::csptr& series,
-        const core::log::logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        const SPTR(gdcm::Writer)& _writer,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::csptr& _series,
+        const core::log::logger::sptr& _logger = nullptr,
+        ProgressCallback _progress             = nullptr,
+        CancelRequestedCallback _cancel        = nullptr
     );
 
     /// Destructor
@@ -82,12 +82,12 @@ protected:
      * @brief Write image landmarks into sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence);
+    void writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
 
     /**
      * @brief Write image distances into sequence
      */
-    void writeDistances(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence);
+    void writeDistances(gdcm::SmartPointer<gdcm::SequenceOfItems> _sequence);
 
     /**
      * @brief Add a frame number to the referenced image sequence
@@ -96,8 +96,8 @@ protected:
      * @throw(io::dicom::exception::Failed)
      */
     void addReferencedImage(
-        int frameNumber,
-        gdcm::SmartPointer<gdcm::SequenceOfItems> referencedImageSequence
+        int _frame_number,
+        gdcm::SmartPointer<gdcm::SequenceOfItems> _referenced_image_sequence
     );
 };
 

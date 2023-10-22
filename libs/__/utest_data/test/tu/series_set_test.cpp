@@ -54,19 +54,22 @@ void series_set_test::tearDown()
 
 void series_set_test::generationTest()
 {
-    const unsigned char nbImgSeries   = 3;
-    const unsigned char nbModelSeries = 4;
-    auto series_set                   = utest_data::generator::series_set::createSeriesSet(nbImgSeries, nbModelSeries);
+    const unsigned char nb_img_series   = 3;
+    const unsigned char nb_model_series = 4;
+    auto series_set                     = utest_data::generator::series_set::createSeriesSet(
+        nb_img_series,
+        nb_model_series
+    );
 
-    CPPUNIT_ASSERT_EQUAL((std::size_t) (nbImgSeries + nbModelSeries), series_set->size());
+    CPPUNIT_ASSERT_EQUAL((std::size_t) (nb_img_series + nb_model_series), series_set->size());
 
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::image_series>(series_set->at(0)));
 
-    const std::string performingPhysicianName =
+    const std::string performing_physician_name =
         "Adams^John Robert Quincy^^Rev.^B.A. M.Div.\\Morrison-Jones^Susan^^^Ph.D., Chief Executive Officer\\Doe^John";
 
-    unsigned char nbIS = 0;
-    unsigned char nbMS = 0;
+    unsigned char nb_is = 0;
+    unsigned char nb_ms = 0;
 
     unsigned int count = 1;
     std::stringstream str;
@@ -84,7 +87,7 @@ void series_set_test::generationTest()
         CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->getSeriesDate());
         CPPUNIT_ASSERT_EQUAL(std::string("101010.101010"), series->getSeriesTime());
         CPPUNIT_ASSERT_EQUAL(std::string("Description"), series->getSeriesDescription());
-        CPPUNIT_ASSERT(performingPhysicianName == series->getPerformingPhysicianName());
+        CPPUNIT_ASSERT(performing_physician_name == series->getPerformingPhysicianName());
 
         CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesSet1^PrenomSeriesSet1"), series->getPatientName());
         CPPUNIT_ASSERT_EQUAL(std::string("4564383757"), series->getPatientID());
@@ -103,23 +106,23 @@ void series_set_test::generationTest()
 
         CPPUNIT_ASSERT_EQUAL(std::string("IRCAD"), series->getInstitutionName());
 
-        data::image_series::sptr imgSeries   = std::dynamic_pointer_cast<data::image_series>(series);
-        data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series);
+        data::image_series::sptr img_series   = std::dynamic_pointer_cast<data::image_series>(series);
+        data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series);
 
-        if(imgSeries)
+        if(img_series)
         {
-            ++nbIS;
-            CPPUNIT_ASSERT(imgSeries->getSizeInBytes() > 0);
+            ++nb_is;
+            CPPUNIT_ASSERT(img_series->getSizeInBytes() > 0);
         }
-        else if(modelSeries)
+        else if(model_series)
         {
-            ++nbMS;
-            CPPUNIT_ASSERT(!modelSeries->getReconstructionDB().empty());
+            ++nb_ms;
+            CPPUNIT_ASSERT(!model_series->getReconstructionDB().empty());
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(nbImgSeries, nbIS);
-    CPPUNIT_ASSERT_EQUAL(nbModelSeries, nbMS);
+    CPPUNIT_ASSERT_EQUAL(nb_img_series, nb_is);
+    CPPUNIT_ASSERT_EQUAL(nb_model_series, nb_ms);
 }
 
 } //namespace sight::utest_data::ut

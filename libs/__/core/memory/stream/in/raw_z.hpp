@@ -37,8 +37,8 @@ class CORE_CLASS_API raw_z : public factory
 {
 public:
 
-    raw_z(std::filesystem::path path) :
-        m_path(std::move(path))
+    raw_z(std::filesystem::path _path) :
+        m_path(std::move(_path))
     {
     }
 

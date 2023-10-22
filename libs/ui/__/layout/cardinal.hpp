@@ -52,7 +52,7 @@ public:
         TOP
     } Align;
 
-    typedef std::string RegistryKeyType;
+    typedef std::string registry_key_t;
 
     class ViewInfo
     {
@@ -115,9 +115,9 @@ public:
      *   - \b backgroundColor (optional) : (hexadecimal format starting with "#") background color.
      */
 
-    UI_API void initialize(const ui::config_t& configuration) override;
+    UI_API void initialize(const ui::config_t& _configuration) override;
 
-    UI_API static const RegistryKeyType REGISTRY_KEY;
+    UI_API static const registry_key_t REGISTRY_KEY;
 
 protected:
 

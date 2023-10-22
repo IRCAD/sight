@@ -27,84 +27,84 @@
 #include "FileDialog.hpp"
 #include "selector_dialog.hpp"
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void VideoControls::load(Tester& tester, const std::string& controlsName, const std::filesystem::path& path)
+void VideoControls::load(Tester& _tester, const std::string& _controls_name, const std::filesystem::path& _path)
 {
     // Some activity takes time to load and the control is not always there
     QTest::qWait(1000);
 
-    tester.take("controls", controlsName);
-    helper::ComboBox::select(tester, Select::fromParent(controlsName, "videoSelectorSrv"), "File...");
-    helper::FileDialog::fill(tester, path);
+    _tester.take("controls", _controls_name);
+    helper::ComboBox::select(_tester, Select::fromParent(_controls_name, "videoSelectorSrv"), "File...");
+    helper::FileDialog::fill(_tester, _path);
 
     // If RealSense is activated, another dialog appears
-    helper::Dialog::maybeTake(tester, "choose video grabber implementation dialog");
-    if(tester.exists())
+    helper::Dialog::maybeTake(_tester, "choose video grabber implementation dialog");
+    if(_tester.exists())
     {
-        helper::selector_dialog::select(tester, "OpenCV player");
+        helper::selector_dialog::select(_tester, "OpenCV player");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void VideoControls::start(Tester& tester, const std::string& controlsName)
+void VideoControls::start(Tester& _tester, const std::string& _controls_name)
 {
-    auto bt = tester.addInBacktrace("Start the video controlled by " + controlsName);
-    helper::Button::push(tester, controlsName + "/Start");
-    tester.shouldBeHidden(
+    auto bt = _tester.addInBacktrace("Start the video controlled by " + _controls_name);
+    helper::Button::push(_tester, _controls_name + "/Start");
+    _tester.shouldBeHidden(
         "start button",
-        [&tester, &controlsName]
+        [&_tester, &_controls_name]
         {
-            return tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(controlsName + "/Start"));
+            return _tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(_controls_name + "/Start"));
         });
 }
 
 //------------------------------------------------------------------------------
 
-void VideoControls::pause(Tester& tester, const std::string& controlsName)
+void VideoControls::pause(Tester& _tester, const std::string& _controls_name)
 {
-    auto bt = tester.addInBacktrace("Pause the video controlled by " + controlsName);
-    helper::Button::push(tester, controlsName + "/Pause");
-    tester.shouldBeHidden(
+    auto bt = _tester.addInBacktrace("Pause the video controlled by " + _controls_name);
+    helper::Button::push(_tester, _controls_name + "/Pause");
+    _tester.shouldBeHidden(
         "pause button",
-        [&tester, &controlsName]
+        [&_tester, &_controls_name]
         {
-            return tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(controlsName + "/Pause"));
+            return _tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(_controls_name + "/Pause"));
         });
 }
 
 //------------------------------------------------------------------------------
 
-void VideoControls::play(Tester& tester, const std::string& controlsName)
+void VideoControls::play(Tester& _tester, const std::string& _controls_name)
 {
-    auto bt = tester.addInBacktrace("Play the video controlled by " + controlsName);
-    helper::Button::push(tester, controlsName + "/Play");
-    tester.shouldBeHidden(
+    auto bt = _tester.addInBacktrace("Play the video controlled by " + _controls_name);
+    helper::Button::push(_tester, _controls_name + "/Play");
+    _tester.shouldBeHidden(
         "play button",
-        [&tester, &controlsName]
+        [&_tester, &_controls_name]
         {
-            return tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(controlsName + "/Play"));
+            return _tester.getMainWindow()->findChild<QWidget*>(QString::fromStdString(_controls_name + "/Play"));
         });
 }
 
 //------------------------------------------------------------------------------
 
-void VideoControls::stop(Tester& tester, const std::string& controlsName)
+void VideoControls::stop(Tester& _tester, const std::string& _controls_name)
 {
-    auto bt = tester.addInBacktrace("Stop the video controlled by " + controlsName);
-    helper::Button::push(tester, controlsName + "/Stop");
+    auto bt = _tester.addInBacktrace("Stop the video controlled by " + _controls_name);
+    helper::Button::push(_tester, _controls_name + "/Stop");
 }
 
 //------------------------------------------------------------------------------
 
-void VideoControls::loop(Tester& tester, const std::string& controlsName)
+void VideoControls::loop(Tester& _tester, const std::string& _controls_name)
 {
-    auto bt = tester.addInBacktrace("Loop the video controlled by " + controlsName);
-    helper::Button::push(tester, controlsName + "/Loop");
+    auto bt = _tester.addInBacktrace("Loop the video controlled by " + _controls_name);
+    helper::Button::push(_tester, _controls_name + "/Loop");
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

@@ -46,13 +46,13 @@ public:
      *
      * @param csvStream the stream to read
      */
-    IO_API csv_reader(const std::filesystem::path& csvPath);
+    IO_API csv_reader(const std::filesystem::path& _csv_path);
 
     /// Destructor
     IO_API virtual ~csv_reader();
 
     /// Containers to store parsed tokens.
-    typedef std::vector<std::string> TokenContainerType;
+    typedef std::vector<std::string> token_container_t;
 
     /**
      * @brief Returns tokens on next line to read, using comma separator
@@ -62,7 +62,7 @@ public:
      *
      * @return tokens found on next line separated with given characters
      */
-    IO_API TokenContainerType getLine(const std::string& separator = ",");
+    IO_API token_container_t getLine(const std::string& _separator = ",");
 
 private:
 

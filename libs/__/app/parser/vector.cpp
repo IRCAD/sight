@@ -43,9 +43,9 @@ void vector::updating()
 void vector::createConfig(core::tools::object::sptr _obj)
 {
     // Declaration of attributes values
-    const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT      = "new";
-    const std::string GET_OBJECT        = "ref";
+    const std::string object_build_mode = "src";
+    const std::string build_object      = "new";
+    const std::string get_object        = "ref";
 
     auto vector = std::dynamic_pointer_cast<data::vector>(_obj);
     SIGHT_ASSERT("The passed object must be a data::vector", vector);
@@ -54,14 +54,14 @@ void vector::createConfig(core::tools::object::sptr _obj)
     {
         if(elem.first == "item")
         {
-            const auto buildMode = elem.second.get<std::string>(OBJECT_BUILD_MODE, BUILD_OBJECT);
+            const auto build_mode = elem.second.get<std::string>(object_build_mode, build_object);
             SIGHT_ASSERT(
-                "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
-                                                   "or GET_OBJECT.",
-                buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
+                "The buildMode \"" << build_mode << "\" is not supported, it should be either BUILD_OBJECT"
+                                                    "or GET_OBJECT.",
+                build_mode == build_object || build_mode == get_object
             );
 
-            if(buildMode == BUILD_OBJECT)
+            if(build_mode == build_object)
             {
                 // Create and manage object config
                 auto ctm = app::config_manager::make();
@@ -69,11 +69,11 @@ void vector::createConfig(core::tools::object::sptr _obj)
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();
-                data::object::sptr localObj = ctm->getConfigRoot();
+                data::object::sptr local_obj = ctm->getConfigRoot();
 
                 // Add object
-                SIGHT_ASSERT("A data::vector can contain only data::object", localObj);
-                vector->push_back(localObj);
+                SIGHT_ASSERT("A data::vector can contain only data::object", local_obj);
+                vector->push_back(local_obj);
             }
             else // if( buildMode == GET_OBJECT )
             {

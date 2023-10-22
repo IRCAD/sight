@@ -49,7 +49,7 @@ void matrix_test::to_vtk_matrix_test()
         }
     }
 
-    vtkSmartPointer<vtkMatrix4x4> vtkMatrix = toVTKMatrix(matrix);
+    vtkSmartPointer<vtkMatrix4x4> vtk_matrix = to_vtk_matrix(matrix);
 
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
@@ -58,7 +58,7 @@ void matrix_test::to_vtk_matrix_test()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "i=" + std::to_string(i) + " j=" + std::to_string(j),
                 i * 10. + j,
-                vtkMatrix->GetElement(i, j)
+                vtk_matrix->GetElement(i, j)
             );
         }
     }
@@ -68,17 +68,17 @@ void matrix_test::to_vtk_matrix_test()
 
 void matrix_test::from_vtk_matrix_test()
 {
-    auto vtkMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+    auto vtk_matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            vtkMatrix->SetElement(i, j, 10 * i + j);
+            vtk_matrix->SetElement(i, j, 10 * i + j);
         }
     }
 
     auto matrix = std::make_shared<data::matrix4>();
-    fromVTKMatrix(vtkMatrix, matrix);
+    from_vtk_matrix(vtk_matrix, matrix);
 
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {

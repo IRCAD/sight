@@ -34,16 +34,16 @@ class UI_CLASS_API location_dummy : public sight::ui::dialog::location_base
 {
 public:
 
-    UI_API void setType(Types type) override;
-    UI_API void setOption(location_dummy::Options option) override;
-    UI_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+    UI_API void setType(Types _type) override;
+    UI_API void setOption(location_dummy::Options _option) override;
+    UI_API void addFilter(const std::string& _filter_name, const std::string& _wildcard_list) override;
     UI_API std::string getCurrentSelection() const override;
 
     UI_API sight::core::location::base::sptr show() override;
 
-    UI_API static void setPaths(const std::vector<std::filesystem::path>& files);
+    UI_API static void setPaths(const std::vector<std::filesystem::path>& _files);
 
-    UI_API static void pushPaths(const std::vector<std::filesystem::path>& files);
+    UI_API static void pushPaths(const std::vector<std::filesystem::path>& _files);
 
     UI_API static bool clear();
 

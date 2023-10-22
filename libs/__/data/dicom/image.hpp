@@ -49,13 +49,13 @@ public:
      * @param[in] rescaleIntercept Rescale intercept
      */
     DATA_API image(
-        std::uint16_t samplesPerPixel,
-        std::uint16_t bitsAllocated,
-        std::uint16_t bitsStored,
-        std::uint16_t highBit,
-        std::uint16_t pixelRepresentation,
-        double rescaleSlope,
-        double rescaleIntercept
+        std::uint16_t _samples_per_pixel,
+        std::uint16_t _bits_allocated,
+        std::uint16_t _bits_stored,
+        std::uint16_t _high_bit,
+        std::uint16_t _pixel_representation,
+        double _rescale_slope,
+        double _rescale_intercept
     );
 
     /// Destructor

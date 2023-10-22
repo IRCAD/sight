@@ -25,8 +25,8 @@
 namespace sight::data
 {
 
-exception::exception(const std::string& message) noexcept :
-    core::exception(message)
+exception::exception(const std::string& _message) noexcept :
+    core::exception(_message)
 {
 }
 

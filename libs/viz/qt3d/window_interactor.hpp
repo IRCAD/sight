@@ -61,17 +61,17 @@ public:
     {
     public:
 
-        Registry(std::string functorKey)
+        Registry(std::string _functor_key)
         {
-            viz::qt3d::registry::get()->add_factory(functorKey, &sight::viz::qt3d::factory::make<T>);
+            viz::qt3d::registry::get()->add_factory(_functor_key, &sight::viz::qt3d::factory::make<T>);
         }
     };
 
     SIGHT_DECLARE_CLASS(window_interactor, sight::core::base_object);
 
-    typedef std::string FactoryRegistryKeyType;
+    typedef std::string factory_registry_key_t;
 
-    VIZ_QT3D_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    VIZ_QT3D_API static const factory_registry_key_t REGISTRY_KEY;
 
     VIZ_QT3D_API static window_interactor::sptr createManager();
 
@@ -85,12 +85,12 @@ public:
     VIZ_QT3D_API virtual void createContainer(ui::container::widget::sptr _parent) = 0;
 
     /// Converts 3DView to QWidget and attach it to the container.
-    VIZ_QT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3dView) = 0;
+    VIZ_QT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3d_view) = 0;
 
     /// Set the render service using the renderwindow_interactor
-    virtual void setRenderService(service::base::sptr srv)
+    virtual void setRenderService(service::base::sptr _srv)
     {
-        m_renderService = srv;
+        m_renderService = _srv;
     }
 
 protected:

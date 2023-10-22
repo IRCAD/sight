@@ -56,11 +56,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void notifyMaterialSetup(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat) override
+    void notifyMaterialSetup(Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& _mat) override
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
-        adaptor->updateValue(mat);
+        adaptor->updateValue(_mat);
     }
 
     //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ compositor_parameter::compositor_parameter() noexcept
 
 void compositor_parameter::configuring()
 {
-    this->IParameter::configuring();
+    this->parameter_adaptor::configuring();
 
     const config_t config = this->get_config();
 
@@ -112,7 +112,7 @@ void compositor_parameter::starting()
 {
     this->initialize();
 
-    sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->getLayer();
 
     if(!m_isVisible)
     {
@@ -123,7 +123,7 @@ void compositor_parameter::starting()
 
     m_resizeConnection.connect(
         layer,
-        sight::viz::scene3d::Layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
         this->get_sptr(),
         ADD_LISTENER_SLOT
     );
@@ -136,7 +136,7 @@ void compositor_parameter::updating()
     // This is typically called when the data has changed through autoconnect
     // So set the parameter as dirty and perform the update
     this->setDirty();
-    this->IParameter::updating();
+    this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
@@ -147,14 +147,14 @@ void compositor_parameter::stopping()
 
     this->getRenderService()->makeCurrent();
 
-    this->IParameter::stopping();
+    this->parameter_adaptor::stopping();
 
-    sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->getLayer();
 
-    Ogre::CompositorChain* compChain =
+    Ogre::CompositorChain* comp_chain =
         Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
-    auto* compositor = compChain->getCompositor(m_compositorName);
+    auto* compositor = comp_chain->getCompositor(m_compositorName);
 
     // Association of a listener attached to this adaptor to the configured compositor
     compositor->removeListener(m_listener);
@@ -168,11 +168,11 @@ void compositor_parameter::setVisible(bool _enable)
 {
     this->getRenderService()->makeCurrent();
 
-    const auto layer                 = this->getLayer();
-    Ogre::CompositorChain* compChain =
+    const auto layer                  = this->getLayer();
+    Ogre::CompositorChain* comp_chain =
         Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
-    auto* compositor = compChain->getCompositor(m_compositorName);
+    auto* compositor = comp_chain->getCompositor(m_compositorName);
     SIGHT_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
 
     if(!_enable && m_listener != nullptr)
@@ -201,7 +201,7 @@ void compositor_parameter::setVisible(bool _enable)
 void compositor_parameter::updateValue(Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
-    this->IParameter::updating();
+    this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
@@ -210,12 +210,12 @@ void compositor_parameter::addListener()
 {
     this->getRenderService()->makeCurrent();
 
-    sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+    sight::viz::scene3d::layer::sptr layer = this->getLayer();
 
-    Ogre::CompositorChain* compChain =
+    Ogre::CompositorChain* comp_chain =
         Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
-    auto* compositor = compChain->getCompositor(m_compositorName);
+    auto* compositor = comp_chain->getCompositor(m_compositorName);
     SIGHT_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
 
     if(m_listener != nullptr)

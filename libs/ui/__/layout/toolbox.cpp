@@ -35,7 +35,7 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-const toolbox::RegistryKeyType toolbox::REGISTRY_KEY = "sight::ui::layout::toolbox";
+const toolbox::registry_key_t toolbox::REGISTRY_KEY = "sight::ui::layout::toolbox";
 
 //-----------------------------------------------------------------------------
 
@@ -49,46 +49,46 @@ toolbox::~toolbox()
 
 //-----------------------------------------------------------------------------
 
-void toolbox::initialize(const ui::config_t& configuration)
+void toolbox::initialize(const ui::config_t& _configuration)
 {
     m_views.clear();
-    for(const auto& view : boost::make_iterator_range(configuration.equal_range("view")))
+    for(const auto& view : boost::make_iterator_range(_configuration.equal_range("view")))
     {
         ViewInfo vi;
-        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
+        if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
-            if(const auto border = viewCfg->get_optional<int>("border"); border.has_value())
+            if(const auto border = view_cfg->get_optional<int>("border"); border.has_value())
             {
                 vi.m_border = border.value();
             }
             else
             {
-                vi.m_leftBorder   = viewCfg->get<int>("leftBorder", vi.m_leftBorder);
-                vi.m_topBorder    = viewCfg->get<int>("topBorder", vi.m_topBorder);
-                vi.m_rightBorder  = viewCfg->get<int>("rightBorder", vi.m_rightBorder);
-                vi.m_bottomBorder = viewCfg->get<int>("bottomBorder", vi.m_bottomBorder);
+                vi.m_leftBorder   = view_cfg->get<int>("leftBorder", vi.m_leftBorder);
+                vi.m_topBorder    = view_cfg->get<int>("topBorder", vi.m_topBorder);
+                vi.m_rightBorder  = view_cfg->get<int>("rightBorder", vi.m_rightBorder);
+                vi.m_bottomBorder = view_cfg->get<int>("bottomBorder", vi.m_bottomBorder);
             }
 
-            vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
-            vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
-            vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
-            vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
+            vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
+            vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
+            vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
+            vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
 
-            vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
-            vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-            vi.m_expanded     = viewCfg->get<bool>("expanded", vi.m_expanded);
+            vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
+            vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+            vi.m_expanded     = view_cfg->get<bool>("expanded", vi.m_expanded);
 
-            vi.m_caption = viewCfg->get<std::string>("caption", "");
+            vi.m_caption = view_cfg->get<std::string>("caption", "");
 
-            if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
+            if(const auto hexa_color = view_cfg->get<std::string>("backgroundColor", ""); !hexa_color.empty())
             {
                 SIGHT_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "
-                    "hexadecimal digits. Given color: " << hexaColor,
-                    hexaColor[0] == '#'
-                    && (hexaColor.length() == 7 || hexaColor.length() == 9)
+                    "hexadecimal digits. Given color: " << hexa_color,
+                    hexa_color[0] == '#'
+                    && (hexa_color.length() == 7 || hexa_color.length() == 9)
                 );
-                vi.m_backgroundColor = hexaColor;
+                vi.m_backgroundColor = hexa_color;
             }
         }
 

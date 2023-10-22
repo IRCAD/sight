@@ -139,13 +139,13 @@ public:
      * @brief Sets the material template Name.
      * @param _materialName material name.
      */
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName);
+    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _material_name);
 
     /**
      * @brief Enables/disables automatic reset on camera.
      * @param _autoResetCamera use true to activate it.
      */
-    MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _autoResetCamera);
+    MODULE_VIZ_SCENE3D_API void setAutoResetCamera(bool _auto_reset_camera);
 
     /**
      * @brief Gets the associated entity.
@@ -163,26 +163,26 @@ public:
      * @brief Sets meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
      * @param _isDynamic use true to use dynamic vertex buffer.
      */
-    MODULE_VIZ_SCENE3D_API void setDynamicVertices(bool _isDynamic);
+    MODULE_VIZ_SCENE3D_API void setDynamicVertices(bool _is_dynamic);
 
     /**
      * @brief Sets meshes and indices buffers to dynamic state (only has effect if called before service
      * starting/update).
      * @param _isDynamic use true to use dynamic vertex and indices buffer.
      */
-    MODULE_VIZ_SCENE3D_API void setDynamic(bool _isDynamic);
+    MODULE_VIZ_SCENE3D_API void setDynamic(bool _is_dynamic);
 
     /**
      * @brief Sets the query flag.
      * @param _queryFlags value of the query flag.
      */
-    MODULE_VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _queryFlags);
+    MODULE_VIZ_SCENE3D_API void setQueryFlags(std::uint32_t _query_flags);
 
     /**
      * @brief Sets if the reconstruction is managed or not.
      * @param _isReconstructionManaged use true if the reconstruction is managed.
      */
-    MODULE_VIZ_SCENE3D_API void setIsReconstructionManaged(bool _isReconstructionManaged);
+    MODULE_VIZ_SCENE3D_API void setIsReconstructionManaged(bool _is_reconstruction_managed);
 
     /// Flags the r2vb objects as dirty and asks the render service to update.
     MODULE_VIZ_SCENE3D_API void requestRender() override;
@@ -243,7 +243,7 @@ private:
      */
     module::viz::scene3d::adaptor::material::sptr createMaterialService(
         data::mesh::csptr _mesh,
-        const std::string& _materialSuffix = ""
+        const std::string& _material_suffix = ""
     );
 
     /**
@@ -328,16 +328,16 @@ inline void mesh::setMaterial(data::material::sptr _material)
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setMaterialTemplateName(const std::string& _materialName)
+inline void mesh::setMaterialTemplateName(const std::string& _material_name)
 {
-    m_materialTemplateName = _materialName;
+    m_materialTemplateName = _material_name;
 }
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setAutoResetCamera(bool _autoResetCamera)
+inline void mesh::setAutoResetCamera(bool _auto_reset_camera)
 {
-    m_autoResetCamera = _autoResetCamera;
+    m_autoResetCamera = _auto_reset_camera;
 }
 
 //------------------------------------------------------------------------------
@@ -356,38 +356,38 @@ inline bool mesh::getVisibility() const
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamic(bool _isDynamic)
+inline void mesh::setDynamic(bool _is_dynamic)
 {
-    m_isDynamic = _isDynamic;
+    m_isDynamic = _is_dynamic;
     if(m_meshGeometry)
     {
-        m_meshGeometry->setDynamic(_isDynamic);
+        m_meshGeometry->setDynamic(_is_dynamic);
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setDynamicVertices(bool _isDynamic)
+inline void mesh::setDynamicVertices(bool _is_dynamic)
 {
-    m_isDynamicVertices = _isDynamic;
+    m_isDynamicVertices = _is_dynamic;
     if(m_meshGeometry)
     {
-        m_meshGeometry->setDynamicVertices(_isDynamic);
+        m_meshGeometry->setDynamicVertices(_is_dynamic);
     }
 }
 
 //------------------------------------------------------------------------------
 
-inline void mesh::setQueryFlags(uint32_t _queryFlags)
+inline void mesh::setQueryFlags(uint32_t _query_flags)
 {
-    m_queryFlags = _queryFlags;
+    m_queryFlags = _query_flags;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void mesh::setIsReconstructionManaged(bool _isReconstructionManaged)
+inline void mesh::setIsReconstructionManaged(bool _is_reconstruction_managed)
 {
-    m_isReconstructionManaged = _isReconstructionManaged;
+    m_isReconstructionManaged = _is_reconstruction_managed;
 }
 
 //------------------------------------------------------------------------------

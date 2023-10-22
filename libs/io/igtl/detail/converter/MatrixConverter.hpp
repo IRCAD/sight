@@ -48,14 +48,14 @@ public:
      *
      * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer _src) const override;
 
     /**
      * @brief convert a data::image to a ::igtl::ImageMessage
      *
      * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr _src) const override;
 
     /**
      * @brief create new MatrixConverter
@@ -69,7 +69,7 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& getIgtlType() const override;
+    [[nodiscard]] IO_IGTL_API std::string const& get_igtl_type() const override;
 
     /**
      * @brief get the fwData object type supported for conversion

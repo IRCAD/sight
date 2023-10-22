@@ -115,8 +115,8 @@ public:
     spy_logger_impl& operator=(spy_logger_impl&&)      = delete;
 
     // Constructor
-    inline explicit spy_logger_impl(spy_logger* const logger) noexcept :
-        m_logger(logger)
+    inline explicit spy_logger_impl(spy_logger* const _logger) noexcept :
+        M_LOGGER(_logger)
     {
     }
 
@@ -127,17 +127,17 @@ public:
     }
 
     // Returns the next log file name
-    inline std::filesystem::path next_log_archive(const std::filesystem::path& log_archive)
+    inline std::filesystem::path next_log_archive(const std::filesystem::path& _log_archive)
     {
         // Get the original log archive name and the current index
-        if(m_original_log_archive.empty() && log_archive.empty())
+        if(m_original_log_archive.empty() && _log_archive.empty())
         {
             m_original_log_archive = ENCRYPTED_LOG_FILE;
             m_log_archive_index    = 0;
         }
-        else if(!log_archive.empty() && (m_original_log_archive.empty() || log_archive != m_original_log_archive))
+        else if(!_log_archive.empty() && (m_original_log_archive.empty() || _log_archive != m_original_log_archive))
         {
-            m_original_log_archive = log_archive;
+            m_original_log_archive = _log_archive;
             m_log_archive_index    = 0;
         }
         else
@@ -204,10 +204,10 @@ public:
 
     // Launch the remote logger, either in raw mode or in encrypted mode
     inline void start_logger(
-        const std::filesystem::path& log_archive,
-        level_type level,
-        const core::crypto::secure_string& password = core::crypto::secure_string(),
-        bool ask_password                           = false
+        const std::filesystem::path& _log_archive,
+        level_type _level,
+        const core::crypto::secure_string& _password = core::crypto::secure_string(),
+        bool _ask_password                           = false
 )
     {
         // If the logger is started, stop it by closing the input stream
@@ -220,17 +220,17 @@ public:
         const auto logger_path = get_logger_path();
 
         // Build the log archive name
-        const auto& new_log_archive = next_log_archive(log_archive);
+        const auto& new_log_archive = next_log_archive(_log_archive);
 
         // Store the log archive name
         m_log_archives.emplace_back(new_log_archive.string());
         std::cerr << "\nLog archive: " << new_log_archive.string() << std::endl;
 
         // To avoid the logger to restart after changing the global password
-        m_raw = (password.empty() && !ask_password);
+        m_raw = (_password.empty() && !_ask_password);
 
         // Store the level, so we can launch the logger later when changing the password
-        m_level = level;
+        m_level = _level;
 
         // Create the input and output streams
         SIGHT_ASSERT("The input stream is not null", !m_remote_in);
@@ -253,13 +253,13 @@ public:
         }
         else
         {
-            if(!password.empty())
+            if(!_password.empty())
             {
                 args.emplace_back("-p");
-                args.emplace_back(core::crypto::to_base64(password).c_str());
+                args.emplace_back(core::crypto::to_base64(_password).c_str());
             }
 
-            if(ask_password)
+            if(_ask_password)
             {
                 args.emplace_back("-a");
             }
@@ -325,7 +325,7 @@ public:
             }
 
             // If we asked the password, store it for later use
-            if(ask_password)
+            if(_ask_password)
             {
                 core::crypto::password_keeper::set_global_password(password_buffer, false);
             }
@@ -336,7 +336,7 @@ public:
             *m_remote_in,
             keywords::format = (file_stream_format()),
             keywords::filter = expressions::attr<trivial::severity_level>("Severity")
-                               >= static_cast<trivial::severity_level>(level),
+                               >= static_cast<trivial::severity_level>(_level),
             keywords::auto_flush = true
         );
 
@@ -361,7 +361,7 @@ public:
     }
 
     // Pointer to the public interface
-    spy_logger* const m_logger;
+    spy_logger* const M_LOGGER;
 
     int m_remote_pid {0};
 
@@ -426,7 +426,7 @@ std::filesystem::path spy_logger::get_logger_path()
                 paths.cbegin(),
                 paths.cend(),
                 std::back_inserter(bin_paths),
-                [](const auto& path){return path.string();});
+                [](const auto& _path){return _path.string();});
 
             std::filesystem::path result = boost::process::search_path("sightlog", bin_paths).string();
 
@@ -458,30 +458,30 @@ spy_logger::~spy_logger() = default;
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::add_console_log(std::ostream& os, level_type level)
+void spy_logger::add_console_log(std::ostream& _os, level_type _level)
 {
     // Just in case..
     std::unique_lock lock(s_mutex);
 
     boost::log::add_console_log(
-        os,
+        _os,
         keywords::format = (console_stream_format()),
         keywords::filter = expressions::attr<trivial::severity_level>("Severity")
-                           >= static_cast<trivial::severity_level>(level),
+                           >= static_cast<trivial::severity_level>(_level),
         keywords::auto_flush = true
     );
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::add_file_log(const std::filesystem::path& log_file, level_type level)
+void spy_logger::add_file_log(const std::filesystem::path& _log_file, level_type _level)
 {
     // Just in case..
     std::unique_lock lock(s_mutex);
 
     boost::log::add_file_log(
         // file name pattern
-        keywords::file_name = log_file.string(),
+        keywords::file_name = _log_file.string(),
         // rotate files every 10 MiB...
         keywords::rotation_size = 10 * 1024 * 1024,
         // ...or at midnight
@@ -489,7 +489,7 @@ void spy_logger::add_file_log(const std::filesystem::path& log_file, level_type 
         // log record format
         keywords::format = (file_stream_format()),
         keywords::filter = expressions::attr<trivial::severity_level>("Severity")
-                           >= static_cast<trivial::severity_level>(level),
+                           >= static_cast<trivial::severity_level>(_level),
         keywords::auto_flush = true
     );
 }
@@ -497,25 +497,25 @@ void spy_logger::add_file_log(const std::filesystem::path& log_file, level_type 
 //-----------------------------------------------------------------------------
 
 void spy_logger::start_encrypted_logger(
-    const std::filesystem::path& log_archive,
-    level_type level,
-    const core::crypto::secure_string& password,
-    bool ask_password
+    const std::filesystem::path& _log_archive,
+    level_type _level,
+    const core::crypto::secure_string& _password,
+    bool _ask_password
 )
 {
     std::unique_lock lock(m_pimpl->m_mutex);
-    m_pimpl->start_logger(log_archive, level, password, ask_password);
+    m_pimpl->start_logger(_log_archive, _level, _password, _ask_password);
 }
 
 //-----------------------------------------------------------------------------
 
 void spy_logger::start_logger(
-    const std::filesystem::path& log_archive,
-    level_type level
+    const std::filesystem::path& _log_archive,
+    level_type _level
 )
 {
     std::unique_lock lock(m_pimpl->m_mutex);
-    m_pimpl->start_logger(log_archive, level);
+    m_pimpl->start_logger(_log_archive, _level);
 }
 
 //------------------------------------------------------------------------------
@@ -545,29 +545,29 @@ bool spy_logger::is_log_encrypted() const
 //------------------------------------------------------------------------------
 
 void spy_logger::change_log_password(
-    const core::crypto::secure_string& password,
-    const core::crypto::secure_string& old_password
+    const core::crypto::secure_string& _password,
+    const core::crypto::secure_string& _old_password
 )
 {
-    relocate_log(m_pimpl->m_original_log_archive, password, true, old_password);
+    relocate_log(m_pimpl->m_original_log_archive, _password, true, _old_password);
 }
 
 //------------------------------------------------------------------------------
 
 void spy_logger::relocate_log(
-    const std::filesystem::path& new_path,
-    const core::crypto::secure_string& password,
-    bool relocate_previous_logs,
-    const core::crypto::secure_string& old_password
+    const std::filesystem::path& _new_path,
+    const core::crypto::secure_string& _password,
+    bool _relocate_previous_logs,
+    const core::crypto::secure_string& _old_password
 )
 {
     std::unique_lock lock(m_pimpl->m_mutex);
 
     // Create the new directory if needed
-    const auto& new_dir = new_path.has_parent_path()
-                          ? new_path.parent_path()
-                          : new_path.has_root_path()
-                          ? new_path.root_path()
+    const auto& new_dir = _new_path.has_parent_path()
+                          ? _new_path.parent_path()
+                          : _new_path.has_root_path()
+                          ? _new_path.root_path()
                           : std::filesystem::current_path();
 
     std::filesystem::create_directories(new_dir);
@@ -576,9 +576,9 @@ void spy_logger::relocate_log(
     const auto& merged_logs_path =
         [&]
         {
-            if(relocate_previous_logs && !m_pimpl->m_log_archives.empty())
+            if(_relocate_previous_logs && !m_pimpl->m_log_archives.empty())
             {
-                return m_pimpl->next_log_archive(new_path);
+                return m_pimpl->next_log_archive(_new_path);
             }
 
             return std::filesystem::path();
@@ -586,9 +586,9 @@ void spy_logger::relocate_log(
 
     // Restart the logger. If it was encrypted , it will be encrypted again
     m_pimpl->start_logger(
-        new_path,
+        _new_path,
         m_pimpl->m_level,
-        password,
+        _password,
         false
     );
 
@@ -600,9 +600,9 @@ void spy_logger::relocate_log(
         std::remove_if(
             m_pimpl->m_log_archives.begin(),
             m_pimpl->m_log_archives.end(),
-            [&](const auto& path)
+            [&](const auto& _path)
         {
-            const auto& canonical_path = std::filesystem::weakly_canonical(path);
+            const auto& canonical_path = std::filesystem::weakly_canonical(_path);
             return canonical_path == std::filesystem::weakly_canonical(merged_logs_path)
             || canonical_path == std::filesystem::weakly_canonical(current_log);
         }),
@@ -630,7 +630,7 @@ void spy_logger::relocate_log(
 
         boost::process::ipstream remote_err;
 
-        const auto& args = password.empty()
+        const auto& args = _password.empty()
                            ? boost::process::args(
             {
                 "-b",
@@ -639,14 +639,14 @@ void spy_logger::relocate_log(
                 "-o",
                 core::crypto::to_base64(merged_logs_path.string())
             })
-                           : old_password.empty()
+                           : _old_password.empty()
                            ? boost::process::args(
             {
                 "-b",
                 "-i",
                 core::crypto::to_base64(boost::join(m_pimpl->m_log_archives, ";")),
                 "-p",
-                core::crypto::to_base64(password).c_str(), // NOLINT(readability-redundant-string-cstr)
+                core::crypto::to_base64(_password).c_str(), // NOLINT(readability-redundant-string-cstr)
                 "-o",
                 core::crypto::to_base64(merged_logs_path.string())
             })
@@ -656,9 +656,9 @@ void spy_logger::relocate_log(
                 "-i",
                 core::crypto::to_base64(boost::join(m_pimpl->m_log_archives, ";")),
                 "-p",
-                core::crypto::to_base64(password).c_str(), // NOLINT(readability-redundant-string-cstr)
+                core::crypto::to_base64(_password).c_str(), // NOLINT(readability-redundant-string-cstr)
                 "-P",
-                core::crypto::to_base64(old_password).c_str(), // NOLINT(readability-redundant-string-cstr)
+                core::crypto::to_base64(_old_password).c_str(), // NOLINT(readability-redundant-string-cstr)
                 "-o",
                 core::crypto::to_base64(merged_logs_path.string())
             });
@@ -708,45 +708,45 @@ void spy_logger::relocate_log(
 
 //------------------------------------------------------------------------------
 
-void spy_logger::trace(const std::string& mes, const char* file, int line)
+void spy_logger::trace(const std::string& _mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), trivial::trace) << FILE_LINE(mes);
+    BOOST_LOG_SEV(lg::get(), trivial::trace) << FILE_LINE(_mes);
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::debug(const std::string& mes, const char* file, int line)
+void spy_logger::debug(const std::string& _mes, const char* file, int line)
 {
     BOOST_LOG_SEV(lg::get(), trivial::debug)
-    << "[" << file << ":" << line << "] " << FILE_LINE(mes);
+    << "[" << file << ":" << line << "] " << FILE_LINE(_mes);
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::info(const std::string& mes, const char* file, int line)
+void spy_logger::info(const std::string& _mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), trivial::info) << FILE_LINE(mes);
+    BOOST_LOG_SEV(lg::get(), trivial::info) << FILE_LINE(_mes);
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::warn(const std::string& mes, const char* file, int line)
+void spy_logger::warn(const std::string& _mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), trivial::warning) << FILE_LINE(mes);
+    BOOST_LOG_SEV(lg::get(), trivial::warning) << FILE_LINE(_mes);
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::error(const std::string& mes, const char* file, int line)
+void spy_logger::error(const std::string& _mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), trivial::error) << FILE_LINE(mes);
+    BOOST_LOG_SEV(lg::get(), trivial::error) << FILE_LINE(_mes);
 }
 
 //-----------------------------------------------------------------------------
 
-void spy_logger::fatal(const std::string& mes, const char* file, int line)
+void spy_logger::fatal(const std::string& _mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), trivial::fatal) << FILE_LINE(mes);
+    BOOST_LOG_SEV(lg::get(), trivial::fatal) << FILE_LINE(_mes);
 }
 
 } // namespace sight::core::log

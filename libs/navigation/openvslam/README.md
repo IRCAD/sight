@@ -15,5 +15,5 @@ Library which handles conversions between _Sight_ and [OpenVSLAM](https://github
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> navigation_openvslam ...)
+target_link_libraries( my_target <PUBLIC|PRIVATE> navigation_openvslam ...)
 ```

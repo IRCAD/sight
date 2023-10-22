@@ -30,33 +30,33 @@ namespace sight::service
 
 notifier::notifier(core::com::signals& _signals) noexcept
 {
-    _signals(signals::NOTIFIED, m_notified_sig);
-    _signals(signals::NOTIFICATION_CLOSED, m_notification_closed_sig);
+    _signals(signals::NOTIFIED, M_NOTIFIED_SIG);
+    _signals(signals::NOTIFICATION_CLOSED, M_NOTIFICATION_CLOSED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::notify(Notification notification) const
+void notifier::notify(Notification _notification) const
 {
-    SIGHT_FATAL_IF("channel '" + notification.channel + "' not found.", !m_channels.contains(notification.channel));
-    notification.channel = m_channels.at(notification.channel);
-    m_notified_sig->async_emit(std::move(notification));
+    SIGHT_FATAL_IF("channel '" + _notification.channel + "' not found.", !m_channels.contains(_notification.channel));
+    _notification.channel = m_channels.at(_notification.channel);
+    M_NOTIFIED_SIG->async_emit(std::move(_notification));
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::closeNotification(std::string channel) const
+void notifier::closeNotification(std::string _channel) const
 {
-    SIGHT_FATAL_IF("channel '" + channel + "' not found.", !m_channels.contains(channel));
-    channel = m_channels.at(channel);
-    m_notification_closed_sig->async_emit(std::move(channel));
+    SIGHT_FATAL_IF("channel '" + _channel + "' not found.", !m_channels.contains(_channel));
+    _channel = m_channels.at(_channel);
+    M_NOTIFICATION_CLOSED_SIG->async_emit(std::move(_channel));
 }
 
 //------------------------------------------------------------------------------
 
-void notifier::initialize(const service::config_t& config)
+void notifier::initialize(const service::config_t& _config)
 {
-    if(const auto& notification = config.get_child_optional("notification"); notification)
+    if(const auto& notification = _config.get_child_optional("notification"); notification)
     {
         for(const auto& channel : boost::make_iterator_range(notification->equal_range("channel")))
         {

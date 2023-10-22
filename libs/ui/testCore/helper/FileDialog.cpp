@@ -22,28 +22,28 @@
 #include "FileDialog.hpp"
 
 #include "Dialog.hpp"
-#include "Field.hpp"
+#include "field.hpp"
 
 #include <QFileDialog>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 //------------------------------------------------------------------------------
 
-void FileDialog::fill(Tester& tester, const std::filesystem::path& path)
+void FileDialog::fill(Tester& _tester, const std::filesystem::path& _path)
 {
-    auto bt = tester.addInBacktrace("fill " + path.string() + " in the file window");
-    Dialog::take<QFileDialog*>(tester, "file window");
-    const QPointer<QFileDialog> fileWindow = tester.get<QFileDialog*>();
-    helper::Field::fill(tester, Select::fromDialog("fileNameEdit"), path.string());
-    tester.interact(std::make_unique<KeyboardClick>(Qt::Key_Enter));
-    tester.doubt(
+    auto bt = _tester.addInBacktrace("fill " + _path.string() + " in the file window");
+    Dialog::take<QFileDialog*>(_tester, "file window");
+    const QPointer<QFileDialog> file_window = _tester.get<QFileDialog*>();
+    helper::field::fill(_tester, Select::fromDialog("fileNameEdit"), _path.string());
+    _tester.interact(std::make_unique<KeyboardClick>(Qt::Key_Enter));
+    _tester.doubt(
         "the file window is closed",
-        [&fileWindow](QObject*)
+        [&file_window](QObject*)
         {
-            return fileWindow == nullptr || !fileWindow->isVisible();
+            return file_window == nullptr || !file_window->isVisible();
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test_core::helper

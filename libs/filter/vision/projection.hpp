@@ -53,16 +53,16 @@ public:
  */
     template<class T>
     static void projectPixel(
-        std::size_t px,
-        std::size_t py,
-        T depth,
-        T cx,
-        T cy,
-        T fx,
-        T fy,
-        T& x,
-        T& y,
-        T& z
+        std::size_t _px,
+        std::size_t _py,
+        T _depth,
+        T _cx,
+        T _cy,
+        T _fx,
+        T _fy,
+        T& _x,
+        T& _y,
+        T& _z
     );
 
 /**
@@ -84,17 +84,17 @@ public:
  */
     template<class T>
     static bool projectPoint(
-        T x,
-        T y,
-        T z,
-        T cx,
-        T cy,
-        T fx,
-        T fy,
-        std::size_t width,
-        std::size_t height,
-        std::size_t& px,
-        std::size_t& py
+        T _x,
+        T _y,
+        T _z,
+        T _cx,
+        T _cy,
+        T _fx,
+        T _fy,
+        std::size_t _width,
+        std::size_t _height,
+        std::size_t& _px,
+        std::size_t& _py
     );
 };
 
@@ -102,54 +102,54 @@ public:
 
 template<class T>
 void projection::projectPixel(
-    std::size_t px,
-    std::size_t py,
-    T depth,
-    T cx,
-    T cy,
-    T fx,
-    T fy,
-    T& x,
-    T& y,
-    T& z
+    std::size_t _px,
+    std::size_t _py,
+    T _depth,
+    T _cx,
+    T _cy,
+    T _fx,
+    T _fy,
+    T& _x,
+    T& _y,
+    T& _z
 )
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
-    x = (static_cast<T>(px) - cx) / fx * depth;
-    y = (static_cast<T>(py) - cy) / fy * depth;
-    z = static_cast<T>(depth);
+    _x = (static_cast<T>(_px) - _cx) / _fx * _depth;
+    _y = (static_cast<T>(_py) - _cy) / _fy * _depth;
+    _z = static_cast<T>(_depth);
 }
 
 //------------------------------------------------------------------------------
 
 template<class T>
 bool projection::projectPoint(
-    T x,
-    T y,
-    T z,
-    T cx,
-    T cy,
-    T fx,
-    T fy,
-    std::size_t width,
-    std::size_t height,
-    std::size_t& px,
-    std::size_t& py
+    T _x,
+    T _y,
+    T _z,
+    T _cx,
+    T _cy,
+    T _fx,
+    T _fy,
+    std::size_t _width,
+    std::size_t _height,
+    std::size_t& _px,
+    std::size_t& _py
 )
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
-    const T a = x / z;
-    const T b = y / z;
-    T u       = a * fx + cx;
-    T v       = b * fy + cy;
+    const T a = _x / _z;
+    const T b = _y / _z;
+    T u       = a * _fx + _cx;
+    T v       = b * _fy + _cy;
 
-    if((v < 1.) || (v > static_cast<T>(height)) || (u < 1.) || (u > static_cast<T>(width)))
+    if((v < 1.) || (v > static_cast<T>(_height)) || (u < 1.) || (u > static_cast<T>(_width)))
     {
         return false;
     }
 
-    px = static_cast<std::size_t>(std::lround(u));
-    py = static_cast<std::size_t>(std::lround(v));
+    _px = static_cast<std::size_t>(std::lround(u));
+    _py = static_cast<std::size_t>(std::lround(v));
 
     return true;
 }

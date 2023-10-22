@@ -94,7 +94,7 @@ private:
      * @brief method called when the current object is a timeline
      * @note Currently only data::matrix_tl and data::frame_tl are managed
      */
-    void manageTimeline(data::object::sptr obj, std::size_t index);
+    void manageTimeline(data::object::sptr _obj, std::size_t _index);
 
     /// client socket
     sight::io::igtl::Client m_client;

@@ -35,7 +35,7 @@ namespace sight::ui::layout
 
 //-----------------------------------------------------------------------------
 
-const cardinal::RegistryKeyType cardinal::REGISTRY_KEY = "sight::ui::layout::cardinal";
+const cardinal::registry_key_t cardinal::REGISTRY_KEY = "sight::ui::layout::cardinal";
 //-----------------------------------------------------------------------------
 
 const std::map<std::string, cardinal::Align> cardinal::STRING_TO_ALIGN = {
@@ -48,50 +48,50 @@ const std::map<std::string, cardinal::Align> cardinal::STRING_TO_ALIGN = {
 
 //-----------------------------------------------------------------------------
 
-void cardinal::initialize(const ui::config_t& configuration)
+void cardinal::initialize(const ui::config_t& _configuration)
 {
     m_views.clear();
 
-    const auto viewsCfg = configuration.equal_range("view");
-    for(const auto& view : boost::make_iterator_range(viewsCfg))
+    const auto views_cfg = _configuration.equal_range("view");
+    for(const auto& view : boost::make_iterator_range(views_cfg))
     {
         ViewInfo vi;
-        if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
+        if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
-            if(const auto align = viewCfg->get_optional<std::string>("align"); align.has_value())
+            if(const auto align = view_cfg->get_optional<std::string>("align"); align.has_value())
             {
                 SIGHT_ASSERT("Align " << *align << " unknown", STRING_TO_ALIGN.find(*align) != STRING_TO_ALIGN.end());
                 vi.m_align = STRING_TO_ALIGN.find(*align)->second;
             }
 
-            vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
-            vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
-            vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
-            vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
+            vi.m_minSize.first  = view_cfg->get<int>("minWidth", vi.m_minSize.first);
+            vi.m_minSize.second = view_cfg->get<int>("minHeight", vi.m_minSize.second);
+            vi.m_maxSize.first  = view_cfg->get<int>("maxWidth", vi.m_maxSize.first);
+            vi.m_maxSize.second = view_cfg->get<int>("maxHeight", vi.m_maxSize.second);
 
-            vi.m_isResizable  = viewCfg->get<bool>("resizable", vi.m_isResizable);
-            vi.m_position     = viewCfg->get<int>("position", vi.m_position);
-            vi.m_layer        = viewCfg->get<int>("layer", vi.m_layer);
-            vi.m_row          = viewCfg->get<int>("row", vi.m_row);
-            vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
-            vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
-            vi.m_toolTip      = viewCfg->get<std::string>("toolTip", vi.m_toolTip);
+            vi.m_isResizable  = view_cfg->get<bool>("resizable", vi.m_isResizable);
+            vi.m_position     = view_cfg->get<int>("position", vi.m_position);
+            vi.m_layer        = view_cfg->get<int>("layer", vi.m_layer);
+            vi.m_row          = view_cfg->get<int>("row", vi.m_row);
+            vi.m_visible      = view_cfg->get<bool>("visible", vi.m_visible);
+            vi.m_useScrollBar = view_cfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+            vi.m_toolTip      = view_cfg->get<std::string>("toolTip", vi.m_toolTip);
 
-            if(auto caption = viewCfg->get_optional<std::string>("caption"); caption.has_value())
+            if(auto caption = view_cfg->get_optional<std::string>("caption"); caption.has_value())
             {
                 vi.m_caption.first  = true;
                 vi.m_caption.second = caption.value();
             }
 
-            if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
+            if(const auto hexa_color = view_cfg->get<std::string>("backgroundColor", ""); !hexa_color.empty())
             {
                 SIGHT_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "
-                    "hexadecimal digits. Given color: " << hexaColor,
-                    hexaColor[0] == '#'
-                    && (hexaColor.length() == 7 || hexaColor.length() == 9)
+                    "hexadecimal digits. Given color: " << hexa_color,
+                    hexa_color[0] == '#'
+                    && (hexa_color.length() == 7 || hexa_color.length() == 9)
                 );
-                vi.m_backgroundColor = hexaColor;
+                vi.m_backgroundColor = hexa_color;
             }
         }
 

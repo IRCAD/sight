@@ -47,13 +47,13 @@ void generic_tl<BUFFER_TYPE>::shallow_copy(const object::csptr&)
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const generic_tl<BUFFER_TYPE> >(source);
+    const auto& other = std::dynamic_pointer_cast<const generic_tl<BUFFER_TYPE> >(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
         !bool(other)
@@ -62,45 +62,45 @@ void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& source, const std::
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
-    for(const TimelineType::value_type& elt : other->m_timeline)
+    for(const timeline_t::value_type& elt : other->m_timeline)
     {
-        SPTR(BufferType) tlObj = this->createBuffer(elt.first);
-        tlObj->deep_copy(*elt.second);
-        m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
+        SPTR(buffer_t) tl_obj = this->createBuffer(elt.first);
+        tl_obj->deep_copy(*elt.second);
+        m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-CSPTR(typename generic_tl<BUFFER_TYPE>::BufferType)
+CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
 generic_tl<BUFFER_TYPE>::getClosestBuffer(
-    core::hires_clock::type timestamp,
-    timeline::direction_t direction
+    core::hires_clock::type _timestamp,
+    timeline::direction_t _direction
 ) const
 {
-    CSPTR(data::timeline::object) buffer = this->getClosestObject(timestamp, direction);
-    return std::dynamic_pointer_cast<const BufferType>(buffer);
+    CSPTR(data::timeline::object) buffer = this->getClosestObject(_timestamp, _direction);
+    return std::dynamic_pointer_cast<const buffer_t>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-CSPTR(typename generic_tl<BUFFER_TYPE>::BufferType)
-generic_tl<BUFFER_TYPE>::get_buffer(core::hires_clock::type timestamp) const
+CSPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
+generic_tl<BUFFER_TYPE>::get_buffer(core::hires_clock::type _timestamp) const
 {
-    CSPTR(data::timeline::object) buffer = this->getObject(timestamp);
-    return std::dynamic_pointer_cast<const BufferType>(buffer);
+    CSPTR(data::timeline::object) buffer = this->getObject(_timestamp);
+    return std::dynamic_pointer_cast<const buffer_t>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void generic_tl<BUFFER_TYPE>::initPoolSize(unsigned int maxElementNum)
+void generic_tl<BUFFER_TYPE>::initPoolSize(unsigned int _max_element_num)
 {
-    m_maxElementNum = maxElementNum;
+    m_maxElementNum = _max_element_num;
     this->allocPoolSize(sizeof(BUFFER_TYPE) * m_maxElementNum);
 }
 
@@ -108,33 +108,33 @@ void generic_tl<BUFFER_TYPE>::initPoolSize(unsigned int maxElementNum)
 
 template<class BUFFER_TYPE>
 SPTR(data::timeline::object)
-generic_tl<BUFFER_TYPE>::createObject(core::hires_clock::type timestamp)
+generic_tl<BUFFER_TYPE>::createObject(core::hires_clock::type _timestamp)
 {
-    return this->createBuffer(timestamp);
+    return this->createBuffer(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-SPTR(typename generic_tl<BUFFER_TYPE>::BufferType)
-generic_tl<BUFFER_TYPE>::createBuffer(core::hires_clock::type timestamp)
+SPTR(typename generic_tl<BUFFER_TYPE>::buffer_t)
+generic_tl<BUFFER_TYPE>::createBuffer(core::hires_clock::type _timestamp)
 {
-    SPTR(BufferType) obj = std::make_shared<BufferType>(
+    SPTR(buffer_t) obj = std::make_shared<buffer_t>(
         m_maxElementNum,
-        timestamp,
-        (data::timeline::buffer::BufferDataType) m_pool->malloc(),
+        _timestamp,
+        (data::timeline::buffer::buffer_data_t) m_pool->malloc(),
         m_pool->get_requested_size(),
-        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
+        [object_ptr = m_pool](auto&& _p_h1, auto&& ...){object_ptr->free(std::forward<decltype(_p_h1)>(_p_h1));});
     return obj;
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-bool generic_tl<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::object)& obj) const
+bool generic_tl<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::object)& _obj) const
 {
-    CSPTR(BufferType) srcObj = std::dynamic_pointer_cast<const BufferType>(obj);
-    return srcObj != nullptr;
+    CSPTR(buffer_t) src_obj = std::dynamic_pointer_cast<const buffer_t>(_obj);
+    return src_obj != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -148,23 +148,23 @@ unsigned int generic_tl<BUFFER_TYPE>::getMaxElementNum() const
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-bool generic_tl<BUFFER_TYPE>::operator==(const generic_tl& other) const noexcept
+bool generic_tl<BUFFER_TYPE>::operator==(const generic_tl& _other) const noexcept
 {
-    if(m_maxElementNum != other.m_maxElementNum)
+    if(m_maxElementNum != _other.m_maxElementNum)
     {
         return false;
     }
 
     // Super class last
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-bool generic_tl<BUFFER_TYPE>::operator!=(const generic_tl& other) const noexcept
+bool generic_tl<BUFFER_TYPE>::operator!=(const generic_tl& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 } // namespace sight::data

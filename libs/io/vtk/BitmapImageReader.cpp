@@ -75,7 +75,7 @@ void BitmapImageReader::read()
     SIGHT_ASSERT("The current object has expired.", !m_object.expired());
     SIGHT_ASSERT("Unable to lock object", m_object.lock());
 
-    data::image::sptr pImage = getConcreteObject();
+    data::image::sptr p_image = getConcreteObject();
 
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
@@ -91,9 +91,9 @@ void BitmapImageReader::read()
 
     progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
     progress_callback->SetCallback(
-        [&](vtkObject* caller, std::uint64_t, void*)
+        [&](vtkObject* _caller, std::uint64_t, void*)
         {
-            auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
+            auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
             m_job->done_work(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
@@ -109,7 +109,7 @@ void BitmapImageReader::read()
     SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->get_file().string(), !img);
     try
     {
-        io::vtk::fromVTKImage(img, pImage);
+        io::vtk::from_vtk_image(img, p_image);
     }
     catch(std::exception& e)
     {
@@ -133,7 +133,7 @@ core::jobs::base::sptr BitmapImageReader::getJob() const
 
 //------------------------------------------------------------------------------
 
-void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& ext)
+void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& _ext)
 {
     /* Get the collection of available bitmap image readers */
     vtkSmartPointer<vtkImageReader2Collection> ir2c = vtkSmartPointer<vtkImageReader2Collection>::New();
@@ -153,7 +153,7 @@ void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& ext)
 
         for(const auto& token : tokens)
         {
-            ext.push_back(token);
+            _ext.push_back(token);
         }
     }
 }

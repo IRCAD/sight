@@ -48,32 +48,32 @@ enum class Flag : std::uint64_t
 
 //------------------------------------------------------------------------------
 
-static constexpr Flag operator|(Flag lhs, Flag rhs)
+static constexpr Flag operator|(Flag _lhs, Flag _rhs)
 {
     return static_cast<Flag>(
-        static_cast<std::underlying_type_t<Flag> >(lhs)
-        | static_cast<std::underlying_type_t<Flag> >(rhs)
+        static_cast<std::underlying_type_t<Flag> >(_lhs)
+        | static_cast<std::underlying_type_t<Flag> >(_rhs)
     );
 }
 
 //------------------------------------------------------------------------------
 
-static constexpr Flag operator&(Flag lhs, Flag rhs)
+static constexpr Flag operator&(Flag _lhs, Flag _rhs)
 {
     return static_cast<Flag>(
-        static_cast<std::underlying_type_t<Flag> >(lhs)
-        & static_cast<std::underlying_type_t<Flag> >(rhs)
+        static_cast<std::underlying_type_t<Flag> >(_lhs)
+        & static_cast<std::underlying_type_t<Flag> >(_rhs)
     );
 }
 
 /// Returns the backend associated to an extension
 /// @arg extension: the selected extension
 /// @return backend suitable for the given extension
-inline static Backend extensionToBackend(const std::string& extension)
+inline static Backend extension_to_backend(const std::string& _extension)
 {
-    if(extension.ends_with(detail::JPEG_EXT) || extension.ends_with(detail::JPG_EXT))
+    if(_extension.ends_with(detail::JPEG_EXT) || _extension.ends_with(detail::JPG_EXT))
     {
-        if(nvJPEG())
+        if(nv_jpeg())
         {
             return Backend::NVJPEG;
         }
@@ -81,9 +81,9 @@ inline static Backend extensionToBackend(const std::string& extension)
         return Backend::LIBJPEG;
     }
 
-    if(extension.ends_with(detail::J2K_EXT))
+    if(_extension.ends_with(detail::J2K_EXT))
     {
-        if(nvJPEG2K())
+        if(nv_jpeg_2k())
         {
             return Backend::NVJPEG2K_J2K;
         }
@@ -91,9 +91,9 @@ inline static Backend extensionToBackend(const std::string& extension)
         return Backend::OPENJPEG_J2K;
     }
 
-    if(extension.ends_with(detail::JP2_EXT))
+    if(_extension.ends_with(detail::JP2_EXT))
     {
-        if(nvJPEG2K())
+        if(nv_jpeg_2k())
         {
             return Backend::NVJPEG2K;
         }
@@ -101,34 +101,34 @@ inline static Backend extensionToBackend(const std::string& extension)
         return Backend::OPENJPEG;
     }
 
-    if(extension.ends_with(detail::TIFF_EXT) || extension.ends_with(detail::TIF_EXT))
+    if(_extension.ends_with(detail::TIFF_EXT) || _extension.ends_with(detail::TIF_EXT))
     {
         return Backend::LIBTIFF;
     }
 
-    if(extension.ends_with(detail::PNG_EXT))
+    if(_extension.ends_with(detail::PNG_EXT))
     {
         return Backend::LIBPNG;
     }
 
-    SIGHT_THROW("Unsupported extension: " << extension);
+    SIGHT_THROW("Unsupported extension: " << _extension);
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<Backend, data::sequenced_set<std::string> > guessBackendOrExtension(
-    Backend backend,
-    std::string ext
+inline static std::pair<Backend, data::sequenced_set<std::string> > guess_backend_or_extension(
+    Backend _backend,
+    std::string _ext
 )
 {
     // If no backend is given, only rely on extension
-    if(backend == Backend::ANY)
+    if(_backend == Backend::ANY)
     {
-        return {extensionToBackend(ext), {ext}};
+        return {extension_to_backend(_ext), {_ext}};
     }
 
     // Enforce the extension to match the backend
-    return {backend, extensions(backend)};
+    return {_backend, extensions(_backend)};
 }
 
 } // namespace sight::io::bitmap::detail

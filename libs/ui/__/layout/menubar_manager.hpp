@@ -43,9 +43,9 @@ public:
 
     SIGHT_DECLARE_CLASS(menubar_manager, ui::object);
 
-    using RegistryKeyType = std::string;
+    using registry_key_t = std::string;
 
-    UI_API const static RegistryKeyType REGISTRY_KEY;
+    UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     UI_API menubar_manager() = default;
@@ -68,8 +68,8 @@ public:
      *>
           <gui>
               <layout>
-                  <menu name="My Menu"/>
-                  <menu name="My Menu 2"/>
+                  <menu name="My menu"/>
+                  <menu name="My menu 2"/>
               </layout>
           </gui>
           <registry>
@@ -80,18 +80,18 @@ public:
        @endcode
      * This method analyzes the gui section of the configuration.
      *  - \<layout\> (mandatory) : give the list of the menu that will appear in the menu bar.
-     *  - \<menu name="My Menu"/\> :
+     *  - \<menu name="My menu"/\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 
-    UI_API virtual void initialize(const ui::config_t& configuration);
+    UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate menu with parent menuBar.
      * @pre layout must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_API virtual void createLayout(ui::container::menubar::sptr parent, const std::string& id) = 0;
+    UI_API virtual void createLayout(ui::container::menubar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local menus.
@@ -102,12 +102,12 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    UI_API virtual void menuIsVisible(ui::container::menu::sptr, bool isVisible) = 0;
+    UI_API virtual void menuIsVisible(ui::container::menu::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_API virtual void menuIsEnabled(ui::container::menu::sptr, bool isEnabled) = 0;
+    UI_API virtual void menuIsEnabled(ui::container::menu::sptr, bool _is_enabled) = 0;
 
 protected:
 

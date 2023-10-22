@@ -22,7 +22,7 @@
 
 #include "bresenham_line_test.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 
 #include <filter/image/bresenham_line.hpp>
 
@@ -49,92 +49,92 @@ void bresenham_line_test::tearDown()
 void bresenham_line_test::straightLineTest()
 {
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{0, 0, 0}};
-        const filter::image::bresenham_line::CoordinatesType END_POINT   = {{0, 0, 1024}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{0, 0, 0}};
+        const filter::image::bresenham_line::coordinates_t end_point   = {{0, 0, 1024}};
 
-        const filter::image::bresenham_line::PathType result =
-            filter::image::bresenham_line::draw(bresenham_line::Orientation::X_AXIS, START_POINT, END_POINT);
+        const filter::image::bresenham_line::path_t result =
+            filter::image::bresenham_line::draw(bresenham_line::Orientation::X_AXIS, start_point, end_point);
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(END_POINT[2] - START_POINT[2] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(end_point[2] - start_point[2] + 1), result.size());
 
         auto iter = result.begin();
-        for(std::size_t i = START_POINT[2] ; i <= END_POINT[2] ; ++i)
+        for(std::size_t i = start_point[2] ; i <= end_point[2] ; ++i)
         {
-            const auto& pathElt = *iter;
+            const auto& path_elt = *iter;
 
-            const filter::image::bresenham_line::CoordinatesType expectedElt = {{0, 0, i}};
+            const filter::image::bresenham_line::coordinates_t expected_elt = {{0, 0, i}};
 
-            CPPUNIT_ASSERT(pathElt == expectedElt);
+            CPPUNIT_ASSERT(path_elt == expected_elt);
             ++iter;
         }
     }
 
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{25, 2057, 3}};
-        const filter::image::bresenham_line::CoordinatesType END_POINT   = {{25, 1313, 3}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{25, 2057, 3}};
+        const filter::image::bresenham_line::coordinates_t end_point   = {{25, 1313, 3}};
 
-        const filter::image::bresenham_line::PathType result =
+        const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
                 filter::image::bresenham_line::Orientation::Z_AXIS,
-                START_POINT,
-                END_POINT
+                start_point,
+                end_point
             );
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(START_POINT[1] - END_POINT[1] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(start_point[1] - end_point[1] + 1), result.size());
 
         auto iter = result.begin();
-        for(std::size_t i = START_POINT[1] ; i >= END_POINT[1] ; --i)
+        for(std::size_t i = start_point[1] ; i >= end_point[1] ; --i)
         {
-            const auto& pathElt = *iter;
+            const auto& path_elt = *iter;
 
-            const filter::image::bresenham_line::CoordinatesType expectedElt = {{25, i, 3}};
+            const filter::image::bresenham_line::coordinates_t expected_elt = {{25, i, 3}};
 
-            CPPUNIT_ASSERT(pathElt == expectedElt);
+            CPPUNIT_ASSERT(path_elt == expected_elt);
             ++iter;
         }
     }
 
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{90, 67, 68}};
-        const filter::image::bresenham_line::CoordinatesType END_POINT   = {{90, 67, 54}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{90, 67, 68}};
+        const filter::image::bresenham_line::coordinates_t end_point   = {{90, 67, 54}};
 
-        const filter::image::bresenham_line::PathType result =
+        const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
                 filter::image::bresenham_line::Orientation::Y_AXIS,
-                START_POINT,
-                END_POINT
+                start_point,
+                end_point
             );
 
         CPPUNIT_ASSERT(!result.empty());
-        CPPUNIT_ASSERT_EQUAL(std::size_t(START_POINT[2] - END_POINT[2] + 1), result.size());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(start_point[2] - end_point[2] + 1), result.size());
 
         auto iter = result.begin();
-        for(std::size_t i = START_POINT[2] ; i >= END_POINT[2] ; --i)
+        for(std::size_t i = start_point[2] ; i >= end_point[2] ; --i)
         {
-            const auto& pathElt = *iter;
+            const auto& path_elt = *iter;
 
-            const filter::image::bresenham_line::CoordinatesType expectedElt = {{90, 67, i}};
+            const filter::image::bresenham_line::coordinates_t expected_elt = {{90, 67, i}};
 
-            CPPUNIT_ASSERT(pathElt == expectedElt);
+            CPPUNIT_ASSERT(path_elt == expected_elt);
             ++iter;
         }
     }
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{90, 67, 68}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{90, 67, 68}};
 
-        const filter::image::bresenham_line::PathType result =
+        const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
                 filter::image::bresenham_line::Orientation::Y_AXIS,
-                START_POINT,
-                START_POINT
+                start_point,
+                start_point
             );
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), result.size());
 
-        CPPUNIT_ASSERT(START_POINT == result[0]);
+        CPPUNIT_ASSERT(start_point == result[0]);
     }
 }
 
@@ -143,19 +143,19 @@ void bresenham_line_test::straightLineTest()
 void bresenham_line_test::obliqueLineTest()
 {
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{1, 1, 42}};
-        const filter::image::bresenham_line::CoordinatesType END_POINT   = {{11, 5, 42}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{1, 1, 42}};
+        const filter::image::bresenham_line::coordinates_t end_point   = {{11, 5, 42}};
 
-        const filter::image::bresenham_line::PathType result =
+        const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
                 filter::image::bresenham_line::Orientation::Z_AXIS,
-                START_POINT,
-                END_POINT
+                start_point,
+                end_point
             );
 
         CPPUNIT_ASSERT(!result.empty());
 
-        const bresenham_line::PathType expectedPath = {
+        const bresenham_line::path_t expected_path = {
             {{1, 1, 42}},
             {{2, 1, 42}},
             {{3, 2, 42}},
@@ -169,31 +169,31 @@ void bresenham_line_test::obliqueLineTest()
             {{11, 5, 42}}
         };
 
-        CPPUNIT_ASSERT_EQUAL(expectedPath.size(), result.size());
+        CPPUNIT_ASSERT_EQUAL(expected_path.size(), result.size());
 
         auto iter = result.begin();
-        for(const auto& expectedPathElt : expectedPath)
+        for(const auto& expected_path_elt : expected_path)
         {
-            const auto& resElt = *iter;
-            CPPUNIT_ASSERT(expectedPathElt == resElt);
+            const auto& res_elt = *iter;
+            CPPUNIT_ASSERT(expected_path_elt == res_elt);
             ++iter;
         }
     }
 
     {
-        const filter::image::bresenham_line::CoordinatesType START_POINT = {{1, 4, 1}};
-        const filter::image::bresenham_line::CoordinatesType END_POINT   = {{1, 2, 5}};
+        const filter::image::bresenham_line::coordinates_t start_point = {{1, 4, 1}};
+        const filter::image::bresenham_line::coordinates_t end_point   = {{1, 2, 5}};
 
-        const filter::image::bresenham_line::PathType result =
+        const filter::image::bresenham_line::path_t result =
             filter::image::bresenham_line::draw(
                 filter::image::bresenham_line::Orientation::X_AXIS,
-                START_POINT,
-                END_POINT
+                start_point,
+                end_point
             );
 
         CPPUNIT_ASSERT(!result.empty());
 
-        const bresenham_line::PathType expectedPath = {
+        const bresenham_line::path_t expected_path = {
             {{1, 4, 1}},
             {{1, 4, 2}},
             {{1, 3, 3}},
@@ -201,13 +201,13 @@ void bresenham_line_test::obliqueLineTest()
             {{1, 2, 5}},
         };
 
-        CPPUNIT_ASSERT_EQUAL(expectedPath.size(), result.size());
+        CPPUNIT_ASSERT_EQUAL(expected_path.size(), result.size());
 
         auto iter = result.begin();
-        for(const auto& expectedPathElt : expectedPath)
+        for(const auto& expected_path_elt : expected_path)
         {
-            const auto& resElt = *iter;
-            CPPUNIT_ASSERT(expectedPathElt == resElt);
+            const auto& res_elt = *iter;
+            CPPUNIT_ASSERT(expected_path_elt == res_elt);
             ++iter;
         }
     }

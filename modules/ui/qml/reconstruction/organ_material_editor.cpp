@@ -75,27 +75,27 @@ void organ_material_editor::updating()
 
 //------------------------------------------------------------------------------
 
-void organ_material_editor::onColor(QColor color)
+void organ_material_editor::onColor(QColor _color)
 {
     auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->red()   = static_cast<float>(color.redF());
-    material->diffuse()->green() = static_cast<float>(color.greenF());
-    material->diffuse()->blue()  = static_cast<float>(color.blueF());
+    material->diffuse()->red()   = static_cast<float>(_color.redF());
+    material->diffuse()->green() = static_cast<float>(_color.greenF());
+    material->diffuse()->blue()  = static_cast<float>(_color.blueF());
     this->materialNotification();
 }
 
 //------------------------------------------------------------------------------
 
-void organ_material_editor::onOpacitySlider(int value)
+void organ_material_editor::onOpacitySlider(int _value)
 {
     auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha() = static_cast<float>(value) / 100.0F;
+    material->diffuse()->alpha() = static_cast<float>(_value) / 100.0F;
     this->materialNotification();
 }
 
@@ -106,8 +106,8 @@ void organ_material_editor::materialNotification()
     auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
-    data::object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::object::ModifiedSignalType>(
+    data::object::modified_signal_t::sptr sig;
+    sig = reconstruction->getMaterial()->signal<data::object::modified_signal_t>(
         data::object::MODIFIED_SIG
     );
     sig->async_emit();

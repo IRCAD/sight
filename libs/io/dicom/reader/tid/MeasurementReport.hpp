@@ -47,11 +47,11 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API MeasurementReport(
-        const CSPTR(data::dicom_series)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::image::sptr& image,
-        const core::log::logger::sptr& logger
+        const CSPTR(data::dicom_series)& _dicom_series,
+        const SPTR(gdcm::Reader)& _reader,
+        const SPTR(io::dicom::container::DicomInstance)& _instance,
+        const data::image::sptr& _image,
+        const core::log::logger::sptr& _logger
     );
 
     /// Destructor
@@ -61,7 +61,7 @@ public:
      * @brief Create Measurement Report template root node
      * @param[in] root Root node
      */
-    IO_DICOM_API virtual void readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& root);
+    IO_DICOM_API virtual void readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& _root);
 };
 
 } // namespace sight::io::dicom::reader::tid

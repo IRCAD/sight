@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/new.hpp"
-#include "viz/scene3d/IGraphicsWorker.hpp"
+#include "viz/scene3d/graphics_worker.hpp"
 #include "viz/scene3d/interactor/base.hpp"
 #include "viz/scene3d/registry/detail.hpp"
 
@@ -64,7 +64,7 @@ public:
             LONG_TAP_GESTURE,
             ENTER,
             LEAVE
-        } InteractionEnumType;
+        } interaction_enum_t;
 
         /**
          * @brief
@@ -78,7 +78,7 @@ public:
         int key;
         interactor::base::MouseButton button;
         interactor::base::Modifier modifiers;
-        InteractionEnumType interactionType;
+        interaction_enum_t interactionType;
     };
 
     /**
@@ -92,9 +92,9 @@ public:
     {
     public:
 
-        Registry(std::string functorKey)
+        Registry(std::string _functor_key)
         {
-            viz::scene3d::registry::get()->add_factory(functorKey, &viz::scene3d::factory::make<T>);
+            viz::scene3d::registry::get()->add_factory(_functor_key, &viz::scene3d::factory::make<T>);
         }
     };
 
@@ -108,24 +108,24 @@ public:
     {
     public:
 
-        OffscreenMgrRegistry(std::string functorKey)
+        OffscreenMgrRegistry(std::string _functor_key)
         {
             auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr<T>
                         {
                             // Capture the factory inside a lambda to distinguish it from overloaded methods.
-                            return viz::scene3d::offscreenInteractorMgrFactory::make<T>(_dims);
+                            return viz::scene3d::offscreen_interactor_mgr_factory::make<T>(_dims);
                         };
-            viz::scene3d::registry::getOffscreenMgr()->add_factory(functorKey, fact);
+            viz::scene3d::registry::get_offscreen_mgr()->add_factory(_functor_key, fact);
         }
     };
 
     SIGHT_DECLARE_CLASS(window_interactor, core::base_object);
 
-    typedef std::string FactoryRegistryKeyType;
+    typedef std::string factory_registry_key_t;
 
-    VIZ_SCENE3D_API static const FactoryRegistryKeyType REGISTRY_KEY;
+    VIZ_SCENE3D_API static const factory_registry_key_t REGISTRY_KEY;
 
-    VIZ_SCENE3D_API static const FactoryRegistryKeyType OFFSCREEN_REGISTRY_KEY;
+    VIZ_SCENE3D_API static const factory_registry_key_t OFFSCREEN_REGISTRY_KEY;
 
     VIZ_SCENE3D_API static window_interactor::sptr createManager();
 
@@ -155,8 +155,8 @@ public:
     /// Creates an interactor and installs it in window.
     VIZ_SCENE3D_API virtual void createContainer(
         ui::container::widget::sptr _parent,
-        bool fullscreen,
-        const std::string& id
+        bool _fullscreen,
+        const std::string& _id
     ) = 0;
 
     /// Connects widget and render signals and slots.
@@ -178,7 +178,7 @@ public:
     VIZ_SCENE3D_API virtual Ogre::TexturePtr getRenderTexture() = 0;
 
     /// Spawns a worker able to handle graphics resources in parallel.
-    VIZ_SCENE3D_API virtual IGraphicsWorker* createGraphicsWorker() = 0;
+    VIZ_SCENE3D_API virtual graphics_worker* createGraphicsWorker() = 0;
 
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
@@ -190,12 +190,12 @@ public:
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screenNumber index of the screen on which to render in fullscreen mode.
      */
-    VIZ_SCENE3D_API virtual void setFullscreen(bool _fullscreen, int _screenNumber);
+    VIZ_SCENE3D_API virtual void setFullscreen(bool _fullscreen, int _screen_number);
 
     /// Set the render service using the IOgreRenderwindow_interactor
-    virtual void setRenderService(service::base::sptr srv)
+    virtual void setRenderService(service::base::sptr _srv)
     {
-        m_renderService = srv;
+        m_renderService = _srv;
     }
 
 protected:

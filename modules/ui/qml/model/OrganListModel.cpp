@@ -48,10 +48,10 @@ QHash<int, QByteArray> OrganListModel::roleNames() const
 
 //------------------------------------------------------------------------------
 
-void OrganListModel::updateModelSeries(const data::model_series::sptr& modelSeries)
+void OrganListModel::updateModelSeries(const data::model_series::sptr& _model_series)
 {
     beginResetModel();
-    m_modelSeries = modelSeries;
+    m_modelSeries = _model_series;
     endResetModel();
 }
 
@@ -70,9 +70,9 @@ int OrganListModel::rowCount(const QModelIndex& /*parent*/) const
 
 //------------------------------------------------------------------------------
 
-QVariant OrganListModel::data(const QModelIndex& index, int role) const
+QVariant OrganListModel::data(const QModelIndex& _index, int _role) const
 {
-    if(index.row() < 0)
+    if(_index.row() < 0)
     {
         return {};
     }
@@ -83,16 +83,16 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
     }
 
     const auto reconstructions = m_modelSeries->getReconstructionDB();
-    const std::size_t nbRec    = reconstructions.size();
-    const auto idx             = static_cast<size_t>(index.row());
+    const std::size_t nb_rec   = reconstructions.size();
+    const auto idx             = static_cast<size_t>(_index.row());
 
-    if(idx >= nbRec)
+    if(idx >= nb_rec)
     {
         return {};
     }
 
     const auto& rec = reconstructions[idx];
-    switch(role)
+    switch(_role)
     {
         case VisibilityRole:
             return rec->getIsVisible();
@@ -105,7 +105,7 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
             break;
 
         case StructureTypeRole:
-            return QString::fromStdString(rec->getStructureType());
+            return QString::fromStdString(rec->get_structure_type());
 
             break;
 

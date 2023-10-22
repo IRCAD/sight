@@ -41,7 +41,7 @@ class DATA_CLASS_API object
 public:
 
     /// Constructor
-    DATA_API object(core::hires_clock::type timestamp = 0);
+    DATA_API object(core::hires_clock::type _timestamp = 0);
 
     /// Destructor
     DATA_API virtual ~object();
@@ -57,8 +57,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const object& other) const noexcept;
-    DATA_API bool operator!=(const object& other) const noexcept;
+    DATA_API bool operator==(const object& _other) const noexcept;
+    DATA_API bool operator!=(const object& _other) const noexcept;
     /// @}
 
 protected:

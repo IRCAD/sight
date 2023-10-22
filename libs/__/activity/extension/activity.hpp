@@ -60,7 +60,7 @@ struct ACTIVITY_CLASS_API activity_config_param
     activity_config_param()
     = default;
 
-    ACTIVITY_API activity_config_param(const config_t& config);
+    ACTIVITY_API activity_config_param(const config_t& _config);
 
     //------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ struct ACTIVITY_CLASS_API activity_config
     activity_config()
     = default;
 
-    ACTIVITY_API activity_config(const config_t& config);
+    ACTIVITY_API activity_config(const config_t& _config);
 
     std::string id;
     activity_config_params_type parameters;
@@ -91,7 +91,7 @@ struct ACTIVITY_CLASS_API activity_requirement_key
     activity_requirement_key()
     = default;
 
-    ACTIVITY_API activity_requirement_key(const config_t& config);
+    ACTIVITY_API activity_requirement_key(const config_t& _config);
 
     std::string key;
 };
@@ -99,7 +99,7 @@ struct ACTIVITY_CLASS_API activity_requirement_key
 struct ACTIVITY_CLASS_API activity_requirement
 {
     ACTIVITY_API activity_requirement() = default;
-    ACTIVITY_API activity_requirement(const config_t& config);
+    ACTIVITY_API activity_requirement(const config_t& _config);
 
     typedef std::vector<activity_requirement_key> key_t;
 
@@ -214,22 +214,22 @@ struct ACTIVITY_CLASS_API activity_requirement
  */
 struct ACTIVITY_CLASS_API activity_info
 {
-    typedef std::vector<activity_requirement> RequirementsType;
-    typedef std::pair<unsigned int, unsigned int> MinMaxType;
-    typedef std::map<std::string, MinMaxType> RequirementsMinMaxCount;
-    typedef std::map<std::string, unsigned int> DataCountType;
+    typedef std::vector<activity_requirement> requirements_t;
+    typedef std::pair<unsigned int, unsigned int> min_max_t;
+    typedef std::map<std::string, min_max_t> RequirementsMinMaxCount;
+    typedef std::map<std::string, unsigned int> data_count_t;
 
     ACTIVITY_API activity_info() = default;
-    ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& ext);
+    ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& _ext);
 
-    [[nodiscard]] ACTIVITY_API bool usableWith(DataCountType dataCount) const;
+    [[nodiscard]] ACTIVITY_API bool usableWith(data_count_t _data_count) const;
 
     std::string id;
     std::string title;
     std::string description;
     std::string icon;
     std::string tabInfo;
-    RequirementsType requirements;
+    requirements_t requirements;
     std::string builderImpl;
     std::string bundleId; ///< Identifier of the module containing the activity
 
@@ -276,18 +276,18 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    ACTIVITY_API activity_info getInfo(const std::string& extensionId) const;
+    ACTIVITY_API activity_info getInfo(const std::string& _extension_id) const;
 
     /**
      * @brief Tests if we have information about operator
      * @note This method is thread safe.
      */
-    ACTIVITY_API bool hasInfo(const std::string& extensionId) const;
+    ACTIVITY_API bool hasInfo(const std::string& _extension_id) const;
 
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    static ACTIVITY_API activity_info::DataCountType getDataCount(const CSPTR(data::vector)& data);
+    static ACTIVITY_API activity_info::data_count_t getDataCount(const CSPTR(data::vector)& _data);
 
     /**
      * @brief Get all infos
@@ -299,7 +299,7 @@ public:
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    ACTIVITY_API infos_t getInfos(const CSPTR(data::vector)& data) const;
+    ACTIVITY_API infos_t getInfos(const CSPTR(data::vector)& _data) const;
 
     /**
      * @brief Get all keys
@@ -314,14 +314,14 @@ public:
     ACTIVITY_API void clear_registry();
 
     ACTIVITY_API std::tuple<activity_info, std::map<std::string, std::string> > getInfoAndReplacementMap(
-        const data::activity& activity,
-        const activity_config_params_type& parameters = activity_config_params_type()
+        const data::activity& _activity,
+        const activity_config_params_type& _parameters = activity_config_params_type()
     ) const;
 
     static ACTIVITY_API std::map<std::string, std::string> getReplacementMap(
-        const data::activity& activity,
-        const activity_info& info,
-        const activity_config_params_type& parameters = activity_config_params_type()
+        const data::activity& _activity,
+        const activity_info& _info,
+        const activity_config_params_type& _parameters = activity_config_params_type()
     );
 
 protected:

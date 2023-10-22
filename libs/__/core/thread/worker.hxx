@@ -32,9 +32,9 @@ namespace sight::core::thread
 //------------------------------------------------------------------------------
 
 template<typename R, typename TASK>
-std::shared_future<R> worker::post_task(TASK f)
+std::shared_future<R> worker::post_task(TASK _f)
 {
-    std::packaged_task<R()> task(f);
+    std::packaged_task<R()> task(_f);
     std::future<R> future = task.get_future();
 
     std::function<void()> f_task = core::thread::move_task_into_function(task);

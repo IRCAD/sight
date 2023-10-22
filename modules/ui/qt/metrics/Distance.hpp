@@ -78,7 +78,7 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::signals::key_t DISTANCE_REQUESTED_SIG;
-    typedef core::com::signal<void ()> DistanceRequestedSignalType;
+    typedef core::com::signal<void ()> distance_requested_signal_t;
 /**
  * @}
  */
@@ -116,7 +116,7 @@ private:
 
     QPointer<QPushButton> m_distButton;
 
-    DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
+    distance_requested_signal_t::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
 
     data::ptr<data::image, data::Access::inout> m_image {this, "image"};
 };

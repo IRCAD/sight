@@ -32,23 +32,23 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-int sequencer::parseActivities(data::activity_set& activity_set)
+int sequencer::parseActivities(data::activity_set& _activity_set)
 {
-    const auto scoped_emitter = activity_set.scoped_emit();
+    const auto scoped_emitter = _activity_set.scoped_emit();
     std::size_t index         = 0;
 
-    for(auto it = activity_set.cbegin() ; it != activity_set.cend() ; ++it)
+    for(auto it = _activity_set.cbegin() ; it != _activity_set.cend() ; ++it)
     {
         if(*it == nullptr)
         {
             SIGHT_ERROR("One activity is unknown, it will be removed");
-            it = activity_set.erase(it);
+            it = _activity_set.erase(it);
         }
         else if(!(index < m_activityIds.size() && m_activityIds[index] == (*it)->getActivityConfigId()))
         {
             // Remove the wrong data
             SIGHT_ERROR("The activity '" + (*it)->getActivityConfigId() + "' is unknown, it will be removed");
-            it = activity_set.erase(it);
+            it = _activity_set.erase(it);
         }
         else if(!sight::activity::sequencer::validateActivity(*it).first)
         {
@@ -56,7 +56,7 @@ int sequencer::parseActivities(data::activity_set& activity_set)
         }
         else
         {
-            this->storeActivityData(activity_set, index++);
+            this->storeActivityData(_activity_set, index++);
         }
     }
 
@@ -66,20 +66,20 @@ int sequencer::parseActivities(data::activity_set& activity_set)
 //------------------------------------------------------------------------------
 
 void sequencer::storeActivityData(
-    const data::activity_set& activity_set,
-    std::size_t index,
-    const data::composite::csptr& overrides
+    const data::activity_set& _activity_set,
+    std::size_t _index,
+    const data::composite::csptr& _overrides
 )
 {
     // Retrives the current activity data
-    SIGHT_ASSERT("ActivitySet does not contain enough activities.", activity_set.size() > index);
-    const auto& activity = activity_set[index];
+    SIGHT_ASSERT("ActivitySet does not contain enough activities.", _activity_set.size() > _index);
+    const auto& activity = _activity_set[_index];
     SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
 
     for(const auto& [key, value] : *activity)
     {
         // Do not store overriden requirements
-        if(!overrides || overrides->count(key) == 0)
+        if(!_overrides || _overrides->count(key) == 0)
         {
             m_requirements[key] = value;
         }
@@ -89,19 +89,19 @@ void sequencer::storeActivityData(
 //------------------------------------------------------------------------------
 
 data::activity::sptr sequencer::getActivity(
-    data::activity_set& activity_set,
-    std::size_t index,
-    const core::com::slot_base::sptr& slot
+    data::activity_set& _activity_set,
+    std::size_t _index,
+    const core::com::slot_base::sptr& _slot
 )
 {
     data::activity::sptr activity;
 
-    const auto& activityId = m_activityIds[index];
-    const auto& info       = activity::extension::activity::getDefault()->getInfo(activityId);
+    const auto& activity_id = m_activityIds[_index];
+    const auto& info        = activity::extension::activity::getDefault()->getInfo(activity_id);
 
-    if(activity_set.size() > index) // The activity already exists, update the data
+    if(_activity_set.size() > _index) // The activity already exists, update the data
     {
-        activity = activity_set[index];
+        activity = _activity_set[_index];
         SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
 
         // FIXME: update all the data or only the requirement ?
@@ -117,9 +117,9 @@ data::activity::sptr sequencer::getActivity(
     else // create a new activity
     {
         // try to create the intermediate activities
-        if(index > 0 && (index - 1) >= activity_set.size())
+        if(_index > 0 && (_index - 1) >= _activity_set.size())
         {
-            getActivity(activity_set, index - 1, slot);
+            getActivity(_activity_set, _index - 1, _slot);
         }
 
         // Create the activity
@@ -151,13 +151,13 @@ data::activity::sptr sequencer::getActivity(
             }
         }
 
-        auto scoped_emitter = activity_set.scoped_emit();
-        activity_set.push_back(activity);
+        auto scoped_emitter = _activity_set.scoped_emit();
+        _activity_set.push_back(activity);
 
-        if(slot)
+        if(_slot)
         {
-            auto sig = activity_set.signal<data::activity_set::added_signal_t>(data::activity_set::ADDED_OBJECTS_SIG);
-            core::com::connection::blocker block(sig->get_connection(slot));
+            auto sig = _activity_set.signal<data::activity_set::added_signal_t>(data::activity_set::ADDED_OBJECTS_SIG);
+            core::com::connection::blocker block(sig->get_connection(_slot));
 
             // Force signal emission while blocker exists
             scoped_emitter.reset();
@@ -169,27 +169,27 @@ data::activity::sptr sequencer::getActivity(
 
 //------------------------------------------------------------------------------
 
-void sequencer::removeLastActivities(data::activity_set& activity_set, std::size_t index)
+void sequencer::removeLastActivities(data::activity_set& _activity_set, std::size_t _index)
 {
-    if(activity_set.size() > index)
+    if(_activity_set.size() > _index)
     {
-        const auto scoped_emitter = activity_set.scoped_emit();
+        const auto scoped_emitter = _activity_set.scoped_emit();
 
         // Remove the activities behind the index
-        activity_set.erase(activity_set.cbegin() + int(index), activity_set.cend());
+        _activity_set.erase(_activity_set.cbegin() + int(_index), _activity_set.cend());
 
         // clear the requirements and parse the remaining activities to regereate the requirements
         m_requirements.clear();
-        this->parseActivities(activity_set);
+        this->parseActivities(_activity_set);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void sequencer::cleanRequirements(std::size_t index)
+void sequencer::cleanRequirements(std::size_t _index)
 {
     // For all registered activities at index and after
-    for(auto i = index, end = m_activityIds.size() ; i < end ; ++i)
+    for(auto i = _index, end = m_activityIds.size() ; i < end ; ++i)
     {
         // Get the information about the activity
         const auto& id   = m_activityIds[i];

@@ -62,35 +62,35 @@ class FILTER_VISION_CLASS_API masker
 public:
 
     /// Constructor
-    FILTER_VISION_API masker(const ColSpace& c, const DetectionMode& d);
+    FILTER_VISION_API masker(const ColSpace& _c, const DetectionMode& _d);
 
     /// Destructor
     FILTER_VISION_API ~masker();
 
     /// Train the foreground color model defined with a number of clusters inside a mask on a given image
     FILTER_VISION_API void trainForegroundModel(
-        const cv::Mat& rgbImg,
-        const cv::Mat& selectionMask,
-        unsigned int numClusters,
-        double noise = 0.0
+        const cv::Mat& _rgb_img,
+        const cv::Mat& _selection_mask,
+        unsigned int _num_clusters,
+        double _noise = 0.0
     );
 
     /// Train the background color model defined with a number of clusters inside a mask on a given image
     FILTER_VISION_API void trainBackgroundModel(
-        const cv::Mat& rgbImg,
-        const cv::Mat& selectionMask,
-        unsigned int numClusters
+        const cv::Mat& _rgb_img,
+        const cv::Mat& _selection_mask,
+        unsigned int _num_clusters
     );
 
     /// Perform an image masking based on the learned model on a downscaled image inside a given mask
     [[nodiscard]] FILTER_VISION_API cv::Mat makeMask(
-        const cv::Mat& testImg,
-        const cv::Size& downSize,
-        cv::InputArray filterMask
+        const cv::Mat& _test_img,
+        const cv::Size& _down_size,
+        cv::InputArray _filter_mask
     ) const;
 
     /// Set threshold value to get final binary image
-    FILTER_VISION_API void setThreshold(double t);
+    FILTER_VISION_API void setThreshold(double _t);
 
     /// Return if a model is learned
     FILTER_VISION_API bool isModelLearned();
@@ -99,30 +99,30 @@ private:
 
     /// Make a response mask from a model on a given image inside a mask
     static cv::Mat makeResponseImage(
-        const cv::Mat& inImg,
-        cv::Ptr<cv::ml::EM> model,
-        cv::Mat& inImgMask
+        const cv::Mat& _in_img,
+        cv::Ptr<cv::ml::EM> _model,
+        cv::Mat& _in_img_mask
     );
 
     /// Convert the colorspace of an image
-    static cv::Mat convertColourSpace(const cv::Mat& src, const ColSpace& c);
+    static cv::Mat convertColourSpace(const cv::Mat& _src, const ColSpace& _c);
 
     /// Train the model from samples
-    static cv::Ptr<cv::ml::EM> trainModelFromSamples(const cv::Mat& samples, unsigned int numClusters);
+    static cv::Ptr<cv::ml::EM> trainModelFromSamples(const cv::Mat& _samples, unsigned int _num_clusters);
 
     /// Get samples of an image inside a mask to train the model
-    static cv::Mat makeTrainingSamples(const cv::Mat& trainImg, const cv::Mat& mask, const ColSpace& c);
+    static cv::Mat makeTrainingSamples(const cv::Mat& _train_img, const cv::Mat& _mask, const ColSpace& _c);
 
     /// OpenCV operations to remove holes in the mask
-    static cv::Mat removeMaskHoles(const cv::Mat& m, std::size_t n, cv::InputArray insideMask);
+    static cv::Mat removeMaskHoles(const cv::Mat& _m, std::size_t _n, cv::InputArray _inside_mask);
 
     /// Foreground and background models
     cv::Ptr<cv::ml::EM> m_foregroundModel;
     cv::Ptr<cv::ml::EM> m_backgroundModel;
 
     /// Colorspace and detection mode of the image masking model
-    const ColSpace m_COLORSPACE;
-    const DetectionMode m_DETECTIONMODE;
+    const ColSpace M_COLORSPACE;
+    const DetectionMode M_DETECTIONMODE;
 
     /// Threshold of image masking model to get binary mask
     double m_threshold {0.0};

@@ -31,11 +31,11 @@ namespace sight::viz::scene3d::helper
 
 //-----------------------------------------------------------------------------
 
-void mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _numPoints, std::size_t _numComponents)
+void mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _num_points, std::size_t _num_components)
 {
-    if(_numComponents == 3)
+    if(_num_components == 3)
     {
-        for(unsigned int i = 0 ; i < (_numPoints - 1) ; ++i)
+        for(unsigned int i = 0 ; i < (_num_points - 1) ; ++i)
         {
             // Fastest way to copy tested so far, take 1.0 in alpha as default
             Ogre::RGBA argb = 0xFF000000;
@@ -51,9 +51,9 @@ void mesh::copyColors(Ogre::RGBA* _dest, const std::uint8_t* _src, std::size_t _
                  | static_cast<unsigned int>(_src[1]) << 8
                  | static_cast<unsigned int>(_src[2]) << 16;
     }
-    else if(_numComponents == 4)
+    else if(_num_components == 4)
     {
-        memcpy(_dest, _src, _numPoints * _numComponents);
+        memcpy(_dest, _src, _num_points * _num_components);
     }
     else
     {

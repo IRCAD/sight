@@ -47,22 +47,22 @@ namespace sight::core::com::util
 template<typename T, typename R>
 struct weak_call
 {
-    weak_call(const std::shared_ptr<T const>& ptr, std::function<R()> f) :
-        m_weak_ptr(ptr),
-        m_func(std::move(f))
+    weak_call(const std::shared_ptr<T const>& _ptr, std::function<R()> _f) :
+        m_weak_ptr(_ptr),
+        m_func(std::move(_f))
     {
     }
 
     weak_call(
-        const std::shared_ptr<T const>& weak_ptr,
-        std::function<R()> f,
-        const std::shared_ptr<core::thread::worker>& m,
-        const std::shared_ptr<T const>& shared_ptr
+        const std::shared_ptr<T const>& _weak_ptr,
+        std::function<R()> _f,
+        const std::shared_ptr<core::thread::worker>& _m,
+        const std::shared_ptr<T const>& _shared_ptr
     ) :
-        m_weak_ptr(weak_ptr),
-        m_shared_ptr(shared_ptr),
-        m_func(std::move(f)),
-        m_worker(m)
+        m_weak_ptr(_weak_ptr),
+        m_shared_ptr(_shared_ptr),
+        m_func(std::move(_f)),
+        m_worker(_m)
     {
     }
 
@@ -112,21 +112,21 @@ struct weak_call
 
 /// Returns weak call from given object and function.
 template<typename T, typename R>
-weak_call<T, R> weakcall(const std::shared_ptr<T const>& ptr, std::function<R()> f)
+weak_call<T, R> weakcall(const std::shared_ptr<T const>& _ptr, std::function<R()> _f)
 {
-    return weak_call<T, R>(ptr, f);
+    return weak_call<T, R>(_ptr, _f);
 }
 
 /// Returns weak call from given object, function and mutex.
 template<typename T, typename R>
 weak_call<T, R> weakcall(
-    const std::shared_ptr<T const>& weak_ptr,
-    std::function<R()> f,
-    const std::shared_ptr<core::thread::worker>& m,
-    const std::shared_ptr<T const>& shared_ptr = nullptr
+    const std::shared_ptr<T const>& _weak_ptr,
+    std::function<R()> _f,
+    const std::shared_ptr<core::thread::worker>& _m,
+    const std::shared_ptr<T const>& _shared_ptr = nullptr
 )
 {
-    return weak_call<T, R>(weak_ptr, f, m, shared_ptr);
+    return weak_call<T, R>(_weak_ptr, _f, _m, _shared_ptr);
 }
 
 } // namespace sight::core::com::util

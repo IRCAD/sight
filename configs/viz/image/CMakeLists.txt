@@ -10,7 +10,7 @@ add_dependencies(
     module_ui_qt
     module_data
     module_viz_scene3d
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
     module_viz_scene2d
     module_ui_icons
 )

@@ -48,9 +48,9 @@ public:
     SessionReaderImpl& operator=(SessionReaderImpl&&)      = delete;
 
     /// Constructor
-    inline explicit SessionReaderImpl(SessionReader* const sessionReader) :
-        m_sessionReader(sessionReader),
-        m_password(std::make_unique<password_keeper>()),
+    inline explicit SessionReaderImpl(SessionReader* const _session_reader) :
+        M_SESSION_READER(_session_reader),
+        M_PASSWORD(std::make_unique<password_keeper>()),
         m_encryptionPolicy(password_keeper::encryption_policy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
@@ -64,9 +64,9 @@ public:
     {
         // Deserialize the root object
         m_object = m_sessionDeserializer.deserialize(
-            m_sessionReader->get_file(),
+            M_SESSION_READER->get_file(),
             m_archiveFormat,
-            m_password->get_password(),
+            M_PASSWORD->get_password(),
             m_encryptionPolicy
         );
     }
@@ -78,10 +78,10 @@ public:
     core::tools::object::sptr m_object;
 
     /// Pointer to the public interface
-    SessionReader* const m_sessionReader;
+    SessionReader* const M_SESSION_READER;
 
     /// Keep the password in a vault
-    const std::unique_ptr<password_keeper> m_password;
+    const std::unique_ptr<password_keeper> M_PASSWORD;
 
     /// The encryption policy
     password_keeper::encryption_policy m_encryptionPolicy;
@@ -117,44 +117,44 @@ std::string SessionReader::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setPassword(const secure_string& password)
+void SessionReader::setPassword(const secure_string& _password)
 {
-    m_pimpl->m_password->set_password(password);
+    m_pimpl->M_PASSWORD->set_password(_password);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setEncryptionPolicy(const password_keeper::encryption_policy policy)
+void SessionReader::setEncryptionPolicy(const password_keeper::encryption_policy _policy)
 {
-    m_pimpl->m_encryptionPolicy = policy;
+    m_pimpl->m_encryptionPolicy = _policy;
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
+void SessionReader::setArchiveFormat(const Archive::ArchiveFormat _archive_format)
 {
-    m_pimpl->m_archiveFormat = archiveFormat;
+    m_pimpl->m_archiveFormat = _archive_format;
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setCustomDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setCustomDeserializer(const std::string& _class_name, deserializer_t _deserializer)
 {
-    m_pimpl->m_sessionDeserializer.setCustomDeserializer(className, deserializer);
+    m_pimpl->m_sessionDeserializer.setCustomDeserializer(_class_name, _deserializer);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setDeserializer(const std::string& _class_name, deserializer_t _deserializer)
 {
-    detail::session_deserializer::setDeserializer(className, deserializer);
+    detail::session_deserializer::setDeserializer(_class_name, _deserializer);
 }
 
 //------------------------------------------------------------------------------
 
-deserializer_t SessionReader::deserializer(const std::string& className)
+deserializer_t SessionReader::deserializer(const std::string& _class_name)
 {
-    return detail::session_deserializer::deserializer(className);
+    return detail::session_deserializer::deserializer(_class_name);
 }
 
 } // namespace sight::io::session

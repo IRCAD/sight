@@ -36,88 +36,88 @@ namespace sight::geometry::vision::helper
 
 //-----------------------------------------------------------------------------
 
-ErrorAndPointsType computeReprojectionError(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const std::vector<cv::Point2f>& _imagePoints,
+error_and_points_t compute_reprojection_error(
+    const std::vector<cv::Point3f>& _object_points,
+    const std::vector<cv::Point2f>& _image_points,
     const cv::Mat& _rvecs,
     const cv::Mat& _tvecs,
-    const cv::Mat& _cameraMatrix,
-    const cv::Mat& _distCoeffs
+    const cv::Mat& _camera_matrix,
+    const cv::Mat& _dist_coeffs
 )
 {
-    ErrorAndPointsType errorAndProjectedPoints;
-    std::vector<cv::Point2f> imagePoints2;
-    int totalPoints = 0;
-    double totalErr = 0;
-    double err      = NAN;
+    error_and_points_t error_and_projected_points;
+    std::vector<cv::Point2f> image_points2;
+    int total_points = 0;
+    double total_err = 0;
+    double err       = NAN;
 
     //projection
     cv::projectPoints(
-        cv::Mat(_objectPoints),
+        cv::Mat(_object_points),
         _rvecs,
         _tvecs,
-        _cameraMatrix,
-        _distCoeffs,
-        imagePoints2
+        _camera_matrix,
+        _dist_coeffs,
+        image_points2
     );
 
-    errorAndProjectedPoints.second = imagePoints2;
+    error_and_projected_points.second = image_points2;
 
     //difference
-    err = cv::norm(cv::Mat(_imagePoints), cv::Mat(imagePoints2), cv::NORM_L2);
+    err = cv::norm(cv::Mat(_image_points), cv::Mat(image_points2), cv::NORM_L2);
 
-    int n = static_cast<int>(_objectPoints.size());
-    totalErr    += err * err;
-    totalPoints += n;
+    int n = static_cast<int>(_object_points.size());
+    total_err    += err * err;
+    total_points += n;
 
-    errorAndProjectedPoints.first = std::sqrt(totalErr / totalPoints);
+    error_and_projected_points.first = std::sqrt(total_err / total_points);
 
-    return errorAndProjectedPoints;
+    return error_and_projected_points;
 }
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f cameraPoseMonocular(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const std::vector<cv::Point2f>& _imagePoints,
-    const cv::Mat _cameraMatrix,
-    const cv::Mat& _distCoeffs,
+cv::Matx44f camera_pose_monocular(
+    const std::vector<cv::Point3f>& _object_points,
+    const std::vector<cv::Point2f>& _image_points,
+    const cv::Mat _camera_matrix,
+    const cv::Mat& _dist_coeffs,
     const int _flag
 )
 {
     SIGHT_ASSERT(
         "There should be the same number of 3d points than 2d points",
-        _objectPoints.size() == _imagePoints.size()
+        _object_points.size() == _image_points.size()
     );
 
     cv::Mat rvec;
     cv::Mat tvec;
-    cv::Mat R;
-    cv::Mat T;
-    T = cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat r;
+    cv::Mat t;
+    t = cv::Mat::eye(4, 4, CV_64F);
 
     //solvePnP
-    cv::solvePnP(_objectPoints, _imagePoints, _cameraMatrix, _distCoeffs, rvec, tvec, false, _flag);
+    cv::solvePnP(_object_points, _image_points, _camera_matrix, _dist_coeffs, rvec, tvec, false, _flag);
 
     // to matrix
-    cv::Rodrigues(rvec, R); // R is 3x3
+    cv::Rodrigues(rvec, r); // R is 3x3
 
-    T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1;    // copies R into T
-    T(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1; // copies tvec into T
+    t(cv::Range(0, 3), cv::Range(0, 3)) = r * 1;    // copies R into T
+    t(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1; // copies tvec into T
 
-    return cv::Matx44f(T);
+    return cv::Matx44f(t);
 }
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f cameraPoseStereo(
-    const std::vector<cv::Point3f>& _objectPoints,
-    const cv::Mat& _cameraMatrix1,
-    const cv::Mat& _distCoeffs1,
-    const cv::Mat& _cameraMatrix2,
-    const cv::Mat& _distCoeffs2,
-    const std::vector<cv::Point2f>& _imgPoints1,
-    const std::vector<cv::Point2f>& _imgPoints2,
+cv::Matx44f camera_pose_stereo(
+    const std::vector<cv::Point3f>& _object_points,
+    const cv::Mat& _camera_matrix1,
+    const cv::Mat& _dist_coeffs1,
+    const cv::Mat& _camera_matrix2,
+    const cv::Mat& _dist_coeffs2,
+    const std::vector<cv::Point2f>& _img_points1,
+    const std::vector<cv::Point2f>& _img_points2,
     const cv::Mat& _r,
     const cv::Mat& _t
 )
@@ -125,9 +125,9 @@ cv::Matx44f cameraPoseStereo(
     //1. initialize solution with solvePnP
     cv::Mat rvec;
     cv::Mat tvec;
-    cv::Mat R;
-    cv::Mat T;
-    T = cv::Mat::eye(4, 4, CV_64F);
+    cv::Mat r;
+    cv::Mat t;
+    t = cv::Mat::eye(4, 4, CV_64F);
 
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
@@ -135,17 +135,17 @@ cv::Matx44f cameraPoseStereo(
     extrinsic(cv::Range(0, 3), cv::Range(3, 4)) = _t * 1;
 
     cv::solvePnP(
-        _objectPoints,
-        _imgPoints1,
-        _cameraMatrix1,
-        _distCoeffs1,
+        _object_points,
+        _img_points1,
+        _camera_matrix1,
+        _dist_coeffs1,
         rvec,
         tvec,
         false,
         cv::SOLVEPNP_ITERATIVE
     );
 
-    std::vector<double> optimVector = {{
+    std::vector<double> optim_vector = {{
         rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2),
         tvec.at<double>(0), tvec.at<double>(1), tvec.at<double>(2)
     }
@@ -157,36 +157,36 @@ cv::Matx44f cameraPoseStereo(
     ::ceres::Problem problem;
 
     //Cost function for image 1
-    for(std::size_t i = 0 ; i < _imgPoints1.size() ; ++i)
+    for(std::size_t i = 0 ; i < _img_points1.size() ; ++i)
     {
         ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
-            _cameraMatrix1,
-            _distCoeffs1,
-            _imgPoints1[i],
-            _objectPoints[i],
+            _camera_matrix1,
+            _dist_coeffs1,
+            _img_points1[i],
+            _object_points[i],
             cv::Mat::eye(4, 4, CV_64F)
         );
         problem.AddResidualBlock(
             cost_function,
             nullptr,
-            optimVector.data()
+            optim_vector.data()
         );
     }
 
     //image 2
-    for(std::size_t i = 0 ; i < _imgPoints2.size() ; ++i)
+    for(std::size_t i = 0 ; i < _img_points2.size() ; ++i)
     {
         ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
-            _cameraMatrix2,
-            _distCoeffs2,
-            _imgPoints2[i],
-            _objectPoints[i],
+            _camera_matrix2,
+            _dist_coeffs2,
+            _img_points2[i],
+            _object_points[i],
             extrinsic
         );
         problem.AddResidualBlock(
             cost_function,
             nullptr,
-            optimVector.data()
+            optim_vector.data()
         );
     }
 
@@ -207,37 +207,37 @@ cv::Matx44f cameraPoseStereo(
 
     SIGHT_DEBUG("Ceres report : " + summary.FullReport());
 
-    cv::Mat finalRVec = (cv::Mat_<double>(3, 1) << optimVector[0], optimVector[1], optimVector[2]);
-    cv::Mat finalTVec = (cv::Mat_<double>(3, 1) << optimVector[3], optimVector[4], optimVector[5]);
+    cv::Mat final_r_vec = (cv::Mat_<double>(3, 1) << optim_vector[0], optim_vector[1], optim_vector[2]);
+    cv::Mat final_t_vec = (cv::Mat_<double>(3, 1) << optim_vector[3], optim_vector[4], optim_vector[5]);
 
-    cv::Rodrigues(finalRVec, R); //Rotation vec. to matrix
+    cv::Rodrigues(final_r_vec, r); //Rotation vec. to matrix
 
-    T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1;         // copies R into T
-    T(cv::Range(0, 3), cv::Range(3, 4)) = finalTVec * 1; // copies tvec into T
+    t(cv::Range(0, 3), cv::Range(0, 3)) = r * 1;           // copies R into T
+    t(cv::Range(0, 3), cv::Range(3, 4)) = final_t_vec * 1; // copies tvec into T
 
-    return cv::Matx44f(T);
+    return cv::Matx44f(t);
 }
 
 //-----------------------------------------------------------------------------
 
-void calibratePointingTool(
-    const data::vector::csptr _matricesVector,
-    data::matrix4::sptr _calibrationMatrix,
-    data::matrix4::sptr _centerMatrix
+void calibrate_pointing_tool(
+    const data::vector::csptr _matrices_vector,
+    data::matrix4::sptr _calibration_matrix,
+    data::matrix4::sptr _center_matrix
 )
 {
-    if(_matricesVector->size() < 4)
+    if(_matrices_vector->size() < 4)
     {
         SIGHT_WARN("Number of points when computing the tool calibration should be more than 5.");
         return;
     }
 
-    geometry::eigen::helper::EigenMatrix matrixSum;
-    matrixSum.fill(0.);
-    Eigen::Vector4d vectorSum;
-    vectorSum.fill(0);
+    geometry::eigen::helper::EigenMatrix matrix_sum;
+    matrix_sum.fill(0.);
+    Eigen::Vector4d vector_sum;
+    vector_sum.fill(0);
 
-    for(const auto& i : *_matricesVector)
+    for(const auto& i : *_matrices_vector)
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
@@ -248,59 +248,59 @@ void calibratePointingTool(
         xyz1(0, 2) = (*m1)(2, 3);
         xyz1(0, 3) = 1.0;
 
-        matrixSum = matrixSum + xyz1.transpose() * xyz1;
-        vectorSum = vectorSum + xyz1.squaredNorm() * Eigen::Vector4d(xyz1(0, 0), xyz1(0, 1), xyz1(0, 2), xyz1(0, 3));
+        matrix_sum = matrix_sum + xyz1.transpose() * xyz1;
+        vector_sum = vector_sum + xyz1.squaredNorm() * Eigen::Vector4d(xyz1(0, 0), xyz1(0, 1), xyz1(0, 2), xyz1(0, 3));
     }
 
-    geometry::eigen::helper::EigenMatrix tempMatrix;
-    tempMatrix.fill(0.);
-    tempMatrix(0, 0) = vectorSum[0];
-    tempMatrix(0, 1) = vectorSum[1];
-    tempMatrix(0, 2) = vectorSum[2];
-    tempMatrix(0, 3) = vectorSum[3];
-    tempMatrix       = -tempMatrix* matrixSum.inverse();
+    geometry::eigen::helper::EigenMatrix temp_matrix;
+    temp_matrix.fill(0.);
+    temp_matrix(0, 0) = vector_sum[0];
+    temp_matrix(0, 1) = vector_sum[1];
+    temp_matrix(0, 2) = vector_sum[2];
+    temp_matrix(0, 3) = vector_sum[3];
+    temp_matrix       = -temp_matrix* matrix_sum.inverse();
 
-    const double a = -1. * tempMatrix(0, 0) / 2.;
-    const double b = -1. * tempMatrix(0, 1) / 2.;
-    const double c = -1. * tempMatrix(0, 2) / 2.;
+    const double a = -1. * temp_matrix(0, 0) / 2.;
+    const double b = -1. * temp_matrix(0, 1) / 2.;
+    const double c = -1. * temp_matrix(0, 2) / 2.;
 
     Eigen::Vector3d translation;
     translation.fill(0);
-    for(const auto& i : *_matricesVector)
+    for(const auto& i : *_matrices_vector)
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
-        const geometry::eigen::helper::EigenMatrix pointMatrix = geometry::eigen::helper::toEigen(m1);
-        geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
-        const geometry::eigen::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
+        const geometry::eigen::helper::EigenMatrix point_matrix = geometry::eigen::helper::to_eigen(m1);
+        geometry::eigen::helper::EigenMatrix center_matrix(point_matrix);
+        const geometry::eigen::helper::EigenMatrix point_matrix_inverse = point_matrix.inverse();
 
-        centerMatrix(0, 3) = a;
-        centerMatrix(1, 3) = b;
-        centerMatrix(2, 3) = c;
+        center_matrix(0, 3) = a;
+        center_matrix(1, 3) = b;
+        center_matrix(2, 3) = c;
 
-        const geometry::eigen::helper::EigenMatrix calibrationMatrix = pointMatrixInverse * centerMatrix;
-        translation(0) += calibrationMatrix(0, 3);
-        translation(1) += calibrationMatrix(1, 3);
-        translation(2) += calibrationMatrix(2, 3);
+        const geometry::eigen::helper::EigenMatrix calibration_matrix = point_matrix_inverse * center_matrix;
+        translation(0) += calibration_matrix(0, 3);
+        translation(1) += calibration_matrix(1, 3);
+        translation(2) += calibration_matrix(2, 3);
     }
 
-    translation /= static_cast<double>(_matricesVector->size());
+    translation /= static_cast<double>(_matrices_vector->size());
 
-    (*_calibrationMatrix)(0, 3) = translation(0);
-    (*_calibrationMatrix)(1, 3) = translation(1);
-    (*_calibrationMatrix)(2, 3) = translation(2);
+    (*_calibration_matrix)(0, 3) = translation(0);
+    (*_calibration_matrix)(1, 3) = translation(1);
+    (*_calibration_matrix)(2, 3) = translation(2);
 
-    (*_centerMatrix)(0, 3) = a;
-    (*_centerMatrix)(1, 3) = b;
-    (*_centerMatrix)(2, 3) = c;
+    (*_center_matrix)(0, 3) = a;
+    (*_center_matrix)(1, 3) = b;
+    (*_center_matrix)(2, 3) = c;
 }
 
 //-----------------------------------------------------------------------------
 
-data::point_list::sptr detectChessboard(
+data::point_list::sptr detect_chessboard(
     const cv::Mat& _img,
-    std::size_t _xDim,
-    std::size_t _yDim,
+    std::size_t _x_dim,
+    std::size_t _y_dim,
     float _scale
 )
 {
@@ -311,38 +311,38 @@ data::point_list::sptr detectChessboard(
     // Ensure that we have a true depth-less 2D image.
     const cv::Mat img2d = _img.dims == 3 ? _img.reshape(0, 2, _img.size + 1) : _img;
 
-    cv::Mat grayImg;
+    cv::Mat gray_img;
     if(_img.channels() == 1)
     {
-        grayImg = img2d;
+        gray_img = img2d;
     }
     else
     {
-        const auto cvtMethod = _img.channels() == 3 ? cv::COLOR_RGB2GRAY : cv::COLOR_RGBA2GRAY;
+        const auto cvt_method = _img.channels() == 3 ? cv::COLOR_RGB2GRAY : cv::COLOR_RGBA2GRAY;
 
-        cv::cvtColor(img2d, grayImg, cvtMethod);
+        cv::cvtColor(img2d, gray_img, cvt_method);
     }
 
-    const cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
+    const cv::Size board_size(static_cast<int>(_x_dim) - 1, static_cast<int>(_y_dim) - 1);
     std::vector<cv::Point2f> corners;
 
     const int flags = cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE | cv::CALIB_CB_FILTER_QUADS
                       | cv::CALIB_CB_FAST_CHECK;
 
-    cv::Mat detectionImage;
+    cv::Mat detection_image;
 
     if(_scale < 1.F)
     {
-        cv::resize(grayImg, detectionImage, cv::Size(), _scale, _scale);
+        cv::resize(gray_img, detection_image, cv::Size(), _scale, _scale);
     }
     else
     {
-        detectionImage = grayImg;
+        detection_image = gray_img;
     }
 
-    const bool patternWasFound = cv::findChessboardCorners(detectionImage, boardSize, corners, flags);
+    const bool pattern_was_found = cv::findChessboardCorners(detection_image, board_size, corners, flags);
 
-    if(patternWasFound)
+    if(pattern_was_found)
     {
         // Rescale points to get their coordinates in the full scale image.
         const auto rescale = [_scale](cv::Point2f& _pt){_pt = _pt / _scale;};
@@ -350,14 +350,14 @@ data::point_list::sptr detectChessboard(
 
         // Refine points coordinates in the full scale image.
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
-        cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
+        cv::cornerSubPix(gray_img, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
         pointlist = std::make_shared<data::point_list>();
         data::point_list::PointListContainer& points = pointlist->getPoints();
         points.reserve(corners.size());
 
-        const auto cv2SightPt = [](const cv::Point2f& p){return std::make_shared<data::point>(p.x, p.y);};
-        std::ranges::transform(corners, std::back_inserter(points), cv2SightPt);
+        const auto cv2_sight_pt = [](const cv::Point2f& _p){return std::make_shared<data::point>(_p.x, _p.y);};
+        std::ranges::transform(corners, std::back_inserter(points), cv2_sight_pt);
     }
 
     return pointlist;

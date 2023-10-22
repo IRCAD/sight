@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,15 +30,15 @@ namespace sight::io::dicom::container
 //------------------------------------------------------------------------------
 
 DicomCodedAttribute::DicomCodedAttribute(
-    std::string codeValue,
-    std::string codingSchemeDesignator,
-    std::string codeMeaning,
-    std::string codingSchemeVersion
+    std::string _code_value,
+    std::string _coding_scheme_designator,
+    std::string _code_meaning,
+    std::string _coding_scheme_version
 ) :
-    m_codeValue(std::move(codeValue)),
-    m_codingSchemeDesignator(std::move(codingSchemeDesignator)),
-    m_codeMeaning(std::move(codeMeaning)),
-    m_codingSchemeVersion(std::move(codingSchemeVersion))
+    m_codeValue(std::move(_code_value)),
+    m_codingSchemeDesignator(std::move(_coding_scheme_designator)),
+    m_codeMeaning(std::move(_code_meaning)),
+    m_codingSchemeVersion(std::move(_coding_scheme_version))
 {
 }
 
@@ -54,12 +54,12 @@ bool DicomCodedAttribute::isEmpty() const
 
 //------------------------------------------------------------------------------
 
-bool DicomCodedAttribute::operator==(const DicomCodedAttribute& other) const
+bool DicomCodedAttribute::operator==(const DicomCodedAttribute& _other) const
 {
-    return m_codeValue == other.m_codeValue
-           && m_codingSchemeDesignator == other.m_codingSchemeDesignator
-           && m_codeMeaning == other.m_codeMeaning
-           && m_codingSchemeVersion == other.m_codingSchemeVersion;
+    return m_codeValue == _other.m_codeValue
+           && m_codingSchemeDesignator == _other.m_codingSchemeDesignator
+           && m_codeMeaning == _other.m_codeMeaning
+           && m_codingSchemeVersion == _other.m_codingSchemeVersion;
 }
 
 //------------------------------------------------------------------------------

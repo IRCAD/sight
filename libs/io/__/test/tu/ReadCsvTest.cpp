@@ -44,17 +44,17 @@ namespace sight::io::ut
 void ReadCsvTest::setUp()
 {
     // Set up context before running a test.
-    const auto currentPath          = boost::dll::program_location().parent_path().parent_path();
-    const auto validCRLF_file       = currentPath / "share/sight/io/valid_crlf_file.csv";
-    const auto validLF_file         = currentPath / "share/sight/io/valid_lf_file.csv";
-    const auto invalidCsv_file      = currentPath / "share/sight/io/invalid_file.csv";
-    const auto invalidFileDirectory = currentPath / "share/sight/io/invalid_file_path.csv";
+    const auto current_path           = boost::dll::program_location().parent_path().parent_path();
+    const auto valid_crlf_file        = current_path / "share/sight/io/valid_crlf_file.csv";
+    const auto valid_lf_file          = current_path / "share/sight/io/valid_lf_file.csv";
+    const auto invalid_csv_file       = current_path / "share/sight/io/invalid_file.csv";
+    const auto invalid_file_directory = current_path / "share/sight/io/invalid_file_path.csv";
 
     // Open an existing file
-    m_validCRLFCsvDirectoryPath = validCRLF_file.string();
-    m_validLFCsvDirectoryPath   = validLF_file.string();
-    m_invalidCsvDirectoryPath   = invalidCsv_file.string();
-    m_wrongFilepathDirectory    = invalidFileDirectory.string();
+    m_validCRLFCsvDirectoryPath = valid_crlf_file.string();
+    m_validLFCsvDirectoryPath   = valid_lf_file.string();
+    m_invalidCsvDirectoryPath   = invalid_csv_file.string();
+    m_wrongFilepathDirectory    = invalid_file_directory.string();
 }
 
 //------------------------------------------------------------------------------
@@ -79,46 +79,46 @@ void ReadCsvTest::test_validCRLFCsv()
 {
     // cspell: disable
     io::reader::csv_reader csv_reader(m_validCRLFCsvDirectoryPath);
-    io::reader::csv_reader::TokenContainerType tokenVec;
+    io::reader::csv_reader::token_container_t token_vec;
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("1" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon Base" == tokenVec[1]);
-    CPPUNIT_ASSERT("platinum" == tokenVec[2]);
-    CPPUNIT_ASSERT("Muhammed" == tokenVec[3]);
-    CPPUNIT_ASSERT("3" == tokenVec[4]);
-    CPPUNIT_ASSERT("-213.25" == tokenVec[5]);
-    CPPUNIT_ASSERT("38.94" == tokenVec[6]);
-    CPPUNIT_ASSERT("35" == tokenVec[7]);
-    CPPUNIT_ASSERT("Name" == tokenVec[8]);
-    CPPUNIT_ASSERT("Storage" == tokenVec[9]);
-    CPPUNIT_ASSERT("0.8" == tokenVec[10]);
-    CPPUNIT_ASSERT(tokenVec[11].empty());
-    CPPUNIT_ASSERT(12 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("1" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon Base" == token_vec[1]);
+    CPPUNIT_ASSERT("platinum" == token_vec[2]);
+    CPPUNIT_ASSERT("Muhammed" == token_vec[3]);
+    CPPUNIT_ASSERT("3" == token_vec[4]);
+    CPPUNIT_ASSERT("-213.25" == token_vec[5]);
+    CPPUNIT_ASSERT("38.94" == token_vec[6]);
+    CPPUNIT_ASSERT("35" == token_vec[7]);
+    CPPUNIT_ASSERT("Name" == token_vec[8]);
+    CPPUNIT_ASSERT("Storage" == token_vec[9]);
+    CPPUNIT_ASSERT("0.8" == token_vec[10]);
+    CPPUNIT_ASSERT(token_vec[11].empty());
+    CPPUNIT_ASSERT(12 == token_vec.size());
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("2" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon Base for stackable storage" == tokenVec[1]);
-    CPPUNIT_ASSERT("plati" == tokenVec[2]);
-    CPPUNIT_ASSERT("Muhammed and MacIntyre" == tokenVec[3]);
-    CPPUNIT_ASSERT("12" == tokenVec[4]);
-    CPPUNIT_ASSERT("-213.25" == tokenVec[5]);
-    CPPUNIT_ASSERT("32.94" == tokenVec[6]);
-    CPPUNIT_ASSERT("35" == tokenVec[7]);
-    CPPUNIT_ASSERT("Organization" == tokenVec[8]);
-    CPPUNIT_ASSERT("0.89" == tokenVec[9]);
-    CPPUNIT_ASSERT(tokenVec[10].empty());
-    CPPUNIT_ASSERT(11 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("2" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon Base for stackable storage" == token_vec[1]);
+    CPPUNIT_ASSERT("plati" == token_vec[2]);
+    CPPUNIT_ASSERT("Muhammed and MacIntyre" == token_vec[3]);
+    CPPUNIT_ASSERT("12" == token_vec[4]);
+    CPPUNIT_ASSERT("-213.25" == token_vec[5]);
+    CPPUNIT_ASSERT("32.94" == token_vec[6]);
+    CPPUNIT_ASSERT("35" == token_vec[7]);
+    CPPUNIT_ASSERT("Organization" == token_vec[8]);
+    CPPUNIT_ASSERT("0.89" == token_vec[9]);
+    CPPUNIT_ASSERT(token_vec[10].empty());
+    CPPUNIT_ASSERT(11 == token_vec.size());
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("3" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon" == tokenVec[1]);
-    CPPUNIT_ASSERT("plati" == tokenVec[2]);
-    CPPUNIT_ASSERT("MacIntyre" == tokenVec[3]);
-    CPPUNIT_ASSERT("9" == tokenVec[4]);
-    CPPUNIT_ASSERT("0.56" == tokenVec[5]);
-    CPPUNIT_ASSERT(tokenVec[6].empty());
-    CPPUNIT_ASSERT(7 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("3" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon" == token_vec[1]);
+    CPPUNIT_ASSERT("plati" == token_vec[2]);
+    CPPUNIT_ASSERT("MacIntyre" == token_vec[3]);
+    CPPUNIT_ASSERT("9" == token_vec[4]);
+    CPPUNIT_ASSERT("0.56" == token_vec[5]);
+    CPPUNIT_ASSERT(token_vec[6].empty());
+    CPPUNIT_ASSERT(7 == token_vec.size());
 
     //cspell: enable
 }
@@ -129,46 +129,46 @@ void ReadCsvTest::test_validLFCsv()
 {
     // cspell: disable
     io::reader::csv_reader csv_reader(m_validLFCsvDirectoryPath);
-    io::reader::csv_reader::TokenContainerType tokenVec;
+    io::reader::csv_reader::token_container_t token_vec;
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("1" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon Base" == tokenVec[1]);
-    CPPUNIT_ASSERT("platinum" == tokenVec[2]);
-    CPPUNIT_ASSERT("Muhammed" == tokenVec[3]);
-    CPPUNIT_ASSERT("3" == tokenVec[4]);
-    CPPUNIT_ASSERT("-213.25" == tokenVec[5]);
-    CPPUNIT_ASSERT("38.94" == tokenVec[6]);
-    CPPUNIT_ASSERT("35" == tokenVec[7]);
-    CPPUNIT_ASSERT("Name" == tokenVec[8]);
-    CPPUNIT_ASSERT("Storage" == tokenVec[9]);
-    CPPUNIT_ASSERT("0.8" == tokenVec[10]);
-    CPPUNIT_ASSERT(tokenVec[11].empty());
-    CPPUNIT_ASSERT(12 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("1" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon Base" == token_vec[1]);
+    CPPUNIT_ASSERT("platinum" == token_vec[2]);
+    CPPUNIT_ASSERT("Muhammed" == token_vec[3]);
+    CPPUNIT_ASSERT("3" == token_vec[4]);
+    CPPUNIT_ASSERT("-213.25" == token_vec[5]);
+    CPPUNIT_ASSERT("38.94" == token_vec[6]);
+    CPPUNIT_ASSERT("35" == token_vec[7]);
+    CPPUNIT_ASSERT("Name" == token_vec[8]);
+    CPPUNIT_ASSERT("Storage" == token_vec[9]);
+    CPPUNIT_ASSERT("0.8" == token_vec[10]);
+    CPPUNIT_ASSERT(token_vec[11].empty());
+    CPPUNIT_ASSERT(12 == token_vec.size());
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("2" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon Base for stackable storage" == tokenVec[1]);
-    CPPUNIT_ASSERT("plati" == tokenVec[2]);
-    CPPUNIT_ASSERT("Muhammed and MacIntyre" == tokenVec[3]);
-    CPPUNIT_ASSERT("12" == tokenVec[4]);
-    CPPUNIT_ASSERT("-213.25" == tokenVec[5]);
-    CPPUNIT_ASSERT("32.94" == tokenVec[6]);
-    CPPUNIT_ASSERT("35" == tokenVec[7]);
-    CPPUNIT_ASSERT("Organization" == tokenVec[8]);
-    CPPUNIT_ASSERT("0.89" == tokenVec[9]);
-    CPPUNIT_ASSERT(tokenVec[10].empty());
-    CPPUNIT_ASSERT(11 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("2" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon Base for stackable storage" == token_vec[1]);
+    CPPUNIT_ASSERT("plati" == token_vec[2]);
+    CPPUNIT_ASSERT("Muhammed and MacIntyre" == token_vec[3]);
+    CPPUNIT_ASSERT("12" == token_vec[4]);
+    CPPUNIT_ASSERT("-213.25" == token_vec[5]);
+    CPPUNIT_ASSERT("32.94" == token_vec[6]);
+    CPPUNIT_ASSERT("35" == token_vec[7]);
+    CPPUNIT_ASSERT("Organization" == token_vec[8]);
+    CPPUNIT_ASSERT("0.89" == token_vec[9]);
+    CPPUNIT_ASSERT(token_vec[10].empty());
+    CPPUNIT_ASSERT(11 == token_vec.size());
 
-    tokenVec = csv_reader.getLine();
-    CPPUNIT_ASSERT("3" == tokenVec[0]);
-    CPPUNIT_ASSERT("Eldon" == tokenVec[1]);
-    CPPUNIT_ASSERT("plati" == tokenVec[2]);
-    CPPUNIT_ASSERT("MacIntyre" == tokenVec[3]);
-    CPPUNIT_ASSERT("9" == tokenVec[4]);
-    CPPUNIT_ASSERT("0.56" == tokenVec[5]);
-    CPPUNIT_ASSERT(tokenVec[6].empty());
-    CPPUNIT_ASSERT(7 == tokenVec.size());
+    token_vec = csv_reader.getLine();
+    CPPUNIT_ASSERT("3" == token_vec[0]);
+    CPPUNIT_ASSERT("Eldon" == token_vec[1]);
+    CPPUNIT_ASSERT("plati" == token_vec[2]);
+    CPPUNIT_ASSERT("MacIntyre" == token_vec[3]);
+    CPPUNIT_ASSERT("9" == token_vec[4]);
+    CPPUNIT_ASSERT("0.56" == token_vec[5]);
+    CPPUNIT_ASSERT(token_vec[6].empty());
+    CPPUNIT_ASSERT(7 == token_vec.size());
 
     // cspell: enable
 }
@@ -178,10 +178,10 @@ void ReadCsvTest::test_validLFCsv()
 void ReadCsvTest::test_invalidCsv()
 {
     io::reader::csv_reader csv_reader(m_invalidCsvDirectoryPath);
-    io::reader::csv_reader::TokenContainerType tagVec = csv_reader.getLine();
+    io::reader::csv_reader::token_container_t tag_vec = csv_reader.getLine();
 
     CPPUNIT_ASSERT(std::filesystem::exists(m_invalidCsvDirectoryPath));
-    const std::size_t size = tagVec.size();
+    const std::size_t size = tag_vec.size();
     CPPUNIT_ASSERT(size == 0);
 }
 

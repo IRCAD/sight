@@ -58,10 +58,10 @@ ComputeMaterial::ComputeMaterial(Qt3DCore::QNode* _parent) :
     m_computeTechnique(new Qt3DRender::QTechnique)
 {
     //Initialize shader program
-    const auto computeShaderPath = sight::core::runtime::get_library_resource_file_path(
+    const auto compute_shader_path = sight::core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/quadToTriangleMesh_CP.glsl"
     );
-    const auto source = QUrl::fromLocalFile(QString::fromStdString(computeShaderPath.string()));
+    const auto source = QUrl::fromLocalFile(QString::fromStdString(compute_shader_path.string()));
     m_computeShader->setComputeShaderCode(Qt3DRender::QShaderProgram::loadSource(source));
 
     m_computeRenderPass->setShaderProgram(m_computeShader);
@@ -101,37 +101,37 @@ void ComputeMaterial::setIndexBuffer(Qt3DRender::QBuffer* _buffer)
     m_indexBufferParameter->setName(QStringLiteral("c_in_index"));
 
     //Set the buffer as parameter data
-    QVariant tmpVariant;
-    tmpVariant.setValue(m_indexBuffer);
-    m_indexBufferParameter->setValue(tmpVariant);
+    QVariant tmp_variant;
+    tmp_variant.setValue(m_indexBuffer);
+    m_indexBufferParameter->setValue(tmp_variant);
 }
 
 //------------------------------------------------------------------------------
 
-void ComputeMaterial::updateFrameGraph(viz::qt3d::core::FrameGraph* _frameGraph, int _numberOfCells)
+void ComputeMaterial::updateFrameGraph(viz::qt3d::core::FrameGraph* _frame_graph, int _number_of_cells)
 {
     // Memory barrier to wait for compute shader to finish before rendering the mesh.
-    auto* const memBarrier = new Qt3DRender::QMemoryBarrier();
-    memBarrier->setWaitOperations(Qt3DRender::QMemoryBarrier::VertexAttributeArray);
+    auto* const mem_barrier = new Qt3DRender::QMemoryBarrier();
+    mem_barrier->setWaitOperations(Qt3DRender::QMemoryBarrier::VertexAttributeArray);
 
     // Set the memory barrier as a child of framegraph's camera selector.
-    _frameGraph->addNode(memBarrier, _frameGraph->getCameraSelector());
+    _frame_graph->addNode(mem_barrier, _frame_graph->getCameraSelector());
 
     // FrameGraph node handling openGL dispatch call.
-    auto* const emptyNode = new Qt3DRender::QFrameGraphNode();
+    auto* const empty_node = new Qt3DRender::QFrameGraphNode();
     {
-        auto* const computeTechFilter = new Qt3DRender::QTechniqueFilter(emptyNode);
-        computeTechFilter->addMatch(m_computeFilterKey);
+        auto* const compute_tech_filter = new Qt3DRender::QTechniqueFilter(empty_node);
+        compute_tech_filter->addMatch(m_computeFilterKey);
         {
-            auto* const dispatch = new Qt3DRender::QDispatchCompute(computeTechFilter);
-            dispatch->setWorkGroupX(_numberOfCells);
+            auto* const dispatch = new Qt3DRender::QDispatchCompute(compute_tech_filter);
+            dispatch->setWorkGroupX(_number_of_cells);
         }
     }
 
     // Creates a new branch in the framegraph which is child of framegraph's camera selector.
-    _frameGraph->addNode(
-        emptyNode,
-        qobject_cast<Qt3DRender::QFrameGraphNode*>(_frameGraph->getCameraSelector()->parent())
+    _frame_graph->addNode(
+        empty_node,
+        qobject_cast<Qt3DRender::QFrameGraphNode*>(_frame_graph->getCameraSelector()->parent())
     );
 }
 

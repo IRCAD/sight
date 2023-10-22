@@ -25,7 +25,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class Scene3d
@@ -39,7 +39,7 @@ public:
      * @param rotation the rotation to be applied, in radian divided by pi. (eg to apply an horizontal rotation of PI/2,
      *                 use QPointF(1/2., 0)
      */
-    GUITEST_API static void rotate(Tester& tester, const Select& scene, QPointF rotation);
+    GUITEST_API static void rotate(Tester& _tester, const Select& _scene, QPointF _rotation);
 
     /**
      * Zooms the camera in the specified scene using the mouse wheel
@@ -49,7 +49,7 @@ public:
      *                   out. Don't be mistaken: the value is NOT the scale, for example, mouseSteps=2 will zoom in with
      *                   two mouse wheel steps, not making the image twice as large.
      */
-    GUITEST_API static void zoom(Tester& tester, const Select& scene, int mouseSteps);
+    GUITEST_API static void zoom(Tester& _tester, const Select& _scene, int _mouse_steps);
 };
 
 } // namespace sight::ui::testCore::helper

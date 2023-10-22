@@ -51,7 +51,7 @@ public:
      * @pre layout must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    UI_QT_API void createToolBar(ui::container::widget::sptr parent) override;
+    UI_QT_API void createToolBar(ui::container::widget::sptr _parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.

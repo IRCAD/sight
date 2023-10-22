@@ -28,7 +28,7 @@
 #include <core/com/slot.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/IText.hpp>
+#include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
@@ -109,7 +109,7 @@ protected:
 private:
 
     /// SLOT: internal function to update origin color using provided data::color.
-    void updateOriginColor(sight::data::color::sptr _newColor);
+    void updateOriginColor(sight::data::color::sptr _new_color);
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
@@ -157,9 +157,9 @@ private:
     Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores labels attached to each axis.
-    std::array<sight::viz::scene3d::IText::sptr, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
+    std::array<sight::viz::scene3d::text::sptr, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
 
-    sight::viz::scene3d::IText::sptr m_axisNameTxt {nullptr};
+    sight::viz::scene3d::text::sptr m_axisNameTxt {nullptr};
 
     /// Defines labels font size in points.
     std::size_t m_fontSize {12};

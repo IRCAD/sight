@@ -67,8 +67,8 @@ public:
         io::reader::factory::make<series_set>
     );
 
-    typedef std::vector<SPTR(data::dicom_series)> DicomSeriesContainerType;
-    typedef std::vector<std::string> FilenameContainerType;
+    typedef std::vector<SPTR(data::dicom_series)> dicom_series_container_t;
+    typedef std::vector<std::string> filename_container_t;
     typedef std::vector<std::string> supportedSOPClassContainerType;
 
     /// Constructor
@@ -86,8 +86,8 @@ public:
      * @param[in] notifier Service used to notify changes in series_set
      */
     IO_DICOM_API void readFromDicomSeriesSet(
-        const data::series_set::csptr& dicom_series_set,
-        const sight::service::base::sptr& notifier = sight::service::base::sptr()
+        const data::series_set::csptr& _dicom_series_set,
+        const sight::service::base::sptr& _notifier = sight::service::base::sptr()
     );
 
     /**
@@ -99,7 +99,7 @@ public:
     IO_DICOM_API bool isDicomDirAvailable();
 
     /// Return DicomSeries container
-    IO_DICOM_API DicomSeriesContainerType& getDicomSeries();
+    IO_DICOM_API dicom_series_container_t& getDicomSeries();
 
     /// Get Set whether the reader must use the dicomdir file or not
     const bool& getDicomdirActivated() const
@@ -108,21 +108,21 @@ public:
     }
 
     ///Set Set whether the reader must use the dicomdir file or not
-    void setDicomdirActivated(const bool& isDicomdirActivated)
+    void setDicomdirActivated(const bool& _is_dicomdir_activated)
     {
-        m_isDicomdirActivated = isDicomdirActivated;
+        m_isDicomdirActivated = _is_dicomdir_activated;
     }
 
     /// Get Dicom filter type that must be applied prior to the reading process
-    const std::string& getDicomFilterType() const
+    const std::string& get_dicom_filter_type() const
     {
         return m_dicomFilterType;
     }
 
     ///Set Dicom filter type that must be applied prior to the reading process
-    void setDicomFilterType(const std::string& dicomFilterType)
+    void set_dicom_filter_type(const std::string& _dicom_filter_type)
     {
-        m_dicomFilterType = dicomFilterType;
+        m_dicomFilterType = _dicom_filter_type;
     }
 
     /// Get Supported SOP Class
@@ -132,9 +132,9 @@ public:
     }
 
     ///Set Supported SOP Class
-    void setsupportedSOPClassContainer(const supportedSOPClassContainerType& supportedSOPClassContainer)
+    void setsupportedSOPClassContainer(const supportedSOPClassContainerType& _supported_sop_class_container)
     {
-        m_supportedSOPClassContainer = supportedSOPClassContainer;
+        m_supportedSOPClassContainer = _supported_sop_class_container;
     }
 
     /// Get Logger
@@ -144,18 +144,18 @@ public:
     }
 
     ///Set Logger
-    void setLogger(const core::log::logger::sptr& logger)
+    void setLogger(const core::log::logger::sptr& _logger)
     {
-        m_logger = logger;
+        m_logger = _logger;
     }
 
     /// Getter for reader's job
     IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
 
     /// Enable buffer rotation
-    void setBufferRotationEnabled(bool enabled)
+    void setBufferRotationEnabled(bool _enabled)
     {
-        m_enableBufferRotation = enabled;
+        m_enableBufferRotation = _enabled;
     }
 
 private:
@@ -169,7 +169,7 @@ private:
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(const sight::service::base::sptr& notifier = sight::service::base::sptr());
+    void convertDicomSeries(const sight::service::base::sptr& _notifier = sight::service::base::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
@@ -177,12 +177,12 @@ private:
      * @param[in] b Second DicomSeries
      */
     static bool dicomSeriesComparator(
-        const SPTR(data::dicom_series)& a,
-        const SPTR(data::dicom_series)& b
+        const SPTR(data::dicom_series)& _a,
+        const SPTR(data::dicom_series)& _b
     );
 
     /// Object Reader Map
-    DicomSeriesContainerType m_dicomSeriesContainer;
+    dicom_series_container_t m_dicomSeriesContainer;
 
     /// True if the reader can use the dicomdir file.
     bool m_isDicomdirActivated;

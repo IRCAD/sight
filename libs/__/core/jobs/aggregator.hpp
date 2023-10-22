@@ -73,7 +73,7 @@ public:
      *
      * @param name The job's name
      */
-    CORE_API aggregator(const std::string& name);
+    CORE_API aggregator(const std::string& _name);
 
     /**
      * @brief Add an base to the aggregator
@@ -83,7 +83,7 @@ public:
      * @param job the base to add to the aggregator
      * @param weight added base's weight. Avoid values lower than 0.01
      */
-    CORE_API void add(const core::jobs::base::sptr& i_job, double weight = 1.);
+    CORE_API void add(const core::jobs::base::sptr& _i_job, double _weight = 1.);
 
     /**
      * @brief Retrieve sub job sequence of the aggregator
@@ -116,15 +116,15 @@ private:
         job_info()
         = default;
 
-        job_info(std::uint64_t d, std::uint64_t t) :
-            done_work(d),
-            total_work(t)
+        job_info(std::uint64_t _d, std::uint64_t _t) :
+            done_work(_d),
+            total_work(_t)
         {
         }
 
-        job_info(const base& i_job) :
-            done_work(i_job.get_done_work_units()),
-            total_work(i_job.get_total_work_units())
+        job_info(const base& _i_job) :
+            done_work(_i_job.get_done_work_units()),
+            total_work(_i_job.get_total_work_units())
         {
         }
 

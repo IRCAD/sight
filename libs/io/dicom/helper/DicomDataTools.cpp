@@ -53,9 +53,9 @@ static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
 
 //------------------------------------------------------------------------------
 
-gdcm::PixelFormat DicomDataTools::getPixelType(const core::type& type)
+gdcm::PixelFormat DicomDataTools::get_pixel_type(const core::type& _type)
 {
-    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
+    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(_type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
     {
         return it->second;
@@ -66,10 +66,10 @@ gdcm::PixelFormat DicomDataTools::getPixelType(const core::type& type)
 
 //------------------------------------------------------------------------------
 
-gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::image::csptr& image)
+gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::image::csptr& _image)
 {
     gdcm::PhotometricInterpretation pi;
-    const std::size_t components = image->numComponents();
+    const std::size_t components = _image->numComponents();
 
     // Attempt a guess (VTK do the same choice)
     switch(components)
@@ -98,10 +98,10 @@ gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(con
 //------------------------------------------------------------------------------
 
 gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
-    data::material::RepresentationType representationMode
+    data::material::representation_t _representation_mode
 )
 {
-    switch(representationMode)
+    switch(_representation_mode)
     {
         case data::material::SURFACE:
             return gdcm::Surface::SURFACE;
@@ -120,11 +120,11 @@ gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
 
 //------------------------------------------------------------------------------
 
-data::material::RepresentationType DicomDataTools::convertToRepresentationMode(
-    gdcm::Surface::VIEWType presentationType
+data::material::representation_t DicomDataTools::convertToRepresentationMode(
+    gdcm::Surface::VIEWType _presentation_type
 )
 {
-    switch(presentationType)
+    switch(_presentation_type)
     {
         case gdcm::Surface::SURFACE:
             return data::material::SURFACE;
@@ -144,51 +144,51 @@ data::material::RepresentationType DicomDataTools::convertToRepresentationMode(
 //------------------------------------------------------------------------------
 
 std::size_t DicomDataTools::convertPointToFrameNumber(
-    const data::image::csptr& image,
-    const data::point::csptr& point
+    const data::image::csptr& _image,
+    const data::point::csptr& _point
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double z_spacing = (_image->numDimensions() > 2) ? (_image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double z_origin = (_image->numDimensions() > 2) ? (_image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
-    const auto zCoordinate = static_cast<double>(point->getCoord()[2]);
+    const auto z_coordinate = static_cast<double>(_point->getCoord()[2]);
 
     // Compute frame number
-    const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
+    const std::size_t frame_number = static_cast<std::size_t>(floor((z_coordinate - z_origin) / z_spacing + 0.5)) + 1;
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameNumber<1 || frameNumber> image->size()[2]
+        frame_number<1 || frame_number> _image->size()[2]
     );
 
-    return frameNumber;
+    return frame_number;
 }
 
 //------------------------------------------------------------------------------
 
 double DicomDataTools::convertFrameNumberToZCoordinate(
-    const data::image::csptr& image,
-    const std::size_t frameNumber
+    const data::image::csptr& _image,
+    const std::size_t _frame_number
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double z_spacing = (_image->numDimensions() > 2) ? (_image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double z_origin = (_image->numDimensions() > 2) ? (_image->getOrigin()[2]) : 0;
 
     // Compute coordinate
-    const std::size_t frameIndex = (frameNumber - 1);
+    const std::size_t frame_index = (_frame_number - 1);
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameIndex >= image->size()[2]
+        frame_index >= _image->size()[2]
     );
-    const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
+    const double z_coordinate = z_origin + static_cast<double>(frame_index) * z_spacing;
 
-    return zCoordinate;
+    return z_coordinate;
 }
 
 //------------------------------------------------------------------------------

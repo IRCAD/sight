@@ -48,7 +48,7 @@ class DATA_CLASS_API model_series final : public series,
 {
 public:
 
-    using ReconstructionVectorType = std::vector<reconstruction::sptr>;
+    using reconstruction_vector_t = std::vector<reconstruction::sptr>;
 
     SIGHT_DECLARE_CLASS(model_series, series);
 
@@ -62,10 +62,10 @@ public:
     DATA_API ~model_series() noexcept override = default;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
-    const ReconstructionVectorType& getReconstructionDB() const;
+    const reconstruction_vector_t& getReconstructionDB() const;
 
     /// Sets the reconstruction container use to store mesh, material and image mask.
-    void setReconstructionDB(const ReconstructionVectorType& _val);
+    void setReconstructionDB(const reconstruction_vector_t& _val);
 
     /// Gets the DICOM reference use to generate valid DICOM Segmentation Surface.
     dicom_series::csptr getDicomReference() const;
@@ -78,11 +78,11 @@ public:
      * @{
      */
     /// Defines the type of signal sent when a reconstruction is added.
-    typedef core::com::signal<void (ReconstructionVectorType)> ReconstructionsAddedSignalType;
+    typedef core::com::signal<void (reconstruction_vector_t)> reconstructions_added_signal_t;
     DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
 
     /// Defines the type of signal sent when a reconstruction is removed.
-    typedef core::com::signal<void (ReconstructionVectorType)> ReconstructionsRemovedSignalType;
+    typedef core::com::signal<void (reconstruction_vector_t)> reconstructions_removed_signal_t;
     DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
 /**
  * @}
@@ -90,22 +90,22 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const model_series& other) const noexcept;
-    DATA_API bool operator!=(const model_series& other) const noexcept;
+    DATA_API bool operator==(const model_series& _other) const noexcept;
+    DATA_API bool operator!=(const model_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& source) override;
+    DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     DATA_API void deep_copy(
-        const object::csptr& source,
-        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
+        const object::csptr& _source,
+        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
     DATA_API fiducials_series::csptr getFiducials() const;
@@ -115,7 +115,7 @@ public:
 protected:
 
     /// Stores models.
-    ReconstructionVectorType m_reconstructionDB;
+    reconstruction_vector_t m_reconstructionDB;
 
     /// Stores the DICOM reference used to generate a valid DICOM Segmentation Surface.
     dicom_series::sptr m_dicomReference;
@@ -126,22 +126,22 @@ private:
     fiducials_series::sptr m_fiducialsSeries {std::make_shared<data::fiducials_series>()};
 
     /// Stores the signal emitted when reconstructions are added.
-    ReconstructionsAddedSignalType::sptr m_sigReconstructionsAdded;
+    reconstructions_added_signal_t::sptr m_sigReconstructionsAdded;
 
     /// Stores the signal emitted when reconstructions are removed.
-    ReconstructionsRemovedSignalType ::sptr m_sigReconstructionsRemoved;
+    reconstructions_removed_signal_t ::sptr m_sigReconstructionsRemoved;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const model_series::ReconstructionVectorType& model_series::getReconstructionDB() const
+inline const model_series::reconstruction_vector_t& model_series::getReconstructionDB() const
 {
     return m_reconstructionDB;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void model_series::setReconstructionDB(const model_series::ReconstructionVectorType& _val)
+inline void model_series::setReconstructionDB(const model_series::reconstruction_vector_t& _val)
 {
     m_reconstructionDB = _val;
 }

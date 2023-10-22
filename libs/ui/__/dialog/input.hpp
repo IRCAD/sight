@@ -56,10 +56,10 @@ public:
      * @return Returns text in the input field
      */
     UI_API static std::pair<std::string, bool> showInputDialog(
-        const std::string& title,
-        const std::string& message,
-        const std::string& text = "",
-        EchoMode echoMode       = EchoMode::DEFAULT
+        const std::string& _title,
+        const std::string& _message,
+        const std::string& _text = "",
+        EchoMode _echo_mode      = EchoMode::DEFAULT
     );
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
@@ -83,26 +83,26 @@ public:
      * @param text the input text in the input field
      */
     UI_API input(
-        const std::string& title,
-        const std::string& message,
-        const std::string& text = "",
-        EchoMode echoMode       = EchoMode::DEFAULT
+        const std::string& _title,
+        const std::string& _message,
+        const std::string& _text = "",
+        EchoMode _echo_mode      = EchoMode::DEFAULT
     );
 
     /// Destructor. Do nothing
     UI_API ~input() override;
 
     /// Set the title of the input dialog
-    UI_API void setTitle(const std::string& title) override;
+    UI_API void setTitle(const std::string& _title) override;
 
     /// Set the message
-    UI_API void setMessage(const std::string& msg) override;
+    UI_API void setMessage(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_API void setEchoMode(EchoMode echoMode) override;
+    UI_API void setEchoMode(EchoMode _echo_mode) override;
 
     /// Set the input text in the input field
-    UI_API void set_input(const std::string& text) override;
+    UI_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
     UI_API std::pair<std::string, bool> getInput() override;

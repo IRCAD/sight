@@ -95,7 +95,7 @@ protected:
 private Q_SLOTS:
 
     /// Slot called when slider value changed.
-    void onSliderChanged(int value);
+    void onSliderChanged(int _value);
 
     /// Slot called when line edit value changed.
     void onTextChanged();

@@ -19,7 +19,7 @@ of the type of data to serialize.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_session ...)
+add_dependencies(my_target module_io_session ...)
 ```
 
 ### XML

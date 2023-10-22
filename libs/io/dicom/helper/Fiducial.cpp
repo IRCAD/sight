@@ -24,7 +24,7 @@
 
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/helper/MedicalImage.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/point_list.hpp>
@@ -36,19 +36,19 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsLandmarks(const SPTR(data::series_set)& seriesSet)
+bool Fiducial::containsLandmarks(const SPTR(data::series_set)& _series_set)
 {
     // Let's find if a series contains distances
     return std::any_of(
-        seriesSet->begin(),
-        seriesSet->end(),
-        [](const data::series::sptr& series)
+        _series_set->begin(),
+        _series_set->end(),
+        [](const data::series::sptr& _series)
         {
-            if(auto imageSeries = std::dynamic_pointer_cast<data::image_series>(series))
+            if(auto image_series = std::dynamic_pointer_cast<data::image_series>(_series))
             {
-                if(data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*imageSeries))
+                if(data::point_list::sptr point_list = data::helper::medical_image::get_landmarks(*image_series))
                 {
-                    return !pointList->getPoints().empty();
+                    return !point_list->getPoints().empty();
                 }
             }
 
@@ -58,18 +58,18 @@ bool Fiducial::containsLandmarks(const SPTR(data::series_set)& seriesSet)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsDistances(const SPTR(data::series_set)& seriesSet)
+bool Fiducial::containsDistances(const SPTR(data::series_set)& _series_set)
 {
     return std::any_of(
-        seriesSet->begin(),
-        seriesSet->end(),
-        [](const data::series::sptr& series)
+        _series_set->begin(),
+        _series_set->end(),
+        [](const data::series::sptr& _series)
         {
-            if(auto imageSeries = std::dynamic_pointer_cast<data::image_series>(series))
+            if(auto image_series = std::dynamic_pointer_cast<data::image_series>(_series))
             {
-                if(auto distanceVector = data::helper::MedicalImage::getDistances(*imageSeries))
+                if(auto distance_vector = data::helper::medical_image::get_distances(*image_series))
                 {
-                    return !distanceVector->empty();
+                    return !distance_vector->empty();
                 }
             }
 
@@ -79,29 +79,29 @@ bool Fiducial::containsDistances(const SPTR(data::series_set)& seriesSet)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::contains3DDistances(const SPTR(data::series_set)& seriesSet)
+bool Fiducial::contains3DDistances(const SPTR(data::series_set)& _series_set)
 {
     // Let's find if a series contains distances
-    for(const auto& series : *seriesSet)
+    for(const auto& series : *_series_set)
     {
-        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
-        if(imageSeries)
+        const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
+        if(image_series)
         {
-            const auto& distanceVector = data::helper::MedicalImage::getDistances(*imageSeries);
-            if(distanceVector && !distanceVector->empty())
+            const auto& distance_vector = data::helper::medical_image::get_distances(*image_series);
+            if(distance_vector && !distance_vector->empty())
             {
-                for(const auto& object : *distanceVector)
+                for(const auto& object : *distance_vector)
                 {
-                    const auto& pointList = std::dynamic_pointer_cast<data::point_list>(object);
-                    if(pointList && pointList->getPoints().size() >= 2)
+                    const auto& point_list = std::dynamic_pointer_cast<data::point_list>(object);
+                    if(point_list && point_list->getPoints().size() >= 2)
                     {
-                        const auto& point1             = *pointList->getPoints().begin();
-                        const auto& point2             = *(++pointList->getPoints().begin());
-                        const std::size_t frameNumber1 =
-                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(imageSeries, point1);
-                        const std::size_t frameNumber2 =
-                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(imageSeries, point2);
-                        if(frameNumber1 != frameNumber2)
+                        const auto& point1              = *point_list->getPoints().begin();
+                        const auto& point2              = *(++point_list->getPoints().begin());
+                        const std::size_t frame_number1 =
+                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image_series, point1);
+                        const std::size_t frame_number2 =
+                            io::dicom::helper::DicomDataTools::convertPointToFrameNumber(image_series, point2);
+                        if(frame_number1 != frame_number2)
                         {
                             return true;
                         }

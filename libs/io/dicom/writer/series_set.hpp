@@ -78,9 +78,9 @@ public:
     }
 
     /// Set Fiducials Export Mode
-    void setFiducialsExportMode(const io::dicom::writer::series::FiducialsExportMode& fiducialsExportMode)
+    void setFiducialsExportMode(const io::dicom::writer::series::FiducialsExportMode& _fiducials_export_mode)
     {
-        m_fiducialsExportMode = fiducialsExportMode;
+        m_fiducialsExportMode = _fiducials_export_mode;
     }
 
 protected:

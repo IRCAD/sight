@@ -64,9 +64,9 @@ series_pusher::series_pusher() noexcept :
     );
 
     // Public signals
-    m_sigProgressed      = new_signal<ProgressedSignalType>(PROGRESSED_SIG);
-    m_sigStartedProgress = new_signal<StartedProgressSignalType>(STARTED_PROGRESS_SIG);
-    m_sigStoppedProgress = new_signal<StoppedProgressSignalType>(STOPPED_PROGRESS_SIG);
+    m_sigProgressed      = new_signal<progressed_signal_t>(PROGRESSED_SIG);
+    m_sigStartedProgress = new_signal<started_progress_signal_t>(STARTED_PROGRESS_SIG);
+    m_sigStoppedProgress = new_signal<stopped_progress_signal_t>(STOPPED_PROGRESS_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -110,42 +110,42 @@ void series_pusher::stopping()
 
 void series_pusher::updating()
 {
-    const auto selectedSeries = m_selectedSeries.lock();
+    const auto selected_series = m_selectedSeries.lock();
 
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Pushing Series");
-        messageBox.setMessage(
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Pushing Series");
+        message_box.setMessage(
             "The service is already pushing data. Please wait until the pushing is done "
             "before sending a new push request."
         );
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.show();
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.show();
     }
-    else if(selectedSeries->empty())
+    else if(selected_series->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Pushing Series");
-        messageBox.setMessage("Unable to push series, there is no series selected.");
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.show();
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Pushing Series");
+        message_box.setMessage("Unable to push series, there is no series selected.");
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.show();
     }
     else
     {
-        const auto pacsConfiguration = m_config.lock();
+        const auto pacs_configuration = m_config.lock();
 
         // Initialize enquirer
         m_seriesEnquirer->initialize(
-            pacsConfiguration->getLocalApplicationTitle(),
-            pacsConfiguration->getPacsHostName(),
-            pacsConfiguration->getPacsApplicationPort(),
-            pacsConfiguration->getPacsApplicationTitle(),
-            pacsConfiguration->getMoveApplicationTitle(),
+            pacs_configuration->getLocalApplicationTitle(),
+            pacs_configuration->getPacsHostName(),
+            pacs_configuration->getPacsApplicationPort(),
+            pacs_configuration->getPacsApplicationTitle(),
+            pacs_configuration->getMoveApplicationTitle(),
             m_slotProgressCallback
         );
 
@@ -153,8 +153,8 @@ void series_pusher::updating()
         m_isPushing = true;
 
         // Check whether some selected series are already on the PACS or not
-        bool pushOK = this->checkSeriesOnPACS();
-        if(pushOK)
+        bool push_ok = this->checkSeriesOnPACS();
+        if(push_ok)
         {
             // Push series to the PACS
             m_pushSeriesWorker->post([this](auto&& ...){pushSeries();});
@@ -168,18 +168,18 @@ bool series_pusher::checkSeriesOnPACS()
     // Return true if the push operation must be performed
     bool result = true;
 
-    const auto seriesVector = m_selectedSeries.lock();
+    const auto series_vector = m_selectedSeries.lock();
 
     // Catch any errors
     try
     {
         // Find which selected series must be pushed
-        DicomSeriesContainerType duplicateSeriesVector;
+        dicom_series_container_t duplicate_series_vector;
 
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        for(const auto& object : *seriesVector)
+        for(const auto& object : *series_vector)
         {
             auto series = std::dynamic_pointer_cast<data::series>(object);
             SIGHT_ASSERT("The series_set should contain only Series.", series);
@@ -191,7 +191,7 @@ bool series_pusher::checkSeriesOnPACS()
             // If the series has been found on the PACS
             if(responses.size() > 1)
             {
-                duplicateSeriesVector.push_back(series);
+                duplicate_series_vector.push_back(series);
             }
 
             sight::io::dimse::helper::series::releaseResponses(responses);
@@ -201,13 +201,13 @@ bool series_pusher::checkSeriesOnPACS()
         m_seriesEnquirer->disconnect();
 
         // Inform the user that some series are already on the PACS
-        if(!duplicateSeriesVector.empty())
+        if(!duplicate_series_vector.empty())
         {
             std::stringstream ss;
             ss << "Those series are already on the PACS: \n";
 
             // Display duplicated Series
-            for(const data::series::csptr& series : duplicateSeriesVector)
+            for(const data::series::csptr& series : duplicate_series_vector)
             {
                 std::string description = series->getSeriesDescription();
                 description = (description.empty()) ? "[No description]" : description;
@@ -217,26 +217,26 @@ bool series_pusher::checkSeriesOnPACS()
             ss << std::endl << "Would you like to perform the operation anyway ?" << std::endl
             << "(This will result in a merge operation)";
 
-            sight::ui::dialog::message messageBox;
-            messageBox.setTitle("Duplicate series");
-            messageBox.setMessage(ss.str());
-            messageBox.setIcon(ui::dialog::message::INFO);
-            messageBox.addButton(ui::dialog::message::OK);
-            messageBox.addButton(ui::dialog::message::CANCEL);
-            sight::ui::dialog::message::Buttons answer = messageBox.show();
+            sight::ui::dialog::message message_box;
+            message_box.setTitle("Duplicate series");
+            message_box.setMessage(ss.str());
+            message_box.setIcon(ui::dialog::message::INFO);
+            message_box.addButton(ui::dialog::message::OK);
+            message_box.addButton(ui::dialog::message::CANCEL);
+            sight::ui::dialog::message::Buttons answer = message_box.show();
 
             result = (answer == sight::ui::dialog::message::OK);
         }
     }
     catch(sight::io::dimse::exceptions::Base& exception)
     {
-        const auto pacsConfiguration = m_config.lock();
+        const auto pacs_configuration = m_config.lock();
 
         std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
-        << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
-        << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
-        << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
+        << "Pacs host name: " << pacs_configuration->getPacsHostName() << "\n"
+        << "Pacs application title: " << pacs_configuration->getPacsApplicationTitle() << "\n"
+        << "Pacs port: " << pacs_configuration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->async_run(ss.str(), true);
         SIGHT_WARN(exception.what());
         result = false;
@@ -252,69 +252,69 @@ bool series_pusher::checkSeriesOnPACS()
 
 void series_pusher::pushSeries()
 {
-    const auto seriesVector = m_selectedSeries.lock();
+    const auto series_vector = m_selectedSeries.lock();
 
     // Catch any errors
     try
     {
         // List of dicom slice that must be pushed
-        std::vector<CSPTR(DcmDataset)> dicomContainer;
+        std::vector<CSPTR(DcmDataset)> dicom_container;
 
         // Connect to PACS
-        for(const auto& series : *seriesVector)
+        for(const auto& series : *series_vector)
         {
-            data::dicom_series::csptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
-            SIGHT_ASSERT("The series_set should contain only DicomSeries.", dicomSeries);
+            data::dicom_series::csptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
+            SIGHT_ASSERT("The series_set should contain only DicomSeries.", dicom_series);
 
-            for(const auto& item : dicomSeries->getDicomContainer())
+            for(const auto& item : dicom_series->getDicomContainer())
             {
-                DcmFileFormat fileFormat;
-                core::memory::buffer_object::sptr bufferObj = item.second;
-                const std::size_t buffSize                  = bufferObj->size();
-                core::memory::buffer_object::lock_t lock(bufferObj);
+                DcmFileFormat file_format;
+                core::memory::buffer_object::sptr buffer_obj = item.second;
+                const std::size_t buff_size                  = buffer_obj->size();
+                core::memory::buffer_object::lock_t lock(buffer_obj);
                 char* buffer = static_cast<char*>(lock.buffer());
 
                 DcmInputBufferStream is;
-                is.setBuffer(buffer, offile_off_t(buffSize));
+                is.setBuffer(buffer, offile_off_t(buff_size));
                 is.setEos();
 
-                fileFormat.transferInit();
-                if(!fileFormat.read(is).good())
+                file_format.transferInit();
+                if(!file_format.read(is).good())
                 {
-                    SIGHT_THROW("Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "'");
+                    SIGHT_THROW("Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "'");
                 }
 
-                fileFormat.loadAllDataIntoMemory();
-                fileFormat.transferEnd();
+                file_format.loadAllDataIntoMemory();
+                file_format.transferEnd();
 
-                const DcmDataset* dataset = fileFormat.getAndRemoveDataset();
-                CSPTR(DcmDataset) datasetPtr(dataset);
-                dicomContainer.push_back(datasetPtr);
+                const DcmDataset* dataset = file_format.getAndRemoveDataset();
+                CSPTR(DcmDataset) dataset_ptr(dataset);
+                dicom_container.push_back(dataset_ptr);
             }
         }
 
         // Number of instances that must be uploaded
-        m_instanceCount = static_cast<std::uint64_t>(dicomContainer.size());
+        m_instanceCount = static_cast<std::uint64_t>(dicom_container.size());
 
         // Connect from PACS
         m_seriesEnquirer->connect();
         m_sigStartedProgress->async_emit(m_progressbarId);
 
         // Push series
-        m_seriesEnquirer->pushSeries(dicomContainer);
+        m_seriesEnquirer->pushSeries(dicom_container);
 
         // Disconnect from PACS
         m_seriesEnquirer->disconnect();
     }
     catch(sight::io::dimse::exceptions::Base& exception)
     {
-        const auto pacsConfiguration = m_config.lock();
+        const auto pacs_configuration = m_config.lock();
 
         std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
-        << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
-        << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
-        << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
+        << "Pacs host name: " << pacs_configuration->getPacsHostName() << "\n"
+        << "Pacs application title: " << pacs_configuration->getPacsApplicationTitle() << "\n"
+        << "Pacs port: " << pacs_configuration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->async_run(ss.str(), true);
         SIGHT_WARN(exception.what());
     }
@@ -327,13 +327,13 @@ void series_pusher::pushSeries()
 
 void series_pusher::progress_callback(
     const std::string& /*seriesInstanceUID*/,
-    unsigned int instanceNumber,
+    unsigned int _instance_number,
     const std::string& /*filePath*/
 )
 {
-    if(instanceNumber < (m_instanceCount - 1))
+    if(_instance_number < (m_instanceCount - 1))
     {
-        float percentage = static_cast<float>(instanceNumber) / static_cast<float>(m_instanceCount);
+        float percentage = static_cast<float>(_instance_number) / static_cast<float>(m_instanceCount);
         m_sigProgressed->async_emit(m_progressbarId, percentage, "Pushing series...");
     }
     else
@@ -344,15 +344,15 @@ void series_pusher::progress_callback(
 
 //------------------------------------------------------------------------------
 
-void series_pusher::displayMessage(const std::string& message, bool error)
+void series_pusher::displayMessage(const std::string& _message, bool _error)
 {
-    SIGHT_WARN_IF("Error: " + message, error);
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle((error ? "Error" : "Information"));
-    messageBox.setMessage(message);
-    messageBox.setIcon(error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
-    messageBox.addButton(ui::dialog::message::OK);
-    messageBox.show();
+    SIGHT_WARN_IF("Error: " + _message, _error);
+    sight::ui::dialog::message message_box;
+    message_box.setTitle((_error ? "Error" : "Information"));
+    message_box.setMessage(_message);
+    message_box.setIcon(_error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
+    message_box.addButton(ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

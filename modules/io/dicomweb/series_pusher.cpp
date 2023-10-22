@@ -39,7 +39,7 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/Preferences.hpp>
+#include <ui/__/preferences.hpp>
 
 namespace sight::module::io::dicomweb
 {
@@ -62,12 +62,12 @@ void series_pusher::configuring()
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {
-        const std::string serverInfo               = configuration.get("server", "");
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string server_info               = configuration.get("server", "");
+        const std::string::size_type split_position = server_info.find(':');
+        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
 
-        m_serverHostnameKey = serverInfo.substr(0, splitPosition);
-        m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+        m_serverHostnameKey = server_info.substr(0, split_position);
+        m_serverPortKey     = server_info.substr(split_position + 1, server_info.size());
     }
     else
     {
@@ -91,7 +91,7 @@ void series_pusher::stopping()
 
 void series_pusher::updating()
 {
-    ui::Preferences preferences;
+    ui::preferences preferences;
 
     try
     {
@@ -111,30 +111,30 @@ void series_pusher::updating()
         // Do nothing
     }
 
-    const auto selectedSeries = m_selectedSeries.lock();
+    const auto selected_series = m_selectedSeries.lock();
 
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Pushing Series");
-        messageBox.setMessage(
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Pushing Series");
+        message_box.setMessage(
             "The service is already pushing data. Please wait until the pushing is done "
             "before sending a new push request."
         );
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.show();
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.show();
     }
-    else if(selectedSeries->empty())
+    else if(selected_series->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        sight::ui::dialog::message messageBox;
-        messageBox.setTitle("Pushing Series");
-        messageBox.setMessage("Unable to push series, there is no series selected.");
-        messageBox.setIcon(ui::dialog::message::INFO);
-        messageBox.addButton(ui::dialog::message::OK);
-        messageBox.show();
+        sight::ui::dialog::message message_box;
+        message_box.setTitle("Pushing Series");
+        message_box.setMessage("Unable to push series, there is no series selected.");
+        message_box.setIcon(ui::dialog::message::INFO);
+        message_box.addButton(ui::dialog::message::OK);
+        message_box.show();
     }
     else
     {
@@ -149,55 +149,55 @@ void series_pusher::pushSeries()
 {
     m_isPushing = true;
 
-    const auto seriesVector = m_selectedSeries.lock();
+    const auto series_vector = m_selectedSeries.lock();
 
     // Connect to PACS
-    std::size_t nbSeriesSuccess = 0;
-    for(const auto& series : *seriesVector)
+    std::size_t nb_series_success = 0;
+    for(const auto& series : *series_vector)
     {
-        const auto& dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
+        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
 
-        if(!dicomSeries)
+        if(!dicom_series)
         {
             continue;
         }
 
-        nbSeriesSuccess++;
+        nb_series_success++;
 
-        data::dicom_series::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
-        const std::size_t dicomContainerSize                  = dicomContainer.size();
+        data::dicom_series::dicom_container_t dicom_container = dicom_series->getDicomContainer();
+        const std::size_t dicom_container_size                = dicom_container.size();
 
         try
         {
-            std::size_t nbInstanceSuccess = 0;
-            for(const auto& item : dicomContainer)
+            std::size_t nb_instance_success = 0;
+            for(const auto& item : dicom_container)
             {
-                const core::memory::buffer_object::sptr bufferObj = item.second;
-                const core::memory::buffer_object::lock_t lockerDest(bufferObj);
-                const char* buffer     = static_cast<char*>(lockerDest.buffer());
-                const std::size_t size = bufferObj->size();
+                const core::memory::buffer_object::sptr buffer_obj = item.second;
+                const core::memory::buffer_object::lock_t locker_dest(buffer_obj);
+                const char* buffer     = static_cast<char*>(locker_dest.buffer());
+                const std::size_t size = buffer_obj->size();
 
-                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, int(size));
+                const QByteArray file_buffer = QByteArray::fromRawData(buffer, int(size));
 
                 /// Url PACS
-                const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+                const std::string pacs_server("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
                 sight::io::http::Request::sptr request =
-                    sight::io::http::Request::New(pacsServer + "/instances");
-                QByteArray seriesAnswer;
-                if(fileBuffer.size() != 0)
+                    sight::io::http::Request::New(pacs_server + "/instances");
+                QByteArray series_answer;
+                if(file_buffer.size() != 0)
                 {
-                    seriesAnswer = m_clientQt.post(request, fileBuffer);
-                    if(!seriesAnswer.isEmpty())
+                    series_answer = m_clientQt.post(request, file_buffer);
+                    if(!series_answer.isEmpty())
                     {
-                        nbInstanceSuccess++;
+                        nb_instance_success++;
                     }
                 }
 
-                if(dicomContainerSize == nbInstanceSuccess)
+                if(dicom_container_size == nb_instance_success)
                 {
                     sight::module::io::dicomweb::series_pusher::displayMessage(
-                        "Upload successful: " + std::to_string(nbSeriesSuccess) + "/"
-                        + std::to_string(seriesVector->size()),
+                        "Upload successful: " + std::to_string(nb_series_success) + "/"
+                        + std::to_string(series_vector->size()),
                         false
                     );
                 }
@@ -221,15 +221,15 @@ void series_pusher::pushSeries()
 
 //------------------------------------------------------------------------------
 
-void series_pusher::displayMessage(const std::string& message, bool error)
+void series_pusher::displayMessage(const std::string& _message, bool _error)
 {
-    SIGHT_WARN_IF("Error: " + message, error);
-    sight::ui::dialog::message messageBox;
-    messageBox.setTitle((error ? "Error" : "Information"));
-    messageBox.setMessage(message);
-    messageBox.setIcon(error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
-    messageBox.addButton(ui::dialog::message::OK);
-    messageBox.show();
+    SIGHT_WARN_IF("Error: " + _message, _error);
+    sight::ui::dialog::message message_box;
+    message_box.setTitle((_error ? "Error" : "Information"));
+    message_box.setMessage(_message);
+    message_box.setIcon(_error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
+    message_box.addButton(ui::dialog::message::OK);
+    message_box.show();
 }
 
 //------------------------------------------------------------------------------

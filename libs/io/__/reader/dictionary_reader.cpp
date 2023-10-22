@@ -108,33 +108,33 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 //------------------------------------------------------------------------------
 
-inline std::string trim(std::string& s)
+inline std::string trim(std::string& _s)
 {
-    return boost::algorithm::trim_copy(s);
+    return boost::algorithm::trim_copy(_s);
 }
 
 //------------------------------------------------------------------------------
 
 /// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
-std::string reformatString(std::string& expr)
+std::string reformat_string(std::string& _expr)
 {
-    std::string trimStr = boost::algorithm::trim_copy(expr);
-    std::string result  = boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
-                          + boost::algorithm::to_lower_copy(trimStr.substr(1));
+    std::string trim_str = boost::algorithm::trim_copy(_expr);
+    std::string result   = boost::algorithm::to_upper_copy(trim_str.substr(0, 1))
+                           + boost::algorithm::to_lower_copy(trim_str.substr(1));
     return result;
 }
 
 //------------------------------------------------------------------------------
 /// Return the list of availabe value for the key of the map m.
 
-template<typename MapType>
-std::string getValues(const MapType& m)
+template<typename map_t>
+std::string get_values(const map_t& _m)
 {
     std::stringstream str;
-    using const_iterator = typename MapType::const_iterator;
-    const_iterator iter = m.begin();
+    using const_iterator = typename map_t::const_iterator;
+    const_iterator iter = _m.begin();
     str << "( " << iter->first;
-    for( ; iter != m.end() ; ++iter)
+    for( ; iter != _m.end() ; ++iter)
     {
         str << ", " << iter->first;
     }
@@ -252,7 +252,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> parse(std::string& buf, std::vector<io::Line>& lines)
+std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::Line>& _lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -263,12 +263,12 @@ std::pair<bool, std::string> parse(std::string& buf, std::vector<io::Line>& line
     using iterator_type = std::string::const_iterator;
     using line_parser   = io::LineParser<iterator_type>;
 
-    iterator_type iter = buf.begin();
-    iterator_type end  = buf.end();
+    iterator_type iter = _buf.begin();
+    iterator_type end  = _buf.end();
 
     line_parser grammar; // Our grammar
 
-    bool result     = phrase_parse(iter, end, grammar, space - blank - eol, lines);
+    bool result     = phrase_parse(iter, end, grammar, space - blank - eol, _lines);
     bool success    = result && (iter == end);
     std::string msg = grammar.error.str();
     return std::make_pair(success, msg);
@@ -288,8 +288,8 @@ void dictionary_reader::read()
     std::ifstream file;
     file.open(path.string().c_str(), std::ios::binary);
 
-    std::string errorOpen = "Unable to open " + path.string();
-    SIGHT_THROW_IF(errorOpen, !file.is_open());
+    std::string error_open = "Unable to open " + path.string();
+    SIGHT_THROW_IF(error_open, !file.is_open());
 
     file.seekg(0, std::ios::end);
     const auto length = file.tellg();
@@ -308,26 +308,26 @@ void dictionary_reader::read()
     SIGHT_THROW_IF(error, !result.first);
 
     // File the dictionary Structure
-    data::structure_traits_dictionary::sptr structDico = getConcreteObject();
+    data::structure_traits_dictionary::sptr struct_dico = getConcreteObject();
 
     for(io::Line line : dico_lines)
     {
-        data::structure_traits::sptr newOrgan = std::make_shared<data::structure_traits>();
-        newOrgan->setType(line.type);
+        data::structure_traits::sptr new_organ = std::make_shared<data::structure_traits>();
+        new_organ->setType(line.type);
 
-        std::string classReformated = reformatString(
+        std::string class_reformated = reformat_string(
             line.organClass
         );
-        data::structure_traits_helper::ClassTranslatorType::right_const_iterator strClassIter =
-            data::structure_traits_helper::s_CLASSTRANSLATOR.right.find(classReformated);
-        std::string availableValues = getValues(data::structure_traits_helper::s_CLASSTRANSLATOR.right);
+        data::structure_traits_helper::class_translator_t::right_const_iterator str_class_iter =
+            data::structure_traits_helper::s_CLASSTRANSLATOR.right.find(class_reformated);
+        std::string available_values = get_values(data::structure_traits_helper::s_CLASSTRANSLATOR.right);
         error =
-            std::string("Organ class ") + classReformated + " isn't available. Authorized type are "
-            + availableValues;
-        SIGHT_THROW_IF(error, !(strClassIter != data::structure_traits_helper::s_CLASSTRANSLATOR.right.end()));
-        newOrgan->setClass(strClassIter->second);
+            std::string("Organ class ") + class_reformated + " isn't available. Authorized type are "
+            + available_values;
+        SIGHT_THROW_IF(error, !(str_class_iter != data::structure_traits_helper::s_CLASSTRANSLATOR.right.end()));
+        new_organ->setClass(str_class_iter->second);
 
-        newOrgan->setColor(
+        new_organ->setColor(
             std::make_shared<data::color>(
                 static_cast<float>(line.red) / 255.0F,
                 static_cast<float>(line.green) / 255.0F,
@@ -340,32 +340,32 @@ void dictionary_reader::read()
         data::structure_traits::CategoryContainer categories;
         for(std::string category : categorylist)
         {
-            std::string catReformated = reformatString(
+            std::string cat_reformated = reformat_string(
                 category
             );
-            data::structure_traits_helper::CategoryTranslatorType::right_const_iterator strCategoryIter =
-                data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.find(catReformated);
-            availableValues = getValues(
+            data::structure_traits_helper::category_translator_t::right_const_iterator str_category_iter =
+                data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.find(cat_reformated);
+            available_values = get_values(
                 data::structure_traits_helper::s_CATEGORYTRANSLATOR.right
             );
             error =
-                std::string("Category ") + catReformated + " isn't available. Authorized type are "
-                + availableValues;
+                std::string("Category ") + cat_reformated + " isn't available. Authorized type are "
+                + available_values;
             SIGHT_THROW_IF(
                 error,
-                !(strCategoryIter != data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.end())
+                !(str_category_iter != data::structure_traits_helper::s_CATEGORYTRANSLATOR.right.end())
             );
-            categories.push_back(strCategoryIter->second);
+            categories.push_back(str_category_iter->second);
         }
 
-        newOrgan->setCategories(categories);
-        newOrgan->setAttachmentType(line.attachment);
-        newOrgan->setNativeExp(line.nativeExp);
-        newOrgan->setNativeGeometricExp(line.nativeExpGeo);
-        newOrgan->setAnatomicRegion(line.anatomicRegion);
-        newOrgan->setPropertyCategory(line.propertyCategory);
-        newOrgan->setPropertyType(line.propertyType);
-        structDico->addStructure(newOrgan);
+        new_organ->setCategories(categories);
+        new_organ->set_attachment_type(line.attachment);
+        new_organ->setNativeExp(line.nativeExp);
+        new_organ->setNativeGeometricExp(line.nativeExpGeo);
+        new_organ->setAnatomicRegion(line.anatomicRegion);
+        new_organ->setPropertyCategory(line.propertyCategory);
+        new_organ->set_property_type(line.propertyType);
+        struct_dico->addStructure(new_organ);
     }
 }
 

@@ -69,8 +69,8 @@ class IO_DICOM_CLASS_API DicomSeries
 {
 public:
 
-    typedef std::vector<std::filesystem::path> FilenameContainerType;
-    typedef std::vector<SPTR(data::dicom_series)> DicomSeriesContainerType;
+    typedef std::vector<std::filesystem::path> filename_container_t;
+    typedef std::vector<SPTR(data::dicom_series)> dicom_series_container_t;
 
     /// Constructor
     IO_DICOM_API DicomSeries() noexcept = default;
@@ -85,10 +85,10 @@ public:
      * @param[in] completeSeriesObserver complete series observer
      * @return container containing DicomSeries
      */
-    static IO_DICOM_API DicomSeriesContainerType read(
-        FilenameContainerType& filenames,
-        const SPTR(core::jobs::observer)& readerObserver         = nullptr,
-        const SPTR(core::jobs::observer)& completeSeriesObserver = nullptr
+    static IO_DICOM_API dicom_series_container_t read(
+        filename_container_t& _filenames,
+        const SPTR(core::jobs::observer)& _reader_observer          = nullptr,
+        const SPTR(core::jobs::observer)& _complete_series_observer = nullptr
     );
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
@@ -96,8 +96,8 @@ public:
      * @param[in] completeSeriesObserver complete series observer
      */
     static IO_DICOM_API void complete(
-        DicomSeriesContainerType& seriesContainer,
-        const SPTR(core::jobs::observer)& completeSeriesObserver
+        dicom_series_container_t& _series_container,
+        const SPTR(core::jobs::observer)& _complete_series_observer
     );
 
 protected:
@@ -108,8 +108,8 @@ protected:
      * @param[in] completeSeriesObserver complete series observer
      */
     static void fillSeries(
-        DicomSeriesContainerType& seriesContainer,
-        const SPTR(core::jobs::observer)& completeSeriesObserver
+        dicom_series_container_t& _series_container,
+        const SPTR(core::jobs::observer)& _complete_series_observer
     );
 
     /**
@@ -118,9 +118,9 @@ protected:
      * @param[in] filenames List of files
      * @param[in] readerObserver reader observer
      */
-    static DicomSeriesContainerType splitFiles(
-        FilenameContainerType& filenames,
-        const SPTR(core::jobs::observer)& readerObserver
+    static dicom_series_container_t splitFiles(
+        filename_container_t& _filenames,
+        const SPTR(core::jobs::observer)& _reader_observer
     );
 
     /**
@@ -130,9 +130,9 @@ protected:
      * @param[in] filename Filename from which the information must be read
      */
     static void createSeries(
-        DicomSeriesContainerType& seriesContainer,
-        const gdcm::Scanner& scanner,
-        const std::filesystem::path& filename
+        dicom_series_container_t& _series_container,
+        const gdcm::Scanner& _scanner,
+        const std::filesystem::path& _filename
     );
 };
 

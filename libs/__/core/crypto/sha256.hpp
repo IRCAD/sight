@@ -44,10 +44,10 @@ static const int HASH_SIZE = 32;
 /// Compute a sha256 hash using openSSL
 /// @param message the message to hash
 /// @param hash the output hash
-void hash(const secure_string& message, std::array<unsigned char, HASH_SIZE>& output);
+void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _output);
 
 /// Compute a sha256 hash using openSSL and return the result as a secure_string
 /// @param message the message to hash
-CORE_API secure_string hash(const secure_string& message);
+CORE_API secure_string hash(const secure_string& _message);
 
 } // namespace sight::core::crypto

@@ -33,13 +33,13 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-void series_set::shallow_copy(const object::csptr& source)
+void series_set::shallow_copy(const object::csptr& _source)
 {
-    const auto& other = std::dynamic_pointer_cast<const series_set>(source);
+    const auto& other = std::dynamic_pointer_cast<const series_set>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
@@ -49,32 +49,32 @@ void series_set::shallow_copy(const object::csptr& source)
 
 //------------------------------------------------------------------------------
 
-bool series_set::operator==(const series_set& other) const noexcept
+bool series_set::operator==(const series_set& _other) const noexcept
 {
-    return base_class::operator==(other);
+    return base_class::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool series_set::operator!=(const series_set& other) const noexcept
+bool series_set::operator!=(const series_set& _other) const noexcept
 {
-    return base_class::operator!=(other);
+    return base_class::operator!=(_other);
 }
 
 //------------------------------------------------------------------------------
 
-void series_set::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
+void series_set::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
 {
-    const auto& other = std::dynamic_pointer_cast<const series_set>(source);
+    const auto& other = std::dynamic_pointer_cast<const series_set>(_source);
 
     SIGHT_THROW_EXCEPTION_IF(
         exception(
-            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
+            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
     );
 
-    base_class::deep_copy(other, cache);
+    base_class::deep_copy(other, _cache);
 }
 
 } // namespace sight::data

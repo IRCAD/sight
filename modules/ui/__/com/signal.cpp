@@ -39,8 +39,8 @@ static const core::com::signals::key_t CANCELLED_SIG = "cancelled";
 //-----------------------------------------------------------------------------
 
 signal::signal() noexcept :
-    m_sigTriggered(new_signal<TriggeredSignalType>(TRIGGERED_SIG)),
-    m_sigCancelled(new_signal<TriggeredSignalType>(CANCELLED_SIG))
+    m_sigTriggered(new_signal<triggered_signal_t>(TRIGGERED_SIG)),
+    m_sigCancelled(new_signal<triggered_signal_t>(CANCELLED_SIG))
 {
     SIGHT_WARN(
         "'sight::module::ui::com::signal' is deprecated and will be removed in Sight 24.0,"
@@ -78,7 +78,7 @@ void signal::stopping()
 
 void signal::info(std::ostream& _sstream)
 {
-    _sstream << "Starter Action" << std::endl;
+    _sstream << "Starter action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------

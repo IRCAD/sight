@@ -77,10 +77,10 @@ protected:
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     MODULE_VIZ_SCENE2D_API void setColor(const std::string& _color);
-    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::vec2d_t& coord, QGraphicsItem* item);
+    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
     MODULE_VIZ_SCENE2D_API sight::viz::scene2d::vec2d_t coordViewToCoordItem(
-        const sight::viz::scene2d::vec2d_t& coord,
-        QGraphicsItem* item
+        const sight::viz::scene2d::vec2d_t& _coord,
+        QGraphicsItem* _item
     );
 
 private:
@@ -96,7 +96,7 @@ private:
     bool m_autoRefresh {true};
     bool m_interaction {true};
     static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
-    void setDoubleParameter(double val, std::string key);
+    void setDoubleParameter(double _val, std::string _key);
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

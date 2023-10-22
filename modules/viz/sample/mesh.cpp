@@ -46,7 +46,7 @@ mesh::mesh() noexcept
     new_slot(UPDATE_CAM_POSITION_SLOT, &mesh::updateCamPosition, this);
     new_slot(UPDATE_CAM_TRANSFORM_SLOT, &mesh::updateCamTransform, this);
 
-    m_sigCamUpdated = new_signal<CamUpdatedSignalType>(CAM_UPDATED_SIG);
+    m_sigCamUpdated = new_signal<cam_updated_signal_t>(CAM_UPDATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -67,38 +67,38 @@ void mesh::starting()
 {
     this->sight::ui::service::create();
 
-    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    const auto genericSceneId = this->get_id() + "-genericScene";
-    sight::ui::registry::registerSIDContainer(genericSceneId, qtContainer);
+    const auto generic_scene_id = this->get_id() + "-genericScene";
+    sight::ui::registry::register_sid_container(generic_scene_id, qt_container);
 
     auto mesh = m_mesh.lock();
 
     // create and register the render service
     // create the frame configuration
-    service::config_t renderConfig;
-    renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
-    renderConfig.put("scene.layer.<xmlattr>.id", "default");
-    renderConfig.put("scene.layer.<xmlattr>.order", "1");
+    service::config_t render_config;
+    render_config.put("scene.background.<xmlattr>.color", "#36393E");
+    render_config.put("scene.layer.<xmlattr>.id", "default");
+    render_config.put("scene.layer.<xmlattr>.order", "1");
 
-    service::config_t interactorCfg;
-    interactorCfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
-    service::config_t negatoCfg;
-    negatoCfg.put("<xmlattr>.uid", this->get_id() + "meshAdaptor");
-    service::config_t cameraCfg;
-    cameraCfg.put("<xmlattr>.uid", this->get_id() + "cameraAdaptor");
+    service::config_t interactor_cfg;
+    interactor_cfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
+    service::config_t negato_cfg;
+    negato_cfg.put("<xmlattr>.uid", this->get_id() + "meshAdaptor");
+    service::config_t camera_cfg;
+    camera_cfg.put("<xmlattr>.uid", this->get_id() + "cameraAdaptor");
 
-    renderConfig.add_child("scene.layer.adaptor", interactorCfg);
-    renderConfig.add_child("scene.layer.adaptor", negatoCfg);
-    renderConfig.add_child("scene.layer.adaptor", cameraCfg);
+    render_config.add_child("scene.layer.adaptor", interactor_cfg);
+    render_config.add_child("scene.layer.adaptor", negato_cfg);
+    render_config.add_child("scene.layer.adaptor", camera_cfg);
 
     m_renderSrv = sight::service::add("sight::viz::scene3d::render");
-    m_renderSrv->set_config(renderConfig);
-    m_renderSrv->set_id(genericSceneId);
+    m_renderSrv->set_config(render_config);
+    m_renderSrv->set_id(generic_scene_id);
     m_renderSrv->configure();
 
-    service::config_t interactorConfig;
+    service::config_t interactor_config;
     m_interactorSrv = sight::service::add("sight::module::viz::scene3d::adaptor::trackball_camera");
     m_interactorSrv->set_id(this->get_id() + "interactorAdaptor");
     m_interactorSrv->configure();
@@ -154,7 +154,7 @@ void mesh::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    sight::ui::registry::unregisterSIDContainer(this->get_id() + "-genericScene");
+    sight::ui::registry::unregister_sid_container(this->get_id() + "-genericScene");
 
     sight::service::remove(m_cameraSrv);
     sight::service::remove(m_meshSrv);

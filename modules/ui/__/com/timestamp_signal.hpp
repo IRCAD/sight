@@ -29,10 +29,10 @@ namespace sight::module::ui::com
 {
 
 /**
- * @brief Action that sends a timestamp-signal when it is triggered.
+ * @brief action that sends a timestamp-signal when it is triggered.
  *
  * @section Signals Signals
- * - \b triggered(type) : Emitted when the action is triggered, with the timestamp as a HighResClockType.
+ * - \b triggered(type) : Emitted when the action is triggered, with the timestamp as a high_res_clock_t.
  * - \b triggeredAsString(string) : Emitted when the action is triggered, with the timestamp as a string.
  *
  * @section XML XML Configuration
@@ -61,7 +61,7 @@ public:
     SIGHT_DECLARE_SERVICE(timestamp_signal, sight::ui::action);
 
     /// Type of triggered signal
-    typedef core::com::signal<void (sight::core::hires_clock::type)> TriggeredSignalType;
+    typedef core::com::signal<void (sight::core::hires_clock::type)> triggered_signal_t;
     typedef core::com::signal<void (std::string)> TriggeredAsStringSignalType;
 
     /**
@@ -100,7 +100,7 @@ protected:
     bool m_formatStringAsDate {true};
 
     /// Signal triggered when action has been triggered
-    SPTR(TriggeredSignalType) m_sigTriggered;
+    SPTR(triggered_signal_t) m_sigTriggered;
 
     /// Signal triggered when action has been triggered (message sent as string)
     SPTR(TriggeredAsStringSignalType) m_sigTriggeredAsString;

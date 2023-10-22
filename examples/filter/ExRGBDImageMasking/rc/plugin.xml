@@ -3,7 +3,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
     <extension implements="sight::app::extension::config">
@@ -185,7 +185,7 @@
 
             <service uid="showSettingsAct" type="sight::module::ui::action" />
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
@@ -224,9 +224,9 @@
                 <in key="image" uid="foregroundImage" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
-            <!-- Scene in which skin mesh will be render and fill a binary image to perform image masking -->
+            <!-- scene in which skin mesh will be render and fill a binary image to perform image masking -->
             <service uid="offscreenSceneSrv" type="sight::viz::scene3d::render">
                 <inout key="offScreen" uid="offscreenImage" />
                 <scene width="1280" height="720">

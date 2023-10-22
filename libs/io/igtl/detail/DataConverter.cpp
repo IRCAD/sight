@@ -44,9 +44,9 @@ DataConverter::sptr DataConverter::getInstance()
 
 //-----------------------------------------------------------------------------
 
-void DataConverter::registerConverter(converter::base::sptr c)
+void DataConverter::registerConverter(converter::base::sptr _c)
 {
-    (DataConverter::getInstance())->m_converters.push_back(c);
+    (DataConverter::getInstance())->m_converters.push_back(_c);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,14 +61,14 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::object::csptr src) const
+::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::object::csptr _src) const
 {
-    const std::string classname = src->get_classname();
+    const std::string classname = _src->get_classname();
     for(const converter::base::sptr& converter : m_converters)
     {
         if(converter->getFwDataObjectType() == classname)
         {
-            return converter->fromFwDataObject(src);
+            return converter->fromFwDataObject(_src);
         }
     }
 
@@ -77,38 +77,38 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer _src) const
 {
     data::object::sptr obj;
-    const std::string deviceType = src->GetDeviceType();
+    const std::string device_type = _src->GetDeviceType();
 
     for(const converter::base::sptr& converter : m_converters)
     {
-        if(converter->getIgtlType() == deviceType)
+        if(converter->get_igtl_type() == device_type)
         {
-            obj = converter->fromIgtlMessage(src);
+            obj = converter->fromIgtlMessage(_src);
             return obj;
         }
     }
 
-    SIGHT_THROW("Message of type " << std::string(src->GetDeviceType()) << " is not supported");
+    SIGHT_THROW("Message of type " << std::string(_src->GetDeviceType()) << " is not supported");
 }
 
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer DataConverter::getStatusMessage(
-    int igtlCode,
-    int igtlSubCode,
-    const std::string& errMsg
+    int _igtl_code,
+    int _igtl_sub_code,
+    const std::string& _err_msg
 )
 {
-    ::igtl::StatusMessage::Pointer statusMsg;
+    ::igtl::StatusMessage::Pointer status_msg;
 
-    statusMsg = ::igtl::StatusMessage::New();
-    statusMsg->SetCode(igtlCode);
-    statusMsg->SetErrorName(errMsg.c_str());
-    statusMsg->SetSubCode(igtlSubCode);
-    return ::igtl::MessageBase::Pointer(statusMsg); // NOLINT(modernize-return-braced-init-list)
+    status_msg = ::igtl::StatusMessage::New();
+    status_msg->SetCode(_igtl_code);
+    status_msg->SetErrorName(_err_msg.c_str());
+    status_msg->SetSubCode(_igtl_sub_code);
+    return ::igtl::MessageBase::Pointer(status_msg); // NOLINT(modernize-return-braced-init-list)
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     msg->SetNumberOfTypes(static_cast<int>(m_converters.size()));
     for(std::size_t i = 0 ; i < m_converters.size() ; ++i)
     {
-        msg->SetType(static_cast<int>(i), m_converters[i]->getIgtlType().c_str());
+        msg->SetType(static_cast<int>(i), m_converters[i]->get_igtl_type().c_str());
     }
 
     return ::igtl::MessageBase::Pointer(msg); // NOLINT(modernize-return-braced-init-list)

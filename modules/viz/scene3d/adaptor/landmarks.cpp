@@ -27,8 +27,8 @@
 #include <core/com/slots.hxx>
 #include <core/tools/compare.hpp>
 
-#include <viz/scene3d/helper/ManualObject.hpp>
-#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -52,7 +52,7 @@ landmarks::landmarks() noexcept
 {
     SIGHT_WARN(
         "'sight::module::viz::scene3d::adaptor::landmarks' is deprecated, please use"
-        " 'sight::module::viz::scene3dQt::adaptor::landmarks' instead."
+        " 'sight::module::viz::scene3d_qt::adaptor::landmarks' instead."
     );
 
     new_slot(Slots::REMOVE_GROUP, &landmarks::removeGroup, this);
@@ -125,24 +125,24 @@ void landmarks::configuring()
         SIGHT_ERROR("Unknown orientation, allow values are `axial`, `frontal` and `sagittal`");
     }
 
-    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
-    if(!hexaMask.empty())
+    std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
-            "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'. Given value : " + hexaMask,
-            hexaMask.length() > 2 && hexaMask.substr(0, 2) == "0x"
+            "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'. Given value : " + hexa_mask,
+            hexa_mask.length() > 2 && hexa_mask.substr(0, 2) == "0x"
         );
-        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
-    hexaMask = config.get<std::string>(s_LANDMARKS_FLAGS_CONFIG, "");
-    if(!hexaMask.empty())
+    hexa_mask = config.get<std::string>(s_LANDMARKS_FLAGS_CONFIG, "");
+    if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(
-            "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'. Given value : " + hexaMask,
-            hexaMask.length() > 2 && hexaMask.substr(0, 2) == "0x"
+            "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'. Given value : " + hexa_mask,
+            hexa_mask.length() > 2 && hexa_mask.substr(0, 2) == "0x"
         );
-        m_landmarksQueryFlag = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_landmarksQueryFlag = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
     // View distance
@@ -176,12 +176,12 @@ void landmarks::configuring()
     m_currentSize = config.get<float>(s_INITIAL_SIZE, m_currentSize);
 
     // Initial shape
-    const std::string& initialShape = config.get<std::string>(s_INITIAL_SHAPE, "sphere");
-    if(initialShape == "sphere")
+    const std::string& initial_shape = config.get<std::string>(s_INITIAL_SHAPE, "sphere");
+    if(initial_shape == "sphere")
     {
         m_currentShape = sight::data::landmarks::Shape::SPHERE;
     }
-    else if(initialShape == "cube")
+    else if(initial_shape == "cube")
     {
         m_currentShape = sight::data::landmarks::Shape::CUBE;
     }
@@ -199,8 +199,8 @@ void landmarks::starting()
 
     getRenderService()->makeCurrent();
 
-    auto* rootSceneNode = getSceneManager()->getRootSceneNode();
-    m_transNode = getOrCreateTransformNode(rootSceneNode);
+    auto* root_scene_node = getSceneManager()->getRootSceneNode();
+    m_transNode = getOrCreateTransformNode(root_scene_node);
 
     m_material = std::make_shared<data::material>();
     m_material->setDiffuse(std::make_shared<data::color>(1.F, 1.F, 1.F, 1.F));
@@ -269,12 +269,12 @@ void landmarks::updating()
     const auto& landmarks = m_landmarks.const_lock();
 
     // Create all point.
-    for(const auto& groupName : landmarks->getGroupNames())
+    for(const auto& group_name : landmarks->getGroupNames())
     {
-        const auto& group = landmarks->getGroup(groupName);
+        const auto& group = landmarks->getGroup(group_name);
         for(std::size_t index = 0 ; index < group.m_points.size() ; ++index)
         {
-            this->insertMyPoint(groupName, index, landmarks.get_shared());
+            this->insertMyPoint(group_name, index, landmarks.get_shared());
         }
     }
 }
@@ -290,9 +290,9 @@ void landmarks::stopping()
     }
 
     // Stop all threads.
-    for(const auto& selectedLandmark : m_selectedLandmarks)
+    for(const auto& selected_landmark : m_selectedLandmarks)
     {
-        selectedLandmark->m_timer->stop();
+        selected_landmark->m_timer->stop();
     }
 
     removeAll();
@@ -308,7 +308,7 @@ void landmarks::removeAll()
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    auto* sceneMgr = getSceneManager();
+    auto* scene_mgr = getSceneManager();
 
     // Find object where name match _groupName and delete Ogre's resources.
     for(auto it = m_manualObjects.begin() ; it != m_manualObjects.end() ; )
@@ -324,7 +324,7 @@ void landmarks::removeAll()
         }
 
         m_transNode->removeAndDestroyChild(landmark->m_node);
-        sceneMgr->destroyManualObject(landmark->m_object);
+        scene_mgr->destroyManualObject(landmark->m_object);
 
         it = m_manualObjects.erase(it);
     }
@@ -335,35 +335,35 @@ void landmarks::removeAll()
 
 //------------------------------------------------------------------------------
 
-void landmarks::removeGroup(std::string _groupName)
+void landmarks::removeGroup(std::string _group_name)
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    auto* sceneMgr = getSceneManager();
+    auto* scene_mgr = getSceneManager();
 
     // Find object where name match _groupName and delete Ogre's resources.
-    for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; )
+    for(auto object_it = m_manualObjects.begin() ; object_it != m_manualObjects.end() ; )
     {
-        const std::string& name = (*objectIt)->m_groupName;
-        if(name.find(_groupName) != std::string::npos)
+        const std::string& name = (*object_it)->m_groupName;
+        if(name.find(_group_name) != std::string::npos)
         {
             // Stop the thread if it already run since we are deleting data.
-            deselectPoint(_groupName, (*objectIt)->m_index);
+            deselectPoint(_group_name, (*object_it)->m_index);
 
             if(m_enableLabels)
             {
-                (*objectIt)->m_label->detachFromNode();
+                (*object_it)->m_label->detachFromNode();
             }
 
-            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
-            sceneMgr->destroyManualObject((*objectIt)->m_object);
+            m_transNode->removeAndDestroyChild((*object_it)->m_node);
+            scene_mgr->destroyManualObject((*object_it)->m_object);
 
-            objectIt = m_manualObjects.erase(objectIt);
+            object_it = m_manualObjects.erase(object_it);
         }
         else
         {
-            ++objectIt;
+            ++object_it;
         }
     }
 
@@ -373,7 +373,7 @@ void landmarks::removeGroup(std::string _groupName)
 
 //------------------------------------------------------------------------------
 
-void landmarks::modifyGroup(std::string _groupName)
+void landmarks::modifyGroup(std::string _group_name)
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
@@ -386,32 +386,32 @@ void landmarks::modifyGroup(std::string _groupName)
     }
 
     // Remove the group.
-    removeGroup(_groupName);
+    removeGroup(_group_name);
 
     // Get landmarks.
     const auto& landmarks = m_landmarks.const_lock();
 
     // Retrieve group.
-    const auto& group = landmarks->getGroup(_groupName);
+    const auto& group = landmarks->getGroup(_group_name);
 
-    std::size_t groupSize = group.m_points.size();
+    std::size_t group_size = group.m_points.size();
 
     // Re-create the group.
-    for(std::size_t index = 0 ; index < groupSize ; ++index)
+    for(std::size_t index = 0 ; index < group_size ; ++index)
     {
-        this->insertMyPoint(_groupName, index, landmarks.get_shared());
+        this->insertMyPoint(_group_name, index, landmarks.get_shared());
     }
 
     // Re-run selected landmark threads
     for(std::size_t index : indexes)
     {
-        this->selectPoint(_groupName, index);
+        this->selectPoint(_group_name, index);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::renameGroup(std::string _oldGroupName, std::string _newGroupName)
+void landmarks::renameGroup(std::string _old_group_name, std::string _new_group_name)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -424,45 +424,45 @@ void landmarks::renameGroup(std::string _oldGroupName, std::string _newGroupName
     }
 
     // Remove the group.
-    removeGroup(_oldGroupName);
+    removeGroup(_old_group_name);
 
     // Get landmarks.
     const auto& landmarks = m_landmarks.const_lock();
 
     // Retrieve group.
-    const auto& group = landmarks->getGroup(_newGroupName);
+    const auto& group = landmarks->getGroup(_new_group_name);
 
-    const std::size_t groupSize = group.m_points.size();
+    const std::size_t group_size = group.m_points.size();
 
     // Re-create the group.
-    for(std::size_t index = 0 ; index < groupSize ; ++index)
+    for(std::size_t index = 0 ; index < group_size ; ++index)
     {
-        this->insertMyPoint(_newGroupName, index, landmarks.get_shared());
+        this->insertMyPoint(_new_group_name, index, landmarks.get_shared());
     }
 
     // Re-run selected landmark threads
     for(std::size_t index : indexes)
     {
-        this->selectPoint(_newGroupName, index);
+        this->selectPoint(_new_group_name, index);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::modifyPoint(std::string _groupName, std::size_t _index)
+void landmarks::modifyPoint(std::string _group_name, std::size_t _index)
 {
     const auto& landmarks = m_landmarks.const_lock();
-    const auto& point     = landmarks->getPoint(_groupName, _index);
+    const auto& point     = landmarks->getPoint(_group_name, _index);
 
-    for(auto& m_manualObject : m_manualObjects)
+    for(auto& m_manual_object : m_manualObjects)
     {
-        const auto& name = m_manualObject->m_groupName;
-        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index == _index)
+        const auto& name = m_manual_object->m_groupName;
+        if(name.find(_group_name) != std::string::npos && m_manual_object->m_index == _index)
         {
             const Ogre::Vector3 position(static_cast<float>(point[0]),
                                          static_cast<float>(point[1]),
                                          static_cast<float>(point[2]));
-            m_manualObject->m_node->setPosition(position);
+            m_manual_object->m_node->setPosition(position);
             break;
         }
     }
@@ -472,7 +472,7 @@ void landmarks::modifyPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::addPoint(std::string _groupName)
+void landmarks::addPoint(std::string _group_name)
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
@@ -481,9 +481,9 @@ void landmarks::addPoint(std::string _groupName)
     const auto landmarks = m_landmarks.const_lock();
 
     // Retrieve group.
-    const auto& group = landmarks->getGroup(_groupName);
+    const auto& group = landmarks->getGroup(_group_name);
     SIGHT_ASSERT(
-        "They must have at least one point in the group `" << _groupName << "`",
+        "They must have at least one point in the group `" << _group_name << "`",
         !group.m_points.empty()
     );
 
@@ -491,49 +491,49 @@ void landmarks::addPoint(std::string _groupName)
     std::size_t index = group.m_points.size() - 1;
 
     // Add the new point.
-    this->insertMyPoint(_groupName, index, landmarks.get_shared());
+    this->insertMyPoint(_group_name, index, landmarks.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::removePoint(std::string _groupName, std::size_t _index)
+void landmarks::removePoint(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
 
     // Find object where name match _groupName and the index, and delete Ogre's resources.
-    for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
+    for(auto object_it = m_manualObjects.begin() ; object_it != m_manualObjects.end() ; ++object_it)
     {
-        const std::string& name = (*objectIt)->m_groupName;
-        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
+        const std::string& name = (*object_it)->m_groupName;
+        if(name.find(_group_name) != std::string::npos && (*object_it)->m_index == _index)
         {
             // Stop the thread if it already run since we are deleting data.
-            this->deselectPoint(_groupName, _index);
+            this->deselectPoint(_group_name, _index);
 
             if(m_enableLabels)
             {
-                (*objectIt)->m_label->detachFromNode();
+                (*object_it)->m_label->detachFromNode();
             }
 
-            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
-            sceneMgr->destroyManualObject((*objectIt)->m_object);
-            objectIt = m_manualObjects.erase(objectIt);
+            m_transNode->removeAndDestroyChild((*object_it)->m_node);
+            scene_mgr->destroyManualObject((*object_it)->m_object);
+            object_it = m_manualObjects.erase(object_it);
             break;
         }
     }
 
     // Re-compute index of landmarks in the same group.
-    for(auto& m_manualObject : m_manualObjects)
+    for(auto& m_manual_object : m_manualObjects)
     {
-        const std::string& name = m_manualObject->m_groupName;
-        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index > _index)
+        const std::string& name = m_manual_object->m_groupName;
+        if(name.find(_group_name) != std::string::npos && m_manual_object->m_index > _index)
         {
-            m_manualObject->m_index -= 1;
+            m_manual_object->m_index -= 1;
             if(m_enableLabels)
             {
-                m_manualObject->m_label->setText(_groupName + "_" + std::to_string(m_manualObject->m_index));
+                m_manual_object->m_label->setText(_group_name + "_" + std::to_string(m_manual_object->m_index));
             }
         }
     }
@@ -544,39 +544,39 @@ void landmarks::removePoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::insertPoint(std::string _groupName, std::size_t _index)
+void landmarks::insertPoint(std::string _group_name, std::size_t _index)
 {
     // Make the context as current
     getRenderService()->makeCurrent();
 
     const auto landmarks = m_landmarks.const_lock();
-    insertMyPoint(_groupName, _index, landmarks.get_shared());
+    insertMyPoint(_group_name, _index, landmarks.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 std::shared_ptr<landmarks::Landmark> landmarks::insertMyPoint(
-    std::string _groupName,
+    std::string _group_name,
     std::size_t _index,
     const data::landmarks::csptr& _landmarks
 )
 {
     // Retrieve group.
-    const data::landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
+    const data::landmarks::LandmarksGroup& group = _landmarks->getGroup(_group_name);
 
     // Create the point name.
-    const std::string pointName = _groupName + "_" + std::to_string(_index);
+    const std::string point_name = _group_name + "_" + std::to_string(_index);
 
     // Create the manual object.
     const Ogre::ColourValue color =
         Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->get_id() + "_" + pointName + "_object");
+    Ogre::SceneManager* scene_mgr = this->getSceneManager();
+    Ogre::ManualObject* object    = scene_mgr->createManualObject(this->get_id() + "_" + point_name + "_object");
     switch(group.m_shape)
     {
         case data::landmarks::Shape::SPHERE:
-            sight::viz::scene3d::helper::ManualObject::createSphere(
+            sight::viz::scene3d::helper::manual_object::createSphere(
                 object,
                 m_materialAdaptor->getMaterialName(),
                 color,
@@ -585,7 +585,7 @@ std::shared_ptr<landmarks::Landmark> landmarks::insertMyPoint(
             break;
 
         case data::landmarks::Shape::CUBE:
-            sight::viz::scene3d::helper::ManualObject::createCube(
+            sight::viz::scene3d::helper::manual_object::createCube(
                 object,
                 m_materialAdaptor->getMaterialName(),
                 color,
@@ -596,23 +596,23 @@ std::shared_ptr<landmarks::Landmark> landmarks::insertMyPoint(
 
     object->setQueryFlags(m_landmarksQueryFlag);
 
-    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->get_id() + "_" + pointName + "_node");
+    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->get_id() + "_" + point_name + "_node");
 
     // Set the point to the right position.
-    const data::landmarks::PointType& point = _landmarks->getPoint(_groupName, _index);
+    const data::landmarks::point_t& point = _landmarks->getPoint(_group_name, _index);
     node->setPosition(Ogre::Real(point[0]), Ogre::Real(point[1]), Ogre::Real(point[2]));
 
     // Attach data.
     node->attachObject(object);
 
     // Create the label.
-    sight::viz::scene3d::IText::sptr text;
+    sight::viz::scene3d::text::sptr text;
     if(m_enableLabels)
     {
         // Create the label.
-        text = sight::viz::scene3d::IText::make(this->getLayer());
+        text = sight::viz::scene3d::text::make(this->getLayer());
         text->setFontSize(m_fontSize);
-        text->setText(pointName);
+        text->setText(point_name);
         text->setTextColor(color);
         text->setVisible(group.m_visibility && m_isVisible);
 
@@ -621,8 +621,8 @@ std::shared_ptr<landmarks::Landmark> landmarks::insertMyPoint(
     }
 
     // Store the created data.
-    auto newLandmark = std::make_shared<Landmark>(node, object, _groupName, _index, text);
-    m_manualObjects.push_back(newLandmark);
+    auto new_landmark = std::make_shared<Landmark>(node, object, _group_name, _index, text);
+    m_manualObjects.push_back(new_landmark);
 
     // Hide landmarks if an image is given to the service.
     this->hideMyLandmark(*m_manualObjects.back(), *_landmarks);
@@ -630,27 +630,28 @@ std::shared_ptr<landmarks::Landmark> landmarks::insertMyPoint(
     // Request the rendering.
     this->requestRender();
 
-    return newLandmark;
+    return new_landmark;
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::selectPoint(std::string _groupName, std::size_t _index)
+void landmarks::selectPoint(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    for(auto& m_manualObject : m_manualObjects)
+    for(auto& m_manual_object : m_manualObjects)
     {
-        const std::string& name = m_manualObject->m_groupName;
-        if(name.find(_groupName) != std::string::npos && m_manualObject->m_index == _index)
+        const std::string& name = m_manual_object->m_groupName;
+        if(name.find(_group_name) != std::string::npos && m_manual_object->m_index == _index)
         {
             const auto it = std::find_if(
                 m_selectedLandmarks.begin(),
                 m_selectedLandmarks.end(),
-                [&](std::shared_ptr<SelectedLandmark> _landmark)
+                [&](
+                    std::shared_ptr<SelectedLandmark> _landmark)
                 {
-                    return _landmark->m_landmark->m_groupName == _groupName && _landmark->m_landmark->m_index == _index;
+                    return _landmark->m_landmark->m_groupName == _group_name && _landmark->m_landmark->m_index == _index;
                 });
 
             if(it == m_selectedLandmarks.end())
@@ -659,19 +660,19 @@ void landmarks::selectPoint(std::string _groupName, std::size_t _index)
                 std::lock_guard guard(m_selectedMutex);
 
                 // Create thread data.
-                std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(this->worker()->create_timer(), m_manualObject);
-                m_selectedLandmarks.push_back(selectedLandmark);
+                std::shared_ptr<SelectedLandmark> selected_landmark =
+                    std::make_shared<SelectedLandmark>(this->worker()->create_timer(), m_manual_object);
+                m_selectedLandmarks.push_back(selected_landmark);
 
                 // Run a thread that change the selected point.
                 core::thread::timer::time_duration_t duration = std::chrono::milliseconds(500);
-                selectedLandmark->m_timer->set_function(
-                    [this, selectedLandmark](auto&& ...)
+                selected_landmark->m_timer->set_function(
+                    [this, selected_landmark](auto&& ...)
                     {
-                        hightlight(selectedLandmark);
+                        hightlight(selected_landmark);
                     });
-                selectedLandmark->m_timer->set_duration(duration);
-                selectedLandmark->m_timer->start();
+                selected_landmark->m_timer->set_duration(duration);
+                selected_landmark->m_timer->start();
             }
 
             break;
@@ -681,7 +682,7 @@ void landmarks::selectPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::deselectPoint(std::string _groupName, std::size_t _index)
+void landmarks::deselectPoint(std::string _group_name, std::size_t _index)
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
@@ -690,19 +691,19 @@ void landmarks::deselectPoint(std::string _groupName, std::size_t _index)
     std::lock_guard guard(m_selectedMutex);
 
     // Find the thread and stop it.
-    for(auto landmarkIt = m_selectedLandmarks.begin() ; landmarkIt != m_selectedLandmarks.end() ; ++landmarkIt)
+    for(auto landmark_it = m_selectedLandmarks.begin() ; landmark_it != m_selectedLandmarks.end() ; ++landmark_it)
     {
-        if((*landmarkIt)->m_landmark->m_groupName == _groupName && (*landmarkIt)->m_landmark->m_index == _index)
+        if((*landmark_it)->m_landmark->m_groupName == _group_name && (*landmark_it)->m_landmark->m_index == _index)
         {
             // Stop the timer.
-            (*landmarkIt)->m_timer->stop();
-            (*landmarkIt)->m_landmark->m_object->setVisible(true);
-            hideLandmark((*landmarkIt)->m_landmark);
+            (*landmark_it)->m_timer->stop();
+            (*landmark_it)->m_landmark->m_object->setVisible(true);
+            hideLandmark((*landmark_it)->m_landmark);
 
             // Request the rendering.
             requestRender();
 
-            m_selectedLandmarks.erase(landmarkIt);
+            m_selectedLandmarks.erase(landmark_it);
             break;
         }
     }
@@ -710,28 +711,28 @@ void landmarks::deselectPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void landmarks::hightlight(std::shared_ptr<SelectedLandmark> _selectedLandmark)
+void landmarks::hightlight(std::shared_ptr<SelectedLandmark> _selected_landmark)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
     // Hightlight the selected landmark.
-    this->hideLandmark(_selectedLandmark->m_landmark);
-    if(_selectedLandmark->m_landmark->m_object->isVisible())
+    this->hideLandmark(_selected_landmark->m_landmark);
+    if(_selected_landmark->m_landmark->m_object->isVisible())
     {
-        if(_selectedLandmark->m_show)
+        if(_selected_landmark->m_show)
         {
-            _selectedLandmark->m_landmark->m_object->setVisible(true);
+            _selected_landmark->m_landmark->m_object->setVisible(true);
         }
         else
         {
-            _selectedLandmark->m_landmark->m_object->setVisible(false);
+            _selected_landmark->m_landmark->m_object->setVisible(false);
         }
 
         this->requestRender();
     }
 
-    _selectedLandmark->m_show = !_selectedLandmark->m_show;
+    _selected_landmark->m_show = !_selected_landmark->m_show;
 
     // Request the rendering.
     this->requestRender();
@@ -745,21 +746,21 @@ void landmarks::initializeImage()
 
     if(image)
     {
-        namespace Helper = sight::data::helper::MedicalImage;
+        namespace Helper = sight::data::helper::medical_image;
 
         const auto axial_index = std::max(
             std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::AXIAL).value_or(0)
+            Helper::get_slice_index(*image, Helper::orientation_t::AXIAL).value_or(0)
         );
 
         const auto frontal_index = std::max(
             std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::FRONTAL).value_or(0)
+            Helper::get_slice_index(*image, Helper::orientation_t::FRONTAL).value_or(0)
         );
 
         const auto m_sagittal_index = std::max(
             std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::SAGITTAL).value_or(0)
+            Helper::get_slice_index(*image, Helper::orientation_t::SAGITTAL).value_or(0)
         );
 
         this->changeSliceIndex(int(axial_index), int(frontal_index), int(m_sagittal_index));
@@ -777,14 +778,14 @@ void landmarks::changeSliceType(int _from, int _to)
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto toOrientation   = static_cast<OrientationMode>(_to);
-    const auto fromOrientation = static_cast<OrientationMode>(_from);
+    const auto to_orientation   = static_cast<OrientationMode>(_to);
+    const auto from_orientation = static_cast<OrientationMode>(_from);
 
-    const auto newOrientation = m_orientation == toOrientation ? fromOrientation
-                                                               : m_orientation
-                                == fromOrientation ? toOrientation : m_orientation;
+    const auto new_orientation = m_orientation == to_orientation ? from_orientation
+                                                                 : m_orientation
+                                 == from_orientation ? to_orientation : m_orientation;
 
-    m_orientation = newOrientation;
+    m_orientation = new_orientation;
 
     this->hideLandmarks();
 
@@ -794,27 +795,27 @@ void landmarks::changeSliceType(int _from, int _to)
 
 //------------------------------------------------------------------------------
 
-void landmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
+void landmarks::changeSliceIndex(int _axial_index, int _frontal_index, int _sagittal_index)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto imageLock = m_image.lock();
+    const auto image_lock = m_image.lock();
 
-    if(imageLock)
+    if(image_lock)
     {
         this->getRenderService()->makeCurrent();
 
-        const auto& imgSpacing = imageLock->getSpacing();
-        const auto& imgOrigin  = imageLock->getOrigin();
+        const auto& img_spacing = image_lock->getSpacing();
+        const auto& img_origin  = image_lock->getOrigin();
 
         m_currentSlicePos = {
-            static_cast<float>(_sagittalIndex) * static_cast<float>(imgSpacing[0])
-            + static_cast<float>(imgOrigin[0]),
-            static_cast<float>(_frontalIndex) * static_cast<float>(imgSpacing[1])
-            + static_cast<float>(imgOrigin[1]),
-            static_cast<float>(_axialIndex) * static_cast<float>(imgSpacing[2])
-            + static_cast<float>(imgOrigin[2])
+            static_cast<float>(_sagittal_index) * static_cast<float>(img_spacing[0])
+            + static_cast<float>(img_origin[0]),
+            static_cast<float>(_frontal_index) * static_cast<float>(img_spacing[1])
+            + static_cast<float>(img_origin[1]),
+            static_cast<float>(_axial_index) * static_cast<float>(img_spacing[2])
+            + static_cast<float>(img_origin[2])
         };
 
         this->hideLandmarks();
@@ -826,9 +827,9 @@ void landmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 //------------------------------------------------------------------------------
 
-void landmarks::toggleAddLandmarks(bool toggle)
+void landmarks::toggleAddLandmarks(bool _toggle)
 {
-    if(toggle)
+    if(_toggle)
     {
         m_landmarksMode = LandmarksMode::ADD;
     }
@@ -840,9 +841,9 @@ void landmarks::toggleAddLandmarks(bool toggle)
 
 //------------------------------------------------------------------------------
 
-void landmarks::toggleRemoveLandmarks(bool toggle)
+void landmarks::toggleRemoveLandmarks(bool _toggle)
 {
-    if(toggle)
+    if(_toggle)
     {
         m_landmarksMode = LandmarksMode::REMOVE;
     }
@@ -867,7 +868,7 @@ void landmarks::removeLandmarks()
     const auto& image = m_image.const_lock();
     SIGHT_THROW_IF("Data is null.", !image);
 
-    const auto slice_index = sight::data::helper::MedicalImage::getSliceIndex(
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
         *image,
         m_orientation
     );
@@ -878,7 +879,7 @@ void landmarks::removeLandmarks()
         return;
     }
 
-    bool hasDeleted = false;
+    bool has_deleted = false;
 
     for(const auto& name : landmarks->getGroupNames())
     {
@@ -888,8 +889,8 @@ void landmarks::removeLandmarks()
         {
             if(isLandmarkVisible(*it, group.m_size))
             {
-                it         = group.m_points.erase(it);
-                hasDeleted = true;
+                it          = group.m_points.erase(it);
+                has_deleted = true;
             }
             else
             {
@@ -898,9 +899,9 @@ void landmarks::removeLandmarks()
         }
     }
 
-    if(hasDeleted)
+    if(has_deleted)
     {
-        const auto& sig = landmarks->signal<sight::data::landmarks::ModifiedSignalType>(
+        const auto& sig = landmarks->signal<sight::data::landmarks::modified_signal_t>(
             sight::data::landmarks::MODIFIED_SIG
         );
         sig->async_emit();
@@ -910,40 +911,40 @@ void landmarks::removeLandmarks()
 //------------------------------------------------------------------------------
 
 void landmarks::configureLandmarks(
-    std::optional<std::string> group,
-    std::optional<sight::data::landmarks::ColorType> color,
-    std::optional<sight::data::landmarks::SizeType> size,
-    std::optional<sight::data::landmarks::Shape> shape,
-    std::optional<int> groupMax,
-    std::optional<int> visibleMax,
-    std::optional<int> totalMax
+    std::optional<std::string> _group,
+    std::optional<sight::data::landmarks::color_t> _color,
+    std::optional<sight::data::landmarks::size_t> _size,
+    std::optional<sight::data::landmarks::Shape> _shape,
+    std::optional<int> _group_max,
+    std::optional<int> _visible_max,
+    std::optional<int> _total_max
 )
 {
-    if(group)
+    if(_group)
     {
-        m_currentGroup = *group;
+        m_currentGroup = *_group;
     }
 
-    if(color)
+    if(_color)
     {
-        m_currentColor = *color;
+        m_currentColor = *_color;
     }
 
-    if(size)
+    if(_size)
     {
-        m_currentSize = *size;
+        m_currentSize = *_size;
     }
 
-    if(shape)
+    if(_shape)
     {
-        m_currentShape = *shape;
+        m_currentShape = *_shape;
     }
 
-    if(groupMax)
+    if(_group_max)
     {
-        if(*groupMax >= 0)
+        if(*_group_max >= 0)
         {
-            m_groupMax[m_currentGroup] = std::size_t(*groupMax);
+            m_groupMax[m_currentGroup] = std::size_t(*_group_max);
         }
         else
         {
@@ -951,11 +952,11 @@ void landmarks::configureLandmarks(
         }
     }
 
-    if(visibleMax)
+    if(_visible_max)
     {
-        if(*visibleMax >= 0)
+        if(*_visible_max >= 0)
         {
-            m_visibleMax = *visibleMax;
+            m_visibleMax = *_visible_max;
         }
         else
         {
@@ -963,11 +964,11 @@ void landmarks::configureLandmarks(
         }
     }
 
-    if(totalMax)
+    if(_total_max)
     {
-        if(*totalMax >= 0)
+        if(*_total_max >= 0)
         {
-            m_totalMax = *totalMax;
+            m_totalMax = *_total_max;
         }
         else
         {
@@ -978,14 +979,14 @@ void landmarks::configureLandmarks(
 
 //------------------------------------------------------------------------------
 
-void landmarks::createLandmark(sight::data::landmarks::PointType point)
+void landmarks::createLandmark(sight::data::landmarks::point_t _point)
 {
-    createAndPickLandmark(point, false);
+    createAndPickLandmark(_point, false);
 }
 
 //------------------------------------------------------------------------------
 
-void landmarks::createAndPickLandmark(const sight::data::landmarks::PointType& point, bool pick)
+void landmarks::createAndPickLandmark(const sight::data::landmarks::point_t& _point, bool _pick)
 {
     if(isMaxLandmarksReached())
     {
@@ -1000,14 +1001,14 @@ void landmarks::createAndPickLandmark(const sight::data::landmarks::PointType& p
     if(!landmarks->hasGroup(m_currentGroup))
     {
         landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
-        const auto& sig = landmarks->signal<sight::data::landmarks::GroupAddedSignalType>(
+        const auto& sig = landmarks->signal<sight::data::landmarks::group_added_signal_t>(
             sight::data::landmarks::GROUP_ADDED_SIG
         );
 
         sig->async_emit(m_currentGroup);
     }
 
-    landmarks->addPoint(m_currentGroup, point);
+    landmarks->addPoint(m_currentGroup, _point);
 
     // Get the last index.
     const auto& group = landmarks->getGroup(m_currentGroup);
@@ -1015,7 +1016,7 @@ void landmarks::createAndPickLandmark(const sight::data::landmarks::PointType& p
     // Add the new point.
     const auto& new_landmark = insertMyPoint(m_currentGroup, group.m_points.size() - 1, landmarks.get_shared());
 
-    if(pick)
+    if(_pick)
     {
         m_pickedData = new_landmark;
         m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
@@ -1026,7 +1027,7 @@ void landmarks::createAndPickLandmark(const sight::data::landmarks::PointType& p
     }
 
     // Block the signal to avoid being called back.
-    const auto& sig = landmarks->signal<sight::data::landmarks::PointAddedSignalType>(
+    const auto& sig = landmarks->signal<sight::data::landmarks::point_added_signal_t>(
         sight::data::landmarks::POINT_ADDED_SIG
     );
 
@@ -1059,8 +1060,8 @@ bool landmarks::isMaxLandmarksReached()
     {
         const auto& names = landmarks->getGroupNames();
 
-        std::size_t max        = 0;
-        std::size_t maxVisible = 0;
+        std::size_t max         = 0;
+        std::size_t max_visible = 0;
 
         for(const auto& name : names)
         {
@@ -1082,9 +1083,9 @@ bool landmarks::isMaxLandmarksReached()
                 {
                     if(isLandmarkVisible(point, group.m_size))
                     {
-                        ++maxVisible;
+                        ++max_visible;
 
-                        if(maxVisible >= *m_visibleMax)
+                        if(max_visible >= *m_visibleMax)
                         {
                             return true;
                         }
@@ -1104,10 +1105,10 @@ void landmarks::hideLandmarks()
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    const auto imageLock = m_image.lock();
+    const auto image_lock = m_image.lock();
 
     // Hide landmarks only if there is an image.
-    if(imageLock)
+    if(image_lock)
     {
         for(const auto& landmark : m_manualObjects)
         {
@@ -1130,18 +1131,18 @@ void landmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 
 //------------------------------------------------------------------------------
 
-void landmarks::hideMyLandmark(Landmark& landmark, const data::landmarks& landmarks)
+void landmarks::hideMyLandmark(Landmark& _landmark, const data::landmarks& _landmarks)
 {
     const bool must_show =
         [&]
         {
             // Retrieve group
-            if(!landmarks.hasGroup(landmark.m_groupName))
+            if(!_landmarks.hasGroup(_landmark.m_groupName))
             {
                 return false;
             }
 
-            const auto& group = landmarks.getGroup(landmark.m_groupName);
+            const auto& group = _landmarks.getGroup(_landmark.m_groupName);
 
             if(!group.m_visibility)
             {
@@ -1150,7 +1151,7 @@ void landmarks::hideMyLandmark(Landmark& landmark, const data::landmarks& landma
 
             if(const auto& image = m_image.const_lock(); image)
             {
-                const auto& position = landmark.m_node->getPosition();
+                const auto& position = _landmark.m_node->getPosition();
                 return isLandmarkVisible({position[0], position[1], position[2]}, group.m_size);
             }
 
@@ -1158,19 +1159,19 @@ void landmarks::hideMyLandmark(Landmark& landmark, const data::landmarks& landma
         }();
 
     // Show or hide the landmark.
-    landmark.m_object->setVisible(must_show);
+    _landmark.m_object->setVisible(must_show);
 }
 
 //------------------------------------------------------------------------------
 
 bool landmarks::isLandmarkVisible(
-    const data::landmarks::PointType& point,
-    data::landmarks::SizeType group_size
+    const data::landmarks::point_t& _point,
+    data::landmarks::size_t _group_size
 ) const
 {
     if(const auto& image = m_image.const_lock(); image)
     {
-        const auto position       = point[m_orientation];
+        const auto position       = _point[m_orientation];
         const auto slice_position = m_currentSlicePos[m_orientation];
         const auto spacing        = image->getSpacing()[m_orientation];
 
@@ -1179,19 +1180,19 @@ bool landmarks::isLandmarkVisible(
             case ViewDistance::SLICES_IN_RANGE:
             {
                 // Check if the position is the same than slice position
-                const auto group_half_size = group_size * 0.5;
+                const auto group_half_size = _group_size * 0.5;
                 const auto max_size        = std::max(group_half_size, spacing);
 
-                return core::tools::is_greater(position, (slice_position - group_size))
+                return core::tools::is_greater(position, (slice_position - _group_size))
                        && core::tools::is_less(position, (slice_position + max_size));
             }
 
             case ViewDistance::CURRENT_SLICE:
             {
                 // Check if the position is the same than slice position
-                const auto roundedPosition      = std::round(position / spacing);
-                const auto roundedSlicePosition = std::round(slice_position / spacing);
-                return core::tools::is_equal(roundedPosition, roundedSlicePosition);
+                const auto rounded_position       = std::round(position / spacing);
+                const auto rounded_slice_position = std::round(slice_position / spacing);
+                return core::tools::is_equal(rounded_position, rounded_slice_position);
             }
 
             default:
@@ -1225,18 +1226,18 @@ void landmarks::setVisible(bool _visible)
 std::optional<Ogre::Vector3> landmarks::getNearestPickedPosition(int _x, int _y)
 {
     Ogre::SceneManager* sm = this->getSceneManager();
-    const auto result      = sight::viz::scene3d::Utils::pickObject(_x, _y, m_queryMask, *sm);
+    const auto result      = sight::viz::scene3d::utils::pickObject(_x, _y, m_queryMask, *sm);
 
     if(result.has_value())
     {
-        const auto* const camera = sm->getCamera(sight::viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+        const auto* const camera = sm->getCamera(sight::viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
 
         // Screen to viewport space conversion.
-        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+        const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+        const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-        const Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
+        const Ogre::Ray ray = camera->getCameraToViewportRay(vp_x, vp_y);
 
         Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
@@ -1259,24 +1260,24 @@ void landmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x
 
     const auto layer = this->getLayer();
 
-    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+    Ogre::SceneManager* const scene_mgr = layer->getSceneManager();
 
     const Ogre::Camera* const cam = layer->getDefaultCamera();
     const auto* const vp          = cam->getViewport();
 
-    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+    const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+    const Ogre::Ray ray = cam->getCameraToViewportRay(vp_x, vp_y);
 
-    const auto raySceneQuery = std::unique_ptr<Ogre::RaySceneQuery>(
-        sceneMgr->createRayQuery(ray, m_landmarksQueryFlag)
+    const auto ray_scene_query = std::unique_ptr<Ogre::RaySceneQuery>(
+        scene_mgr->createRayQuery(ray, m_landmarksQueryFlag)
     );
 
-    raySceneQuery->setSortByDistance(true);
-    const auto& queryResult = raySceneQuery->execute();
+    ray_scene_query->setSortByDistance(true);
+    const auto& query_result = ray_scene_query->execute();
 
-    if(queryResult.empty())
+    if(query_result.empty())
     {
         // Nothing found.
         return;
@@ -1286,10 +1287,10 @@ void landmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x
     bool found = false;
 
     // The plane is always intercepted, if a landmark is found
-    for(std::size_t index = 0 ; !found && index < queryResult.size() ; ++index)
+    for(std::size_t index = 0 ; !found && index < query_result.size() ; ++index)
     {
         // The landmark should be the nearest object found.
-        const auto* const object = queryResult[index].movable;
+        const auto* const object = query_result[index].movable;
 
         auto landmarks = m_landmarks.lock();
 
@@ -1313,7 +1314,7 @@ void landmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x
                             landmarks->removePoint(landmark->m_groupName, landmark->m_index);
                             removePoint(landmark->m_groupName, landmark->m_index);
 
-                            const auto& sig = landmarks->signal<sight::data::landmarks::PointRemovedSignalType>(
+                            const auto& sig = landmarks->signal<sight::data::landmarks::point_removed_signal_t>(
                                 sight::data::landmarks::POINT_REMOVED_SIG
                             );
 
@@ -1342,9 +1343,9 @@ void landmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x
     // If nothing is picked, we will create a new landmark.
     if(!found && m_landmarksMode == LandmarksMode::ADD)
     {
-        if(auto newPos = this->getNearestPickedPosition(_x, _y); newPos)
+        if(auto new_pos = this->getNearestPickedPosition(_x, _y); new_pos)
         {
-            createAndPickLandmark({(*newPos)[0], (*newPos)[1], (*newPos)[2]});
+            createAndPickLandmark({(*new_pos)[0], (*new_pos)[1], (*new_pos)[2]});
         }
     }
 }
@@ -1362,29 +1363,29 @@ void landmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int 
         const Ogre::Camera* const cam = layer->getDefaultCamera();
         SIGHT_ASSERT("No camera found", cam);
 
-        bool moveInCameraPlane = true;
+        bool move_in_camera_plane = true;
 
-        Ogre::Vector3 newPos;
+        Ogre::Vector3 new_pos;
         if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
         {
             // If something is picked, we will snap the landmark to it
-            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-            if(pickedPos.has_value())
+            std::optional<Ogre::Vector3> picked_pos = this->getNearestPickedPosition(_x, _y);
+            if(picked_pos.has_value())
             {
-                newPos            = pickedPos.value();
-                moveInCameraPlane = false;
+                new_pos              = picked_pos.value();
+                move_in_camera_plane = false;
             }
         }
 
         // Else we move the distance along a plane.
-        if(moveInCameraPlane)
+        if(move_in_camera_plane)
         {
             const auto* const vp = cam->getViewport();
 
-            const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-            const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+            const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+            const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-            const Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
+            const Ogre::Ray ray           = cam->getCameraToViewportRay(vp_x, vp_y);
             const Ogre::Vector3 direction = this->getCamDirection(cam);
 
             const Ogre::Vector3 position = m_pickedData->m_node->getPosition();
@@ -1399,20 +1400,20 @@ void landmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int 
                 return;
             }
 
-            newPos = ray.getPoint(hit.second);
+            new_pos = ray.getPoint(hit.second);
         }
 
         // Reset the query flag.
         m_pickedData->m_object->setQueryFlags(m_landmarksQueryFlag);
 
         // Update the data, the autoconnection will call modifyPoint.
-        auto landmarks                    = m_landmarks.lock();
-        data::landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
-        point[0] = newPos[0];
-        point[1] = newPos[1];
-        point[2] = newPos[2];
+        auto landmarks                  = m_landmarks.lock();
+        data::landmarks::point_t& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
+        point[0] = new_pos[0];
+        point[1] = new_pos[1];
+        point[2] = new_pos[2];
 
-        const auto& sig = landmarks->signal<data::landmarks::PointModifiedSigType>(
+        const auto& sig = landmarks->signal<data::landmarks::point_modified_sig_t>(
             data::landmarks::POINT_MODIFIED_SIG
         );
         sig->async_emit(m_pickedData->m_groupName, m_pickedData->m_index);
@@ -1440,33 +1441,33 @@ void landmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mods
 {
     const auto& layer = getLayer();
 
-    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+    Ogre::SceneManager* const scene_mgr = layer->getSceneManager();
 
     const Ogre::Camera* const cam = layer->getDefaultCamera();
     const auto* const vp          = cam->getViewport();
 
-    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+    const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+    const Ogre::Ray ray = cam->getCameraToViewportRay(vp_x, vp_y);
 
-    const auto raySceneQuery = std::unique_ptr<Ogre::RaySceneQuery>(
-        sceneMgr->createRayQuery(ray, m_landmarksQueryFlag)
+    const auto ray_scene_query = std::unique_ptr<Ogre::RaySceneQuery>(
+        scene_mgr->createRayQuery(ray, m_landmarksQueryFlag)
     );
 
-    raySceneQuery->setSortByDistance(true);
-    const auto& queryResult = raySceneQuery->execute();
+    ray_scene_query->setSortByDistance(true);
+    const auto& query_result = ray_scene_query->execute();
 
-    if(queryResult.empty())
+    if(query_result.empty())
     {
         return;
     }
 
     bool found = false;
 
-    for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+    for(std::size_t qr_idx = 0 ; qr_idx < query_result.size() && !found ; qr_idx++)
     {
-        const auto* const object = queryResult[qrIdx].movable;
+        const auto* const object = query_result[qr_idx].movable;
         for(auto& landmark : m_manualObjects)
         {
             if(landmark->m_object == object)
@@ -1485,8 +1486,8 @@ void landmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mods
         getLayer()->cancelFurtherInteraction();
 
         // Check if something is picked to update the position of the distance.
-        const auto pickedPos = getNearestPickedPosition(_x, _y);
-        if(pickedPos.has_value())
+        const auto picked_pos = getNearestPickedPosition(_x, _y);
+        if(picked_pos.has_value())
         {
             // Update the data, the autoconnection will call modifyPoint.
             const auto& landmarks = m_landmarks.const_lock();
@@ -1496,7 +1497,7 @@ void landmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mods
             );
 
             // Send signal with world coordinates of the landmarks
-            m_send_world_coord->async_emit(
+            M_SEND_WORLD_COORD->async_emit(
                 point[0],
                 point[1],
                 point[2]

@@ -58,7 +58,7 @@ struct InrLoaderFunctor
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameter& param)
+    void operator()(Parameter& _param)
     {
         SIGHT_INFO(
             "::io::itk::InrImageReader::InrLoaderFunctor with PIXELTYPE "
@@ -66,45 +66,45 @@ struct InrLoaderFunctor
         );
 
         // Reader IO (*1*)
-        typename ::itk::ImageIOBase::Pointer imageIORead = ::itk::ImageIOFactory::CreateImageIO(
-            param.m_filename.c_str(),
+        typename ::itk::ImageIOBase::Pointer image_io_read = ::itk::ImageIOFactory::CreateImageIO(
+            _param.m_filename.c_str(),
             ::itk::ImageIOFactory::ReadMode
         );
 
         // set observation (*2*)
-        Progressor progress(imageIORead, param.m_fwReader, param.m_filename);
+        Progressor progress(image_io_read, _param.m_fwReader, _param.m_filename);
 
         // the reader
-        using ImageType  = ::itk::Image<PIXELTYPE, 3>;
-        using ReaderType = ::itk::ImageFileReader<ImageType>;
-        typename ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName(param.m_filename);
+        using image_t  = ::itk::Image<PIXELTYPE, 3>;
+        using reader_t = ::itk::ImageFileReader<image_t>;
+        typename reader_t::Pointer reader = reader_t::New();
+        reader->SetFileName(_param.m_filename);
 
         // attach its IO (*3*)
-        reader->SetImageIO(imageIORead);
+        reader->SetImageIO(image_io_read);
 
         reader->Update();
-        typename ImageType::Pointer itkimage = reader->GetOutput();
-        io::itk::moveFromItk<ImageType>(itkimage, param.m_dataImage);
+        typename image_t::Pointer itkimage = reader->GetOutput();
+        io::itk::move_from_itk<image_t>(itkimage, _param.m_dataImage);
     }
 
     //// get pixel type from Header
-    static const core::type& getImageType(const std::string& imageFileName)
+    static const core::type& get_image_type(const std::string& _image_file_name)
     {
-        ::itk::ImageIOBase::Pointer imageIO = ::itk::ImageIOFactory::CreateImageIO(
-            imageFileName.c_str(),
+        ::itk::ImageIOBase::Pointer image_io = ::itk::ImageIOFactory::CreateImageIO(
+            _image_file_name.c_str(),
             ::itk::ImageIOFactory::ReadMode
         );
 
-        if(imageIO == nullptr)
+        if(image_io == nullptr)
         {
-            const std::string errMsg = "no ImageIOFactory found to read header of file : " + imageFileName;
-            throw(std::ios_base::failure(errMsg));
+            const std::string err_msg = "no ImageIOFactory found to read header of file : " + _image_file_name;
+            throw(std::ios_base::failure(err_msg));
         }
 
-        imageIO->SetFileName(imageFileName.c_str());
-        imageIO->ReadImageInformation();
-        auto type = imageIO->GetComponentType();
+        image_io->SetFileName(_image_file_name.c_str());
+        image_io->ReadImageInformation();
+        auto type = image_io->GetComponentType();
 
         return sight::io::itk::ITK_TYPE_CONVERTER.at(type);
     }
@@ -119,7 +119,7 @@ void InrImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::type type = InrLoaderFunctor::getImageType(file.string());
+    const core::type type = InrLoaderFunctor::get_image_type(file.string());
 
     InrLoaderFunctor::Parameter param;
     param.m_filename  = file.string();

@@ -71,19 +71,19 @@ void shutdown()
 
 //------------------------------------------------------------------------------
 
-void add_modules(const std::filesystem::path& directory)
+void add_modules(const std::filesystem::path& _directory)
 {
-    SIGHT_INFO("Loading modules from: " + directory.string());
+    SIGHT_INFO("Loading modules from: " + _directory.string());
 
     auto& runtime = detail::runtime::get();
-    runtime.add_modules(directory);
+    runtime.add_modules(_directory);
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<module> load_module(const std::string& identifier)
+std::shared_ptr<module> load_module(const std::string& _identifier)
 {
-    auto module = std::dynamic_pointer_cast<detail::module>(detail::runtime::get().find_module(identifier));
+    auto module = std::dynamic_pointer_cast<detail::module>(detail::runtime::get().find_module(_identifier));
 
     if(module)
     {
@@ -96,9 +96,9 @@ std::shared_ptr<module> load_module(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-void unload_module(const std::string& identifier)
+void unload_module(const std::string& _identifier)
 {
-    auto module = std::dynamic_pointer_cast<detail::module>(detail::runtime::get().find_module(identifier));
+    auto module = std::dynamic_pointer_cast<detail::module>(detail::runtime::get().find_module(_identifier));
 
     if(module)
     {
@@ -108,17 +108,17 @@ void unload_module(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-bool load_library(const std::string& identifier)
+bool load_library(const std::string& _identifier)
 {
     static std::map<std::string, std::shared_ptr<detail::dl::library> > s_libraries;
 
     // Even if dlopen does not actually load twice the same library, we avoid this
-    if(s_libraries.find(identifier) != std::end(s_libraries))
+    if(s_libraries.find(_identifier) != std::end(s_libraries))
     {
         return true;
     }
 
-    auto library        = std::make_shared<detail::dl::library>(identifier);
+    auto library        = std::make_shared<detail::dl::library>(_identifier);
     const auto& runtime = core::runtime::detail::runtime::get();
 
     // Try to load from all known paths
@@ -129,7 +129,7 @@ bool load_library(const std::string& identifier)
         try
         {
             library->load();
-            s_libraries[identifier] = library;
+            s_libraries[_identifier] = library;
             return true;
         }
         catch(const runtime_exception&)
@@ -138,16 +138,16 @@ bool load_library(const std::string& identifier)
         }
     }
 
-    SIGHT_ERROR("Could not load library '" + identifier);
+    SIGHT_ERROR("Could not load library '" + _identifier);
 
     return false;
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<module> find_module(const std::string& identifier)
+std::shared_ptr<module> find_module(const std::string& _identifier)
 {
-    return detail::runtime::get().find_module(identifier);
+    return detail::runtime::get().find_module(_identifier);
 }
 
 //------------------------------------------------------------------------------
@@ -159,13 +159,13 @@ std::set<std::shared_ptr<module> > modules()
 
 //------------------------------------------------------------------------------
 
-void start_module(const std::string& identifier)
+void start_module(const std::string& _identifier)
 {
     // Retrieves the specified module.
-    std::shared_ptr<module> module = detail::runtime::get().find_module(identifier);
+    std::shared_ptr<module> module = detail::runtime::get().find_module(_identifier);
     if(module == nullptr)
     {
-        throw runtime_exception(identifier + ": module not found.");
+        throw runtime_exception(_identifier + ": module not found.");
     }
 
     // Starts the found module.
@@ -174,34 +174,34 @@ void start_module(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<extension> find_extension(const std::string& identifier)
+std::shared_ptr<extension> find_extension(const std::string& _identifier)
 {
-    return detail::runtime::get().find_extension(identifier);
+    return detail::runtime::get().find_extension(_identifier);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<std::shared_ptr<core::runtime::extension> > get_all_extensions_for_point(std::string extension_pt)
+std::vector<std::shared_ptr<core::runtime::extension> > get_all_extensions_for_point(std::string _extension_pt)
 {
     auto& runtime                                  = core::runtime::detail::runtime::get();
-    std::shared_ptr<detail::extension_point> point = runtime.find_extension_point(extension_pt);
+    std::shared_ptr<detail::extension_point> point = runtime.find_extension_point(_extension_pt);
 
     if(!point)
     {
-        throw runtime_exception(extension_pt + ": invalid extension point identifier.");
+        throw runtime_exception(_extension_pt + ": invalid extension point identifier.");
     }
 
     std::vector<std::shared_ptr<core::runtime::extension> > extensions;
-    std::ranges::transform(point->get_all_extensions(), std::back_inserter(extensions), [](auto e){return e;});
+    std::ranges::transform(point->get_all_extensions(), std::back_inserter(extensions), [](auto _e){return _e;});
 
     return extensions;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string filter_id(const std::string& identifier)
+std::string filter_id(const std::string& _identifier)
 {
-    return boost::algorithm::trim_left_copy_if(identifier, [](auto x){return x == ':';});
+    return boost::algorithm::trim_left_copy_if(_identifier, [](auto _x){return _x == ':';});
 }
 
 //------------------------------------------------------------------------------

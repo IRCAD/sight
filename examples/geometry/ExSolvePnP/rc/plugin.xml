@@ -3,7 +3,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
     <extension implements="sight::app::extension::config">
@@ -182,7 +182,7 @@
                 </preference>
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="ARSceneSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
@@ -225,7 +225,7 @@
                 <config autoresetcamera="false" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="VRSceneSrv" type="sight::viz::scene3d::render">
                 <scene>

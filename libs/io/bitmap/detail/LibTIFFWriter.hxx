@@ -60,13 +60,13 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::image& image,
-        O& output,
-        Writer::Mode mode,
+        const data::image& _image,
+        O& _output,
+        Writer::Mode _mode,
         Flag = Flag::NONE
 )
     {
-        const auto& pixel_format = image.getPixelFormat();
+        const auto& pixel_format = _image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
             pixel_format != data::image::PixelFormat::RGB
@@ -74,7 +74,7 @@ public:
             && pixel_format != data::image::PixelFormat::GRAY_SCALE
         );
 
-        const auto& pixel_type = image.getType();
+        const auto& pixel_type = _image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel type: " << pixel_type,
             pixel_type != core::type::INT8
@@ -104,7 +104,7 @@ public:
         // Open the stream for writing
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            keeper.m_tiff = tiffStreamOpen(output);
+            keeper.m_tiff = tiffStreamOpen(_output);
         }
         else
         {
@@ -114,7 +114,7 @@ public:
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
 
         // Set the configuration
-        const auto& sizes        = image.size();
+        const auto& sizes        = _image.size();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_IMAGEWIDTH, image_width));
@@ -135,7 +135,7 @@ public:
         }
 
         // Compression
-        switch(mode)
+        switch(_mode)
         {
             case Writer::Mode::BEST:
             {
@@ -159,7 +159,7 @@ public:
             }
         }
 
-        const auto& num_components = image.numComponents();
+        const auto& num_components = _image.numComponents();
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLESPERPIXEL, num_components));
         CHECK_TIFF(
             TIFFSetField(
@@ -189,7 +189,7 @@ public:
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG));
 
         // Store "spacing"
-        if(const auto& spacings = image.getSpacing(); spacings[0] > 0.0 && spacings[1] > 0.0)
+        if(const auto& spacings = _image.getSpacing(); spacings[0] > 0.0 && spacings[1] > 0.0)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_XRESOLUTION, 10 / spacings[0]));
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_YRESOLUTION, 10 / spacings[1]));
@@ -210,7 +210,7 @@ public:
         for(std::uint32_t row = 0 ; row < image_height ; ++row)
         {
             // Copy to row buffer the original data
-            std::memcpy(m_row_buffer.data(), image.getPixel(row * image_width), strip_size);
+            std::memcpy(m_row_buffer.data(), _image.getPixel(row * image_width), strip_size);
 
             SIGHT_THROW_IF(
                 "TIFFWriteScanline() failed.",
@@ -228,21 +228,21 @@ public:
 
             if constexpr(std::is_same_v<std::uint8_t**, O>)
             {
-                (*output) = new std::uint8_t[output_buffer_size];
-                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+                (*_output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*_output), output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::uint8_t*, O>)
             {
-                std::memcpy(output, output_buffer.data(), output_buffer_size);
+                std::memcpy(_output, output_buffer.data(), output_buffer_size);
             }
             else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
             {
-                if(output.size() < output_buffer_size)
+                if(_output.size() < output_buffer_size)
                 {
-                    output.resize(output_buffer_size);
+                    _output.resize(output_buffer_size);
                 }
 
-                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
+                std::memcpy(_output.data(), output_buffer.data(), output_buffer_size);
             }
 
             return output_buffer_size;
@@ -267,19 +267,19 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static TIFF* tiffStreamOpen(std::ostream& ostream)
+    inline static TIFF* tiffStreamOpen(std::ostream& _ostream)
     {
         // If os is either a ostrstream or ostringstream, and has no data
         // written to it yet, then tellp() will return -1 which will break us.
         // We workaround this by writing out a dummy character and
         // then seek back to the beginning.
-        if(!ostream.fail() && ostream.tellp() < 0)
+        if(!_ostream.fail() && _ostream.tellp() < 0)
         {
-            ostream << '\0';
-            ostream.seekp(0);
+            _ostream << '\0';
+            _ostream.seekp(0);
         }
 
-        tiff_stream_data* data = new tiff_stream_data {.ostream = ostream, .start_pos = ostream.tellp()};
+        tiff_stream_data* data = new tiff_stream_data {.ostream = _ostream, .start_pos = _ostream.tellp()};
 
         // Open for writing.
         TIFF* tiff = TIFFClientOpen(
@@ -291,8 +291,8 @@ private:
             tiffSeekProc,
             tiffCloseProc,
             tiffSizeProc,
-            tiff::mapProc,
-            tiff::unmapProc
+            tiff::map_proc,
+            tiff::unmap_proc
         );
 
         return tiff;
@@ -307,28 +307,28 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffWriteProc(thandle_t fd, void* buf, tmsize_t size)
+    inline static tmsize_t tiffWriteProc(thandle_t _fd, void* _buf, tmsize_t _size)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         const auto pos               = data->ostream.tellp();
 
         // Verify that type does not overflow.
-        std::streamsize request_size = size;
-        if(tmsize_t(request_size) != size)
+        std::streamsize request_size = _size;
+        if(tmsize_t(request_size) != _size)
         {
             return -1;
         }
 
-        data->ostream.write(reinterpret_cast<const char*>(buf), request_size);
+        data->ostream.write(reinterpret_cast<const char*>(_buf), request_size);
 
         return tmsize_t(data->ostream.tellp() - pos);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSeekProc(thandle_t fd, toff_t off, int whence)
+    inline static toff_t tiffSeekProc(thandle_t _fd, toff_t _off, int _whence)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
         // if the stream has already failed, don't do anything
         if(data->ostream.fail())
@@ -336,12 +336,12 @@ private:
             return toff_t(-1);
         }
 
-        switch(whence)
+        switch(_whence)
         {
             case SEEK_SET:
             {
                 // Compute 64-bit offset
-                const std::uint64_t new_offset = std::uint64_t(data->start_pos) + off;
+                const std::uint64_t new_offset = std::uint64_t(data->start_pos) + _off;
 
                 // Verify that value does not overflow
                 const std::ios::off_type offset = std::ios::off_type(new_offset);
@@ -357,8 +357,8 @@ private:
             case SEEK_CUR:
             {
                 // Verify that value does not overflow
-                const std::ios::off_type offset = std::ios::off_type(off);
-                if(std::uint64_t(offset) != off)
+                const std::ios::off_type offset = std::ios::off_type(_off);
+                if(std::uint64_t(offset) != _off)
                 {
                     return std::uint64_t(-1);
                 }
@@ -370,8 +370,8 @@ private:
             case SEEK_END:
             {
                 // Verify that value does not overflow
-                const std::ios::off_type offset = std::ios::off_type(off);
-                if(std::uint64_t(offset) != off)
+                const std::ios::off_type offset = std::ios::off_type(_off);
+                if(std::uint64_t(offset) != _off)
                 {
                     return std::uint64_t(-1);
                 }
@@ -393,7 +393,7 @@ private:
             // reset the fail bit or else tellp() won't work below
             data->ostream.clear(data->ostream.rdstate() & ~std::ios::failbit);
 
-            switch(whence)
+            switch(_whence)
             {
                 case SEEK_SET:
                 default:
@@ -413,7 +413,7 @@ private:
             // restore original stream state
             data->ostream.clear(old_state);
 
-            const std::uint64_t new_offset = std::uint64_t(origin) + off;
+            const std::uint64_t new_offset = std::uint64_t(origin) + _off;
 
             // only do something if desired seek position is valid
             if(new_offset > std::uint64_t(data->start_pos))
@@ -439,18 +439,18 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static int tiffCloseProc(thandle_t fd)
+    inline static int tiffCloseProc(thandle_t _fd)
     {
         // Our stream was not allocated by us, so it shouldn't be closed by us.
-        delete reinterpret_cast<tiff_stream_data*>(fd);
+        delete reinterpret_cast<tiff_stream_data*>(_fd);
         return 0;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSizeProc(thandle_t fd)
+    inline static toff_t tiffSizeProc(thandle_t _fd)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         const auto initial_pos       = data->ostream.tellp();
 
         data->ostream.seekp(0, std::ios::end);

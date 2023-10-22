@@ -36,8 +36,8 @@ namespace sight::ui::qt::dialog
 //------------------------------------------------------------------------------
 
 progress::progress(
-    const std::string& title,
-    const std::string& message
+    const std::string& _title,
+    const std::string& _message
 ) :
     m_title(""),
     m_dialog(nullptr),
@@ -46,10 +46,10 @@ progress::progress(
     m_mainWindow(nullptr)
 {
     // Use progress widget defined by frame
-    ui::container::widget::sptr progressWidget = ui::frame::getProgressWidget();
-    QWidget* activeWindow                      =
-        std::dynamic_pointer_cast<ui::qt::container::widget>(progressWidget)->getQtContainer();
-    m_mainWindow = qobject_cast<QMainWindow*>(activeWindow);
+    ui::container::widget::sptr progress_widget = ui::frame::getProgressWidget();
+    QWidget* active_window                      =
+        std::dynamic_pointer_cast<ui::qt::container::widget>(progress_widget)->getQtContainer();
+    m_mainWindow = qobject_cast<QMainWindow*>(active_window);
 
 //    QWidget *activeWindow = NULL;
 //
@@ -90,8 +90,8 @@ progress::progress(
         m_dialog->setValue(0);
         m_dialog->setCancelButton(m_cancelButton);
 
-        this->progress::setTitle(title);
-        this->progress::setMessage(message);
+        this->progress::setTitle(_title);
+        this->progress::setMessage(_message);
 
         m_dialog->show();
     }
@@ -126,13 +126,13 @@ progress::~progress()
 
 //------------------------------------------------------------------------------
 
-void progress::operator()(float percent, std::string msg)
+void progress::operator()(float _percent, std::string _msg)
 {
     SIGHT_ASSERT("m_dialog or m_progressbar not instanced", m_progressbar || m_dialog);
-    int value = (int) (percent * 100);
+    int value = (int) (_percent * 100);
     if(value != this->m_value)
     {
-        this->setMessage(msg);
+        this->setMessage(_msg);
 
         if(m_progressbar != nullptr)
         {
@@ -158,9 +158,9 @@ void progress::operator()(float percent, std::string msg)
 
 //------------------------------------------------------------------------------
 
-void progress::setTitle(const std::string& title)
+void progress::setTitle(const std::string& _title)
 {
-    m_title = QString::fromStdString(title);
+    m_title = QString::fromStdString(_title);
     if(m_progressbar != nullptr)
     {
         m_mainWindow->statusBar()->showMessage(m_title);
@@ -173,7 +173,7 @@ void progress::setTitle(const std::string& title)
 
 //------------------------------------------------------------------------------
 
-void progress::setMessage(const std::string& msg)
+void progress::setMessage(const std::string& _msg)
 {
     QString message("");
     if(!m_title.isEmpty())
@@ -182,7 +182,7 @@ void progress::setMessage(const std::string& msg)
         message += " - ";
     }
 
-    message += QString::fromStdString(msg);
+    message += QString::fromStdString(_msg);
     if(m_progressbar != nullptr)
     {
         m_mainWindow->statusBar()->showMessage(message);

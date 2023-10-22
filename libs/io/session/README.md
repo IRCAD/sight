@@ -65,7 +65,7 @@ and de-serialization function, stored in a separated header file (all of them ar
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_session)
+target_link_library(my_target <PUBLIC|PRIVATE> io_session)
 ```
 
 

@@ -31,9 +31,9 @@ namespace sight::viz::scene3d
 {
 
 class window_interactor;
-class ILight;
-class IText;
-class Layer;
+class light_adaptor;
+class text;
+class layer;
 
 namespace factory
 {
@@ -42,7 +42,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
-    const viz::scene3d::registry::key_t& classname
+    const viz::scene3d::registry::key_t& _classname
 );
 
 template<class CLASSNAME>
@@ -54,14 +54,14 @@ SPTR(CLASSNAME)  make()
 
 } // namespace factory
 
-namespace offscreenInteractorMgrFactory
+namespace offscreen_interactor_mgr_factory
 {
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims);
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
-    const viz::scene3d::registry::key_t& classname,
+    const viz::scene3d::registry::key_t& _classname,
     std::pair<unsigned int, unsigned int> _dims
 );
 
@@ -73,14 +73,14 @@ SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims)
 
 } // namespace offscreenInteractorMgrFactory
 
-namespace lightFactory
+namespace light_factory
 {
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) make(
-    const viz::scene3d::registry::key_t& classname
+VIZ_SCENE3D_API SPTR(viz::scene3d::light_adaptor) make(
+    const viz::scene3d::registry::key_t& _classname
 );
 
 template<class CLASSNAME>
@@ -92,19 +92,19 @@ SPTR(CLASSNAME) make()
 
 } // namespace lightFactory
 
-namespace textFactory
+namespace text_factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::Layer) & _layer);
+SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer);
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::IText) make(
-    const viz::scene3d::registry::key_t& classname,
-    const SPTR(sight::viz::scene3d::Layer) & _layer
+VIZ_SCENE3D_API SPTR(viz::scene3d::text) make(
+    const viz::scene3d::registry::key_t& _classname,
+    const SPTR(sight::viz::scene3d::layer) & _layer
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::Layer) & _layer)
+SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer)
 {
     SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(_layer);
     return obj;

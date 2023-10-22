@@ -23,7 +23,7 @@
 
 #include <ui/testCore/Tester.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::ui::test_core::helper
 {
 
 class selector_dialog
@@ -36,7 +36,7 @@ public:
      * @param selection The item to be selected
      * @warning This method assumes that the selection dialog is already open.
      */
-    GUITEST_API static void select(Tester& tester, const std::string& selection);
+    GUITEST_API static void select(Tester& _tester, const std::string& _selection);
 };
 
 } // namespace sight::ui::testCore::helper

@@ -183,13 +183,13 @@ public:
     SIGHT_DECLARE_SERVICE(scan, sight::io::service::rgbd_grabber);
 
     /// Signal send when Distance is computed.
-    typedef core::com::signal<void (double)> DistanceComputedSignalType;
+    typedef core::com::signal<void (double)> distance_computed_signal_t;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> DevicePlayedSignalType;
+    typedef core::com::signal<void (void)> device_played_signal_t;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> FilePlayedSignalType;
+    typedef core::com::signal<void (void)> file_played_signal_t;
 
     /// Constructor. Initializes signals/slots.
     MODULE_IO_REALSENSE_API scan() noexcept;
@@ -302,7 +302,7 @@ private:
         COLOR,
         DEPTH,
         INFRARED
-    } PointcloudColormapEnumType;
+    } pointcloud_colormap_enum_t;
 
     // Overriden functions/slots
 
@@ -412,7 +412,7 @@ private:
     float m_depthScale = 0.F;
 
     /// Handle on which frame the pointcloud is mapped.
-    PointcloudColormapEnumType m_pointcloudColorMap = PointcloudColormap::COLOR;
+    pointcloud_colormap_enum_t m_pointcloudColorMap = PointcloudColormap::COLOR;
 
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     CameraSettings m_cameraSettings;

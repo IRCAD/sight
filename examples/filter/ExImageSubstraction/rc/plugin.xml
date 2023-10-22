@@ -56,7 +56,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
 
     <extension implements="sight::app::extension::config">
@@ -244,7 +244,7 @@
             <!-- Action to save an image in the Tab 3 -->
             <service uid="computeImageAct" type="sight::module::ui::action" />
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="negato1SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
@@ -272,7 +272,7 @@
                 <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="negato2SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
@@ -300,7 +300,7 @@
                 <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene ******************************* -->
+            <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="negato3SceneSrv" type="sight::viz::scene3d::render">
                 <scene>

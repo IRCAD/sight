@@ -49,7 +49,7 @@ public:
     inline ~LibTIFFReader() noexcept = default;
 
     /// Reading
-    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& _image, std::istream& _istream, Flag /*flag*/)
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
@@ -67,7 +67,7 @@ public:
         } keeper;
 
         // Open the tiff file for reading
-        keeper.m_tiff = tiffStreamOpen(istream);
+        keeper.m_tiff = tiffStreamOpen(_istream);
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
 
         // Get the image size and format
@@ -104,7 +104,7 @@ public:
         {
             // TIFFReadRGBAImage approach
             // Allocate destination image
-            image.resize(
+            _image.resize(
                 {width, height, 0},
                 sample_format == SAMPLEFORMAT_INT ? core::type::INT8 : core::type::UINT8,
                 data::image::PixelFormat::RGBA
@@ -115,7 +115,7 @@ public:
                     keeper.m_tiff,
                     width,
                     height,
-                    reinterpret_cast<std::uint32_t*>(image.buffer()),
+                    reinterpret_cast<std::uint32_t*>(_image.buffer()),
                     0
                 )
             );
@@ -212,11 +212,11 @@ public:
                 }();
 
             // Allocate destination image
-            image.resize({width, height, 0}, component_type, pixel_format);
+            _image.resize({width, height, 0}, component_type, pixel_format);
 
             for(std::uint32_t row = 0 ; row < height ; ++row)
             {
-                CHECK_TIFF(TIFFReadScanline(keeper.m_tiff, image.getPixel(row * width), row));
+                CHECK_TIFF(TIFFReadScanline(keeper.m_tiff, _image.getPixel(row * width), row));
             }
         }
     }
@@ -233,9 +233,9 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static TIFF* tiffStreamOpen(std::istream& istream)
+    inline static TIFF* tiffStreamOpen(std::istream& _istream)
     {
-        tiff_stream_data* const data = new tiff_stream_data {.istream = istream, .start_pos = istream.tellg()};
+        tiff_stream_data* const data = new tiff_stream_data {.istream = _istream, .start_pos = _istream.tellg()};
 
         // Open for reading.
         TIFF* tiff = TIFFClientOpen(
@@ -247,8 +247,8 @@ private:
             tiffSeekProc,
             tiffCloseProc,
             tiffSizeProc,
-            tiff::mapProc,
-            tiff::unmapProc
+            tiff::map_proc,
+            tiff::unmap_proc
         );
 
         return tiff;
@@ -256,10 +256,10 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiffReadProc(thandle_t fd, void* buff, tmsize_t size)
+    inline static tmsize_t tiffReadProc(thandle_t _fd, void* _buff, tmsize_t _size)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
-        data->istream.read(reinterpret_cast<char*>(buff), size);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
+        data->istream.read(reinterpret_cast<char*>(_buff), _size);
         return data->istream.gcount();
     }
 
@@ -272,22 +272,22 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSeekProc(thandle_t fd, toff_t off, int whence)
+    inline static toff_t tiffSeekProc(thandle_t _fd, toff_t _off, int _whence)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
-        switch(whence)
+        switch(_whence)
         {
             case SEEK_SET:
-                data->istream.seekg(data->start_pos + std::ios::off_type(off), std::ios::beg);
+                data->istream.seekg(data->start_pos + std::ios::off_type(_off), std::ios::beg);
                 break;
 
             case SEEK_CUR:
-                data->istream.seekg(std::streamoff(off), std::ios::cur);
+                data->istream.seekg(std::streamoff(_off), std::ios::cur);
                 break;
 
             case SEEK_END:
-                data->istream.seekg(std::streamoff(off), std::ios::end);
+                data->istream.seekg(std::streamoff(_off), std::ios::end);
                 break;
         }
 
@@ -296,18 +296,18 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static int tiffCloseProc(thandle_t fd)
+    inline static int tiffCloseProc(thandle_t _fd)
     {
         // Our stream was not allocated by us, so it shouldn't be closed by us.
-        delete reinterpret_cast<tiff_stream_data*>(fd);
+        delete reinterpret_cast<tiff_stream_data*>(_fd);
         return 0;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiffSizeProc(thandle_t fd)
+    inline static toff_t tiffSizeProc(thandle_t _fd)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(fd);
+        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
         const auto initial_pos = data->istream.tellg();
 

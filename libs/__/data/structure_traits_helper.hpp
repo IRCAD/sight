@@ -37,13 +37,13 @@ class DATA_CLASS_API structure_traits_helper
 {
 public:
 
-    typedef boost::bimaps::bimap<data::structure_traits::StructureClass, std::string> ClassTranslatorType;
+    typedef boost::bimaps::bimap<data::structure_traits::StructureClass, std::string> class_translator_t;
     /// Map to translate structure class (string vs enum)
-    DATA_API static const ClassTranslatorType s_CLASSTRANSLATOR;
+    DATA_API static const class_translator_t s_CLASSTRANSLATOR;
 
-    typedef boost::bimaps::bimap<data::structure_traits::Category, std::string> CategoryTranslatorType;
+    typedef boost::bimaps::bimap<data::structure_traits::Category, std::string> category_translator_t;
     /// Map to translate structure categories (string vs enum)
-    DATA_API static const CategoryTranslatorType s_CATEGORYTRANSLATOR;
+    DATA_API static const category_translator_t s_CATEGORYTRANSLATOR;
 };
 
 } // namespace sight::data

@@ -96,7 +96,7 @@ protected:
      *
      * \<show\>, \<hide\>, \<show_or_hide\> and \<toggle\> tags can have 2 type of attribute :
      * - wid to show  or hide windows container (view)
-     * - sid  to show or hide a gui container service (editor, IView, render...)
+     * - sid  to show or hide a gui container service (editor, view, render...)
      *
      * The action in the menu/toolbar must be checkable (style="check").
      */
@@ -109,22 +109,22 @@ protected:
 private:
 
     /// < fwID, WIDContainer>
-    typedef std::vector<std::pair<std::string, std::string> > MoveSrvVectType;
+    typedef std::vector<std::pair<std::string, std::string> > move_srv_vect_t;
     /// map representing fwID's services and new associated wid parent container
-    MoveSrvVectType m_moveSrv;
+    move_srv_vect_t m_moveSrv;
 
     /// < wid, showState>
-    typedef std::vector<std::pair<std::string, visibility_t> > ShowSrvVectType;
+    typedef std::vector<std::pair<std::string, visibility_t> > show_srv_vect_t;
     /// map representing wid container and show state
-    ShowSrvVectType m_showSrvWid;
+    show_srv_vect_t m_showSrvWid;
 
     /// map representing sid container and show state
-    ShowSrvVectType m_showSrvSid;
+    show_srv_vect_t m_showSrvSid;
 
     /// < fwID, enableState>
-    typedef std::vector<std::pair<std::string, bool> > EnableSrvVectType;
+    typedef std::vector<std::pair<std::string, bool> > enable_srv_vect_t;
     /// map representing fwID's services and enable state
-    EnableSrvVectType m_enableSrv;
+    enable_srv_vect_t m_enableSrv;
 };
 
 } // namespace sight::module::ui

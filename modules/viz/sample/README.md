@@ -12,7 +12,7 @@ Module containing sample user interface widgets displaying sight data.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_viz_sample ... )
+add_dependencies(my_target module_viz_sample ... )
 ```
 
 ### XML

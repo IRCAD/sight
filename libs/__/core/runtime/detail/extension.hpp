@@ -62,10 +62,10 @@ public:
      * @todo        test parameters validity
      */
     extension(
-        std::shared_ptr<core::runtime::module> module,
-        const std::string& id,
-        const std::string& point,
-        xmlNodePtr xml_node
+        std::shared_ptr<core::runtime::module> _module,
+        const std::string& _id,
+        const std::string& _point,
+        xmlNodePtr _xml_node
     );
     /**
      * @brief   Destructor
@@ -96,7 +96,7 @@ public:
      * @brief       Sets the configuration of the extension.
      * @param[in]   element a shared pointer to the configuration element to add
      */
-    void set_config(const core::runtime::config_t& config);
+    void set_config(const core::runtime::config_t& _config);
 
 private:
 

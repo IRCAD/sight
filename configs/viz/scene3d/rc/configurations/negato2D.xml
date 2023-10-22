@@ -107,7 +107,7 @@
             <config sliceIndex="${sliceIndex}" filtering="anisotropic" />
         </service>
 
-        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::image_multi_distances" auto_connect="true">
+        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::image_multi_distances" auto_connect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="16" radius="3" queryFlags="0x40000000" />
         </service>
@@ -122,7 +122,7 @@
             <config queryMask="0x40000000" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::landmarks" auto_connect="true">
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::landmarks" auto_connect="true">
             <inout key="imageSeries" uid="${image}" />
             <config label="false" orientation="${sliceIndex}" priority="4" initialGroup="Group_0" initialSize="10.0" />
         </service>
