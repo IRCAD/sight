@@ -47,7 +47,7 @@ viz::scene3d::r2vb_renderable* viz::scene3d::r2vb_renderable::make(
 
     instance->m_inputPrimitiveType = _primitive_type;
     instance->m_srcObject          = _source_object;
-    instance->mParentSceneManager  = _scene_manager;
+    instance->mManager             = _scene_manager;
 
     // Input material name
 
@@ -139,7 +139,7 @@ void r2vb_renderable::_updateRenderQueue(Ogre::RenderQueue* _queue)
         // Update the ouput vertex buffer only if the dirty flag is set
         if(m_dirty)
         {
-            m_r2vbBuffer->update(mParentSceneManager);
+            m_r2vbBuffer->update(mManager);
             m_dirty = false;
         }
 

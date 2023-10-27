@@ -154,7 +154,7 @@ inline void r2vb_renderable::setDirty()
 
 inline void r2vb_renderable::manualUpdate()
 {
-    m_r2vbBuffer->update(mParentSceneManager);
+    m_r2vbBuffer->update(mManager);
 }
 
 //-----------------------------------------------------------------------------

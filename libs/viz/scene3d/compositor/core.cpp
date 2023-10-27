@@ -80,7 +80,14 @@ int core::getTransparencyDepth() const
 
 bool core::setTransparencyTechnique(transparencyTechnique _technique)
 {
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    try
+    {
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    }
+    catch(Ogre::InvalidParametersException&)
+    {
+        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+    }
     m_transparencyTechnique = _technique;
 
     return true;
@@ -139,7 +146,14 @@ void core::update()
 
 void core::setTransparencyDepth(int _depth)
 {
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    try
+    {
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    }
+    catch(Ogre::InvalidParametersException&)
+    {
+        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+    }
     m_numPass = _depth;
 }
 
@@ -147,7 +161,14 @@ void core::setTransparencyDepth(int _depth)
 
 void core::setStereoMode(core::stereo_mode_t _stereo_mode)
 {
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    try
+    {
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, false);
+    }
+    catch(Ogre::InvalidParametersException&)
+    {
+        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+    }
     m_stereoMode = _stereo_mode;
 }
 
@@ -162,7 +183,14 @@ core::stereo_mode_t core::getStereoMode() const
 
 void core::setupDefaultTransparency()
 {
-    Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, true);
+    try
+    {
+        Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_viewport, m_coreCompositorName, true);
+    }
+    catch(Ogre::InvalidParametersException&)
+    {
+        SIGHT_DEBUG("Can not find compositor: " + m_coreCompositorName);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -192,10 +220,11 @@ void core::setupTransparency()
         bool need_final_compositor_swap(false);
 
         // If the compositor chain already contains the final compositor, we have to remove it
-        if(compositor_manager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
+        Ogre::CompositorChain* chain = compositor_manager.getCompositorChain(m_viewport);
+        if(const size_t pos = chain->getCompositorPosition(FINAL_CHAIN_COMPOSITOR); pos != Ogre::CompositorChain::NPOS)
         {
-            compositor_manager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
-            compositor_manager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
+            chain->setCompositorEnabled(pos, false);
+            chain->removeCompositor(pos);
             need_final_compositor_swap = true;
         }
 

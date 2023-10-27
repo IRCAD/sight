@@ -23,9 +23,6 @@ vertex_program Default/{{ shading }}_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
 {% for param in params['renderSceneVP'] %}
         {{ param }}
 {% endfor %}
@@ -73,8 +70,6 @@ vertex_program CelShadingDepthPeeling/{{ shading }}_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
 {% for param in params['renderSceneVP'] %}
         {{ param }}
 {% endfor %}

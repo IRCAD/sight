@@ -17,7 +17,8 @@ material Mip0_mat
     {
         pass
         {
-            cull_software front
+            // TEMP_FB: To check
+            cull_hardware clockwise
             vertex_program_ref stdPos_VP
             {
             }

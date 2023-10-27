@@ -66,7 +66,6 @@ material VolumeBricksGrid
             depth_check off
             depth_write off
             cull_hardware none
-            cull_software none
             transparent_sorting off
 
             vertex_program_ref VolumeBricksGrid_VP

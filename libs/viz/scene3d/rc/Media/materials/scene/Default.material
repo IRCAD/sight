@@ -13,7 +13,6 @@ material Default
 
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Ambient_VP
             {
@@ -50,7 +49,6 @@ material Default
         pass Mip_0
         {
             cull_hardware none
-            cull_software none
 
             fragment_program_ref Mip_FP
             {
@@ -69,7 +67,6 @@ material Default
         pass Mip1_mat
         {
             cull_hardware none
-            cull_software none
 
             fragment_program_ref Mip_FP_def
             {

@@ -58,7 +58,7 @@ grid_proxy_geometry* grid_proxy_geometry::make(
                      (_scene_manager->createMovableObject(_name, grid_proxy_geometry_factory::FACTORY_TYPE_NAME));
 
     instance->m_inputPrimitiveType = data::mesh::cell_type_t::POINT;
-    instance->mParentSceneManager  = _scene_manager;
+    instance->mManager             = _scene_manager;
     instance->m_3DImageTexture     = _3_d_image_texture;
     instance->m_maskTexture        = _mask_texture;
     instance->m_gpuTF              = _tf;
@@ -104,7 +104,7 @@ grid_proxy_geometry::~grid_proxy_geometry()
         Ogre::MeshPtr mesh = m_r2vbSource->getMesh();
         m_srcObject = nullptr;
 
-        mParentSceneManager->destroyEntity(m_r2vbSource);
+        mManager->destroyEntity(m_r2vbSource);
 
         Ogre::MeshManager::getSingleton().remove(mesh->getHandle());
     }
@@ -116,7 +116,7 @@ grid_proxy_geometry::~grid_proxy_geometry()
 
     if(m_gridViewportCamera != nullptr)
     {
-        mParentSceneManager->destroyCamera(m_gridViewportCamera);
+        mManager->destroyCamera(m_gridViewportCamera);
     }
 }
 
@@ -129,7 +129,7 @@ void grid_proxy_geometry::initialize()
     // (E.g. accessing the camera's viewport size while the grid volume is rendered will return its width and height).
     if(m_gridViewportCamera == nullptr)
     {
-        m_gridViewportCamera = mParentSceneManager->createCamera(mName + "_GridVolumeCamera");
+        m_gridViewportCamera = mManager->createCamera(mName + "_GridVolumeCamera");
     }
 
     this->initializeR2VBSource();
@@ -187,7 +187,7 @@ void grid_proxy_geometry::initializeR2VBSource()
 
             sub_mesh->vertexData              = new Ogre::VertexData();
             sub_mesh->vertexData->vertexStart = 0;
-            sub_mesh->vertexData->vertexCount = static_cast<std::size_t>(nb_vtx);
+            sub_mesh->vertexData->vertexCount = static_cast<Ogre::uint32>(nb_vtx);
 
             Ogre::VertexDeclaration* decl = sub_mesh->vertexData->vertexDeclaration;
 
@@ -203,7 +203,7 @@ void grid_proxy_geometry::initializeR2VBSource()
 
         //Create the R2VB source
         {
-            m_r2vbSource = mParentSceneManager->createEntity(grid_mesh);
+            m_r2vbSource = mManager->createEntity(grid_mesh);
 
             m_srcObject = m_r2vbSource->getSubEntity(0);
 
@@ -282,8 +282,7 @@ void grid_proxy_geometry::setupGrid()
 
         Ogre::VertexData* mesh_vtx_data = r2vb_src_mesh->getSubMesh(0)->vertexData;
 
-        mesh_vtx_data->vertexCount = std::size_t(m_gridSize[0]) * std::size_t(m_gridSize[1])
-                                     * std::size_t(m_gridSize[2]);
+        mesh_vtx_data->vertexCount = Ogre::uint32(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
 
         Ogre::HardwareVertexBufferSharedPtr vtx_buffer =
             Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
@@ -376,7 +375,7 @@ void grid_proxy_geometry::computeGrid()
 
         params->setNamedConstant("u_slice", static_cast<int>(i));
 
-        mParentSceneManager->manualRender(
+        mManager->manualRender(
             &m_gridRenderOp,
             m_gridComputingPass,
             rt->getViewport(0),
@@ -386,7 +385,7 @@ void grid_proxy_geometry::computeGrid()
         );
     }
 
-    m_gridRenderOp.vertexData->vertexCount = count;
+    m_gridRenderOp.vertexData->vertexCount = Ogre::uint32(count);
     m_gridRenderOp.operationType           = Ogre::RenderOperation::OT_POINT_LIST;
 
     this->manualUpdate();

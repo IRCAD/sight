@@ -1,1 +1,1 @@
-find_package(OGRE REQUIRED COMPONENTS Overlay)
+find_package(OGRE REQUIRED)

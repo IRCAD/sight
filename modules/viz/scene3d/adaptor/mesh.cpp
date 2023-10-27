@@ -287,7 +287,6 @@ void mesh::updateMesh(data::mesh::csptr _mesh)
         m_entity = m_meshGeometry->createEntity(*scene_mgr);
         m_entity->setVisible(m_isVisible);
         m_entity->setQueryFlags(m_queryFlags);
-        scene_mgr->getRootSceneNode()->detachObject(m_entity);
     }
     else
     {

@@ -156,7 +156,8 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             );
             pass->setFragmentProgram(new_name);
 
-            auto num_tex_unit                 = pass->getNumTextureUnitStates();
+            auto num_tex_unit = pass->getNumTextureUnitStates();
+
             Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
             tex_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
             tex_state->setTextureFiltering(Ogre::TFO_NONE);
@@ -181,7 +182,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             }
 
             auto params = pass->getFragmentProgramParameters();
-            params->setNamedConstant("u_nearestDepthBuffer", num_tex_unit);
+            params->setNamedConstant("u_nearestDepthBuffer", int(num_tex_unit));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
             {
@@ -256,7 +257,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
                 tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 tex_state->setCompositorReference(algo_name, "pingBuffer", 1);
 
-                params->setNamedConstant("u_frontDepthBuffer", num_tex_unit++);
+                params->setNamedConstant("u_frontDepthBuffer", int(num_tex_unit++));
             }
 
             Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
@@ -265,7 +266,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             tex_state->setCompositorReference(algo_name, "occlusion", 0);
 
-            params->setNamedConstant("u_occlusionDepthBuffer", num_tex_unit);
+            params->setNamedConstant("u_occlusionDepthBuffer", int(num_tex_unit));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             params->setNamedAutoConstant("u_near", Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
             params->setNamedAutoConstant("u_far", Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
@@ -310,7 +311,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
                 tex_state->setTextureFiltering(Ogre::TFO_NONE);
                 tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 tex_state->setCompositorReference(algo_name, "pingBuffer", 1);
-                params->setNamedConstant("u_frontDepthBuffer", num_tex_unit++);
+                params->setNamedConstant("u_frontDepthBuffer", int(num_tex_unit++));
             }
 
             Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
@@ -319,7 +320,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             tex_state->setCompositorReference(algo_name, "occlusion", 0);
 
-            params->setNamedConstant("u_occlusionDepthBuffer", num_tex_unit);
+            params->setNamedConstant("u_occlusionDepthBuffer", int(num_tex_unit));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
@@ -390,7 +391,7 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             auto num_tex_unit = pass->getNumTextureUnitStates();
 
             // Modify texture input according to the requested pass
-            for(std::size_t i = 0 ; i < 4 ; ++i)
+            for(Ogre::uint32 i = 0 ; i < 4 ; ++i)
             {
                 Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
                 tex_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
@@ -400,10 +401,10 @@ Ogre::Technique* viz::scene3d::compositor::material_mgr_listener::handleSchemeNo
             }
 
             auto params = pass->getFragmentProgramParameters();
-            params->setNamedConstant("u_nearestDepthBuffer", num_tex_unit);
-            params->setNamedConstant("u_farthestDepthBuffer", num_tex_unit + 1);
-            params->setNamedConstant("u_forwardColorBuffer", num_tex_unit + 2);
-            params->setNamedConstant("u_forwardAlphasBuffer", num_tex_unit + 3);
+            params->setNamedConstant("u_nearestDepthBuffer", int(num_tex_unit));
+            params->setNamedConstant("u_farthestDepthBuffer", int(num_tex_unit + 1));
+            params->setNamedConstant("u_forwardColorBuffer", int(num_tex_unit + 2));
+            params->setNamedConstant("u_forwardAlphasBuffer", int(num_tex_unit + 3));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
             if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())

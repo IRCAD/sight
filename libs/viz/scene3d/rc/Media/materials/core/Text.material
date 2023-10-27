@@ -24,7 +24,6 @@ material Text
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
             colour_write on on on off
 

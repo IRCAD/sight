@@ -213,8 +213,14 @@ Ogre::Root* utils::getOgreRoot()
                     constexpr std::string_view plugin_folder_token = "PluginFolder=";
                     constexpr std::string_view plugin_token        = "Plugin=";
 
+#if defined(WIN32)
+                    const std::string module = std::filesystem::weakly_canonical(
+                        core::tools::os::get_shared_library_path(lib_name).remove_filename() / ".." / "plugins" / "ogre"
+                    ).string();
+#else
                     const std::string module =
                         core::tools::os::get_shared_library_path(lib_name).remove_filename().string();
+#endif
 
                     // First parse config and looks for required plugin and plugin folder
                     {
@@ -310,6 +316,7 @@ Ogre::Root* utils::getOgreRoot()
         rs->setConfigOption("Full Screen", "false");
         rs->setConfigOption("VSync", "false");
         rs->setConfigOption("Display Frequency", "60");
+        rs->setConfigOption("Separate Shader Objects", "No");
 
         root->setRenderSystem(rs);
 
@@ -710,7 +717,7 @@ void utils::allocateTexture(
 {
     auto usage = _dynamic ? Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE : Ogre::TU_STATIC_WRITE_ONLY;
 
-    _texture->freeInternalResources();
+    _texture->unload();
 
     _texture->setWidth(static_cast<Ogre::uint32>(_width));
     _texture->setHeight(static_cast<Ogre::uint32>(_height));

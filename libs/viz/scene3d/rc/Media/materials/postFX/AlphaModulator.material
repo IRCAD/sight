@@ -18,7 +18,6 @@ material AlphaModulator
         pass
         {
             cull_hardware none
-            cull_software none
             depth_check off
 
             separate_scene_blend zero one zero src_alpha

@@ -179,9 +179,10 @@ void mesh::bindLayer(
         FW_PROFILE_AVG("REALLOC LAYER", 5);
 
         // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
-        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        auto usage =
+            (m_isDynamic || m_isDynamicVertices)
+            ? static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE)
+            : static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
         const std::size_t offset = Ogre::VertexElement::getTypeSize(_type);
 
@@ -261,14 +262,15 @@ void mesh::updateMesh(const data::mesh::csptr& _mesh, bool _points_only)
         FW_PROFILE("REALLOC MESH");
 
         // We need to reallocate
-        m_ogreMesh->sharedVertexData->vertexCount = num_vertices;
+        m_ogreMesh->sharedVertexData->vertexCount = Ogre::uint32(num_vertices);
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
         Ogre::HardwareVertexBufferSharedPtr vertex_buffer;
-        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        auto usage =
+            (m_isDynamic || m_isDynamicVertices)
+            ? static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE)
+            : static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
         std::size_t offset = 0;
 
@@ -296,7 +298,7 @@ void mesh::updateMesh(const data::mesh::csptr& _mesh, bool _points_only)
     else
     {
         // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
-        m_ogreMesh->sharedVertexData->vertexCount = num_vertices;
+        m_ogreMesh->sharedVertexData->vertexCount = Ogre::uint32(num_vertices);
     }
 
     //------------------------------------------
@@ -395,11 +397,12 @@ void mesh::updateMesh(const data::mesh::csptr& _mesh, bool _points_only)
 
                 if(create_index_buffer)
                 {
-                    Ogre::HardwareBuffer::Usage usage = m_isDynamic
-                                                        ? Ogre::HardwareBuffer::
-                                                        HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                                        :
-                                                        Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+                    auto usage =
+                        m_isDynamic
+                        ? static_cast<Ogre::HardwareBuffer::Usage>(
+                            Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                        )
+                        : static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
                     ibuf = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
                         indices32_bits ? Ogre::HardwareIndexBuffer::IT_32BIT : Ogre::HardwareIndexBuffer::IT_16BIT,
@@ -471,14 +474,15 @@ void mesh::updateMesh(const data::point_list::csptr& _point_list)
         FW_PROFILE("REALLOC MESH");
 
         // We need to reallocate
-        m_ogreMesh->sharedVertexData->vertexCount = ui_num_vertices;
+        m_ogreMesh->sharedVertexData->vertexCount = Ogre::uint32(ui_num_vertices);
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
         Ogre::HardwareVertexBufferSharedPtr vertex_buffer;
-        Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
-                                            ? Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                            : Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        auto usage =
+            (m_isDynamic || m_isDynamicVertices)
+            ? static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE)
+            : static_cast<Ogre::HardwareBuffer::Usage>(Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
         std::size_t offset = 0;
 
@@ -500,7 +504,7 @@ void mesh::updateMesh(const data::point_list::csptr& _point_list)
     else
     {
         // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
-        m_ogreMesh->sharedVertexData->vertexCount = ui_num_vertices;
+        m_ogreMesh->sharedVertexData->vertexCount = Ogre::uint32(ui_num_vertices);
     }
 
     if(m_subMesh == nullptr)
@@ -551,8 +555,6 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::updateR2VB(
         if(m_r2vbEntity == nullptr)
         {
             m_r2vbEntity = _scene_mgr.createEntity(m_r2vbMesh);
-            // Never attach it to the scene manager otherwise it will be computed all the time
-            _scene_mgr.getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
         const std::size_t num_sub_entities = m_r2vbEntity->getNumSubEntities();
@@ -923,7 +925,7 @@ void mesh::updateColors(const data::mesh::csptr& _mesh)
     {
         if(m_perPrimitiveColorTexture)
         {
-            m_perPrimitiveColorTexture->freeInternalResources();
+            m_perPrimitiveColorTexture->unload();
         }
 
         m_perPrimitiveColorTexture.reset();

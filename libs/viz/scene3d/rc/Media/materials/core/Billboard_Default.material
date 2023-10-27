@@ -31,7 +31,6 @@ geometry_program Default/Billboard_GP glsl
     {
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -47,7 +46,6 @@ geometry_program Default/Billboard_PerPointColor_GP glsl
     {
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -63,7 +61,6 @@ geometry_program Default/Billboard_FixedSize_GP glsl
     {
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -79,7 +76,6 @@ geometry_program Default/Billboard_FixedSize_PerPointColor_GP glsl
     {
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -94,7 +90,6 @@ geometry_program Default/Billboard_Depth_GP glsl
     default_params
     {
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -109,7 +104,6 @@ geometry_program Default/Billboard_FixedSize_Depth_GP glsl
     default_params
     {
         param_named_auto u_proj projection_matrix
-        param_named_auto u_cameraPos camera_position
         param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
@@ -136,7 +130,6 @@ material Billboard_FixedSize
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
 
             vertex_program_ref Default/Billboard_VP
@@ -187,7 +180,6 @@ material Billboard_FixedSize_PerPointColor
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
 
             vertex_program_ref Default/Billboard_PerPointColor_VP
@@ -238,7 +230,6 @@ material Billboard_Default
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
 
             vertex_program_ref Default/Billboard_VP
@@ -289,7 +280,6 @@ material Billboard_Default_PerPointColor
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
 
             vertex_program_ref Default/Billboard_PerPointColor_VP

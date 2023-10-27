@@ -61,7 +61,7 @@ aruco_tracker::aruco_tracker() noexcept :
     new_slot(SET_PARAMETER_SLOT, &aruco_tracker::setParameter, this);
 
     // Initialize detector parameters
-    m_detectorParams = cv::aruco::DetectorParameters::create();
+    m_detectorParams = cv::makePtr<cv::aruco::DetectorParameters>();
 
     // We need to tweak some parameters to adjust detection in our cases.
     //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
@@ -77,7 +77,8 @@ aruco_tracker::aruco_tracker() noexcept :
     m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
 
     // For now only original aruco markers are used
-    m_dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
+    m_dictionary =
+        cv::makePtr<cv::aruco::Dictionary>(cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL));
 }
 
 //-----------------------------------------------------------------------------

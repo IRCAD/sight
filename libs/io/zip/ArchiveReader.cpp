@@ -34,6 +34,11 @@
 
 #include <core/exceptionmacros.hpp>
 
+#ifdef _MSC_VER
+// warning for unreachable code in Release/RelWithDebInfo in boost::iostreams whereas it should be ignored,
+// see https://developercommunity.visualstudio.com/t/error:-C4702-with-external:w0/1696694
+#pragma warning(disable : 4702)
+#endif // _MSC_VER
 #include <boost/iostreams/stream.hpp>
 
 #include <filesystem>

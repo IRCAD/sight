@@ -74,7 +74,14 @@ void chain_manager::addAvailableCompositor(compositor_id_t _compositor_name)
     // Remove the final chain compositor if present
     if(compositor_manager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
     {
-        compositor_manager.setCompositorEnabled(viewport, FINAL_CHAIN_COMPOSITOR, false);
+        try
+        {
+            compositor_manager.setCompositorEnabled(viewport, FINAL_CHAIN_COMPOSITOR, false);
+        }
+        catch(Ogre::InvalidParametersException&)
+        {
+            SIGHT_DEBUG("Can not find compositor: " + FINAL_CHAIN_COMPOSITOR);
+        }
         compositor_manager.removeCompositor(viewport, FINAL_CHAIN_COMPOSITOR);
     }
 
@@ -155,10 +162,11 @@ void chain_manager::setCompositorChain(const std::vector<compositor_id_t>& _comp
     Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
-    if(compositor_manager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
+    Ogre::CompositorChain* chain = compositor_manager.getCompositorChain(viewport);
+    if(const size_t pos = chain->getCompositorPosition(FINAL_CHAIN_COMPOSITOR); pos != Ogre::CompositorChain::NPOS)
     {
-        compositor_manager.setCompositorEnabled(viewport, FINAL_CHAIN_COMPOSITOR, false);
-        compositor_manager.removeCompositor(viewport, FINAL_CHAIN_COMPOSITOR);
+        chain->setCompositorEnabled(pos, false);
+        chain->removeCompositor(pos);
     }
 
     for(const compositor_id_t& compositor_name : _compositors)

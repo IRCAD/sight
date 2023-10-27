@@ -26,6 +26,7 @@
 
 #include <io/vtk/helper/transfer_function.hpp>
 
+#include <array>
 #include <cmath>
 
 // Registers the fixture into the 'registry'

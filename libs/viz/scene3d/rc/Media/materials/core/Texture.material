@@ -14,7 +14,6 @@ fragment_program SimpleTex_FP glsl
         {
                 param_named colorMap int 0
                 param_named depthMap int 1
-                param_named normalMap int 2
         }
 }
 
@@ -25,7 +24,6 @@ material Texture
                 pass
                 {
                         cull_hardware none
-                        cull_software none
                         depth_check off
 
                         vertex_program_ref SimpleTex_VP

@@ -68,11 +68,17 @@ int main(int argc, char** argv)
 
         cv::Mat marker;
 
-        cv::Ptr<cv::aruco::Dictionary> dictionary;
+#if CV_MAJOR_VERSION > 4 || (CV_MAJOR_VERSION == 4 && CV_VERSION_MINOR > 5)
         //Use the aruco original dictionary
-        dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
+        const auto& dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL);
+
+        cv::aruco::generateImageMarker(dictionary, id, size, marker, border_bits);
+#else
+        //Use the aruco original dictionary
+        const auto& dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
 
         cv::aruco::drawMarker(dictionary, id, size, marker, border_bits);
+#endif
 
         cv::imwrite(file, marker);
     }

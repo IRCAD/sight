@@ -305,7 +305,7 @@ void material::updateShadingMode(int _shading_mode, int _num_lights, bool _has_d
                         // Ogre packs texture unit indices so we can't use spare indices
                         ogre_pass->getGeometryProgramParameters()->setNamedConstant(
                             "u_colorPrimitiveTexture",
-                            unit_state_count - 1
+                            int(unit_state_count - 1)
                         );
                     }
                 }

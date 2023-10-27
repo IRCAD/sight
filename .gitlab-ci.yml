@@ -291,6 +291,8 @@ deploy:apps-linux-release:
     TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
+    MSVC_VERSION: "17"
+    CUDA_VERSION: "12_2"
   stage: build
   script:
     # Get the package_name name from our CMake script

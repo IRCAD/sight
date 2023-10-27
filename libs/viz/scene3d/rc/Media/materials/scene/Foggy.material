@@ -10,7 +10,6 @@ fragment_program Default/Foggy_FP glsl
     {
         param_named u_fogParams float2 100. 1000.
         param_named u_fogColor float4 0.5 0.5 0.5 1.0
-        param_named u_fog int 1
         // Lighting
         param_named_auto u_f3CameraPos camera_position
         param_named_auto u_f4LightPos light_position_array 10
@@ -34,7 +33,6 @@ material Foggy
 
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/PixelLit_VP
             {

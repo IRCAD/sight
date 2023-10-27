@@ -13,7 +13,7 @@ uniform vec3 u_boundingBoxMax;
 
 layout(location = 0) in ivec3 vs_gridPos[];
 
-out vec3 oPos;
+out vec3 @VES_POSITION@;
 
 //-----------------------------------------------------------------------------
 
@@ -119,7 +119,7 @@ void main()
         {
             for(int j = 0; j < nbVertexPerFace; ++j)
             {
-                oPos = faceVertices[i * nbVertexPerFace + j];
+                @VES_POSITION@ = faceVertices[i * nbVertexPerFace + j];
                 EmitVertex();
             }
             EndPrimitive();

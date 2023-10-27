@@ -27,7 +27,6 @@ material OrenNayar
 
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/PixelLit_VP
             {

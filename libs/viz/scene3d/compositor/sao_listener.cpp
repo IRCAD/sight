@@ -73,7 +73,7 @@ void sao_listener::notifyMaterialRender(Ogre::uint32 _pass_id, Ogre::MaterialPtr
         // ---------------------------------------------------
         //  Copy the content of mip0,mip1... in rt0
         // ---------------------------------------------------
-        rt0->freeInternalResources();
+        rt0->unload();
 
         rt0->changeGroupOwnership(mip0.get()->getGroup());
         rt0->setWidth(mip0.get()->getWidth());

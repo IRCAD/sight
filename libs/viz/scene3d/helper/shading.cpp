@@ -296,7 +296,7 @@ shading::shader_constants_t shading::findShaderConstants(
             {
                 for(std::size_t i = 0 ; i < cst_def.second.elementSize ; ++i)
                 {
-                    constant_value.d[i] = _params->getDoubleConstantList()[cst_def.second.physicalIndex + i];
+                    constant_value.d[i] = *_params->getDoublePointer(cst_def.second.physicalIndex + i);
                 }
 
                 found = true;
@@ -305,7 +305,7 @@ shading::shader_constants_t shading::findShaderConstants(
             {
                 for(std::size_t i = 0 ; i < cst_def.second.elementSize ; ++i)
                 {
-                    constant_value.f[i] = _params->getFloatConstantList()[cst_def.second.physicalIndex + i];
+                    constant_value.f[i] = *_params->getFloatPointer(cst_def.second.physicalIndex + i);
                 }
 
                 found = true;
@@ -314,7 +314,7 @@ shading::shader_constants_t shading::findShaderConstants(
             {
                 for(std::size_t i = 0 ; i < cst_def.second.elementSize ; ++i)
                 {
-                    constant_value.i[i] = _params->getIntConstantList()[cst_def.second.physicalIndex + i];
+                    constant_value.i[i] = *_params->getIntPointer(cst_def.second.physicalIndex + i);
                 }
 
                 found = true;

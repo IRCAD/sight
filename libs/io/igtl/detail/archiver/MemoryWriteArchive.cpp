@@ -27,10 +27,9 @@
 #include <archive_entry.h>
 
 #include <boost/date_time.hpp>
-#include <boost/integer_traits.hpp>
-#include <boost/iostreams/stream.hpp>
 
 #include <filesystem>
+#include <fstream>
 #include <utility>
 
 namespace sight::io::igtl::detail::archiver
@@ -60,8 +59,8 @@ void MemoryArchiveSink::archive()
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
     archive_entry_set_size(entry, la_int64_t(m_buffer.size()));
-    const time_t seconds           = now.time_of_day().total_seconds();
-    const std::int64_t nanoseconds = static_cast<std::int64_t>(now.time_of_day().total_nanoseconds());
+    const time_t seconds   = now.time_of_day().total_seconds();
+    const long nanoseconds = static_cast<long>(now.time_of_day().total_nanoseconds()); // NOLINT(google-runtime-int)
     archive_entry_set_atime(entry, seconds, nanoseconds);
     archive_entry_set_birthtime(entry, seconds, nanoseconds);
     archive_entry_set_ctime(entry, seconds, nanoseconds);

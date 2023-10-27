@@ -17,6 +17,8 @@ cmake_policy(SET CMP0067 NEW)
 cmake_policy(SET CMP0106 OLD)
 # Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 cmake_policy(SET CMP0141 NEW)
+# Use old policy for now because of openCV
+cmake_policy(SET CMP0146 OLD)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
     # Transform the ``DEPFILE`` after running the custom command for Ninja generator.

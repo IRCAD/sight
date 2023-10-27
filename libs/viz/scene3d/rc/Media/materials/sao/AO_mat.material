@@ -37,11 +37,6 @@ material AO_mat
                 param_named u_radius float 0.85
                 param_named eu_MaxMipLevels int 8
                 param_named u_q int 5
-
-                param_named u_k int 1
-                param_named u_sigma int 1
-                param_named u_epsilon float 0.001
-                param_named u_beta float 0.0001
             }
 
             texture_unit MipMap_tex

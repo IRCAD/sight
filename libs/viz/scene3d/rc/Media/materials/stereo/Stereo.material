@@ -20,7 +20,6 @@ material Stereo
         pass
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
 

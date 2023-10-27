@@ -838,17 +838,17 @@ void ray_tracing_volume_renderer::updateRayTracingMaterial()
         fp_params->setNamedAutoConstant(
             "u_f4LightPos",
             Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY,
-            10
+            8
         );
         fp_params->setNamedAutoConstant(
             "u_f3LightDiffuseCol",
             Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY,
-            10
+            8
         );
         fp_params->setNamedAutoConstant(
             "u_f3LightSpecularCol",
             Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR_ARRAY,
-            10
+            8
         );
         fp_params->setNamedAutoConstant(
             "u_invWorldViewProj",

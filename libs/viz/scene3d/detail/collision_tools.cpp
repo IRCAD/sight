@@ -179,8 +179,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     // we need to test every triangle of every object.
     closest_distance = -1.0F;
     Ogre::Vector3 closest_result;
-    Ogre::RaySceneQueryResult& query_result = mRaySceneQuery->getLastResults();
-    for(auto& qr_idx : query_result)
+    for(auto& qr_idx : mRaySceneQuery->getLastResults())
     {
         // Stop checking if we have found a raycast hit that is closer
         // than all remaining entities.

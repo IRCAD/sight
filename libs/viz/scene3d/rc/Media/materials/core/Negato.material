@@ -40,7 +40,6 @@ material Negato
         {
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
             depth_bias -1 -1
 
             vertex_program_ref Negato_VP

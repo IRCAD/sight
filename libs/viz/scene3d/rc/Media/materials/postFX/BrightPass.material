@@ -12,7 +12,6 @@ material BrightPass
         pass
         {
             cull_hardware none
-            cull_software none
             depth_check off
             polygon_mode_overrideable false
 

@@ -23,13 +23,13 @@ layout(location = 1) in vec4 vColor[];
 layout(location = 2) in vec2 vTexCoord[];
 #endif // DIFFUSE_TEX
 
-out vec3 oPos;
-out vec3 oNormal;
+out vec3 @VES_POSITION@;
+out vec3 @VES_NORMAL@;
 #if defined(VERTEX_COLOR) || defined(PER_PRIMITIVE_COLOR)
-out uint oColour;
+out uint @VES_COLOR@;
 #endif // VERTEX_COLOR
 #ifdef DIFFUSE_TEX
-out vec2 oUv0;
+out vec2 @VES_TEXTURE_COORDINATES_0@;
 #endif // DIFFUSE_TEX
 
 #ifdef PER_PRIMITIVE_COLOR
@@ -39,25 +39,25 @@ out vec2 oUv0;
 layout(binding=1) uniform sampler2D u_colorPrimitiveTexture;
 #endif // PER_PRIMITIVE_COLOR
 
-void emit(int index, vec4 ppcolor)
+void emit(int index, vec4 pp_color)
 {
-    oPos = gl_in[index].gl_Position.xyz;
-    oNormal = vNormal[index];
+    @VES_POSITION@ = gl_in[index].gl_Position.xyz;
+    @VES_NORMAL@ = vNormal[index];
 
 #ifdef DIFFUSE_TEX
-    oUv0 = vTexCoord[index];
+    @VES_TEXTURE_COORDINATES_0@ = vTexCoord[index];
 #endif // DIFFUSE_TEX
 
 #ifdef VERTEX_COLOR
     vec4 color;
     color = vColor[index];
 #   ifdef PER_PRIMITIVE_COLOR
-    color = ppcolor * color;
+    color = pp_color * color;
 #   endif // PER_PRIMITIVE_COLOR
-    oColour = packUnorm4x8(color);
+    @VES_COLOR@ = packUnorm4x8(color);
 #else
 #   ifdef PER_PRIMITIVE_COLOR
-    oColour = packUnorm4x8(ppcolor);
+    @VES_COLOR@ = packUnorm4x8(pp_color);
 #   endif // PER_PRIMITIVE_COLOR
 #endif // VERTEX_COLOR
 
@@ -66,7 +66,7 @@ void emit(int index, vec4 ppcolor)
 
 void main(void)
 {
-    vec4 ppcolor = vec4(1.,1.,1.,1.);
+    vec4 pp_color = vec4(1.,1.,1.,1.);
 #ifdef PER_PRIMITIVE_COLOR
     ivec2 colorPrimitiveTextureSize = textureSize(u_colorPrimitiveTexture, 0);
     // compute offset
@@ -75,16 +75,16 @@ void main(void)
 
     vec2 range = max(vec2(1.0, 1.0), colorPrimitiveTextureSize - 1.0);
     vec2 uv = vec2(mod / range.x , div/ range.y);
-    ppcolor = texture(u_colorPrimitiveTexture, uv );
+    pp_color = texture(u_colorPrimitiveTexture, uv );
 #endif // PER_PRIMITIVE_COLOR
 
 #if defined(QUAD)
-    emit(0, ppcolor); emit(1, ppcolor); emit(3, ppcolor); emit(2, ppcolor);
+    emit(0, pp_color); emit(1, pp_color); emit(3, pp_color); emit(2, pp_color);
 #else
 #if defined(TETRA)
-    emit(0, ppcolor); emit(1, ppcolor); emit(2, ppcolor); emit(3, ppcolor); emit(0, ppcolor); emit(1, ppcolor);
+    emit(0, pp_color); emit(1, pp_color); emit(2, pp_color); emit(3, pp_color); emit(0, pp_color); emit(1, pp_color);
 #else
-    emit(0, ppcolor); emit(1, ppcolor); emit(2, ppcolor);
+    emit(0, pp_color); emit(1, pp_color); emit(2, pp_color);
 #endif
 #endif
     EndPrimitive();

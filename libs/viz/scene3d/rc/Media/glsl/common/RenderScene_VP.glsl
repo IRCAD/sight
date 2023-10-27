@@ -4,13 +4,22 @@
 #extension GL_GOOGLE_include_directive : enable
 #endif // GLSL_LANG_VALIDATOR
 
-uniform mat4 u_worldViewProj;
-uniform mat4 u_worldView;
+#ifdef PHONG
 uniform mat4 u_world;
+#endif
+
+#if defined(PHONG) || defined(CEL_SHADING)
 uniform mat4 u_normalMatrix;
+#endif
+
+#if defined(AUTOSTEREO) || defined(FLAT)
+uniform mat4 u_worldView;
+#endif
 
 #ifdef AUTOSTEREO
 uniform mat4 u_proj;
+#else
+uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 in vec4 position;

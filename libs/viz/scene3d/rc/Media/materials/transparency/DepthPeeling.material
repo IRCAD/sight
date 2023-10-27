@@ -43,7 +43,6 @@ material DepthPeeling/Blend
         pass blend
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
             scene_blend_op add

@@ -106,8 +106,8 @@ struct LabelImageFilter
     template<class PIXELTYPE>
     void operator()(Parameters& _params)
     {
-        data::image::sptr image      = _params.i_image;
-        const unsigned int dimension = 3;
+        data::image::sptr image                       = _params.i_image;
+        [[maybe_unused]] const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
         using input_image_t = typename itk::Image<PIXELTYPE, dimension>;
         typename input_image_t::Pointer itk_input_image = io::itk::move_to_itk<input_image_t>(image);

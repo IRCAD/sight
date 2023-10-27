@@ -70,7 +70,6 @@ material RayEntryPoints
             depth_write on
             depth_func less
             cull_hardware clockwise
-            cull_software none
 
             vertex_program_ref RayEntryPoints_VP
             {
@@ -93,7 +92,6 @@ material RayEntryPoints
             depth_write on
             depth_func less
             cull_hardware anticlockwise
-            cull_software none
 
             vertex_program_ref RayEntryPoints_VP
             {
@@ -116,7 +114,6 @@ material RayEntryPoints
             depth_write on
             depth_func greater_equal
             cull_hardware clockwise
-            cull_software none
 
             vertex_program_ref RayEntryPoints_VP
             {
@@ -144,7 +141,6 @@ material RayEntryPoints
             depth_write on
             depth_func less
             cull_hardware none
-            cull_software none
             depth_bias 1 1
 
             vertex_program_ref RayEntryPoints_VP

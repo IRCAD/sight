@@ -7,7 +7,6 @@ material Video
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
@@ -29,7 +28,6 @@ material Video
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
@@ -47,7 +45,6 @@ material VideoWithTF
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
@@ -74,7 +71,6 @@ material VideoWithTF
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
@@ -92,7 +88,6 @@ material VideoWithTF_Int
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
@@ -119,7 +114,6 @@ material VideoWithTF_Int
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Video_VP
             {
